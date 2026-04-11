@@ -1589,6 +1589,12 @@ def locate_rebalance_dates(trading_dates):
     return latest_rebalance, prev_rebalance, next_rebalance, effective_rebalance
 
 
+def resolve_rebalance_effective_date(trading_dates, latest_rebalance):
+    if latest_rebalance is None:
+        return None
+    return str(pd.Timestamp(latest_rebalance).date())
+
+
 def build_signal_window(trading_dates, lookback=LOOKBACK):
     all_dates = pd.DatetimeIndex(trading_dates)
     if len(all_dates) <= lookback + 1:
@@ -2178,12 +2184,7 @@ def assemble_context(hedge_hist, all_trading_dates, candidates, histories, failu
         prev_members = members_df.loc[members_df["rebalance_date"] == str(pd.Timestamp(prev_rebalance).date())].copy()
     effective_members = members_df.loc[members_df["rebalance_date"] == str(pd.Timestamp(effective_rebalance).date())].copy()
 
-    rebalance_idx = pd.DatetimeIndex(all_trading_dates).get_loc(pd.Timestamp(latest_rebalance))
-    effective_date = (
-        str(pd.Timestamp(all_trading_dates[rebalance_idx + 1]).date())
-        if rebalance_idx + 1 < len(all_trading_dates)
-        else None
-    )
+    effective_date = resolve_rebalance_effective_date(all_trading_dates, latest_rebalance)
 
     freshness = {
         "status": "正常",

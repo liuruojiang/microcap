@@ -926,6 +926,7 @@ def load_symbol_cache(
     trading_dates: pd.DatetimeIndex,
     cap_dates: pd.DatetimeIndex,
     trade_constraint_mode: str = TRADE_CONSTRAINT_MODE_NEXT_OPEN,
+    exclude_historical_st_from_caps: bool = True,
 ) -> tuple[str, pd.Series, pd.Series, pd.Series, pd.Series] | None:
     try:
         price_path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, symbol)
@@ -1004,8 +1005,9 @@ def load_symbol_cache(
         cap_series = cap_series.where(cap_tradeable, np.nan)
         cap_active = build_active_status_series(meta, cap_dates).astype(bool)
         cap_series = cap_series.where(cap_active, np.nan)
-        cap_st = st_series.reindex(cap_dates).fillna(False).astype(bool)
-        cap_series = cap_series.where(~cap_st, np.nan)
+        if exclude_historical_st_from_caps:
+            cap_st = st_series.reindex(cap_dates).fillna(False).astype(bool)
+            cap_series = cap_series.where(~cap_st, np.nan)
 
         return symbol, ret_series, cap_series, buyable_series, sellable_series
     except Exception:
@@ -1018,6 +1020,7 @@ def load_cache_panels(
     cap_dates: pd.DatetimeIndex,
     max_workers: int = 8,
     trade_constraint_mode: str = TRADE_CONSTRAINT_MODE_NEXT_OPEN,
+    exclude_historical_st_from_caps: bool = True,
 ) -> tuple[pd.DataFrame, dict[pd.Timestamp, dict[str, float]], pd.DataFrame, pd.DataFrame]:
     returns_df = pd.DataFrame(index=trading_dates)
     buyable_df = pd.DataFrame(index=trading_dates)
@@ -1025,7 +1028,14 @@ def load_cache_panels(
     caps_by_date: dict[pd.Timestamp, dict[str, float]] = {pd.Timestamp(dt): {} for dt in cap_dates}
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = {
-            pool.submit(load_symbol_cache, symbol, trading_dates, cap_dates, trade_constraint_mode): symbol
+            pool.submit(
+                load_symbol_cache,
+                symbol,
+                trading_dates,
+                cap_dates,
+                trade_constraint_mode,
+                exclude_historical_st_from_caps,
+            ): symbol
             for symbol in symbols
         }
         for fut in as_completed(futures):

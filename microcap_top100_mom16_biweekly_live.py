@@ -43,6 +43,7 @@ HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS = 40
 EXECUTION_TIMING = freq_mod.EXECUTION_TIMING_CLOSE
 TRADE_CONSTRAINT_MODE = freq_mod.TRADE_CONSTRAINT_MODE_CLOSE
 RESEARCH_STACK_VERSION = "2026-04-11-p0-p1-history-meta-master-stv2"
+STATIC_CONTEXT_CACHE_VERSION = "2026-04-11-live-current-st-members-v1"
 
 DEFAULT_INDEX_CSV = OUTPUT_DIR / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv"
 DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live"
@@ -533,17 +534,15 @@ def build_local_proxy_bundle(
         cap_dates=rebalance_dates,
         max_workers=args.max_workers,
         trade_constraint_mode=TRADE_CONSTRAINT_MODE,
+        exclude_historical_st_from_caps=False,
     )
     name_map = load_name_map()
-    target_members_map = freq_mod.build_target_members_map(caps_by_date, rebalance_dates, top_n=TOP_N)
-    target_members_map = {
-        pd.Timestamp(dt): [
-            symbol
-            for symbol in members
-            if is_tradable_name(name_map.get(symbol.zfill(6), ""))
-        ][:TOP_N]
-        for dt, members in target_members_map.items()
-    }
+    target_members_map = build_live_target_members_map(
+        caps_by_date=caps_by_date,
+        rebalance_dates=rebalance_dates,
+        name_map=name_map,
+        top_n=TOP_N,
+    )
     members_df = freq_mod.build_target_members_frame(target_members_map, caps_by_date, name_map=name_map)
     index_df, turnover_df, _ = freq_mod.simulate_rebalance_path(
         trading_dates=trading_dates,
@@ -816,6 +815,25 @@ def load_name_map() -> dict[str, str]:
     return dict(zip(frame["code"].str.zfill(6), frame["name"]))
 
 
+def build_live_target_members_map(
+    caps_by_date: dict[pd.Timestamp, dict[str, float]],
+    rebalance_dates: pd.DatetimeIndex,
+    name_map: dict[str, str],
+    top_n: int = TOP_N,
+) -> dict[pd.Timestamp, list[str]]:
+    out: dict[pd.Timestamp, list[str]] = {}
+    for dt in rebalance_dates:
+        cap_map = caps_by_date.get(pd.Timestamp(dt), {})
+        ranked = sorted(cap_map.items(), key=lambda x: x[1])
+        tradable_members = [
+            symbol
+            for symbol, _ in ranked
+            if is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
+        ][:top_n]
+        out[pd.Timestamp(dt)] = tradable_members
+    return out
+
+
 def load_member_snapshot(
     snapshot_dates: list[pd.Timestamp],
     max_workers: int,
@@ -829,17 +847,15 @@ def load_member_snapshot(
         trading_dates=snapshot_index,
         cap_dates=snapshot_index,
         max_workers=max_workers,
+        exclude_historical_st_from_caps=False,
     )
     name_map = load_name_map()
-    target_members_map = freq_mod.build_target_members_map(caps_by_date, snapshot_index, top_n=TOP_N)
-    target_members_map = {
-        pd.Timestamp(dt): [
-            symbol
-            for symbol in members
-            if is_tradable_name(name_map.get(symbol.zfill(6), ""))
-        ][:TOP_N]
-        for dt, members in target_members_map.items()
-    }
+    target_members_map = build_live_target_members_map(
+        caps_by_date=caps_by_date,
+        rebalance_dates=snapshot_index,
+        name_map=name_map,
+        top_n=TOP_N,
+    )
 
     snapshots: dict[pd.Timestamp, pd.DataFrame] = {}
     for dt in snapshot_index:
@@ -949,6 +965,7 @@ def load_cached_static_context(
     try:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         expected = {
+            "cache_version": STATIC_CONTEXT_CACHE_VERSION,
             "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
             "prev_rebalance": None if prev_rebalance is None else str(pd.Timestamp(prev_rebalance).date()),
             "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
@@ -977,6 +994,7 @@ def save_static_context_cache(
 ) -> None:
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
     meta = {
+        "cache_version": STATIC_CONTEXT_CACHE_VERSION,
         "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
         "prev_rebalance": None if prev_rebalance is None else str(pd.Timestamp(prev_rebalance).date()),
         "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
