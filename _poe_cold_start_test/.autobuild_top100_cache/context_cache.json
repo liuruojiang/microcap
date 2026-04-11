@@ -1,0 +1,2119 @@
+{
+  "close_df": [
+    {
+      "date": "2026-03-06",
+      "microcap": 1038.4335254556568,
+      "hedge": 8248.86
+    },
+    {
+      "date": "2026-03-09",
+      "microcap": 1028.2285694955997,
+      "hedge": 8203.87
+    },
+    {
+      "date": "2026-03-10",
+      "microcap": 1060.4867544511706,
+      "hedge": 8350.09
+    },
+    {
+      "date": "2026-03-11",
+      "microcap": 1052.511831066616,
+      "hedge": 8363.53
+    },
+    {
+      "date": "2026-03-12",
+      "microcap": 1036.3022133437105,
+      "hedge": 8335.91
+    },
+    {
+      "date": "2026-03-13",
+      "microcap": 1037.3084549567368,
+      "hedge": 8214.29
+    },
+    {
+      "date": "2026-03-16",
+      "microcap": 1034.3199533482302,
+      "hedge": 8211.35
+    },
+    {
+      "date": "2026-03-17",
+      "microcap": 1009.0194054604094,
+      "hedge": 8019.86
+    },
+    {
+      "date": "2026-03-18",
+      "microcap": 1029.4074105715702,
+      "hedge": 8096.59
+    },
+    {
+      "date": "2026-03-19",
+      "microcap": 998.3934475375531,
+      "hedge": 7909.23
+    },
+    {
+      "date": "2026-03-20",
+      "microcap": 954.8493163151587,
+      "hedge": 7783.43
+    },
+    {
+      "date": "2026-03-23",
+      "microcap": 893.3725742145257,
+      "hedge": 7409.11
+    },
+    {
+      "date": "2026-03-24",
+      "microcap": 952.4119218726005,
+      "hedge": 7600.86
+    },
+    {
+      "date": "2026-03-25",
+      "microcap": 977.0439152465535,
+      "hedge": 7751.18
+    },
+    {
+      "date": "2026-03-26",
+      "microcap": 960.227599307057,
+      "hedge": 7639.38
+    },
+    {
+      "date": "2026-03-27",
+      "microcap": 977.7300607784892,
+      "hedge": 7746.31
+    },
+    {
+      "date": "2026-03-30",
+      "microcap": 988.215161542309,
+      "hedge": 7767.93
+    },
+    {
+      "date": "2026-03-31",
+      "microcap": 971.6115658713823,
+      "hedge": 7619.85
+    },
+    {
+      "date": "2026-04-01",
+      "microcap": 978.10802374176,
+      "hedge": 7764.15
+    },
+    {
+      "date": "2026-04-02",
+      "microcap": 950.2017606674433,
+      "hedge": 7623.42
+    },
+    {
+      "date": "2026-04-03",
+      "microcap": 911.8843874573923,
+      "hedge": 7536.6
+    },
+    {
+      "date": "2026-04-07",
+      "microcap": 941.2716385509448,
+      "hedge": 7606.02
+    },
+    {
+      "date": "2026-04-08",
+      "microcap": 983.8997754067093,
+      "hedge": 7955.77
+    },
+    {
+      "date": "2026-04-09",
+      "microcap": 955.6735145997914,
+      "hedge": 7921.45
+    }
+  ],
+  "latest_signal": [
+    {
+      "date": "2026-04-09",
+      "signal_label": "cash",
+      "next_holding": "cash",
+      "microcap_close": 955.6735145997914,
+      "hedge_close": 7921.45,
+      "microcap_mom": -0.05286904352079991,
+      "hedge_mom": -0.012270787769362523,
+      "momentum_gap": -0.040598255751437384,
+      "ratio_bias_mom": NaN,
+      "ratio_r2": 0.21847541287245992,
+      "weight": 1.0,
+      "futures_drag": 0.0,
+      "current_holding": "cash",
+      "trade_state": "hold"
+    }
+  ],
+  "target_members": [
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 1,
+      "symbol": "688701",
+      "name": "卓锦股份",
+      "market_cap": 1220581311.1487854,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 2,
+      "symbol": "688296",
+      "name": "和达科技",
+      "market_cap": 1462026842.801756,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 3,
+      "symbol": "002193",
+      "name": "如意集团",
+      "market_cap": 1481310013.4557168,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 4,
+      "symbol": "002856",
+      "name": "美芝股份",
+      "market_cap": 1481675247.289637,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 5,
+      "symbol": "002883",
+      "name": "中设股份",
+      "market_cap": 1481931505.7168233,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 6,
+      "symbol": "002719",
+      "name": "麦趣尔",
+      "market_cap": 1483668173.5907512,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 7,
+      "symbol": "688659",
+      "name": "元琛科技",
+      "market_cap": 1534400000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 8,
+      "symbol": "301098",
+      "name": "金埔园林",
+      "market_cap": 1535862085.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 9,
+      "symbol": "600543",
+      "name": "莫高股份",
+      "market_cap": 1538164800.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 10,
+      "symbol": "603729",
+      "name": "龙韵股份",
+      "market_cap": 1568078400.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 11,
+      "symbol": "688217",
+      "name": "睿昂基因",
+      "market_cap": 1571784913.682848,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 12,
+      "symbol": "600455",
+      "name": "博通股份",
+      "market_cap": 1618286780.0000002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 13,
+      "symbol": "300417",
+      "name": "南华仪器",
+      "market_cap": 1637634144.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 14,
+      "symbol": "300929",
+      "name": "华骐环保",
+      "market_cap": 1643733972.601246,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 15,
+      "symbol": "300665",
+      "name": "飞鹿股份",
+      "market_cap": 1646471889.307393,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 16,
+      "symbol": "300621",
+      "name": "维业股份",
+      "market_cap": 1666534166.9999998,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 17,
+      "symbol": "688671",
+      "name": "碧兴物联",
+      "market_cap": 1678734082.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 18,
+      "symbol": "688004",
+      "name": "博汇科技",
+      "market_cap": 1709077920.0000002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 19,
+      "symbol": "600476",
+      "name": "湘邮科技",
+      "market_cap": 1720227600.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 20,
+      "symbol": "688078",
+      "name": "龙软科技",
+      "market_cap": 1755263439.9999998,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 21,
+      "symbol": "300405",
+      "name": "科隆股份",
+      "market_cap": 1763110559.9673736,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 22,
+      "symbol": "301372",
+      "name": "科净源",
+      "market_cap": 1788342894.0311174,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 23,
+      "symbol": "688528",
+      "name": "秦川物联",
+      "market_cap": 1795920000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 24,
+      "symbol": "688067",
+      "name": "爱威科技",
+      "market_cap": 1801320000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 25,
+      "symbol": "300295",
+      "name": "三六五网",
+      "market_cap": 1812707105.536508,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 26,
+      "symbol": "301167",
+      "name": "建研设计",
+      "market_cap": 1818879999.9999998,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 27,
+      "symbol": "300500",
+      "name": "启迪设计",
+      "market_cap": 1837174616.449096,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 28,
+      "symbol": "600561",
+      "name": "江西长运",
+      "market_cap": 1849099200.0000002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 29,
+      "symbol": "688573",
+      "name": "信宇人",
+      "market_cap": 1851468108.6419373,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 30,
+      "symbol": "688329",
+      "name": "艾隆科技",
+      "market_cap": 1853572000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 31,
+      "symbol": "300649",
+      "name": "杭州园林",
+      "market_cap": 1863101689.1091034,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 32,
+      "symbol": "688021",
+      "name": "奥福科技",
+      "market_cap": 1872136066.871669,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 33,
+      "symbol": "600697",
+      "name": "欧亚集团",
+      "market_cap": 1894738973.502117,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 34,
+      "symbol": "688681",
+      "name": "科汇股份",
+      "market_cap": 1898713800.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 35,
+      "symbol": "600883",
+      "name": "博闻科技",
+      "market_cap": 1905230160.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 36,
+      "symbol": "688096",
+      "name": "京源环保",
+      "market_cap": 1907241119.5588233,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 37,
+      "symbol": "300635",
+      "name": "中达安",
+      "market_cap": 1913991380.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 38,
+      "symbol": "688565",
+      "name": "力源科技",
+      "market_cap": 1927025099.9999998,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 39,
+      "symbol": "600847",
+      "name": "万里股份",
+      "market_cap": 1929888365.9999998,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 40,
+      "symbol": "300169",
+      "name": "天晟新材",
+      "market_cap": 1936346979.1945393,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 41,
+      "symbol": "300670",
+      "name": "大烨智能",
+      "market_cap": 1945891741.3056002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 42,
+      "symbol": "603717",
+      "name": "天域生物",
+      "market_cap": 1946881270.192901,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 43,
+      "symbol": "002494",
+      "name": "华斯股份",
+      "market_cap": 1958242626.3597682,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 44,
+      "symbol": "001211",
+      "name": "双枪科技",
+      "market_cap": 1958400000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 45,
+      "symbol": "600778",
+      "name": "友好集团",
+      "market_cap": 1959280604.438291,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 46,
+      "symbol": "603880",
+      "name": "南卫股份",
+      "market_cap": 1965485600.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 47,
+      "symbol": "603879",
+      "name": "永悦科技",
+      "market_cap": 1965614087.0056388,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 48,
+      "symbol": "688793",
+      "name": "倍轻松",
+      "market_cap": 1981901361.902713,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 49,
+      "symbol": "002715",
+      "name": "登云股份",
+      "market_cap": 1992720000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 50,
+      "symbol": "600493",
+      "name": "凤竹纺织",
+      "market_cap": 1993760000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 51,
+      "symbol": "301336",
+      "name": "趣睡科技",
+      "market_cap": 2008400000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 52,
+      "symbol": "301037",
+      "name": "保立佳",
+      "market_cap": 2009007862.5412087,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 53,
+      "symbol": "000610",
+      "name": "西安旅游",
+      "market_cap": 2024194553.231047,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 54,
+      "symbol": "300838",
+      "name": "浙江力诺",
+      "market_cap": 2025517040.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 55,
+      "symbol": "300535",
+      "name": "达威股份",
+      "market_cap": 2030166801.2082899,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 56,
+      "symbol": "300958",
+      "name": "建工修复",
+      "market_cap": 2032873429.8393548,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 57,
+      "symbol": "301049",
+      "name": "超越科技",
+      "market_cap": 2033044414.5185864,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 58,
+      "symbol": "603022",
+      "name": "新通联",
+      "market_cap": 2038000000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 59,
+      "symbol": "688193",
+      "name": "仁度生物",
+      "market_cap": 2041159178.101956,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 60,
+      "symbol": "603779",
+      "name": "威龙股份",
+      "market_cap": 2042308937.5407166,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 61,
+      "symbol": "002591",
+      "name": "恒大高新",
+      "market_cap": 2044358486.5221236,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 62,
+      "symbol": "688695",
+      "name": "中创股份",
+      "market_cap": 2045485640.4221852,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 63,
+      "symbol": "600448",
+      "name": "华纺股份",
+      "market_cap": 2053212097.7124999,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 64,
+      "symbol": "002188",
+      "name": "中天服务",
+      "market_cap": 2054212266.3125,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 65,
+      "symbol": "001336",
+      "name": "楚环科技",
+      "market_cap": 2055150395.0000002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 66,
+      "symbol": "300220",
+      "name": "金运激光",
+      "market_cap": 2068416000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 67,
+      "symbol": "300614",
+      "name": "百川畅银",
+      "market_cap": 2069684759.1000001,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 68,
+      "symbol": "300106",
+      "name": "西部牧业",
+      "market_cap": 2071056638.4057968,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 69,
+      "symbol": "300823",
+      "name": "建科智能",
+      "market_cap": 2076076223.1154084,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 70,
+      "symbol": "688058",
+      "name": "宝兰德",
+      "market_cap": 2080954767.5927892,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 71,
+      "symbol": "300717",
+      "name": "华信新材",
+      "market_cap": 2081193750.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 72,
+      "symbol": "301273",
+      "name": "瑞晨环保",
+      "market_cap": 2083343311.3210578,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 73,
+      "symbol": "300556",
+      "name": "丝路视觉",
+      "market_cap": 2086060770.971952,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 74,
+      "symbol": "688420",
+      "name": "美腾科技",
+      "market_cap": 2086948000.0000002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 75,
+      "symbol": "688466",
+      "name": "金科环境",
+      "market_cap": 2090057541.0403745,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 76,
+      "symbol": "600137",
+      "name": "浪莎股份",
+      "market_cap": 2090178141.5725257,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 77,
+      "symbol": "300886",
+      "name": "华业香料",
+      "market_cap": 2095091980.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 78,
+      "symbol": "603709",
+      "name": "中源家居",
+      "market_cap": 2095403064.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 79,
+      "symbol": "603860",
+      "name": "中公高科",
+      "market_cap": 2099753199.9999998,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 80,
+      "symbol": "002910",
+      "name": "庄园牧场",
+      "market_cap": 2104003373.3482723,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 81,
+      "symbol": "603908",
+      "name": "牧高笛",
+      "market_cap": 2104669928.8,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 82,
+      "symbol": "301030",
+      "name": "仕净科技",
+      "market_cap": 2108834298.296799,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 83,
+      "symbol": "301139",
+      "name": "元道通信",
+      "market_cap": 2115505920.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 84,
+      "symbol": "300013",
+      "name": "新宁物流",
+      "market_cap": 2116180207.8779843,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 85,
+      "symbol": "002316",
+      "name": "亚联发展",
+      "market_cap": 2122848000.0000002,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 86,
+      "symbol": "300923",
+      "name": "研奥股份",
+      "market_cap": 2138706000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 87,
+      "symbol": "002963",
+      "name": "豪尔赛",
+      "market_cap": 2153154198.088737,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 88,
+      "symbol": "300163",
+      "name": "先锋新材",
+      "market_cap": 2161439999.9999995,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 89,
+      "symbol": "605567",
+      "name": "春雪食品",
+      "market_cap": 2168000000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 90,
+      "symbol": "300675",
+      "name": "建科院",
+      "market_cap": 2169200493.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 91,
+      "symbol": "002820",
+      "name": "桂发祥",
+      "market_cap": 2169377586.4202337,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 92,
+      "symbol": "300334",
+      "name": "津膜科技",
+      "market_cap": 2177891216.4049253,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 93,
+      "symbol": "600303",
+      "name": "曙光股份",
+      "market_cap": 2180697432.8745985,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 94,
+      "symbol": "688670",
+      "name": "金迪克",
+      "market_cap": 2181872000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 95,
+      "symbol": "300640",
+      "name": "德艺文创",
+      "market_cap": 2189393726.2702703,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 96,
+      "symbol": "600119",
+      "name": "长江投资",
+      "market_cap": 2191622220.504202,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 97,
+      "symbol": "001366",
+      "name": "播恩集团",
+      "market_cap": 2194888800.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 98,
+      "symbol": "301001",
+      "name": "凯淳股份",
+      "market_cap": 2207200000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 99,
+      "symbol": "300949",
+      "name": "奥雅股份",
+      "market_cap": 2215200000.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 100,
+      "symbol": "603029",
+      "name": "天鹅股份",
+      "market_cap": 2224198860.0,
+      "target_weight": 0.01,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    }
+  ],
+  "effective_members": [
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 1,
+      "symbol": "688701",
+      "name": "卓锦股份",
+      "market_cap": 1220581311.1487854,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 2,
+      "symbol": "688296",
+      "name": "和达科技",
+      "market_cap": 1462026842.801756,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 3,
+      "symbol": "002193",
+      "name": "如意集团",
+      "market_cap": 1481310013.4557168,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 4,
+      "symbol": "002856",
+      "name": "美芝股份",
+      "market_cap": 1481675247.289637,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 5,
+      "symbol": "002883",
+      "name": "中设股份",
+      "market_cap": 1481931505.7168233,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 6,
+      "symbol": "002719",
+      "name": "麦趣尔",
+      "market_cap": 1483668173.5907512,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 7,
+      "symbol": "688659",
+      "name": "元琛科技",
+      "market_cap": 1534400000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 8,
+      "symbol": "301098",
+      "name": "金埔园林",
+      "market_cap": 1535862085.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 9,
+      "symbol": "600543",
+      "name": "莫高股份",
+      "market_cap": 1538164800.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 10,
+      "symbol": "603729",
+      "name": "龙韵股份",
+      "market_cap": 1568078400.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 11,
+      "symbol": "688217",
+      "name": "睿昂基因",
+      "market_cap": 1571784913.682848,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 12,
+      "symbol": "600455",
+      "name": "博通股份",
+      "market_cap": 1618286780.0000002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 13,
+      "symbol": "300417",
+      "name": "南华仪器",
+      "market_cap": 1637634144.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 14,
+      "symbol": "300929",
+      "name": "华骐环保",
+      "market_cap": 1643733972.601246,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 15,
+      "symbol": "300665",
+      "name": "飞鹿股份",
+      "market_cap": 1646471889.307393,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 16,
+      "symbol": "300621",
+      "name": "维业股份",
+      "market_cap": 1666534166.9999998,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 17,
+      "symbol": "688671",
+      "name": "碧兴物联",
+      "market_cap": 1678734082.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 18,
+      "symbol": "688004",
+      "name": "博汇科技",
+      "market_cap": 1709077920.0000002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 19,
+      "symbol": "600476",
+      "name": "湘邮科技",
+      "market_cap": 1720227600.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 20,
+      "symbol": "688078",
+      "name": "龙软科技",
+      "market_cap": 1755263439.9999998,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 21,
+      "symbol": "300405",
+      "name": "科隆股份",
+      "market_cap": 1763110559.9673736,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 22,
+      "symbol": "301372",
+      "name": "科净源",
+      "market_cap": 1788342894.0311174,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 23,
+      "symbol": "688528",
+      "name": "秦川物联",
+      "market_cap": 1795920000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 24,
+      "symbol": "688067",
+      "name": "爱威科技",
+      "market_cap": 1801320000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 25,
+      "symbol": "300295",
+      "name": "三六五网",
+      "market_cap": 1812707105.536508,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 26,
+      "symbol": "301167",
+      "name": "建研设计",
+      "market_cap": 1818879999.9999998,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 27,
+      "symbol": "300500",
+      "name": "启迪设计",
+      "market_cap": 1837174616.449096,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 28,
+      "symbol": "600561",
+      "name": "江西长运",
+      "market_cap": 1849099200.0000002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 29,
+      "symbol": "688573",
+      "name": "信宇人",
+      "market_cap": 1851468108.6419373,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 30,
+      "symbol": "688329",
+      "name": "艾隆科技",
+      "market_cap": 1853572000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 31,
+      "symbol": "300649",
+      "name": "杭州园林",
+      "market_cap": 1863101689.1091034,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 32,
+      "symbol": "688021",
+      "name": "奥福科技",
+      "market_cap": 1872136066.871669,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 33,
+      "symbol": "600697",
+      "name": "欧亚集团",
+      "market_cap": 1894738973.502117,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 34,
+      "symbol": "688681",
+      "name": "科汇股份",
+      "market_cap": 1898713800.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 35,
+      "symbol": "600883",
+      "name": "博闻科技",
+      "market_cap": 1905230160.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 36,
+      "symbol": "688096",
+      "name": "京源环保",
+      "market_cap": 1907241119.5588233,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 37,
+      "symbol": "300635",
+      "name": "中达安",
+      "market_cap": 1913991380.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 38,
+      "symbol": "688565",
+      "name": "力源科技",
+      "market_cap": 1927025099.9999998,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 39,
+      "symbol": "600847",
+      "name": "万里股份",
+      "market_cap": 1929888365.9999998,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 40,
+      "symbol": "300169",
+      "name": "天晟新材",
+      "market_cap": 1936346979.1945393,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 41,
+      "symbol": "300670",
+      "name": "大烨智能",
+      "market_cap": 1945891741.3056002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 42,
+      "symbol": "603717",
+      "name": "天域生物",
+      "market_cap": 1946881270.192901,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 43,
+      "symbol": "002494",
+      "name": "华斯股份",
+      "market_cap": 1958242626.3597682,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 44,
+      "symbol": "001211",
+      "name": "双枪科技",
+      "market_cap": 1958400000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 45,
+      "symbol": "600778",
+      "name": "友好集团",
+      "market_cap": 1959280604.438291,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 46,
+      "symbol": "603880",
+      "name": "南卫股份",
+      "market_cap": 1965485600.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 47,
+      "symbol": "603879",
+      "name": "永悦科技",
+      "market_cap": 1965614087.0056388,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 48,
+      "symbol": "688793",
+      "name": "倍轻松",
+      "market_cap": 1981901361.902713,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 49,
+      "symbol": "002715",
+      "name": "登云股份",
+      "market_cap": 1992720000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 50,
+      "symbol": "600493",
+      "name": "凤竹纺织",
+      "market_cap": 1993760000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 51,
+      "symbol": "301336",
+      "name": "趣睡科技",
+      "market_cap": 2008400000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 52,
+      "symbol": "301037",
+      "name": "保立佳",
+      "market_cap": 2009007862.5412087,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 53,
+      "symbol": "000610",
+      "name": "西安旅游",
+      "market_cap": 2024194553.231047,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 54,
+      "symbol": "300838",
+      "name": "浙江力诺",
+      "market_cap": 2025517040.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 55,
+      "symbol": "300535",
+      "name": "达威股份",
+      "market_cap": 2030166801.2082899,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 56,
+      "symbol": "300958",
+      "name": "建工修复",
+      "market_cap": 2032873429.8393548,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 57,
+      "symbol": "301049",
+      "name": "超越科技",
+      "market_cap": 2033044414.5185864,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 58,
+      "symbol": "603022",
+      "name": "新通联",
+      "market_cap": 2038000000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 59,
+      "symbol": "688193",
+      "name": "仁度生物",
+      "market_cap": 2041159178.101956,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 60,
+      "symbol": "603779",
+      "name": "威龙股份",
+      "market_cap": 2042308937.5407166,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 61,
+      "symbol": "002591",
+      "name": "恒大高新",
+      "market_cap": 2044358486.5221236,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 62,
+      "symbol": "688695",
+      "name": "中创股份",
+      "market_cap": 2045485640.4221852,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 63,
+      "symbol": "600448",
+      "name": "华纺股份",
+      "market_cap": 2053212097.7124999,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 64,
+      "symbol": "002188",
+      "name": "中天服务",
+      "market_cap": 2054212266.3125,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 65,
+      "symbol": "001336",
+      "name": "楚环科技",
+      "market_cap": 2055150395.0000002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 66,
+      "symbol": "300220",
+      "name": "金运激光",
+      "market_cap": 2068416000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 67,
+      "symbol": "300614",
+      "name": "百川畅银",
+      "market_cap": 2069684759.1000001,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 68,
+      "symbol": "300106",
+      "name": "西部牧业",
+      "market_cap": 2071056638.4057968,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 69,
+      "symbol": "300823",
+      "name": "建科智能",
+      "market_cap": 2076076223.1154084,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 70,
+      "symbol": "688058",
+      "name": "宝兰德",
+      "market_cap": 2080954767.5927892,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 71,
+      "symbol": "300717",
+      "name": "华信新材",
+      "market_cap": 2081193750.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 72,
+      "symbol": "301273",
+      "name": "瑞晨环保",
+      "market_cap": 2083343311.3210578,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 73,
+      "symbol": "300556",
+      "name": "丝路视觉",
+      "market_cap": 2086060770.971952,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 74,
+      "symbol": "688420",
+      "name": "美腾科技",
+      "market_cap": 2086948000.0000002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 75,
+      "symbol": "688466",
+      "name": "金科环境",
+      "market_cap": 2090057541.0403745,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 76,
+      "symbol": "600137",
+      "name": "浪莎股份",
+      "market_cap": 2090178141.5725257,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 77,
+      "symbol": "300886",
+      "name": "华业香料",
+      "market_cap": 2095091980.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 78,
+      "symbol": "603709",
+      "name": "中源家居",
+      "market_cap": 2095403064.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 79,
+      "symbol": "603860",
+      "name": "中公高科",
+      "market_cap": 2099753199.9999998,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 80,
+      "symbol": "002910",
+      "name": "庄园牧场",
+      "market_cap": 2104003373.3482723,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 81,
+      "symbol": "603908",
+      "name": "牧高笛",
+      "market_cap": 2104669928.8,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 82,
+      "symbol": "301030",
+      "name": "仕净科技",
+      "market_cap": 2108834298.296799,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 83,
+      "symbol": "301139",
+      "name": "元道通信",
+      "market_cap": 2115505920.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 84,
+      "symbol": "300013",
+      "name": "新宁物流",
+      "market_cap": 2116180207.8779843,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 85,
+      "symbol": "002316",
+      "name": "亚联发展",
+      "market_cap": 2122848000.0000002,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 86,
+      "symbol": "300923",
+      "name": "研奥股份",
+      "market_cap": 2138706000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 87,
+      "symbol": "002963",
+      "name": "豪尔赛",
+      "market_cap": 2153154198.088737,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 88,
+      "symbol": "300163",
+      "name": "先锋新材",
+      "market_cap": 2161439999.9999995,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 89,
+      "symbol": "605567",
+      "name": "春雪食品",
+      "market_cap": 2168000000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 90,
+      "symbol": "300675",
+      "name": "建科院",
+      "market_cap": 2169200493.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 91,
+      "symbol": "002820",
+      "name": "桂发祥",
+      "market_cap": 2169377586.4202337,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 92,
+      "symbol": "300334",
+      "name": "津膜科技",
+      "market_cap": 2177891216.4049253,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 93,
+      "symbol": "600303",
+      "name": "曙光股份",
+      "market_cap": 2180697432.8745985,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 94,
+      "symbol": "688670",
+      "name": "金迪克",
+      "market_cap": 2181872000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 95,
+      "symbol": "300640",
+      "name": "德艺文创",
+      "market_cap": 2189393726.2702703,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 96,
+      "symbol": "600119",
+      "name": "长江投资",
+      "market_cap": 2191622220.504202,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 97,
+      "symbol": "001366",
+      "name": "播恩集团",
+      "market_cap": 2194888800.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 98,
+      "symbol": "301001",
+      "name": "凯淳股份",
+      "market_cap": 2207200000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 99,
+      "symbol": "300949",
+      "name": "奥雅股份",
+      "market_cap": 2215200000.0,
+      "target_weight": 0.01
+    },
+    {
+      "rebalance_date": "2026-04-02",
+      "rank": 100,
+      "symbol": "603029",
+      "name": "天鹅股份",
+      "market_cap": 2224198860.0,
+      "target_weight": 0.01
+    }
+  ],
+  "changes_df": [
+    {
+      "action": "enter",
+      "symbol": "688021",
+      "name": "奥福科技",
+      "prev_rank": NaN,
+      "new_rank": 32.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "301030",
+      "name": "仕净科技",
+      "prev_rank": NaN,
+      "new_rank": 82.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "300675",
+      "name": "建科院",
+      "prev_rank": NaN,
+      "new_rank": 90.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "300334",
+      "name": "津膜科技",
+      "prev_rank": NaN,
+      "new_rank": 92.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "300640",
+      "name": "德艺文创",
+      "prev_rank": NaN,
+      "new_rank": 95.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "301001",
+      "name": "凯淳股份",
+      "prev_rank": NaN,
+      "new_rank": 98.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "300949",
+      "name": "奥雅股份",
+      "prev_rank": NaN,
+      "new_rank": 99.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "enter",
+      "symbol": "603029",
+      "name": "天鹅股份",
+      "prev_rank": NaN,
+      "new_rank": 100.0,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "688189",
+      "name": "南新制药",
+      "prev_rank": 49.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "000632",
+      "name": "三木集团",
+      "prev_rank": 77.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "000692",
+      "name": "惠天热电",
+      "prev_rank": 81.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "600768",
+      "name": "宁波富邦",
+      "prev_rank": 91.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "603214",
+      "name": "爱婴室",
+      "prev_rank": 93.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "002694",
+      "name": "顾地科技",
+      "prev_rank": 96.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "000056",
+      "name": "皇庭国际",
+      "prev_rank": 97.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    },
+    {
+      "action": "exit",
+      "symbol": "605122",
+      "name": "四方新材",
+      "prev_rank": 100.0,
+      "new_rank": NaN,
+      "signal_date": "2026-04-02",
+      "effective_date": "2026-04-03"
+    }
+  ],
+  "latest_rebalance": "2026-04-02",
+  "prev_rebalance": "2026-03-19",
+  "next_rebalance": null,
+  "effective_rebalance": "2026-04-02",
+  "rebalance_effective_date": "2026-04-03",
+  "freshness": {
+    "status": "正常",
+    "latest_trade_date": "2026-04-09",
+    "current_date": "2026-04-09",
+    "stale_calendar_days": 0
+  },
+  "rebuild_meta": {
+    "candidate_pool": 120,
+    "history_symbols_ok": 120,
+    "history_symbols_failed": 0,
+    "rebalance_count": 3,
+    "effective_member_count": 100,
+    "stage_attempts": [
+      120
+    ],
+    "window_trade_days": 25,
+    "strict_validated": true,
+    "validated_exact_pools": [
+      120
+    ],
+    "signal_consensus": true
+  }
+}

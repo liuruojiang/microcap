@@ -1,0 +1,194 @@
+[
+  {
+    "date": "2026-03-09",
+    "open": 5.34,
+    "close_raw": 5.44,
+    "close_adj": 5.44,
+    "high": 5.46,
+    "low": 5.31
+  },
+  {
+    "date": "2026-03-10",
+    "open": 5.48,
+    "close_raw": 5.51,
+    "close_adj": 5.51,
+    "high": 5.57,
+    "low": 5.46
+  },
+  {
+    "date": "2026-03-11",
+    "open": 5.52,
+    "close_raw": 5.46,
+    "close_adj": 5.46,
+    "high": 5.55,
+    "low": 5.44
+  },
+  {
+    "date": "2026-03-12",
+    "open": 5.47,
+    "close_raw": 5.38,
+    "close_adj": 5.38,
+    "high": 5.5,
+    "low": 5.37
+  },
+  {
+    "date": "2026-03-13",
+    "open": 5.36,
+    "close_raw": 5.33,
+    "close_adj": 5.33,
+    "high": 5.42,
+    "low": 5.32
+  },
+  {
+    "date": "2026-03-16",
+    "open": 5.35,
+    "close_raw": 5.38,
+    "close_adj": 5.38,
+    "high": 5.39,
+    "low": 5.31
+  },
+  {
+    "date": "2026-03-17",
+    "open": 5.4,
+    "close_raw": 5.28,
+    "close_adj": 5.28,
+    "high": 5.42,
+    "low": 5.27
+  },
+  {
+    "date": "2026-03-18",
+    "open": 5.3,
+    "close_raw": 5.43,
+    "close_adj": 5.43,
+    "high": 5.43,
+    "low": 5.26
+  },
+  {
+    "date": "2026-03-19",
+    "open": 5.38,
+    "close_raw": 5.3,
+    "close_adj": 5.3,
+    "high": 5.42,
+    "low": 5.27
+  },
+  {
+    "date": "2026-03-20",
+    "open": 5.34,
+    "close_raw": 5.09,
+    "close_adj": 5.09,
+    "high": 5.35,
+    "low": 5.08
+  },
+  {
+    "date": "2026-03-23",
+    "open": 5.0,
+    "close_raw": 4.71,
+    "close_adj": 4.71,
+    "high": 5.0,
+    "low": 4.68
+  },
+  {
+    "date": "2026-03-24",
+    "open": 4.83,
+    "close_raw": 4.93,
+    "close_adj": 4.93,
+    "high": 4.94,
+    "low": 4.75
+  },
+  {
+    "date": "2026-03-25",
+    "open": 4.93,
+    "close_raw": 5.03,
+    "close_adj": 5.03,
+    "high": 5.1,
+    "low": 4.93
+  },
+  {
+    "date": "2026-03-26",
+    "open": 4.98,
+    "close_raw": 4.89,
+    "close_adj": 4.89,
+    "high": 5.08,
+    "low": 4.86
+  },
+  {
+    "date": "2026-03-27",
+    "open": 4.83,
+    "close_raw": 4.97,
+    "close_adj": 4.97,
+    "high": 4.99,
+    "low": 4.8
+  },
+  {
+    "date": "2026-03-30",
+    "open": 4.94,
+    "close_raw": 4.99,
+    "close_adj": 4.99,
+    "high": 5.0,
+    "low": 4.85
+  },
+  {
+    "date": "2026-03-31",
+    "open": 5.01,
+    "close_raw": 4.9,
+    "close_adj": 4.9,
+    "high": 5.06,
+    "low": 4.89
+  },
+  {
+    "date": "2026-04-01",
+    "open": 5.02,
+    "close_raw": 4.99,
+    "close_adj": 4.99,
+    "high": 5.02,
+    "low": 4.91
+  },
+  {
+    "date": "2026-04-02",
+    "open": 4.97,
+    "close_raw": 4.86,
+    "close_adj": 4.86,
+    "high": 5.0,
+    "low": 4.8
+  },
+  {
+    "date": "2026-04-03",
+    "open": 4.89,
+    "close_raw": 4.7,
+    "close_adj": 4.7,
+    "high": 4.9,
+    "low": 4.68
+  },
+  {
+    "date": "2026-04-07",
+    "open": 4.7,
+    "close_raw": 4.82,
+    "close_adj": 4.82,
+    "high": 4.83,
+    "low": 4.68
+  },
+  {
+    "date": "2026-04-08",
+    "open": 4.9,
+    "close_raw": 5.03,
+    "close_adj": 5.03,
+    "high": 5.04,
+    "low": 4.88
+  },
+  {
+    "date": "2026-04-09",
+    "open": 5.0,
+    "close_raw": 4.87,
+    "close_adj": 4.87,
+    "high": 5.0,
+    "low": 4.86
+  },
+  {
+    "date": "2026-04-10",
+    "open": 4.93,
+    "close_raw": 4.95,
+    "close_adj": 4.95,
+    "high": 5.03,
+    "low": 4.92
+  }
+]

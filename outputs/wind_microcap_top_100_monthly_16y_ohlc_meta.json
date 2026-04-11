@@ -1,0 +1,21 @@
+{
+  "index_name": "wind_microcap_top_100_monthly_16y_ohlc_proxy",
+  "source_close_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_monthly_16y.csv",
+  "source_members_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_monthly_16y_members.csv",
+  "shared_cache_root": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\A股美股动量组合策略\\.microcap_index_cache",
+  "local_ohlc_cache_dir": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\.microcap_ohlc_cache",
+  "sample_start": "2010-01-04",
+  "sample_end": "2026-03-18",
+  "trading_days": 3934,
+  "rebalance_dates": 195,
+  "unique_member_symbols": 1049,
+  "loaded_ohlc_symbols": 996,
+  "mean_valid_member_ratio": 0.6139171326893748,
+  "median_valid_member_ratio": 0.55,
+  "min_valid_member_ratio": 0.0,
+  "construction_note": "Raw proxy OHLC is built by equal-weighting constituent open/high/low/close moves versus previous close. Anchored OHLC rescales each day's proxy OHLC so the close matches the existing Top100 proxy close exactly.",
+  "max_abs_close_diff_pct": 18.446439294433773,
+  "mean_abs_close_diff_pct": 7.329372530820075,
+  "anchored_max_abs_close_diff_pct": 0.0,
+  "anchored_mean_abs_close_diff_pct": 0.0
+}

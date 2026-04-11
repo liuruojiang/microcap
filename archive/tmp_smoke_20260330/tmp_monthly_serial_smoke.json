@@ -1,0 +1,31 @@
+{
+  "index_code": "868008.WI",
+  "source_used": "public_proxy",
+  "method_note": "Public reconstruction using AKShare raw close data and CNInfo share-change data. This is not the official Wind time series.",
+  "rule_note": "Public sources indicate 8841431.WI was renamed to the daily-equal-weight variant, while 868008.WI switched to monthly rebalance on 2025-01-02. Post-switch schedule is inferred as month_start.",
+  "limitations": [
+    "Current ST board exclusion is applied to the whole sample when --exclude-current-st is on.",
+    "Historical ST status is not reconstructed day by day.",
+    "Returns use raw close, so corporate-action handling will differ from the official index divisor methodology.",
+    "Active universe is built from current SH/SZ A-shares; delisted historical names are not fully backfilled."
+  ],
+  "stats": {
+    "symbols_total": 5,
+    "symbols_success": 5,
+    "symbols_failed": 0,
+    "current_st_excluded": 178,
+    "rebalance_dates": 3,
+    "active_days": 58
+  },
+  "failures_sample": {},
+  "params": {
+    "start_date": "2023-01-01",
+    "end_date": "2023-03-31",
+    "constituents": 400,
+    "switch_date": "2025-01-02",
+    "pre_switch_schedule": "month_start",
+    "post_switch_schedule": "month_start",
+    "limit_symbols": 5,
+    "executor": "thread"
+  }
+}

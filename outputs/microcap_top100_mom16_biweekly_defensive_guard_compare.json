@@ -1,0 +1,54 @@
+{
+  "baseline": {
+    "full_sample": {
+      "start_date": "2005-01-26",
+      "end_date": "2026-03-18",
+      "annual_pct": 48.29324125473489,
+      "max_drawdown_pct": -52.619153439390175,
+      "sharpe": 2.681512107620136,
+      "total_return_pct": 414209.7246582316
+    },
+    "last_5_years": {
+      "start_date": "2021-03-18",
+      "end_date": "2026-03-18",
+      "annual_pct": 25.19161397286178,
+      "max_drawdown_pct": -14.935753985777737,
+      "sharpe": 1.719291369692659,
+      "total_return_pct": 207.474713415254
+    },
+    "last_10_years": {
+      "start_date": "2016-03-18",
+      "end_date": "2026-03-18",
+      "annual_pct": 57.40607972722873,
+      "max_drawdown_pct": -14.93575398577773,
+      "sharpe": 4.379689864873138,
+      "total_return_pct": 9231.36805829527
+    }
+  },
+  "with_defensive_guard": {
+    "full_sample": {
+      "start_date": "2005-01-26",
+      "end_date": "2026-03-18",
+      "annual_pct": 42.96501236624404,
+      "max_drawdown_pct": -52.619153439390175,
+      "sharpe": 2.449820192145315,
+      "total_return_pct": 191058.50852181896
+    },
+    "last_5_years": {
+      "start_date": "2021-03-18",
+      "end_date": "2026-03-18",
+      "annual_pct": 10.032000704849331,
+      "max_drawdown_pct": -19.67109840608759,
+      "sharpe": 0.8065001550267401,
+      "total_return_pct": 61.27484407802979
+    },
+    "last_10_years": {
+      "start_date": "2016-03-18",
+      "end_date": "2026-03-18",
+      "annual_pct": 45.68799084883659,
+      "max_drawdown_pct": -19.671098406087587,
+      "sharpe": 3.909575425022027,
+      "total_return_pct": 4205.403166588266
+    }
+  }
+}

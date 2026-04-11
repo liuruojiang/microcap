@@ -1,0 +1,29 @@
+{
+  "best_params": {
+    "commission": 0.001,
+    "trading_days": 252,
+    "bias_n": 60,
+    "mom_day": 40,
+    "r2_window": 20,
+    "r2_threshold": 0.2,
+    "target_vol": 0.3,
+    "vol_window": 40,
+    "max_lev": 1.5,
+    "min_lev": 0.1,
+    "scale_threshold": 0.0
+  },
+  "summary": {
+    "start": "2010-10-18",
+    "end": "2026-03-27",
+    "holding": "BIL",
+    "nav": 41.38186400409406,
+    "total_return": 40.38186400409406,
+    "annual_return": 0.26343926578488874,
+    "annual_vol": 0.2587708093544662,
+    "sharpe": 1.0180408927964808,
+    "max_drawdown": -0.42208504092840343,
+    "calmar": 0.6241378874869316,
+    "monthly_win_rate": 0.5913978494623656,
+    "months": 186
+  }
+}

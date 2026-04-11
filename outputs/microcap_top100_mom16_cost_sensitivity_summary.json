@@ -1,0 +1,65 @@
+{
+  "strategy": "top100_mom16_hedge_zz1000_cost_sensitivity",
+  "lookback": 16,
+  "gross_metrics": {
+    "lookback": 16,
+    "gross_annual": 0.5306124957652545,
+    "gross_max_dd": -0.11582671465914196,
+    "gross_sharpe": 4.171274998801523,
+    "gross_vol": 0.12720630884267,
+    "gross_total_return": 960.9461190781622,
+    "entry_days": 99,
+    "exit_days": 98,
+    "holding_days_pct": 0.7470002552974215,
+    "rebalance_cost_days": 194
+  },
+  "cost_grid": [
+    0.0,
+    0.001,
+    0.002,
+    0.003,
+    0.004,
+    0.005
+  ],
+  "baseline_3permil_each": {
+    "signal_one_side_cost": 0.003,
+    "monthly_rebalance_one_side_cost": 0.003,
+    "net_annual": 0.46232821135641466,
+    "net_max_dd": -0.1687902435031368,
+    "net_sharpe": 3.6277068451247776,
+    "net_vol": 0.1274436527245113,
+    "net_total_return": 459.58643813892695,
+    "entry_exit_cost_sum": 0.5910000000000001,
+    "rebalance_cost_sum": 0.14447999999999928,
+    "total_cost_sum": 0.7354799999999994
+  },
+  "best_by_net_sharpe": {
+    "signal_one_side_cost": 0.0,
+    "monthly_rebalance_one_side_cost": 0.0,
+    "net_annual": 0.5306124957652545,
+    "net_max_dd": -0.11582671465914196,
+    "net_sharpe": 4.171274998801525,
+    "net_vol": 0.12720630884266992,
+    "net_total_return": 960.9461190781622,
+    "entry_exit_cost_sum": 0.0,
+    "rebalance_cost_sum": 0.0,
+    "total_cost_sum": 0.0
+  },
+  "worst_by_net_sharpe": {
+    "signal_one_side_cost": 0.005,
+    "monthly_rebalance_one_side_cost": 0.005,
+    "net_annual": 0.41841046023938944,
+    "net_max_dd": -0.20240555080543568,
+    "net_sharpe": 3.2664127842752966,
+    "net_vol": 0.12809479017889044,
+    "net_total_return": 280.5861933734671,
+    "entry_exit_cost_sum": 0.9850000000000001,
+    "rebalance_cost_sum": 0.24079999999999885,
+    "total_cost_sum": 1.225799999999999
+  },
+  "notes": {
+    "signal_cost_definition": "Entry and exit each charged at signal_one_side_cost on the microcap stock basket.",
+    "monthly_rebalance_definition": "Monthly stock-basket reshuffle charged at 2 * monthly_rebalance_one_side_cost * replaced_fraction.",
+    "futures_leg": "No extra transaction cost added; futures drag stays at 3/10000 per active day."
+  }
+}

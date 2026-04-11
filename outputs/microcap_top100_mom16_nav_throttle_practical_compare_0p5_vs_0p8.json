@@ -1,0 +1,117 @@
+{
+  "as_of_date": "2026-04-09",
+  "scan_grid": {
+    "dd_moderate": [
+      0.03,
+      0.04,
+      0.05
+    ],
+    "dd_severe": [
+      0.06,
+      0.08,
+      0.1
+    ],
+    "scale_moderate": [
+      0.85,
+      0.9,
+      0.95
+    ],
+    "scale_severe": [
+      0.65,
+      0.7,
+      0.75,
+      0.8
+    ],
+    "recover_dd": [
+      0.02,
+      0.03
+    ],
+    "n_configs_per_ratio": 216
+  },
+  "ratios": {
+    "0.5": {
+      "baseline": {
+        "annual_return": 0.2596079878021369,
+        "annual_vol": 0.14711040562126365,
+        "sharpe": 1.7647153286389456,
+        "max_drawdown": -0.24151907153124955,
+        "total_return": 40.86767549885536,
+        "start": "2010-02-02",
+        "end": "2026-04-09",
+        "days": 3928,
+        "latest_nav": 41.86767549885536
+      },
+      "best_nav_throttle": {
+        "hedge_ratio": 0.5,
+        "label": "dd5_6_sc85_65_rec3",
+        "dd_moderate": 0.05,
+        "dd_severe": 0.06,
+        "scale_moderate": 0.85,
+        "scale_severe": 0.65,
+        "recover_dd": 0.03,
+        "rebal_cost_bps": 2.0,
+        "annual_return": 0.2360827994382888,
+        "annual_vol": 0.12400269419359494,
+        "sharpe": 1.9038521781608442,
+        "max_drawdown": -0.1836216923150156,
+        "total_return": 29.859851655378755,
+        "start": "2010-02-02",
+        "end": "2026-04-09",
+        "days": 3928,
+        "latest_nav": 30.859851655378755,
+        "avg_scale": 0.8379200610997964,
+        "min_scale": 0.65,
+        "share_below_1": 0.5384419551934827,
+        "severe_share": 0.4040224032586558,
+        "n_scale_changes": 138,
+        "annualized_turnover": 1.7033095723014253
+      }
+    },
+    "0.8": {
+      "baseline": {
+        "annual_return": 0.24356939629375352,
+        "annual_vol": 0.10990412555376015,
+        "sharpe": 2.2161988466448452,
+        "max_drawdown": -0.1377291471849807,
+        "total_return": 33.02727021842104,
+        "start": "2010-02-02",
+        "end": "2026-04-09",
+        "days": 3928,
+        "latest_nav": 34.02727021842104
+      },
+      "best_nav_throttle": {
+        "hedge_ratio": 0.8,
+        "label": "dd5_6_sc90_65_rec3",
+        "dd_moderate": 0.05,
+        "dd_severe": 0.06,
+        "scale_moderate": 0.9,
+        "scale_severe": 0.65,
+        "recover_dd": 0.03,
+        "rebal_cost_bps": 2.0,
+        "annual_return": 0.23071337323703678,
+        "annual_vol": 0.10018656688830761,
+        "sharpe": 2.3028374002898633,
+        "max_drawdown": -0.11235794530412424,
+        "total_return": 27.7608624578771,
+        "start": "2010-02-02",
+        "end": "2026-04-09",
+        "days": 3928,
+        "latest_nav": 28.7608624578771,
+        "avg_scale": 0.8812372708757638,
+        "min_scale": 0.65,
+        "share_below_1": 0.42133401221995925,
+        "severe_share": 0.3014256619144603,
+        "n_scale_changes": 104,
+        "annualized_turnover": 1.3632892057026476
+      }
+    }
+  },
+  "artifacts": {
+    "scan_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_nav_throttle_practical_scan_0p5_vs_0p8.csv",
+    "best_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_nav_throttle_practical_best_configs_0p5_vs_0p8.csv",
+    "windows_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_nav_throttle_practical_windows_0p5_vs_0p8.csv",
+    "optimized_windows_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_nav_throttle_practical_optimized_windows_0p5_vs_0p8.csv",
+    "plot_png": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_nav_throttle_practical_compare_0p5_vs_0p8_recent10y.png",
+    "rebased_nav_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_nav_throttle_practical_compare_0p5_vs_0p8_recent10y_rebased_nav.csv"
+  }
+}

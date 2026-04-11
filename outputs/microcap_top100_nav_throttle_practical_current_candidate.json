@@ -1,0 +1,22 @@
+{
+  "strategy_family": "top100_mom16_biweekly_live_practical_nav_throttle",
+  "as_of_date": "2026-04-10",
+  "selected_version": "1.2",
+  "selected_candidate": {
+    "name": "practical_nav_throttle_4_8",
+    "dd_moderate": 0.04,
+    "dd_severe": 0.08,
+    "scale_moderate": 0.85,
+    "scale_severe": 0.7,
+    "recover_dd": 0.03,
+    "rebal_cost_bps": 2.0,
+    "timing_rule": "T close observes NAV drawdown, T+1 session applies new scale",
+    "rerisk_rule": "restore directly to full once drawdown recovers inside 3%",
+    "version_alias": "v1.2"
+  },
+  "selection_note": "Chosen as the current practical candidate for live-style follow-up tests because it is close to best recent-window efficiency while requiring materially fewer scale changes than 3/8.",
+  "source_artifacts": {
+    "practical_scan_summary": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_summary.json",
+    "focus_windows_summary": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_focus_windows_summary.csv"
+  }
+}

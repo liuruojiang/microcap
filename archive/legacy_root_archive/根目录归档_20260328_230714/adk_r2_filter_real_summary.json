@@ -1,0 +1,238 @@
+{
+  "script": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\A股美股动量组合策略\\mnt_bot V 6.1 plus.py",
+  "dk_r2_window": 20,
+  "dk_r2_threshold": 0.3,
+  "weights": {
+    "Sub-A": 0.15,
+    "Sub-A-DK": 0.15,
+    "Sub-B": 0.4,
+    "Sub-C": 0.3
+  },
+  "filter_stats": {
+    "filtered_days_total": 12343,
+    "observed_days_total": 37220,
+    "filtered_pct_total": 33.16227834497582,
+    "per_pair": {
+      "SZ50/HS300": {
+        "filtered_days": 1357,
+        "observed_days": 3722,
+        "filtered_pct": 36.45889306824288
+      },
+      "SZ50/ZZ500": {
+        "filtered_days": 1292,
+        "observed_days": 3722,
+        "filtered_pct": 34.71252015045675
+      },
+      "SZ50/ZZ1000": {
+        "filtered_days": 1217,
+        "observed_days": 3722,
+        "filtered_pct": 32.697474476088125
+      },
+      "SZ50/CYB": {
+        "filtered_days": 1150,
+        "observed_days": 3722,
+        "filtered_pct": 30.897367006985494
+      },
+      "HS300/ZZ500": {
+        "filtered_days": 1261,
+        "observed_days": 3722,
+        "filtered_pct": 33.879634605051045
+      },
+      "HS300/ZZ1000": {
+        "filtered_days": 1229,
+        "observed_days": 3722,
+        "filtered_pct": 33.0198817839871
+      },
+      "HS300/CYB": {
+        "filtered_days": 1144,
+        "observed_days": 3722,
+        "filtered_pct": 30.736163353036
+      },
+      "ZZ500/ZZ1000": {
+        "filtered_days": 1247,
+        "observed_days": 3722,
+        "filtered_pct": 33.50349274583557
+      },
+      "ZZ500/CYB": {
+        "filtered_days": 1212,
+        "observed_days": 3722,
+        "filtered_pct": 32.56313809779689
+      },
+      "ZZ1000/CYB": {
+        "filtered_days": 1234,
+        "observed_days": 3722,
+        "filtered_pct": 33.15421816227834
+      }
+    }
+  },
+  "periods": {
+    "最长": {
+      "ADK_当前无R2过滤": {
+        "start": "2010-11-22",
+        "end": "2026-03-18",
+        "days": 3722,
+        "total_return": 49.27576330396678,
+        "annual_return": 0.291419228413236,
+        "annual_vol": 0.2083242261247727,
+        "sharpe": 1.3988734475782705,
+        "max_drawdown": -0.34678828579695425
+      },
+      "ADK_加回R2过滤": {
+        "start": "2010-11-22",
+        "end": "2026-03-18",
+        "days": 3722,
+        "total_return": 30.75376346242907,
+        "annual_return": 0.2532549992971256,
+        "annual_vol": 0.19228445231603303,
+        "sharpe": 1.3170851633957548,
+        "max_drawdown": -0.25846164953476314
+      },
+      "组合_当前无R2过滤": {
+        "start": "2008-01-17",
+        "end": "2026-03-27",
+        "days": 4705,
+        "total_return": 28.298450156487156,
+        "annual_return": 0.20403447846770328,
+        "annual_vol": 0.12475782510861813,
+        "sharpe": 1.6354443361774251,
+        "max_drawdown": -0.17350257184443246
+      },
+      "组合_加回R2过滤": {
+        "start": "2008-01-17",
+        "end": "2026-03-27",
+        "days": 4705,
+        "total_return": 26.27653827820101,
+        "annual_return": 0.19931059770963322,
+        "annual_vol": 0.12402242006230729,
+        "sharpe": 1.6070529635649917,
+        "max_drawdown": -0.17350257184443246
+      }
+    },
+    "10年": {
+      "ADK_当前无R2过滤": {
+        "start": "2016-03-18",
+        "end": "2026-03-18",
+        "days": 2429,
+        "total_return": 16.145642540374602,
+        "annual_return": 0.32871633284216895,
+        "annual_vol": 0.20705762906093725,
+        "sharpe": 1.5875596293311531,
+        "max_drawdown": -0.22409244211152865
+      },
+      "ADK_加回R2过滤": {
+        "start": "2016-03-18",
+        "end": "2026-03-18",
+        "days": 2429,
+        "total_return": 11.099362327551924,
+        "annual_return": 0.2831903132173308,
+        "annual_vol": 0.19479208646855553,
+        "sharpe": 1.4538081004797134,
+        "max_drawdown": -0.22237197427366268
+      },
+      "组合_当前无R2过滤": {
+        "start": "2016-03-28",
+        "end": "2026-03-27",
+        "days": 2597,
+        "total_return": 8.926665570426913,
+        "annual_return": 0.25811775808735193,
+        "annual_vol": 0.1156994159403534,
+        "sharpe": 2.230933976541589,
+        "max_drawdown": -0.11658661409723838
+      },
+      "组合_加回R2过滤": {
+        "start": "2016-03-28",
+        "end": "2026-03-27",
+        "days": 2597,
+        "total_return": 8.629323627943728,
+        "annual_return": 0.2542958604477832,
+        "annual_vol": 0.11514289653112099,
+        "sharpe": 2.208524087102948,
+        "max_drawdown": -0.1114000737953335
+      }
+    },
+    "5年": {
+      "ADK_当前无R2过滤": {
+        "start": "2021-03-18",
+        "end": "2026-03-18",
+        "days": 1211,
+        "total_return": 3.281937393340053,
+        "annual_return": 0.3376588227769821,
+        "annual_vol": 0.21435108563022384,
+        "sharpe": 1.5752606140725405,
+        "max_drawdown": -0.2240924421115284
+      },
+      "ADK_加回R2过滤": {
+        "start": "2021-03-18",
+        "end": "2026-03-18",
+        "days": 1211,
+        "total_return": 2.533444091193745,
+        "annual_return": 0.28722556262082355,
+        "annual_vol": 0.20082584267071876,
+        "sharpe": 1.4302221208242052,
+        "max_drawdown": -0.22237197427366243
+      },
+      "组合_当前无R2过滤": {
+        "start": "2021-03-29",
+        "end": "2026-03-27",
+        "days": 1300,
+        "total_return": 2.2023741166730555,
+        "annual_return": 0.2624643368832449,
+        "annual_vol": 0.12381993767743595,
+        "sharpe": 2.1197259650298994,
+        "max_drawdown": -0.116586614097238
+      },
+      "组合_加回R2过滤": {
+        "start": "2021-03-29",
+        "end": "2026-03-27",
+        "days": 1300,
+        "total_return": 2.1076195407043397,
+        "annual_return": 0.25489403766854046,
+        "annual_vol": 0.12333958204349743,
+        "sharpe": 2.0666037086022273,
+        "max_drawdown": -0.11140007379533348
+      }
+    },
+    "2年": {
+      "ADK_当前无R2过滤": {
+        "start": "2024-03-18",
+        "end": "2026-03-18",
+        "days": 484,
+        "total_return": 0.508342901724234,
+        "annual_return": 0.2283190067623455,
+        "annual_vol": 0.22553410669871526,
+        "sharpe": 1.0123480217887866,
+        "max_drawdown": -0.1834903379706301
+      },
+      "ADK_加回R2过滤": {
+        "start": "2024-03-18",
+        "end": "2026-03-18",
+        "days": 484,
+        "total_return": 0.5861170855068825,
+        "annual_return": 0.2596103764611284,
+        "annual_vol": 0.21213746426386818,
+        "sharpe": 1.2237837260947497,
+        "max_drawdown": -0.18976694022133178
+      },
+      "组合_当前无R2过滤": {
+        "start": "2024-03-27",
+        "end": "2026-03-27",
+        "days": 520,
+        "total_return": 0.7147223522244386,
+        "annual_return": 0.3097159242005525,
+        "annual_vol": 0.13980699747063363,
+        "sharpe": 2.2153106053622826,
+        "max_drawdown": -0.11658661409723846
+      },
+      "组合_加回R2过滤": {
+        "start": "2024-03-27",
+        "end": "2026-03-27",
+        "days": 520,
+        "total_return": 0.7220513670145254,
+        "annual_return": 0.31251383109610686,
+        "annual_vol": 0.13934423352440184,
+        "sharpe": 2.2427467803422214,
+        "max_drawdown": -0.1114000737953336
+      }
+    }
+  }
+}

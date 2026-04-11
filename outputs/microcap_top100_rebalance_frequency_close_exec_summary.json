@@ -1,0 +1,82 @@
+{
+  "execution_timing": "close",
+  "summary_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_rebalance_frequency_close_exec_summary.csv",
+  "recent_windows_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_rebalance_frequency_close_exec_recent_windows.csv",
+  "baseline_compare_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_rebalance_frequency_close_exec_vs_baseline.csv",
+  "schedules": [
+    {
+      "schedule": "weekly",
+      "execution_timing": "close",
+      "net_annual": 0.38115681082048414,
+      "net_max_dd": -0.1577912305363362,
+      "net_sharpe": 3.4490868878310375,
+      "net_vol": 0.11050948358687915,
+      "net_total_return": 182.26775038862,
+      "entry_exit_cost_sum": 0.6120000000000001,
+      "rebalance_cost_sum": 0.2733,
+      "total_cost_sum": 0.8853,
+      "entry_days": 204,
+      "rebalance_cost_days": 617,
+      "avg_monthly_equiv_turnover_frac": 0.07172209026128266,
+      "rebalance_events": 842
+    },
+    {
+      "schedule": "biweekly",
+      "execution_timing": "close",
+      "net_annual": 0.32566550067215827,
+      "net_max_dd": -0.15184555120128213,
+      "net_sharpe": 3.045960776081273,
+      "net_vol": 0.1069171682148637,
+      "net_total_return": 93.559150817619,
+      "entry_exit_cost_sum": 0.639,
+      "rebalance_cost_sum": 0.18714000000000003,
+      "total_cost_sum": 0.8261400000000001,
+      "entry_days": 213,
+      "rebalance_cost_days": 296,
+      "avg_monthly_equiv_turnover_frac": 0.1018289786223278,
+      "rebalance_events": 421
+    },
+    {
+      "schedule": "monthly",
+      "execution_timing": "close",
+      "net_annual": 0.22271507650815248,
+      "net_max_dd": -0.16249745274694138,
+      "net_sharpe": 2.1115539166528925,
+      "net_vol": 0.10547449191408143,
+      "net_total_return": 24.654198659485967,
+      "entry_exit_cost_sum": 0.681,
+      "rebalance_cost_sum": 0.12084,
+      "total_cost_sum": 0.8018400000000001,
+      "entry_days": 227,
+      "rebalance_cost_days": 133,
+      "avg_monthly_equiv_turnover_frac": 0.1489230769230769,
+      "rebalance_events": 195
+    }
+  ],
+  "baseline_compare": [
+    {
+      "schedule": "biweekly",
+      "baseline_end_date": "2026-03-18",
+      "baseline_final_nav": 52.11178718083991,
+      "close_exec_final_nav": 94.559150817619,
+      "final_nav_delta": 42.44736363677909,
+      "final_nav_delta_pct": 0.8145443849292091
+    },
+    {
+      "schedule": "monthly",
+      "baseline_end_date": "2026-03-18",
+      "baseline_final_nav": 19.992755352897515,
+      "close_exec_final_nav": 25.654198659485967,
+      "final_nav_delta": 5.661443306588453,
+      "final_nav_delta_pct": 0.2831747403825431
+    },
+    {
+      "schedule": "weekly",
+      "baseline_end_date": "2026-03-18",
+      "baseline_final_nav": 72.12312920925852,
+      "close_exec_final_nav": 183.26775038862,
+      "final_nav_delta": 111.14462117936147,
+      "final_nav_delta_pct": 1.5410399187878512
+    }
+  ]
+}

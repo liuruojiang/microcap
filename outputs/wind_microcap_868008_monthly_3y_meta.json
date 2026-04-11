@@ -1,0 +1,52 @@
+{
+  "index_code": "868008.WI",
+  "source_used": "public_proxy",
+  "method_note": "Public reconstruction using AKShare raw close data and CNInfo share-change data. This is not the official Wind time series.",
+  "rule_note": "Public sources indicate 8841431.WI was renamed to the daily-equal-weight variant, while 868008.WI switched to monthly rebalance on 2025-01-02. Post-switch schedule is inferred as month_start.",
+  "limitations": [
+    "Current ST board exclusion is applied to the whole sample when --exclude-current-st is on.",
+    "Historical ST status is not reconstructed day by day.",
+    "Returns use raw close, so corporate-action handling will differ from the official index divisor methodology.",
+    "Active universe is built from current SH/SZ A-shares; delisted historical names are not fully backfilled."
+  ],
+  "stats": {
+    "symbols_total": 5014,
+    "symbols_success": 4559,
+    "symbols_failed": 455,
+    "current_st_excluded": 178,
+    "rebalance_dates": 39,
+    "active_days": 773
+  },
+  "failures_sample": {
+    "600012": "Expecting value: line 1 column 1 (char 0)",
+    "600017": "Expecting value: line 1 column 1 (char 0)",
+    "600052": "Expecting value: line 1 column 1 (char 0)",
+    "600035": "Expecting value: line 1 column 1 (char 0)",
+    "600064": "Expecting value: line 1 column 1 (char 0)",
+    "600085": "Expecting value: line 1 column 1 (char 0)",
+    "600088": "Expecting value: line 1 column 1 (char 0)",
+    "600119": "Expecting value: line 1 column 1 (char 0)",
+    "600148": "Expecting value: line 1 column 1 (char 0)",
+    "600158": "Expecting value: line 1 column 1 (char 0)",
+    "600173": "Expecting value: line 1 column 1 (char 0)",
+    "600216": "Expecting value: line 1 column 1 (char 0)",
+    "600218": "Expecting value: line 1 column 1 (char 0)",
+    "600223": "Expecting value: line 1 column 1 (char 0)",
+    "600217": "Expecting value: line 1 column 1 (char 0)",
+    "600250": "Expecting value: line 1 column 1 (char 0)",
+    "600288": "Expecting value: line 1 column 1 (char 0)",
+    "600287": "Expecting value: line 1 column 1 (char 0)",
+    "600285": "Expecting value: line 1 column 1 (char 0)",
+    "600316": "Expecting value: line 1 column 1 (char 0)"
+  },
+  "params": {
+    "start_date": "2023-01-01",
+    "end_date": "2026-03-29",
+    "constituents": 400,
+    "switch_date": "2025-01-02",
+    "pre_switch_schedule": "month_start",
+    "post_switch_schedule": "month_start",
+    "limit_symbols": null,
+    "executor": "process"
+  }
+}

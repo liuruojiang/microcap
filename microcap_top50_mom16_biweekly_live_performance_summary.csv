@@ -1,0 +1,2 @@
+period_label,source,start_date,end_date,days,final_nav,total_return_pct,annual_pct,max_drawdown_pct,sharpe,vol_pct
+last_5_years,costed,2021-04-01,2026-03-18,1201,4.112738139348391,311.2738139348391,32.98178138277051,-13.598998817400624,2.1449222746176804,15.376679040106152

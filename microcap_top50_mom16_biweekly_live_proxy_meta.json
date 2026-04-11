@@ -1,0 +1,22 @@
+{
+  "index_code": "TOP50_BIWEEKLY_THURSDAY_PROXY",
+  "source_used": "local_cache_proxy_recent_extension",
+  "method_note": "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names from signal-date ranking, and blocks next-day buys at locked limit-up / sells at locked limit-down.",
+  "core_params": {
+    "top_n": 50,
+    "exclude_current_st": true,
+    "exclude_bj_exchange": true,
+    "exclude_suspended_on_signal_date": true,
+    "block_limit_up_entry": true,
+    "block_limit_down_exit": true,
+    "rebalance_frequency": "biweekly",
+    "rebalance_weekday_anchor": "Thursday",
+    "lookback": 16,
+    "hedge_column": "1.000852"
+  },
+  "start_date": "1990-12-19",
+  "end_date": "2026-04-07",
+  "rebalance_dates_count": 5,
+  "recent_extension_start": "2026-02-02",
+  "recent_candidate_symbols": 502
+}

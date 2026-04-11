@@ -1,0 +1,29 @@
+{
+  "method": {
+    "exact_recent_window": "recent days where 5-minute tail data is available for both basket and CSI1000",
+    "estimate_last_year": "project empirical recent tail 10-minute return pairs onto last year's daily signal boundaries",
+    "tail_window": "14:50 to 15:00",
+    "recent_exact_days": 24
+  },
+  "recent_exact": {
+    "start_date": "2026-02-05",
+    "end_date": "2026-03-18",
+    "days": 24,
+    "jitter_days": 1,
+    "jitter_prob": 0.041666666666666664,
+    "avg_member_count_used": 99.91666666666667
+  },
+  "last_year_estimate": {
+    "window_start": "2025-03-18",
+    "window_end": "2026-03-18",
+    "days": 243,
+    "estimated_average_flip_prob": 0.007201646090534979,
+    "estimated_median_flip_prob": 0.0,
+    "estimated_p90_flip_prob": 0.0,
+    "high_risk_days_over_10pct": 4,
+    "high_risk_days_over_25pct": 2
+  },
+  "files": {
+    "recent_exact_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\A股美股动量组合策略\\microcap_top100_tail10m_jitter_recent_exact.csv"
+  }
+}

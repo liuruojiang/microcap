@@ -1,0 +1,57 @@
+[
+  {
+    "change_date": "2023-08-21",
+    "total_shares_10k": 8948.0,
+    "reason": "A股上市"
+  },
+  {
+    "change_date": "2024-02-29",
+    "total_shares_10k": 8948.0,
+    "reason": "限售股份上市"
+  },
+  {
+    "change_date": "2024-03-12",
+    "total_shares_10k": 8948.0,
+    "reason": "其他"
+  },
+  {
+    "change_date": "2024-03-18",
+    "total_shares_10k": 8948.0,
+    "reason": "其他"
+  },
+  {
+    "change_date": "2024-04-22",
+    "total_shares_10k": 8948.0,
+    "reason": "定期报告"
+  },
+  {
+    "change_date": "2024-08-20",
+    "total_shares_10k": 8948.0,
+    "reason": "限售股份上市"
+  },
+  {
+    "change_date": "2024-08-27",
+    "total_shares_10k": 8948.0,
+    "reason": "定期报告"
+  },
+  {
+    "change_date": "2025-02-20",
+    "total_shares_10k": 8948.0,
+    "reason": "限售股份上市"
+  },
+  {
+    "change_date": "2025-04-22",
+    "total_shares_10k": 8948.0,
+    "reason": "定期报告"
+  },
+  {
+    "change_date": "2025-04-22",
+    "total_shares_10k": 8948.0,
+    "reason": "其他"
+  },
+  {
+    "change_date": "2025-08-27",
+    "total_shares_10k": 8948.0,
+    "reason": "定期报告"
+  }
+]

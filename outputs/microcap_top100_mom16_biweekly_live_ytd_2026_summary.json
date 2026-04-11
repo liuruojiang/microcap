@@ -1,0 +1,15 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live",
+  "window_label": "ytd_2026",
+  "start_date": "2026-01-05",
+  "end_date": "2026-04-09",
+  "trading_days": 62,
+  "final_nav_ytd": 0.9703724926357554,
+  "total_return_pct": -2.9627507364244576,
+  "annual_return_pct": -11.506529164977653,
+  "max_drawdown_pct": -12.765147680871348,
+  "sharpe": -0.48424020655223515,
+  "volatility_pct": 20.824247733868678,
+  "peak_date": "2026-02-06",
+  "trough_date": "2026-04-07"
+}

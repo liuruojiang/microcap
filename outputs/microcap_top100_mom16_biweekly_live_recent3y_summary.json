@@ -1,0 +1,17 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live",
+  "window_label": "recent_3y",
+  "source_nav": "outputs\\microcap_top100_mom16_biweekly_live_performance_nav.csv",
+  "window_start_target": "2023-04-09",
+  "window_start_actual": "2023-04-10",
+  "window_end": "2026-04-09",
+  "trading_days": 726,
+  "final_nav_window": 2.092438809910046,
+  "total_return_pct": 109.24388099100462,
+  "annual_return_pct": 29.21143815226044,
+  "max_drawdown_pct": -12.765147680871358,
+  "sharpe": 1.7433558250713688,
+  "volatility_pct": 15.386922719392599,
+  "peak_date": "2026-02-06",
+  "trough_date": "2026-04-07"
+}

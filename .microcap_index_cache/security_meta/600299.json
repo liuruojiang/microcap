@@ -1,0 +1,22 @@
+{
+  "meta_version": 2,
+  "symbol": "600299",
+  "first_trade_date": "2010-01-04",
+  "last_trade_date": "2026-04-10",
+  "list_date": "2000-04-20",
+  "delist_date": null,
+  "exchange": "SSE",
+  "board": "主板",
+  "st_intervals": [
+    {
+      "start": "2010-04-06",
+      "end": "2011-07-07",
+      "source": "cninfo_notice"
+    },
+    {
+      "start": "2014-04-16",
+      "end": null,
+      "source": "cninfo_notice"
+    }
+  ]
+}

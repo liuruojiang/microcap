@@ -1,0 +1,17 @@
+{
+  "meta_version": 2,
+  "symbol": "000672",
+  "first_trade_date": "2013-04-26",
+  "last_trade_date": "2026-03-27",
+  "list_date": "1996-12-18",
+  "delist_date": null,
+  "exchange": "SZSE",
+  "board": "主板",
+  "st_intervals": [
+    {
+      "start": "2013-04-26",
+      "end": "2013-04-26",
+      "source": "name_change"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "index_code": "883418",
+  "index_name": "同花顺微盘股",
+  "signal_col": "right_skew",
+  "reg_window": 18,
+  "m_windows": [
+    40,
+    60,
+    80,
+    100,
+    120,
+    160,
+    200,
+    250,
+    300,
+    400,
+    500
+  ],
+  "thresholds": [
+    0.3,
+    0.5,
+    0.7,
+    0.9,
+    1.1,
+    1.3,
+    1.5
+  ],
+  "combos": 77,
+  "sample_start": "2023-07-05",
+  "sample_end": "2026-03-27",
+  "best_by_sharpe": {
+    "z_window": 250,
+    "threshold": 0.3,
+    "rows": 661,
+    "sample_start": "2023-07-05",
+    "sample_end": "2026-03-27",
+    "total_return": 1.215650803889671,
+    "annual_return": 0.3387551664815176,
+    "sharpe": 1.9231880805295145,
+    "max_drawdown": -0.09891616915469459,
+    "position_days_pct": 0.32223903177004537,
+    "trades": 20
+  },
+  "best_by_annual_return": {
+    "z_window": 200,
+    "threshold": 1.5,
+    "rows": 661,
+    "sample_start": "2023-07-05",
+    "sample_end": "2026-03-27",
+    "total_return": 1.8514938921596515,
+    "annual_return": 0.46852972534350656,
+    "sharpe": 1.8387755219987263,
+    "max_drawdown": -0.2198051268767497,
+    "position_days_pct": 0.6006051437216339,
+    "trades": 1
+  },
+  "smallest_drawdown": {
+    "z_window": 500,
+    "threshold": 1.5,
+    "rows": 661,
+    "sample_start": "2023-07-05",
+    "sample_end": "2026-03-27",
+    "total_return": 0.0,
+    "annual_return": 0.0,
+    "sharpe": 0.0,
+    "max_drawdown": 0.0,
+    "position_days_pct": 0.0,
+    "trades": 0
+  }
+}

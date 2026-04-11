@@ -1,0 +1,114 @@
+{
+  "aligned_params": {
+    "rebalance": "biweekly_thursday_signal",
+    "lookback": 16,
+    "signal_model": "relative_momentum",
+    "hedge": "CSI1000",
+    "fixed_hedge_ratio": 1.0,
+    "cost_model": "same on both sides"
+  },
+  "summary": [
+    {
+      "strategy": "Top50",
+      "net_annual": 1.2287280314283309,
+      "net_max_dd": -0.16161859593389308,
+      "net_sharpe": 6.54410350656595,
+      "net_vol": 0.18776109366172172,
+      "net_total_return": 413579.0893567606,
+      "entry_exit_cost_sum": 0.5760000000000001,
+      "rebalance_cost_sum": 0.31980000000000003,
+      "total_cost_sum": 0.8958000000000002,
+      "entry_days": 192,
+      "rebalance_cost_days": 321,
+      "rebalance_events": 420,
+      "avg_turnover_frac_one_side": 0.15695238095238098
+    },
+    {
+      "strategy": "Top100",
+      "net_annual": 0.6786561192850058,
+      "net_max_dd": -0.1748344675626238,
+      "net_sharpe": 5.04225417288121,
+      "net_vol": 0.13459379396917884,
+      "net_total_return": 4266.596898311162,
+      "entry_exit_cost_sum": 0.573,
+      "rebalance_cost_sum": 0.26094000000000006,
+      "total_cost_sum": 0.83394,
+      "entry_days": 191,
+      "rebalance_cost_days": 315,
+      "rebalance_events": 420,
+      "avg_turnover_frac_one_side": 0.12985714285714287
+    }
+  ],
+  "recent_windows": [
+    {
+      "strategy": "Top100",
+      "window_years": 1,
+      "annual": 0.38292280958565716,
+      "max_dd": -0.06113813156759635,
+      "sharpe": 2.5355287278745102
+    },
+    {
+      "strategy": "Top50",
+      "window_years": 1,
+      "annual": 0.3092263302454987,
+      "max_dd": -0.08934998309691151,
+      "sharpe": 2.0191446535858217
+    },
+    {
+      "strategy": "Top50",
+      "window_years": 2,
+      "annual": 0.37727604685090577,
+      "max_dd": -0.09853865044768838,
+      "sharpe": 2.313913405619823
+    },
+    {
+      "strategy": "Top100",
+      "window_years": 2,
+      "annual": 0.33422725007910303,
+      "max_dd": -0.10568122006438782,
+      "sharpe": 2.1267744005735136
+    },
+    {
+      "strategy": "Top50",
+      "window_years": 3,
+      "annual": 0.3933186651695335,
+      "max_dd": -0.09853865044768854,
+      "sharpe": 2.575450336095184
+    },
+    {
+      "strategy": "Top100",
+      "window_years": 3,
+      "annual": 0.3470813074487311,
+      "max_dd": -0.10568122006438774,
+      "sharpe": 2.368396431407194
+    },
+    {
+      "strategy": "Top100",
+      "window_years": 4,
+      "annual": 0.3311761472457164,
+      "max_dd": -0.115516263048338,
+      "sharpe": 2.3157307623319445
+    },
+    {
+      "strategy": "Top50",
+      "window_years": 4,
+      "annual": 0.34359678722555653,
+      "max_dd": -0.13598998817400743,
+      "sharpe": 2.291430634188868
+    },
+    {
+      "strategy": "Top50",
+      "window_years": 5,
+      "annual": 0.32999773003531296,
+      "max_dd": -0.13598998817400718,
+      "sharpe": 2.14885249017457
+    },
+    {
+      "strategy": "Top100",
+      "window_years": 5,
+      "annual": 0.2851183255079195,
+      "max_dd": -0.1748344675626234,
+      "sharpe": 1.9487564468157679
+    }
+  ]
+}

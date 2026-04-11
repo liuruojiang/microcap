@@ -1,0 +1,95 @@
+{
+  "execution_timing": "close",
+  "trade_constraint_mode": "close",
+  "summary_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_rebalance_frequency_close_conservative_summary.csv",
+  "recent_windows_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_rebalance_frequency_close_conservative_recent_windows.csv",
+  "compare_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_rebalance_frequency_close_conservative_vs_baseline.csv",
+  "schedules": [
+    {
+      "schedule": "weekly",
+      "execution_timing": "close",
+      "trade_constraint_mode": "close",
+      "net_annual": 0.2940303427029991,
+      "net_max_dd": -0.15754422758787306,
+      "net_sharpe": 2.719570897601057,
+      "net_vol": 0.10811644695946859,
+      "net_total_return": 63.03769915198272,
+      "entry_exit_cost_sum": 0.6360000000000001,
+      "rebalance_cost_sum": 0.26286,
+      "total_cost_sum": 0.89886,
+      "entry_days": 212,
+      "rebalance_cost_days": 608,
+      "avg_monthly_equiv_turnover_frac": 0.0703206650831354,
+      "rebalance_events": 842
+    },
+    {
+      "schedule": "biweekly",
+      "execution_timing": "close",
+      "trade_constraint_mode": "close",
+      "net_annual": 0.24665254872584352,
+      "net_max_dd": -0.16017211879235327,
+      "net_sharpe": 2.3577112097626722,
+      "net_vol": 0.10461525046176949,
+      "net_total_return": 34.07790948854174,
+      "entry_exit_cost_sum": 0.675,
+      "rebalance_cost_sum": 0.17709000000000003,
+      "total_cost_sum": 0.85209,
+      "entry_days": 225,
+      "rebalance_cost_days": 291,
+      "avg_monthly_equiv_turnover_frac": 0.0995249406175772,
+      "rebalance_events": 421
+    },
+    {
+      "schedule": "monthly",
+      "execution_timing": "close",
+      "trade_constraint_mode": "close",
+      "net_annual": 0.18998312718357813,
+      "net_max_dd": -0.16249745274694072,
+      "net_sharpe": 1.8168858923261093,
+      "net_vol": 0.10456524979691924,
+      "net_total_return": 15.557464377292536,
+      "entry_exit_cost_sum": 0.6990000000000001,
+      "rebalance_cost_sum": 0.11298,
+      "total_cost_sum": 0.81198,
+      "entry_days": 233,
+      "rebalance_cost_days": 130,
+      "avg_monthly_equiv_turnover_frac": 0.1449230769230769,
+      "rebalance_events": 195
+    }
+  ],
+  "compare": [
+    {
+      "schedule": "biweekly",
+      "end_date": "2026-03-18",
+      "close_conservative_final_nav": 35.07790948854174,
+      "baseline_final_nav": 52.11178718083991,
+      "vs_baseline_delta": -17.03387769229817,
+      "vs_baseline_delta_pct": -0.32687187705128373,
+      "close_exec_final_nav": 94.559150817619,
+      "vs_close_exec_delta": -59.48124132907726,
+      "vs_close_exec_delta_pct": -0.6290373889228524
+    },
+    {
+      "schedule": "monthly",
+      "end_date": "2026-03-18",
+      "close_conservative_final_nav": 16.557464377292536,
+      "baseline_final_nav": 19.992755352897515,
+      "vs_baseline_delta": -3.4352909756049783,
+      "vs_baseline_delta_pct": -0.17182679000306522,
+      "close_exec_final_nav": 25.654198659485967,
+      "vs_close_exec_delta": -9.096734282193431,
+      "vs_close_exec_delta_pct": -0.35459046696162533
+    },
+    {
+      "schedule": "weekly",
+      "end_date": "2026-03-18",
+      "close_conservative_final_nav": 64.03769915198272,
+      "baseline_final_nav": 72.12312920925852,
+      "vs_baseline_delta": -8.0854300572758,
+      "vs_baseline_delta_pct": -0.11210592421491694,
+      "close_exec_final_nav": 183.26775038862,
+      "vs_close_exec_delta": -119.23005123663727,
+      "vs_close_exec_delta_pct": -0.6505784622979738
+    }
+  ]
+}

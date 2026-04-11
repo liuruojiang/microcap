@@ -1,0 +1,90 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live_v1_2",
+  "version": "1.2",
+  "version_note": "Defensive alternative to the v1.1 mainline. Same as v1.1 (0.8x hedge), plus practical NAV throttle 4/8 with 0.85x/0.70x scale and recover 3%.",
+  "core_params": {
+    "top_n": 100,
+    "exclude_current_st": true,
+    "rebalance_schedule": "biweekly",
+    "rebalance_weekday_anchor": "Thursday",
+    "lookback": 16,
+    "signal_model": "relative_momentum",
+    "hedge_column": "1.000852",
+    "fixed_hedge_ratio": 0.8,
+    "futures_drag_per_day": 0.0003,
+    "execution_timing": "close",
+    "trade_constraint_mode": "close",
+    "research_stack_version": "2026-04-11-p0-p1-history-meta-master-stv2",
+    "security_meta_version": 2,
+    "security_master_enabled": true,
+    "nav_control": {
+      "type": "practical_nav_throttle",
+      "dd_moderate": 0.04,
+      "dd_severe": 0.08,
+      "scale_moderate": 0.85,
+      "scale_severe": 0.7,
+      "recover_dd": 0.03,
+      "timing_rule": "T close drawdown observed, T+1 scale applied"
+    }
+  },
+  "latest_trade_date": "2026-04-10",
+  "latest_rebalance_date": "2026-04-02",
+  "previous_rebalance_date": "2026-03-19",
+  "next_rebalance_date": null,
+  "history_anchor": {
+    "latest_trade_date": "2026-04-10",
+    "current_date": "2026-04-11",
+    "stale_calendar_days": 1,
+    "max_stale_anchor_days": 5,
+    "is_stale": false,
+    "status": "fresh"
+  },
+  "latest_signal": {
+    "signal_label": "cash",
+    "current_holding": "cash",
+    "next_holding": "cash",
+    "trade_state": "hold",
+    "momentum_trade_state": "hold",
+    "member_rebalance_state": "rebalance",
+    "member_rebalance_required": true,
+    "member_enter_count": 10,
+    "member_exit_count": 10,
+    "member_rebalance_label": "名单调仓（调入 10，调出 10）",
+    "microcap_mom": -0.05045307057044579,
+    "hedge_mom": -0.012148324171039948,
+    "momentum_gap": -0.03830474639940584,
+    "microcap_close": 396176.9142928679,
+    "hedge_close": 7998.23,
+    "nav_control_scale_last_applied": 0.85,
+    "nav_control_scale_next_session": 0.85,
+    "nav_control_state_last_applied": "moderate",
+    "nav_control_state_next_session": "moderate",
+    "nav_control_drawdown_last_close": -0.06838752181282126,
+    "effective_hedge_ratio_last_applied": 0.0,
+    "effective_hedge_ratio_next_session": 0.0
+  },
+  "target_members": {
+    "count": 100,
+    "enter_count": 10,
+    "exit_count": 10,
+    "equal_weight": 0.01
+  },
+  "capital_plan": {
+    "gross_stock_capital": null,
+    "per_stock_target_notional": null,
+    "hedge_notional": 0.0
+  },
+  "version_role": "defensive_alternative",
+  "latest_nav_date": "2026-04-10",
+  "performance_snapshot": {
+    "start_date": "2010-02-02",
+    "end_date": "2026-04-10",
+    "days": 3928,
+    "final_nav": 79.81862442272107,
+    "total_return_pct": 7881.862442272107,
+    "annual_pct": 31.07927082406412,
+    "max_drawdown_pct": -10.593341389172139,
+    "sharpe": 3.070652166847249,
+    "vol_pct": 10.12139087572864
+  }
+}

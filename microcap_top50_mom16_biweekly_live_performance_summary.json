@@ -1,0 +1,88 @@
+{
+  "period_label": "last_5_years",
+  "source": "costed",
+  "query_text": "表现 近5年",
+  "start_date": "2021-04-01",
+  "end_date": "2026-03-18",
+  "summary": {
+    "period_label": "last_5_years",
+    "source": "costed",
+    "start_date": "2021-04-01",
+    "end_date": "2026-03-18",
+    "days": 1201,
+    "final_nav": 4.112738139348391,
+    "total_return_pct": 311.2738139348391,
+    "annual_pct": 32.98178138277051,
+    "max_drawdown_pct": -13.598998817400624,
+    "sharpe": 2.1449222746176804,
+    "vol_pct": 15.376679040106152
+  },
+  "yearly": [
+    {
+      "year": "2021",
+      "start_date": "2021-04-01",
+      "end_date": "2021-12-31",
+      "days": 185,
+      "return_pct": 2.294175122947273,
+      "max_drawdown_pct": -11.584353016620508,
+      "sharpe": 0.20880418975143258,
+      "annual_pct": 3.069826147835153
+    },
+    {
+      "year": "2022",
+      "start_date": "2022-01-04",
+      "end_date": "2022-12-30",
+      "days": 242,
+      "return_pct": 44.498314940436124,
+      "max_drawdown_pct": -13.59899881740061,
+      "sharpe": 2.6774998932287937,
+      "annual_pct": 45.276080717696686
+    },
+    {
+      "year": "2023",
+      "start_date": "2023-01-03",
+      "end_date": "2023-12-29",
+      "days": 242,
+      "return_pct": 46.612869345829,
+      "max_drawdown_pct": -4.166569938793674,
+      "sharpe": 3.8570793626557554,
+      "annual_pct": 47.433249055704096
+    },
+    {
+      "year": "2024",
+      "start_date": "2024-01-02",
+      "end_date": "2024-12-31",
+      "days": 242,
+      "return_pct": 33.78439666821893,
+      "max_drawdown_pct": -8.75948603933372,
+      "sharpe": 2.0058746338033067,
+      "annual_pct": 33.918183291222846
+    },
+    {
+      "year": "2025",
+      "start_date": "2025-01-02",
+      "end_date": "2025-12-31",
+      "days": 243,
+      "return_pct": 46.301119208357356,
+      "max_drawdown_pct": -8.934998309691167,
+      "sharpe": 3.0474316743378873,
+      "annual_pct": 46.646570443811285
+    },
+    {
+      "year": "2026",
+      "start_date": "2026-01-05",
+      "end_date": "2026-03-18",
+      "days": 47,
+      "return_pct": -3.040098636077515,
+      "max_drawdown_pct": -7.9474702962650134,
+      "sharpe": -0.9033322498605539,
+      "annual_pct": -14.496642153292171
+    }
+  ],
+  "files": {
+    "summary_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\microcap_top50_mom16_biweekly_live_performance_summary.csv",
+    "yearly_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\microcap_top50_mom16_biweekly_live_performance_yearly.csv",
+    "nav_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\microcap_top50_mom16_biweekly_live_performance_nav.csv",
+    "chart_png": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\microcap_top50_mom16_biweekly_live_performance_curve.png"
+  }
+}

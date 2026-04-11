@@ -1,0 +1,32 @@
+{
+  "strategy": "microcap_buyhold_short_zz1000",
+  "entry_rule": "always long microcap and short CSI1000 proxy",
+  "return_rule": "microcap_return - hedge_return - futures_drag_per_day",
+  "futures_drag_per_day": 0.0003,
+  "start_date": "2023-01-04",
+  "end_date": "2026-03-18",
+  "n_days": 773,
+  "metrics": {
+    "annual": 0.20344337414717728,
+    "vol": 0.20529849612389328,
+    "sharpe": 0.9909637819480349,
+    "max_dd": -0.36744005305868327,
+    "calmar": 0.5536777290707763,
+    "total_return": 0.8088649814931452,
+    "win_rate": 0.7435897435897436
+  },
+  "max_dd_window": {
+    "peak_date": "2024-01-09",
+    "trough_date": "2024-02-07",
+    "recovery_date": "2024-12-16",
+    "max_dd": -0.3674400530586832,
+    "days_peak_to_trough": 29,
+    "days_to_recovery": 342
+  },
+  "yearly": {
+    "2023": 0.37810380997293436,
+    "2024": -0.02786619768577725,
+    "2025": 0.2800904020357009,
+    "2026": 0.05476942469050816
+  }
+}

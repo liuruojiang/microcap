@@ -1,0 +1,51 @@
+{
+  "index_code": "883418",
+  "index_name": "同花顺微盘股",
+  "signal_col": "right_skew",
+  "reg_window": 18,
+  "mode": "no_threshold_sign",
+  "rule": "hold when signal > 0, else cash",
+  "m_windows": [
+    20,
+    30,
+    40,
+    50,
+    60,
+    80,
+    100,
+    120,
+    160,
+    200,
+    250,
+    300,
+    400,
+    500
+  ],
+  "combos": 14,
+  "sample_start": "2023-07-05",
+  "sample_end": "2026-03-27",
+  "best_by_sharpe": {
+    "z_window": 60,
+    "rows": 661,
+    "sample_start": "2023-07-05",
+    "sample_end": "2026-03-27",
+    "total_return": 1.8433567003451006,
+    "annual_return": 0.46699154027306355,
+    "sharpe": 1.8557156853912087,
+    "max_drawdown": -0.17620863796168018,
+    "position_days_pct": 0.49016641452344933,
+    "trades": 42
+  },
+  "best_by_annual_return": {
+    "z_window": 60,
+    "rows": 661,
+    "sample_start": "2023-07-05",
+    "sample_end": "2026-03-27",
+    "total_return": 1.8433567003451006,
+    "annual_return": 0.46699154027306355,
+    "sharpe": 1.8557156853912087,
+    "max_drawdown": -0.17620863796168018,
+    "position_days_pct": 0.49016641452344933,
+    "trades": 42
+  }
+}

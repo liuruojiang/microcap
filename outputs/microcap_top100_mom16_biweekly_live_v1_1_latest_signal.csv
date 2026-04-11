@@ -1,0 +1,2 @@
+date,signal_label,next_holding,microcap_close,hedge_close,microcap_mom,hedge_mom,momentum_gap,ratio_bias_mom,ratio_r2,weight,futures_drag,current_holding,trade_state,momentum_trade_state,member_rebalance_state,member_rebalance_required,member_enter_count,member_exit_count,member_rebalance_label
+2026-04-10,cash,cash,396176.9142928679,7998.23,-0.05045307057044579,-0.012148324171039948,-0.03830474639940584,-23.89930101953621,0.06940795018934677,1.0,0.0,cash,hold,hold,rebalance,True,10,10,名单调仓（调入 10，调出 10）

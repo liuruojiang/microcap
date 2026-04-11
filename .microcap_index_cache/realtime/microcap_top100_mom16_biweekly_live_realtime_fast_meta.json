@@ -1,0 +1,12 @@
+{
+  "snapshot_time": "2026-04-10 18:14:24.402410",
+  "latest_anchor_trade_date": "2026-04-10",
+  "quote_source": "eastmoney_stock_get_member_only",
+  "hedge_quote_source": "eastmoney_stock_get",
+  "member_price_count": 100,
+  "member_count": 100,
+  "microcap_rt_close": 399520.68041285546,
+  "hedge_rt_close": 7998.23,
+  "tail_jitter_risk": "normal",
+  "tail_jitter_note": ""
+}

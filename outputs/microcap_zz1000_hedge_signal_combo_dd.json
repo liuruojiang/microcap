@@ -1,0 +1,20 @@
+{
+  "and": {
+    "peak_date": "2024-02-27",
+    "trough_date": "2024-02-28",
+    "recovery_date": "2024-03-18",
+    "max_dd": -0.05495950944921253
+  },
+  "or": {
+    "peak_date": "2025-08-08",
+    "trough_date": "2025-10-09",
+    "recovery_date": null,
+    "max_dd": -0.0886055971142059
+  },
+  "avg_weight": {
+    "peak_date": "2024-02-27",
+    "trough_date": "2024-03-05",
+    "recovery_date": "2024-03-18",
+    "max_dd": -0.06196311175909305
+  }
+}

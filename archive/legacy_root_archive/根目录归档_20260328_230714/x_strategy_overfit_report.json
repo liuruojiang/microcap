@@ -1,0 +1,185 @@
+{
+  "split": {
+    "cutoff_date": "2021-06-29",
+    "train_start": "2010-05-31",
+    "train_end": "2021-06-29",
+    "test_start": "2021-06-30",
+    "test_end": "2026-03-27"
+  },
+  "selected_from_train": {
+    "params": {
+      "commission": 0.001,
+      "trading_days": 252,
+      "bias_n": 60,
+      "mom_day": 40,
+      "r2_window": 20,
+      "r2_threshold": 0.3,
+      "target_vol": 0.3,
+      "vol_window": 40,
+      "max_lev": 1.5,
+      "min_lev": 0.1,
+      "scale_threshold": 0.0
+    },
+    "train_rank": 1,
+    "test_rank": 155,
+    "train_score": 1120.4969117260314,
+    "test_score": 1036.677151560004,
+    "train_sharpe": 1.0424373201885184,
+    "test_sharpe": 0.9457126325431708,
+    "train_calmar": 0.771723289854451,
+    "test_calmar": 0.8979763965898531,
+    "train_annual_return": 0.2519920820969226,
+    "test_annual_return": 0.26328951415055135
+  },
+  "current_opt_params": {
+    "params": {
+      "commission": 0.001,
+      "trading_days": 252,
+      "bias_n": 60,
+      "mom_day": 40,
+      "r2_window": 20,
+      "r2_threshold": 0.2,
+      "target_vol": 0.3,
+      "vol_window": 40,
+      "max_lev": 1.5,
+      "min_lev": 0.1,
+      "scale_threshold": 0.0
+    },
+    "train": {
+      "start": "2010-10-18",
+      "end": "2021-06-29",
+      "holding": "QQQ",
+      "nav": 9.953010689831233,
+      "total_return": 8.953010689831233,
+      "annual_return": 0.23167070494832087,
+      "annual_vol": 0.24852024457667438,
+      "sharpe": 0.9322005349823522,
+      "max_drawdown": -0.4220874228565912,
+      "calmar": 0.548869007705623,
+      "monthly_win_rate": 0.5968992248062015,
+      "months": 129
+    },
+    "test": {
+      "start": "2021-06-30",
+      "end": "2026-03-27",
+      "holding": "BIL",
+      "nav": 4.157443913002093,
+      "total_return": 3.1574439130020933,
+      "annual_return": 0.3380596312663029,
+      "annual_vol": 0.2805694800734802,
+      "sharpe": 1.2049052205456068,
+      "max_drawdown": -0.2795543871634609,
+      "calmar": 1.2092803647135497,
+      "monthly_win_rate": 0.5689655172413793,
+      "months": 58
+    }
+  },
+  "baseline_params": {
+    "params": {
+      "commission": 0.001,
+      "trading_days": 252,
+      "bias_n": 60,
+      "mom_day": 20,
+      "r2_window": 20,
+      "r2_threshold": 0.3,
+      "target_vol": 0.2,
+      "vol_window": 60,
+      "max_lev": 1.5,
+      "min_lev": 0.1,
+      "scale_threshold": 0.1
+    },
+    "train": {
+      "start": "2010-09-20",
+      "end": "2021-06-29",
+      "holding": "QQQ",
+      "nav": 5.85130275611216,
+      "total_return": 4.85130275611216,
+      "annual_return": 0.172404297738739,
+      "annual_vol": 0.21190787634245142,
+      "sharpe": 0.8135813576845389,
+      "max_drawdown": -0.4314113076776148,
+      "calmar": 0.39962860191780913,
+      "monthly_win_rate": 0.5307692307692308,
+      "months": 130
+    },
+    "test": {
+      "start": "2021-06-30",
+      "end": "2026-03-27",
+      "holding": "BIL",
+      "nav": 2.2635830386202564,
+      "total_return": 1.2635830386202564,
+      "annual_return": 0.1817160637649604,
+      "annual_vol": 0.2353386053004794,
+      "sharpe": 0.7721472791637651,
+      "max_drawdown": -0.27876164673275583,
+      "calmar": 0.6518689564894434,
+      "monthly_win_rate": 0.6206896551724138,
+      "months": 58
+    }
+  },
+  "stability": {
+    "combo_count": 1296,
+    "train_test_score_corr": 0.5940045571086413,
+    "top_train_decile_avg_test_sharpe": 0.8708438643378061,
+    "top_train_decile_median_test_sharpe": 0.9165209569005679,
+    "overall_median_test_sharpe": 0.565654390629357
+  },
+  "rolling_current_opt": [
+    {
+      "start": "2010-10-18",
+      "end": "2014-12-31",
+      "holding": "CN_DIVLOWVOL_TR",
+      "nav": 3.6548017417445005,
+      "total_return": 2.6548017417445005,
+      "annual_return": 0.34752175068588476,
+      "annual_vol": 0.24244204821817233,
+      "sharpe": 1.4334219383147255,
+      "max_drawdown": -0.19819514688051398,
+      "calmar": 1.7534321912301687,
+      "monthly_win_rate": 0.6470588235294118,
+      "months": 51
+    },
+    {
+      "start": "2015-01-01",
+      "end": "2018-12-31",
+      "holding": "TLT",
+      "nav": 1.6172613297123,
+      "total_return": 0.6172613297123,
+      "annual_return": 0.12392000423520622,
+      "annual_vol": 0.23942338957038523,
+      "sharpe": 0.5175768518588133,
+      "max_drawdown": -0.41217326657310865,
+      "calmar": 0.30065027085696755,
+      "monthly_win_rate": 0.5416666666666666,
+      "months": 48
+    },
+    {
+      "start": "2019-01-01",
+      "end": "2022-12-31",
+      "holding": "TLT",
+      "nav": 1.8797914840422887,
+      "total_return": 0.8797914840422887,
+      "annual_return": 0.16524938788664145,
+      "annual_vol": 0.2684984471090653,
+      "sharpe": 0.6154575181565813,
+      "max_drawdown": -0.27955438716346037,
+      "calmar": 0.5911171331037536,
+      "monthly_win_rate": 0.5625,
+      "months": 48
+    },
+    {
+      "start": "2023-01-01",
+      "end": "2026-03-27",
+      "holding": "BIL",
+      "nav": 3.7241500102205634,
+      "total_return": 2.7241500102205634,
+      "annual_return": 0.48357036620489624,
+      "annual_vol": 0.2884251538829092,
+      "sharpe": 1.6765887430234652,
+      "max_drawdown": -0.22574816503158976,
+      "calmar": 2.1420788343383808,
+      "monthly_win_rate": 0.6153846153846154,
+      "months": 39
+    }
+  ]
+}

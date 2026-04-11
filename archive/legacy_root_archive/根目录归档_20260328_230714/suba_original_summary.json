@@ -1,0 +1,15 @@
+{
+  "start": "2010-09-29 00:00:00",
+  "end": "2026-03-26 00:00:00",
+  "total_return_pct": 2319.2610950870476,
+  "annual_return_pct": 22.961259594664153,
+  "annual_vol_pct": 21.251232501951467,
+  "sharpe": 1.080467196081717,
+  "max_drawdown_pct": -31.1982810805861,
+  "calmar": 0.7359783551970228,
+  "daily_win_rate_pct": 63.307630949215635,
+  "monthly_win_rate_pct": 58.288770053475936,
+  "months": 187,
+  "latest_holding": "cash",
+  "latest_weight": 1.0
+}

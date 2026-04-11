@@ -1,0 +1,18 @@
+{
+  "mom5": {
+    "peak_date": "2025-11-18",
+    "trough_date": "2026-03-12",
+    "recovery_date": null,
+    "max_dd": -0.07664793339443132,
+    "days_peak_to_trough": 114,
+    "days_to_recovery": null
+  },
+  "bias20_10": {
+    "peak_date": "2024-02-27",
+    "trough_date": "2024-03-05",
+    "recovery_date": "2024-03-19",
+    "max_dd": -0.07649472616244246,
+    "days_peak_to_trough": 7,
+    "days_to_recovery": 21
+  }
+}

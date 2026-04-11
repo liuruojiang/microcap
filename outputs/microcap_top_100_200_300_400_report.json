@@ -1,0 +1,15 @@
+{
+  "counts": [
+    100,
+    200,
+    300,
+    400
+  ],
+  "windows": [
+    5,
+    10,
+    15
+  ],
+  "long_only_output": "microcap_top_100_200_300_400_longonly_summary.csv",
+  "strategy_output": "microcap_top_100_200_300_400_strategy_summary.csv"
+}

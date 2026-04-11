@@ -1,0 +1,359 @@
+{
+  "strategy": "top20_30_100_practical_compare",
+  "config": {
+    "rebalance": "biweekly",
+    "lookback": 16,
+    "entry_gap": 0.005,
+    "exit_gap": 0.0,
+    "hedge_ratios": [
+      1.0,
+      0.9
+    ],
+    "top_n_list": [
+      20,
+      30,
+      100
+    ],
+    "stock_cost_one_side": 0.003
+  },
+  "summary": [
+    {
+      "top_n": 20,
+      "hedge_ratio": 0.9,
+      "annual": 3.448436793839929,
+      "max_dd": -0.1681963251591102,
+      "sharpe": 9.802903582459193,
+      "vol": 0.35177707960020976,
+      "total_return": 28843871218.425255,
+      "entry_days": 105,
+      "exit_days": 105,
+      "entry_exit_cost_sum": 0.63,
+      "rebalance_cost_sum": 0.40349999999999997,
+      "total_cost_sum": 1.0335,
+      "active_days_pct": 0.7666581567526168,
+      "avg_turnover_frac_one_side": 0.19607142857142856
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 1.0,
+      "annual": 3.4165970681218134,
+      "max_dd": -0.17897215103401667,
+      "sharpe": 9.663382153376935,
+      "vol": 0.353561208062941,
+      "total_return": 25686928765.35965,
+      "entry_days": 105,
+      "exit_days": 105,
+      "entry_exit_cost_sum": 0.63,
+      "rebalance_cost_sum": 0.40349999999999997,
+      "total_cost_sum": 1.0335,
+      "active_days_pct": 0.7666581567526168,
+      "avg_turnover_frac_one_side": 0.19607142857142856
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 0.9,
+      "annual": 2.173811065953453,
+      "max_dd": -0.16910526238993215,
+      "sharpe": 8.463557520747488,
+      "vol": 0.25684365712935636,
+      "total_return": 124153744.78407669,
+      "entry_days": 86,
+      "exit_days": 86,
+      "entry_exit_cost_sum": 0.516,
+      "rebalance_cost_sum": 0.36919999999999875,
+      "total_cost_sum": 0.8851999999999989,
+      "active_days_pct": 0.7824865968853715,
+      "avg_turnover_frac_one_side": 0.18087301587301585
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 1.0,
+      "annual": 2.149060419872912,
+      "max_dd": -0.1828019895736136,
+      "sharpe": 8.319453625826176,
+      "vol": 0.25831749493759526,
+      "total_return": 109419103.23949376,
+      "entry_days": 86,
+      "exit_days": 86,
+      "entry_exit_cost_sum": 0.516,
+      "rebalance_cost_sum": 0.36919999999999875,
+      "total_cost_sum": 0.8851999999999989,
+      "active_days_pct": 0.7824865968853715,
+      "avg_turnover_frac_one_side": 0.18087301587301585
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 1.0,
+      "annual": 0.7063491288966837,
+      "max_dd": -0.14826657740737736,
+      "sharpe": 5.227805065339419,
+      "vol": 0.13511389963252646,
+      "total_return": 5556.182825092248,
+      "entry_days": 80,
+      "exit_days": 79,
+      "entry_exit_cost_sum": 0.4770000000000001,
+      "rebalance_cost_sum": 0.24731999999999668,
+      "total_cost_sum": 0.7243199999999967,
+      "active_days_pct": 0.7549144753637989,
+      "avg_turnover_frac_one_side": 0.12835714285714284
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 0.9,
+      "annual": 0.717152430278637,
+      "max_dd": -0.1318378284051457,
+      "sharpe": 5.227749985305715,
+      "vol": 0.13718185305235064,
+      "total_return": 6151.975151908504,
+      "entry_days": 80,
+      "exit_days": 79,
+      "entry_exit_cost_sum": 0.4770000000000001,
+      "rebalance_cost_sum": 0.24731999999999668,
+      "total_cost_sum": 0.7243199999999967,
+      "active_days_pct": 0.7549144753637989,
+      "avg_turnover_frac_one_side": 0.12835714285714284
+    }
+  ],
+  "recent_windows": [
+    {
+      "top_n": 100,
+      "hedge_ratio": 0.9,
+      "window_years": 1,
+      "annual": 0.35534520536389147,
+      "max_dd": -0.07189659074952712,
+      "sharpe": 2.377502067107917
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 1.0,
+      "window_years": 1,
+      "annual": 0.3411925724169165,
+      "max_dd": -0.07030824215509658,
+      "sharpe": 2.3074691295301464
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 0.9,
+      "window_years": 1,
+      "annual": 0.293829230603988,
+      "max_dd": -0.10519213936821813,
+      "sharpe": 1.9302605791322696
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 1.0,
+      "window_years": 1,
+      "annual": 0.2739027473288842,
+      "max_dd": -0.10307984644617393,
+      "sharpe": 1.8133507126648272
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 0.9,
+      "window_years": 1,
+      "annual": 0.13072940883197903,
+      "max_dd": -0.12137978120827174,
+      "sharpe": 0.8011060000888857
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 1.0,
+      "window_years": 1,
+      "annual": 0.11519404124827837,
+      "max_dd": -0.12936128521417728,
+      "sharpe": 0.7118815518332668
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 0.9,
+      "window_years": 2,
+      "annual": 0.31412658612448285,
+      "max_dd": -0.10665876492815266,
+      "sharpe": 2.0016199167210007
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 0.9,
+      "window_years": 2,
+      "annual": 0.3298628864466109,
+      "max_dd": -0.10519213936821831,
+      "sharpe": 1.9802742463085388
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 1.0,
+      "window_years": 2,
+      "annual": 0.3129788445907471,
+      "max_dd": -0.10307984644617423,
+      "sharpe": 1.897010381085589
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 1.0,
+      "window_years": 2,
+      "annual": 0.28910906191923513,
+      "max_dd": -0.10579340513002781,
+      "sharpe": 1.868563413557019
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 0.9,
+      "window_years": 2,
+      "annual": 0.3077554466622159,
+      "max_dd": -0.12137978120827235,
+      "sharpe": 1.7018661792276875
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 1.0,
+      "window_years": 2,
+      "annual": 0.28685329474391885,
+      "max_dd": -0.12936128521417734,
+      "sharpe": 1.6036326258058913
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 0.9,
+      "window_years": 3,
+      "annual": 0.3517738554216432,
+      "max_dd": -0.1153001809605682,
+      "sharpe": 2.2890724592908027
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 1.0,
+      "window_years": 3,
+      "annual": 0.3458164805073025,
+      "max_dd": -0.10782446369384277,
+      "sharpe": 2.258285984456089
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 0.9,
+      "window_years": 3,
+      "annual": 0.3203407502566811,
+      "max_dd": -0.10665876492815247,
+      "sharpe": 2.2002967568991525
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 1.0,
+      "window_years": 3,
+      "annual": 0.3097497703561696,
+      "max_dd": -0.10579340513002804,
+      "sharpe": 2.1436360165015778
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 0.9,
+      "window_years": 3,
+      "annual": 0.32818430584230707,
+      "max_dd": -0.12137978120827242,
+      "sharpe": 1.980876395731396
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 1.0,
+      "window_years": 3,
+      "annual": 0.3195990486979947,
+      "max_dd": -0.12936128521417742,
+      "sharpe": 1.936067689899705
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 0.9,
+      "window_years": 4,
+      "annual": 0.28202454175386715,
+      "max_dd": -0.1180606718689727,
+      "sharpe": 1.9972617981406946
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 0.9,
+      "window_years": 4,
+      "annual": 0.295738762568613,
+      "max_dd": -0.1153001809605686,
+      "sharpe": 1.973607310574272
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 1.0,
+      "window_years": 4,
+      "annual": 0.27810712692222084,
+      "max_dd": -0.11949724947328215,
+      "sharpe": 1.9729303474790432
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 1.0,
+      "window_years": 4,
+      "annual": 0.2946599848835725,
+      "max_dd": -0.11963839297376035,
+      "sharpe": 1.9634049926867072
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 0.9,
+      "window_years": 4,
+      "annual": 0.2674667709925531,
+      "max_dd": -0.12137978120827271,
+      "sharpe": 1.6816413620259079
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 1.0,
+      "window_years": 4,
+      "annual": 0.2636069557225107,
+      "max_dd": -0.129361285214177,
+      "sharpe": 1.6534213195318128
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 0.9,
+      "window_years": 5,
+      "annual": 0.3084618538190962,
+      "max_dd": -0.11530018096056809,
+      "sharpe": 2.019843259555475
+    },
+    {
+      "top_n": 30,
+      "hedge_ratio": 1.0,
+      "window_years": 5,
+      "annual": 0.3041667368355645,
+      "max_dd": -0.11963839297376046,
+      "sharpe": 1.9720234175076536
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 0.9,
+      "window_years": 5,
+      "annual": 0.26339841834254707,
+      "max_dd": -0.13183782840514602,
+      "sharpe": 1.8360461979673401
+    },
+    {
+      "top_n": 100,
+      "hedge_ratio": 1.0,
+      "window_years": 5,
+      "annual": 0.25812504471942543,
+      "max_dd": -0.1482665774073777,
+      "sharpe": 1.7871015359385178
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 0.9,
+      "window_years": 5,
+      "annual": 0.2843806732946452,
+      "max_dd": -0.12137978120827259,
+      "sharpe": 1.760189517545687
+    },
+    {
+      "top_n": 20,
+      "hedge_ratio": 1.0,
+      "window_years": 5,
+      "annual": 0.2782406085029028,
+      "max_dd": -0.12936128521417728,
+      "sharpe": 1.7045783196273196
+    }
+  ]
+}

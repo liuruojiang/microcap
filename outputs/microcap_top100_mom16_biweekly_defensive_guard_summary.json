@@ -1,0 +1,106 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_defensive_guard",
+  "base_strategy": "top100_microcap_biweekly_thursday_mom16_zz1000_hedge",
+  "guard_definition": {
+    "source_logic": "adapted from JSG defensive-sector filter",
+    "breadth_proxy": "industry_etf_close / MA20 - 1",
+    "top_n": 1,
+    "trigger": "top industry is defensive and score > 0",
+    "defensive_etfs": {
+      "1.512800": "银行",
+      "1.515220": "煤炭",
+      "1.515210": "钢铁"
+    },
+    "original_missing_sector": [
+      "采掘I"
+    ]
+  },
+  "sample": {
+    "start_date": "2005-01-26",
+    "end_date": "2026-03-18",
+    "rows": 5133
+  },
+  "guard_stats": {
+    "guard_days": 387,
+    "guard_days_pct": 0.07539450613676213,
+    "base_signal_blocked_days": 330,
+    "top_guard_industries": {
+      "煤炭": 201,
+      "银行": 143,
+      "钢铁": 43
+    }
+  },
+  "performance": {
+    "baseline": {
+      "full_sample": {
+        "start_date": "2005-01-26",
+        "end_date": "2026-03-18",
+        "annual_pct": 48.29324125473489,
+        "max_drawdown_pct": -52.619153439390175,
+        "sharpe": 2.681512107620136,
+        "total_return_pct": 414209.7246582316
+      },
+      "last_5_years": {
+        "start_date": "2021-03-18",
+        "end_date": "2026-03-18",
+        "annual_pct": 25.19161397286178,
+        "max_drawdown_pct": -14.935753985777737,
+        "sharpe": 1.719291369692659,
+        "total_return_pct": 207.474713415254
+      },
+      "last_10_years": {
+        "start_date": "2016-03-18",
+        "end_date": "2026-03-18",
+        "annual_pct": 57.40607972722873,
+        "max_drawdown_pct": -14.93575398577773,
+        "sharpe": 4.379689864873138,
+        "total_return_pct": 9231.36805829527
+      }
+    },
+    "with_defensive_guard": {
+      "full_sample": {
+        "start_date": "2005-01-26",
+        "end_date": "2026-03-18",
+        "annual_pct": 42.96501236624404,
+        "max_drawdown_pct": -52.619153439390175,
+        "sharpe": 2.449820192145315,
+        "total_return_pct": 191058.50852181896
+      },
+      "last_5_years": {
+        "start_date": "2021-03-18",
+        "end_date": "2026-03-18",
+        "annual_pct": 10.032000704849331,
+        "max_drawdown_pct": -19.67109840608759,
+        "sharpe": 0.8065001550267401,
+        "total_return_pct": 61.27484407802979
+      },
+      "last_10_years": {
+        "start_date": "2016-03-18",
+        "end_date": "2026-03-18",
+        "annual_pct": 45.68799084883659,
+        "max_drawdown_pct": -19.671098406087587,
+        "sharpe": 3.909575425022027,
+        "total_return_pct": 4205.403166588266
+      }
+    }
+  },
+  "latest_signal": {
+    "signal_date": "2026-03-18",
+    "current_holding": "cash",
+    "next_holding": "cash",
+    "trade_state": "hold",
+    "base_signal_on": true,
+    "guard_on": true,
+    "guard_top_name": "银行",
+    "guard_top_score": 0.022176905429518223,
+    "microcap_mom": -0.02368906555355821,
+    "hedge_mom": -0.024480196439178425,
+    "momentum_gap": 0.000791130885620217
+  },
+  "files": {
+    "nav_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_defensive_guard_nav.csv",
+    "latest_signal_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_defensive_guard_latest_signal.csv",
+    "summary_json": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_defensive_guard_summary.json",
+    "compare_json": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_defensive_guard_compare.json"
+  }
+}

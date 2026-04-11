@@ -1,0 +1,458 @@
+{
+  "strategy_family": "industry_etf_neutral_ratio_abs60_weekly_topn",
+  "compare": [
+    {
+      "variant": "top1",
+      "annual": 0.12589284662475175,
+      "vol": 0.3421683750174148,
+      "sharpe": 0.3679265993484768,
+      "max_dd": -0.609125545777054,
+      "signal_changes": 112,
+      "median_holding_spell": 10.0
+    },
+    {
+      "variant": "top2",
+      "annual": 0.05727980854230452,
+      "vol": 0.2378143051173692,
+      "sharpe": 0.2408593903299259,
+      "max_dd": -0.44610612761876445,
+      "signal_changes": 250,
+      "median_holding_spell": 5.0
+    },
+    {
+      "variant": "top3",
+      "annual": 0.07080470105182446,
+      "vol": 0.19474177302457205,
+      "sharpe": 0.36358250185434277,
+      "max_dd": -0.32300494567315957,
+      "signal_changes": 323,
+      "median_holding_spell": 5.0
+    }
+  ],
+  "variants": {
+    "top1": {
+      "strategy": "industry_etf_neutral_ratio_abs60_weekly_top1",
+      "signal_mode": "60d absolute momentum on ETF / 中证500 ratio, weekly rebalance, top1 equal weight",
+      "top_n": 1,
+      "hedge_proxy": {
+        "secid": "1.000905",
+        "name": "中证500价格指数"
+      },
+      "trade_cost_per_leg": 0.0,
+      "lookback": 60,
+      "rebalance": "weekly",
+      "min_active_etfs": 5,
+      "start_date": "2017-11-03",
+      "end_date": "2026-03-27",
+      "n_days": 2037,
+      "annual": 0.12589284662475175,
+      "vol": 0.3421683750174148,
+      "sharpe": 0.3679265993484768,
+      "max_dd": -0.609125545777054,
+      "calmar": 0.20667799519744617,
+      "win_rate": 0.504950495049505,
+      "total_return": 1.705697379621209,
+      "signal_changes": 112,
+      "rebalance_days": 415,
+      "long_days_pct": 0.9685812469317624,
+      "cash_days_pct": 0.031418753068237604,
+      "unique_etfs_used": [
+        "传媒",
+        "光伏",
+        "军工",
+        "化工",
+        "医疗",
+        "医药",
+        "半导体/芯片",
+        "房地产",
+        "新能源",
+        "有色金属",
+        "机器人/中游制造",
+        "消费",
+        "煤炭",
+        "证券",
+        "通信",
+        "酒",
+        "钢铁",
+        "银行",
+        "食品饮料"
+      ],
+      "median_holding_spell": 10.0,
+      "current_signal": {
+        "date": "2026-03-27",
+        "target": [
+          "1.515220"
+        ],
+        "target_name": [
+          "煤炭"
+        ],
+        "hedge": "中证500价格指数",
+        "top10": [
+          {
+            "secid": "1.515220",
+            "name": "煤炭",
+            "score": 0.14827076596744138,
+            "selected": true
+          },
+          {
+            "secid": "1.515790",
+            "name": "光伏",
+            "score": 0.09285296513767793,
+            "selected": false
+          },
+          {
+            "secid": "0.159870",
+            "name": "化工",
+            "score": 0.05524150756878554,
+            "selected": false
+          },
+          {
+            "secid": "1.516160",
+            "name": "新能源",
+            "score": 0.049501401561801384,
+            "selected": false
+          },
+          {
+            "secid": "1.512400",
+            "name": "有色金属",
+            "score": -0.0031145212861530824,
+            "selected": false
+          },
+          {
+            "secid": "1.515080",
+            "name": "红利策略",
+            "score": -0.010277444474825703,
+            "selected": false
+          },
+          {
+            "secid": "1.515880",
+            "name": "通信",
+            "score": -0.02188130632509855,
+            "selected": false
+          },
+          {
+            "secid": "1.512660",
+            "name": "军工",
+            "score": -0.022151458699878113,
+            "selected": false
+          },
+          {
+            "secid": "1.512980",
+            "name": "传媒",
+            "score": -0.037717214197924065,
+            "selected": false
+          },
+          {
+            "secid": "1.515210",
+            "name": "钢铁",
+            "score": -0.04555896321884867,
+            "selected": false
+          }
+        ]
+      },
+      "latest_close": {
+        "煤炭": 1.277,
+        "hedge_index": 7737.61
+      },
+      "yearly": {
+        "2017": 0.0,
+        "2018": 0.10939644339610677,
+        "2019": 0.5711154209114462,
+        "2020": 1.2756887087209798,
+        "2021": -0.49747328177416583,
+        "2022": -0.008549461606458197,
+        "2023": 0.15417158899066097,
+        "2024": -0.019841392887219977,
+        "2025": 0.2743413621586177,
+        "2026": -0.05029488160559159
+      }
+    },
+    "top2": {
+      "strategy": "industry_etf_neutral_ratio_abs60_weekly_top2",
+      "signal_mode": "60d absolute momentum on ETF / 中证500 ratio, weekly rebalance, top2 equal weight",
+      "top_n": 2,
+      "hedge_proxy": {
+        "secid": "1.000905",
+        "name": "中证500价格指数"
+      },
+      "trade_cost_per_leg": 0.0,
+      "lookback": 60,
+      "rebalance": "weekly",
+      "min_active_etfs": 5,
+      "start_date": "2017-11-03",
+      "end_date": "2026-03-27",
+      "n_days": 2037,
+      "annual": 0.05727980854230452,
+      "vol": 0.2378143051173692,
+      "sharpe": 0.2408593903299259,
+      "max_dd": -0.44610612761876445,
+      "calmar": 0.12839951078021278,
+      "win_rate": 0.5247524752475248,
+      "total_return": 0.5960864188780819,
+      "signal_changes": 250,
+      "rebalance_days": 415,
+      "long_days_pct": 0.9685812469317624,
+      "cash_days_pct": 0.031418753068237604,
+      "unique_etfs_used": [
+        "传媒",
+        "光伏",
+        "军工",
+        "化工",
+        "医疗",
+        "医药",
+        "半导体/芯片",
+        "建材",
+        "房地产",
+        "新能源",
+        "有色金属",
+        "机器人/中游制造",
+        "消费",
+        "煤炭",
+        "红利策略",
+        "证券",
+        "通信",
+        "酒",
+        "钢铁",
+        "银行",
+        "食品饮料"
+      ],
+      "median_holding_spell": 5.0,
+      "current_signal": {
+        "date": "2026-03-27",
+        "target": [
+          "1.515220",
+          "1.515790"
+        ],
+        "target_name": [
+          "煤炭",
+          "光伏"
+        ],
+        "hedge": "中证500价格指数",
+        "top10": [
+          {
+            "secid": "1.515220",
+            "name": "煤炭",
+            "score": 0.14827076596744138,
+            "selected": true
+          },
+          {
+            "secid": "1.515790",
+            "name": "光伏",
+            "score": 0.09285296513767793,
+            "selected": true
+          },
+          {
+            "secid": "0.159870",
+            "name": "化工",
+            "score": 0.05524150756878554,
+            "selected": false
+          },
+          {
+            "secid": "1.516160",
+            "name": "新能源",
+            "score": 0.049501401561801384,
+            "selected": false
+          },
+          {
+            "secid": "1.512400",
+            "name": "有色金属",
+            "score": -0.0031145212861530824,
+            "selected": false
+          },
+          {
+            "secid": "1.515080",
+            "name": "红利策略",
+            "score": -0.010277444474825703,
+            "selected": false
+          },
+          {
+            "secid": "1.515880",
+            "name": "通信",
+            "score": -0.02188130632509855,
+            "selected": false
+          },
+          {
+            "secid": "1.512660",
+            "name": "军工",
+            "score": -0.022151458699878113,
+            "selected": false
+          },
+          {
+            "secid": "1.512980",
+            "name": "传媒",
+            "score": -0.037717214197924065,
+            "selected": false
+          },
+          {
+            "secid": "1.515210",
+            "name": "钢铁",
+            "score": -0.04555896321884867,
+            "selected": false
+          }
+        ]
+      },
+      "latest_close": {
+        "煤炭": 1.277,
+        "光伏": 1.107,
+        "hedge_index": 7737.61
+      },
+      "yearly": {
+        "2017": 0.0,
+        "2018": 0.02759715115070116,
+        "2019": 0.22551302832283748,
+        "2020": 0.6577755071312401,
+        "2021": -0.20478124421842225,
+        "2022": -0.12299922192859869,
+        "2023": 0.12890591547910613,
+        "2024": 0.06583823710204384,
+        "2025": 0.06834751150735863,
+        "2026": -0.14721082719076484
+      }
+    },
+    "top3": {
+      "strategy": "industry_etf_neutral_ratio_abs60_weekly_top3",
+      "signal_mode": "60d absolute momentum on ETF / 中证500 ratio, weekly rebalance, top3 equal weight",
+      "top_n": 3,
+      "hedge_proxy": {
+        "secid": "1.000905",
+        "name": "中证500价格指数"
+      },
+      "trade_cost_per_leg": 0.0,
+      "lookback": 60,
+      "rebalance": "weekly",
+      "min_active_etfs": 5,
+      "start_date": "2017-11-03",
+      "end_date": "2026-03-27",
+      "n_days": 2037,
+      "annual": 0.07080470105182446,
+      "vol": 0.19474177302457205,
+      "sharpe": 0.36358250185434277,
+      "max_dd": -0.32300494567315957,
+      "calmar": 0.21920624436342198,
+      "win_rate": 0.5841584158415841,
+      "total_return": 0.7758056856752096,
+      "signal_changes": 323,
+      "rebalance_days": 415,
+      "long_days_pct": 0.9685812469317624,
+      "cash_days_pct": 0.031418753068237604,
+      "unique_etfs_used": [
+        "传媒",
+        "光伏",
+        "军工",
+        "化工",
+        "医疗",
+        "医药",
+        "半导体/芯片",
+        "建材",
+        "房地产",
+        "新能源",
+        "有色金属",
+        "机器人/中游制造",
+        "消费",
+        "煤炭",
+        "红利策略",
+        "证券",
+        "通信",
+        "酒",
+        "钢铁",
+        "银行",
+        "食品饮料"
+      ],
+      "median_holding_spell": 5.0,
+      "current_signal": {
+        "date": "2026-03-27",
+        "target": [
+          "1.515220",
+          "1.515790",
+          "1.516160"
+        ],
+        "target_name": [
+          "煤炭",
+          "光伏",
+          "新能源"
+        ],
+        "hedge": "中证500价格指数",
+        "top10": [
+          {
+            "secid": "1.515220",
+            "name": "煤炭",
+            "score": 0.14827076596744138,
+            "selected": true
+          },
+          {
+            "secid": "1.515790",
+            "name": "光伏",
+            "score": 0.09285296513767793,
+            "selected": true
+          },
+          {
+            "secid": "0.159870",
+            "name": "化工",
+            "score": 0.05524150756878554,
+            "selected": false
+          },
+          {
+            "secid": "1.516160",
+            "name": "新能源",
+            "score": 0.049501401561801384,
+            "selected": true
+          },
+          {
+            "secid": "1.512400",
+            "name": "有色金属",
+            "score": -0.0031145212861530824,
+            "selected": false
+          },
+          {
+            "secid": "1.515080",
+            "name": "红利策略",
+            "score": -0.010277444474825703,
+            "selected": false
+          },
+          {
+            "secid": "1.515880",
+            "name": "通信",
+            "score": -0.02188130632509855,
+            "selected": false
+          },
+          {
+            "secid": "1.512660",
+            "name": "军工",
+            "score": -0.022151458699878113,
+            "selected": false
+          },
+          {
+            "secid": "1.512980",
+            "name": "传媒",
+            "score": -0.037717214197924065,
+            "selected": false
+          },
+          {
+            "secid": "1.515210",
+            "name": "钢铁",
+            "score": -0.04555896321884867,
+            "selected": false
+          }
+        ]
+      },
+      "latest_close": {
+        "煤炭": 1.277,
+        "光伏": 1.107,
+        "新能源": 3.168,
+        "hedge_index": 7737.61
+      },
+      "yearly": {
+        "2017": 0.0,
+        "2018": 0.07591721366040227,
+        "2019": 0.19804657363955025,
+        "2020": 0.6110122862305354,
+        "2021": -0.16800332218228364,
+        "2022": -0.06307429305271828,
+        "2023": 0.08815300538414217,
+        "2024": 0.057086943419607294,
+        "2025": 0.03570432530666845,
+        "2026": -0.07916711490570394
+      }
+    }
+  }
+}

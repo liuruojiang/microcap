@@ -1,0 +1,123 @@
+{
+  "input_nav_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
+  "latest_date": "2026-04-09",
+  "logic_notes": {
+    "signal_timing": "uses prior close drawdown to set next session scale",
+    "rerisking": "no daily step-up; once drawdown recovers inside recover_dd, restore to full immediately on next session",
+    "trimmed_capital_return": 0.0,
+    "rebal_cost_bps_per_unit_turnover": 2.0
+  },
+  "baseline_v1_1": {
+    "annual_return": 0.2433337719771982,
+    "annual_vol": 0.106314725256332,
+    "sharpe": 2.288805914613465,
+    "max_drawdown": -0.14348637804826792,
+    "total_return": 32.92309846673537,
+    "start": "2010-02-02",
+    "end": "2026-04-09",
+    "days": 3928
+  },
+  "reference_config": {
+    "config": {
+      "dd_moderate": 0.03,
+      "dd_severe": 0.06,
+      "scale_moderate": 0.85,
+      "scale_severe": 0.7,
+      "recover_dd": 0.03,
+      "rebal_cost_bps": 2.0
+    },
+    "performance": {
+      "annual_return": 0.23028874472874228,
+      "annual_vol": 0.09753440619117526,
+      "sharpe": 2.3611026479964194,
+      "max_drawdown": -0.1196295522669103,
+      "total_return": 27.60071708513781,
+      "start": "2010-02-02",
+      "end": "2026-04-09",
+      "days": 3928
+    },
+    "throttle": {
+      "avg_scale": 0.9105651731160894,
+      "median_scale": 1.0,
+      "min_scale": 0.7,
+      "share_below_1": 0.4254073319755601,
+      "share_at_severe_scale": 0.17082484725050917,
+      "avg_turnover": 0.007408350305498983,
+      "annualized_turnover": 1.8669042769857438,
+      "moderate_or_worse_share": 0.4254073319755601,
+      "severe_share": 0.17082484725050917,
+      "recovery_band_share": 0.0,
+      "n_scale_changes": 193
+    },
+    "scan_rank_by_sharpe": 11
+  },
+  "best_scan_config": {
+    "config": {
+      "dd_moderate": 0.03,
+      "dd_severe": 0.08,
+      "scale_moderate": 0.85,
+      "scale_severe": 0.65,
+      "recover_dd": 0.03,
+      "rebal_cost_bps": 2.0
+    },
+    "label": "dd3_8_sc85_65_rec3",
+    "performance": {
+      "annual_return": 0.23360673505920926,
+      "annual_vol": 0.0985126215060027,
+      "sharpe": 2.371338123866441,
+      "max_drawdown": -0.12383715447651844,
+      "total_return": 28.874674070531217,
+      "start": "2010-02-02",
+      "end": "2026-04-09",
+      "days": 3928
+    },
+    "throttle": {
+      "avg_scale": 0.9217031568228106,
+      "median_scale": 1.0,
+      "min_scale": 0.65,
+      "share_below_1": 0.4238798370672098,
+      "share_at_severe_scale": 0.07357433808553972,
+      "avg_turnover": 0.006682790224032588,
+      "annualized_turnover": 1.6840631364562122,
+      "moderate_or_worse_share": 0.4238798370672098,
+      "severe_share": 0.07357433808553972,
+      "recovery_band_share": 0.0,
+      "n_scale_changes": 164
+    }
+  },
+  "scan_grid": {
+    "dd_moderate": [
+      0.03,
+      0.04,
+      0.05
+    ],
+    "dd_severe": [
+      0.06,
+      0.08,
+      0.1
+    ],
+    "scale_moderate": [
+      0.85,
+      0.9,
+      0.95
+    ],
+    "scale_severe": [
+      0.65,
+      0.7,
+      0.75,
+      0.8
+    ],
+    "recover_dd": [
+      0.02,
+      0.03
+    ],
+    "n_configs": 216
+  },
+  "artifacts": {
+    "scan_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_scan.csv",
+    "top_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_top20.csv",
+    "windows_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_windows.csv",
+    "plot_png": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_recent10y_compare.png",
+    "rebased_nav_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_v1_1_nav_throttle_practical_recent10y_rebased_nav.csv"
+  }
+}

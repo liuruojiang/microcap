@@ -1,0 +1,17 @@
+{
+  "meta_version": 2,
+  "symbol": "600831",
+  "first_trade_date": "2010-01-04",
+  "last_trade_date": "2026-04-10",
+  "list_date": "1994-02-24",
+  "delist_date": null,
+  "exchange": "SSE",
+  "board": "主板",
+  "st_intervals": [
+    {
+      "start": "2024-07-06",
+      "end": "2025-11-07",
+      "source": "cninfo_notice"
+    }
+  ]
+}

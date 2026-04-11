@@ -1,0 +1,9 @@
+{
+  "start_date": "2025-01-01",
+  "end_date": "2026-04-10",
+  "symbols_total": 504,
+  "success_count": 504,
+  "error_count": 0,
+  "cache_dir": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\prices_qfq",
+  "report_csv": "outputs\\qfq_cache_fill_recent_candidates_20260410.csv"
+}

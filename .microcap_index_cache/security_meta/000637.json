@@ -1,0 +1,17 @@
+{
+  "meta_version": 2,
+  "symbol": "000637",
+  "first_trade_date": "2010-01-04",
+  "last_trade_date": "2026-04-10",
+  "list_date": "1996-11-14",
+  "delist_date": null,
+  "exchange": "SZSE",
+  "board": "主板",
+  "st_intervals": [
+    {
+      "start": "2023-04-29",
+      "end": "2024-06-12",
+      "source": "cninfo_notice|name_change"
+    }
+  ]
+}

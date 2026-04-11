@@ -1,0 +1,198 @@
+{
+  "period_label": "全样本",
+  "source": "costed",
+  "query_text": "表现",
+  "start_date": "2010-02-02",
+  "end_date": "2026-04-09",
+  "summary": {
+    "period_label": "全样本",
+    "source": "costed",
+    "start_date": "2010-02-02",
+    "end_date": "2026-04-09",
+    "days": 3928,
+    "final_nav": 28.435089021027487,
+    "total_return_pct": 2743.508902102749,
+    "annual_pct": 22.9847225713246,
+    "max_drawdown_pct": -14.728587821533132,
+    "sharpe": 2.198408902379939,
+    "vol_pct": 10.455162616218463
+  },
+  "yearly": [
+    {
+      "year": "2010",
+      "start_date": "2010-02-02",
+      "end_date": "2010-12-31",
+      "days": 221,
+      "return_pct": 0.09670920517568238,
+      "max_drawdown_pct": -8.307551961088787,
+      "sharpe": 0.0179219481857165,
+      "annual_pct": 0.10639984125964119
+    },
+    {
+      "year": "2011",
+      "start_date": "2011-01-04",
+      "end_date": "2011-12-30",
+      "days": 244,
+      "return_pct": 8.345937673454017,
+      "max_drawdown_pct": -7.71567736797325,
+      "sharpe": 1.4295982047461648,
+      "annual_pct": 8.4726666291993
+    },
+    {
+      "year": "2012",
+      "start_date": "2012-01-04",
+      "end_date": "2012-12-31",
+      "days": 243,
+      "return_pct": 2.186302483361935,
+      "max_drawdown_pct": -5.086626330527144,
+      "sharpe": 0.3944484193932978,
+      "annual_pct": 2.2061458373929366
+    },
+    {
+      "year": "2013",
+      "start_date": "2013-01-04",
+      "end_date": "2013-12-31",
+      "days": 238,
+      "return_pct": 4.893519245239353,
+      "max_drawdown_pct": -9.184209161953383,
+      "sharpe": 0.8059887939175596,
+      "annual_pct": 4.952533672380466
+    },
+    {
+      "year": "2014",
+      "start_date": "2014-01-02",
+      "end_date": "2014-12-31",
+      "days": 245,
+      "return_pct": 25.4347485146333,
+      "max_drawdown_pct": -4.06882967443567,
+      "sharpe": 4.182060275200833,
+      "annual_pct": 25.611063176085437
+    },
+    {
+      "year": "2015",
+      "start_date": "2015-01-05",
+      "end_date": "2015-12-31",
+      "days": 244,
+      "return_pct": 74.7267520892236,
+      "max_drawdown_pct": -6.853913173690884,
+      "sharpe": 7.886215546422479,
+      "annual_pct": 76.15452840631562
+    },
+    {
+      "year": "2016",
+      "start_date": "2016-01-04",
+      "end_date": "2016-12-30",
+      "days": 244,
+      "return_pct": 66.97169482774284,
+      "max_drawdown_pct": -4.362730903518786,
+      "sharpe": 11.148341869240767,
+      "annual_pct": 67.98248326574469
+    },
+    {
+      "year": "2017",
+      "start_date": "2017-01-03",
+      "end_date": "2017-12-29",
+      "days": 244,
+      "return_pct": 9.335065298923961,
+      "max_drawdown_pct": -10.149220763230616,
+      "sharpe": 1.0543394319652242,
+      "annual_pct": 9.477459540445166
+    },
+    {
+      "year": "2018",
+      "start_date": "2018-01-02",
+      "end_date": "2018-12-28",
+      "days": 244,
+      "return_pct": 32.51339491043321,
+      "max_drawdown_pct": -5.668399026012816,
+      "sharpe": 3.694845420049262,
+      "annual_pct": 33.05853442865172
+    },
+    {
+      "year": "2019",
+      "start_date": "2019-01-02",
+      "end_date": "2019-12-31",
+      "days": 244,
+      "return_pct": 13.072252916525361,
+      "max_drawdown_pct": -5.302071978150924,
+      "sharpe": 1.9001951252154883,
+      "annual_pct": 13.158391282814375
+    },
+    {
+      "year": "2020",
+      "start_date": "2020-01-02",
+      "end_date": "2020-12-31",
+      "days": 243,
+      "return_pct": 26.069602395421665,
+      "max_drawdown_pct": -5.901863108297656,
+      "sharpe": 2.821977266254919,
+      "annual_pct": 26.16993688989091
+    },
+    {
+      "year": "2021",
+      "start_date": "2021-01-04",
+      "end_date": "2021-12-31",
+      "days": 243,
+      "return_pct": 6.671650294891918,
+      "max_drawdown_pct": -14.72858782153319,
+      "sharpe": 0.4953859374596072,
+      "annual_pct": 6.752789201182607
+    },
+    {
+      "year": "2022",
+      "start_date": "2022-01-04",
+      "end_date": "2022-12-30",
+      "days": 242,
+      "return_pct": 37.07612003001479,
+      "max_drawdown_pct": -14.22489926053635,
+      "sharpe": 2.3463450000141997,
+      "annual_pct": 37.70799742929156
+    },
+    {
+      "year": "2023",
+      "start_date": "2023-01-03",
+      "end_date": "2023-12-29",
+      "days": 242,
+      "return_pct": 49.88555877793277,
+      "max_drawdown_pct": -3.709239745681414,
+      "sharpe": 4.457144298589391,
+      "annual_pct": 50.77278429336527
+    },
+    {
+      "year": "2024",
+      "start_date": "2024-01-02",
+      "end_date": "2024-12-31",
+      "days": 242,
+      "return_pct": 9.847932752709854,
+      "max_drawdown_pct": -8.997838566709394,
+      "sharpe": 0.6118848408518228,
+      "annual_pct": 9.883370006481984
+    },
+    {
+      "year": "2025",
+      "start_date": "2025-01-02",
+      "end_date": "2025-12-31",
+      "days": 243,
+      "return_pct": 38.539636614402625,
+      "max_drawdown_pct": -8.728559829400451,
+      "sharpe": 2.6531365135931146,
+      "annual_pct": 38.81984949874537
+    },
+    {
+      "year": "2026",
+      "start_date": "2026-01-05",
+      "end_date": "2026-04-09",
+      "days": 62,
+      "return_pct": -2.9627507364243355,
+      "max_drawdown_pct": -12.765147680871236,
+      "sharpe": -0.5338852318994181,
+      "annual_pct": -11.0291692029448
+    }
+  ],
+  "files": {
+    "summary_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_performance_summary.csv",
+    "yearly_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_performance_yearly.csv",
+    "nav_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_performance_nav.csv",
+    "chart_png": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_performance_curve.png"
+  }
+}

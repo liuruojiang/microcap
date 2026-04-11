@@ -1,0 +1,34 @@
+{
+  "summary": {
+    "start": "2010-10-18",
+    "end": "2026-03-27",
+    "holding": "BIL",
+    "nav": 41.381807303276005,
+    "total_return": 40.381807303276005,
+    "annual_return": 0.2634391570488417,
+    "annual_vol": 0.2587708600985353,
+    "sharpe": 1.0180402729601348,
+    "max_drawdown": -0.4220844469532141,
+    "calmar": 0.6241385081835118,
+    "monthly_win_rate": 0.5913978494623656,
+    "months": 186
+  },
+  "sources": {
+    "QQQ": "Yahoo",
+    "GLD": "Yahoo",
+    "TLT": "Yahoo",
+    "BIL": "Yahoo",
+    "CN_CHINEXT_TR": "CNINDEX:399606",
+    "CN_DIVLOWVOL_TR": "CSINDEX:H30269"
+  },
+  "assumptions": {
+    "chinext_candidates": [
+      "399606"
+    ],
+    "divlowvol_candidates": [
+      "H30269",
+      "H20955"
+    ],
+    "cash_asset": "BIL"
+  }
+}
