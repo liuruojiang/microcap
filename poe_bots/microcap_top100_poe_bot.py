@@ -1,8 +1,8 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# poe: name=Microcap-Top100-Signal-Autorebuild
+# poe: name=Microcap-Top100-POE-Bot
 # poe: privacy_shield=half
-"""Single-file auto-rebuild POE bot for Top100 microcap queries."""
+"""Primary POE bot entry for Top100 microcap queries."""
 
 import base64
 import contextlib
