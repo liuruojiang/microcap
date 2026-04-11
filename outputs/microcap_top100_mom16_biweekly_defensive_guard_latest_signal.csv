@@ -1,2 +1,0 @@
-signal_date,current_holding,next_holding,trade_state,base_signal_on,guard_on,guard_top_name,guard_top_score,microcap_mom,hedge_mom,momentum_gap
-2026-03-18,cash,cash,hold,True,True,银行,0.022176905429518223,-0.02368906555355821,-0.024480196439178425,0.000791130885620217

@@ -1,8 +1,0 @@
-{
-  "start_date": "2022-11-01",
-  "end_date": "2026-04-10",
-  "symbols_total": 215,
-  "success_count": 215,
-  "error_count": 0,
-  "report_csv": "outputs\\qfq_cache_force_backfill_still_short_20260411.csv"
-}

@@ -1,2 +1,0 @@
-date,signal_label,next_holding,microcap_close,hedge_close,microcap_mom,hedge_mom,momentum_gap,ratio_bias_mom,ratio_r2,weight,futures_drag
-2026-04-09,cash,cash,396176.9142928679,8096.59,-0.07800552180551468,-0.0319171450332576,-0.04608837677225708,-5.701912028462763,0.2803585686010956,1.0,0.0

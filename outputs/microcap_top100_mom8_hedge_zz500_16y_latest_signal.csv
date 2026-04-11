@@ -1,2 +1,0 @@
-date,signal_label,next_holding,microcap_close,hedge_close,microcap_mom,hedge_mom,momentum_gap,ratio_bias_mom,ratio_r2,weight,futures_drag
-2026-03-18,long_microcap_short_zz1000,long_microcap_short_zz1000,3943170.509712001,8096.43,-0.006292353578628784,-0.03156573962989495,0.025273386051266167,19.826703754038597,0.7270505357144447,1.0,0.0003

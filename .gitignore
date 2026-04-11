@@ -1,0 +1,36 @@
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.python-version
+.venv/
+venv/
+env/
+ENV/
+
+# Test and lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Local backup and sandbox directories
+.codex_backups/
+_tmp_test_cache/
+_poe_cold_start_test/outputs/
+_poe_sandbox_clean/
+
+# Project caches and generated outputs
+.autobuild_top100_cache/
+.microcap_index_cache/
+.microcap_ohlc_cache/
+outputs/
