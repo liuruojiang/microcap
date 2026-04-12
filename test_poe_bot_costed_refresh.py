@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import base64
 import shutil
 import unittest
+import zlib
 from pathlib import Path
 from unittest.mock import patch
 
@@ -132,6 +134,45 @@ class PoeBotCostedRefreshTests(unittest.TestCase):
         self.assertEqual(nav_col, "nav")
         self.assertEqual(Path(source_path), gross_path)
         self.assertAlmostEqual(float(perf_df.iloc[-1]["nav"]), 1.0302, places=10)
+
+    def test_load_performance_source_prefers_local_files_over_stale_embedded_payload(self) -> None:
+        gross_path = self.work_dir / "live_nav.csv"
+        turnover_path = self.work_dir / "proxy_turnover.csv"
+
+        pd.DataFrame(
+            {
+                "date": ["2026-04-09", "2026-04-10"],
+                "return": [0.0, 0.0],
+                "nav": [1.0, 1.0],
+            }
+        ).to_csv(gross_path, index=False, encoding="utf-8")
+
+        embedded_df = pd.DataFrame(
+            {
+                "date": ["2026-04-09", "2026-04-10"],
+                "return_net": [0.0, -0.02],
+                "nav_net": [1.0, 0.98],
+            }
+        )
+        embedded_b64 = base64.b64encode(
+            zlib.compress(embedded_df.to_csv(index=False).encode("utf-8"))
+        ).decode("ascii")
+
+        strategy = {
+            "performance_costed_nav_csv": self.work_dir / "missing_costed_nav.csv",
+            "performance_live_nav_csv": gross_path,
+            "performance_proxy_turnover_csv": turnover_path,
+            "embedded_performance_b64": embedded_b64,
+        }
+
+        with patch.object(bot, "get_strategy", return_value=strategy):
+            perf_df, ret_col, nav_col, source_label, source_path = bot.load_performance_source()
+
+        self.assertEqual(source_label, "gross")
+        self.assertEqual(ret_col, "return")
+        self.assertEqual(nav_col, "nav")
+        self.assertEqual(Path(source_path), gross_path)
+        self.assertAlmostEqual(float(perf_df.iloc[-1]["nav"]), 1.0, places=10)
 
 
 if __name__ == "__main__":
