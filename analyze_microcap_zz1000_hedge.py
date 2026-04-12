@@ -376,6 +376,7 @@ def run_backtest(
     max_lev: float,
     min_lev: float,
     scale_threshold: float,
+    hedge_ratio: float = 1.0,
 ) -> pd.DataFrame:
     work = close_df.copy()
     work["microcap_ret"] = work["microcap"].pct_change(fill_method=None)
@@ -407,7 +408,7 @@ def run_backtest(
             microcap_ret = work["microcap_ret"].iloc[i]
             hedge_ret = work["hedge_ret"].iloc[i]
             if pd.notna(microcap_ret) and pd.notna(hedge_ret):
-                active_ret = float(microcap_ret - hedge_ret)
+                active_ret = float(microcap_ret - hedge_ratio * hedge_ret)
         if signal_model == "bias_momentum":
             signal_on = bool(
                 pd.notna(work["ratio_bias_mom"].iloc[i])

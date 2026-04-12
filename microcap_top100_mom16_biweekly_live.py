@@ -921,6 +921,7 @@ def run_signal(close_df: pd.DataFrame) -> pd.DataFrame:
         max_lev=hedge_mod.DEFAULT_MAX_LEV,
         min_lev=hedge_mod.DEFAULT_MIN_LEV,
         scale_threshold=hedge_mod.DEFAULT_SCALE_THRESHOLD,
+        hedge_ratio=FIXED_HEDGE_RATIO,
     )
     result.index = pd.to_datetime(result.index)
     return result

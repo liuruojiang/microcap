@@ -4,6 +4,8 @@ import json
 import shutil
 from pathlib import Path
 
+import pandas as pd
+
 import microcap_top100_mom16_biweekly_live as base_mod
 
 
@@ -130,6 +132,29 @@ def seed_proxy_bundle_from_v1_0(paths: dict[str, Path]) -> list[Path]:
     return copied
 
 
+def costed_nav_matches_current_hedge_ratio(costed_nav_csv: Path, hedge_ratio: float) -> bool:
+    path = Path(costed_nav_csv)
+    if not path.exists():
+        return False
+    try:
+        frame = pd.read_csv(path)
+    except Exception:
+        return False
+    required = {"holding", "microcap_ret", "hedge_ret", "futures_drag", "return_raw"}
+    if required.difference(frame.columns):
+        return False
+    active = frame.loc[frame["holding"].astype(str) != "cash"].copy()
+    if active.empty:
+        return True
+    for col in ("microcap_ret", "hedge_ret", "futures_drag", "return_raw"):
+        active[col] = pd.to_numeric(active[col], errors="coerce")
+    active = active.dropna(subset=["microcap_ret", "hedge_ret", "futures_drag", "return_raw"])
+    if active.empty:
+        return False
+    expected = active["microcap_ret"] - float(hedge_ratio) * active["hedge_ret"] - active["futures_drag"]
+    return bool((active["return_raw"] - expected).abs().le(1e-10).all())
+
+
 def prepare_current_v1_1_outputs(
     paths: dict[str, Path] | None = None,
     costed_nav_csv: Path | None = None,
@@ -137,6 +162,14 @@ def prepare_current_v1_1_outputs(
     actual_paths = paths if paths is not None else base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
     actual_costed_nav_csv = Path(costed_nav_csv) if costed_nav_csv is not None else base_mod.DEFAULT_COSTED_NAV_CSV
     removed = invalidate_incompatible_outputs(paths=actual_paths, costed_nav_csv=actual_costed_nav_csv)
+    if actual_costed_nav_csv.exists() and not costed_nav_matches_current_hedge_ratio(
+        actual_costed_nav_csv,
+        hedge_ratio=base_mod.FIXED_HEDGE_RATIO,
+    ):
+        actual_costed_nav_csv.unlink(missing_ok=True)
+        removed.append(actual_costed_nav_csv)
+        for key in ("performance_summary", "performance_yearly", "performance_nav", "performance_chart", "performance_json"):
+            actual_paths[key].unlink(missing_ok=True)
     proxy_bundle_missing = any(
         not actual_paths[key].exists() for key in ("proxy_meta", "proxy_members", "proxy_turnover")
     )

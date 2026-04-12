@@ -114,6 +114,24 @@ class V11OutputCompatibilityTests(unittest.TestCase):
         self.assertTrue(paths["nav"].exists())
         self.assertTrue(costed_path.exists())
 
+    def test_costed_nav_matches_current_hedge_ratio_rejects_old_spread_formula(self) -> None:
+        _, costed_path = self._build_paths()
+        pd.DataFrame(
+            [
+                {
+                    "date": "2026-04-10",
+                    "holding": "long_microcap_short_zz1000",
+                    "microcap_ret": 0.01,
+                    "hedge_ret": 0.02,
+                    "futures_drag": 0.00024,
+                    "return_raw": 0.01 - 0.02 - 0.00024,
+                }
+            ]
+        ).to_csv(costed_path, index=False, encoding="utf-8")
+
+        self.assertFalse(v1_1_mod.costed_nav_matches_current_hedge_ratio(costed_path, hedge_ratio=0.8))
+        self.assertTrue(v1_1_mod.costed_nav_matches_current_hedge_ratio(costed_path, hedge_ratio=1.0))
+
     def test_seed_proxy_bundle_from_v1_0_copies_current_mainline_proxy_files(self) -> None:
         paths, _ = self._build_paths()
         source_dir = self.work_dir / "source"
@@ -154,6 +172,18 @@ class V11OutputCompatibilityTests(unittest.TestCase):
 
         seed_mock.assert_called_once_with(paths)
         self.assertEqual(state, {"removed": [], "copied": [paths["proxy_turnover"]]})
+
+    def test_prepare_current_v1_1_outputs_invalidates_costed_nav_when_formula_is_stale(self) -> None:
+        paths, costed_path = self._build_paths()
+        costed_path.write_text("stale", encoding="utf-8")
+
+        with patch.object(v1_1_mod, "invalidate_incompatible_outputs", return_value=[]):
+            with patch.object(v1_1_mod, "costed_nav_matches_current_hedge_ratio", return_value=False):
+                with patch.object(v1_1_mod, "seed_proxy_bundle_from_v1_0", return_value=[]):
+                    state = v1_1_mod.prepare_current_v1_1_outputs(paths=paths, costed_nav_csv=costed_path)
+
+        self.assertFalse(costed_path.exists())
+        self.assertEqual(state["removed"], [costed_path])
 
     def test_refresh_mainline_outputs_prepares_outputs_before_reuse_check(self) -> None:
         args = tools_mod.build_mainline_args()
