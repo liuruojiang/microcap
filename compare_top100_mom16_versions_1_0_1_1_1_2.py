@@ -15,24 +15,24 @@ import validate_top100_versions_consistency as validate_mod
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
-V1_1_COSTED_PATH = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv"
 
 VERSION_CONFIGS = {
     "v1.0": {
+        "script": "microcap_top100_mom16_biweekly_live.py",
         "path": OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
         "return_col": "return_net",
         "nav_col": "nav_net",
         "source": "costed",
     },
     "v1.1": {
-        "refresh_cmd": [sys.executable, "top100_v1_1_mainline_tools.py", "chart"],
+        "script": "microcap_top100_mom16_biweekly_live_v1_1.py",
         "path": OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
         "return_col": "return_net",
         "nav_col": "nav_net",
         "source": "costed",
     },
     "v1.2": {
-        "refresh_cmd": [sys.executable, "microcap_top100_mom16_biweekly_live_v1_2.py"],
+        "script": "microcap_top100_mom16_biweekly_live_v1_2.py",
         "path": OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_nav4_8_biweekly_thursday_16y_costed_nav.csv",
         "return_col": "return_net_v1_2",
         "nav_col": "nav_net_v1_2",
@@ -47,6 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Refresh v1.0/v1.1/v1.2 and build a recent-window costed NAV compare chart.")
     parser.add_argument("--years", type=int, default=2, help="Recent trailing years window to plot.")
     parser.add_argument("--skip-refresh", action="store_true", help="Reuse existing version outputs without refreshing.")
+    parser.add_argument("--run-validation", action="store_true", help="Also run version consistency validation before rendering.")
     return parser.parse_args()
 
 
@@ -77,48 +78,45 @@ def build_v1_0_args(max_workers: int = 8) -> argparse.Namespace:
     )
 
 
-def refresh_v1_1_outputs() -> None:
-    subprocess.run(VERSION_CONFIGS["v1.1"]["refresh_cmd"], cwd=ROOT, check=True)
-
-
-def refresh_v1_0_outputs() -> None:
-    if not V1_1_COSTED_PATH.exists():
-        raise FileNotFoundError(f"Missing v1.1 costed NAV required to rebuild v1.0 costs: {V1_1_COSTED_PATH}")
-
+def detect_target_end_date() -> pd.Timestamp:
     args = build_v1_0_args()
     paths = v1_0_mod.build_output_paths(args.output_prefix)
-    resolved_panel_path, _ = v1_0_mod.build_refreshed_panel_shadow(args, paths)
-    close_df = v1_0_mod.load_close_df(resolved_panel_path, args.index_csv)
-    gross = v1_0_mod.run_signal(close_df).sort_index()
-    gross.to_csv(paths["nav"], index_label="date", encoding="utf-8")
-
-    costed_v1_1 = pd.read_csv(V1_1_COSTED_PATH, parse_dates=["date"]).sort_values("date").set_index("date")
-    cost_cols = ["entry_exit_cost", "rebalance_cost", "total_cost"]
-    missing_cost_cols = [col for col in cost_cols if col not in costed_v1_1.columns]
-    if missing_cost_cols:
-        raise KeyError(f"Missing v1.1 cost columns required for v1.0 rebuild: {missing_cost_cols}")
-
-    aligned_costs = costed_v1_1[cost_cols].reindex(gross.index)
-    if aligned_costs.isna().any().any():
-        missing_dates = aligned_costs.index[aligned_costs.isna().any(axis=1)]
-        raise ValueError(f"v1.1 cost series is missing dates needed for v1.0 rebuild: {list(missing_dates[:5])}")
-
-    out = gross.copy()
-    for col in cost_cols:
-        out[col] = aligned_costs[col].astype(float)
-    out["return_net"] = (1.0 + out["return"]) * (1.0 - out["total_cost"]) - 1.0
-    out["nav_net"] = (1.0 + out["return_net"]).cumprod()
-    out.to_csv(VERSION_CONFIGS["v1.0"]["path"], index_label="date", encoding="utf-8")
+    _, target_end_date = v1_0_mod.build_refreshed_panel_shadow(args, paths)
+    return pd.Timestamp(target_end_date).normalize()
 
 
-def refresh_v1_2_outputs() -> None:
-    subprocess.run(VERSION_CONFIGS["v1.2"]["refresh_cmd"], cwd=ROOT, check=True)
+def build_refresh_query(years: int) -> str:
+    if years <= 1:
+        return "净值图 最近一年"
+    return f"净值图 最近{years}年"
 
 
-def ensure_all_versions_refreshed() -> None:
-    refresh_v1_1_outputs()
-    refresh_v1_0_outputs()
-    refresh_v1_2_outputs()
+def read_csv_last_date(path: Path, date_col: str = "date") -> pd.Timestamp | None:
+    if not path.exists():
+        return None
+    frame = pd.read_csv(path, usecols=[date_col])
+    if frame.empty:
+        return None
+    return pd.Timestamp(frame[date_col].iloc[-1]).normalize()
+
+
+def version_is_fresh(version: str, target_end_date: pd.Timestamp) -> bool:
+    last_date = read_csv_last_date(Path(VERSION_CONFIGS[version]["path"]))
+    return last_date is not None and last_date >= pd.Timestamp(target_end_date).normalize()
+
+
+def refresh_version_outputs(version: str, years: int) -> None:
+    script = str(VERSION_CONFIGS[version]["script"])
+    query = build_refresh_query(years)
+    subprocess.run([sys.executable, script, *query.split()], cwd=ROOT, check=True)
+
+
+def ensure_all_versions_refreshed(years: int) -> None:
+    target_end_date = detect_target_end_date()
+    for version in ("v1.0", "v1.1", "v1.2"):
+        if version_is_fresh(version, target_end_date):
+            continue
+        refresh_version_outputs(version, years)
 
 
 def load_version_series(version: str) -> tuple[pd.Series, dict[str, str]]:
@@ -202,8 +200,8 @@ def render_compare_chart(rebased: pd.DataFrame, output_path: Path, years: int, a
 def main() -> None:
     args = parse_args()
     if not args.skip_refresh:
-        ensure_all_versions_refreshed()
-    validation_payload = validate_mod.run_validation()
+        ensure_all_versions_refreshed(args.years)
+    validation_payload = validate_mod.run_validation() if args.run_validation else None
 
     series_map: dict[str, pd.Series] = {}
     source_meta: dict[str, dict[str, str]] = {}
@@ -232,9 +230,9 @@ def main() -> None:
     payload = {
         "as_of_date": str(latest.date()),
         "window_years": int(args.years),
-        "source_policy": "refresh each version first, then compare costed NAV only",
-        "validation_summary_json": str(validate_mod.VALIDATION_JSON),
-        "validation_as_of_date": validation_payload["as_of_date"],
+        "source_policy": "refresh stale versions via each script's fast performance query, then compare costed NAV only",
+        "validation_summary_json": str(validate_mod.VALIDATION_JSON) if validation_payload is not None else None,
+        "validation_as_of_date": validation_payload["as_of_date"] if validation_payload is not None else None,
         "versions": {version: {**source_meta[version], **summarize_returns(series_map[version].fillna(0.0))} for version in series_map},
         "recent_window": summary_rows,
         "artifacts": {key: str(path) for key, path in artifacts.items()},
