@@ -1658,6 +1658,35 @@ def parse_date_range(text: str, now: pd.Timestamp | None = None) -> tuple[pd.Tim
     return None, None, "全样本"
 
 
+def normalize_query_text(query: str) -> str:
+    text = str(query or "").strip()
+    if not text:
+        return ""
+    if text.startswith("成分股名单"):
+        return "成分股" + text[len("成分股名单") :]
+    for prefix in ("净值表现", "净值图"):
+        if text.startswith(prefix):
+            return "表现" + text[len(prefix) :]
+    return text
+
+
+def classify_query_kind(query: str) -> str:
+    text = normalize_query_text(query)
+    if text == "信号":
+        return "signal"
+    if text == "实时信号":
+        return "realtime_signal"
+    if text == "成分股":
+        return "members"
+    if text == "进出名单":
+        return "changes"
+    if text == "实时进出名单":
+        return "realtime_changes"
+    if PERFORMANCE_PATTERN.search(text):
+        return "performance"
+    return "default"
+
+
 def load_performance_source(
     costed_nav_csv: Path,
     fallback_result: pd.DataFrame,
@@ -1782,6 +1811,138 @@ def build_performance_outputs(
     }
     paths["performance_json"].write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return payload
+
+
+def refresh_history_anchor(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
+    return build_refreshed_panel_shadow(args, paths)
+
+
+def ensure_strategy_nav_fresh(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+) -> None:
+    ensure_strategy_files(args, paths, panel_path, target_end_date)
+
+
+def ensure_base_signal_fresh(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+) -> dict[str, object]:
+    ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    close_df = load_close_df(panel_path, args.index_csv)
+    result = run_signal(close_df)
+    latest_signal = enrich_signal_frame(hedge_mod.build_latest_signal(result), result)
+    latest_rebalance, prev_rebalance, next_rebalance, effective_rebalance = locate_rebalance_dates(close_df.index)
+    rebalance_effective_date = latest_rebalance
+    anchor_freshness = assess_history_anchor_freshness(
+        latest_trade_date=pd.Timestamp(result.index[-1]),
+        max_stale_days=args.max_stale_anchor_days,
+    )
+    return {
+        "paths": paths,
+        "resolved_panel_path": panel_path,
+        "target_end_date": pd.Timestamp(target_end_date),
+        "close_df": close_df,
+        "result": result,
+        "latest_signal": latest_signal,
+        "latest_rebalance": latest_rebalance,
+        "rebalance_effective_date": rebalance_effective_date,
+        "prev_rebalance": prev_rebalance,
+        "next_rebalance": next_rebalance,
+        "effective_rebalance": effective_rebalance,
+        "anchor_freshness": anchor_freshness,
+    }
+
+
+def ensure_static_members_fresh(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+    base_context: dict[str, object],
+) -> dict[str, object]:
+    context = dict(base_context)
+    latest_rebalance = pd.Timestamp(context["latest_rebalance"])
+    prev_rebalance = context.get("prev_rebalance")
+    effective_rebalance = context.get("effective_rebalance")
+    rebalance_effective_date = context.get("rebalance_effective_date")
+    cached_static = load_cached_static_context(
+        paths=paths,
+        latest_rebalance=latest_rebalance,
+        prev_rebalance=prev_rebalance,
+        effective_rebalance=effective_rebalance,
+        rebalance_effective_date=rebalance_effective_date,
+        capital=args.capital,
+    )
+    if cached_static is None:
+        snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
+        snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+        target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
+        prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
+        effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
+        target_members = add_capital_columns(target_members, capital=args.capital)
+        if not target_members.empty:
+            target_members["signal_date"] = pd.Timestamp(latest_rebalance).date()
+            target_members["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
+        changes_df = build_change_table(prev_members, target_members)
+        if not changes_df.empty:
+            changes_df["signal_date"] = pd.Timestamp(latest_rebalance).date()
+            changes_df["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
+        save_static_context_cache(
+            paths=paths,
+            latest_rebalance=latest_rebalance,
+            prev_rebalance=prev_rebalance,
+            effective_rebalance=effective_rebalance,
+            rebalance_effective_date=rebalance_effective_date,
+            target_members=target_members.drop(columns=["target_notional"], errors="ignore"),
+            effective_members=effective_members,
+            changes_df=changes_df,
+        )
+    else:
+        target_members, effective_members, changes_df = cached_static
+    context["target_members"] = target_members
+    context["effective_members"] = effective_members
+    context["changes_df"] = changes_df
+    context["latest_signal"] = augment_signal_with_member_rebalance(context["latest_signal"], changes_df)
+    return context
+
+
+def handle_performance_query_fast(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+    query_text: str,
+) -> None:
+    ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    perf_df, ret_col, nav_col, source_label = load_performance_source(
+        args.costed_nav_csv,
+        pd.DataFrame(),
+        args.index_csv,
+    )
+    build_performance_outputs(
+        perf_df=perf_df,
+        ret_col=ret_col,
+        nav_col=nav_col,
+        source_label=source_label,
+        query_text=query_text,
+        paths=paths,
+    )
+    summary = pd.read_csv(paths["performance_summary"])
+    yearly = pd.read_csv(paths["performance_yearly"])
+    print("表现汇总")
+    print(format_table(summary))
+    print("年度分解")
+    print(format_table(yearly, max_rows=30))
+    print(f"已保存: {paths['performance_chart'].name}")
+    print(f"已保存: {paths['performance_summary'].name}")
+    print(f"已保存: {paths['performance_yearly'].name}")
+    print(f"已保存: {paths['performance_nav'].name}")
+    print(f"已保存: {paths['performance_json'].name}")
 
 
 def normalize_symbol_code(series: pd.Series) -> pd.Series:
@@ -2571,29 +2732,44 @@ def format_table(df: pd.DataFrame, max_rows: int = 20) -> str:
 
 
 def handle_query(context: dict[str, object], args: argparse.Namespace, query: str) -> None:
-    query = query.strip()
+    query = normalize_query_text(query).strip()
     paths = context["paths"]
-    latest_rebalance = pd.Timestamp(context["latest_rebalance"])
+    latest_rebalance = context.get("latest_rebalance")
+    if latest_rebalance is not None:
+        latest_rebalance = pd.Timestamp(latest_rebalance)
     rebalance_effective_date = context.get("rebalance_effective_date")
     anchor_freshness = context.get("anchor_freshness", {})
-    save_base_outputs(context)
+    if {"result", "latest_signal", "summary", "target_members", "changes_df"}.issubset(context):
+        save_base_outputs(context)
 
     if query == "\u5b9e\u65f6\u4fe1\u53f7":
         ensure_realtime_anchor_is_fresh(context, args)
         latest_anchor_trade_date = pd.Timestamp(context["close_df"].index[-1])
-        cached_fast = load_cached_fast_realtime_signal(
-            paths=paths,
-            cache_seconds=args.realtime_cache_seconds,
-            latest_anchor_trade_date=latest_anchor_trade_date,
-        )
-        if cached_fast is None:
-            rt_signal, meta = build_realtime_signal_fast(context)
-            save_cached_fast_realtime_signal(paths, rt_signal, meta)
-            cache_age_seconds = 0.0
-            result_source = "fresh"
-        else:
-            rt_signal, meta, cache_age_seconds = cached_fast
-            result_source = "cache"
+        try:
+            cached_fast = load_cached_fast_realtime_signal(
+                paths=paths,
+                cache_seconds=args.realtime_cache_seconds,
+                latest_anchor_trade_date=latest_anchor_trade_date,
+            )
+            if cached_fast is None:
+                rt_signal, meta = build_realtime_signal_fast(context)
+                save_cached_fast_realtime_signal(paths, rt_signal, meta)
+                cache_age_seconds = 0.0
+                result_source = "fresh_fast"
+            else:
+                rt_signal, meta, cache_age_seconds = cached_fast
+                result_source = "cache_fast"
+        except Exception:
+            realtime_state = compute_realtime_state(
+                context,
+                args.realtime_cache_seconds,
+                args.capital,
+                allow_stale_anchor=args.allow_stale_realtime,
+            )
+            rt_signal = realtime_state["signal"]
+            meta = realtime_state["meta"]
+            cache_age_seconds = float(realtime_state.get("cache_age_seconds", 0.0))
+            result_source = "cache" if realtime_state["from_cache"] else "fresh_fallback"
         rt_signal.to_csv(paths["realtime_signal"], index=False, encoding="utf-8")
         gap_value = float(rt_signal.iloc[0]["momentum_gap"])
         jitter_risk = str(rt_signal.iloc[0].get("tail_jitter_risk", "normal"))
@@ -2615,6 +2791,7 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
     if query == "信号":
         ensure_closed_signal_anchor_is_fresh(context)
         latest_signal = context["latest_signal"]
+        latest_signal.to_csv(paths["signal"], index=False, encoding="utf-8")
         print("确认信号")
         print(format_table(latest_signal))
         if anchor_freshness:
@@ -2627,35 +2804,6 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
                 )
             )
         print(f"已保存: {paths['signal'].name}")
-        return
-
-    if query == "实时信号":
-        ensure_realtime_anchor_is_fresh(context, args)
-        realtime_state = compute_realtime_state(
-            context,
-            args.realtime_cache_seconds,
-            args.capital,
-            allow_stale_anchor=args.allow_stale_realtime,
-        )
-        rt_signal = realtime_state["signal"]
-        meta = realtime_state["meta"]
-        cache_age_seconds = float(realtime_state.get("cache_age_seconds", 0.0))
-        rt_signal.to_csv(paths["realtime_signal"], index=False, encoding="utf-8")
-        gap_value = float(rt_signal.iloc[0]["momentum_gap"])
-        jitter_risk = str(rt_signal.iloc[0].get("tail_jitter_risk", "normal"))
-        jitter_note = str(rt_signal.iloc[0].get("tail_jitter_note", "") or "")
-        print("实时信号")
-        print(format_table(rt_signal))
-        print(f"实时快照时间: {meta['snapshot_time']}")
-        print(f"锚定最新历史交易日: {meta['latest_anchor_trade_date']}")
-        print(f"微盘实时价格来源: {meta['quote_source']}")
-        print(f"对冲腿实时价格来源: {meta['hedge_quote_source']}")
-        print(f"尾盘抖动风险: {jitter_risk} (|gap|={abs(gap_value):.4%})")
-        if jitter_risk != "normal" and jitter_note:
-            print(f"提示: {jitter_note}")
-        print(f"结果来源: {'cache' if realtime_state['from_cache'] else 'fresh'}")
-        print(f"实时结果年龄: {cache_age_seconds:.1f} 秒")
-        print(f"已保存: {paths['realtime_signal'].name}")
         return
 
     if query == "成分股":
@@ -2756,17 +2904,48 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
     )
 
 
+def execute_query(args: argparse.Namespace, query: str) -> None:
+    query_text = normalize_query_text(query)
+    paths = build_output_paths(args.output_prefix)
+    panel_path, target_end_date = refresh_history_anchor(args, paths)
+    kind = classify_query_kind(query_text)
+    if kind == "performance":
+        handle_performance_query_fast(args, paths, panel_path, target_end_date, query_text)
+        return
+    if kind == "signal":
+        base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
+        handle_query(base_context, args, query_text)
+        return
+    if kind in {"members", "changes", "realtime_signal", "realtime_changes"}:
+        base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
+        member_context = ensure_static_members_fresh(args, paths, panel_path, target_end_date, base_context)
+        handle_query(member_context, args, query_text)
+        return
+
+    include_members = (not query_text) or query_text in {"成分股", "进出名单", "实时进出名单", "实时信号"}
+    context = build_base_context(args, include_members=include_members)
+    if query_text:
+        handle_query(context, args, query_text)
+        return
+    save_base_outputs(context)
+    print_console_summary(context["summary"])
+    print(f"已保存: {paths['summary'].name}")
+    print(f"已保存: {paths['signal'].name}")
+    print(f"已保存: {paths['members'].name}")
+    print(f"已保存: {paths['changes'].name}")
+    print(f"已保存: {paths['nav'].name}")
+
+
 def main() -> None:
     args = parse_args()
     _ensure_core_deps_or_exit(args)
     _load_runtime_modules()
     query = " ".join(args.query_tokens).strip()
-    include_members = (not query) or query in {"成分股", "进出名单", "实时进出名单", "实时信号"}
-    context = build_base_context(args, include_members=include_members)
     if query:
-        handle_query(context, args, query)
+        execute_query(args, query)
         return
 
+    context = build_base_context(args, include_members=True)
     save_base_outputs(context)
     print_console_summary(context["summary"])
     paths = context["paths"]

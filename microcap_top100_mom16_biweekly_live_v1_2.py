@@ -112,11 +112,17 @@ def patched_live_module():
 
 
 def _ensure_base_outputs() -> None:
+    base_paths = v1_1_mod.base_mod.build_output_paths(v1_1_mod.base_mod.DEFAULT_OUTPUT_PREFIX)
+    has_base_turnover = base_paths["proxy_turnover"].exists()
     if BASE_SUMMARY_JSON.exists() and BASE_SIGNAL_CSV.exists() and BASE_COSTED_NAV_CSV.exists():
         try:
             summary = json.loads(BASE_SUMMARY_JSON.read_text(encoding="utf-8"))
             core_params = summary.get("core_params", {}) if isinstance(summary, dict) else {}
-            if core_params.get("research_stack_version") == v1_1_mod.base_mod.RESEARCH_STACK_VERSION:
+            # v1.2 must not reuse a costed base series that cannot be rebuilt from turnover history.
+            if (
+                has_base_turnover
+                and core_params.get("research_stack_version") == v1_1_mod.base_mod.RESEARCH_STACK_VERSION
+            ):
                 return
         except Exception:
             pass
