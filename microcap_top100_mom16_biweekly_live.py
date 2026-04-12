@@ -1,27 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import re
+import sys
 import time
 import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from types import SimpleNamespace
 
-import akshare as ak
-import matplotlib
-import numpy as np
-import pandas as pd
-import requests
-from pandas.errors import PerformanceWarning
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
-import analyze_microcap_zz1000_hedge as hedge_mod
-import analyze_top100_rebalance_frequency as freq_mod
-import fetch_wind_microcap_index as fetch_mod
+import microcap_runtime_bootstrap as runtime_bootstrap
 
 
 ROOT = Path(__file__).resolve().parent
@@ -32,16 +22,17 @@ REALTIME_DIR = CACHE_DIR / "realtime"
 TOP_N = 100
 LOOKBACK = 16
 REBALANCE_WEEKDAY = "Thursday"
-HEDGE_COLUMN = hedge_mod.DEFAULT_HEDGE_COLUMN
+DEFAULT_PANEL_PATH = ROOT / "mnt_strategy_data_cn.csv"
+HEDGE_COLUMN = "1.000852"
 FIXED_HEDGE_RATIO = 1.0
-FUTURES_DRAG = hedge_mod.DEFAULT_FUTURES_DRAG
+FUTURES_DRAG = 3.0 / 10000.0
 REQUIRE_POSITIVE_MICROCAP_MOM = False
 TAIL_JITTER_WARNING_GAP = 0.001
 TAIL_JITTER_CAUTION_GAP = 0.002
 DEFAULT_MAX_STALE_ANCHOR_DAYS = 5
 HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS = 40
-EXECUTION_TIMING = freq_mod.EXECUTION_TIMING_CLOSE
-TRADE_CONSTRAINT_MODE = freq_mod.TRADE_CONSTRAINT_MODE_CLOSE
+EXECUTION_TIMING = "close"
+TRADE_CONSTRAINT_MODE = "close"
 RESEARCH_STACK_VERSION = "2026-04-11-p0-p1-history-meta-master-stv2"
 STATIC_CONTEXT_CACHE_VERSION = "2026-04-11-live-current-st-members-v1"
 
@@ -59,7 +50,16 @@ WEEK_FREQ_BY_START = {
     "Friday": "W-THU",
 }
 
-warnings.filterwarnings("ignore", category=PerformanceWarning)
+ak = None
+np = None
+pd = None
+plt = None
+requests = None
+hedge_mod = None
+freq_mod = None
+fetch_mod = None
+PerformanceWarning = None
+_RUNTIME_MODULES_READY = False
 
 CN_NUM = {
     "一": 1,
@@ -89,12 +89,26 @@ def parse_args() -> argparse.Namespace:
         )
     )
     parser.add_argument("query_tokens", nargs="*", help="可选查询，例如：信号 / 实时信号 / 成分股 / 进出名单 / 表现 2024至今")
-    parser.add_argument("--panel-path", type=Path, default=hedge_mod.DEFAULT_PANEL)
+    parser.add_argument("--panel-path", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--index-csv", type=Path, default=DEFAULT_INDEX_CSV)
     parser.add_argument("--costed-nav-csv", type=Path, default=DEFAULT_COSTED_NAV_CSV)
     parser.add_argument("--output-prefix", default=DEFAULT_OUTPUT_PREFIX)
     parser.add_argument("--capital", type=float, default=None, help="Optional gross stock capital used for per-stock target notional.")
     parser.add_argument("--max-workers", type=int, default=8)
+    parser.add_argument(
+        "--bootstrap-deps",
+        action="store_true",
+        help="Install missing runtime dependencies from an offline wheelhouse before running.",
+    )
+    parser.add_argument(
+        "--wheelhouse",
+        type=Path,
+        default=None,
+        help=(
+            "Offline wheel directory for --bootstrap-deps. "
+            "If omitted, auto-detect MICROCAP_WHEELHOUSE, ./wheelhouse, ./.vendor_libs/wheelhouse, or ./.vendor_libs."
+        ),
+    )
     parser.add_argument(
         "--realtime-cache-seconds",
         type=int,
@@ -128,6 +142,57 @@ def parse_args() -> argparse.Namespace:
         help="Allow realtime queries even when the historical anchor is stale. Use with caution.",
     )
     return parser.parse_args()
+
+
+def _load_runtime_modules() -> None:
+    global ak, np, pd, plt, requests
+    global hedge_mod, freq_mod, fetch_mod, PerformanceWarning, _RUNTIME_MODULES_READY
+
+    if _RUNTIME_MODULES_READY:
+        return
+
+    np = importlib.import_module("numpy")
+    pd = importlib.import_module("pandas")
+    requests = importlib.import_module("requests")
+    ak = importlib.import_module("akshare")
+    matplotlib = importlib.import_module("matplotlib")
+    matplotlib.use("Agg")
+    plt = importlib.import_module("matplotlib.pyplot")
+    PerformanceWarning = importlib.import_module("pandas.errors").PerformanceWarning
+    hedge_mod = importlib.import_module("analyze_microcap_zz1000_hedge")
+    freq_mod = importlib.import_module("analyze_top100_rebalance_frequency")
+    fetch_mod = importlib.import_module("fetch_wind_microcap_index")
+    warnings.filterwarnings("ignore", category=PerformanceWarning)
+    _RUNTIME_MODULES_READY = True
+
+
+def _ensure_core_deps_or_exit(args: argparse.Namespace) -> None:
+    missing = runtime_bootstrap.find_missing_modules()
+    if not missing:
+        return
+
+    if not args.bootstrap_deps:
+        print(runtime_bootstrap.format_missing_dependencies_message(missing, bootstrap_requested=False), file=sys.stderr)
+        raise SystemExit(2)
+
+    wheelhouse = runtime_bootstrap.resolve_wheelhouse(ROOT, args.wheelhouse)
+    if wheelhouse is None:
+        print(runtime_bootstrap.format_missing_dependencies_message(missing, bootstrap_requested=True), file=sys.stderr)
+        raise SystemExit(2)
+
+    result = runtime_bootstrap.bootstrap_from_wheelhouse(wheelhouse)
+    if result.returncode != 0:
+        print(runtime_bootstrap.format_bootstrap_failure_message(wheelhouse, result), file=sys.stderr)
+        raise SystemExit(2)
+
+    remaining = runtime_bootstrap.find_missing_modules()
+    if remaining:
+        print(runtime_bootstrap.format_missing_dependencies_message(remaining, bootstrap_requested=True), file=sys.stderr)
+        raise SystemExit(2)
+
+
+if not runtime_bootstrap.find_missing_modules():
+    _load_runtime_modules()
 
 
 def is_tradable_name(name: str) -> bool:
@@ -2692,6 +2757,8 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
 
 def main() -> None:
     args = parse_args()
+    _ensure_core_deps_or_exit(args)
+    _load_runtime_modules()
     query = " ".join(args.query_tokens).strip()
     include_members = (not query) or query in {"成分股", "进出名单", "实时进出名单", "实时信号"}
     context = build_base_context(args, include_members=include_members)
