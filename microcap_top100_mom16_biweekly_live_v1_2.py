@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import argparse
 import contextlib
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -27,6 +29,7 @@ BASE_SUMMARY_JSON = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v1_1_summa
 BASE_SIGNAL_CSV = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v1_1_latest_signal.csv"
 BASE_LIVE_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v1_1_nav.csv"
 BASE_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv"
+V1_0_SUMMARY_JSON = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_summary.json"
 
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_2"
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
@@ -38,6 +41,8 @@ PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
 PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
 PERF_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.json"
 PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
+EXPECTED_VERSION_ROLE = "defensive_alternative"
+EXPECTED_VERSION_NOTE_PREFIX = "Defensive backup alternative."
 
 LIVE_MEMBER_QUERIES = {"成分股", "进出名单", "实时进出名单"}
 SIGNAL_QUERIES = {"信号", "实时信号"}
@@ -90,6 +95,89 @@ def _is_performance_query(query: str) -> bool:
     return bool(v1_1_mod.base_mod.PERFORMANCE_PATTERN.search(query))
 
 
+def _file_sha1(path: Path) -> str:
+    digest = hashlib.sha1()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _build_v1_1_args(max_workers: int = 8) -> argparse.Namespace:
+    base_mod = v1_1_mod.base_mod
+    return argparse.Namespace(
+        query_tokens=[],
+        panel_path=base_mod.hedge_mod.DEFAULT_PANEL,
+        index_csv=base_mod.DEFAULT_INDEX_CSV,
+        costed_nav_csv=base_mod.DEFAULT_COSTED_NAV_CSV,
+        output_prefix=base_mod.DEFAULT_OUTPUT_PREFIX,
+        capital=None,
+        max_workers=max_workers,
+        realtime_cache_seconds=30,
+        rebuild_index_if_missing=True,
+        force_refresh=False,
+        max_stale_anchor_days=base_mod.DEFAULT_MAX_STALE_ANCHOR_DAYS,
+        allow_stale_realtime=False,
+    )
+
+
+def current_base_fingerprint() -> dict[str, object]:
+    return {
+        "base_version": "1.1",
+        "base_costed_nav_csv": str(BASE_COSTED_NAV_CSV),
+        "base_costed_nav_sha1": _file_sha1(BASE_COSTED_NAV_CSV),
+        "research_stack_version": v1_1_mod.base_mod.RESEARCH_STACK_VERSION,
+        "nav_control": {
+            "dd_moderate": CFG.dd_moderate,
+            "dd_severe": CFG.dd_severe,
+            "scale_moderate": CFG.scale_moderate,
+            "scale_severe": CFG.scale_severe,
+            "recover_dd": CFG.recover_dd,
+            "rebal_cost_bps": CFG.rebal_cost_bps,
+        },
+    }
+
+
+def summary_matches_current_v1_2_base(summary: dict[str, object]) -> bool:
+    if not isinstance(summary, dict):
+        return False
+    if str(summary.get("version")) != "1.2":
+        return False
+    if str(summary.get("version_role")) != EXPECTED_VERSION_ROLE:
+        return False
+    if not str(summary.get("version_note", "")).startswith(EXPECTED_VERSION_NOTE_PREFIX):
+        return False
+    base_fingerprint = summary.get("base_fingerprint")
+    return base_fingerprint == current_base_fingerprint()
+
+
+def invalidate_incompatible_v1_2_outputs() -> list[Path]:
+    if not SUMMARY_JSON.exists():
+        return []
+    try:
+        summary = json.loads(SUMMARY_JSON.read_text(encoding="utf-8"))
+    except Exception:
+        summary = None
+    if summary_matches_current_v1_2_base(summary):
+        return []
+    removed: list[Path] = []
+    for path in [
+        SUMMARY_JSON,
+        LATEST_SIGNAL_CSV,
+        NAV_CSV,
+        COSTED_NAV_CSV,
+        PERF_SUMMARY_CSV,
+        PERF_YEARLY_CSV,
+        PERF_NAV_CSV,
+        PERF_JSON,
+        PERF_PNG,
+    ]:
+        if path.exists():
+            path.unlink(missing_ok=True)
+            removed.append(path)
+    return removed
+
+
 @contextlib.contextmanager
 def patched_live_module():
     live_mod = v1_1_mod.base_mod
@@ -113,25 +201,70 @@ def patched_live_module():
 
 def _ensure_base_outputs() -> None:
     base_paths = v1_1_mod.base_mod.build_output_paths(v1_1_mod.base_mod.DEFAULT_OUTPUT_PREFIX)
+    v1_1_mod.prepare_current_v1_1_outputs(paths=base_paths, costed_nav_csv=BASE_COSTED_NAV_CSV)
     has_base_turnover = base_paths["proxy_turnover"].exists()
-    if BASE_SUMMARY_JSON.exists() and BASE_SIGNAL_CSV.exists() and BASE_COSTED_NAV_CSV.exists():
+    if has_base_turnover and BASE_COSTED_NAV_CSV.exists():
+        return
+    args = _build_v1_1_args()
+    resolved_panel_path, target_end_date = v1_1_mod.base_mod.build_refreshed_panel_shadow(args, base_paths)
+    v1_1_mod.base_mod.ensure_strategy_files(args, base_paths, resolved_panel_path, target_end_date)
+
+
+def _load_reference_summary() -> dict[str, object]:
+    if BASE_SUMMARY_JSON.exists():
         try:
             summary = json.loads(BASE_SUMMARY_JSON.read_text(encoding="utf-8"))
-            core_params = summary.get("core_params", {}) if isinstance(summary, dict) else {}
-            # v1.2 must not reuse a costed base series that cannot be rebuilt from turnover history.
-            if (
-                has_base_turnover
-                and core_params.get("research_stack_version") == v1_1_mod.base_mod.RESEARCH_STACK_VERSION
-            ):
-                return
+            if v1_1_mod.summary_is_current_v1_1(summary):
+                return summary
         except Exception:
             pass
-    old_argv = sys.argv[:]
-    try:
-        sys.argv = [sys.argv[0]]
-        v1_1_mod.base_mod.main()
-    finally:
-        sys.argv = old_argv
+    if V1_0_SUMMARY_JSON.exists():
+        return json.loads(V1_0_SUMMARY_JSON.read_text(encoding="utf-8"))
+    raise FileNotFoundError("Neither current v1.1 summary nor v1.0 reference summary is available.")
+
+
+def _build_base_signal_row(base_net: pd.DataFrame, reference_summary: dict[str, object]) -> pd.DataFrame:
+    latest_row = base_net.iloc[-1]
+    latest_signal = dict(reference_summary.get("latest_signal", {}))
+    current_holding = str(latest_row.get("holding", latest_signal.get("current_holding", "cash")))
+    next_holding = str(latest_row.get("next_holding", latest_signal.get("next_holding", current_holding)))
+    latest_signal["current_holding"] = current_holding
+    latest_signal["next_holding"] = next_holding
+    latest_signal["trade_state"] = v1_1_mod.base_mod.compute_trade_state(current_holding, next_holding)
+    latest_signal["momentum_trade_state"] = latest_signal["trade_state"]
+    for src_col, dst_col in [
+        ("microcap_close", "microcap_close"),
+        ("hedge_close", "hedge_close"),
+        ("microcap_mom", "microcap_mom"),
+        ("hedge_mom", "hedge_mom"),
+        ("momentum_gap", "momentum_gap"),
+    ]:
+        if src_col in latest_row:
+            latest_signal[dst_col] = float(latest_row[src_col])
+    latest_signal.setdefault("signal_label", next_holding)
+    return pd.DataFrame([{**latest_signal, "date": pd.Timestamp(base_net.index.max())}])
+
+
+def _build_base_summary(base_net: pd.DataFrame) -> tuple[dict[str, object], pd.DataFrame]:
+    reference_summary = _load_reference_summary()
+    signal_df = (
+        pd.read_csv(BASE_SIGNAL_CSV)
+        if BASE_SIGNAL_CSV.exists()
+        else _build_base_signal_row(base_net, reference_summary)
+    )
+    summary = dict(reference_summary)
+    summary["strategy"] = "microcap_top100_mom16_biweekly_live_v1_1"
+    summary["version"] = "1.1"
+    summary["version_role"] = "backup_alternative"
+    summary["version_note"] = (
+        "Backup alternative to v1.0. Same live framework as v1.0, "
+        "but fixed hedge ratio is reduced from 1.0x to 0.8x."
+    )
+    summary.setdefault("core_params", {})
+    summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
+    summary["latest_trade_date"] = str(pd.Timestamp(base_net.index.max()).date())
+    summary["latest_signal"] = signal_df.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
+    return summary, signal_df
 
 
 def _compute_nav_control_state(base_returns: pd.Series) -> dict[str, object]:
@@ -245,13 +378,13 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
 def generate_v1_2_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     _ensure_base_outputs()
-    base_summary = json.loads(BASE_SUMMARY_JSON.read_text(encoding="utf-8"))
-    base_signal = pd.read_csv(BASE_SIGNAL_CSV)
+    invalidate_incompatible_v1_2_outputs()
     base_nav_path = BASE_COSTED_NAV_CSV
     base_net = pd.read_csv(base_nav_path, parse_dates=["date"]).sort_values("date").set_index("date")
     if "return_net" not in base_net.columns:
         raise KeyError(f"Expected costed return column 'return_net' in {base_nav_path}.")
     base_ret_col = "return_net"
+    base_summary, base_signal = _build_base_summary(base_net)
 
     control = _compute_nav_control_state(base_net[base_ret_col].fillna(0.0))
     throttle_run = control["throttle_run"]
@@ -320,6 +453,7 @@ def generate_v1_2_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         BASE_HEDGE_RATIO * control["next_scale"] if next_holding != "cash" else 0.0
     )
     summary["performance_snapshot"] = perf_payload["summary"]
+    summary["base_fingerprint"] = current_base_fingerprint()
     SUMMARY_JSON.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     return summary, signal_row, out
 

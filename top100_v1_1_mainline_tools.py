@@ -46,6 +46,7 @@ def refresh_mainline_outputs() -> dict[str, object]:
     base_mod = v1_1_mod.base_mod
     args = build_mainline_args()
     paths = base_mod.build_output_paths(args.output_prefix)
+    v1_1_mod.prepare_current_v1_1_outputs(paths=paths, costed_nav_csv=args.costed_nav_csv)
     resolved_panel_path, target_end_date = base_mod.build_refreshed_panel_shadow(args, paths)
     base_mod.ensure_strategy_files(args, paths, resolved_panel_path, target_end_date)
     close_df = base_mod.load_close_df(resolved_panel_path, args.index_csv)
