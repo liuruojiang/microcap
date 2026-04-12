@@ -147,6 +147,7 @@ def build_output_paths(output_prefix: str) -> dict[str, Path]:
         "nav": OUTPUT_DIR / f"{output_prefix}_nav.csv",
         "proxy_meta": OUTPUT_DIR / f"{output_prefix}_proxy_meta.json",
         "proxy_members": OUTPUT_DIR / f"{output_prefix}_proxy_members.csv",
+        "proxy_turnover": OUTPUT_DIR / f"{output_prefix}_proxy_turnover.csv",
         "realtime_signal": OUTPUT_DIR / f"{output_prefix}_realtime_signal.csv",
         "realtime_members": OUTPUT_DIR / f"{output_prefix}_realtime_target_members.csv",
         "realtime_changes": OUTPUT_DIR / f"{output_prefix}_realtime_rebalance_changes.csv",
@@ -451,7 +452,7 @@ def extend_index_recent_window(
     )
     refresh_price_cache_tail(target_end_date, args.max_workers, candidate_symbols)
 
-    recent_index_df, recent_members_df, _, meta = build_local_proxy_bundle(
+    recent_index_df, recent_members_df, recent_turnover_df, meta = build_local_proxy_bundle(
         args=args,
         trading_dates=recent_dates,
         symbols=candidate_symbols,
@@ -482,13 +483,24 @@ def extend_index_recent_window(
         combined_members = pd.concat([existing_members, recent_members_out], ignore_index=True)
     else:
         combined_members = recent_members_df
-    combined_index, combined_members, _, effective_start = trim_proxy_history(
+
+    if paths["proxy_turnover"].exists():
+        existing_turnover = pd.read_csv(paths["proxy_turnover"])
+        if "rebalance_date" in existing_turnover.columns:
+            existing_turnover["rebalance_date"] = pd.to_datetime(existing_turnover["rebalance_date"], errors="coerce")
+            existing_turnover = existing_turnover.loc[existing_turnover["rebalance_date"] < recent_start]
+        combined_turnover = pd.concat([existing_turnover, recent_turnover_df], ignore_index=True)
+    else:
+        combined_turnover = recent_turnover_df
+
+    combined_index, combined_members, combined_turnover, effective_start = trim_proxy_history(
         combined_index,
         combined_members,
-        None,
+        combined_turnover,
     )
     combined_index.to_csv(args.index_csv, index=False, encoding="utf-8")
     combined_members.to_csv(paths["proxy_members"], index=False, encoding="utf-8")
+    combined_turnover.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
 
     meta["start_date"] = str(pd.Timestamp(combined_index["date"].min()).date())
     meta["end_date"] = str(pd.Timestamp(combined_index["date"].max()).date())
@@ -613,6 +625,7 @@ def ensure_strategy_files(
     target_end_date: pd.Timestamp,
 ) -> None:
     current_index_end = read_csv_last_date(args.index_csv)
+    current_costed_end = read_csv_last_date(args.costed_nav_csv)
     meta_matches_execution_model = False
     if paths["proxy_meta"].exists():
         try:
@@ -621,14 +634,26 @@ def ensure_strategy_files(
             )
         except Exception:
             meta_matches_execution_model = False
+    can_reuse_index = args.index_csv.exists() and current_index_end is not None and meta_matches_execution_model
+    has_proxy_turnover = paths["proxy_turnover"].exists()
+    can_reuse_proxy = can_reuse_index and has_proxy_turnover
     files_fresh = (
-        args.index_csv.exists()
-        and current_index_end is not None
+        can_reuse_proxy
         and pd.Timestamp(current_index_end).normalize() >= pd.Timestamp(target_end_date).normalize()
         and args.costed_nav_csv.exists()
-        and meta_matches_execution_model
+        and current_costed_end is not None
+        and pd.Timestamp(current_costed_end).normalize() >= pd.Timestamp(target_end_date).normalize()
     )
     if files_fresh:
+        normalize_existing_proxy_outputs(args, paths)
+        return
+    if (
+        can_reuse_index
+        and args.costed_nav_csv.exists()
+        and current_costed_end is not None
+        and pd.Timestamp(current_index_end).normalize() >= pd.Timestamp(target_end_date).normalize()
+        and pd.Timestamp(current_costed_end).normalize() >= pd.Timestamp(target_end_date).normalize()
+    ):
         normalize_existing_proxy_outputs(args, paths)
         return
     if not args.rebuild_index_if_missing:
@@ -637,10 +662,31 @@ def ensure_strategy_files(
             missing.append(str(args.index_csv))
         if not args.costed_nav_csv.exists():
             missing.append(str(args.costed_nav_csv))
+        if not paths["proxy_turnover"].exists():
+            missing.append(str(paths["proxy_turnover"]))
         raise FileNotFoundError("Missing required strategy files: " + ", ".join(missing))
 
-    if args.index_csv.exists() and current_index_end is not None:
+    if (
+        can_reuse_index
+        and pd.Timestamp(current_index_end).normalize() >= pd.Timestamp(target_end_date).normalize()
+        and args.costed_nav_csv.exists()
+        and current_costed_end is not None
+        and pd.Timestamp(current_costed_end).normalize() < pd.Timestamp(target_end_date).normalize()
+        and try_extend_costed_nav_without_turnover(args, panel_path, target_end_date)
+    ):
+        return
+
+    if can_reuse_index and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize():
         extend_index_recent_window(args, paths, panel_path, target_end_date)
+        if try_extend_costed_nav_without_turnover(args, panel_path, target_end_date):
+            return
+        if paths["proxy_turnover"].exists():
+            rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
+            return
+
+    if can_reuse_proxy:
+        normalize_existing_proxy_outputs(args, paths)
+        rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
         return
 
     refresh_price_cache_tail(target_end_date, args.max_workers)
@@ -655,14 +701,9 @@ def ensure_strategy_files(
     args.index_csv.parent.mkdir(parents=True, exist_ok=True)
     index_df.to_csv(args.index_csv, index=False, encoding="utf-8")
     members_df.to_csv(paths["proxy_members"], index=False, encoding="utf-8")
+    turnover_df.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
     paths["proxy_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    close_df = load_close_df(panel_path, args.index_csv)
-    gross = run_signal(close_df)
-    turnover_df = turnover_df.copy()
-    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"])
-    net = freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
-    net.to_csv(args.costed_nav_csv, index_label="date", encoding="utf-8")
+    rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
 
 
 def load_close_df(panel_path: Path, index_csv: Path) -> pd.DataFrame:
@@ -773,6 +814,15 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
         if len(trimmed_perf) != len(perf):
             trimmed_perf.to_csv(args.costed_nav_csv, index=False, encoding="utf-8")
 
+    if paths["proxy_turnover"].exists():
+        turnover = pd.read_csv(paths["proxy_turnover"])
+        if "rebalance_date" in turnover.columns:
+            turnover["rebalance_date"] = pd.to_datetime(turnover["rebalance_date"], errors="coerce")
+            turnover = turnover.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+            trimmed_turnover = turnover.loc[turnover["rebalance_date"] >= effective_start].copy()
+            if len(trimmed_turnover) != len(turnover):
+                trimmed_turnover.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
+
     meta = {}
     if paths["proxy_meta"].exists():
         try:
@@ -808,6 +858,95 @@ def run_signal(close_df: pd.DataFrame) -> pd.DataFrame:
     )
     result.index = pd.to_datetime(result.index)
     return result
+
+
+def rebuild_costed_nav_from_proxy_turnover(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+) -> None:
+    turnover_path = paths["proxy_turnover"]
+    if not turnover_path.exists():
+        raise FileNotFoundError(f"Missing proxy turnover history required for costed NAV rebuild: {turnover_path}")
+
+    turnover_df = pd.read_csv(turnover_path)
+    if "rebalance_date" not in turnover_df.columns:
+        raise KeyError(f"Column 'rebalance_date' not found in {turnover_path}.")
+    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
+    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+
+    close_df = load_close_df(panel_path, args.index_csv)
+    gross = run_signal(close_df)
+    net = freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
+    net.to_csv(args.costed_nav_csv, index_label="date", encoding="utf-8")
+
+
+def try_extend_costed_nav_without_turnover(
+    args: argparse.Namespace,
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+) -> bool:
+    if not args.index_csv.exists() or not args.costed_nav_csv.exists():
+        return False
+
+    costed = pd.read_csv(args.costed_nav_csv)
+    if costed.empty or "date" not in costed.columns or "nav_net" not in costed.columns:
+        return False
+    costed["date"] = pd.to_datetime(costed["date"], errors="coerce")
+    costed = costed.dropna(subset=["date"]).sort_values("date")
+    if costed.empty:
+        return False
+
+    current_costed_end = pd.Timestamp(costed["date"].max())
+    close_df = load_close_df(panel_path, args.index_csv)
+    gross = run_signal(close_df).sort_index()
+    if gross.empty or current_costed_end not in gross.index:
+        return False
+
+    target_end = pd.Timestamp(target_end_date).normalize()
+    missing = gross.loc[(gross.index > current_costed_end) & (gross.index <= target_end)].copy()
+    if missing.empty:
+        return False
+    required_cols = {"return", "holding", "next_holding"}
+    if required_cols.difference(missing.columns):
+        return False
+
+    rebalance_dates = build_biweekly_rebalance_dates(pd.DatetimeIndex(gross.index))
+    missing_rebalances = rebalance_dates[(rebalance_dates > current_costed_end) & (rebalance_dates <= target_end)]
+    if len(missing_rebalances):
+        return False
+
+    if EXECUTION_TIMING == freq_mod.EXECUTION_TIMING_CLOSE:
+        active = missing["next_holding"].ne("cash")
+        prev_active = missing["holding"].ne("cash")
+    else:
+        active = missing["holding"].ne("cash")
+        prev_active = active.shift(1, fill_value=False)
+
+    entry_cost = pd.Series(0.0, index=missing.index, dtype=float)
+    entry_cost.loc[active & ~prev_active] = freq_mod.cost_mod.ENTRY_COST
+    exit_cost = pd.Series(0.0, index=missing.index, dtype=float)
+    exit_cost.loc[~active & prev_active] = freq_mod.cost_mod.EXIT_COST
+
+    missing["entry_exit_cost"] = entry_cost + exit_cost
+    missing["rebalance_cost"] = 0.0
+    missing["total_cost"] = missing["entry_exit_cost"]
+    missing["return_net"] = (1.0 + missing["return"]) * (1.0 - missing["total_cost"]) - 1.0
+    prior_nav = float(costed.loc[costed["date"] == current_costed_end, "nav_net"].iloc[-1])
+    missing["nav_net"] = prior_nav * (1.0 + missing["return_net"]).cumprod()
+
+    combined = pd.concat(
+        [
+            costed.loc[costed["date"] <= current_costed_end].copy(),
+            missing.reset_index().rename(columns={"index": "date"}),
+        ],
+        ignore_index=True,
+        sort=False,
+    ).sort_values("date")
+    combined["date"] = pd.to_datetime(combined["date"], errors="coerce")
+    combined = combined.dropna(subset=["date"]).drop_duplicates(subset="date", keep="last")
+    combined.to_csv(args.costed_nav_csv, index=False, encoding="utf-8")
+    return True
 
 
 def load_name_map() -> dict[str, str]:

@@ -241,9 +241,11 @@ def generate_v1_2_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     _ensure_base_outputs()
     base_summary = json.loads(BASE_SUMMARY_JSON.read_text(encoding="utf-8"))
     base_signal = pd.read_csv(BASE_SIGNAL_CSV)
-    base_nav_path = BASE_LIVE_NAV_CSV if BASE_LIVE_NAV_CSV.exists() else BASE_COSTED_NAV_CSV
+    base_nav_path = BASE_COSTED_NAV_CSV
     base_net = pd.read_csv(base_nav_path, parse_dates=["date"]).sort_values("date").set_index("date")
-    base_ret_col = "return_net" if "return_net" in base_net.columns else "return"
+    if "return_net" not in base_net.columns:
+        raise KeyError(f"Expected costed return column 'return_net' in {base_nav_path}.")
+    base_ret_col = "return_net"
 
     control = _compute_nav_control_state(base_net[base_ret_col].fillna(0.0))
     throttle_run = control["throttle_run"]
@@ -285,7 +287,7 @@ def generate_v1_2_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["version"] = "1.2"
     summary["version_role"] = "defensive_alternative"
     summary["version_note"] = (
-        "Defensive alternative to the v1.1 mainline. Same as v1.1 (0.8x hedge), "
+        "Defensive backup alternative. Same as v1.1 (0.8x hedge), "
         "plus practical NAV throttle 4/8 with 0.85x/0.70x scale and recover 3%."
     )
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO

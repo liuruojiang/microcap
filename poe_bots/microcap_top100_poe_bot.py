@@ -177,13 +177,13 @@ WEEK_FREQ_BY_START = {
     "Friday": "W-THU",
 }
 
-DEFAULT_STRATEGY_VERSION = "1.1"
+DEFAULT_STRATEGY_VERSION = "1.0"
 ACTIVE_STRATEGY_VERSION = DEFAULT_STRATEGY_VERSION
 VERSION_PATTERN = re.compile(r"(?i)(?:^|[\s,，:：])(?:版本\s*)?v?(1\.[012])(?=$|[\s,，:：])")
 SUPPORTED_STRATEGIES = {
     "1.0": {
         "version": "1.0",
-        "label": "v1.0（历史基线版，1.0x 对冲）",
+        "label": "v1.0（主版本，1.0x 对冲）",
         "cache_tag": "v1_0",
         "hedge_ratio": 1.0,
         "performance_costed_nav_csv": PERFORMANCE_COSTED_NAV_CSV,
@@ -192,7 +192,7 @@ SUPPORTED_STRATEGIES = {
     },
     "1.1": {
         "version": "1.1",
-        "label": "v1.1（主线版，0.8x 对冲）",
+        "label": "v1.1（备选版，0.8x 对冲）",
         "cache_tag": "v1_1",
         "hedge_ratio": 0.8,
         "performance_costed_nav_csv": ROOT / "outputs" / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
@@ -245,7 +245,7 @@ def update_settings():
         f"- 发送 {CMD_CHANGES}：返回最新调仓进出名单\n"
         f"- 发送 {CMD_REALTIME_CHANGES}：返回按最新实时市值估算的进出名单\n"
         "说明：该版本不依赖本地策略脚本或本地 CSV，会在线重建最近窗口的 Top100 名单。\n"
-        "默认按 1.1 主线版执行。版本用法：命令前后都可加 1.0 / 1.1 / 1.2，例如 `1.2 信号`、`表现 1.0 近5年`。"
+        "默认按 1.0 主版本执行。版本用法：命令前后都可加 1.0 / 1.1 / 1.2，例如 `1.2 信号`、`表现 1.0 近5年`。"
     )
     poe.update_settings(SettingsResponse(introduction_message=intro))
 

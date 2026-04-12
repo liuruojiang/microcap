@@ -22,6 +22,7 @@ htmlcov/
 Thumbs.db
 *.tmp
 *.temp
+gcm-diagnose.log
 
 # Local backup and sandbox directories
 .codex_backups/

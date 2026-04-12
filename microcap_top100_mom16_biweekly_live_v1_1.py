@@ -11,7 +11,7 @@ base_mod.DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_1"
 base_mod.DEFAULT_COSTED_NAV_CSV = (
     base_mod.OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv"
 )
-base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v1.1 Mainline"
+base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v1.1 Backup"
 
 
 def build_summary(
@@ -37,9 +37,9 @@ def build_summary(
         anchor_freshness=anchor_freshness,
     )
     summary["version"] = "1.1"
-    summary["version_role"] = "mainline"
+    summary["version_role"] = "backup_alternative"
     summary["version_note"] = (
-        "Primary mainline version. Same live framework as v1.0, "
+        "Backup alternative to v1.0. Same live framework as v1.0, "
         "but fixed hedge ratio is reduced from 1.0x to 0.8x."
     )
     return summary
