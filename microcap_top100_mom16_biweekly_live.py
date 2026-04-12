@@ -712,8 +712,9 @@ def ensure_strategy_files(
     if files_fresh:
         normalize_existing_proxy_outputs(args, paths)
         return
+    # A fresh costed NAV without turnover history cannot be trusted after execution-model changes.
     if (
-        can_reuse_index
+        can_reuse_proxy
         and args.costed_nav_csv.exists()
         and current_costed_end is not None
         and pd.Timestamp(current_index_end).normalize() >= pd.Timestamp(target_end_date).normalize()

@@ -180,10 +180,11 @@ class MainlineRefreshConsistencyTests(unittest.TestCase):
         self.assertAlmostEqual(float(saved["return_net"].iloc[-1]), 0.02, places=10)
         self.assertAlmostEqual(float(saved["nav_net"].iloc[-1]), 1.0302, places=10)
 
-    def test_ensure_strategy_files_accepts_fresh_costed_without_turnover_history(self) -> None:
+    def test_ensure_strategy_files_rebuilds_fresh_costed_when_turnover_history_is_missing(self) -> None:
         index_csv = self.work_dir / "index.csv"
         costed_nav_csv = self.work_dir / "costed_nav.csv"
         proxy_meta = self.work_dir / "proxy_meta.json"
+        panel_csv = self.work_dir / "panel.csv"
 
         pd.DataFrame(
             {
@@ -213,6 +214,7 @@ class MainlineRefreshConsistencyTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        pd.DataFrame({"date": ["2026-04-09", "2026-04-10"]}).to_csv(panel_csv, index=False, encoding="utf-8")
 
         args = SimpleNamespace(
             index_csv=index_csv,
@@ -225,18 +227,60 @@ class MainlineRefreshConsistencyTests(unittest.TestCase):
             "proxy_members": self.work_dir / "proxy_members.csv",
             "proxy_turnover": self.work_dir / "proxy_turnover.csv",
         }
+        rebuilt_index = pd.DataFrame(
+            {
+                "date": ["2026-04-09", "2026-04-10"],
+                "close": [1.0, 1.01],
+                "holding_count": [100, 100],
+                "holding_effective": [True, True],
+            }
+        )
+        rebuilt_members = pd.DataFrame(
+            {
+                "rebalance_date": ["2026-04-10"],
+                "symbol": ["000001"],
+            }
+        )
+        rebuilt_turnover = pd.DataFrame(
+            {
+                "rebalance_date": ["2026-04-10"],
+                "two_side_cost_rate": [0.00063],
+                "execution_timing": [base_mod.EXECUTION_TIMING],
+            }
+        )
+        rebuilt_net = pd.DataFrame(
+            {
+                "return_net": [0.01, 0.002],
+                "nav_net": [1.01, 1.01202],
+            },
+            index=pd.to_datetime(["2026-04-09", "2026-04-10"]),
+        )
 
-        with patch.object(
-            base_mod,
-            "refresh_price_cache_tail",
-            side_effect=AssertionError("fresh costed/index should not trigger full rebuild"),
-        ):
-            base_mod.ensure_strategy_files(
-                args=args,
-                paths=paths,
-                panel_path=self.work_dir / "panel.csv",
-                target_end_date=pd.Timestamp("2026-04-10"),
-            )
+        with patch.object(base_mod, "refresh_price_cache_tail") as refresh_mock:
+            with patch.object(
+                base_mod,
+                "build_local_proxy_bundle",
+                return_value=(rebuilt_index, rebuilt_members, rebuilt_turnover, {"core_params": {}}),
+            ):
+                with patch.object(
+                    base_mod,
+                    "rebuild_costed_nav_from_proxy_turnover",
+                    side_effect=lambda args, paths, panel_path: rebuilt_net.to_csv(
+                        args.costed_nav_csv, index_label="date", encoding="utf-8"
+                    ),
+                ):
+                    base_mod.ensure_strategy_files(
+                        args=args,
+                        paths=paths,
+                        panel_path=panel_csv,
+                        target_end_date=pd.Timestamp("2026-04-10"),
+                    )
+
+        refresh_mock.assert_called_once_with(pd.Timestamp("2026-04-10"), 1)
+        saved = pd.read_csv(costed_nav_csv)
+        self.assertEqual(saved["date"].iloc[-1], "2026-04-10")
+        self.assertAlmostEqual(float(saved["nav_net"].iloc[-1]), 1.01202, places=10)
+        self.assertTrue(paths["proxy_turnover"].exists())
 
 
 if __name__ == "__main__":
