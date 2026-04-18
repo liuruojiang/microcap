@@ -183,17 +183,41 @@ def build_recent_rebased(series_map: dict[str, pd.Series], years: int) -> tuple[
     return pd.DataFrame(rebased), latest
 
 
+def build_relative_spread_bps(rebased: pd.DataFrame, baseline: str = "v1.0") -> pd.DataFrame:
+    base = rebased[baseline].astype(float)
+    return rebased.astype(float).div(base, axis=0).sub(1.0).mul(10000.0)
+
+
 def render_compare_chart(rebased: pd.DataFrame, output_path: Path, years: int, as_of_date: pd.Timestamp) -> Path:
-    plt.figure(figsize=(13, 7))
+    spread_bps = build_relative_spread_bps(rebased)
+    fig, (ax_nav, ax_spread) = plt.subplots(
+        2,
+        1,
+        figsize=(13, 8.5),
+        sharex=True,
+        gridspec_kw={"height_ratios": [3.2, 1.4]},
+    )
+    styles = {
+        "v1.0": {"color": "#1f77b4", "linestyle": "-", "linewidth": 2.6, "zorder": 3},
+        "v1.1": {"color": "#d62728", "linestyle": "--", "linewidth": 2.0, "zorder": 2},
+        "v1.2": {"color": "#2ca02c", "linestyle": ":", "linewidth": 2.2, "zorder": 1},
+    }
     for version in ("v1.0", "v1.1", "v1.2"):
-        plt.plot(rebased.index, rebased[version], linewidth=2.0, label=version)
-    plt.title(f"Top100 Mom16 Versions 1.0 vs 1.1 vs 1.2 - Recent {years}Y (costed, as of {as_of_date.date()})")
-    plt.ylabel("Rebased NAV")
-    plt.grid(alpha=0.25)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=160)
-    plt.close()
+        ax_nav.plot(rebased.index, rebased[version], label=version, **styles[version])
+    ax_nav.set_title(f"Top100 Mom16 Versions 1.0 vs 1.1 vs 1.2 - Recent {years}Y (costed, as of {as_of_date.date()})")
+    ax_nav.set_ylabel("Rebased NAV")
+    ax_nav.grid(alpha=0.25)
+    ax_nav.legend()
+
+    for version in ("v1.0", "v1.1", "v1.2"):
+        ax_spread.plot(spread_bps.index, spread_bps[version], label=version, **styles[version])
+    ax_spread.axhline(0.0, color="#666666", linewidth=1.0, alpha=0.8)
+    ax_spread.set_ylabel("Vs v1.0 (bps)")
+    ax_spread.grid(alpha=0.25)
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=160)
+    plt.close(fig)
     return output_path
 
 

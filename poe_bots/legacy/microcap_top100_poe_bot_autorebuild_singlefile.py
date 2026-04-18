@@ -1352,6 +1352,10 @@ def fetch_hedge_realtime_quote():
 def format_signal_summary(row, context):
     freshness = context["freshness"]
     meta = context["rebuild_meta"]
+    last_trade_date = str(meta.get("last_trade_signal_date") or "").strip()
+    changes_df = context.get("changes_df")
+    rebalance_effective_date = str(context.get("rebalance_effective_date") or "").strip()
+    last_member_trade_date = rebalance_effective_date if isinstance(changes_df, pd.DataFrame) and not changes_df.empty and rebalance_effective_date else ""
     return "\n".join(
         [
             "信号结论",
@@ -1370,14 +1374,15 @@ def format_signal_summary(row, context):
             "",
             "调仓快照",
             f"- 最新调仓日：{context['latest_rebalance']}",
-            f"- 当前生效名单：{context['effective_rebalance']}",
-            f"- 调仓生效日：{context['rebalance_effective_date']}",
+            f"- 最近一次动量交易：{last_trade_date or '无'}",
+            f"- 最近一次调仓交易：{last_member_trade_date or '无'}",
+            f"- 当前生效名单对应调仓日：{context['effective_rebalance']}",
             "",
             "自动重建状态",
             f"- 候选池数量：{meta['candidate_pool']}",
             f"- 历史成功股票数：{meta['history_symbols_ok']}",
             f"- 历史失败股票数：{meta['history_symbols_failed']}",
-            f"- 最近历史交易日：{freshness['latest_trade_date']}",
+            f"- 历史锚点交易日：{freshness['latest_trade_date']}",
             f"- 严格校验：{'通过' if meta.get('strict_validated') else '未开启'}",
             f"- 一致性校验池：{','.join(str(x) for x in meta.get('validated_exact_pools', []))}" if meta.get("validated_exact_pools") else "- 一致性校验池：无",
         ]
@@ -1386,6 +1391,10 @@ def format_signal_summary(row, context):
 
 def format_realtime_summary(row, context, available_rows, total_rows):
     meta = context["rebuild_meta"]
+    last_trade_date = str(meta.get("last_trade_signal_date") or "").strip()
+    changes_df = context.get("changes_df")
+    rebalance_effective_date = str(context.get("rebalance_effective_date") or "").strip()
+    last_member_trade_date = rebalance_effective_date if isinstance(changes_df, pd.DataFrame) and not changes_df.empty and rebalance_effective_date else ""
     lines = [
         "实时信号结论",
         f"- 当前状态：{render_holding(str(row['next_holding']))}",
@@ -1407,8 +1416,9 @@ def format_realtime_summary(row, context, available_rows, total_rows):
         "",
         "调仓快照",
         f"- 最新调仓日：{context['latest_rebalance']}",
-        f"- 当前生效名单：{context['effective_rebalance']}",
-        f"- 调仓生效日：{context['rebalance_effective_date']}",
+        f"- 最近一次动量交易：{last_trade_date or '无'}",
+        f"- 最近一次调仓交易：{last_member_trade_date or '无'}",
+        f"- 当前生效名单对应调仓日：{context['effective_rebalance']}",
         "",
         "严格校验",
         f"- 生效成分股：{len(context['effective_members'])} / {TOP_N}",

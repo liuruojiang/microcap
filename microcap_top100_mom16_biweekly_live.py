@@ -1835,6 +1835,16 @@ def ensure_base_signal_fresh(
 ) -> dict[str, object]:
     ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
     close_df = load_close_df(panel_path, args.index_csv)
+    return build_base_signal_context(args, paths, panel_path, target_end_date, close_df)
+
+
+def build_base_signal_context(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+    close_df: pd.DataFrame,
+) -> dict[str, object]:
     result = run_signal(close_df)
     latest_signal = enrich_signal_frame(hedge_mod.build_latest_signal(result), result)
     latest_rebalance, prev_rebalance, next_rebalance, effective_rebalance = locate_rebalance_dates(close_df.index)
@@ -1857,6 +1867,18 @@ def ensure_base_signal_fresh(
         "effective_rebalance": effective_rebalance,
         "anchor_freshness": anchor_freshness,
     }
+
+
+def ensure_realtime_query_base_context(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+) -> dict[str, object]:
+    if not args.index_csv.exists():
+        raise FileNotFoundError(f"Missing proxy index required for realtime query: {args.index_csv}")
+    close_df = load_close_df(panel_path, args.index_csv)
+    return build_base_signal_context(args, paths, panel_path, target_end_date, close_df)
 
 
 def ensure_static_members_fresh(
@@ -2917,7 +2939,15 @@ def execute_query(args: argparse.Namespace, query: str) -> None:
         base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
         handle_query(base_context, args, query_text)
         return
-    if kind in {"members", "changes", "realtime_signal", "realtime_changes"}:
+    if kind in {"realtime_signal", "realtime_changes"}:
+        try:
+            base_context = ensure_realtime_query_base_context(args, paths, panel_path, target_end_date)
+        except (FileNotFoundError, ValueError):
+            base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
+        member_context = ensure_static_members_fresh(args, paths, panel_path, target_end_date, base_context)
+        handle_query(member_context, args, query_text)
+        return
+    if kind in {"members", "changes"}:
         base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
         member_context = ensure_static_members_fresh(args, paths, panel_path, target_end_date, base_context)
         handle_query(member_context, args, query_text)

@@ -57,6 +57,22 @@ class CompareVersionsFastRefreshTests(unittest.TestCase):
 
         refresh_mock.assert_not_called()
 
+    def test_build_relative_spread_bps_uses_v1_0_as_baseline(self) -> None:
+        rebased = pd.DataFrame(
+            {
+                "v1.0": [1.0, 1.01, 1.02],
+                "v1.1": [1.0, 1.011, 1.019],
+                "v1.2": [1.0, 1.009, 1.021],
+            },
+            index=pd.to_datetime(["2026-04-08", "2026-04-09", "2026-04-10"]),
+        )
+
+        spread = compare_mod.build_relative_spread_bps(rebased)
+
+        self.assertEqual(spread["v1.0"].tolist(), [0.0, 0.0, 0.0])
+        self.assertAlmostEqual(float(spread["v1.1"].iloc[1]), 9.90099009900991, places=10)
+        self.assertAlmostEqual(float(spread["v1.2"].iloc[1]), -9.90099009900991, places=10)
+
 
 if __name__ == "__main__":
     unittest.main()

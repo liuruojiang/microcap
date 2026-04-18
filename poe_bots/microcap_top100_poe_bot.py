@@ -6,6 +6,7 @@
 
 import base64
 import contextlib
+import gzip
 import json
 import io
 import os
@@ -148,6 +149,8 @@ DEFAULT_MAX_WORKERS = int(os.environ.get("AUTOREBUILD_MAX_WORKERS", "12"))
 DEFAULT_REQUEST_TIMEOUT = int(os.environ.get("AUTOREBUILD_TIMEOUT", "8"))
 DEFAULT_QUOTE_CACHE_SECONDS = int(os.environ.get("AUTOREBUILD_CACHE_SECONDS", "120"))
 DEFAULT_CONTEXT_CACHE_SECONDS = int(os.environ.get("AUTOREBUILD_CONTEXT_CACHE_SECONDS", "900"))
+THREAD_CONTEXT_CACHE_SECONDS = int(os.environ.get("AUTOREBUILD_THREAD_CACHE_SECONDS", "1800"))
+THREAD_CONTEXT_ATTACHMENT_PREFIX = "microcap_top100_thread_context"
 STRICT_EXACT_MODE = str(os.environ.get("AUTOREBUILD_STRICT_EXACT", "1")).strip().lower() not in ("0", "false", "no")
 DEFAULT_MIN_ACCEPTABLE_MEMBERS = int(os.environ.get("AUTOREBUILD_MIN_ACCEPTABLE_MEMBERS", str(TOP_N if STRICT_EXACT_MODE else 75)))
 DEFAULT_TIME_BUDGET_SECONDS = int(os.environ.get("AUTOREBUILD_TIME_BUDGET_SECONDS", "180"))
@@ -747,7 +750,7 @@ def deserialize_context(payload):
     changes_df = pd.DataFrame(payload.get("changes_df") or [])
     context = {
         "close_df": close_df,
-        "result": result,
+        "result": None,
         "latest_signal": latest_signal,
         "target_members": target_members,
         "effective_members": effective_members,
@@ -760,6 +763,7 @@ def deserialize_context(payload):
         "freshness": payload.get("freshness") or {},
         "rebuild_meta": payload.get("rebuild_meta") or {},
     }
+    return context
 
 
 def is_exact_context(context):
@@ -828,6 +832,71 @@ def write_context_cache(context):
         write_json_cache(context_cache_path(), serialize_context(context))
     except Exception:
         pass
+
+
+def thread_context_attachment_name():
+    return f"{THREAD_CONTEXT_ATTACHMENT_PREFIX}_{get_strategy_cache_tag()}.json.gz"
+
+
+def build_thread_context_attachment(context):
+    envelope = {
+        "kind": "thread_context_cache",
+        "strategy_cache_tag": get_strategy_cache_tag(),
+        "created_ts": float(time.time()),
+        "context": serialize_context(context),
+    }
+    content = gzip.compress(json.dumps(envelope, ensure_ascii=False).encode("utf-8"))
+    return thread_context_attachment_name(), content, "application/gzip"
+
+
+def iter_default_chat_messages():
+    if poe is None:
+        return []
+    chat = getattr(poe, "default_chat", None)
+    if chat is None:
+        return []
+    if isinstance(chat, list):
+        return chat
+    if isinstance(getattr(chat, "messages", None), list):
+        return getattr(chat, "messages")
+    try:
+        return list(chat)
+    except Exception:
+        return []
+
+
+def read_recent_thread_context_cache(force_refresh=False):
+    if force_refresh:
+        return None
+    now_ts = time.time()
+    for message in reversed(iter_default_chat_messages()):
+        attachments = getattr(message, "attachments", None) or []
+        for attachment in attachments:
+            name = str(getattr(attachment, "name", "") or "")
+            if not name.startswith(THREAD_CONTEXT_ATTACHMENT_PREFIX):
+                continue
+            try:
+                raw = attachment.get_contents()
+                if isinstance(raw, str):
+                    raw = raw.encode("utf-8")
+                envelope = json.loads(gzip.decompress(raw).decode("utf-8"))
+            except Exception:
+                continue
+            if str(envelope.get("strategy_cache_tag") or "") != get_strategy_cache_tag():
+                continue
+            created_ts = float(envelope.get("created_ts") or 0.0)
+            if created_ts <= 0 or (now_ts - created_ts) > THREAD_CONTEXT_CACHE_SECONDS:
+                continue
+            payload = envelope.get("context") or {}
+            if not payload_matches_current_core_params(payload):
+                continue
+            try:
+                context = deserialize_context(payload)
+            except Exception:
+                continue
+            if has_complete_member_tables(context):
+                return context
+    return None
 
 
 def fetch_json(url, headers=None, timeout=DEFAULT_REQUEST_TIMEOUT, retries=5):
@@ -970,6 +1039,29 @@ def get_last_trade_signal_info(context):
     return str(pd.Timestamp(changed.index[-1]).date()), str(last["trade_state_calc"])
 
 
+def get_last_strategy_trade_date(context):
+    trade_dates = []
+    meta = (context or {}).get("rebuild_meta") or {}
+    last_trade_signal_date = str(meta.get("last_trade_signal_date") or "").strip()
+    if last_trade_signal_date:
+        trade_dates.append(last_trade_signal_date)
+    changes_df = (context or {}).get("changes_df")
+    rebalance_effective_date = str((context or {}).get("rebalance_effective_date") or "").strip()
+    if isinstance(changes_df, pd.DataFrame) and not changes_df.empty and rebalance_effective_date:
+        trade_dates.append(rebalance_effective_date)
+    if not trade_dates:
+        return None
+    return str(max(pd.Timestamp(item) for item in trade_dates).date())
+
+
+def get_last_member_rebalance_trade_date(context):
+    changes_df = (context or {}).get("changes_df")
+    rebalance_effective_date = str((context or {}).get("rebalance_effective_date") or "").strip()
+    if isinstance(changes_df, pd.DataFrame) and not changes_df.empty and rebalance_effective_date:
+        return rebalance_effective_date
+    return None
+
+
 def format_threshold_text(momentum_gap):
     gap = float(momentum_gap)
     if gap >= 0:
@@ -998,80 +1090,85 @@ def eastmoney_index_history(secid, calendar_days, force_refresh=False):
 
     end_ts = pd.Timestamp.now().normalize()
     start_ts = end_ts - pd.Timedelta(days=max(10, int(calendar_days)))
-    url = (
-        "https://push2his.eastmoney.com/api/qt/stock/kline/get"
-        f"?secid={secid}"
-        "&fields1=f1,f2,f3,f4,f5,f6"
-        "&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61"
-        "&klt=101&fqt=1"
-        f"&beg={start_ts.strftime('%Y%m%d')}"
-        f"&end={end_ts.strftime('%Y%m%d')}"
-        "&lmt=10000"
-    )
     rows = []
+    code = secid.split(".")[-1]
+    market_prefix = "sh" if str(secid).startswith("1.") else "sz"
+
+    tencent_symbol = f"{market_prefix}{code}"
+    tencent_len = max(120, int(calendar_days) * 3)
+    tencent_url = (
+        "https://web.ifzq.gtimg.cn/appstock/app/kline/kline"
+        f"?param={tencent_symbol},day,,,{tencent_len}"
+    )
     try:
-        data = fetch_json(
-            url,
-            headers={"Referer": "https://quote.eastmoney.com/"},
-        ).get("data") or {}
-        klines = data.get("klines") or []
+        data = fetch_json(tencent_url, timeout=min(DEFAULT_REQUEST_TIMEOUT, 6), retries=2)
+        payload = (data.get("data") or {}).get(tencent_symbol) or {}
+        klines = payload.get("day") or []
         for item in klines:
-            parts = item.split(",")
-            if len(parts) < 3:
+            if not isinstance(item, list) or len(item) < 3:
                 continue
-            rows.append({"date": pd.to_datetime(parts[0]), "close": float(parts[2])})
+            dt = pd.to_datetime(item[0], errors="coerce")
+            if pd.isna(dt) or dt < start_ts or dt > end_ts:
+                continue
+            rows.append({"date": dt, "close": float(item[2])})
     except Exception:
         rows = []
 
     if not rows:
-        if any_cached is not None:
-            frame = pd.DataFrame(any_cached)
-            if not frame.empty:
-                frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
-                frame = frame.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset="date").reset_index(drop=True)
-                if not frame.empty:
-                    return frame
-        code = secid.split(".")[-1]
-        market_prefix = "sh" if str(secid).startswith("1.") else "sz"
-        tencent_symbol = f"{market_prefix}{code}"
-        tencent_len = max(120, int(calendar_days) * 3)
-        tencent_url = (
-            "https://web.ifzq.gtimg.cn/appstock/app/kline/kline"
-            f"?param={tencent_symbol},day,,,{tencent_len}"
-        )
-        try:
-            data = fetch_json(tencent_url, timeout=min(DEFAULT_REQUEST_TIMEOUT, 6), retries=2)
-            payload = (data.get("data") or {}).get(tencent_symbol) or {}
-            klines = payload.get("day") or []
-            for item in klines:
-                if not isinstance(item, list) or len(item) < 3:
-                    continue
-                dt = pd.to_datetime(item[0], errors="coerce")
-                if pd.isna(dt) or dt < start_ts or dt > end_ts:
-                    continue
-                rows.append({"date": dt, "close": float(item[2])})
-        except Exception:
-            rows = []
-
-    if not rows:
-        code = secid.split(".")[-1]
-        sina_symbol = f"sh{code}"
+        sina_symbol = f"{market_prefix}{code}"
         sina_url = (
             "https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData"
             f"?symbol={sina_symbol}&scale=240&ma=no&datalen=6000"
         )
-        data = fetch_json(sina_url)
-        if not isinstance(data, list):
-            raise RuntimeError(f"无法获取指数历史: {secid}")
-        for item in data:
-            day = item.get("day")
-            close = item.get("close")
-            if day is None or close is None:
-                continue
-            dt = pd.to_datetime(day)
-            if dt < start_ts or dt > end_ts:
-                continue
-            rows.append({"date": dt, "close": float(close)})
+        try:
+            data = fetch_json(sina_url, timeout=min(DEFAULT_REQUEST_TIMEOUT, 6), retries=2)
+            if isinstance(data, list):
+                for item in data:
+                    day = item.get("day")
+                    close = item.get("close")
+                    if day is None or close is None:
+                        continue
+                    dt = pd.to_datetime(day, errors="coerce")
+                    if pd.isna(dt) or dt < start_ts or dt > end_ts:
+                        continue
+                    rows.append({"date": dt, "close": float(close)})
+        except Exception:
+            rows = []
+
+    if not rows:
+        url = (
+            "https://push2his.eastmoney.com/api/qt/stock/kline/get"
+            f"?secid={secid}"
+            "&fields1=f1,f2,f3,f4,f5,f6"
+            "&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61"
+            "&klt=101&fqt=1"
+            f"&beg={start_ts.strftime('%Y%m%d')}"
+            f"&end={end_ts.strftime('%Y%m%d')}"
+            "&lmt=10000"
+        )
+        try:
+            data = fetch_json(
+                url,
+                headers={"Referer": "https://quote.eastmoney.com/"},
+                timeout=min(DEFAULT_REQUEST_TIMEOUT, 6),
+                retries=2,
+            ).get("data") or {}
+            klines = data.get("klines") or []
+            for item in klines:
+                parts = item.split(",")
+                if len(parts) < 3:
+                    continue
+                rows.append({"date": pd.to_datetime(parts[0]), "close": float(parts[2])})
+        except Exception:
+            rows = []
+
+    if not rows and any_cached is not None:
+        frame = pd.DataFrame(any_cached)
+        if not frame.empty:
+            frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
+            frame = frame.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset="date").reset_index(drop=True)
+            if not frame.empty:
+                return frame
 
     out = pd.DataFrame(rows)
     if out.empty:
@@ -1095,46 +1192,8 @@ def fetch_universe_spot(cache_seconds=DEFAULT_QUOTE_CACHE_SECONDS):
         if len(cached_df) >= required_count:
             return cached_df
 
-    rows = []
-    page = 1
     try:
-        while True:
-            url = (
-                "https://push2.eastmoney.com/api/qt/clist/get"
-                f"?pn={page}&pz=100&po=0&np=1&fltt=2&invt=2&fid=f20"
-                "&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23"
-                "&fields=f12,f14,f2,f3,f17,f18,f20"
-            )
-            data = fetch_json(
-                url,
-                headers={"Referer": "https://quote.eastmoney.com/"},
-            ).get("data") or {}
-            diff = data.get("diff") or []
-            if not diff:
-                break
-            for item in diff:
-                code = str(item.get("f12") or "").zfill(6)
-                name = str(item.get("f14") or "")
-                latest = pd.to_numeric(item.get("f2"), errors="coerce")
-                market_cap = pd.to_numeric(item.get("f20"), errors="coerce")
-                prev_close = pd.to_numeric(item.get("f18"), errors="coerce")
-                open_price = pd.to_numeric(item.get("f17"), errors="coerce")
-                if not code or pd.isna(latest) or latest <= 0 or pd.isna(market_cap) or market_cap <= 0:
-                    continue
-                rows.append(
-                    {
-                        "code": code,
-                        "name": name,
-                        "latest_price": float(latest),
-                        "market_cap": float(market_cap),
-                        "prev_close": None if pd.isna(prev_close) else float(prev_close),
-                        "open_price": None if pd.isna(open_price) else float(open_price),
-                    }
-                )
-            total = int(data.get("total") or 0)
-            if len(rows) >= target_count or page * 100 >= total or page >= 20:
-                break
-            page += 1
+        rows = fetch_eastmoney_universe_rows(target_count=target_count)
     except Exception:
         rows = []
 
@@ -1160,6 +1219,75 @@ def fetch_universe_spot(cache_seconds=DEFAULT_QUOTE_CACHE_SECONDS):
         )
     write_json_cache(cache, universe.to_dict(orient="records"))
     return universe
+
+
+def build_eastmoney_universe_page_url(page, page_size=100):
+    return (
+        "https://push2.eastmoney.com/api/qt/clist/get"
+        f"?pn={int(page)}&pz={int(page_size)}&po=0&np=1&fltt=2&invt=2&fid=f20"
+        "&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23"
+        "&fields=f12,f14,f2,f3,f17,f18,f20"
+    )
+
+
+def parse_eastmoney_universe_items(diff):
+    rows = []
+    for item in diff or []:
+        code = str(item.get("f12") or "").zfill(6)
+        name = str(item.get("f14") or "")
+        latest = pd.to_numeric(item.get("f2"), errors="coerce")
+        market_cap = pd.to_numeric(item.get("f20"), errors="coerce")
+        prev_close = pd.to_numeric(item.get("f18"), errors="coerce")
+        open_price = pd.to_numeric(item.get("f17"), errors="coerce")
+        if not code or pd.isna(latest) or latest <= 0 or pd.isna(market_cap) or market_cap <= 0:
+            continue
+        rows.append(
+            {
+                "code": code,
+                "name": name,
+                "latest_price": float(latest),
+                "market_cap": float(market_cap),
+                "prev_close": None if pd.isna(prev_close) else float(prev_close),
+                "open_price": None if pd.isna(open_price) else float(open_price),
+            }
+        )
+    return rows
+
+
+def fetch_eastmoney_universe_rows(target_count, page_size=100, max_pages=20):
+    first_page = fetch_json(
+        build_eastmoney_universe_page_url(1, page_size=page_size),
+        headers={"Referer": "https://quote.eastmoney.com/"},
+    ).get("data") or {}
+    rows_by_page = {1: parse_eastmoney_universe_items(first_page.get("diff") or [])}
+    total = int(first_page.get("total") or 0)
+    pages_total = max(1, int(np.ceil(float(max(1, total)) / float(page_size)))) if total > 0 else 1
+    final_page = min(max_pages, pages_total)
+    fetched_page = 1
+    valid_rows = len(rows_by_page[1])
+    while fetched_page < final_page and valid_rows < target_count:
+        missing_rows = max(1, int(target_count - valid_rows))
+        batch_size = max(1, int(np.ceil(float(missing_rows) / float(page_size))))
+        batch_end = min(final_page, fetched_page + batch_size)
+        with ThreadPoolExecutor(max_workers=max(1, min(8, batch_end - fetched_page))) as pool:
+            futures = {
+                pool.submit(
+                    fetch_json,
+                    build_eastmoney_universe_page_url(page, page_size=page_size),
+                    headers={"Referer": "https://quote.eastmoney.com/"},
+                ): page
+                for page in range(fetched_page + 1, batch_end + 1)
+            }
+            for fut in as_completed(futures):
+                page = futures[fut]
+                data = fut.result().get("data") or {}
+                rows_by_page[page] = parse_eastmoney_universe_items(data.get("diff") or [])
+        fetched_page = batch_end
+        valid_rows = sum(len(rows_by_page.get(page) or []) for page in range(1, fetched_page + 1))
+    rows = []
+    for page in range(1, fetched_page + 1):
+        rows.extend(rows_by_page.get(page) or [])
+    return rows
 
 
 def load_current_st_codes():
@@ -1593,6 +1721,37 @@ def fetch_candidate_histories(candidates, trading_start, trading_end, max_worker
     return histories, failures
 
 
+def extend_histories_for_candidate_pool(
+    candidates,
+    trading_start,
+    trading_end,
+    max_workers,
+    min_latest_date=None,
+    force_refresh=False,
+    history_cache=None,
+    failure_cache=None,
+):
+    merged_histories = dict(history_cache or {})
+    merged_failures = dict(failure_cache or {})
+    symbols = candidates["code"].astype(str).tolist()
+    missing_symbols = [symbol for symbol in symbols if symbol not in merged_histories and symbol not in merged_failures]
+    if missing_symbols:
+        missing_candidates = candidates[candidates["code"].astype(str).isin(missing_symbols)].copy()
+        fetched_histories, fetched_failures = fetch_candidate_histories(
+            missing_candidates,
+            trading_start,
+            trading_end,
+            max_workers,
+            min_latest_date=min_latest_date,
+            force_refresh=force_refresh,
+        )
+        merged_histories.update(fetched_histories)
+        merged_failures.update(fetched_failures)
+    stage_histories = {symbol: merged_histories[symbol] for symbol in symbols if symbol in merged_histories}
+    stage_failures = {symbol: merged_failures[symbol] for symbol in symbols if symbol in merged_failures}
+    return stage_histories, stage_failures, merged_histories, merged_failures
+
+
 def build_trade_dates(history_days, force_refresh=False):
     hedge_hist = eastmoney_index_history(HEDGE_SECID, history_days, force_refresh=force_refresh)
     hedge_hist = hedge_hist.sort_values("date").reset_index(drop=True)
@@ -1624,7 +1783,11 @@ def locate_rebalance_dates(trading_dates):
 def resolve_rebalance_effective_date(trading_dates, latest_rebalance):
     if latest_rebalance is None:
         return None
-    return str(pd.Timestamp(latest_rebalance).date())
+    latest_rebalance = pd.Timestamp(latest_rebalance)
+    future_dates = [pd.Timestamp(dt) for dt in pd.DatetimeIndex(trading_dates) if pd.Timestamp(dt) > latest_rebalance]
+    if not future_dates:
+        return None
+    return str(min(future_dates).date())
 
 
 def build_signal_window(trading_dates, lookback=LOOKBACK):
@@ -2365,10 +2528,13 @@ def assemble_context(hedge_hist, all_trading_dates, candidates, histories, failu
 
 def build_context(force_refresh=False, require_latest=False):
     cached_context = read_context_cache(force_refresh=force_refresh)
+    thread_cached_context = read_recent_thread_context_cache(force_refresh=force_refresh) if require_latest else None
     hedge_hist = None
     all_trading_dates = None
     latest_trade_date = None
 
+    if require_latest and thread_cached_context is not None and has_complete_member_tables(thread_cached_context):
+        return thread_cached_context
     if require_latest:
         hedge_hist, all_trading_dates = build_trade_dates(
             DEFAULT_HISTORY_CALENDAR_DAYS,
@@ -2407,6 +2573,8 @@ def build_context(force_refresh=False, require_latest=False):
     best_score = (-1, -1, -1)
     exact_contexts = []
     stage_attempts = []
+    history_cache = {}
+    failure_cache = {}
     for pool_size in pool_stages:
         elapsed = time.time() - start_ts
         if STRICT_EXACT_MODE and elapsed >= DEFAULT_TIME_BUDGET_SECONDS:
@@ -2418,13 +2586,15 @@ def build_context(force_refresh=False, require_latest=False):
             )
         stage_attempts.append(pool_size)
         candidates = select_candidate_pool(universe, pool_size, min_latest_date=latest_trade_date)
-        histories, failures = fetch_candidate_histories(
+        histories, failures, history_cache, failure_cache = extend_histories_for_candidate_pool(
             candidates,
             window_dates.min(),
             window_dates.max(),
             DEFAULT_MAX_WORKERS,
             min_latest_date=latest_trade_date,
             force_refresh=force_refresh,
+            history_cache=history_cache,
+            failure_cache=failure_cache,
         )
         try:
             context = assemble_context(
@@ -2543,6 +2713,7 @@ def format_signal_summary(row, context):
     freshness = context["freshness"]
     meta = context["rebuild_meta"]
     last_trade_date, last_trade_action = get_last_trade_signal_info(context)
+    last_member_trade_date = get_last_member_rebalance_trade_date(context)
     last_trade_text = (
         f"{last_trade_date}（{render_trade_state(last_trade_action)}）" if last_trade_date else "无"
     )
@@ -2578,15 +2749,16 @@ def format_signal_summary(row, context):
             "",
             "调仓快照",
             f"- 最新调仓日：{context['latest_rebalance']}",
-            f"- 当前生效名单：{context['effective_rebalance']}",
-            f"- 调仓生效日：{context['rebalance_effective_date']}",
+            f"- 最近一次动量交易：{last_trade_date or '无'}",
+            f"- 最近一次调仓交易：{last_member_trade_date or '无'}",
+            f"- 当前生效名单对应调仓日：{context['effective_rebalance']}",
             f"- 名单变动数量：调入 {int(row.get('member_enter_count', 0))} / 调出 {int(row.get('member_exit_count', 0))}",
             "",
             "自动重建状态",
             f"- 候选池数量：{meta['candidate_pool']}",
             f"- 历史成功股票数：{meta['history_symbols_ok']}",
             f"- 历史失败股票数：{meta['history_symbols_failed']}",
-            f"- 最近历史交易日：{freshness['latest_trade_date']}",
+            f"- 历史锚点交易日：{freshness['latest_trade_date']}",
             f"- 严格校验：{'通过' if meta.get('strict_validated') else '未开启'}",
             f"- 一致性校验池：{','.join(str(x) for x in meta.get('validated_exact_pools', []))}" if meta.get("validated_exact_pools") else "- 一致性校验池：无",
         ]
@@ -2597,6 +2769,7 @@ def format_signal_summary(row, context):
 def format_realtime_summary(row, context, available_rows, total_rows):
     meta = context["rebuild_meta"]
     last_trade_date, last_trade_action = get_last_trade_signal_info(context)
+    last_member_trade_date = get_last_member_rebalance_trade_date(context)
     last_trade_text = (
         f"{last_trade_date}（{render_trade_state(last_trade_action)}）" if last_trade_date else "无"
     )
@@ -2636,8 +2809,9 @@ def format_realtime_summary(row, context, available_rows, total_rows):
             "",
             "调仓快照",
             f"- 最新调仓日：{context['latest_rebalance']}",
-            f"- 当前生效名单：{context['effective_rebalance']}",
-            f"- 调仓生效日：{context['rebalance_effective_date']}",
+            f"- 最近一次动量交易：{last_trade_date or '无'}",
+            f"- 最近一次调仓交易：{last_member_trade_date or '无'}",
+            f"- 当前生效名单对应调仓日：{context['effective_rebalance']}",
             f"- 名单变动数量：调入 {int(row.get('member_enter_count', 0))} / 调出 {int(row.get('member_exit_count', 0))}",
             "",
             "严格校验",
@@ -2719,7 +2893,8 @@ def handle_signal(force_refresh=False):
     context = build_context(force_refresh=force_refresh, require_latest=True)
     row = context["latest_signal"].iloc[0]
     csv_bytes = context["latest_signal"].to_csv(index=False).encode("utf-8-sig")
-    return format_signal_summary(row, context), csv_bytes
+    attachments = [build_thread_context_attachment(context)]
+    return format_signal_summary(row, context), csv_bytes, attachments
 
 
 def handle_realtime_signal(force_refresh=False):
@@ -2800,7 +2975,8 @@ def handle_realtime_signal(force_refresh=False):
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
     csv_bytes = signal_df.to_csv(index=False).encode("utf-8-sig")
-    return format_realtime_summary(signal_df.iloc[0], context, available_rows, len(member_symbols)), csv_bytes
+    attachments = [build_thread_context_attachment(context)]
+    return format_realtime_summary(signal_df.iloc[0], context, available_rows, len(member_symbols)), csv_bytes, attachments
 
 
 def handle_members(force_refresh=False):
@@ -2938,18 +3114,20 @@ def main():
             body, attachments = handle_realtime_changes(force_refresh=force_refresh)
             send_message(f"## 实时进出名单\n\n```text\n{body}\n```", attachments=attachments)
         elif command == CMD_REALTIME:
-            body, csv_bytes = handle_realtime_signal(force_refresh=force_refresh)
+            body, csv_bytes, attachments = handle_realtime_signal(force_refresh=force_refresh)
             send_message(
                 f"## 实时信号\n\n```text\n{body}\n```",
                 versioned_attachment_name("microcap_top100_autorebuild_realtime_signal.csv"),
                 csv_bytes,
+                attachments=attachments,
             )
         else:
-            body, csv_bytes = handle_signal(force_refresh=force_refresh)
+            body, csv_bytes, attachments = handle_signal(force_refresh=force_refresh)
             send_message(
                 f"## 收盘确认信号\n\n```text\n{body}\n```",
                 versioned_attachment_name("microcap_top100_autorebuild_signal.csv"),
                 csv_bytes,
+                attachments=attachments,
             )
     except Exception as exc:
         send_message(f"计算失败：{exc}")
