@@ -1,0 +1,31 @@
+Top100 v1.4 v1.5 archive created: 2026-04-19
+Source root: C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\动量策略\微盘股对冲策略
+Archive root: C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\动量策略\微盘股对冲策略\归档\Top100_v1_4_v1_5研究定版_2026-04-19
+
+Purpose:
+- Freeze today's formal v1.4 / v1.5 decisions
+- Preserve core scripts, tests, summaries, nav exports, charts, and v1.5 two-level NAV robustness outputs
+- Record tried and untried take-profit / exit paths for future A-share / US momentum-rotation reuse
+
+Copied files:
+microcap_top100_mom16_biweekly_live_v1_4.py
+microcap_top100_mom16_biweekly_live_v1_5.py
+test_v1_4_output_compatibility.py
+test_v1_5_output_compatibility.py
+outputs\microcap_top100_mom16_biweekly_live_v1_4_summary.json
+outputs\microcap_top100_mom16_biweekly_live_v1_5_summary.json
+outputs\microcap_top100_mom16_hedge_zz1000_0p8x_gapderisk_newpeak_v1_4_costed_nav.csv
+outputs\microcap_top100_mom16_hedge_zz1000_0p8x_nav4_8_gapexit_newpeak_v1_5_costed_nav.csv
+outputs\microcap_top100_v1_4_v1_5_formal_vs_overlay_match_summary_corrected.json
+outputs\microcap_top100_v1_5_twolevel_nav_robustness_summary_corrected.json
+outputs\microcap_top100_v1_5_twolevel_nav_horizontal_robustness_corrected.csv
+outputs\microcap_top100_v1_5_twolevel_nav_vertical_rolling_windows_corrected.csv
+outputs\microcap_top100_v1_5_twolevel_nav_vertical_summary_corrected.csv
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent1y_compare.png
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent3y_compare.png
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent5y_compare.png
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent10y_compare.png
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent1y_rebased_nav.csv
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent3y_rebased_nav.csv
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent5y_rebased_nav.csv
+outputs\microcap_top100_v1_1_v1_4_v1_5_recent10y_rebased_nav.csv

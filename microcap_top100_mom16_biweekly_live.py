@@ -39,6 +39,7 @@ STATIC_CONTEXT_CACHE_VERSION = "2026-04-11-live-current-st-members-v1"
 DEFAULT_INDEX_CSV = OUTPUT_DIR / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv"
 DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live"
 DEFAULT_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv"
+DEFAULT_FORCED_STOP_LOSS_SCAN_THRESHOLDS = (0.02, 0.03, 0.04, 0.05)
 UNIVERSE_LABEL = "Top100"
 STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly"
 INDEX_CODE = "TOP100_BIWEEKLY_THURSDAY_PROXY"
@@ -221,6 +222,7 @@ def build_output_paths(output_prefix: str) -> dict[str, Path]:
         "performance_nav": OUTPUT_DIR / f"{output_prefix}_performance_nav.csv",
         "performance_chart": OUTPUT_DIR / f"{output_prefix}_performance_curve.png",
         "performance_json": OUTPUT_DIR / f"{output_prefix}_performance_summary.json",
+        "forced_stop_scan": OUTPUT_DIR / f"{output_prefix}_forced_stop_scan.csv",
         "cache_static_meta": REALTIME_DIR / f"{output_prefix}_static_meta.json",
         "cache_static_target": REALTIME_DIR / f"{output_prefix}_static_target_members.csv",
         "cache_static_effective": REALTIME_DIR / f"{output_prefix}_static_effective_members.csv",
@@ -927,10 +929,1070 @@ def run_signal(close_df: pd.DataFrame) -> pd.DataFrame:
     return result
 
 
+def apply_single_trade_forced_stop_loss(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    stop_loss_threshold: float,
+    reentry_momentum_strength_days: int | None = None,
+) -> pd.DataFrame:
+    if stop_loss_threshold <= 0:
+        raise ValueError("stop_loss_threshold must be positive.")
+    if reentry_momentum_strength_days is not None and reentry_momentum_strength_days < 2:
+        raise ValueError("reentry_momentum_strength_days must be at least 2 when provided.")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        out["forced_stop_triggered"] = pd.Series(dtype=bool)
+        out["signal_reset_seen"] = pd.Series(dtype=bool)
+        out["trade_id"] = pd.Series(dtype="Int64")
+        out["trade_return_net"] = pd.Series(dtype=float)
+        out["entry_exit_cost"] = pd.Series(dtype=float)
+        out["rebalance_cost"] = pd.Series(dtype=float)
+        out["total_cost"] = pd.Series(dtype=float)
+        out["return_net"] = pd.Series(dtype=float)
+        out["nav_net"] = pd.Series(dtype=float)
+        out["momentum_reentry_streak"] = pd.Series(dtype="Int64")
+        out["momentum_reentry_triggered"] = pd.Series(dtype=bool)
+        return out
+
+    required = {"holding", "next_holding", "return"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for forced stop loss execution: {sorted(missing)}")
+    if reentry_momentum_strength_days is not None and "momentum_gap" not in out.columns:
+        raise KeyError("Column 'momentum_gap' is required for momentum-strength reentry.")
+
+    out["base_holding"] = out["holding"].astype(str)
+    out["base_next_holding"] = out["next_holding"].astype(str)
+    out["base_signal_on"] = out["base_next_holding"].ne("cash")
+
+    rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    forced_stop_flags: list[bool] = []
+    signal_reset_seen_flags: list[bool] = []
+    blocked_flags: list[bool] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+    momentum_reentry_streaks: list[int] = []
+    momentum_reentry_flags: list[bool] = []
+
+    current_active = str(out["base_holding"].iloc[0]) != "cash"
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    blocked_until_reset = False
+    signal_reset_seen = False
+    nav_net = 1.0
+    trade_nav = 1.0 if current_active else 1.0
+    blocked_strength_streak = 0
+    last_blocked_momentum_gap: float | None = None
+
+    for dt in out.index:
+        base_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+        momentum_gap = float(out.at[dt, "momentum_gap"]) if "momentum_gap" in out.columns else None
+        momentum_reentry_triggered = False
+
+        if blocked_until_reset and reentry_momentum_strength_days is not None:
+            if base_next_active and momentum_gap is not None:
+                if last_blocked_momentum_gap is None:
+                    blocked_strength_streak = 1
+                elif momentum_gap > last_blocked_momentum_gap:
+                    blocked_strength_streak += 1
+                else:
+                    blocked_strength_streak = 1
+                last_blocked_momentum_gap = momentum_gap
+                if blocked_strength_streak >= reentry_momentum_strength_days:
+                    blocked_until_reset = False
+                    momentum_reentry_triggered = True
+                    signal_reset_seen = False
+            else:
+                blocked_strength_streak = 0
+                last_blocked_momentum_gap = None
+
+        desired_next_active = current_active if blocked_until_reset else base_next_active
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+
+        trade_participates = bool(current_active or desired_next_active)
+        if trade_participates:
+            trade_id_for_row = current_trade_id
+        else:
+            trade_id_for_row = None
+
+        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not current_active and desired_next_active) else 0.0
+        exit_cost = freq_mod.cost_mod.EXIT_COST if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+        forced_stop_triggered = False
+
+        if current_active and desired_next_active and trade_nav * (1.0 + return_net) - 1.0 <= -float(stop_loss_threshold):
+            desired_next_active = False
+            forced_stop_triggered = True
+            entry_cost = 0.0
+            exit_cost = freq_mod.cost_mod.EXIT_COST
+            rebalance_cost = 0.0
+            total_cost = exit_cost
+            return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_return_net = trade_nav - 1.0
+        else:
+            trade_return_net = None
+
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        forced_stop_flags.append(bool(forced_stop_triggered))
+        blocked_flags.append(bool(blocked_until_reset))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+        momentum_reentry_streaks.append(int(blocked_strength_streak))
+        momentum_reentry_flags.append(bool(momentum_reentry_triggered))
+
+        if forced_stop_triggered:
+            blocked_until_reset = True
+            signal_reset_seen = False
+            blocked_strength_streak = 0
+            last_blocked_momentum_gap = None
+        elif blocked_until_reset and not base_next_active:
+            blocked_until_reset = False
+            signal_reset_seen = True
+            blocked_strength_streak = 0
+            last_blocked_momentum_gap = None
+        else:
+            signal_reset_seen = False
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
+
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["forced_stop_triggered"] = forced_stop_flags
+    out["blocked_until_signal_reset"] = blocked_flags
+    out["signal_reset_seen"] = signal_reset_seen_flags
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    out["momentum_reentry_streak"] = pd.Series(momentum_reentry_streaks, index=out.index, dtype="Int64")
+    out["momentum_reentry_triggered"] = pd.Series(momentum_reentry_flags, index=out.index, dtype=bool)
+    return out
+
+
+def apply_peak_drawdown_forced_stop_loss(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    stop_loss_threshold: float,
+    reentry_momentum_strength_days: int | None = None,
+    require_reentry_gap_above_stop_level: bool = False,
+    stop_trigger_window_days: int | None = None,
+    stop_trigger_event_count: int | None = None,
+) -> pd.DataFrame:
+    if stop_loss_threshold <= 0:
+        raise ValueError("stop_loss_threshold must be positive.")
+    if reentry_momentum_strength_days is not None and reentry_momentum_strength_days < 2:
+        raise ValueError("reentry_momentum_strength_days must be at least 2 when provided.")
+    if (stop_trigger_window_days is None) != (stop_trigger_event_count is None):
+        raise ValueError("stop_trigger_window_days and stop_trigger_event_count must be provided together.")
+    if stop_trigger_window_days is not None and stop_trigger_window_days < 1:
+        raise ValueError("stop_trigger_window_days must be at least 1 when provided.")
+    if stop_trigger_event_count is not None and stop_trigger_event_count < 1:
+        raise ValueError("stop_trigger_event_count must be at least 1 when provided.")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        out["forced_stop_triggered"] = pd.Series(dtype=bool)
+        out["signal_reset_seen"] = pd.Series(dtype=bool)
+        out["trade_id"] = pd.Series(dtype="Int64")
+        out["trade_return_net"] = pd.Series(dtype=float)
+        out["trade_peak_nav"] = pd.Series(dtype=float)
+        out["trade_drawdown_from_peak"] = pd.Series(dtype=float)
+        out["drawdown_event_triggered"] = pd.Series(dtype=bool)
+        out["drawdown_event_count_in_window"] = pd.Series(dtype="Int64")
+        out["entry_exit_cost"] = pd.Series(dtype=float)
+        out["rebalance_cost"] = pd.Series(dtype=float)
+        out["total_cost"] = pd.Series(dtype=float)
+        out["return_net"] = pd.Series(dtype=float)
+        out["nav_net"] = pd.Series(dtype=float)
+        out["momentum_reentry_streak"] = pd.Series(dtype="Int64")
+        out["momentum_reentry_triggered"] = pd.Series(dtype=bool)
+        return out
+
+    required = {"holding", "next_holding", "return"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for forced stop loss execution: {sorted(missing)}")
+    if reentry_momentum_strength_days is not None and "momentum_gap" not in out.columns:
+        raise KeyError("Column 'momentum_gap' is required for momentum-strength reentry.")
+
+    out["base_holding"] = out["holding"].astype(str)
+    out["base_next_holding"] = out["next_holding"].astype(str)
+    out["base_signal_on"] = out["base_next_holding"].ne("cash")
+
+    rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    forced_stop_flags: list[bool] = []
+    signal_reset_seen_flags: list[bool] = []
+    blocked_flags: list[bool] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+    trade_peak_navs: list[float | None] = []
+    trade_drawdowns: list[float | None] = []
+    drawdown_event_flags: list[bool] = []
+    drawdown_event_counts_in_window: list[int] = []
+    momentum_reentry_streaks: list[int] = []
+    momentum_reentry_flags: list[bool] = []
+
+    current_active = str(out["base_holding"].iloc[0]) != "cash"
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    blocked_until_reset = False
+    signal_reset_seen = False
+    nav_net = 1.0
+    trade_nav = 1.0
+    trade_peak_nav = 1.0
+    event_reference_peak_nav = 1.0
+    blocked_strength_streak = 0
+    last_blocked_momentum_gap: float | None = None
+    blocked_stop_momentum_gap: float | None = None
+    drawdown_event_dates: list[pd.Timestamp] = []
+
+    for dt in out.index:
+        base_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+        momentum_gap = float(out.at[dt, "momentum_gap"]) if "momentum_gap" in out.columns else None
+        momentum_reentry_triggered = False
+
+        if blocked_until_reset and reentry_momentum_strength_days is not None:
+            if base_next_active and momentum_gap is not None:
+                if last_blocked_momentum_gap is None:
+                    blocked_strength_streak = 1
+                elif momentum_gap > last_blocked_momentum_gap:
+                    blocked_strength_streak += 1
+                else:
+                    blocked_strength_streak = 1
+                last_blocked_momentum_gap = momentum_gap
+                gap_reclaimed = (
+                    not require_reentry_gap_above_stop_level
+                    or blocked_stop_momentum_gap is None
+                    or momentum_gap > blocked_stop_momentum_gap
+                )
+                if blocked_strength_streak >= reentry_momentum_strength_days and gap_reclaimed:
+                    blocked_until_reset = False
+                    momentum_reentry_triggered = True
+                    signal_reset_seen = False
+            else:
+                blocked_strength_streak = 0
+                last_blocked_momentum_gap = None
+
+        desired_next_active = current_active if blocked_until_reset else base_next_active
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+            trade_peak_nav = 1.0
+            event_reference_peak_nav = 1.0
+            drawdown_event_dates = []
+
+        trade_participates = bool(current_active or desired_next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+
+        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not current_active and desired_next_active) else 0.0
+        exit_cost = freq_mod.cost_mod.EXIT_COST if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+        forced_stop_triggered = False
+        drawdown_event_triggered = False
+        drawdown_event_count_in_window = 0
+
+        if current_active and desired_next_active:
+            trial_trade_nav = trade_nav * (1.0 + return_net)
+            event_drawdown = (trial_trade_nav / event_reference_peak_nav - 1.0) if event_reference_peak_nav > 0 else 0.0
+            if event_drawdown <= -float(stop_loss_threshold):
+                drawdown_event_triggered = True
+                event_reference_peak_nav = trial_trade_nav
+                drawdown_event_dates.append(pd.Timestamp(dt))
+            else:
+                event_reference_peak_nav = max(event_reference_peak_nav, trial_trade_nav)
+
+            if stop_trigger_window_days is None:
+                drawdown_event_count_in_window = 1 if drawdown_event_triggered else 0
+                stop_now = bool(drawdown_event_triggered)
+            else:
+                window_start = pd.Timestamp(dt) - pd.Timedelta(days=int(stop_trigger_window_days) - 1)
+                drawdown_event_dates = [event_dt for event_dt in drawdown_event_dates if event_dt >= window_start]
+                drawdown_event_count_in_window = int(len(drawdown_event_dates))
+                stop_now = drawdown_event_count_in_window >= int(stop_trigger_event_count)
+
+            if stop_now:
+                desired_next_active = False
+                forced_stop_triggered = True
+                entry_cost = 0.0
+                exit_cost = freq_mod.cost_mod.EXIT_COST
+                rebalance_cost = 0.0
+                total_cost = exit_cost
+                return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_peak_nav = max(trade_peak_nav, trade_nav)
+            trade_return_net = trade_nav - 1.0
+            trade_drawdown_from_peak = (trade_nav / trade_peak_nav - 1.0) if trade_peak_nav > 0 else 0.0
+        else:
+            trade_return_net = None
+            trade_drawdown_from_peak = None
+
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        forced_stop_flags.append(bool(forced_stop_triggered))
+        blocked_flags.append(bool(blocked_until_reset))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+        trade_peak_navs.append(None if trade_return_net is None else float(trade_peak_nav))
+        trade_drawdowns.append(None if trade_drawdown_from_peak is None else float(trade_drawdown_from_peak))
+        drawdown_event_flags.append(bool(drawdown_event_triggered))
+        drawdown_event_counts_in_window.append(int(drawdown_event_count_in_window))
+        momentum_reentry_streaks.append(int(blocked_strength_streak))
+        momentum_reentry_flags.append(bool(momentum_reentry_triggered))
+
+        if forced_stop_triggered:
+            blocked_until_reset = True
+            signal_reset_seen = False
+            blocked_strength_streak = 0
+            last_blocked_momentum_gap = None
+            blocked_stop_momentum_gap = momentum_gap
+        elif blocked_until_reset and not base_next_active:
+            blocked_until_reset = False
+            signal_reset_seen = True
+            blocked_strength_streak = 0
+            last_blocked_momentum_gap = None
+            blocked_stop_momentum_gap = None
+        else:
+            signal_reset_seen = False
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
+
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+            trade_peak_nav = 1.0
+            event_reference_peak_nav = 1.0
+            drawdown_event_dates = []
+
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["forced_stop_triggered"] = forced_stop_flags
+    out["blocked_until_signal_reset"] = blocked_flags
+    out["signal_reset_seen"] = signal_reset_seen_flags
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["trade_peak_nav"] = pd.Series(trade_peak_navs, index=out.index, dtype=float)
+    out["trade_drawdown_from_peak"] = pd.Series(trade_drawdowns, index=out.index, dtype=float)
+    out["drawdown_event_triggered"] = pd.Series(drawdown_event_flags, index=out.index, dtype=bool)
+    out["drawdown_event_count_in_window"] = pd.Series(drawdown_event_counts_in_window, index=out.index, dtype="Int64")
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    out["momentum_reentry_streak"] = pd.Series(momentum_reentry_streaks, index=out.index, dtype="Int64")
+    out["momentum_reentry_triggered"] = pd.Series(momentum_reentry_flags, index=out.index, dtype=bool)
+    return out
+
+
+def apply_ratio_bias_take_profit(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    bias_window: int,
+    take_profit_threshold: float,
+    require_positive_trade_return: bool = True,
+    require_signal_reset_after_take_profit: bool = True,
+) -> pd.DataFrame:
+    if bias_window < 1:
+        raise ValueError("bias_window must be at least 1.")
+    if take_profit_threshold <= 0:
+        raise ValueError("take_profit_threshold must be positive.")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        out["ratio_bias"] = pd.Series(dtype=float)
+        out["take_profit_triggered"] = pd.Series(dtype=bool)
+        out["blocked_until_signal_reset"] = pd.Series(dtype=bool)
+        out["signal_reset_seen"] = pd.Series(dtype=bool)
+        out["trade_id"] = pd.Series(dtype="Int64")
+        out["trade_return_net"] = pd.Series(dtype=float)
+        out["entry_exit_cost"] = pd.Series(dtype=float)
+        out["rebalance_cost"] = pd.Series(dtype=float)
+        out["total_cost"] = pd.Series(dtype=float)
+        out["return_net"] = pd.Series(dtype=float)
+        out["nav_net"] = pd.Series(dtype=float)
+        return out
+
+    required = {"holding", "next_holding", "return", "microcap_close", "hedge_close"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for ratio bias take profit execution: {sorted(missing)}")
+
+    out["base_holding"] = out["holding"].astype(str)
+    out["base_next_holding"] = out["next_holding"].astype(str)
+    out["base_signal_on"] = out["base_next_holding"].ne("cash")
+
+    ratio = pd.to_numeric(out["microcap_close"], errors="coerce") / pd.to_numeric(out["hedge_close"], errors="coerce")
+    out["ratio_bias"] = ratio.div(ratio.rolling(int(bias_window)).mean()).sub(1.0)
+
+    rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    take_profit_flags: list[bool] = []
+    blocked_flags: list[bool] = []
+    signal_reset_seen_flags: list[bool] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+
+    current_active = str(out["base_holding"].iloc[0]) != "cash"
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    blocked_until_reset = False
+    signal_reset_seen = False
+    nav_net = 1.0
+    trade_nav = 1.0
+
+    for dt in out.index:
+        base_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
+        desired_next_active = current_active if blocked_until_reset else base_next_active
+
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+
+        trade_participates = bool(current_active or desired_next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+        ratio_bias = out.at[dt, "ratio_bias"]
+
+        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not current_active and desired_next_active) else 0.0
+        exit_cost = freq_mod.cost_mod.EXIT_COST if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        trade_return_before_exit: float | None = None
+        if current_active and desired_next_active:
+            trade_nav_before_exit = trade_nav * (1.0 + return_net)
+            trade_return_before_exit = trade_nav_before_exit - 1.0
+        take_profit_triggered = False
+        if (
+            current_active
+            and desired_next_active
+            and pd.notna(ratio_bias)
+            and float(ratio_bias) >= float(take_profit_threshold)
+            and (
+                not require_positive_trade_return
+                or (trade_return_before_exit is not None and trade_return_before_exit > 0.0)
+            )
+        ):
+            desired_next_active = False
+            take_profit_triggered = True
+            entry_cost = 0.0
+            exit_cost = freq_mod.cost_mod.EXIT_COST
+            rebalance_cost = 0.0
+            total_cost = exit_cost
+            return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_return_net = trade_nav - 1.0
+        else:
+            trade_return_net = None
+
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        take_profit_flags.append(bool(take_profit_triggered))
+        blocked_flags.append(bool(blocked_until_reset))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+
+        if take_profit_triggered and require_signal_reset_after_take_profit:
+            blocked_until_reset = True
+            signal_reset_seen = False
+        elif blocked_until_reset and not base_next_active:
+            blocked_until_reset = False
+            signal_reset_seen = True
+        else:
+            signal_reset_seen = False
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
+
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["take_profit_triggered"] = pd.Series(take_profit_flags, index=out.index, dtype=bool)
+    out["blocked_until_signal_reset"] = pd.Series(blocked_flags, index=out.index, dtype=bool)
+    out["signal_reset_seen"] = pd.Series(signal_reset_seen_flags, index=out.index, dtype=bool)
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    return out
+
+
+def apply_momentum_gap_peak_decay_exit(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    decay_ratio_threshold: float,
+    require_signal_reset_after_exit: bool = True,
+) -> pd.DataFrame:
+    if decay_ratio_threshold < 0:
+        raise ValueError("decay_ratio_threshold must be non-negative.")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        out["gap_peak"] = pd.Series(dtype=float)
+        out["gap_decay_ratio"] = pd.Series(dtype=float)
+        out["signal_quality_exit_triggered"] = pd.Series(dtype=bool)
+        out["blocked_until_signal_reset"] = pd.Series(dtype=bool)
+        out["signal_reset_seen"] = pd.Series(dtype=bool)
+        out["trade_id"] = pd.Series(dtype="Int64")
+        out["trade_return_net"] = pd.Series(dtype=float)
+        out["entry_exit_cost"] = pd.Series(dtype=float)
+        out["rebalance_cost"] = pd.Series(dtype=float)
+        out["total_cost"] = pd.Series(dtype=float)
+        out["return_net"] = pd.Series(dtype=float)
+        out["nav_net"] = pd.Series(dtype=float)
+        return out
+
+    required = {"holding", "next_holding", "return", "momentum_gap"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for momentum-gap peak-decay exit execution: {sorted(missing)}")
+
+    out["base_holding"] = out["holding"].astype(str)
+    out["base_next_holding"] = out["next_holding"].astype(str)
+    out["base_signal_on"] = out["base_next_holding"].ne("cash")
+
+    rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+    momentum_gap_series = pd.to_numeric(out["momentum_gap"], errors="coerce")
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    exit_flags: list[bool] = []
+    blocked_flags: list[bool] = []
+    signal_reset_seen_flags: list[bool] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+    gap_peaks: list[float | None] = []
+    gap_decay_ratios: list[float | None] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+
+    current_active = str(out["base_holding"].iloc[0]) != "cash"
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    blocked_until_reset = False
+    signal_reset_seen = False
+    nav_net = 1.0
+    trade_nav = 1.0
+    gap_peak: float | None = None
+
+    for dt in out.index:
+        base_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
+        desired_next_active = current_active if blocked_until_reset else base_next_active
+        current_gap = float(momentum_gap_series.loc[dt]) if pd.notna(momentum_gap_series.loc[dt]) else None
+
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+            gap_peak = current_gap
+
+        trade_participates = bool(current_active or desired_next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+
+        if current_active and current_gap is not None:
+            gap_peak = current_gap if gap_peak is None else max(float(gap_peak), current_gap)
+        gap_decay_ratio = None
+        if current_active and current_gap is not None and gap_peak is not None and gap_peak > 0:
+            gap_decay_ratio = current_gap / gap_peak
+
+        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not current_active and desired_next_active) else 0.0
+        exit_cost = freq_mod.cost_mod.EXIT_COST if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        signal_quality_exit_triggered = False
+        if (
+            current_active
+            and desired_next_active
+            and gap_decay_ratio is not None
+            and gap_decay_ratio <= float(decay_ratio_threshold)
+        ):
+            desired_next_active = False
+            signal_quality_exit_triggered = True
+            entry_cost = 0.0
+            exit_cost = freq_mod.cost_mod.EXIT_COST
+            rebalance_cost = 0.0
+            total_cost = exit_cost
+            return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_return_net = trade_nav - 1.0
+        else:
+            trade_return_net = None
+
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        exit_flags.append(bool(signal_quality_exit_triggered))
+        blocked_flags.append(bool(blocked_until_reset))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+        gap_peaks.append(None if gap_peak is None else float(gap_peak))
+        gap_decay_ratios.append(None if gap_decay_ratio is None else float(gap_decay_ratio))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+
+        if signal_quality_exit_triggered and require_signal_reset_after_exit:
+            blocked_until_reset = True
+            signal_reset_seen = False
+        elif blocked_until_reset and not base_next_active:
+            blocked_until_reset = False
+            signal_reset_seen = True
+        else:
+            signal_reset_seen = False
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
+
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+            if not blocked_until_reset:
+                gap_peak = None
+
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["gap_peak"] = pd.Series(gap_peaks, index=out.index, dtype=float)
+    out["gap_decay_ratio"] = pd.Series(gap_decay_ratios, index=out.index, dtype=float)
+    out["signal_quality_exit_triggered"] = pd.Series(exit_flags, index=out.index, dtype=bool)
+    out["blocked_until_signal_reset"] = pd.Series(blocked_flags, index=out.index, dtype=bool)
+    out["signal_reset_seen"] = pd.Series(signal_reset_seen_flags, index=out.index, dtype=bool)
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    return out
+
+
+def run_momentum_gap_peak_decay_scan(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    decay_thresholds: tuple[float, ...],
+) -> pd.DataFrame:
+    rows: list[dict[str, object]] = []
+    for threshold in tuple(float(v) for v in decay_thresholds):
+        result = apply_momentum_gap_peak_decay_exit(
+            gross_result=gross_result,
+            turnover_df=turnover_df,
+            decay_ratio_threshold=threshold,
+        )
+        metrics = hedge_mod.calc_metrics(result["return_net"].fillna(0.0))
+        rows.append(
+            {
+                "threshold": threshold,
+                "threshold_pct": threshold * 100.0,
+                "signal_quality_exit_count": int(result["signal_quality_exit_triggered"].fillna(False).sum()),
+                "annual_return": float(metrics.annual),
+                "max_drawdown": float(metrics.max_dd),
+                "total_return": float(metrics.total_return),
+                "final_nav": float(result["nav_net"].iloc[-1]),
+            }
+        )
+    return pd.DataFrame(rows).sort_values("threshold").reset_index(drop=True)
+
+
+def apply_momentum_gap_peak_decay_derisk(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    decay_ratio_threshold: float,
+    derisk_scale: float,
+    recovery_ratio_threshold: float | None = None,
+) -> pd.DataFrame:
+    if decay_ratio_threshold < 0:
+        raise ValueError("decay_ratio_threshold must be non-negative.")
+    if not (0.0 <= derisk_scale <= 1.0):
+        raise ValueError("derisk_scale must be between 0 and 1.")
+    if recovery_ratio_threshold is not None:
+        recovery_ratio_threshold = float(recovery_ratio_threshold)
+        if recovery_ratio_threshold < 0:
+            raise ValueError("recovery_ratio_threshold must be non-negative.")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        out["gap_peak"] = pd.Series(dtype=float)
+        out["gap_decay_ratio"] = pd.Series(dtype=float)
+        out["signal_quality_derisk_triggered"] = pd.Series(dtype=bool)
+        out["execution_scale"] = pd.Series(dtype=float)
+        out["trade_id"] = pd.Series(dtype="Int64")
+        out["trade_return_net"] = pd.Series(dtype=float)
+        out["entry_exit_cost"] = pd.Series(dtype=float)
+        out["rebalance_cost"] = pd.Series(dtype=float)
+        out["total_cost"] = pd.Series(dtype=float)
+        out["return_net"] = pd.Series(dtype=float)
+        out["nav_net"] = pd.Series(dtype=float)
+        return out
+
+    required = {"holding", "next_holding", "return", "momentum_gap"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for momentum-gap peak-decay derisk execution: {sorted(missing)}")
+
+    out["base_holding"] = out["holding"].astype(str)
+    out["base_next_holding"] = out["next_holding"].astype(str)
+    out["base_signal_on"] = out["base_next_holding"].ne("cash")
+
+    rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+    momentum_gap_series = pd.to_numeric(out["momentum_gap"], errors="coerce")
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    derisk_flags: list[bool] = []
+    execution_scales: list[float] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+    gap_peaks: list[float | None] = []
+    gap_decay_ratios: list[float | None] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+
+    current_active = str(out["base_holding"].iloc[0]) != "cash"
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    nav_net = 1.0
+    trade_nav = 1.0
+    gap_peak: float | None = None
+    active_scale = 1.0
+    derisked_in_trade = False
+    waiting_for_new_peak_after_recovery = False
+    rearm_peak_level: float | None = None
+
+    for dt in out.index:
+        desired_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
+        current_gap = float(momentum_gap_series.loc[dt]) if pd.notna(momentum_gap_series.loc[dt]) else None
+
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+            gap_peak = current_gap
+            active_scale = 1.0
+            derisked_in_trade = False
+            waiting_for_new_peak_after_recovery = False
+            rearm_peak_level = None
+
+        trade_participates = bool(current_active or desired_next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+
+        gross_daily_return = float(returns.loc[dt])
+        prior_gap_peak = gap_peak
+        if current_active and current_gap is not None:
+            gap_peak = current_gap if gap_peak is None else max(float(gap_peak), current_gap)
+        if (
+            current_active
+            and waiting_for_new_peak_after_recovery
+            and rearm_peak_level is not None
+            and gap_peak is not None
+            and float(gap_peak) > float(rearm_peak_level)
+        ):
+            waiting_for_new_peak_after_recovery = False
+            rearm_peak_level = None
+        gap_decay_ratio = None
+        if current_active and current_gap is not None and gap_peak is not None and gap_peak > 0:
+            gap_decay_ratio = current_gap / gap_peak
+
+        signal_quality_derisk_triggered = False
+        applied_scale = active_scale if current_active else 0.0
+        if (
+            current_active
+            and desired_next_active
+            and derisked_in_trade
+            and recovery_ratio_threshold is not None
+            and gap_decay_ratio is not None
+            and gap_decay_ratio >= recovery_ratio_threshold
+        ):
+            active_scale = 1.0
+            applied_scale = active_scale
+            derisked_in_trade = False
+            waiting_for_new_peak_after_recovery = True
+            rearm_peak_level = gap_peak
+        if (
+            current_active
+            and desired_next_active
+            and not derisked_in_trade
+            and not waiting_for_new_peak_after_recovery
+            and gap_decay_ratio is not None
+            and gap_decay_ratio <= float(decay_ratio_threshold)
+        ):
+            active_scale = float(derisk_scale)
+            applied_scale = active_scale
+            derisked_in_trade = True
+            signal_quality_derisk_triggered = True
+
+        realized_daily_return = gross_daily_return * applied_scale if current_active else 0.0
+
+        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not current_active and desired_next_active) else 0.0
+        exit_cost = freq_mod.cost_mod.EXIT_COST if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_return_net = trade_nav - 1.0
+        else:
+            trade_return_net = None
+
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        derisk_flags.append(bool(signal_quality_derisk_triggered))
+        execution_scales.append(float(applied_scale))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+        gap_peaks.append(None if gap_peak is None else float(gap_peak))
+        gap_decay_ratios.append(None if gap_decay_ratio is None else float(gap_decay_ratio))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+            gap_peak = None
+            active_scale = 1.0
+            derisked_in_trade = False
+            waiting_for_new_peak_after_recovery = False
+            rearm_peak_level = None
+
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["gap_peak"] = pd.Series(gap_peaks, index=out.index, dtype=float)
+    out["gap_decay_ratio"] = pd.Series(gap_decay_ratios, index=out.index, dtype=float)
+    out["signal_quality_derisk_triggered"] = pd.Series(derisk_flags, index=out.index, dtype=bool)
+    out["execution_scale"] = pd.Series(execution_scales, index=out.index, dtype=float)
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    return out
+
+
+def run_momentum_gap_peak_decay_derisk_scan(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    decay_thresholds: tuple[float, ...],
+    derisk_scales: tuple[float, ...],
+) -> pd.DataFrame:
+    rows: list[dict[str, object]] = []
+    for threshold in tuple(float(v) for v in decay_thresholds):
+        for derisk_scale in tuple(float(v) for v in derisk_scales):
+            result = apply_momentum_gap_peak_decay_derisk(
+                gross_result=gross_result,
+                turnover_df=turnover_df,
+                decay_ratio_threshold=threshold,
+                derisk_scale=derisk_scale,
+            )
+            metrics = hedge_mod.calc_metrics(result["return_net"].fillna(0.0))
+            rows.append(
+                {
+                    "threshold": threshold,
+                    "threshold_pct": threshold * 100.0,
+                    "derisk_scale": derisk_scale,
+                    "signal_quality_derisk_count": int(result["signal_quality_derisk_triggered"].fillna(False).sum()),
+                    "annual_return": float(metrics.annual),
+                    "max_drawdown": float(metrics.max_dd),
+                    "total_return": float(metrics.total_return),
+                    "final_nav": float(result["nav_net"].iloc[-1]),
+                }
+            )
+    return pd.DataFrame(rows).sort_values(["threshold", "derisk_scale"]).reset_index(drop=True)
+
+
+def run_forced_stop_loss_scan(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    thresholds: tuple[float, ...] = DEFAULT_FORCED_STOP_LOSS_SCAN_THRESHOLDS,
+    reentry_momentum_strength_days: int | None = None,
+) -> pd.DataFrame:
+    rows: list[dict[str, object]] = []
+    ordered_thresholds = tuple(float(value) for value in thresholds)
+    for threshold in ordered_thresholds:
+        result = apply_single_trade_forced_stop_loss(
+            gross_result=gross_result,
+            turnover_df=turnover_df,
+            stop_loss_threshold=threshold,
+            reentry_momentum_strength_days=reentry_momentum_strength_days,
+        )
+        metrics = hedge_mod.calc_metrics(result["return_net"].fillna(0.0))
+        rows.append(
+            {
+                "threshold": threshold,
+                "threshold_pct": int(round(threshold * 100)),
+                "reentry_momentum_strength_days": reentry_momentum_strength_days,
+                "forced_stop_count": int(result["forced_stop_triggered"].fillna(False).sum()),
+                "momentum_reentry_count": int(result["momentum_reentry_triggered"].fillna(False).sum()),
+                "entry_days": int(result["holding"].eq("cash").mul(result["next_holding"].ne("cash")).sum()),
+                "annual_return": float(metrics.annual),
+                "max_drawdown": float(metrics.max_dd),
+                "sharpe": float(metrics.sharpe),
+                "total_return": float(metrics.total_return),
+                "final_nav": float(result["nav_net"].iloc[-1]),
+            }
+        )
+    return pd.DataFrame(rows).sort_values("threshold").reset_index(drop=True)
+
+
+def run_forced_stop_loss_scan_from_proxy_turnover(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    thresholds: tuple[float, ...] = DEFAULT_FORCED_STOP_LOSS_SCAN_THRESHOLDS,
+    reentry_momentum_strength_days: int | None = None,
+) -> pd.DataFrame:
+    turnover_path = paths["proxy_turnover"]
+    if not turnover_path.exists():
+        raise FileNotFoundError(f"Missing proxy turnover history required for forced stop loss scan: {turnover_path}")
+
+    turnover_df = pd.read_csv(turnover_path)
+    if "rebalance_date" not in turnover_df.columns:
+        raise KeyError(f"Column 'rebalance_date' not found in {turnover_path}.")
+    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
+    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+
+    close_df = load_close_df(panel_path, args.index_csv)
+    gross = run_signal(close_df)
+    summary = run_forced_stop_loss_scan(
+        gross_result=gross,
+        turnover_df=turnover_df,
+        thresholds=thresholds,
+        reentry_momentum_strength_days=reentry_momentum_strength_days,
+    )
+    summary.to_csv(paths["forced_stop_scan"], index=False, encoding="utf-8")
+    return summary
+
+
 def rebuild_costed_nav_from_proxy_turnover(
     args: argparse.Namespace,
     paths: dict[str, Path],
     panel_path: Path,
+    stop_loss_threshold: float | None = None,
 ) -> None:
     turnover_path = paths["proxy_turnover"]
     if not turnover_path.exists():
@@ -944,7 +2006,10 @@ def rebuild_costed_nav_from_proxy_turnover(
 
     close_df = load_close_df(panel_path, args.index_csv)
     gross = run_signal(close_df)
-    net = freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
+    if stop_loss_threshold is None:
+        net = freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
+    else:
+        net = apply_single_trade_forced_stop_loss(gross, turnover_df, stop_loss_threshold)
     net.to_csv(args.costed_nav_csv, index_label="date", encoding="utf-8")
 
 
