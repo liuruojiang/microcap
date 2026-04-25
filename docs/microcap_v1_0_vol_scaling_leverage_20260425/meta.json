@@ -1,0 +1,17 @@
+{
+  "source_nav": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
+  "source_start": "2010-02-02",
+  "source_end": "2026-04-24",
+  "baseline": "v1.0 costed Top100 microcap long / CSI1000 short strategy",
+  "vol_window": 60,
+  "target_vols": [
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35
+  ],
+  "max_leverage": 1.5,
+  "scale_change_cost": 0.001,
+  "financing_rate": 0.03
+}

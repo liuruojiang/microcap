@@ -1,0 +1,17 @@
+{
+  "source": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
+  "turnover": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_proxy_turnover.csv",
+  "date_start": "2010-02-02",
+  "date_end": "2026-04-24",
+  "long_abs_active_days_pct": 0.6730182926829268,
+  "current_active_days_pct": 0.760670731707317,
+  "long_abs_signal_changes": 330,
+  "current_signal_changes": 211,
+  "long_abs_entry_exit_cost_days": 330,
+  "long_abs_rebalance_cost_days": 259,
+  "long_abs_total_cost_sum": 1.1439599999999945,
+  "current_total_cost_sum": 0.820469999999994,
+  "long_abs_last_holding": "cash",
+  "long_abs_last_next_holding": "cash",
+  "last_microcap_mom": -0.0092534191035642
+}
