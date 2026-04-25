@@ -37,6 +37,7 @@ PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
 EXPECTED_VERSION_ROLE = "signal_quality_derisk_alternative"
 EXPECTED_VERSION_NOTE_PREFIX = "Signal-quality derisk alternative."
 BASE_HEDGE_RATIO = 0.8
+V1_4_MOMENTUM_GAP_EXIT_BUFFER = 0.0025
 DECAY_RATIO_THRESHOLD = 0.25
 DERISK_SCALE = 0.0
 RECOVERY_RATIO_THRESHOLD = 0.35
@@ -75,6 +76,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "base_costed_nav_sha1": _file_sha1(BASE_COSTED_NAV_CSV),
         "research_stack_version": v1_1_mod.base_mod.RESEARCH_STACK_VERSION,
         "overlay_type": "momentum_gap_peak_decay_derisk_new_peak_guard",
+        "momentum_gap_exit_buffer": V1_4_MOMENTUM_GAP_EXIT_BUFFER,
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
@@ -286,7 +288,11 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
 def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     invalidate_incompatible_v1_4_outputs()
-    reference_summary, _, gross, turnover_df = _load_base_v1_1_context()
+    reference_summary, _, base_gross, turnover_df = _load_base_v1_1_context()
+    gross = v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
+        base_gross,
+        V1_4_MOMENTUM_GAP_EXIT_BUFFER,
+    )
     out = v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
         gross_result=gross,
         turnover_df=turnover_df,
@@ -311,10 +317,12 @@ def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
         "Signal-quality derisk alternative. Same as v1.1 (0.8x hedge), "
-        "plus momentum-gap peak-decay derisk with new-peak rearm guard."
+        "plus 0.25% momentum-gap exit buffer and peak-decay derisk with new-peak rearm guard."
     )
     summary.setdefault("core_params", {})
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
+    summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
+    summary["core_params"]["momentum_gap_exit_buffer"] = V1_4_MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {
         "type": "momentum_gap_peak_decay_derisk_new_peak_guard",
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,

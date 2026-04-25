@@ -1,6 +1,7 @@
 {
-  "common_rows": 3911,
+  "common_rows": 3936,
   "max_abs_nav_diff": 0.0,
   "max_abs_ret_diff": 0.0,
-  "validation_pass": true
+  "validation_pass": true,
+  "official_v1_4_buffer": 0.0025
 }

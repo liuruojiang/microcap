@@ -219,7 +219,7 @@ VERSION_PATTERN = re.compile(r"(?i)(?:版本\s*)?v?(1\.(?:0|4|5))(?:的)?")
 STRATEGIES = {
     "1.0": {
         "version": "1.0",
-        "label": "v1.0（主版本，1.0x 对冲）",
+        "label": "v1.0（基础版本，1.0x 对冲）",
         "cache_tag": "v1_0",
         "hedge_ratio": 1.0,
         "performance_costed_nav_csv": PERFORMANCE_COSTED_NAV_CSV,
@@ -234,14 +234,15 @@ STRATEGIES = {
     },
     "1.4": {
         "version": "1.4",
-        "label": "v1.4（0.8x 对冲 + 动量差峰值衰减去风险）",
+        "label": "v1.4（主线，0.8x 对冲 + 退出 buffer + 动量差峰值衰减去风险）",
         "cache_tag": "v1_4",
         "hedge_ratio": 0.8,
         "performance_costed_nav_csv": V1_4_COSTED_NAV_CSV,
         "performance_live_nav_csv": V1_4_LIVE_NAV_CSV,
         "performance_proxy_turnover_csv": None,
         "embedded_performance_b64": "",
-        "overlay_label": "动量差峰值衰减去风险",
+        "overlay_label": "退出 buffer + 动量差峰值衰减去风险",
+        "momentum_gap_exit_buffer": 0.0025,
         "official_signal_csv": V1_4_SIGNAL_CSV,
         "official_summary_json": V1_4_SUMMARY_JSON,
         "official_output_module": "microcap_top100_mom16_biweekly_live_v1_4",
@@ -263,7 +264,7 @@ STRATEGIES = {
         "official_output_generator": "generate_v1_5_outputs",
     },
 }
-ACTIVE_STRATEGY_VERSION = "1.0"
+ACTIVE_STRATEGY_VERSION = "1.4"
 
 SESSION = requests.Session()
 SESSION.headers.update(
@@ -318,14 +319,14 @@ def cached_path(name):
 
 
 def get_strategy(version=None):
-    selected = str(version or ACTIVE_STRATEGY_VERSION or "1.0")
-    return (STRATEGIES.get(selected) or STRATEGIES["1.0"]).copy()
+    selected = str(version or ACTIVE_STRATEGY_VERSION or "1.4")
+    return (STRATEGIES.get(selected) or STRATEGIES["1.4"]).copy()
 
 
 def set_active_strategy(version):
     global ACTIVE_STRATEGY_VERSION
-    selected = str(version or "1.0")
-    ACTIVE_STRATEGY_VERSION = selected if selected in STRATEGIES else "1.0"
+    selected = str(version or "1.4")
+    ACTIVE_STRATEGY_VERSION = selected if selected in STRATEGIES else "1.4"
     return None
 
 
@@ -379,7 +380,7 @@ def strip_strategy_version_tokens(text):
 
 def resolve_strategy_from_query(query_text):
     match = VERSION_PATTERN.search(str(query_text or ""))
-    version = match.group(1) if match else "1.0"
+    version = match.group(1) if match else "1.4"
     set_active_strategy(version)
     return get_strategy(), strip_strategy_version_tokens(query_text)
 
@@ -1177,6 +1178,7 @@ def build_params_summary():
         f"- 调仓频率：每两周周四（biweekly {REBALANCE_WEEKDAY}），收盘确认信号后按下一可执行日处理。",
         f"- 对冲指数：{HEDGE_SECID}，当前脚本用于中证1000对冲腿。",
         f"- 固定对冲比 hedge_ratio：{float(strategy['hedge_ratio']):.1f}x，决定空中证1000的名义敞口。",
+        f"- 动量退出 buffer：{float(strategy.get('momentum_gap_exit_buffer') or 0.0):.2%}，已持仓时只有 momentum_gap 低于负 buffer 才退出；未持仓入场仍要求 momentum_gap > 0。",
         f"- 期货拖累 FUTURES_DRAG：{FUTURES_DRAG:.4%}/日，模拟对冲腿的日度持有拖累。",
         "",
         "交易成本参数",

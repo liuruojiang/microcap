@@ -251,17 +251,18 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertEqual(strategy["version"], "1.5")
         self.assertEqual(query_text, "\u4fe1\u53f7")
 
-    def test_params_command_uses_default_v1_0(self) -> None:
+    def test_params_command_uses_default_v1_4(self) -> None:
         strategy, query_text = bot.resolve_strategy_from_query("\u53c2\u6570")
-        self.assertEqual(strategy["version"], "1.0")
+        self.assertEqual(strategy["version"], "1.4")
         self.assertEqual(bot.normalize_command(query_text), bot.CMD_PARAMS)
         body = bot.build_params_summary()
         self.assertIn("\u53c2\u6570\u8bf4\u660e", body)
-        self.assertIn("v1.0", body)
+        self.assertIn("v1.4", body)
         self.assertIn("\u6bcf\u4e24\u5468\u5468\u56db", body)
         self.assertIn("biweekly Thursday", body)
         self.assertNotIn("\u8c03\u4ed3\u57fa\u51c6\u65e5\uff1aThursday", body)
-        self.assertIn("Overlay\uff1a\u672a\u542f\u7528", body)
+        self.assertIn("decay=25%", body)
+        self.assertIn("NAV \u63a7\u5236\uff1a\u672a\u542f\u7528", body)
 
     def test_params_command_switches_to_v1_4(self) -> None:
         strategy, query_text = bot.resolve_strategy_from_query("1.4\u53c2\u6570")

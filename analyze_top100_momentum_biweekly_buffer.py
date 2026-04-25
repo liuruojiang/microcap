@@ -7,14 +7,12 @@ import numpy as np
 import pandas as pd
 
 import analyze_microcap_zz1000_hedge as hedge_mod
-import analyze_top100_momentum_biweekly_mix as mix_mod
 import microcap_top100_mom16_biweekly_live as live_mod
-import scan_top100_momentum_costs as cost_mod
+import microcap_top100_mom16_biweekly_live_v1_4 as v1_4_mod
 
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "docs" / "top100_momentum_biweekly_buffer_20260425"
-TURNOVER_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_proxy_turnover.csv"
 BASE_LOOKBACK = 16
 BUFFER_LEVELS = (
     ("base_0p000", 0.000),
@@ -44,52 +42,15 @@ WINDOWS = (
 )
 
 
-def build_buffer_gross(gross_base: pd.DataFrame, exit_buffer: float) -> pd.DataFrame:
-    rows: list[dict[str, object]] = []
-    holding = False
-    for i, (date, row) in enumerate(gross_base.iterrows()):
-        active_ret = 0.0
-        drag = live_mod.FUTURES_DRAG * live_mod.FIXED_HEDGE_RATIO if holding else 0.0
-        if holding and pd.notna(row["microcap_ret"]) and pd.notna(row["hedge_ret"]):
-            active_ret = float(row["microcap_ret"] - live_mod.FIXED_HEDGE_RATIO * row["hedge_ret"])
-
-        gap = float(row["momentum_gap"]) if pd.notna(row["momentum_gap"]) else np.nan
-        microcap_mom = float(row["microcap_mom"]) if pd.notna(row["microcap_mom"]) else np.nan
-        valid = pd.notna(gap) and (
-            microcap_mom > 0.0 if live_mod.REQUIRE_POSITIVE_MICROCAP_MOM and pd.notna(microcap_mom) else True
-        )
-        if not valid:
-            signal_on = False
-        elif holding:
-            signal_on = gap >= -exit_buffer
-        else:
-            signal_on = gap > 0.0
-
-        rows.append(
-            {
-                "date": date,
-                "return_raw": active_ret - drag,
-                "return": active_ret - drag,
-                "holding": "long_microcap_short_zz1000" if holding else "cash",
-                "next_holding": "long_microcap_short_zz1000" if signal_on else "cash",
-                "signal_on": bool(signal_on),
-                "microcap_close": row.get("microcap_close", np.nan),
-                "hedge_close": row.get("hedge_close", np.nan),
-                "microcap_ret": row["microcap_ret"],
-                "hedge_ret": row["hedge_ret"],
-                "microcap_mom": row["microcap_mom"],
-                "hedge_mom": row["hedge_mom"],
-                "momentum_gap": row["momentum_gap"],
-                "ratio_bias_mom": row.get("ratio_bias_mom", np.nan),
-                "ratio_r2": row.get("ratio_r2", np.nan),
-                "futures_drag": drag,
-                "active_spread_ret": active_ret,
-                "weight": 1.0,
-                "realized_vol": np.nan,
-            }
-        )
-        holding = bool(signal_on)
-    return pd.DataFrame(rows).set_index("date")
+def build_v1_4_with_buffer(base_gross: pd.DataFrame, turnover: pd.DataFrame, exit_buffer: float) -> pd.DataFrame:
+    buffered = live_mod.apply_momentum_gap_exit_buffer(base_gross, exit_buffer)
+    return live_mod.apply_momentum_gap_peak_decay_derisk(
+        gross_result=buffered,
+        turnover_df=turnover,
+        decay_ratio_threshold=v1_4_mod.DECAY_RATIO_THRESHOLD,
+        derisk_scale=v1_4_mod.DERISK_SCALE,
+        recovery_ratio_threshold=v1_4_mod.RECOVERY_RATIO_THRESHOLD,
+    )
 
 
 def calc_metrics(ret: pd.Series) -> dict[str, float]:
@@ -158,11 +119,11 @@ def write_summary(summary_df: pd.DataFrame, validation: dict[str, object]) -> No
     lines = [
         "# Top100 Momentum Biweekly Buffer Scan",
         "",
-        "- Data source: live rebuild path from `microcap_top100_mom16_biweekly_live.py` via `load_close_df()`",
-        "- Baseline: `lookback=16`, long when `momentum_gap > 0`",
+        "- Baseline script: `microcap_top100_mom16_biweekly_live_v1_4.py`",
+        "- Baseline: v1.4 original rule, `base_version=v1.1`, 0.8x hedge, peak-decay derisk overlay",
         "- Buffer rule: entry remains `momentum_gap > 0`; when already long, exit only when `momentum_gap < -buffer`",
-        "- Cost path: `scan_top100_momentum_costs.apply_cost_model()` with the live turnover table",
-        f"- Validation: `buffer=0` vs live costed path max_abs_nav_diff = `{validation.get('max_abs_nav_diff')}`; max_abs_ret_diff = `{validation.get('max_abs_ret_diff')}`",
+        "- Overlay path: buffer is applied before v1.4 peak-decay derisk, then v1.4 costed return is recomputed",
+        f"- Validation: `buffer={validation.get('official_v1_4_buffer')}` vs v1.4 official output max_abs_nav_diff = `{validation.get('max_abs_nav_diff')}`; max_abs_ret_diff = `{validation.get('max_abs_ret_diff')}`",
         "",
     ]
     core = summary_df[summary_df["window"].isin(["last_1y", "last_3y", "last_5y", "last_10y", "full_common"])].copy()
@@ -182,33 +143,31 @@ def write_summary(summary_df: pd.DataFrame, validation: dict[str, object]) -> No
 
 def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    close_df = mix_mod.build_close_df()
-    turnover = cost_mod.load_turnover_table(TURNOVER_CSV)
-    gross_base = mix_mod.run_single_gross(close_df, BASE_LOOKBACK)
-    live_net = cost_mod.apply_cost_model(gross_base, turnover)
+    _, _, base_gross, turnover = v1_4_mod._load_base_v1_1_context()
+    _, _, official_v1_4 = v1_4_mod.generate_v1_4_outputs()
 
     net_map: dict[str, pd.DataFrame] = {}
     nav_dir = OUTPUT_DIR / "nav"
     nav_dir.mkdir(exist_ok=True)
     for name, buffer_value in BUFFER_LEVELS:
-        gross = build_buffer_gross(gross_base, buffer_value)
-        net = cost_mod.apply_cost_model(gross, turnover)
+        net = build_v1_4_with_buffer(base_gross, turnover, buffer_value)
         net["buffer"] = buffer_value
         net.to_csv(nav_dir / f"{name}.csv", encoding="utf-8")
         net_map[name] = net
 
-    common = live_net.index.intersection(net_map["base_0p000"].index)
-    diff_nav = (live_net.loc[common, "nav_net"] - net_map["base_0p000"].loc[common, "nav_net"]).abs()
-    diff_ret = (live_net.loc[common, "return_net"] - net_map["base_0p000"].loc[common, "return_net"]).abs()
+    common = official_v1_4.index.intersection(net_map["buffer_0p0025"].index)
+    diff_nav = (official_v1_4.loc[common, "nav_net"] - net_map["buffer_0p0025"].loc[common, "nav_net"]).abs()
+    diff_ret = (official_v1_4.loc[common, "return_net"] - net_map["buffer_0p0025"].loc[common, "return_net"]).abs()
     validation = {
         "common_rows": int(len(common)),
         "max_abs_nav_diff": float(diff_nav.max()) if len(common) else None,
         "max_abs_ret_diff": float(diff_ret.max()) if len(common) else None,
         "validation_pass": bool(len(common) and diff_nav.max() < 1e-12 and diff_ret.max() < 1e-12),
+        "official_v1_4_buffer": v1_4_mod.V1_4_MOMENTUM_GAP_EXIT_BUFFER,
     }
     (OUTPUT_DIR / "validation.json").write_text(json.dumps(validation, ensure_ascii=False, indent=2), encoding="utf-8")
     if not validation["validation_pass"]:
-        raise RuntimeError(f"buffer=0 validation failed: {validation}")
+        raise RuntimeError(f"official v1.4 buffer validation failed: {validation}")
 
     summary_df = summarize(net_map, "base_0p000")
     summary_df.to_csv(OUTPUT_DIR / "summary.csv", index=False, encoding="utf-8")
