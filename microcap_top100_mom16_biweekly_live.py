@@ -27,6 +27,7 @@ HEDGE_COLUMN = "1.000852"
 FIXED_HEDGE_RATIO = 1.0
 FUTURES_DRAG = 3.0 / 10000.0
 REQUIRE_POSITIVE_MICROCAP_MOM = False
+MOMENTUM_GAP_EXIT_BUFFER = 0.0025
 TAIL_JITTER_WARNING_GAP = 0.001
 TAIL_JITTER_CAUTION_GAP = 0.002
 DEFAULT_MAX_STALE_ANCHOR_DAYS = 5
@@ -906,6 +907,58 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
     paths["proxy_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def apply_momentum_gap_exit_buffer(gross_result: pd.DataFrame, exit_buffer: float = MOMENTUM_GAP_EXIT_BUFFER) -> pd.DataFrame:
+    if exit_buffer < 0:
+        raise ValueError("exit_buffer must be non-negative.")
+    if exit_buffer == 0 or gross_result.empty:
+        return gross_result.copy()
+
+    out = gross_result.copy().sort_index()
+    required = {"microcap_ret", "hedge_ret", "microcap_mom", "momentum_gap"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for momentum-gap exit buffer: {sorted(missing)}")
+
+    holding = False
+    rows = []
+    for dt, row in out.iterrows():
+        active_ret = 0.0
+        drag = FUTURES_DRAG * FIXED_HEDGE_RATIO if holding else 0.0
+        if holding and pd.notna(row["microcap_ret"]) and pd.notna(row["hedge_ret"]):
+            active_ret = float(row["microcap_ret"] - FIXED_HEDGE_RATIO * row["hedge_ret"])
+
+        gap = float(row["momentum_gap"]) if pd.notna(row["momentum_gap"]) else np.nan
+        microcap_mom = float(row["microcap_mom"]) if pd.notna(row["microcap_mom"]) else np.nan
+        valid = pd.notna(gap)
+        if REQUIRE_POSITIVE_MICROCAP_MOM:
+            valid = valid and pd.notna(microcap_mom) and microcap_mom > 0.0
+        if not valid:
+            signal_on = False
+        elif holding:
+            signal_on = gap >= -exit_buffer
+        else:
+            signal_on = gap > 0.0
+
+        rows.append(
+            {
+                "holding": "long_microcap_short_zz1000" if holding else "cash",
+                "next_holding": "long_microcap_short_zz1000" if signal_on else "cash",
+                "signal_on": bool(signal_on),
+                "return_raw": active_ret - drag,
+                "return": active_ret - drag,
+                "futures_drag": drag,
+                "active_spread_ret": active_ret,
+            }
+        )
+        holding = bool(signal_on)
+
+    adjusted = pd.DataFrame(rows, index=out.index)
+    for col in adjusted.columns:
+        out[col] = adjusted[col]
+    out["momentum_gap_exit_buffer"] = float(exit_buffer)
+    return out
+
+
 def run_signal(close_df: pd.DataFrame) -> pd.DataFrame:
     result = hedge_mod.run_backtest(
         close_df=close_df,
@@ -926,7 +979,7 @@ def run_signal(close_df: pd.DataFrame) -> pd.DataFrame:
         hedge_ratio=FIXED_HEDGE_RATIO,
     )
     result.index = pd.to_datetime(result.index)
-    return result
+    return apply_momentum_gap_exit_buffer(result, MOMENTUM_GAP_EXIT_BUFFER)
 
 
 def apply_single_trade_forced_stop_loss(
@@ -2373,6 +2426,8 @@ def build_summary(
             "rebalance_weekday_anchor": REBALANCE_WEEKDAY,
             "lookback": LOOKBACK,
             "signal_model": "relative_momentum",
+            "momentum_gap_entry_threshold": 0.0,
+            "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
             "hedge_column": HEDGE_COLUMN,
             "fixed_hedge_ratio": FIXED_HEDGE_RATIO,
             "futures_drag_per_day": FUTURES_DRAG,

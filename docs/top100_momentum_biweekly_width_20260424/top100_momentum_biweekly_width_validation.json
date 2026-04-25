@@ -1,0 +1,8 @@
+{
+  "baseline_costed_nav_exists": true,
+  "common_rows": 3911,
+  "max_abs_nav_diff": 5.297446118394987,
+  "end_saved_nav": 86.59657317296579,
+  "end_fresh_nav": 89.99788130054229,
+  "validation_pass": false
+}

@@ -7,6 +7,7 @@
 import base64
 import contextlib
 import gzip
+import importlib
 import json
 import io
 import os
@@ -18,6 +19,24 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
+
+def _resolve_runtime_paths():
+    file_value = globals().get("__file__")
+    if file_value:
+        bot_file = Path(file_value).resolve()
+        bot_dir = bot_file.parent
+        return bot_file, bot_dir, bot_dir.parent
+    cwd = Path.cwd().resolve()
+    if cwd.name.lower() == "poe_bots":
+        return None, cwd, cwd.parent
+    if (cwd / "poe_bots").exists():
+        return None, cwd / "poe_bots", cwd
+    return None, cwd, cwd
+
+
+BOT_FILE, BOT_DIR, REPO_ROOT = _resolve_runtime_paths()
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 import numpy as np
 import pandas as pd
@@ -114,6 +133,7 @@ CMD_REALTIME = "实时信号"
 CMD_MEMBERS = "成分股"
 CMD_CHANGES = "进出名单"
 CMD_REALTIME_CHANGES = "实时进出名单"
+CMD_PARAMS = "参数"
 
 TOP_N = 100
 LOOKBACK = 16
@@ -163,7 +183,7 @@ ENTRY_COST = 0.003
 EXIT_COST = 0.003
 REBALANCE_ONE_SIDE_COST = 0.003
 
-ROOT = Path.cwd()
+ROOT = REPO_ROOT
 CACHE_DIR = ROOT / ".autobuild_top100_cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 COMMAND_OUTPUT_DIR = ROOT / "outputs" / "poe_command_outputs"
@@ -187,17 +207,63 @@ WEEK_FREQ_BY_START = {
     "Friday": "W-THU",
 }
 
-VERSION_PATTERN = re.compile(r"(?i)(?:^|[\s,，:：])(?:版本\s*)?v?(1\.[012])(?=$|[\s,，:：])")
-SINGLE_STRATEGY = {
-    "version": "1.0",
-    "label": "v1.0（主版本，1.0x 对冲）",
-    "cache_tag": "v1_0",
-    "hedge_ratio": 1.0,
-    "performance_costed_nav_csv": PERFORMANCE_COSTED_NAV_CSV,
-    "performance_live_nav_csv": PERFORMANCE_LIVE_NAV_CSV,
-    "performance_proxy_turnover_csv": PERFORMANCE_PROXY_TURNOVER_CSV,
-    "embedded_performance_b64": EMBEDDED_PERFORMANCE_B64,
+V1_4_SIGNAL_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_4_latest_signal.csv"
+V1_4_SUMMARY_JSON = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_4_summary.json"
+V1_4_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_hedge_zz1000_0p8x_gapderisk_newpeak_v1_4_costed_nav.csv"
+V1_4_LIVE_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_4_performance_nav.csv"
+V1_5_SIGNAL_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_latest_signal.csv"
+V1_5_SUMMARY_JSON = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_summary.json"
+V1_5_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_hedge_zz1000_0p8x_nav4_8_gapexit_newpeak_v1_5_costed_nav.csv"
+V1_5_LIVE_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_performance_nav.csv"
+VERSION_PATTERN = re.compile(r"(?i)(?:版本\s*)?v?(1\.(?:0|4|5))(?:的)?")
+STRATEGIES = {
+    "1.0": {
+        "version": "1.0",
+        "label": "v1.0（主版本，1.0x 对冲）",
+        "cache_tag": "v1_0",
+        "hedge_ratio": 1.0,
+        "performance_costed_nav_csv": PERFORMANCE_COSTED_NAV_CSV,
+        "performance_live_nav_csv": PERFORMANCE_LIVE_NAV_CSV,
+        "performance_proxy_turnover_csv": PERFORMANCE_PROXY_TURNOVER_CSV,
+        "embedded_performance_b64": EMBEDDED_PERFORMANCE_B64,
+        "overlay_label": "",
+        "official_signal_csv": None,
+        "official_summary_json": None,
+        "official_output_module": None,
+        "official_output_generator": None,
+    },
+    "1.4": {
+        "version": "1.4",
+        "label": "v1.4（0.8x 对冲 + 动量差峰值衰减去风险）",
+        "cache_tag": "v1_4",
+        "hedge_ratio": 0.8,
+        "performance_costed_nav_csv": V1_4_COSTED_NAV_CSV,
+        "performance_live_nav_csv": V1_4_LIVE_NAV_CSV,
+        "performance_proxy_turnover_csv": None,
+        "embedded_performance_b64": "",
+        "overlay_label": "动量差峰值衰减去风险",
+        "official_signal_csv": V1_4_SIGNAL_CSV,
+        "official_summary_json": V1_4_SUMMARY_JSON,
+        "official_output_module": "microcap_top100_mom16_biweekly_live_v1_4",
+        "official_output_generator": "generate_v1_4_outputs",
+    },
+    "1.5": {
+        "version": "1.5",
+        "label": "v1.5（0.8x 对冲 + v1.2 NAV节流 + 动量差峰值衰减退出）",
+        "cache_tag": "v1_5",
+        "hedge_ratio": 0.8,
+        "performance_costed_nav_csv": V1_5_COSTED_NAV_CSV,
+        "performance_live_nav_csv": V1_5_LIVE_NAV_CSV,
+        "performance_proxy_turnover_csv": None,
+        "embedded_performance_b64": "",
+        "overlay_label": "v1.2 NAV节流 + 动量差峰值衰减退出",
+        "official_signal_csv": V1_5_SIGNAL_CSV,
+        "official_summary_json": V1_5_SUMMARY_JSON,
+        "official_output_module": "microcap_top100_mom16_biweekly_live_v1_5",
+        "official_output_generator": "generate_v1_5_outputs",
+    },
 }
+ACTIVE_STRATEGY_VERSION = "1.0"
 
 SESSION = requests.Session()
 SESSION.headers.update(
@@ -219,8 +285,9 @@ def build_intro_text():
         f"- 发送 {CMD_MEMBERS}：返回最新调仓目标成分股\n"
         f"- 发送 {CMD_CHANGES}：返回最新调仓进出名单\n"
         f"- 发送 {CMD_REALTIME_CHANGES}：返回按最新实时市值估算的进出名单\n"
-        f"- 发送 {CMD_PERFORMANCE}：返回纯 v1.0 口径表现摘要与附件\n"
-        "说明：该机器人固定按 v1.0 主版本运行，不提供其他版本查询。\n"
+        f"- 发送 {CMD_PERFORMANCE}：返回所选版本口径表现摘要与附件\n"
+        f"- 发送 {CMD_PARAMS}：返回所选版本的重要参数与含义\n"
+        "说明：默认按 v1.0 主版本运行；若命令里写明 1.4 / 1.5，例如“1.4的信号”“1.5 表现 近3年”，则切换到对应版本。\n"
         "云端会在线重建最近窗口的 Top100 名单与代理指数。"
     )
 
@@ -234,7 +301,8 @@ def build_help_text():
         f"4. {CMD_CHANGES}\n"
         f"5. {CMD_REALTIME_CHANGES}\n"
         f"6. {CMD_PERFORMANCE} 近5年 / {CMD_PERFORMANCE} 2024至今 / 最近三年表现\n\n"
-        "说明：该机器人固定按 v1.0 主版本运行，会在线自动重建最近窗口的 Top100 名单与代理指数。"
+        f"7. {CMD_PARAMS} / 1.4参数 / 1.5参数\n\n"
+        "说明：默认按 v1.0 运行；若查询里明确写“1.4”/“v1.4”或“1.5”/“v1.5”，则切换到对应版本。"
         "若只发送“表现”，默认返回最近一年的净值曲线、年化收益率和最大回撤。"
     )
 
@@ -250,10 +318,14 @@ def cached_path(name):
 
 
 def get_strategy(version=None):
-    return SINGLE_STRATEGY.copy()
+    selected = str(version or ACTIVE_STRATEGY_VERSION or "1.0")
+    return (STRATEGIES.get(selected) or STRATEGIES["1.0"]).copy()
 
 
 def set_active_strategy(version):
+    global ACTIVE_STRATEGY_VERSION
+    selected = str(version or "1.0")
+    ACTIVE_STRATEGY_VERSION = selected if selected in STRATEGIES else "1.0"
     return None
 
 
@@ -274,11 +346,30 @@ def get_strategy_base_hedge_ratio():
 
 
 def is_nav_control_strategy():
-    return False
+    return get_strategy()["version"] == "1.5"
 
 
 def get_strategy_overlay_label():
-    return ""
+    return str(get_strategy().get("overlay_label") or "")
+
+
+def get_overlay_config(version=None):
+    selected = str(version or get_strategy()["version"])
+    if selected == "1.4":
+        return {
+            "decay_ratio_threshold": 0.25,
+            "derisk_scale": 0.0,
+            "recovery_ratio_threshold": 0.35,
+            "overlay_type": "momentum_gap_peak_decay_derisk_new_peak_guard",
+        }
+    if selected == "1.5":
+        return {
+            "decay_ratio_threshold": 0.30,
+            "derisk_scale": 0.0,
+            "recovery_ratio_threshold": 0.40,
+            "overlay_type": "momentum_gap_peak_decay_exit_new_peak_guard_on_v1_2",
+        }
+    return None
 
 
 def strip_strategy_version_tokens(text):
@@ -287,7 +378,54 @@ def strip_strategy_version_tokens(text):
 
 
 def resolve_strategy_from_query(query_text):
+    match = VERSION_PATTERN.search(str(query_text or ""))
+    version = match.group(1) if match else "1.0"
+    set_active_strategy(version)
     return get_strategy(), strip_strategy_version_tokens(query_text)
+
+
+def ensure_selected_strategy_outputs(force_refresh=False):
+    strategy = get_strategy()
+    module_name = str(strategy.get("official_output_module") or "").strip()
+    generator_name = str(strategy.get("official_output_generator") or "").strip()
+    if not module_name or not generator_name:
+        return None
+    signal_path = strategy.get("official_signal_csv")
+    summary_path = strategy.get("official_summary_json")
+    need_refresh = force_refresh
+    need_refresh = need_refresh or not signal_path or not Path(signal_path).exists()
+    need_refresh = need_refresh or not summary_path or not Path(summary_path).exists()
+    if need_refresh:
+        try:
+            module = importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            return None
+        return getattr(module, generator_name)()
+    try:
+        summary = json.loads(Path(summary_path).read_text(encoding="utf-8"))
+        signal_df = pd.read_csv(signal_path)
+        if "date" in signal_df.columns:
+            signal_df["date"] = pd.to_datetime(signal_df["date"], errors="coerce")
+        return summary, signal_df, None
+    except Exception:
+        try:
+            module = importlib.import_module(module_name)
+        except ModuleNotFoundError:
+            return None
+        return getattr(module, generator_name)()
+
+
+def load_official_signal_bundle(force_refresh=False):
+    payload = ensure_selected_strategy_outputs(force_refresh=force_refresh)
+    if payload is None:
+        return None, None
+    summary, signal_df, _ = payload
+    if signal_df is None or len(signal_df) == 0:
+        return None, summary
+    signal_df = signal_df.copy()
+    if "date" in signal_df.columns:
+        signal_df["date"] = pd.to_datetime(signal_df["date"], errors="coerce")
+    return signal_df, summary
 
 
 def context_cache_path():
@@ -580,10 +718,35 @@ def load_performance_source():
     embedded = load_embedded_performance_source()
     if embedded is not None:
         return embedded
+    version = strategy.get("version", "1.0")
+    if version in ("1.4", "1.5"):
+        try:
+            if version == "1.4":
+                perf, ret_col, nav_col = compute_performance_from_embedded_base(
+                    decay_pct=0.25, recover_pct=0.35, apply_throttle=False,
+                )
+                return perf, ret_col, nav_col, "embedded_overlay_v1_4", "embedded://v1_4"
+            else:
+                perf, ret_col, nav_col = compute_performance_from_embedded_base(
+                    decay_pct=0.30, recover_pct=0.40, apply_throttle=True,
+                )
+                return perf, ret_col, nav_col, "embedded_overlay_v1_5", "embedded://v1_5"
+        except Exception:
+            pass
+    try:
+        context = build_context(force_refresh=False)
+        close_df = context.get("close_df")
+        if isinstance(close_df, pd.DataFrame) and not close_df.empty:
+            result = run_backtest(close_df)
+            if not result.empty and "return" in result.columns and "nav" in result.columns:
+                return result, "return", "nav", "dynamic_backtest", "dynamic://run_backtest"
+    except Exception:
+        pass
     raise RuntimeError("未找到可用的表现数据源，当前版本无法生成表现图表。")
 
 
 def build_performance_outputs(query_text):
+    ensure_selected_strategy_outputs(force_refresh=False)
     perf_df, ret_col, nav_col, source_label, source_path = load_performance_source()
     start_date, end_date, period_label = resolve_performance_date_range(query_text)
     data = perf_df.copy()
@@ -685,11 +848,18 @@ def df_records_with_dates(frame):
 
 
 def build_context_core_params():
-    return {
+    core_params = {
         "execution_timing": EXECUTION_TIMING,
         "trade_constraint_mode": TRADE_CONSTRAINT_MODE,
         "research_stack_version": RESEARCH_STACK_VERSION,
     }
+    strategy = get_strategy()
+    core_params["strategy_version"] = strategy["version"]
+    core_params["fixed_hedge_ratio"] = float(strategy["hedge_ratio"])
+    overlay_label = str(strategy.get("overlay_label") or "").strip()
+    if overlay_label:
+        core_params["overlay_label"] = overlay_label
+    return core_params
 
 
 def payload_matches_current_core_params(payload):
@@ -993,8 +1163,128 @@ def format_strategy_header_lines():
     return lines
 
 
+def build_params_summary():
+    strategy = get_strategy()
+    version = str(strategy["version"])
+    overlay_cfg = get_overlay_config(version)
+    lines = [
+        "参数说明",
+        *format_strategy_header_lines(),
+        "",
+        "基础信号参数",
+        f"- 成分股数量 TOP_N：{TOP_N}，每期选择自由流通市值/实时市值估算排名前 {TOP_N} 的微盘股。",
+        f"- 动量窗口 LOOKBACK：{LOOKBACK}，用最近 {LOOKBACK} 个交易日收益计算微盘组合与对冲指数的动量。",
+        f"- 调仓频率：每两周周四（biweekly {REBALANCE_WEEKDAY}），收盘确认信号后按下一可执行日处理。",
+        f"- 对冲指数：{HEDGE_SECID}，当前脚本用于中证1000对冲腿。",
+        f"- 固定对冲比 hedge_ratio：{float(strategy['hedge_ratio']):.1f}x，决定空中证1000的名义敞口。",
+        f"- 期货拖累 FUTURES_DRAG：{FUTURES_DRAG:.4%}/日，模拟对冲腿的日度持有拖累。",
+        "",
+        "交易成本参数",
+        f"- 建仓成本 ENTRY_COST：{ENTRY_COST:.2%}，从现金切到持仓时扣除。",
+        f"- 平仓成本 EXIT_COST：{EXIT_COST:.2%}，从持仓切到现金时扣除。",
+        f"- 换仓单边成本 REBALANCE_ONE_SIDE_COST：{REBALANCE_ONE_SIDE_COST:.2%}，成员调仓时用于估算摩擦。",
+    ]
+    if overlay_cfg is None:
+        lines.extend(
+            [
+                "",
+                "版本风控参数",
+                "- Overlay：未启用。v1.0 是主线基础版本，不使用 1.4/1.5 的动量差峰值衰减规则。",
+                "- NAV 控制：未启用。仓位不因策略净值回撤自动降档。",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "",
+                "Overlay 参数",
+                f"- overlay_type：{overlay_cfg['overlay_type']}，说明当前版本使用的风控状态机。",
+                f"- 触发阈值 decay_ratio_threshold：{float(overlay_cfg['decay_ratio_threshold']):.0%}，当 momentum_gap / 本轮持仓峰值 <= 该阈值时触发降风险/退出。",
+                f"- 触发后仓位 derisk_scale：{float(overlay_cfg['derisk_scale']):.0%}，触发后的 overlay 执行比例降到该水平；当前为 0%，即切到现金。",
+                f"- 恢复阈值 recovery_ratio_threshold：{float(overlay_cfg['recovery_ratio_threshold']):.0%}，当 momentum_gap / 本轮持仓峰值 >= 该阈值时允许恢复持仓。",
+                "- 恢复后仓位：overlay 执行比例恢复到 100%，重新按底层信号持仓。",
+                "- rearm_rule：恢复后必须先创出新的本轮 gap_peak，之后才允许下一次衰减触发，避免同一峰值反复触发。",
+                "- momentum_gap：microcap_mom - hedge_mom，用来衡量微盘腿相对对冲腿的动量优势。",
+                "- gap_peak：本轮持仓期间 momentum_gap 的最高值。",
+                "- gap_decay_ratio：momentum_gap / gap_peak，越低表示相对优势衰减越明显。",
+                "- execution_scale：当日实际执行敞口比例；1 表示正常持仓，0 表示退出到现金。",
+            ]
+        )
+    if version == "1.4":
+        lines.extend(
+            [
+                "",
+                "v1.4 特有说明",
+                "- base_version：v1.1，以 0.8x 对冲为底层，再叠加动量差峰值衰减去风险。",
+                "- 触发口径：decay=25%、recover=35%，比 v1.5 更不敏感，通常更晚退出。",
+                "- NAV 控制：未启用；1.4 不是“去掉 NAV 控制的 1.5”，因为 overlay 阈值也不同。",
+            ]
+        )
+    elif version == "1.5":
+        cfg = nav_control_config()
+        lines.extend(
+            [
+                "",
+                "NAV 控制参数",
+                f"- dd_moderate：{cfg.dd_moderate:.0%}，策略净值从高点回撤达到该水平后，下期进入 moderate。",
+                f"- dd_severe：{cfg.dd_severe:.0%}，策略净值从高点回撤达到该水平后，下期进入 severe。",
+                f"- scale_moderate：{cfg.scale_moderate:.0%}，moderate 状态下对底层收益按该比例执行。",
+                f"- scale_severe：{cfg.scale_severe:.0%}，severe 状态下对底层收益按该比例执行。",
+                f"- recover_dd：{cfg.recover_dd:.0%}，回撤修复到该水平以内后，下期恢复 normal。",
+                f"- rebal_cost_bps：{cfg.rebal_cost_bps:.1f}bp，NAV 控制档位变化时按 scale 变动幅度扣成本。",
+                "- timing_rule：T 日收盘观察净值回撤，T+1 应用新的 NAV scale。",
+                "",
+                "v1.5 特有说明",
+                "- base_version：v1.2，先做 NAV throttle，再叠加 30%/40% 的 gap exit overlay。",
+                "- 触发口径：decay=30%、recover=40%，比 v1.4 更敏感，通常更早退出。",
+                "- 仓位口径：v1.5 的 100% 是 overlay 层满仓；最终实际敞口仍受 NAV 控制档位约束。",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "查询说明",
+            "- 输入“参数”查看默认 v1.0 参数。",
+            "- 输入“1.4参数”或“1.5参数”查看对应版本参数。",
+            "- 该命令只展示固定策略参数，不抓实时行情，也不扫描临时参数组合。",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def versioned_attachment_name(file_name):
-    return Path(str(file_name)).name
+    file_path = Path(str(file_name)).name
+    if get_strategy()["version"] == "1.0":
+        return file_path
+    base = Path(file_path)
+    return f"{base.stem}_{get_strategy_cache_tag()}{base.suffix}"
+
+
+def apply_official_signal_to_context(context, signal_df, summary=None):
+    out = dict(context or {})
+    latest_signal = signal_df.copy()
+    for col, default in {
+        "signal_label": latest_signal["next_holding"] if "next_holding" in latest_signal.columns else "cash",
+        "member_rebalance_label": "名单不变",
+        "member_enter_count": 0,
+        "member_exit_count": 0,
+        "ratio_r2": np.nan,
+    }.items():
+        if col not in latest_signal.columns:
+            latest_signal[col] = default
+    latest_signal = augment_signal_with_member_rebalance(latest_signal, out.get("changes_df"))
+    out["latest_signal"] = latest_signal
+    rebuild_meta = dict(out.get("rebuild_meta") or {})
+    rebuild_meta["strategy_version"] = get_strategy()["version"]
+    rebuild_meta["strategy_label"] = get_strategy_label()
+    rebuild_meta["fixed_hedge_ratio"] = get_strategy_hedge_ratio()
+    core_params = dict(rebuild_meta.get("core_params") or build_context_core_params())
+    summary_core_params = (summary or {}).get("core_params") or {}
+    if isinstance(summary_core_params, dict):
+        core_params.update(summary_core_params)
+    rebuild_meta["core_params"] = core_params
+    out["rebuild_meta"] = rebuild_meta
+    return out
 
 
 def annotate_trade_states(result):
@@ -2260,6 +2550,487 @@ def run_backtest(close_df):
     return result
 
 
+def run_backtest_with_gap_overlay(close_df, decay_pct, recover_pct, derisk_scale=0.0, overlay_type=None):
+    """Like run_backtest but with momentum-gap peak-decay overlay.
+
+    When the momentum_gap decays to *decay_pct* of the trade-peak, the
+    position is force-exited.  When it recovers to *recover_pct* of the
+    same peak, holding resumes – but the overlay cannot re-trigger until
+    the gap makes a new peak.
+
+    Parameters
+    ----------
+    close_df : DataFrame with columns ``microcap`` and ``hedge``
+    decay_pct : float  – e.g. 0.25 means "exit when gap drops to 25 % of peak"
+    recover_pct : float – e.g. 0.35 means "recover when gap returns to 35 % of peak"
+    """
+    work = close_df.copy()
+    hedge_ratio = get_strategy_base_hedge_ratio()
+    work["microcap_ret"] = work["microcap"].pct_change(fill_method=None)
+    work["hedge_ret"] = work["hedge"].pct_change(fill_method=None)
+    work["microcap_mom"] = calc_momentum(work["microcap"], LOOKBACK)
+    work["hedge_mom"] = calc_momentum(work["hedge"], LOOKBACK)
+    work["momentum_gap"] = work["microcap_mom"] - work["hedge_mom"]
+    work["ratio"] = work["microcap"] / work["hedge"]
+    work["ratio_bias_mom"] = calc_bias_momentum(work["ratio"], 60, 20)
+    work["ratio_r2"] = calc_rolling_r2(work["ratio"], 5)
+
+    valid_start = work[["microcap_mom", "hedge_mom"]].dropna().index.min()
+    if pd.isna(valid_start):
+        raise RuntimeError("最近窗口数据不足，无法计算动量信号")
+    work = work.loc[valid_start:].copy()
+
+    # Overlay state machine constants
+    ST_NORMAL = "normal"
+    ST_DERISK = "derisk"
+    ST_NEED_NEW_PEAK = "need_new_peak"
+
+    rows = []
+    holding = False
+    gap_peak = 0.0
+    overlay_state = ST_NORMAL
+
+    for i in range(1, len(work)):
+        # ---- return for today (based on yesterday's decision) ----
+        active_ret = 0.0
+        drag = FUTURES_DRAG * hedge_ratio if holding else 0.0
+        if holding:
+            microcap_ret = work["microcap_ret"].iloc[i]
+            hedge_ret = work["hedge_ret"].iloc[i]
+            if pd.notna(microcap_ret) and pd.notna(hedge_ret):
+                active_ret = float(microcap_ret - hedge_ratio * hedge_ret)
+
+        # ---- end-of-day signal ----
+        base_signal_on = bool(
+            pd.notna(work["microcap_mom"].iloc[i])
+            and pd.notna(work["hedge_mom"].iloc[i])
+            and work["microcap_mom"].iloc[i] > work["hedge_mom"].iloc[i]
+        )
+        gap = float(work["momentum_gap"].iloc[i]) if pd.notna(work["momentum_gap"].iloc[i]) else 0.0
+
+        # ---- overlay logic ----
+        derisk_triggered = False
+        recovery_triggered = False
+        gap_decay_ratio = np.nan
+        if holding and gap_peak > 0:
+            gap_decay_ratio = gap / gap_peak
+
+        if not base_signal_on:
+            # Base signal off → full trade end, reset everything
+            overlay_state = ST_NORMAL
+            gap_peak = 0.0
+            effective_signal = False
+        elif overlay_state == ST_NORMAL:
+            if gap > gap_peak:
+                gap_peak = gap
+            if gap_peak > 0 and gap / gap_peak <= decay_pct:
+                overlay_state = ST_DERISK
+                effective_signal = False
+                derisk_triggered = True
+            else:
+                effective_signal = True
+        elif overlay_state == ST_DERISK:
+            if gap_peak > 0 and gap / gap_peak >= recover_pct:
+                overlay_state = ST_NEED_NEW_PEAK
+                effective_signal = True
+                recovery_triggered = True
+            else:
+                effective_signal = False
+        elif overlay_state == ST_NEED_NEW_PEAK:
+            if gap > gap_peak:
+                gap_peak = gap
+                overlay_state = ST_NORMAL
+            effective_signal = True
+        else:
+            effective_signal = base_signal_on
+
+        next_holding = "long_microcap_short_zz1000" if effective_signal else "cash"
+        execution_scale = 1.0 if effective_signal else float(derisk_scale)
+        rows.append(
+            {
+                "date": work.index[i],
+                "return_raw": active_ret - drag,
+                "holding": "long_microcap_short_zz1000" if holding else "cash",
+                "next_holding": next_holding,
+                "holding_overlay": "long_microcap_short_zz1000" if holding else "cash",
+                "next_holding_overlay": next_holding,
+                "microcap_close": float(work["microcap"].iloc[i]),
+                "hedge_close": float(work["hedge"].iloc[i]),
+                "microcap_mom": float(work["microcap_mom"].iloc[i]),
+                "hedge_mom": float(work["hedge_mom"].iloc[i]),
+                "momentum_gap": gap,
+                "gap_peak": float(gap_peak) if gap_peak else np.nan,
+                "gap_decay_ratio": float(gap_decay_ratio) if pd.notna(gap_decay_ratio) else np.nan,
+                "execution_scale": float(execution_scale),
+                "signal_quality_derisk_triggered": bool(derisk_triggered),
+                "recovery_triggered": bool(recovery_triggered),
+                "decay_ratio_threshold": float(decay_pct),
+                "derisk_scale": float(derisk_scale),
+                "recovery_ratio_threshold": float(recover_pct),
+                "overlay_type": overlay_type or "momentum_gap_peak_decay_derisk_new_peak_guard",
+                "ratio_bias_mom": float(work["ratio_bias_mom"].iloc[i]) if pd.notna(work["ratio_bias_mom"].iloc[i]) else np.nan,
+                "ratio_r2": float(work["ratio_r2"].iloc[i]) if pd.notna(work["ratio_r2"].iloc[i]) else np.nan,
+                "hedge_ratio": hedge_ratio,
+                "weight": 1.0,
+                "futures_drag": drag,
+            }
+        )
+        holding = effective_signal
+
+    result = pd.DataFrame(rows).set_index("date")
+    result["return"] = result["return_raw"]
+    result["nav"] = (1.0 + result["return"]).cumprod()
+    return result
+
+
+def apply_entry_exit_costs(result):
+    """Apply entry/exit costs to a backtest result (no rebalance turnover)."""
+    out = result.copy()
+    active = out["next_holding"].ne("cash")
+    prev_active = out["holding"].ne("cash")
+    entry_cost = pd.Series(0.0, index=out.index, dtype=float)
+    entry_cost.loc[active & ~prev_active] = ENTRY_COST
+    exit_cost = pd.Series(0.0, index=out.index, dtype=float)
+    exit_cost.loc[~active & prev_active] = EXIT_COST
+    out["return_net"] = (1.0 + out["return"]) * (1.0 - entry_cost - exit_cost) - 1.0
+    out["nav_net"] = (1.0 + out["return_net"]).cumprod()
+    return out
+
+
+def nav_control_config():
+    return PracticalThrottleConfig(
+        dd_moderate=0.04,
+        dd_severe=0.08,
+        scale_moderate=0.85,
+        scale_severe=0.70,
+        recover_dd=0.03,
+    )
+
+
+def compute_nav_control_state(base_returns):
+    cfg = nav_control_config()
+    throttle_run = apply_practical_throttle(pd.Series(base_returns).fillna(0.0), cfg)
+    nav = (1.0 + throttle_run["return"].fillna(0.0)).cumprod()
+    peak = float(nav.cummax().iloc[-1]) if len(nav) else 1.0
+    current_dd = float(nav.iloc[-1] / peak - 1.0) if len(nav) and peak > 0 else 0.0
+    last_scale = float(throttle_run["scale"].iloc[-1]) if len(throttle_run) else 1.0
+    next_scale, next_state = target_scale_from_drawdown(current_dd, cfg, last_scale)
+    return {
+        "throttle_run": throttle_run,
+        "last_scale": last_scale,
+        "next_scale": float(next_scale),
+        "last_state": str(throttle_run["state"].iloc[-1]) if len(throttle_run) else "normal",
+        "next_state": str(next_state),
+        "current_dd": current_dd,
+    }
+
+
+def apply_v1_5_signal_quality_overlay(base_net, decay_pct, derisk_scale, recover_pct):
+    out = base_net.copy().sort_index()
+    current_active = str(out["holding"].iloc[0]) != "cash"
+    active_scale = 1.0
+    derisked_in_trade = False
+    waiting_for_new_peak_after_recovery = False
+    rearm_peak_level = None
+    gap_peak = None
+
+    executed_holding = []
+    executed_next_holding = []
+    execution_scales = []
+    derisk_flags = []
+    recovery_flags = []
+    gap_peaks = []
+    gap_decay_ratios = []
+    return_nets = []
+    nav_nets = []
+
+    nav_net = 1.0
+    for dt in out.index:
+        desired_next_active = str(out.at[dt, "next_holding"]) != "cash"
+        current_gap = out.at[dt, "momentum_gap"]
+        current_gap = float(current_gap) if pd.notna(current_gap) else None
+
+        if not current_active and desired_next_active:
+            gap_peak = current_gap
+            active_scale = 1.0
+            derisked_in_trade = False
+            waiting_for_new_peak_after_recovery = False
+            rearm_peak_level = None
+
+        if current_active and current_gap is not None:
+            gap_peak = current_gap if gap_peak is None else max(float(gap_peak), current_gap)
+
+        if (
+            current_active
+            and waiting_for_new_peak_after_recovery
+            and rearm_peak_level is not None
+            and gap_peak is not None
+            and float(gap_peak) > float(rearm_peak_level)
+        ):
+            waiting_for_new_peak_after_recovery = False
+            rearm_peak_level = None
+
+        gap_decay_ratio = None
+        if current_active and current_gap is not None and gap_peak is not None and gap_peak > 0:
+            gap_decay_ratio = current_gap / gap_peak
+
+        derisk_triggered = False
+        recovery_triggered = False
+        applied_scale = active_scale if current_active else 1.0
+
+        if (
+            current_active
+            and desired_next_active
+            and derisked_in_trade
+            and gap_decay_ratio is not None
+            and gap_decay_ratio >= recover_pct
+        ):
+            active_scale = 1.0
+            applied_scale = 1.0
+            derisked_in_trade = False
+            waiting_for_new_peak_after_recovery = True
+            rearm_peak_level = gap_peak
+            recovery_triggered = True
+
+        if (
+            current_active
+            and desired_next_active
+            and not derisked_in_trade
+            and not waiting_for_new_peak_after_recovery
+            and gap_decay_ratio is not None
+            and gap_decay_ratio <= decay_pct
+        ):
+            active_scale = float(derisk_scale)
+            applied_scale = float(derisk_scale)
+            derisked_in_trade = True
+            derisk_triggered = True
+
+        base_ret = float(pd.to_numeric(pd.Series([out.at[dt, "return_net_v1_2"]]), errors="coerce").fillna(0.0).iloc[0])
+        realized_ret = base_ret if not current_active else base_ret * applied_scale
+        nav_net *= 1.0 + realized_ret
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        execution_scales.append(float(applied_scale))
+        derisk_flags.append(bool(derisk_triggered))
+        recovery_flags.append(bool(recovery_triggered))
+        gap_peaks.append(None if gap_peak is None else float(gap_peak))
+        gap_decay_ratios.append(None if gap_decay_ratio is None else float(gap_decay_ratio))
+        return_nets.append(float(realized_ret))
+        nav_nets.append(float(nav_net))
+
+        current_active = desired_next_active
+        if not current_active:
+            gap_peak = None
+            active_scale = 1.0
+            derisked_in_trade = False
+            waiting_for_new_peak_after_recovery = False
+            rearm_peak_level = None
+
+    out["holding_base"] = out["holding"]
+    out["next_holding_base"] = out["next_holding"]
+    out["holding_overlay"] = executed_holding
+    out["next_holding_overlay"] = executed_next_holding
+    out["holding"] = out["holding_overlay"]
+    out["next_holding"] = out["next_holding_overlay"]
+    out["execution_scale"] = execution_scales
+    out["signal_quality_derisk_triggered"] = derisk_flags
+    out["recovery_triggered"] = recovery_flags
+    out["gap_peak"] = gap_peaks
+    out["gap_decay_ratio"] = gap_decay_ratios
+    out["return_net_overlay"] = return_nets
+    out["nav_net_overlay"] = nav_nets
+    out["return"] = out["return_net_overlay"]
+    out["nav"] = out["nav_net_overlay"]
+    return out
+
+
+def run_selected_strategy_backtest(close_df):
+    version = get_strategy()["version"]
+    overlay_cfg = get_overlay_config(version)
+    if version == "1.4" and overlay_cfg is not None:
+        result = run_backtest_with_gap_overlay(
+            close_df,
+            overlay_cfg["decay_ratio_threshold"],
+            overlay_cfg["recovery_ratio_threshold"],
+            derisk_scale=overlay_cfg["derisk_scale"],
+            overlay_type=overlay_cfg["overlay_type"],
+        )
+    elif version == "1.5" and overlay_cfg is not None:
+        base = run_backtest(close_df)
+        costed = apply_entry_exit_costs(base)
+        control = compute_nav_control_state(costed["return_net"])
+        throttle_run = control["throttle_run"].reindex(base.index)
+        result = base.copy()
+        result["return_base"] = costed["return_net"]
+        result["nav_base"] = costed["nav_net"]
+        result["return_net_v1_2"] = throttle_run["return"]
+        result["nav_net_v1_2"] = (1.0 + result["return_net_v1_2"].fillna(0.0)).cumprod()
+        result["nav_control_scale"] = throttle_run["scale"]
+        result["nav_control_state"] = throttle_run["state"]
+        result["nav_control_prev_drawdown"] = throttle_run["prev_drawdown"]
+        result["nav_control_turnover"] = throttle_run["turnover"]
+        result["nav_control_cost"] = throttle_run["cost"]
+        result = apply_v1_5_signal_quality_overlay(
+            result,
+            overlay_cfg["decay_ratio_threshold"],
+            overlay_cfg["derisk_scale"],
+            overlay_cfg["recovery_ratio_threshold"],
+        )
+    else:
+        result = run_backtest(close_df)
+
+    if overlay_cfg is not None:
+        result["decay_ratio_threshold"] = float(overlay_cfg["decay_ratio_threshold"])
+        result["derisk_scale"] = float(overlay_cfg["derisk_scale"])
+        result["recovery_ratio_threshold"] = float(overlay_cfg["recovery_ratio_threshold"])
+        result["overlay_type"] = overlay_cfg["overlay_type"]
+        result["version"] = version
+        result["base_version"] = "1.1" if version == "1.4" else "1.2"
+    return result
+
+
+def _build_extended_base_data():
+    """Load v1.0 embedded data and extend it with recent close prices from build_context."""
+    blob = str(STRATEGIES["1.0"].get("embedded_performance_b64") or "").strip()
+    if not blob or blob.startswith("__EMBEDDED_"):
+        return None
+    raw = zlib.decompress(base64.b64decode(blob)).decode("utf-8")
+    embedded = pd.read_csv(io.StringIO(raw))
+    embedded["date"] = pd.to_datetime(embedded["date"])
+    embedded = embedded.sort_values("date").reset_index(drop=True)
+
+    # Extract close price series from embedded data
+    embedded_closes = embedded[["date", "microcap_close", "hedge_close"]].copy()
+    embedded_closes = embedded_closes.rename(columns={"microcap_close": "microcap", "hedge_close": "hedge"})
+    embedded_end = embedded["date"].max()
+
+    # Try to extend with recent data
+    try:
+        context = build_context(force_refresh=False)
+        close_df = context.get("close_df")
+        if isinstance(close_df, pd.DataFrame) and not close_df.empty:
+            recent = close_df.reset_index()
+            recent["date"] = pd.to_datetime(recent["date"])
+            new_rows = recent.loc[recent["date"] > embedded_end, ["date", "microcap", "hedge"]].copy()
+            if not new_rows.empty:
+                embedded_closes = pd.concat([embedded_closes, new_rows], ignore_index=True)
+    except Exception:
+        pass
+
+    # De-duplicate and sort
+    embedded_closes = embedded_closes.drop_duplicates("date").sort_values("date").reset_index(drop=True)
+
+    # (Re-)compute derived columns on the full combined series
+    embedded_closes["microcap_ret"] = embedded_closes["microcap"].pct_change(fill_method=None)
+    embedded_closes["hedge_ret"] = embedded_closes["hedge"].pct_change(fill_method=None)
+    embedded_closes["microcap_mom"] = calc_momentum(embedded_closes["microcap"], LOOKBACK)
+    embedded_closes["hedge_mom"] = calc_momentum(embedded_closes["hedge"], LOOKBACK)
+    embedded_closes["momentum_gap"] = embedded_closes["microcap_mom"] - embedded_closes["hedge_mom"]
+    return embedded_closes
+
+
+def compute_performance_from_embedded_base(decay_pct, recover_pct, apply_throttle=False):
+    """Recompute v1.4/v1.5 performance from the embedded v1.0 base data,
+    extended with recent close prices from build_context when available.
+
+    Uses v1.0's price/momentum columns (which are hedge-ratio-independent)
+    and re-runs the strategy with hedge_ratio=0.8 plus gap peak-decay overlay.
+    """
+    base = _build_extended_base_data()
+    if base is None:
+        return None
+
+    hedge_ratio = get_strategy_base_hedge_ratio()
+
+    ST_NORMAL = "normal"
+    ST_DERISK = "derisk"
+    ST_NEED_NEW_PEAK = "need_new_peak"
+
+    rows = []
+    holding = False
+    gap_peak = 0.0
+    overlay_state = ST_NORMAL
+
+    for idx in range(len(base)):
+        r = base.iloc[idx]
+        microcap_ret = float(r["microcap_ret"]) if pd.notna(r.get("microcap_ret")) else 0.0
+        hedge_ret = float(r["hedge_ret"]) if pd.notna(r.get("hedge_ret")) else 0.0
+        gap = float(r["momentum_gap"]) if pd.notna(r.get("momentum_gap")) else 0.0
+
+        # Return for today based on yesterday's holding decision
+        active_ret = 0.0
+        drag = FUTURES_DRAG * hedge_ratio if holding else 0.0
+        if holding:
+            active_ret = microcap_ret - hedge_ratio * hedge_ret
+
+        # Base signal (same for all versions: microcap_mom > hedge_mom)
+        base_signal_on = bool(
+            pd.notna(r.get("microcap_mom"))
+            and pd.notna(r.get("hedge_mom"))
+            and r["microcap_mom"] > r["hedge_mom"]
+        )
+
+        # Gap peak-decay overlay
+        if not base_signal_on:
+            overlay_state = ST_NORMAL
+            gap_peak = 0.0
+            effective_signal = False
+        elif overlay_state == ST_NORMAL:
+            if gap > gap_peak:
+                gap_peak = gap
+            if gap_peak > 0 and gap / gap_peak <= decay_pct:
+                overlay_state = ST_DERISK
+                effective_signal = False
+            else:
+                effective_signal = True
+        elif overlay_state == ST_DERISK:
+            if gap_peak > 0 and gap / gap_peak >= recover_pct:
+                overlay_state = ST_NEED_NEW_PEAK
+                effective_signal = True
+            else:
+                effective_signal = False
+        elif overlay_state == ST_NEED_NEW_PEAK:
+            if gap > gap_peak:
+                gap_peak = gap
+                overlay_state = ST_NORMAL
+            effective_signal = True
+        else:
+            effective_signal = base_signal_on
+
+        next_hold_str = "long_microcap_short_zz1000" if effective_signal else "cash"
+        rows.append(
+            {
+                "date": r["date"],
+                "return_raw": active_ret - drag,
+                "holding": "long_microcap_short_zz1000" if holding else "cash",
+                "next_holding": next_hold_str,
+            }
+        )
+        holding = effective_signal
+
+    result = pd.DataFrame(rows)
+    result["date"] = pd.to_datetime(result["date"])
+    result = result.set_index("date").sort_index()
+    result["return"] = result["return_raw"]
+    result["nav"] = (1.0 + result["return"]).cumprod()
+
+    costed = apply_entry_exit_costs(result)
+
+    if apply_throttle:
+        cfg = PracticalThrottleConfig(
+            dd_moderate=0.04,
+            dd_severe=0.08,
+            scale_moderate=0.85,
+            scale_severe=0.70,
+            recover_dd=0.03,
+        )
+        throttled = apply_practical_throttle(costed["return_net"], cfg)
+        return throttled, "return", "nav"
+
+    return costed, "return_net", "nav_net"
+
+
 def map_rebalance_apply_costs(index, turnover):
     cost_series = pd.Series(0.0, index=index, dtype=float)
     if turnover is None or len(turnover) == 0:
@@ -2418,6 +3189,22 @@ def build_latest_signal(result):
         "current_holding",
         "trade_state",
     ]
+    overlay_cols = [
+        "gap_peak",
+        "gap_decay_ratio",
+        "execution_scale",
+        "signal_quality_derisk_triggered",
+        "recovery_triggered",
+        "decay_ratio_threshold",
+        "derisk_scale",
+        "recovery_ratio_threshold",
+        "overlay_type",
+        "version",
+        "base_version",
+    ]
+    for col in overlay_cols:
+        if col in last.columns and col not in extra_cols:
+            extra_cols.append(col)
     return last[base_cols + extra_cols]
 
 
@@ -2466,7 +3253,7 @@ def assemble_context(hedge_hist, all_trading_dates, candidates, histories, failu
         how="inner",
     )
     close_df = close_df.sort_values("date").set_index("date").dropna()
-    result = run_backtest(close_df)
+    result = run_selected_strategy_backtest(close_df)
     latest_signal = build_latest_signal(result)
     latest_rebalance, prev_rebalance, next_rebalance, effective_rebalance = locate_rebalance_dates(all_trading_dates)
     target_members = members_df.loc[members_df["rebalance_date"] == str(pd.Timestamp(latest_rebalance).date())].copy()
@@ -2727,6 +3514,12 @@ def format_signal_summary(row, context):
         f"- 最近一次交易信号：{last_trade_text}",
         f"- 阈值位置：{format_threshold_text(row['momentum_gap'])}",
     ]
+    if "execution_scale" in row.index and pd.notna(row["execution_scale"]):
+        lines.append(f"- 当前执行比例：{float(row['execution_scale']):.2f}x")
+    if "signal_quality_derisk_triggered" in row.index:
+        lines.append(f"- 去风险触发：{'是' if bool(row['signal_quality_derisk_triggered']) else '否'}")
+    if "gap_decay_ratio" in row.index and pd.notna(row["gap_decay_ratio"]):
+        lines.append(f"- 动量差峰值衰减比例：{format_pct(row['gap_decay_ratio'])}")
     if "effective_hedge_ratio_last_applied" in row.index:
         lines.extend(
             [
@@ -2745,7 +3538,7 @@ def format_signal_summary(row, context):
             f"- 微盘动量：{format_pct(row['microcap_mom'])}",
             f"- 对冲动量：{format_pct(row['hedge_mom'])}",
             f"- 动量差：{format_pct(row['momentum_gap'])}",
-            f"- 比值 R2：{float(row['ratio_r2']):.3f}" if pd.notna(row["ratio_r2"]) else "- 比值 R2：N/A",
+            f"- 比值 R2：{float(row['ratio_r2']):.3f}" if "ratio_r2" in row.index and pd.notna(row["ratio_r2"]) else "- 比值 R2：N/A",
             "",
             "调仓快照",
             f"- 最新调仓日：{context['latest_rebalance']}",
@@ -2792,6 +3585,12 @@ def format_realtime_summary(row, context, available_rows, total_rows):
                 f"- 当前估算收盘回撤：{format_pct(row['nav_control_drawdown_last_close'])}",
             ]
         )
+    if "execution_scale" in row.index and pd.notna(row["execution_scale"]):
+        lines.append(f"- 当前执行比例：{float(row['execution_scale']):.2f}x")
+    if "signal_quality_derisk_triggered" in row.index:
+        lines.append(f"- 去风险触发：{'是' if bool(row['signal_quality_derisk_triggered']) else '否'}")
+    if "gap_decay_ratio" in row.index and pd.notna(row["gap_decay_ratio"]):
+        lines.append(f"- 动量差峰值衰减比例：{format_pct(row['gap_decay_ratio'])}")
     lines.extend(
         [
             "",
@@ -2891,6 +3690,9 @@ def format_changes_summary(title, context, changes_df, snapshot_time=None):
 
 def handle_signal(force_refresh=False):
     context = build_context(force_refresh=force_refresh, require_latest=True)
+    official_signal_df, official_summary = load_official_signal_bundle(force_refresh=force_refresh)
+    if official_signal_df is not None:
+        context = apply_official_signal_to_context(context, official_signal_df, summary=official_summary)
     row = context["latest_signal"].iloc[0]
     csv_bytes = context["latest_signal"].to_csv(index=False).encode("utf-8-sig")
     attachments = [build_thread_context_attachment(context)]
@@ -2963,7 +3765,7 @@ def handle_realtime_signal(force_refresh=False):
     rt_close_df = close_df.copy()
     rt_close_df.loc[snapshot_ts, ["microcap", "hedge"]] = [microcap_rt_close, hedge_rt_close]
     rt_close_df = rt_close_df.sort_index()
-    rt_result = run_backtest(rt_close_df)
+    rt_result = run_selected_strategy_backtest(rt_close_df)
     signal_df = build_latest_signal(rt_result)
     signal_df = augment_signal_with_member_rebalance(signal_df, context.get("changes_df"))
     jitter_level, jitter_note = classify_tail_jitter_risk(float(signal_df.iloc[0]["momentum_gap"]))
@@ -3045,6 +3847,8 @@ def normalize_command(query_text):
     text = (query_text or "").strip()
     if not text:
         return CMD_SIGNAL
+    if "参数" in text:
+        return CMD_PARAMS
     if PERFORMANCE_PATTERN.search(text):
         return CMD_PERFORMANCE
     if "实时" in text and "进出名单" in text:
@@ -3093,7 +3897,9 @@ def main():
         return
 
     try:
-        if command == CMD_PERFORMANCE:
+        if command == CMD_PARAMS:
+            send_message(f"## 参数\n\n```text\n{build_params_summary()}\n```")
+        elif command == CMD_PERFORMANCE:
             body, attachments = build_performance_outputs(query_text)
             send_message(f"## 表现\n\n```text\n{body}\n```", attachments=attachments)
         elif command == CMD_MEMBERS:
