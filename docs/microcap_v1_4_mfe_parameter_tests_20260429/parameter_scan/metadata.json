@@ -1,0 +1,52 @@
+{
+  "source": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_gapderisk_newpeak_v1_4_costed_nav.csv",
+  "current_params": {
+    "buffer": 0.0025,
+    "decay": 0.25,
+    "scale": 0.0,
+    "recovery": 0.35
+  },
+  "grid": {
+    "buffers": [
+      0.001,
+      0.002,
+      0.0025,
+      0.003,
+      0.0035,
+      0.004,
+      0.0045,
+      0.005
+    ],
+    "decays": [
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4
+    ],
+    "scales": [
+      0.0,
+      0.25,
+      0.5
+    ],
+    "recoveries": [
+      0.25,
+      0.35,
+      0.45,
+      0.55
+    ],
+    "combinations": 576
+  },
+  "current_variant": "buf0p0025_decay0p25_scale0p00_rec0p35",
+  "validation": [
+    {
+      "variant": "buf0p0025_decay0p25_scale0p00_rec0p35",
+      "official_current_params": true,
+      "max_abs_ret_diff": 9.974659986866641e-17,
+      "max_abs_nav_diff": 2.842170943040401e-14,
+      "aligned_rows": 3936
+    }
+  ],
+  "robust_candidate_count": 27
+}

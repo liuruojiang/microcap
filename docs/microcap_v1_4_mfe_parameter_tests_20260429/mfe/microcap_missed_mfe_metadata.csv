@@ -1,0 +1,4 @@
+﻿strategy,source_file,rows,start_date,end_date,inferred_hedge_ratio,cash_days,cash_segments,close_only
+v1_0_live_costed,C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\动量策略\微盘股对冲策略\outputs\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv,3938,2010-02-02,2026-04-28,1.0,944,75,True
+v1_4_buffer_derisk_costed,C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\动量策略\微盘股对冲策略\outputs\microcap_top100_mom16_hedge_zz1000_0p8x_gapderisk_newpeak_v1_4_costed_nav.csv,3936,2010-02-02,2026-04-28,0.8,908,71,True
+v1_6_targetvol15_max1p5_costed,C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\动量策略\微盘股对冲策略\outputs\microcap_top100_mom16_targetvol15_max1p5_v1_6_costed_nav.csv,3936,2010-02-02,2026-04-28,0.8,901,69,True
