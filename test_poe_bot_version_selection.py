@@ -149,6 +149,28 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertEqual(row["version"], "1.5")
         self.assertEqual(row["overlay_type"], "momentum_gap_peak_decay_exit_new_peak_guard_on_v1_2")
 
+    def test_v1_6_selected_backtest_latest_signal_includes_target_vol_columns(self) -> None:
+        bot.set_active_strategy("1.6")
+        result = bot.run_selected_strategy_backtest(self._overlay_close_df())
+        signal = bot.build_latest_signal(result)
+        row = signal.iloc[0]
+        for col in [
+            "execution_scale",
+            "target_vol",
+            "target_vol_window",
+            "target_vol_realized_vol",
+            "target_vol_scale_next_session",
+            "scale_change_cost",
+            "financing_cost",
+            "overlay_type",
+            "version",
+        ]:
+            self.assertIn(col, signal.columns)
+        self.assertEqual(row["version"], "1.6")
+        self.assertEqual(row["overlay_type"], "target_volatility_scaling")
+        self.assertEqual(float(row["target_vol"]), 0.15)
+        self.assertLessEqual(float(result["execution_scale"].max()), 1.5)
+
     def test_realtime_signal_uses_selected_strategy_backtest_for_overlay_columns(self) -> None:
         bot.set_active_strategy("1.5")
         context = self._base_context()
@@ -162,10 +184,10 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         context["target_members"] = context["effective_members"].copy()
         context["result"] = bot.run_backtest(context["close_df"])
         overlay_result = bot.run_selected_strategy_backtest(context["close_df"])
-        universe = pd.DataFrame(
+        quote_frame = pd.DataFrame(
             [
-                {"code": "000001", "name": "A", "latest_price": 10.5},
-                {"code": "000002", "name": "B", "latest_price": 20.5},
+                {"code": "000001", "name": "A", "rt_price": 10.5},
+                {"code": "000002", "name": "B", "rt_price": 20.5},
             ]
         )
         histories = {
@@ -174,7 +196,7 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         }
         with patch.object(bot, "STRICT_EXACT_MODE", False):
             with patch.object(bot, "build_context", return_value=context):
-                with patch.object(bot, "fetch_universe_spot", return_value=universe):
+                with patch.object(bot, "build_realtime_quote_frame", return_value=(quote_frame, "test_quotes")):
                     with patch.object(bot, "fetch_candidate_histories", return_value=(histories, [])):
                         with patch.object(bot, "fetch_hedge_realtime_quote", return_value=101.0):
                             with patch.object(bot, "run_selected_strategy_backtest", return_value=overlay_result) as run_mock:
@@ -189,6 +211,78 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertIn("nav_control_scale_last_applied", csv_text)
         self.assertIn("execution_scale", csv_text)
         self.assertIn("NAV 节流状态", body)
+
+    def test_realtime_signal_uses_member_quotes_without_universe_refresh(self) -> None:
+        member_symbols = [f"{idx:06d}" for idx in range(1, bot.TOP_N + 1)]
+        context = self._base_context()
+        context["close_df"] = self._overlay_close_df()
+        context["effective_members"] = pd.DataFrame(
+            [{"symbol": symbol, "name": f"S{idx}"} for idx, symbol in enumerate(member_symbols, start=1)]
+        )
+        histories = {
+            symbol: pd.DataFrame({"date": [context["close_df"].index[-1]], "close_raw": [10.0]})
+            for symbol in member_symbols
+        }
+        quote_frame = pd.DataFrame(
+            [{"code": symbol, "name": f"S{idx}", "rt_price": 10.1} for idx, symbol in enumerate(member_symbols, start=1)]
+        )
+
+        with patch.object(bot, "STRICT_EXACT_MODE", True):
+            with patch.object(bot, "build_context", return_value=context):
+                with patch.object(
+                    bot,
+                    "fetch_universe_spot",
+                    side_effect=AssertionError("full universe refresh should not be required for realtime signal"),
+                ):
+                    with patch.object(bot, "fetch_realtime_quotes", return_value=quote_frame):
+                        with patch.object(bot, "fetch_candidate_histories", return_value=(histories, [])):
+                            with patch.object(bot, "fetch_hedge_realtime_quote", return_value=101.0):
+                                with patch.object(
+                                    bot,
+                                    "build_thread_context_attachment",
+                                    return_value=("thread.json.gz", b"{}", "application/gzip"),
+                                ):
+                                    body, csv_bytes, _attachments = bot.handle_realtime_signal()
+
+        csv_text = csv_bytes.decode("utf-8-sig")
+        self.assertIn("eastmoney_stock_get_member_only", csv_text)
+        self.assertIn("成分股有效报价：100 / 100", body)
+
+    def test_realtime_signal_allows_small_quote_gap_with_disclosure(self) -> None:
+        member_symbols = [f"{idx:06d}" for idx in range(1, bot.TOP_N + 1)]
+        context = self._base_context()
+        context["close_df"] = self._overlay_close_df()
+        context["effective_members"] = pd.DataFrame(
+            [{"symbol": symbol, "name": f"S{idx}"} for idx, symbol in enumerate(member_symbols, start=1)]
+        )
+        histories = {
+            symbol: pd.DataFrame({"date": [context["close_df"].index[-1]], "close_raw": [10.0]})
+            for symbol in member_symbols
+        }
+        quote_frame = pd.DataFrame(
+            [{"code": symbol, "name": f"S{idx}", "rt_price": 10.1} for idx, symbol in enumerate(member_symbols[:99], start=1)]
+        )
+
+        with patch.object(bot, "STRICT_EXACT_MODE", True):
+            with patch.object(bot, "DEFAULT_MIN_REALTIME_MEMBER_QUOTES", 98):
+                with patch.object(bot, "build_context", return_value=context):
+                    with patch.object(bot, "fetch_universe_spot", side_effect=RuntimeError("universe down")):
+                        with patch.object(bot, "fetch_realtime_quotes", return_value=quote_frame):
+                            with patch.object(bot, "fetch_candidate_histories", return_value=(histories, [])):
+                                with patch.object(bot, "fetch_hedge_realtime_quote", side_effect=RuntimeError("hedge quote down")):
+                                    with patch.object(
+                                        bot,
+                                        "build_thread_context_attachment",
+                                        return_value=("thread.json.gz", b"{}", "application/gzip"),
+                                    ):
+                                        body, csv_bytes, _attachments = bot.handle_realtime_signal()
+
+        csv_text = csv_bytes.decode("utf-8-sig")
+        self.assertIn(",99,100,98,", csv_text)
+        self.assertIn("latest_cached_close_fallback", csv_text)
+        self.assertIn("成分股有效报价：99 / 100", body)
+        self.assertIn("最低报价要求：98 / 100", body)
+        self.assertIn("对冲腿价格来源：latest_cached_close_fallback", body)
 
     def test_script_mode_from_poe_bots_dir_can_import_repo_root_modules(self) -> None:
         repo_root = Path(__file__).resolve().parent
@@ -251,17 +345,22 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertEqual(strategy["version"], "1.5")
         self.assertEqual(query_text, "\u4fe1\u53f7")
 
-    def test_params_command_uses_default_v1_4(self) -> None:
+    def test_resolve_strategy_from_query_switches_to_v1_6(self) -> None:
+        strategy, query_text = bot.resolve_strategy_from_query("1.6\u7684\u4fe1\u53f7")
+        self.assertEqual(strategy["version"], "1.6")
+        self.assertEqual(query_text, "\u4fe1\u53f7")
+
+    def test_params_command_uses_default_v1_0(self) -> None:
         strategy, query_text = bot.resolve_strategy_from_query("\u53c2\u6570")
-        self.assertEqual(strategy["version"], "1.4")
+        self.assertEqual(strategy["version"], "1.0")
         self.assertEqual(bot.normalize_command(query_text), bot.CMD_PARAMS)
         body = bot.build_params_summary()
         self.assertIn("\u53c2\u6570\u8bf4\u660e", body)
-        self.assertIn("v1.4", body)
+        self.assertIn("v1.0", body)
         self.assertIn("\u6bcf\u4e24\u5468\u5468\u56db", body)
         self.assertIn("biweekly Thursday", body)
         self.assertNotIn("\u8c03\u4ed3\u57fa\u51c6\u65e5\uff1aThursday", body)
-        self.assertIn("decay=25%", body)
+        self.assertIn("Overlay\uff1a\u672a\u542f\u7528", body)
         self.assertIn("NAV \u63a7\u5236\uff1a\u672a\u542f\u7528", body)
 
     def test_params_command_switches_to_v1_4(self) -> None:
@@ -289,6 +388,17 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertIn("dd_moderate", body)
         self.assertIn("v1.5 \u7684 100% \u662f overlay \u5c42\u6ee1\u4ed3", body)
 
+    def test_params_command_switches_to_v1_6(self) -> None:
+        strategy, query_text = bot.resolve_strategy_from_query("1.6\u53c2\u6570")
+        self.assertEqual(strategy["version"], "1.6")
+        self.assertEqual(bot.normalize_command(query_text), bot.CMD_PARAMS)
+        body = bot.build_params_summary()
+        self.assertIn("target_vol", body)
+        self.assertIn("15%", body)
+        self.assertIn("max_leverage", body)
+        self.assertIn("1.5x", body)
+        self.assertIn("base_version\uff1av1.0", body)
+
     def test_non_default_strategy_adds_version_suffix_to_attachment_name(self) -> None:
         bot.set_active_strategy("1.4")
         self.assertEqual(
@@ -301,6 +411,13 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertEqual(
             bot.versioned_attachment_name("microcap_top100_autorebuild_signal.csv"),
             "microcap_top100_autorebuild_signal_v1_5.csv",
+        )
+
+    def test_v1_6_adds_version_suffix_to_attachment_name(self) -> None:
+        bot.set_active_strategy("1.6")
+        self.assertEqual(
+            bot.versioned_attachment_name("microcap_top100_autorebuild_signal.csv"),
+            "microcap_top100_autorebuild_signal_v1_6.csv",
         )
 
     def test_handle_signal_uses_official_v1_4_signal_output(self) -> None:
@@ -389,6 +506,48 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertIn("v1.5", body)
         self.assertEqual(attachments[0][0], "thread.json.gz")
 
+    def test_handle_signal_uses_official_v1_6_signal_output(self) -> None:
+        bot.set_active_strategy("1.6")
+        official_signal = pd.DataFrame(
+            [
+                {
+                    "date": pd.Timestamp("2026-04-17"),
+                    "signal_label": "cash",
+                    "current_holding": "cash",
+                    "next_holding": "cash",
+                    "trade_state": "hold",
+                    "momentum_trade_state": "hold",
+                    "microcap_close": 123.0,
+                    "hedge_close": 456.0,
+                    "microcap_mom": -0.01,
+                    "hedge_mom": 0.03,
+                    "momentum_gap": -0.04,
+                    "execution_scale": 0.0,
+                    "target_vol": 0.15,
+                    "target_vol_window": 60,
+                    "target_vol_scale_next_session": 1.2,
+                    "fixed_hedge_ratio": 1.0,
+                    "version": "1.6",
+                }
+            ]
+        )
+        with patch.object(bot, "build_context", return_value=self._base_context()):
+            with patch.object(
+                bot,
+                "build_thread_context_attachment",
+                return_value=("thread.json.gz", b"{}", "application/gzip"),
+            ):
+                with patch.object(
+                    bot,
+                    "load_official_signal_bundle",
+                    return_value=(official_signal, {"version": "1.6"}),
+                ):
+                    body, csv_bytes, attachments = bot.handle_signal()
+        csv_text = csv_bytes.decode("utf-8-sig")
+        self.assertIn("target_vol_scale_next_session", csv_text)
+        self.assertIn("v1.6", body)
+        self.assertEqual(attachments[0][0], "thread.json.gz")
+
     def test_build_performance_outputs_refreshes_official_v1_4_outputs_first(self) -> None:
         bot.set_active_strategy("1.4")
         with patch.object(bot, "ensure_selected_strategy_outputs") as ensure_mock:
@@ -425,6 +584,25 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
                 body, attachments = bot.build_performance_outputs("1.5 \u8868\u73b0")
         ensure_mock.assert_called_once()
         self.assertIn("v1.5", body)
+        self.assertGreaterEqual(len(attachments), 2)
+
+    def test_build_performance_outputs_refreshes_official_v1_6_outputs_first(self) -> None:
+        bot.set_active_strategy("1.6")
+        with patch.object(bot, "ensure_selected_strategy_outputs") as ensure_mock:
+            with patch.object(
+                bot,
+                "load_performance_source",
+                return_value=(
+                    self._performance_df(),
+                    "return_net",
+                    "nav_net",
+                    "costed_v1_6",
+                    "official_v1_6.csv",
+                ),
+            ):
+                body, attachments = bot.build_performance_outputs("1.6 \u8868\u73b0")
+        ensure_mock.assert_called_once()
+        self.assertIn("v1.6", body)
         self.assertGreaterEqual(len(attachments), 2)
 
 

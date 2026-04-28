@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # poe: name=Microcap-Top100-POE-Bot
 # poe: privacy_shield=half
-"""Primary POE bot entry for Top100 microcap queries."""
+"""Primary POE bot entry for Top100 microcap queries.  """
 
 import base64
 import contextlib
@@ -173,6 +173,7 @@ THREAD_CONTEXT_CACHE_SECONDS = int(os.environ.get("AUTOREBUILD_THREAD_CACHE_SECO
 THREAD_CONTEXT_ATTACHMENT_PREFIX = "microcap_top100_thread_context"
 STRICT_EXACT_MODE = str(os.environ.get("AUTOREBUILD_STRICT_EXACT", "1")).strip().lower() not in ("0", "false", "no")
 DEFAULT_MIN_ACCEPTABLE_MEMBERS = int(os.environ.get("AUTOREBUILD_MIN_ACCEPTABLE_MEMBERS", str(TOP_N if STRICT_EXACT_MODE else 75)))
+DEFAULT_MIN_REALTIME_MEMBER_QUOTES = int(os.environ.get("AUTOREBUILD_MIN_REALTIME_MEMBER_QUOTES", str(max(1, TOP_N - 2))))
 DEFAULT_TIME_BUDGET_SECONDS = int(os.environ.get("AUTOREBUILD_TIME_BUDGET_SECONDS", "180"))
 DEFAULT_FETCH_SHARE_CHANGE = str(os.environ.get("AUTOREBUILD_FETCH_SHARE_CHANGE", "1")).strip().lower() in ("1", "true", "yes")
 TRADE_CONSTRAINT_MODE = "close"
@@ -215,7 +216,19 @@ V1_5_SIGNAL_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_l
 V1_5_SUMMARY_JSON = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_summary.json"
 V1_5_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_hedge_zz1000_0p8x_nav4_8_gapexit_newpeak_v1_5_costed_nav.csv"
 V1_5_LIVE_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_performance_nav.csv"
-VERSION_PATTERN = re.compile(r"(?i)(?:版本\s*)?v?(1\.(?:0|4|5))(?:的)?")
+V1_6_SIGNAL_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_6_latest_signal.csv"
+V1_6_SUMMARY_JSON = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_6_summary.json"
+V1_6_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_targetvol15_max1p5_v1_6_costed_nav.csv"
+V1_6_LIVE_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_6_performance_nav.csv"
+TARGET_VOL_VERSION = "1.6"
+TARGET_VOL = 0.15
+TARGET_VOL_WINDOW = 60
+TARGET_VOL_MAX_LEVERAGE = 1.5
+TARGET_VOL_MIN_LEVERAGE = 0.0
+TARGET_VOL_TRADING_DAYS = 244
+TARGET_VOL_SCALE_CHANGE_COST = 0.001
+TARGET_VOL_FINANCING_RATE = 0.03
+VERSION_PATTERN = re.compile(r"(?i)(?:版本\s*)?v?(1\.(?:0|4|5|6))(?:的)?")
 STRATEGIES = {
     "1.0": {
         "version": "1.0",
@@ -263,8 +276,23 @@ STRATEGIES = {
         "official_output_module": "microcap_top100_mom16_biweekly_live_v1_5",
         "official_output_generator": "generate_v1_5_outputs",
     },
+    "1.6": {
+        "version": "1.6",
+        "label": "v1.6（v1.0 + 目标波动15%，最高1.5x）",
+        "cache_tag": "v1_6",
+        "hedge_ratio": 1.0,
+        "performance_costed_nav_csv": V1_6_COSTED_NAV_CSV,
+        "performance_live_nav_csv": V1_6_LIVE_NAV_CSV,
+        "performance_proxy_turnover_csv": None,
+        "embedded_performance_b64": "",
+        "overlay_label": "目标波动率缩放：15% target vol，max 1.5x",
+        "official_signal_csv": V1_6_SIGNAL_CSV,
+        "official_summary_json": V1_6_SUMMARY_JSON,
+        "official_output_module": "microcap_top100_mom16_biweekly_live_v1_6",
+        "official_output_generator": "generate_v1_6_outputs",
+    },
 }
-ACTIVE_STRATEGY_VERSION = "1.4"
+ACTIVE_STRATEGY_VERSION = "1.0"
 
 SESSION = requests.Session()
 SESSION.headers.update(
@@ -288,7 +316,7 @@ def build_intro_text():
         f"- 发送 {CMD_REALTIME_CHANGES}：返回按最新实时市值估算的进出名单\n"
         f"- 发送 {CMD_PERFORMANCE}：返回所选版本口径表现摘要与附件\n"
         f"- 发送 {CMD_PARAMS}：返回所选版本的重要参数与含义\n"
-        "说明：默认按 v1.0 主版本运行；若命令里写明 1.4 / 1.5，例如“1.4的信号”“1.5 表现 近3年”，则切换到对应版本。\n"
+        "说明：默认按 v1.0 主版本运行；若命令里写明 1.4 / 1.5 / 1.6，例如“1.6的信号”“1.6 表现 近3年”，则切换到对应版本。\n"
         "云端会在线重建最近窗口的 Top100 名单与代理指数。"
     )
 
@@ -302,8 +330,8 @@ def build_help_text():
         f"4. {CMD_CHANGES}\n"
         f"5. {CMD_REALTIME_CHANGES}\n"
         f"6. {CMD_PERFORMANCE} 近5年 / {CMD_PERFORMANCE} 2024至今 / 最近三年表现\n\n"
-        f"7. {CMD_PARAMS} / 1.4参数 / 1.5参数\n\n"
-        "说明：默认按 v1.0 运行；若查询里明确写“1.4”/“v1.4”或“1.5”/“v1.5”，则切换到对应版本。"
+        f"7. {CMD_PARAMS} / 1.4参数 / 1.5参数 / 1.6参数\n\n"
+        "说明：默认按 v1.0 运行；若查询里明确写“1.4”/“v1.4”、“1.5”/“v1.5”或“1.6”/“v1.6”，则切换到对应版本。"
         "若只发送“表现”，默认返回最近一年的净值曲线、年化收益率和最大回撤。"
     )
 
@@ -319,14 +347,14 @@ def cached_path(name):
 
 
 def get_strategy(version=None):
-    selected = str(version or ACTIVE_STRATEGY_VERSION or "1.4")
-    return (STRATEGIES.get(selected) or STRATEGIES["1.4"]).copy()
+    selected = str(version or ACTIVE_STRATEGY_VERSION or "1.0")
+    return (STRATEGIES.get(selected) or STRATEGIES["1.0"]).copy()
 
 
 def set_active_strategy(version):
     global ACTIVE_STRATEGY_VERSION
-    selected = str(version or "1.4")
-    ACTIVE_STRATEGY_VERSION = selected if selected in STRATEGIES else "1.4"
+    selected = str(version or "1.0")
+    ACTIVE_STRATEGY_VERSION = selected if selected in STRATEGIES else "1.0"
     return None
 
 
@@ -380,7 +408,7 @@ def strip_strategy_version_tokens(text):
 
 def resolve_strategy_from_query(query_text):
     match = VERSION_PATTERN.search(str(query_text or ""))
-    version = match.group(1) if match else "1.4"
+    version = match.group(1) if match else "1.0"
     set_active_strategy(version)
     return get_strategy(), strip_strategy_version_tokens(query_text)
 
@@ -1242,12 +1270,31 @@ def build_params_summary():
                 "- 仓位口径：v1.5 的 100% 是 overlay 层满仓；最终实际敞口仍受 NAV 控制档位约束。",
             ]
         )
+    elif version == "1.6":
+        lines.extend(
+            [
+                "",
+                "目标波动率缩放参数",
+                f"- target_vol：{TARGET_VOL:.0%}，用历史波动率估算目标年化波动。",
+                f"- vol_window：{TARGET_VOL_WINDOW} 个交易日，计算 trailing realized volatility。",
+                f"- max_leverage：{TARGET_VOL_MAX_LEVERAGE:.1f}x，目标波动推导仓位不得超过该上限。",
+                f"- min_leverage：{TARGET_VOL_MIN_LEVERAGE:.1f}x，现金日仍强制为 0x。",
+                f"- scale_change_cost：{TARGET_VOL_SCALE_CHANGE_COST:.2%} * scale 变动幅度，模拟调整杠杆摩擦。",
+                f"- financing_rate：{TARGET_VOL_FINANCING_RATE:.0%}/年，仅对超过 1.0x 的敞口扣融资敏感性成本。",
+                "- timing_rule：T 日执行比例使用截至 T-1 可观察的 trailing volatility，避免当日信息前视。",
+                "",
+                "v1.6 特有说明",
+                "- base_version：v1.0，底层仍是 1.0x 微盘多头 / 中证1000空头相对动量主线。",
+                "- Overlay：不改变入场/退出信号，只改变持仓日执行敞口。",
+                "- 当前执行比例 execution_scale 可在信号 CSV 中查看。",
+            ]
+        )
     lines.extend(
         [
             "",
             "查询说明",
             "- 输入“参数”查看默认 v1.0 参数。",
-            "- 输入“1.4参数”或“1.5参数”查看对应版本参数。",
+            "- 输入“1.4参数”“1.5参数”或“1.6参数”查看对应版本参数。",
             "- 该命令只展示固定策略参数，不抓实时行情，也不扫描临时参数组合。",
         ]
     )
@@ -1689,7 +1736,17 @@ def select_candidate_pool(universe, pool_size, min_latest_date=None):
         frame = frame[~frame["code"].astype(str).str.zfill(6).isin(st_codes)].copy()
     if min_latest_date is not None and "latest_date" in frame.columns:
         latest_dates = pd.to_datetime(frame["latest_date"], errors="coerce")
-        frame = frame[latest_dates >= pd.Timestamp(min_latest_date)].copy()
+        exact_frame = frame[latest_dates >= pd.Timestamp(min_latest_date)].copy()
+        if len(exact_frame) >= TOP_N:
+            frame = exact_frame
+        else:
+            freshest_date = latest_dates.dropna().max()
+            if pd.notna(freshest_date):
+                freshest_frame = frame[latest_dates >= freshest_date].copy()
+                if len(freshest_frame) >= TOP_N:
+                    frame = freshest_frame
+                else:
+                    frame = exact_frame
     pool_size = max(TOP_N, int(pool_size))
     frame = frame.nsmallest(pool_size, "market_cap")
     return frame.reset_index(drop=True)
@@ -2847,6 +2904,45 @@ def apply_v1_5_signal_quality_overlay(base_net, decay_pct, derisk_scale, recover
     return out
 
 
+def apply_target_vol_scaling(base_result):
+    out = base_result.copy().sort_index()
+    if "total_cost" not in out.columns:
+        out["total_cost"] = 0.0
+    gross = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+    base_cost = pd.to_numeric(out["total_cost"], errors="coerce").fillna(0.0)
+    active = out["holding"].astype(str).ne("cash")
+    realized_vol = gross.rolling(TARGET_VOL_WINDOW).std(ddof=1) * np.sqrt(TARGET_VOL_TRADING_DAYS)
+    raw_scale = (TARGET_VOL / realized_vol).clip(
+        lower=TARGET_VOL_MIN_LEVERAGE,
+        upper=TARGET_VOL_MAX_LEVERAGE,
+    ).shift(1).fillna(1.0)
+    execution_scale = raw_scale.copy()
+    execution_scale.loc[~active] = 0.0
+    scale_change_cost = execution_scale.diff().abs().fillna(execution_scale.abs()) * TARGET_VOL_SCALE_CHANGE_COST
+    financing_cost = execution_scale.sub(1.0).clip(lower=0.0) * TARGET_VOL_FINANCING_RATE / TARGET_VOL_TRADING_DAYS
+    ret = (1.0 + gross * execution_scale) * (1.0 - base_cost * execution_scale) * (1.0 - scale_change_cost) - 1.0
+    ret = ret - financing_cost
+
+    out["target_vol"] = TARGET_VOL
+    out["target_vol_window"] = TARGET_VOL_WINDOW
+    out["target_vol_realized_vol"] = realized_vol
+    out["target_vol_scale_raw"] = raw_scale
+    out["target_vol_scale_next_session"] = raw_scale
+    out["execution_scale"] = execution_scale
+    out["scale_change_cost"] = scale_change_cost
+    out["financing_cost"] = financing_cost
+    out["return_net_v1_0"] = pd.to_numeric(out.get("return_net", pd.Series(0.0, index=out.index)), errors="coerce").fillna(0.0)
+    out["nav_net_v1_0"] = pd.to_numeric(out.get("nav_net", pd.Series(np.nan, index=out.index)), errors="coerce")
+    out["return_net"] = ret
+    out["nav_net"] = (1.0 + out["return_net"].fillna(0.0)).cumprod()
+    out["return"] = out["return_net"]
+    out["nav"] = out["nav_net"]
+    out["version"] = TARGET_VOL_VERSION
+    out["base_version"] = "1.0"
+    out["overlay_type"] = "target_volatility_scaling"
+    return out
+
+
 def run_selected_strategy_backtest(close_df):
     version = get_strategy()["version"]
     overlay_cfg = get_overlay_config(version)
@@ -2879,6 +2975,10 @@ def run_selected_strategy_backtest(close_df):
             overlay_cfg["derisk_scale"],
             overlay_cfg["recovery_ratio_threshold"],
         )
+    elif version == "1.6":
+        base = run_backtest(close_df)
+        costed = apply_entry_exit_costs(base)
+        result = apply_target_vol_scaling(costed)
     else:
         result = run_backtest(close_df)
 
@@ -3195,6 +3295,13 @@ def build_latest_signal(result):
         "gap_peak",
         "gap_decay_ratio",
         "execution_scale",
+        "target_vol",
+        "target_vol_window",
+        "target_vol_realized_vol",
+        "target_vol_scale_raw",
+        "target_vol_scale_next_session",
+        "scale_change_cost",
+        "financing_cost",
         "signal_quality_derisk_triggered",
         "recovery_triggered",
         "decay_ratio_threshold",
@@ -3481,6 +3588,43 @@ def fetch_realtime_quotes(member_symbols):
     return pd.DataFrame(rows)
 
 
+def build_member_candidates(member_symbols, effective_members=None):
+    frame = pd.DataFrame(effective_members).copy() if effective_members is not None else pd.DataFrame()
+    if not frame.empty:
+        source_col = "symbol" if "symbol" in frame.columns else "code"
+        frame["code"] = frame[source_col].astype(str).str.zfill(6)
+        if "name" not in frame.columns:
+            frame["name"] = ""
+        return frame[["code", "name"]].drop_duplicates(subset="code").reset_index(drop=True)
+    return pd.DataFrame({"code": [str(symbol).zfill(6) for symbol in member_symbols], "name": ""})
+
+
+def build_realtime_quote_frame(member_symbols):
+    member_symbols = [str(symbol).zfill(6) for symbol in member_symbols]
+    quote_source_parts = []
+    quotes_df = fetch_realtime_quotes(member_symbols)
+    if not quotes_df.empty:
+        quote_source_parts.append("eastmoney_stock_get_member_only")
+    known_codes = set(quotes_df["code"].astype(str).str.zfill(6)) if not quotes_df.empty and "code" in quotes_df.columns else set()
+    missing_symbols = [symbol for symbol in member_symbols if symbol not in known_codes]
+    if missing_symbols:
+        try:
+            universe = fetch_universe_spot(cache_seconds=0)
+            fallback = universe[universe["code"].astype(str).str.zfill(6).isin(missing_symbols)].copy()
+            if not fallback.empty:
+                fallback["code"] = fallback["code"].astype(str).str.zfill(6)
+                fallback = fallback[["code", "name", "latest_price"]].rename(columns={"latest_price": "rt_price"})
+                quotes_df = pd.concat([quotes_df, fallback], ignore_index=True)
+                quote_source_parts.append("eastmoney_universe_fallback")
+        except Exception:
+            pass
+    if quotes_df.empty:
+        return pd.DataFrame(columns=["code", "name", "rt_price"]), "eastmoney_stock_get_member_only"
+    quotes_df["code"] = quotes_df["code"].astype(str).str.zfill(6)
+    quotes_df = quotes_df.drop_duplicates(subset="code", keep="first")
+    return quotes_df, "+".join(quote_source_parts or ["eastmoney_stock_get_member_only"])
+
+
 def fetch_hedge_realtime_quote():
     url = (
         "https://push2.eastmoney.com/api/qt/stock/get"
@@ -3606,6 +3750,9 @@ def format_realtime_summary(row, context, available_rows, total_rows):
             "",
             "实时数据",
             f"- 成分股有效报价：{available_rows} / {total_rows}",
+            f"- 最低报价要求：{int(row.get('realtime_quote_min_required', DEFAULT_MIN_REALTIME_MEMBER_QUOTES))} / {total_rows}",
+            f"- 实时价格来源：{str(row.get('quote_source', 'eastmoney'))}",
+            f"- 对冲腿价格来源：{str(row.get('hedge_quote_source', 'eastmoney'))}",
             f"- 历史锚点交易日：{row['latest_anchor_trade_date']}",
             "",
             "调仓快照",
@@ -3715,8 +3862,7 @@ def handle_realtime_signal(force_refresh=False):
     close_df = context["close_df"]
     histories_cache_date = close_df.index.max()
 
-    universe = fetch_universe_spot(cache_seconds=0)
-    candidates = universe[universe["code"].isin(member_symbols)].copy()
+    candidates = build_member_candidates(member_symbols, context["effective_members"])
     histories, _ = fetch_candidate_histories(
         candidates,
         histories_cache_date - pd.Timedelta(days=5),
@@ -3734,8 +3880,7 @@ def handle_realtime_signal(force_refresh=False):
         if not hist.empty:
             last_close_map[sym] = float(hist.iloc[-1]["close_raw"])
 
-    quotes_df = candidates[["code", "name", "latest_price"]].copy()
-    quotes_df = quotes_df.rename(columns={"latest_price": "rt_price"})
+    quotes_df, quote_source = build_realtime_quote_frame(member_symbols)
     if quotes_df.empty:
         raise RuntimeError("无法获取当前生效成分股实时行情")
     quotes_df = quotes_df.set_index("code")
@@ -3752,13 +3897,20 @@ def handle_realtime_signal(force_refresh=False):
         available_rows += 1
     if not member_returns:
         raise RuntimeError("没有足够的成分股实时价格来估算微盘代理")
-    if STRICT_EXACT_MODE and available_rows != TOP_N:
+    min_realtime_quotes = min(len(member_symbols), max(1, int(DEFAULT_MIN_REALTIME_MEMBER_QUOTES)))
+    if available_rows < min_realtime_quotes:
         raise RuntimeError(
-            f"严格模式未通过：实时有效报价仅 {available_rows}/{TOP_N}，拒绝输出实时信号。"
+            f"实时有效报价仅 {available_rows}/{len(member_symbols)}，"
+            f"低于最低要求 {min_realtime_quotes}/{len(member_symbols)}，拒绝输出实时信号。"
         )
 
     microcap_rt_close = float(close_df["microcap"].iloc[-1]) * (1.0 + float(np.mean(member_returns)))
-    hedge_rt_close = fetch_hedge_realtime_quote()
+    try:
+        hedge_rt_close = fetch_hedge_realtime_quote()
+        hedge_source = "eastmoney"
+    except Exception:
+        hedge_rt_close = float(close_df["hedge"].iloc[-1])
+        hedge_source = "latest_cached_close_fallback"
 
     snapshot_ts = pd.Timestamp.now()
     anchor_trade_date = pd.Timestamp(close_df.index[-1])
@@ -3771,10 +3923,11 @@ def handle_realtime_signal(force_refresh=False):
     signal_df = build_latest_signal(rt_result)
     signal_df = augment_signal_with_member_rebalance(signal_df, context.get("changes_df"))
     jitter_level, jitter_note = classify_tail_jitter_risk(float(signal_df.iloc[0]["momentum_gap"]))
-    signal_df["quote_source"] = "eastmoney"
-    signal_df["hedge_quote_source"] = "eastmoney"
+    signal_df["quote_source"] = quote_source
+    signal_df["hedge_quote_source"] = hedge_source
     signal_df["member_price_count"] = available_rows
     signal_df["member_count"] = len(member_symbols)
+    signal_df["realtime_quote_min_required"] = min_realtime_quotes
     signal_df["latest_anchor_trade_date"] = str(pd.Timestamp(close_df.index[-1]).date())
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note

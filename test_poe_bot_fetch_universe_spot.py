@@ -4,6 +4,8 @@ import unittest
 from urllib.parse import parse_qs, urlparse
 from unittest.mock import patch
 
+import pandas as pd
+
 from poe_bots import microcap_top100_poe_bot as bot
 
 
@@ -75,6 +77,36 @@ class PoeBotFetchUniverseSpotTests(unittest.TestCase):
         self.assertEqual(requested_pages, [1, 2, 3])
         self.assertEqual(len(rows), 200)
         self.assertEqual(rows[0]["code"], "000101")
+
+    def test_select_candidate_pool_falls_back_to_freshest_snapshot_date(self) -> None:
+        rows = []
+        for idx in range(150):
+            rows.append(
+                {
+                    "code": f"{idx + 1:06d}",
+                    "name": f"Name{idx + 1}",
+                    "latest_date": "2026-04-27",
+                    "latest_price": 10.0,
+                    "market_cap": 1000.0 + idx,
+                }
+            )
+        for idx in range(150, 700):
+            rows.append(
+                {
+                    "code": f"{idx + 1:06d}",
+                    "name": f"Name{idx + 1}",
+                    "latest_date": "2026-04-10",
+                    "latest_price": 10.0,
+                    "market_cap": 1.0 + idx,
+                }
+            )
+        universe = pd.DataFrame(rows)
+
+        with patch.object(bot, "load_current_st_codes", return_value=set()):
+            selected = bot.select_candidate_pool(universe, 600, min_latest_date="2026-04-28")
+
+        self.assertEqual(len(selected), 150)
+        self.assertEqual(set(selected["latest_date"]), {"2026-04-27"})
 
 
 if __name__ == "__main__":
