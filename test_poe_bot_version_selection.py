@@ -53,6 +53,55 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
             "rebalance_effective_date": "2026-04-18",
         }
 
+    def _official_v1_4_context(self) -> dict:
+        context = self._base_context()
+        context["latest_signal"] = pd.DataFrame(
+            [
+                {
+                    "date": pd.Timestamp("2026-04-28"),
+                    "version": "1.4",
+                    "base_version": "1.1",
+                    "signal_label": "cash",
+                    "current_holding": "cash",
+                    "next_holding": "cash",
+                    "trade_state": "hold",
+                    "momentum_trade_state": "hold",
+                    "member_rebalance_label": "名单调仓（调入 15，调出 15）",
+                    "member_enter_count": 15,
+                    "member_exit_count": 15,
+                    "microcap_close": 982677.8014313146,
+                    "hedge_close": 8226.692,
+                    "microcap_mom": 0.06209502500488595,
+                    "hedge_mom": 0.0915654273810469,
+                    "momentum_gap": -0.029470402376160942,
+                    "execution_scale": 0.0,
+                    "fixed_hedge_ratio": 0.8,
+                    "momentum_gap_exit_buffer": 0.0025,
+                    "decay_ratio_threshold": 0.25,
+                    "derisk_scale": 0.0,
+                    "recovery_ratio_threshold": 0.35,
+                    "signal_quality_derisk_triggered": False,
+                }
+            ]
+        )
+        context["close_df"] = pd.DataFrame(
+            {"microcap": [982677.8014313146], "hedge": [8226.692]},
+            index=pd.to_datetime(["2026-04-28"]),
+        )
+        context["result"] = context["latest_signal"].assign(holding="cash").set_index("date")
+        context["latest_rebalance"] = "2026-04-16"
+        context["effective_rebalance"] = "2026-04-16"
+        context["rebalance_effective_date"] = "2026-04-17"
+        context["freshness"] = {"latest_trade_date": "2026-04-28"}
+        context["rebuild_meta"].update(
+            {
+                "candidate_pool": "official_v1_4_source",
+                "history_symbols_ok": 0,
+                "validated_exact_pools": ["official_v1_4"],
+            }
+        )
+        return context
+
     def _performance_df(self) -> pd.DataFrame:
         return pd.DataFrame(
             {
@@ -116,12 +165,14 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
             "decay_ratio_threshold",
             "derisk_scale",
             "recovery_ratio_threshold",
+            "momentum_gap_exit_buffer",
             "overlay_type",
             "version",
         ]:
             self.assertIn(col, signal.columns)
         self.assertEqual(row["version"], "1.4")
         self.assertEqual(row["overlay_type"], "momentum_gap_peak_decay_derisk_new_peak_guard")
+        self.assertEqual(float(row["momentum_gap_exit_buffer"]), 0.0025)
 
     def test_v1_5_selected_backtest_latest_signal_includes_overlay_and_nav_control_columns(self) -> None:
         bot.set_active_strategy("1.5")
@@ -162,13 +213,17 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
             "target_vol_scale_next_session",
             "scale_change_cost",
             "financing_cost",
+            "momentum_gap_exit_buffer",
             "overlay_type",
             "version",
         ]:
             self.assertIn(col, signal.columns)
         self.assertEqual(row["version"], "1.6")
         self.assertEqual(row["overlay_type"], "target_volatility_scaling")
+        self.assertEqual(row["base_version"], "1.4")
         self.assertEqual(float(row["target_vol"]), 0.15)
+        self.assertEqual(float(row["momentum_gap_exit_buffer"]), bot.TARGET_VOL_MOMENTUM_GAP_EXIT_BUFFER)
+        self.assertEqual(float(bot.STRATEGIES["1.6"]["momentum_gap_exit_buffer"]), 0.003)
         self.assertLessEqual(float(result["execution_scale"].max()), 1.5)
 
     def test_realtime_signal_uses_selected_strategy_backtest_for_overlay_columns(self) -> None:
@@ -247,6 +302,43 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         csv_text = csv_bytes.decode("utf-8-sig")
         self.assertIn("eastmoney_stock_get_member_only", csv_text)
         self.assertIn("成分股有效报价：100 / 100", body)
+
+    def test_v1_4_realtime_signal_uses_official_source_not_proxy_rebuild(self) -> None:
+        bot.set_active_strategy("1.4")
+        context = self._official_v1_4_context()
+
+        with patch.object(bot, "build_official_v1_4_context", return_value=context) as official_mock:
+            with patch.object(bot, "build_context", side_effect=AssertionError("v1.4 must not use Poe proxy context")):
+                with patch.object(
+                    bot,
+                    "fetch_candidate_histories",
+                    side_effect=AssertionError("v1.4 official realtime must not append an intraday proxy row"),
+                ):
+                    with patch.object(
+                        bot,
+                        "build_thread_context_attachment",
+                        return_value=("thread.json.gz", b"{}", "application/gzip"),
+                    ):
+                        body, csv_bytes, _attachments = bot.handle_realtime_signal()
+
+        csv_text = csv_bytes.decode("utf-8-sig")
+        official_mock.assert_called_once()
+        self.assertIn("momentum_gap_exit_buffer", csv_text)
+        self.assertIn("982677.8014313146", csv_text)
+        self.assertIn("-0.029470402376160942", csv_text)
+        self.assertIn("不使用 Poe 代理指数近似", body)
+        self.assertIn("信号结论", body)
+
+    def test_after_a_share_close_requires_same_trade_date(self) -> None:
+        context = self._base_context()
+        context["close_df"] = pd.DataFrame(
+            {"microcap": [100.0], "hedge": [200.0]},
+            index=pd.to_datetime(["2026-04-17"]),
+        )
+
+        self.assertTrue(bot.is_after_a_share_close_for_context(context, pd.Timestamp("2026-04-17 15:01:00")))
+        self.assertFalse(bot.is_after_a_share_close_for_context(context, pd.Timestamp("2026-04-17 14:59:00")))
+        self.assertFalse(bot.is_after_a_share_close_for_context(context, pd.Timestamp("2026-04-18 15:01:00")))
 
     def test_realtime_signal_allows_small_quote_gap_with_disclosure(self) -> None:
         member_symbols = [f"{idx:06d}" for idx in range(1, bot.TOP_N + 1)]
@@ -397,7 +489,7 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertIn("15%", body)
         self.assertIn("max_leverage", body)
         self.assertIn("1.5x", body)
-        self.assertIn("base_version\uff1av1.0", body)
+        self.assertIn("base_version\uff1av1.4", body)
 
     def test_non_default_strategy_adds_version_suffix_to_attachment_name(self) -> None:
         bot.set_active_strategy("1.4")
@@ -420,47 +512,61 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
             "microcap_top100_autorebuild_signal_v1_6.csv",
         )
 
-    def test_handle_signal_uses_official_v1_4_signal_output(self) -> None:
+    def test_handle_signal_uses_official_v1_4_source_and_ignores_proxy_rebuild(self) -> None:
         bot.set_active_strategy("1.4")
-        official_signal = pd.DataFrame(
-            [
-                {
-                    "date": pd.Timestamp("2026-04-17"),
-                    "signal_label": "cash",
-                    "current_holding": "cash",
-                    "next_holding": "cash",
-                    "trade_state": "hold",
-                    "momentum_trade_state": "hold",
-                    "microcap_close": 123.0,
-                    "hedge_close": 456.0,
-                    "microcap_mom": -0.01,
-                    "hedge_mom": 0.03,
-                    "momentum_gap": -0.04,
-                    "execution_scale": 0.0,
-                    "signal_quality_derisk_triggered": False,
-                    "fixed_hedge_ratio": 0.8,
-                    "decay_ratio_threshold": 0.25,
-                    "derisk_scale": 0.0,
-                    "recovery_ratio_threshold": 0.35,
-                }
-            ]
-        )
-        with patch.object(bot, "build_context", return_value=self._base_context()):
+        context = self._official_v1_4_context()
+        with patch.object(bot, "build_official_v1_4_context", return_value=context) as official_mock:
+            with patch.object(bot, "build_context", side_effect=AssertionError("v1.4 must not use Poe proxy context")):
+                with patch.object(bot, "run_selected_strategy_backtest", side_effect=AssertionError("proxy close_df must not be used")):
+                    with patch.object(
+                        bot,
+                        "build_thread_context_attachment",
+                        return_value=("thread.json.gz", b"{}", "application/gzip"),
+                    ):
+                        body, csv_bytes, attachments = bot.handle_signal()
+
+        csv_text = csv_bytes.decode("utf-8-sig")
+        official_mock.assert_called_once()
+        self.assertIn("execution_scale", csv_text)
+        self.assertIn("982677.8014313146", csv_text)
+        self.assertIn("-0.029470402376160942", csv_text)
+        self.assertIn("动量差峰值衰减去风险", body)
+        self.assertEqual(attachments[0][0], "thread.json.gz")
+
+    def test_v1_4_signal_requires_official_source_when_poe_proxy_would_be_available(self) -> None:
+        bot.set_active_strategy("1.4")
+        with patch.object(
+            bot,
+            "build_official_v1_4_context",
+            side_effect=RuntimeError("missing official source"),
+        ):
+            with patch.object(bot, "build_context", side_effect=AssertionError("must not fall back to approximate proxy")):
+                with self.assertRaisesRegex(RuntimeError, "missing official source"):
+                    bot.handle_signal()
+
+    def test_v1_4_signal_formats_current_holding_not_next_holding(self) -> None:
+        bot.set_active_strategy("1.4")
+        context = self._official_v1_4_context()
+        context["latest_signal"].loc[0, "current_holding"] = "cash"
+        context["latest_signal"].loc[0, "next_holding"] = "long_microcap_short_zz1000"
+        context["latest_signal"].loc[0, "trade_state"] = "open"
+        context["latest_signal"].loc[0, "momentum_trade_state"] = "open"
+        with patch.object(bot, "build_official_v1_4_context", return_value=context):
             with patch.object(
                 bot,
                 "build_thread_context_attachment",
                 return_value=("thread.json.gz", b"{}", "application/gzip"),
             ):
-                with patch.object(
-                    bot,
-                    "load_official_signal_bundle",
-                    return_value=(official_signal, {"version": "1.4"}),
-                ):
-                    body, csv_bytes, attachments = bot.handle_signal()
-        csv_text = csv_bytes.decode("utf-8-sig")
-        self.assertIn("execution_scale", csv_text)
-        self.assertIn("\u52a8\u91cf\u5dee\u5cf0\u503c\u8870\u51cf\u53bb\u98ce\u9669", body)
-        self.assertEqual(attachments[0][0], "thread.json.gz")
+                body, _csv_bytes, _attachments = bot.handle_signal()
+        self.assertIn("当前状态：空仓", body)
+        self.assertIn("仓位动作（动量信号）：开仓", body)
+
+    def test_non_v1_4_non_default_signal_refuses_approx_fallback_when_official_missing(self) -> None:
+        bot.set_active_strategy("1.5")
+        with patch.object(bot, "load_official_signal_bundle", return_value=(None, None)):
+            with patch.object(bot, "build_context", side_effect=AssertionError("must not build approximate fallback")):
+                with self.assertRaisesRegex(RuntimeError, "v1.5 官方信号"):
+                    bot.handle_signal()
 
     def test_handle_signal_uses_official_v1_5_signal_output(self) -> None:
         bot.set_active_strategy("1.5")

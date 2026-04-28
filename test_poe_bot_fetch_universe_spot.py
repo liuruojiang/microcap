@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import unittest
+import base64
+import gzip
+import json
 from urllib.parse import parse_qs, urlparse
 from unittest.mock import patch
 
@@ -107,6 +110,57 @@ class PoeBotFetchUniverseSpotTests(unittest.TestCase):
 
         self.assertEqual(len(selected), 150)
         self.assertEqual(set(selected["latest_date"]), {"2026-04-27"})
+
+    def test_fetch_universe_spot_uses_akshare_fallback_when_primary_empty(self) -> None:
+        rows = []
+        for idx in range(700):
+            rows.append(
+                {
+                    "代码": f"{idx + 1:06d}",
+                    "名称": f"Name{idx + 1}",
+                    "最新价": 10.0,
+                    "总市值": 1000.0 + idx,
+                    "昨收": 9.9,
+                    "今开": 10.1,
+                }
+            )
+        fake_ak = type("FakeAk", (), {"stock_zh_a_spot_em": staticmethod(lambda: pd.DataFrame(rows))})
+
+        with patch.object(bot, "read_json_cache", return_value=None):
+            with patch.object(bot, "write_json_cache"):
+                with patch.object(bot, "fetch_eastmoney_universe_rows", return_value=[]):
+                    with patch.object(bot, "get_akshare", return_value=fake_ak):
+                        with patch.object(bot, "load_current_st_codes", return_value=set()):
+                            universe = bot.fetch_universe_spot(cache_seconds=0)
+
+        self.assertEqual(len(universe), 700)
+        self.assertEqual(universe.iloc[0]["code"], "000001")
+        self.assertEqual(float(universe.iloc[0]["latest_price"]), 10.0)
+
+    def test_fetch_universe_spot_uses_embedded_snapshot_when_network_empty(self) -> None:
+        rows = [
+            {
+                "code": f"{idx + 1:06d}",
+                "name": f"Name{idx + 1}",
+                "latest_price": 10.0,
+                "market_cap": 1000.0 + idx,
+                "prev_close": 9.9,
+                "open_price": 10.1,
+            }
+            for idx in range(700)
+        ]
+        blob = base64.b64encode(gzip.compress(json.dumps(rows).encode("utf-8"))).decode("ascii")
+
+        with patch.object(bot, "read_json_cache", return_value=None):
+            with patch.object(bot, "write_json_cache"):
+                with patch.object(bot, "fetch_eastmoney_universe_rows", return_value=[]):
+                    with patch.object(bot, "fetch_akshare_universe_rows", return_value=[]):
+                        with patch.object(bot, "EMBEDDED_UNIVERSE_B64", blob):
+                            with patch.object(bot, "load_current_st_codes", return_value=set()):
+                                universe = bot.fetch_universe_spot(cache_seconds=0)
+
+        self.assertEqual(len(universe), 700)
+        self.assertEqual(universe.iloc[-1]["code"], "000700")
 
 
 if __name__ == "__main__":

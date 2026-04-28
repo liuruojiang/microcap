@@ -168,6 +168,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
             latest_signal[src_col] = float(latest_row[src_col])
     latest_signal["signal_quality_derisk_triggered"] = bool(latest_row.get("signal_quality_derisk_triggered", False))
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
+    latest_signal["momentum_gap_exit_buffer"] = V1_4_MOMENTUM_GAP_EXIT_BUFFER
     latest_signal["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
     latest_signal["derisk_scale"] = DERISK_SCALE
     latest_signal["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
