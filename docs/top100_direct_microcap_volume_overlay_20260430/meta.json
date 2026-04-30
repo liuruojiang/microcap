@@ -1,0 +1,55 @@
+{
+  "baseline_nav": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
+  "source": "同花顺微盘股",
+  "index_code": "883418",
+  "qveris_code": "883418.TI",
+  "source_file": "qveris_ths_883418_ti_history.csv",
+  "source_rows": 685,
+  "source_start": "2023-07-04",
+  "source_end": "2026-04-30",
+  "columns_tested": [
+    "amount",
+    "volume"
+  ],
+  "ma_grid": [
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    50,
+    55,
+    60,
+    65,
+    70,
+    75,
+    80
+  ],
+  "days_grid": [
+    5,
+    7,
+    9,
+    11,
+    13,
+    15,
+    17,
+    19,
+    21,
+    23,
+    25
+  ],
+  "scale_grid": [
+    0.0,
+    0.25,
+    0.5,
+    0.75
+  ],
+  "scale_change_cost": 0.003,
+  "baseline_aligned_start": "2023-07-04",
+  "baseline_aligned_end": "2026-04-28",
+  "timing": "Index volume/amount signal at date t is shifted one trading day before affecting Top100 net returns.",
+  "wind_note": "WindPy is not available in the current environment, so 868008.WI amount/volume was not tested.",
+  "qveris_note": "QVeris cn_financial_pro.history_quotation returns 883418.TI history with volume/amount from 2023-07 onward.",
+  "sample_note": "Available THS microcap volume history starts in 2023-07, so this is a short-window diagnostic, not a 5Y/10Y robustness test."
+}

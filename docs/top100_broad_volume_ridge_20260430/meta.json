@@ -1,0 +1,18 @@
+{
+  "nav_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
+  "sample_start": "2010-02-02",
+  "sample_end": "2026-04-28",
+  "ma_range": "40..70",
+  "days_range": "8..25",
+  "scale_grid": [
+    0.0,
+    0.25,
+    0.5,
+    0.75
+  ],
+  "scale_change_cost": 0.003,
+  "sources": {
+    "zz2000": "2.932000",
+    "cyb": "0.399006"
+  }
+}

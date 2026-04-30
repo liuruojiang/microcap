@@ -1,0 +1,13 @@
+{
+  "nav_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
+  "turnover_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_proxy_turnover.csv",
+  "members_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_proxy_members.csv",
+  "index_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+  "sample_start": "2010-02-02",
+  "sample_end": "2026-04-28",
+  "rows": 3938,
+  "rebalance_events": 422,
+  "scale_change_cost": 0.003,
+  "timing": "Rebalance-date features affect returns from return_start_date. Daily holding_count is shifted one trading day.",
+  "data_limitation": "No full historical per-stock volume/amount matrix is available in this local research path; market-cap, turnover, blocked trade counts, and holding count are liquidity proxies."
+}

@@ -1,0 +1,52 @@
+{
+  "nav_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_biweekly_thursday_16y_costed_nav.csv",
+  "sources": {
+    "sh_comp": [
+      "1.000001",
+      "sh_comp"
+    ],
+    "hs300": [
+      "1.000300",
+      "hs300"
+    ],
+    "zz1000": [
+      "1.000852",
+      "zz1000"
+    ],
+    "zz2000": [
+      "2.932000",
+      "zz2000"
+    ],
+    "cyb": [
+      "0.399006",
+      "cyb"
+    ]
+  },
+  "sample_start": "2010-02-02",
+  "sample_end": "2026-04-28",
+  "ma_grid": [
+    10,
+    20,
+    30,
+    40,
+    50,
+    60
+  ],
+  "days_grid": [
+    2,
+    3,
+    5,
+    8,
+    10,
+    15,
+    20
+  ],
+  "scale_grid": [
+    0.0,
+    0.25,
+    0.5,
+    0.75
+  ],
+  "scale_change_cost": 0.003,
+  "timing": "Index amount signal at date t is shifted one trading day before affecting Top100 net returns."
+}

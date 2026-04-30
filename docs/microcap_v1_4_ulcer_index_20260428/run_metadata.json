@@ -1,0 +1,12 @@
+{
+  "source_csv": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_gapderisk_newpeak_v1_4_costed_nav.csv",
+  "strategy_script": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v1_4.py",
+  "return_column": "return_net",
+  "nav_column": "nav_net",
+  "source_start": "2010-02-02",
+  "source_end": "2026-04-28",
+  "rows": 3936,
+  "ulcer_index": "sqrt(mean(drawdown_pct^2)); drawdown from costed daily NAV running peak",
+  "version": "1.4",
+  "costed": true
+}
