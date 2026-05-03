@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 
 import microcap_top100_mom16_biweekly_live_v1_4 as v1_4_mod
 
+# v1.6 intentionally reuses v1.4 internal context/build helpers; recheck this
+# module when v1.4 refactors its v1_1_mod/base_mod or _load_base_v1_1_context API.
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
@@ -51,21 +53,25 @@ LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_6.json
 
 def validate_base_hedge_ratio() -> None:
     v1_1_mod = getattr(v1_4_mod, "v1_1_mod", None)
+    if v1_1_mod is None:
+        raise RuntimeError("missing v1_4_mod.v1_1_mod; cannot validate v1.6 base hedge ratio")
     base_mod = getattr(v1_1_mod, "base_mod", None)
+    if base_mod is None:
+        raise RuntimeError("missing v1_4_mod.v1_1_mod.base_mod; cannot validate v1.6 base hedge ratio")
     checks = {
         "v1_4_mod.BASE_HEDGE_RATIO": getattr(v1_4_mod, "BASE_HEDGE_RATIO", None),
         "v1_4_mod.v1_1_mod.base_mod.FIXED_HEDGE_RATIO": getattr(base_mod, "FIXED_HEDGE_RATIO", None),
     }
     for name, value in checks.items():
         if value is None:
-            continue
+            raise RuntimeError(f"missing {name}; cannot validate v1.6 base hedge ratio")
         if abs(float(value) - float(BASE_HEDGE_RATIO)) > 1e-9:
             raise ValueError(f"hedge ratio mismatch: v1.6={BASE_HEDGE_RATIO}, {name}={value}")
 
 
 def current_base_fingerprint() -> dict[str, object]:
     validate_base_hedge_ratio()
-    base = v1_4_mod.current_base_fingerprint()
+    base = dict(v1_4_mod.current_base_fingerprint())
     base["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
     return {
         "base_version": "1.4",
@@ -81,7 +87,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "scale_change_cost_model": "microcap_long_plus_hedge_leg_net_turnover",
         "scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
         "base_trade_cost_model": "v1_4_total_cost_scaled_by_target_vol_exposure",
-        "volatility_return_source_priority": ["return_raw", "base_gross_return", "return", "return_net"],
+        "volatility_return_source_priority": ["return_raw", "base_gross_return", "return_net_fallback_warning"],
         "pnl_return_source": PNL_RETURN_SOURCE,
         "financing_rate": TARGET_VOL_FINANCING_RATE,
         "momentum_gap_exit_buffer": V1_6_MOMENTUM_GAP_EXIT_BUFFER,
@@ -104,6 +110,16 @@ def summary_matches_current_v1_6_base(summary: dict[str, object]) -> bool:
 
 
 def invalidate_incompatible_v1_6_outputs() -> list[Path]:
+    stale = incompatible_v1_6_outputs()
+    removed: list[Path] = []
+    for path in stale:
+        if path.exists():
+            path.unlink(missing_ok=True)
+            removed.append(path)
+    return removed
+
+
+def incompatible_v1_6_outputs() -> list[Path]:
     if not SUMMARY_JSON.exists():
         return []
     try:
@@ -112,8 +128,7 @@ def invalidate_incompatible_v1_6_outputs() -> list[Path]:
         summary = None
     if summary_matches_current_v1_6_base(summary):
         return []
-    removed: list[Path] = []
-    for path in [
+    return [
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
         REALTIME_SIGNAL_CSV,
@@ -125,11 +140,7 @@ def invalidate_incompatible_v1_6_outputs() -> list[Path]:
         PERF_NAV_CSV,
         PERF_JSON,
         PERF_PNG,
-    ]:
-        if path.exists():
-            path.unlink(missing_ok=True)
-            removed.append(path)
-    return removed
+    ]
 
 
 def ensure_output_dir() -> None:
@@ -278,6 +289,10 @@ def apply_scale_rebalance_threshold(
     active: pd.Series,
     threshold: float = TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
 ) -> pd.Series:
+    if not desired_scale.index.is_unique:
+        raise ValueError("desired_scale must have a unique index")
+    if not active.index.is_unique:
+        raise ValueError("active must have a unique index")
     desired = pd.to_numeric(desired_scale, errors="coerce").fillna(1.0)
     active_flags = active.reindex(desired.index).fillna(False).astype(bool)
     values: list[float] = []
@@ -331,12 +346,12 @@ def calc_base_trade_cost_scale(
 
 
 def _select_target_vol_return_source(out: pd.DataFrame, fallback: pd.Series) -> tuple[pd.Series, str]:
-    for col in ["return_raw", "base_gross_return", "return"]:
+    for col in ["return_raw", "base_gross_return"]:
         if col in out.columns:
             series = pd.to_numeric(out[col], errors="coerce")
             if series.notna().any():
                 return series.fillna(0.0), col
-    return fallback, "return_net"
+    return fallback, "return_net_fallback_warning"
 
 
 def _select_base_pre_cost_return(out: pd.DataFrame, base_return_net: pd.Series, base_trade_cost: pd.Series) -> tuple[pd.Series, str]:
@@ -390,9 +405,9 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
         (1.0 + base_pre_cost_return * execution_scale)
         * (1.0 - base_trade_cost_scaled)
         * (1.0 - scale_change_cost)
+        * (1.0 - financing_cost)
         - 1.0
     )
-    ret = ret - financing_cost
 
     out["target_vol"] = TARGET_VOL
     out["target_vol_window"] = TARGET_VOL_WINDOW
@@ -444,16 +459,18 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         )
         or 0.0
     )
-    next_session_actionable_scale = float(
-        latest_row.get("next_session_actionable_scale", np.nan)
-        if pd.notna(latest_row.get("next_session_actionable_scale", np.nan))
-        else calc_next_session_actionable_scale(
-            pd.Series([current_execution_scale]),
-            pd.Series([next_session_target_scale]),
-            pd.Series([next_holding]),
-            threshold=TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
-        ).iloc[0]
-    )
+    raw_next_session_actionable_scale = latest_row.get("next_session_actionable_scale", np.nan)
+    if pd.notna(raw_next_session_actionable_scale):
+        next_session_actionable_scale = float(raw_next_session_actionable_scale)
+    else:
+        next_session_actionable_scale = float(
+            calc_next_session_actionable_scale(
+                pd.Series([current_execution_scale]),
+                pd.Series([next_session_target_scale]),
+                pd.Series([next_holding]),
+                threshold=TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+            ).iloc[0]
+        )
     raw_scale_delta = next_session_target_scale - current_execution_scale
     actionable_scale_delta = next_session_actionable_scale - current_execution_scale
     scale_delta = actionable_scale_delta
@@ -652,7 +669,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
 def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
-    invalidate_incompatible_v1_6_outputs()
+    stale_outputs = incompatible_v1_6_outputs()
     reference_summary, _, base_gross_cached, turnover_df = v1_4_mod._load_base_v1_1_context()
     close_df = base_gross_cached[["microcap_close", "hedge_close"]].rename(
         columns={"microcap_close": "microcap", "hedge_close": "hedge"}
@@ -718,7 +735,7 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "entry_exit_overlay_cost_model": "target-vol scale-change cost is skipped on holding transition days to avoid double-counting v1.4 entry/exit cost",
         "target_vol_scale_next_session_semantics": "actionable scale after rebalance threshold; raw model target is raw_next_target_scale",
         "idle_cash_return": "not credited when execution_scale < 1.0",
-        "volatility_return_source_priority": ["return_raw", "base_gross_return", "return", "return_net"],
+        "volatility_return_source_priority": ["return_raw", "base_gross_return", "return_net_fallback_warning"],
         "pnl_return_source": PNL_RETURN_SOURCE,
         "financing_rate": TARGET_VOL_FINANCING_RATE,
         "trading_days": TARGET_VOL_TRADING_DAYS,
@@ -731,6 +748,20 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["base_fingerprint"] = current_base_fingerprint()
     summary["live_microcap_tail_overlay"] = live_overlay_meta
     SUMMARY_JSON.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    regenerated_outputs = {
+        SUMMARY_JSON,
+        LATEST_SIGNAL_CSV,
+        NAV_CSV,
+        COSTED_NAV_CSV,
+        PERF_SUMMARY_CSV,
+        PERF_YEARLY_CSV,
+        PERF_NAV_CSV,
+        PERF_JSON,
+        PERF_PNG,
+    }
+    for stale_path in stale_outputs:
+        if stale_path not in regenerated_outputs and stale_path.exists():
+            stale_path.unlink(missing_ok=True)
     return summary, signal_row, out
 
 

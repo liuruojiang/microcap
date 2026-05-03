@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 
 import microcap_top100_mom16_biweekly_live_v1_1 as v1_1_mod
 
+# v1.4 intentionally reuses v1.1 internal base_mod helpers; recheck this
+# module when v1.1 refactors base_mod or output/context APIs.
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
@@ -61,8 +63,12 @@ def ensure_output_dir() -> None:
 
 def validate_base_hedge_ratio() -> None:
     base_mod = getattr(v1_1_mod, "base_mod", None)
+    if base_mod is None:
+        raise RuntimeError("missing v1_1_mod.base_mod; cannot validate v1.4 base hedge ratio")
     value = getattr(base_mod, "FIXED_HEDGE_RATIO", None)
-    if value is not None and abs(float(value) - BASE_HEDGE_RATIO) > 1e-9:
+    if value is None:
+        raise RuntimeError("missing v1_1_mod.base_mod.FIXED_HEDGE_RATIO; cannot validate v1.4 base hedge ratio")
+    if abs(float(value) - BASE_HEDGE_RATIO) > 1e-9:
         raise ValueError(f"hedge ratio mismatch: v1.4={BASE_HEDGE_RATIO}, v1_1.base={value}")
 
 
@@ -130,6 +136,16 @@ def summary_matches_current_v1_4_base(summary: dict[str, object]) -> bool:
 
 
 def invalidate_incompatible_v1_4_outputs() -> list[Path]:
+    stale = incompatible_v1_4_outputs()
+    removed: list[Path] = []
+    for path in stale:
+        if path.exists():
+            path.unlink(missing_ok=True)
+            removed.append(path)
+    return removed
+
+
+def incompatible_v1_4_outputs() -> list[Path]:
     if not SUMMARY_JSON.exists():
         return []
     try:
@@ -138,8 +154,7 @@ def invalidate_incompatible_v1_4_outputs() -> list[Path]:
         summary = None
     if summary_matches_current_v1_4_base(summary):
         return []
-    removed: list[Path] = []
-    for path in [
+    return [
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
         REALTIME_SIGNAL_CSV,
@@ -150,11 +165,7 @@ def invalidate_incompatible_v1_4_outputs() -> list[Path]:
         PERF_NAV_CSV,
         PERF_JSON,
         PERF_PNG,
-    ]:
-        if path.exists():
-            path.unlink(missing_ok=True)
-            removed.append(path)
-    return removed
+    ]
 
 
 def _ensure_base_outputs() -> None:
@@ -397,7 +408,7 @@ def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     ensure_output_dir()
     validate_base_hedge_ratio()
     _ensure_base_outputs()
-    invalidate_incompatible_v1_4_outputs()
+    stale_outputs = incompatible_v1_4_outputs()
     reference_summary, _, base_gross, turnover_df = _load_base_v1_1_context()
     gross = v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
         base_gross,
@@ -455,6 +466,20 @@ def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     SUMMARY_JSON.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    regenerated_outputs = {
+        SUMMARY_JSON,
+        LATEST_SIGNAL_CSV,
+        NAV_CSV,
+        COSTED_NAV_CSV,
+        PERF_SUMMARY_CSV,
+        PERF_YEARLY_CSV,
+        PERF_NAV_CSV,
+        PERF_JSON,
+        PERF_PNG,
+    }
+    for stale_path in stale_outputs:
+        if stale_path not in regenerated_outputs and stale_path.exists():
+            stale_path.unlink(missing_ok=True)
     return summary, signal_row, out
 
 

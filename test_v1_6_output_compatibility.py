@@ -533,6 +533,42 @@ class V16OutputCompatibilityTests(unittest.TestCase):
             child.unlink()
         tmp_dir.rmdir()
 
+    def test_generate_v1_6_outputs_keeps_stale_files_when_rebuild_fails(self) -> None:
+        module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
+        tmp_dir = Path(__file__).resolve().parent / "_tmp_v1_6_failed_rebuild"
+        tmp_dir.mkdir(exist_ok=True)
+        for child in tmp_dir.iterdir():
+            child.unlink()
+        summary_path = tmp_dir / "summary.json"
+        costed_path = tmp_dir / "costed.csv"
+        realtime_path = tmp_dir / "realtime.csv"
+        summary_path.write_text('{"version": "stale"}', encoding="utf-8")
+        costed_path.write_text("stale", encoding="utf-8")
+        realtime_path.write_text("stale", encoding="utf-8")
+
+        with patch.object(module, "OUTPUT_DIR", tmp_dir):
+            with patch.object(module, "SUMMARY_JSON", summary_path):
+                with patch.object(module, "REALTIME_SIGNAL_CSV", realtime_path):
+                    with patch.object(module, "LATEST_SIGNAL_CSV", tmp_dir / "latest.csv"):
+                        with patch.object(module, "NAV_CSV", tmp_dir / "nav.csv"):
+                            with patch.object(module, "COSTED_NAV_CSV", costed_path):
+                                with patch.object(module, "LEGACY_COSTED_NAV_CSV", tmp_dir / "legacy.csv"):
+                                    with patch.object(module, "PERF_SUMMARY_CSV", tmp_dir / "perf_summary.csv"):
+                                        with patch.object(module, "PERF_YEARLY_CSV", tmp_dir / "yearly.csv"):
+                                            with patch.object(module, "PERF_NAV_CSV", tmp_dir / "perf_nav.csv"):
+                                                with patch.object(module, "PERF_JSON", tmp_dir / "perf.json"):
+                                                    with patch.object(module, "PERF_PNG", tmp_dir / "perf.png"):
+                                                        with patch.object(module.v1_4_mod, "_load_base_v1_1_context", side_effect=RuntimeError("boom")):
+                                                            with self.assertRaisesRegex(RuntimeError, "boom"):
+                                                                module.generate_v1_6_outputs()
+
+        self.assertTrue(summary_path.exists())
+        self.assertTrue(costed_path.exists())
+        self.assertTrue(realtime_path.exists())
+        for child in tmp_dir.iterdir():
+            child.unlink()
+        tmp_dir.rmdir()
+
     def test_fingerprint_includes_all_cost_and_overlay_parameters(self) -> None:
         module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
 
@@ -548,12 +584,82 @@ class V16OutputCompatibilityTests(unittest.TestCase):
         ]:
             self.assertIn(key, fp)
 
+    def test_current_base_fingerprint_does_not_mutate_v1_4_fingerprint(self) -> None:
+        module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
+        upstream = {"base_version": "1.4"}
+
+        with patch.object(module.v1_4_mod, "current_base_fingerprint", return_value=upstream):
+            fp = module.current_base_fingerprint()
+
+        self.assertNotIn("momentum_gap_exit_buffer", upstream)
+        self.assertEqual(fp["base_v1_4_fingerprint"]["momentum_gap_exit_buffer"], module.V1_6_MOMENTUM_GAP_EXIT_BUFFER)
+
+    def test_target_vol_return_source_warns_when_falling_back_to_net(self) -> None:
+        module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
+        idx = pd.date_range("2026-01-01", periods=3, freq="B")
+        fallback = pd.Series([0.01, 0.02, 0.03], index=idx)
+        out = pd.DataFrame({"return": [0.50, 0.50, 0.50], "return_net": fallback}, index=idx)
+
+        selected, source = module._select_target_vol_return_source(out, fallback)
+
+        self.assertEqual(source, "return_net_fallback_warning")
+        pd.testing.assert_series_equal(selected, fallback)
+
+    def test_apply_scale_rebalance_threshold_rejects_duplicate_index(self) -> None:
+        module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
+        idx = pd.to_datetime(["2026-01-01", "2026-01-01"])
+
+        with self.assertRaisesRegex(ValueError, "desired_scale must have a unique index"):
+            module.apply_scale_rebalance_threshold(
+                pd.Series([1.0, 1.1], index=idx),
+                pd.Series([True, True], index=idx),
+            )
+
     def test_validate_base_hedge_ratio_rejects_mismatch(self) -> None:
         module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
 
         with patch.object(module.v1_4_mod, "BASE_HEDGE_RATIO", 1.0):
             with self.assertRaisesRegex(ValueError, "hedge ratio mismatch"):
                 module.validate_base_hedge_ratio()
+
+    def test_validate_base_hedge_ratio_rejects_missing_base_module(self) -> None:
+        module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
+
+        with patch.object(module.v1_4_mod.v1_1_mod, "base_mod", None):
+            with self.assertRaisesRegex(RuntimeError, "missing v1_4_mod.v1_1_mod.base_mod"):
+                module.validate_base_hedge_ratio()
+
+    def test_apply_target_vol_scaling_compounds_financing_cost(self) -> None:
+        module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")
+        dates = pd.date_range("2026-01-01", periods=8, freq="B")
+        returns = pd.Series([0.001, -0.001, 0.001, -0.001, 0.001, -0.001, 0.001, -0.001], index=dates)
+        base_result = pd.DataFrame(
+            {
+                "return_net": returns,
+                "return_raw": returns,
+                "nav_net": (1.0 + returns).cumprod(),
+                "holding": ["microcap"] * len(dates),
+                "next_holding": ["microcap"] * len(dates),
+                "total_cost": [0.0] * len(dates),
+            },
+            index=dates,
+        )
+
+        with patch.object(module, "TARGET_VOL_WINDOW", 3):
+            with patch.object(module, "TARGET_VOL_MAX_LEVERAGE", 1.5):
+                with patch.object(module, "TARGET_VOL_FINANCING_RATE", 0.30):
+                    out = module.apply_target_vol_scaling(base_result)
+
+        row = out.iloc[-1]
+        self.assertGreater(float(row["financing_cost"]), 0.0)
+        expected = (
+            (1.0 + float(row["base_pre_cost_return"]) * float(row["execution_scale"]))
+            * (1.0 - float(row["base_trade_cost_scaled"]))
+            * (1.0 - float(row["scale_change_cost"]))
+            * (1.0 - float(row["financing_cost"]))
+            - 1.0
+        )
+        self.assertAlmostEqual(float(row["return_net"]), expected)
 
     def test_summary_rejects_empty_returns_and_uses_cn_trading_days(self) -> None:
         module = importlib.import_module("microcap_top100_mom16_biweekly_live_v1_6")

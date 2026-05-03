@@ -52,6 +52,11 @@ class V14OutputCompatibilityTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "hedge ratio mismatch"):
                 v1_4_mod.validate_base_hedge_ratio()
 
+    def test_validate_base_hedge_ratio_rejects_missing_base_module(self) -> None:
+        with patch.object(v1_4_mod.v1_1_mod, "base_mod", None):
+            with self.assertRaisesRegex(RuntimeError, "missing v1_1_mod.base_mod"):
+                v1_4_mod.validate_base_hedge_ratio()
+
     def test_current_base_fingerprint_records_scale_cost_model(self) -> None:
         with patch.object(v1_4_mod, "_file_sha1", return_value="sha"):
             fp = v1_4_mod.current_base_fingerprint()
@@ -102,12 +107,12 @@ class V14OutputCompatibilityTests(unittest.TestCase):
         def ensure_base() -> None:
             calls.append("ensure")
 
-        def invalidate() -> list[Path]:
-            calls.append("invalidate")
+        def incompatible() -> list[Path]:
+            calls.append("incompatible")
             return []
 
         with patch.object(v1_4_mod, "_ensure_base_outputs", side_effect=ensure_base):
-            with patch.object(v1_4_mod, "invalidate_incompatible_v1_4_outputs", side_effect=invalidate):
+            with patch.object(v1_4_mod, "incompatible_v1_4_outputs", side_effect=incompatible):
                 with patch.object(v1_4_mod, "_load_base_v1_1_context", return_value=(base_summary, pd.DataFrame(), gross, turnover)):
                     with patch.object(v1_4_mod.v1_1_mod.base_mod, "apply_momentum_gap_peak_decay_derisk", return_value=overlaid):
                         with patch.object(v1_4_mod, "build_performance_payload", return_value={"summary": {"final_nav": 1.0}}):
@@ -118,7 +123,7 @@ class V14OutputCompatibilityTests(unittest.TestCase):
                                             with patch.object(v1_4_mod, "current_base_fingerprint", return_value={"ok": True}):
                                                 v1_4_mod.generate_v1_4_outputs()
 
-        self.assertEqual(calls[:2], ["ensure", "invalidate"])
+        self.assertEqual(calls[:2], ["ensure", "incompatible"])
 
     def test_invalidate_incompatible_v1_4_outputs_removes_stale_outputs(self) -> None:
         stale_summary = self.work_dir / "summary.json"
@@ -163,6 +168,26 @@ class V14OutputCompatibilityTests(unittest.TestCase):
         self.assertFalse(stale_realtime_signal.exists())
         self.assertFalse(stale_costed.exists())
         self.assertFalse(stale_perf_png.exists())
+
+    def test_generate_v1_4_outputs_keeps_stale_files_when_rebuild_fails(self) -> None:
+        stale_summary = self.work_dir / "summary.json"
+        stale_costed = self.work_dir / "costed.csv"
+        stale_realtime = self.work_dir / "realtime.csv"
+        stale_summary.write_text('{"version": "stale"}', encoding="utf-8")
+        stale_costed.write_text("stale", encoding="utf-8")
+        stale_realtime.write_text("stale", encoding="utf-8")
+
+        with patch.object(v1_4_mod, "SUMMARY_JSON", stale_summary):
+            with patch.object(v1_4_mod, "COSTED_NAV_CSV", stale_costed):
+                with patch.object(v1_4_mod, "REALTIME_SIGNAL_CSV", stale_realtime):
+                    with patch.object(v1_4_mod, "_ensure_base_outputs"):
+                        with patch.object(v1_4_mod, "_load_base_v1_1_context", side_effect=RuntimeError("boom")):
+                            with self.assertRaisesRegex(RuntimeError, "boom"):
+                                v1_4_mod.generate_v1_4_outputs()
+
+        self.assertTrue(stale_summary.exists())
+        self.assertTrue(stale_costed.exists())
+        self.assertTrue(stale_realtime.exists())
 
     def test_generate_v1_4_outputs_applies_signal_quality_derisk_overlay(self) -> None:
         base_summary = {
