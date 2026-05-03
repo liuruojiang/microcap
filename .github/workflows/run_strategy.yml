@@ -1,19 +1,35 @@
-name: Run Microcap Stra     schedule:
-       - cron: '40 6 * * 1-5'  # Run every weekday at 06:40 UTC
-     workflow_dispatch:  # Allow manual triggering
+name: Run Microcap Strategy
 
-   jobs:
-     strategy:
-       runs-on: ubuntu-latest
+on:
+  schedule:
+    - cron: '40 6 * * 1-5'  # Run every weekday at 06:40 UTC
+  workflow_dispatch:  # Allow manual triggering
 
-       steps:
-         - name: Checkout repository
-           uses: actions/checkout@v2
-
-         - name: Install dependencies
-           run: |
-             python -m pip install --upgrade pip
-             pip install pandas matplotlib
-
-         - name: Run the strategy
-           run: pythontegy\n\nschedule:\n  - cron: '40 6 * * 1-5'  # Every weekday at 06:40 UTC\n\njobs:\n  run_strategy:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Checkout repository\n        uses: actions/checkout@v2\n      - name: Set up Python 3.10\n        uses: actions/setup-python@v2\n        with:\n          python-version: '3.10'\n      - name: Install dependencies\n        run: |\n          python -m pip install --upgrade pip\n          pip install pandas matplotlib\n      - name: Run Microcap Strategy\n        run: python microcap_top100_mom16_biweekly_live_v1_4.py 信号\n      - name: Upload Outputs as Artifact\n        uses: actions/upload-artifact@v2\n        with:\n          name: outputs\n          path: outputs/\n
+jobs:
+  run-strategy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas matplotlib
+      
+      - name: Run strategy
+        run: python microcap_top100_mom16_biweekly_live_v1_4.py "信号"
+      
+      - name: Upload results
+        if: always()  # Ensures results are saved even if script fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: strategy-outputs
+          path: outputs/
+          retention-days: 30
