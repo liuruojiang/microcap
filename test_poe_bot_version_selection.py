@@ -221,7 +221,7 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertEqual(row["version"], "1.6")
         self.assertEqual(row["overlay_type"], "target_volatility_scaling")
         self.assertEqual(row["base_version"], "1.4")
-        self.assertEqual(float(row["target_vol"]), 0.15)
+        self.assertEqual(float(row["target_vol"]), 0.25)
         self.assertEqual(float(row["momentum_gap_exit_buffer"]), bot.TARGET_VOL_MOMENTUM_GAP_EXIT_BUFFER)
         self.assertEqual(float(bot.STRATEGIES["1.6"]["momentum_gap_exit_buffer"]), 0.003)
         self.assertLessEqual(float(result["execution_scale"].max()), 1.5)
@@ -486,7 +486,7 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
         self.assertEqual(bot.normalize_command(query_text), bot.CMD_PARAMS)
         body = bot.build_params_summary()
         self.assertIn("target_vol", body)
-        self.assertIn("15%", body)
+        self.assertIn("25%", body)
         self.assertIn("max_leverage", body)
         self.assertIn("1.5x", body)
         self.assertIn("base_version\uff1av1.4", body)
@@ -629,7 +629,7 @@ class PoeBotVersionSelectionTests(unittest.TestCase):
                     "hedge_mom": 0.03,
                     "momentum_gap": -0.04,
                     "execution_scale": 0.0,
-                    "target_vol": 0.15,
+                    "target_vol": 0.25,
                     "target_vol_window": 60,
                     "target_vol_scale_next_session": 1.2,
                     "fixed_hedge_ratio": 1.0,

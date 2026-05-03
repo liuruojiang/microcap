@@ -220,10 +220,10 @@ V1_5_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_hedge_zz1000_0p8
 V1_5_LIVE_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_5_performance_nav.csv"
 V1_6_SIGNAL_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_6_latest_signal.csv"
 V1_6_SUMMARY_JSON = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_6_summary.json"
-V1_6_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_targetvol15_max1p5_v1_6_costed_nav.csv"
+V1_6_COSTED_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_targetvol25_max1p5_v1_6_costed_nav.csv"
 V1_6_LIVE_NAV_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v1_6_performance_nav.csv"
 TARGET_VOL_VERSION = "1.6"
-TARGET_VOL = 0.15
+TARGET_VOL = 0.25
 TARGET_VOL_WINDOW = 60
 TARGET_VOL_MAX_LEVERAGE = 1.5
 TARGET_VOL_MIN_LEVERAGE = 0.0
@@ -281,14 +281,14 @@ STRATEGIES = {
     },
     "1.6": {
         "version": "1.6",
-        "label": "v1.6（v1.6-specific 0.30% buffer + 目标波动15%，最高1.5x）",
+        "label": "v1.6（v1.6-specific 0.30% buffer + 目标波动25%，最高1.5x）",
         "cache_tag": "v1_6",
         "hedge_ratio": 0.8,
         "performance_costed_nav_csv": V1_6_COSTED_NAV_CSV,
         "performance_live_nav_csv": V1_6_LIVE_NAV_CSV,
         "performance_proxy_turnover_csv": None,
         "embedded_performance_b64": "",
-        "overlay_label": "v1.6-specific 0.30%退出buffer + 目标波动率缩放：15% target vol，max 1.5x",
+        "overlay_label": "v1.6-specific 0.30%退出buffer + 目标波动率缩放：25% target vol，max 1.5x",
         "momentum_gap_exit_buffer": TARGET_VOL_MOMENTUM_GAP_EXIT_BUFFER,
         "official_signal_csv": V1_6_SIGNAL_CSV,
         "official_summary_json": V1_6_SUMMARY_JSON,

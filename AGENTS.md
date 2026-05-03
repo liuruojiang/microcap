@@ -29,6 +29,18 @@
 - When an overlay result looks counterintuitive, treat the overlay output as suspect until these invariants are tested with explicit unit tests and a fresh rerun on real data.
 - Do not rely only on trigger counts, event counts, or threshold-hit audits. Those are secondary checks; the primary check is whether the executed cash/holding state actually controls realized returns.
 
+# Backtest Data Discipline
+
+- Never use old comparison/export CSVs in `outputs/` as the source of truth for a new conclusion. Rebuild every compared series from the current official source functions in the same run, then compute metrics from those freshly rebuilt return series.
+- For version comparisons, all variants must share one explicit baseline, one date index, one return column, one cost model, and one window definition. Report those source paths/functions when giving the result.
+- Before reporting annual return, volatility, Sharpe, drawdown, or total return, print or internally verify: source function/file, return column, start date, end date, row count, duplicate-date count, and common-index row count.
+- Do not mix `gross`, `return`, `return_net`, `nav`, and `nav_net` silently. If the answer is live/practical, use `return_net`/`nav_net` only unless the user explicitly asks for gross.
+- Do not compare a current official version against a custom/export file that embeds an older baseline such as `return_net_v1_4`. If an embedded baseline is unavoidable for diagnosis, first compare it against the current official baseline and reject it if any material date-level mismatch exists.
+- For target-volatility or leverage overlays, generate all target-vol variants from the same freshly rebuilt base result in memory. Do not mix a previously saved `targetvol` CSV with a newly generated v1.4/v1.6 file.
+- Enforce cost sanity checks before accepting target-vol or overlay results: on the same base return stream, costed NAV must be less than or equal to no-cost NAV; entry/exit cost columns must affect `return_net`; and `cash -> long` entry days must deduct the configured entry cost even when exposure scale is zero for that day.
+- If a recomputed table disagrees materially with an earlier table, stop and audit the data lineage first. Do not publish another performance table until the discrepancy is explained by source path, date window, cost model, or code change.
+- Keep `outputs/` clean. Delete stale comparison, scan, custom, corrected, and temporary exports after the conclusion is superseded or documented; preserve only current official artifacts and required data/cache files.
+
 # Desktop Response Paths
 
 - In Codex desktop responses, prefer an ASCII-only local path alias when sending workspace files or images, so the UI can render and click them reliably.

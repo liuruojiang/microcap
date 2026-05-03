@@ -26,6 +26,7 @@ V1_0_SUMMARY_JSON = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_summary.js
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_4"
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
+REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
 COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_gapderisk_newpeak_v1_4_costed_nav.csv"
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
@@ -41,9 +42,33 @@ V1_4_MOMENTUM_GAP_EXIT_BUFFER = 0.0025
 DECAY_RATIO_THRESHOLD = 0.25
 DERISK_SCALE = 0.0
 RECOVERY_RATIO_THRESHOLD = 0.35
+CN_TRADING_DAYS = 244
+SIGNAL_QUALITY_SCALE_COST_MODEL = "active_scale_delta_entry_exit_cost_v1"
+SIGNAL_QUALITY_SCALE_COST_DESCRIPTION = (
+    "abs(scale_delta) * ENTRY_COST/EXIT_COST; ENTRY/EXIT cost assumed to represent whole strategy exposure"
+)
+SIGNAL_QUALITY_REBALANCE_COST_MODEL = "rebalance_base_scaled_by_max_prev_current_execution_scale_v1"
+SIGNAL_QUALITY_REBALANCE_COST_DESCRIPTION = (
+    "rebalance_base_cost * max(previous_execution_scale, current_execution_scale); "
+    "zero-scale derisk periods do not pay member rebalance cost"
+)
+V1_4_OVERLAY_ENGINE_VERSION = "2026-05-03-sq-scale-rebalance-cost-v2"
+
+
+def ensure_output_dir() -> None:
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def validate_base_hedge_ratio() -> None:
+    base_mod = getattr(v1_1_mod, "base_mod", None)
+    value = getattr(base_mod, "FIXED_HEDGE_RATIO", None)
+    if value is not None and abs(float(value) - BASE_HEDGE_RATIO) > 1e-9:
+        raise ValueError(f"hedge ratio mismatch: v1.4={BASE_HEDGE_RATIO}, v1_1.base={value}")
 
 
 def _file_sha1(path: Path) -> str:
+    if not path.exists():
+        return "MISSING"
     digest = hashlib.sha1()
     with path.open("rb") as fh:
         for chunk in iter(lambda: fh.read(1024 * 1024), b""):
@@ -70,16 +95,25 @@ def _build_v1_1_args(max_workers: int = 8) -> argparse.Namespace:
 
 
 def current_base_fingerprint() -> dict[str, object]:
+    validate_base_hedge_ratio()
     return {
         "base_version": "1.1",
+        "base_hedge_ratio": BASE_HEDGE_RATIO,
         "base_costed_nav_csv": str(BASE_COSTED_NAV_CSV),
         "base_costed_nav_sha1": _file_sha1(BASE_COSTED_NAV_CSV),
         "research_stack_version": v1_1_mod.base_mod.RESEARCH_STACK_VERSION,
         "overlay_type": "momentum_gap_peak_decay_derisk_new_peak_guard",
+        "v1_4_overlay_engine_version": V1_4_OVERLAY_ENGINE_VERSION,
         "momentum_gap_exit_buffer": V1_4_MOMENTUM_GAP_EXIT_BUFFER,
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
+        "trading_days": CN_TRADING_DAYS,
+        "overlay_pre_cost_return_field": True,
+        "signal_quality_scale_cost_model": SIGNAL_QUALITY_SCALE_COST_MODEL,
+        "signal_quality_rebalance_cost_model": SIGNAL_QUALITY_REBALANCE_COST_MODEL,
+        "signal_quality_scale_cost_field": True,
+        "signal_quality_scale_turnover_field": True,
     }
 
 
@@ -108,6 +142,7 @@ def invalidate_incompatible_v1_4_outputs() -> list[Path]:
     for path in [
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
+        REALTIME_SIGNAL_CSV,
         NAV_CSV,
         COSTED_NAV_CSV,
         PERF_SUMMARY_CSV,
@@ -163,6 +198,11 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "gap_peak",
         "gap_decay_ratio",
         "execution_scale",
+        "signal_quality_scale_turnover",
+        "signal_quality_scale_cost",
+        "entry_exit_cost",
+        "rebalance_cost",
+        "total_cost",
     ]:
         if src_col in latest_row and pd.notna(latest_row[src_col]):
             latest_signal[src_col] = float(latest_row[src_col])
@@ -197,12 +237,77 @@ def _load_base_v1_1_context() -> tuple[dict[str, object], pd.DataFrame, pd.DataF
     return reference_summary, base_signal, gross, turnover_df
 
 
+def _load_realtime_v1_1_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, object]]:
+    _ensure_base_outputs()
+    args = _build_v1_1_args()
+    base_paths = v1_1_mod.base_mod.build_output_paths(v1_1_mod.base_mod.DEFAULT_OUTPUT_PREFIX)
+    panel_path, target_end_date = v1_1_mod.base_mod.refresh_history_anchor(args, base_paths)
+    try:
+        base_context = v1_1_mod.base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
+    except (FileNotFoundError, ValueError):
+        base_context = v1_1_mod.base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+    member_context = v1_1_mod.base_mod.ensure_static_members_fresh(
+        args,
+        base_paths,
+        panel_path,
+        target_end_date,
+        base_context,
+    )
+    turnover_df = pd.read_csv(base_paths["proxy_turnover"])
+    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
+    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+    return member_context, turnover_df, _load_reference_summary()
+
+
+def build_realtime_v1_4_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+    ensure_output_dir()
+    validate_base_hedge_ratio()
+    context, turnover_df, reference_summary = _load_realtime_v1_1_context()
+    _, meta = v1_1_mod.base_mod.build_realtime_signal_fast(context)
+    snapshot_ts = pd.Timestamp(meta["snapshot_time"])
+    close_df = context["close_df"].copy().sort_index()
+    close_df = v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
+        close_df=close_df,
+        latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
+        snapshot_ts=snapshot_ts,
+        microcap_rt_close=float(meta["microcap_rt_close"]),
+        hedge_rt_close=float(meta["hedge_rt_close"]),
+        quote_trade_date=meta.get("quote_trade_date", ""),
+    )
+    base_gross = v1_1_mod.base_mod.run_signal(close_df).sort_index()
+    gross = v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
+        base_gross,
+        V1_4_MOMENTUM_GAP_EXIT_BUFFER,
+    )
+    out = v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
+        gross_result=gross,
+        turnover_df=turnover_df,
+        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
+        derisk_scale=DERISK_SCALE,
+        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
+    )
+    out = v1_1_mod.base_mod.ensure_overlay_pre_cost_return(out)
+    signal_row = _build_signal_row(out, reference_summary)
+    signal_row = v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
+    v1_1_mod.base_mod.assert_realtime_meta_is_actionable(meta)
+    v1_1_mod.base_mod.assert_signal_matches_result(signal_row, out)
+    for key, value in meta.items():
+        signal_row[key] = value
+    signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"
+    signal_row["official_close_confirmed_signal"] = False
+    signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
+    REALTIME_SIGNAL_CSV.write_text(signal_row.to_csv(index=False), encoding="utf-8")
+    return signal_row, meta, out
+
+
 def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
-    ret = ret.fillna(0.0)
+    ret = ret.dropna().fillna(0.0)
+    if ret.empty:
+        raise ValueError("empty return series")
     nav = (1.0 + ret).cumprod()
     years = (ret.index[-1] - ret.index[0]).days / 365.25
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
-    vol = ret.std(ddof=1) * (252**0.5)
+    vol = ret.std(ddof=1) * (CN_TRADING_DAYS**0.5)
     sharpe = annual / vol if vol > 0 else 0.0
     dd = nav / nav.cummax() - 1.0
     return {
@@ -226,8 +331,8 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
             continue
         nav = (1.0 + part).cumprod()
         years = (part.index[-1] - part.index[0]).days / 365.25
-        annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
-        vol = part.std(ddof=1) * (252**0.5)
+        annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else pd.NA
+        vol = part.std(ddof=1) * (CN_TRADING_DAYS**0.5)
         sharpe = annual / vol if vol > 0 else 0.0
         dd = nav / nav.cummax() - 1.0
         rows.append(
@@ -238,14 +343,15 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
                 "days": int(len(part)),
                 "return_pct": float((nav.iloc[-1] - 1.0) * 100.0),
                 "max_drawdown_pct": float(dd.min() * 100.0),
-                "sharpe": float(sharpe),
-                "annual_pct": float(annual * 100.0),
+                "sharpe": pd.NA if pd.isna(annual) else float(sharpe),
+                "annual_pct": pd.NA if pd.isna(annual) else float(annual * 100.0),
             }
         )
     return pd.DataFrame(rows)
 
 
 def build_performance_payload(ret: pd.Series) -> dict[str, object]:
+    ensure_output_dir()
     summary = summarize_returns(ret)
     yearly_df = summarize_yearly(ret)
     yearly_df.to_csv(PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
@@ -288,6 +394,9 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
 
 def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+    ensure_output_dir()
+    validate_base_hedge_ratio()
+    _ensure_base_outputs()
     invalidate_incompatible_v1_4_outputs()
     reference_summary, _, base_gross, turnover_df = _load_base_v1_1_context()
     gross = v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
@@ -301,13 +410,17 @@ def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         derisk_scale=DERISK_SCALE,
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
-    out.to_csv(COSTED_NAV_CSV, encoding="utf-8-sig")
-    out.reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
+    out = v1_1_mod.base_mod.ensure_overlay_pre_cost_return(out)
+    out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
+    out.rename_axis("date").reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
 
     signal_row = _build_signal_row(out, reference_summary)
     signal_row["version"] = "1.4"
     signal_row["base_version"] = "1.1"
     signal_row["overlay_type"] = "momentum_gap_peak_decay_derisk_new_peak_guard"
+    signal_row["signal_timing"] = "close_confirmed"
+    signal_row["official_close_confirmed_signal"] = True
+    v1_1_mod.base_mod.assert_signal_matches_result(signal_row, out)
     LATEST_SIGNAL_CSV.write_text(signal_row.to_csv(index=False), encoding="utf-8")
 
     perf_payload = build_performance_payload(out["return_net"].fillna(0.0))
@@ -330,6 +443,11 @@ def generate_v1_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
         "rearm_rule": "must set a new trade gap peak after recovery before a later derisk can trigger again",
+        "scale_cost_model": SIGNAL_QUALITY_SCALE_COST_DESCRIPTION,
+        "scale_cost_model_id": SIGNAL_QUALITY_SCALE_COST_MODEL,
+        "rebalance_cost_model": SIGNAL_QUALITY_REBALANCE_COST_DESCRIPTION,
+        "rebalance_cost_model_id": SIGNAL_QUALITY_REBALANCE_COST_MODEL,
+        "scale_cost_fields": ["signal_quality_scale_turnover", "signal_quality_scale_cost"],
     }
     summary["latest_trade_date"] = str(pd.Timestamp(signal_row.iloc[0]["date"]).date())
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
@@ -354,13 +472,42 @@ def _print_signal_query() -> None:
     print(f"next_holding: {row['next_holding']}")
     print(f"trade_state: {row.get('trade_state', 'hold')}")
     print(f"signal_date: {pd.Timestamp(row['date']).strftime('%Y-%m-%d')}")
+    print(f"signal_timing: {row.get('signal_timing')}")
+    print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal')}")
     print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
     print(f"gap_peak: {float(row.get('gap_peak', 0.0)):+.4%}")
     print(f"gap_decay_ratio: {float(row.get('gap_decay_ratio', 0.0)):+.4%}")
     print(f"execution_scale: {float(row.get('execution_scale', 1.0)):.2f}")
     print(f"signal_quality_derisk_triggered: {bool(row.get('signal_quality_derisk_triggered', False))}")
+    print(f"signal_quality_scale_turnover: {float(row.get('signal_quality_scale_turnover', 0.0)):.4f}")
+    print(f"signal_quality_scale_cost: {float(row.get('signal_quality_scale_cost', 0.0)):.4%}")
     print(SUMMARY_JSON)
     print(LATEST_SIGNAL_CSV)
+
+
+def _print_realtime_signal_query() -> None:
+    signal_df, meta, _ = build_realtime_v1_4_outputs()
+    row = signal_df.iloc[0]
+    print("realtime_signal")
+    print("strategy_version: v1.4")
+    print(f"snapshot_time: {meta.get('snapshot_time')}")
+    print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
+    print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
+    print(f"signal_timing: {row.get('signal_timing')}")
+    print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal')}")
+    print(f"current_holding: {row['current_holding']}")
+    print(f"next_holding: {row['next_holding']}")
+    print(f"trade_state: {row.get('trade_state', 'hold')}")
+    print(f"execution_scale: {float(row.get('execution_scale', 0.0)):.2f}")
+    print(f"signal_quality_scale_turnover: {float(row.get('signal_quality_scale_turnover', 0.0)):.4f}")
+    print(f"signal_quality_scale_cost: {float(row.get('signal_quality_scale_cost', 0.0)):.4%}")
+    print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
+    print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
+    print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
+    print(f"quote_source: {meta.get('quote_source')}")
+    print(f"hedge_quote_source: {meta.get('hedge_quote_source')}")
+    print(f"quote_coverage: {meta.get('member_price_count')}/{meta.get('member_count')}")
+    print(REALTIME_SIGNAL_CSV)
 
 
 def _print_performance_query(query: str) -> None:
@@ -391,10 +538,13 @@ def _handle_query(query: str) -> None:
     if query == "信号":
         _print_signal_query()
         return
+    if query == "实时信号":
+        _print_realtime_signal_query()
+        return
     if v1_1_mod.base_mod.PERFORMANCE_PATTERN.search(query):
         _print_performance_query(query)
         return
-    raise ValueError("v1.4 supports: 信号 / 表现 <区间>")
+    raise ValueError("v1.4 supports: 信号 / 实时信号 / 表现 <区间>")
 
 
 def main() -> None:

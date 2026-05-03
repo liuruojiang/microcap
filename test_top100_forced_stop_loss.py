@@ -66,6 +66,22 @@ class Top100ForcedStopLossTests(unittest.TestCase):
             }
         )
 
+    def test_enrich_signal_frame_marks_close_confirmed_signal(self) -> None:
+        result = self.make_gross_result()
+        signal_df = pd.DataFrame(
+            {
+                "next_holding": [POSITION],
+                "microcap_mom": [0.01],
+                "hedge_mom": [0.0],
+                "momentum_gap": [0.01],
+            }
+        )
+
+        enriched = live_mod.enrich_signal_frame(signal_df, result)
+
+        self.assertEqual(enriched.loc[0, "signal_timing"], "close_confirmed")
+        self.assertTrue(bool(enriched.loc[0, "official_close_confirmed_signal"]))
+
     def make_peak_drawdown_result(self) -> pd.DataFrame:
         index = pd.to_datetime(
             [
@@ -559,6 +575,43 @@ class Top100ForcedStopLossTests(unittest.TestCase):
         self.assertTrue(bool(result.loc[pd.Timestamp("2026-06-17"), "signal_quality_derisk_triggered"]))
         self.assertEqual(float(result.loc[pd.Timestamp("2026-06-16"), "execution_scale"]), 1.0)
         self.assertEqual(float(result.loc[pd.Timestamp("2026-06-17"), "execution_scale"]), 0.5)
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-17"), "signal_quality_scale_turnover"]), 0.5)
+        self.assertAlmostEqual(
+            float(result.loc[pd.Timestamp("2026-06-17"), "signal_quality_scale_cost"]),
+            0.5 * live_mod.freq_mod.cost_mod.EXIT_COST,
+        )
+
+    def test_gap_peak_decay_derisk_scales_rebalance_cost_by_execution_scale(self) -> None:
+        gross = self.make_momentum_gap_peak_decay_derisk_result()
+        turnover = self.make_turnover(gross)
+        turnover["two_side_cost_rate"] = 0.0
+        turnover.loc[turnover["rebalance_date"].eq(pd.Timestamp("2026-06-18")), "two_side_cost_rate"] = 0.004
+
+        result = live_mod.apply_momentum_gap_peak_decay_derisk(
+            gross_result=gross,
+            turnover_df=turnover,
+            decay_ratio_threshold=0.6,
+            derisk_scale=0.5,
+        )
+
+        self.assertEqual(float(result.loc[pd.Timestamp("2026-06-18"), "execution_scale"]), 0.5)
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-18"), "rebalance_cost"]), 0.002)
+
+    def test_gap_peak_decay_derisk_skips_rebalance_cost_when_derisked_to_cash(self) -> None:
+        gross = self.make_momentum_gap_peak_decay_derisk_result()
+        turnover = self.make_turnover(gross)
+        turnover["two_side_cost_rate"] = 0.0
+        turnover.loc[turnover["rebalance_date"].eq(pd.Timestamp("2026-06-18")), "two_side_cost_rate"] = 0.004
+
+        result = live_mod.apply_momentum_gap_peak_decay_derisk(
+            gross_result=gross,
+            turnover_df=turnover,
+            decay_ratio_threshold=0.6,
+            derisk_scale=0.0,
+        )
+
+        self.assertEqual(float(result.loc[pd.Timestamp("2026-06-18"), "execution_scale"]), 0.0)
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-18"), "rebalance_cost"]), 0.0)
 
     def test_gap_peak_decay_derisk_scales_return_net_on_derisked_days(self) -> None:
         gross = self.make_momentum_gap_peak_decay_derisk_result()
@@ -571,8 +624,12 @@ class Top100ForcedStopLossTests(unittest.TestCase):
             derisk_scale=0.5,
         )
 
-        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-17"), "return_net"]), 0.015, places=9)
+        expected_derisk_cost = 0.5 * live_mod.freq_mod.cost_mod.EXIT_COST
+        expected_derisk_return = (1.0 + 0.015) * (1.0 - expected_derisk_cost) - 1.0
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-17"), "return_net"]), expected_derisk_return, places=9)
         self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-18"), "return_net"]), 0.01, places=9)
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-17"), "overlay_pre_cost_return"]), 0.015, places=9)
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-18"), "overlay_pre_cost_return"]), 0.01, places=9)
 
     def test_gap_peak_decay_derisk_does_not_use_full_return_after_scale_cut(self) -> None:
         gross = self.make_momentum_gap_peak_decay_derisk_result()
@@ -603,6 +660,11 @@ class Top100ForcedStopLossTests(unittest.TestCase):
         self.assertTrue(bool(result.loc[pd.Timestamp("2026-06-24"), "signal_quality_derisk_triggered"]))
         self.assertEqual(float(result.loc[pd.Timestamp("2026-06-24"), "execution_scale"]), 0.7)
         self.assertEqual(float(result.loc[pd.Timestamp("2026-06-25"), "execution_scale"]), 1.0)
+        self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-25"), "signal_quality_scale_turnover"]), 0.3)
+        self.assertAlmostEqual(
+            float(result.loc[pd.Timestamp("2026-06-25"), "signal_quality_scale_cost"]),
+            0.3 * live_mod.freq_mod.cost_mod.ENTRY_COST,
+        )
         self.assertAlmostEqual(float(result.loc[pd.Timestamp("2026-06-25"), "gap_decay_ratio"]), 0.7, places=9)
 
     def test_gap_peak_decay_derisk_stays_cut_until_eighty_percent_recovery(self) -> None:

@@ -858,14 +858,24 @@ def build_tradeability_series(
     close_calendar = close_series.reindex(trading_dates)
     close_calendar = close_calendar.where(listed_mask)
     close_calendar = close_calendar.ffill().where(listed_mask)
-    return_close_series = close_series
+    raw_return_close_calendar = close_series.reindex(trading_dates)
+    raw_return_close_calendar = raw_return_close_calendar.where(listed_mask)
+    raw_return_close_calendar = raw_return_close_calendar.ffill().where(listed_mask)
+    return_close_calendar = raw_return_close_calendar.copy()
     if return_price is not None and not return_price.empty:
         return_col = next((col for col in ["close_qfq", "close_adj", "close_raw"] if col in return_price.columns), None)
         if return_col is not None:
-            return_close_series = return_price.set_index("date")[return_col].sort_index()
-    return_close_calendar = return_close_series.reindex(trading_dates)
-    return_close_calendar = return_close_calendar.where(listed_mask)
-    return_close_calendar = return_close_calendar.ffill().where(listed_mask)
+            adjusted_close_series = return_price.set_index("date")[return_col].sort_index()
+            adjusted_listed_mask = pd.Series(
+                (trading_dates >= adjusted_close_series.index.min())
+                & (trading_dates <= adjusted_close_series.index.max()),
+                index=trading_dates,
+                dtype=bool,
+            )
+            adjusted_close_calendar = adjusted_close_series.reindex(trading_dates)
+            adjusted_close_calendar = adjusted_close_calendar.where(adjusted_listed_mask)
+            adjusted_close_calendar = adjusted_close_calendar.ffill().where(adjusted_listed_mask)
+            return_close_calendar = adjusted_close_calendar.combine_first(raw_return_close_calendar)
     ret_series = return_close_calendar.pct_change(fill_method=None).astype(float)
 
     ohlc = read_ohlc_cache(symbol, pd.Timestamp(trading_dates.min()), pd.Timestamp(trading_dates.max()))
