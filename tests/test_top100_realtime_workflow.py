@@ -45,6 +45,8 @@ class Top100RealtimeWorkflowTest(unittest.TestCase):
             "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
             "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
             "outputs/microcap_top100_mom16_biweekly_live_summary.json",
+            ".microcap_index_cache/active_universe.csv",
+            ".microcap_index_cache/current_st.csv",
             ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_meta.json",
             ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_target_members.csv",
             ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_effective_members.csv",
