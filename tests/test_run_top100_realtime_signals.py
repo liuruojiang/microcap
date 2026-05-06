@@ -160,6 +160,54 @@ class RunTop100RealtimeSignalsTest(unittest.TestCase):
             self.assertTrue(module.CURRENT_ST_CACHE.exists())
             self.assertEqual(calls, [("active", False), ("st", False)])
 
+    def test_price_cache_tail_refreshes_price_and_share_inputs(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        original_fetch_mod = base.fetch_mod
+        original_freq_mod = base.freq_mod
+        price_calls = []
+        share_calls = []
+
+        fake_fetch = ModuleType("fake_fetch_module")
+
+        def fetch_price_history(symbol, start_date, end_date, force_refresh=False):
+            price_calls.append((symbol, start_date, end_date, force_refresh))
+            return pd.DataFrame({"date": [end_date], "close_raw": [1.0]})
+
+        def fetch_share_change(symbol, start_date, end_date, force_refresh=False):
+            share_calls.append((symbol, start_date, end_date, force_refresh))
+            return pd.DataFrame({"change_date": [end_date], "total_shares_10k": [1.0]})
+
+        fake_fetch.fetch_price_history = fetch_price_history
+        fake_fetch.fetch_share_change = fetch_share_change
+
+        fake_freq = ModuleType("fake_freq_module")
+        fake_freq.START_DATE = "2010-01-01"
+        fake_freq.load_current_universe = lambda: ["000001", "000002"]
+
+        try:
+            base.fetch_mod = fake_fetch
+            base.freq_mod = fake_freq
+            base.refresh_price_cache_tail(pd.Timestamp("2026-05-06"), max_workers=2)
+        finally:
+            base.fetch_mod = original_fetch_mod
+            base.freq_mod = original_freq_mod
+
+        self.assertCountEqual(
+            price_calls,
+            [
+                ("000001", "2010-01-01", "2026-05-06", False),
+                ("000002", "2010-01-01", "2026-05-06", False),
+            ],
+        )
+        self.assertCountEqual(
+            share_calls,
+            [
+                ("000001", "2010-01-01", "2026-05-06", False),
+                ("000002", "2010-01-01", "2026-05-06", False),
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
