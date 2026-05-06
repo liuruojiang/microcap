@@ -12,10 +12,10 @@ import requests
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-import microcap_top100_mom16_biweekly_live_v1_4 as v1_4_mod
+import top100_v14_base_context as v14_context
 
-# v1.8 intentionally reuses v1.4 internal context/build helpers; recheck this
-# module when v1.4 refactors its v1_1_mod/base_mod or _load_base_v1_1_context API.
+# v1.8 intentionally reuses the shared v1.4 base/context adapter; recheck this
+# module when that adapter changes its v1_1_mod/base_mod or context API.
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
@@ -65,15 +65,15 @@ LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_8.json
 
 
 def validate_base_hedge_ratio() -> None:
-    v1_1_mod = getattr(v1_4_mod, "v1_1_mod", None)
+    v1_1_mod = getattr(v14_context, "v1_1_mod", None)
     if v1_1_mod is None:
-        raise RuntimeError("missing v1_4_mod.v1_1_mod; cannot validate v1.8 base hedge ratio")
+        raise RuntimeError("missing v14_context.v1_1_mod; cannot validate v1.8 base hedge ratio")
     base_mod = getattr(v1_1_mod, "base_mod", None)
     if base_mod is None:
-        raise RuntimeError("missing v1_4_mod.v1_1_mod.base_mod; cannot validate v1.8 base hedge ratio")
+        raise RuntimeError("missing v14_context.v1_1_mod.base_mod; cannot validate v1.8 base hedge ratio")
     checks = {
-        "v1_4_mod.BASE_HEDGE_RATIO": getattr(v1_4_mod, "BASE_HEDGE_RATIO", None),
-        "v1_4_mod.v1_1_mod.base_mod.FIXED_HEDGE_RATIO": getattr(base_mod, "FIXED_HEDGE_RATIO", None),
+        "v14_context.BASE_HEDGE_RATIO": getattr(v14_context, "BASE_HEDGE_RATIO", None),
+        "v14_context.v1_1_mod.base_mod.FIXED_HEDGE_RATIO": getattr(base_mod, "FIXED_HEDGE_RATIO", None),
     }
     for name, value in checks.items():
         if value is None:
@@ -84,7 +84,7 @@ def validate_base_hedge_ratio() -> None:
 
 def current_base_fingerprint() -> dict[str, object]:
     validate_base_hedge_ratio()
-    base = dict(v1_4_mod.current_base_fingerprint())
+    base = dict(v14_context.current_base_fingerprint())
     base["momentum_gap_exit_buffer"] = V1_8_MOMENTUM_GAP_EXIT_BUFFER
     return {
         "base_version": "1.4",
@@ -251,7 +251,7 @@ def overlay_live_microcap_tail(
 
 
 def run_candidate_momentum_signal(close_df: pd.DataFrame) -> pd.DataFrame:
-    base_mod = v1_4_mod.v1_1_mod.base_mod
+    base_mod = v14_context.v1_1_mod.base_mod
     return base_mod.hedge_mod.run_backtest(
         close_df=close_df,
         signal_model="momentum",
@@ -273,7 +273,7 @@ def run_candidate_momentum_signal(close_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def apply_entry_exit_thresholds(gross_result: pd.DataFrame) -> pd.DataFrame:
-    base_mod = v1_4_mod.v1_1_mod.base_mod
+    base_mod = v14_context.v1_1_mod.base_mod
     out = gross_result.copy().sort_index()
     required = {"microcap_ret", "hedge_ret", "microcap_mom", "momentum_gap"}
     missing = required.difference(out.columns)
@@ -745,7 +745,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal = dict(reference_summary.get("latest_signal", {}))
     current_holding = str(latest_row.get("holding", latest_signal.get("current_holding", "cash")))
     next_holding = str(latest_row.get("next_holding", latest_signal.get("next_holding", current_holding)))
-    holding_trade_state = v1_4_mod.v1_1_mod.base_mod.compute_trade_state(current_holding, next_holding)
+    holding_trade_state = v14_context.v1_1_mod.base_mod.compute_trade_state(current_holding, next_holding)
     current_execution_scale = float(latest_row.get("current_execution_scale", latest_row.get("execution_scale", 0.0)) or 0.0)
     next_session_target_scale = float(
         latest_row.get(
@@ -984,7 +984,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     stale_outputs = incompatible_v1_8_outputs()
-    reference_summary, _, base_gross_cached, turnover_df = v1_4_mod._load_base_v1_1_context()
+    reference_summary, _, base_gross_cached, turnover_df = v14_context._load_base_v1_1_context()
     close_df = base_gross_cached[["microcap_close", "hedge_close"]].rename(
         columns={"microcap_close": "microcap", "hedge_close": "hedge"}
     )
@@ -994,14 +994,14 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     }
     base_gross = run_candidate_momentum_signal(close_df)
     gross = apply_entry_exit_thresholds(base_gross)
-    base_v1_4 = v1_4_mod.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
+    base_v1_4 = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
         gross_result=gross,
         turnover_df=turnover_df,
         decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
         derisk_scale=DERISK_SCALE,
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
-    base_v1_4 = v1_4_mod.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base_v1_4)
+    base_v1_4 = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base_v1_4)
     target_vol = apply_target_vol_scaling(base_v1_4)
     out = apply_v1_8_overlays(target_vol)
     out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
@@ -1089,11 +1089,11 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
 def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
-    context, turnover_df, reference_summary = v1_4_mod._load_realtime_v1_1_context()
-    _, meta = v1_4_mod.v1_1_mod.base_mod.build_realtime_signal_fast(context)
+    context, turnover_df, reference_summary = v14_context._load_realtime_v1_1_context()
+    _, meta = v14_context.v1_1_mod.base_mod.build_realtime_signal_fast(context)
     snapshot_ts = pd.Timestamp(meta["snapshot_time"])
     close_df = context["close_df"].copy().sort_index()
-    close_df = v1_4_mod.v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
+    close_df = v14_context.v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
         close_df=close_df,
         latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
         snapshot_ts=snapshot_ts,
@@ -1103,18 +1103,18 @@ def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     )
     base_gross = run_candidate_momentum_signal(close_df)
     gross = apply_entry_exit_thresholds(base_gross)
-    base = v1_4_mod.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
+    base = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
         gross_result=gross,
         turnover_df=turnover_df,
         decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
         derisk_scale=DERISK_SCALE,
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
-    base = v1_4_mod.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base)
+    base = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base)
     target_vol = apply_target_vol_scaling(base)
     out = apply_v1_8_overlays(target_vol)
     signal_row = _build_signal_row(out, reference_summary)
-    signal_row = v1_4_mod.v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
+    signal_row = v14_context.v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
     passthrough_cols = [
         "member_rebalance_state",
         "member_rebalance_required",
@@ -1237,7 +1237,7 @@ def _print_realtime_signal_query() -> None:
 def _print_performance_query(query: str) -> None:
     generate_v1_8_outputs()
     perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-    v1_4_mod.v1_1_mod.base_mod.build_performance_outputs(
+    v14_context.v1_1_mod.base_mod.build_performance_outputs(
         perf_df=perf_df,
         ret_col="return_net",
         nav_col="nav_net",
@@ -1265,7 +1265,7 @@ def _handle_query(query: str) -> None:
     if query in {"实时信号", "瀹炴椂淇″彿"}:
         _print_realtime_signal_query()
         return
-    if v1_4_mod.v1_1_mod.base_mod.PERFORMANCE_PATTERN.search(query):
+    if v14_context.v1_1_mod.base_mod.PERFORMANCE_PATTERN.search(query):
         _print_performance_query(query)
         return
     raise ValueError("v1.8 supports: 信号 / 实时信号 / 表现 <区间>")
