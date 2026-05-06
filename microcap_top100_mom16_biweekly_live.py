@@ -360,7 +360,7 @@ def fetch_eastmoney_index_history(
 
 def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
     existing_shadow_end = read_csv_last_date(paths["panel_shadow"])
-    if existing_shadow_end is not None and existing_shadow_end.normalize() >= pd.Timestamp.now().normalize():
+    if panel_shadow_cache_is_reusable(paths["panel_shadow"], existing_shadow_end):
         return paths["panel_shadow"], pd.Timestamp(existing_shadow_end)
 
     panel = pd.read_csv(args.panel_path)
@@ -387,6 +387,28 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
     paths["panel_shadow"].parent.mkdir(parents=True, exist_ok=True)
     shadow.to_csv(paths["panel_shadow"], index=False, encoding="utf-8")
     return paths["panel_shadow"], latest_hedge_date
+
+
+def panel_shadow_cache_is_reusable(
+    panel_shadow: Path,
+    existing_shadow_end: pd.Timestamp | None,
+    now: pd.Timestamp | None = None,
+    same_day_max_age_seconds: int = 600,
+) -> bool:
+    if existing_shadow_end is None:
+        return False
+    current_ts = pd.Timestamp.now() if now is None else pd.Timestamp(now)
+    shadow_day = pd.Timestamp(existing_shadow_end).normalize()
+    current_day = current_ts.normalize()
+    if shadow_day > current_day:
+        return True
+    if shadow_day < current_day:
+        return False
+    try:
+        mtime = pd.Timestamp.fromtimestamp(panel_shadow.stat().st_mtime)
+    except OSError:
+        return False
+    return bool(current_ts - mtime <= pd.Timedelta(seconds=max(0, int(same_day_max_age_seconds))))
 
 
 def refresh_price_cache_tail(end_date: pd.Timestamp, max_workers: int, symbols: list[str] | None = None) -> None:
@@ -725,6 +747,35 @@ def proxy_tail_is_suspiciously_flat(index_csv: Path, target_end_date: pd.Timesta
     return bool(flat_returns and flat_close)
 
 
+def proxy_latest_row_is_flat_placeholder(index_csv: Path, target_end_date: pd.Timestamp) -> bool:
+    if not index_csv.exists():
+        return False
+    try:
+        proxy = pd.read_csv(index_csv)
+    except Exception:
+        return False
+    required = {"date", "close", "daily_return"}
+    if not required.issubset(proxy.columns):
+        return False
+    proxy = proxy.copy()
+    proxy["date"] = pd.to_datetime(proxy["date"], errors="coerce")
+    proxy["close"] = pd.to_numeric(proxy["close"], errors="coerce")
+    proxy["daily_return"] = pd.to_numeric(proxy["daily_return"], errors="coerce")
+    proxy = proxy.dropna(subset=["date", "close", "daily_return"]).sort_values("date")
+    proxy = proxy.loc[proxy["date"] <= pd.Timestamp(target_end_date)]
+    if len(proxy) < 2:
+        return False
+    latest = proxy.iloc[-1]
+    previous = proxy.iloc[-2]
+    if pd.Timestamp(latest["date"]).normalize() < pd.Timestamp(target_end_date).normalize():
+        return False
+    close_tolerance = max(1e-8, abs(float(previous["close"])) * 1e-12)
+    return bool(
+        abs(float(latest["daily_return"])) <= 1e-12
+        and abs(float(latest["close"]) - float(previous["close"])) <= close_tolerance
+    )
+
+
 def assert_proxy_tail_is_actionable(index_csv: Path, target_end_date: pd.Timestamp) -> None:
     if proxy_tail_is_suspiciously_flat(index_csv, target_end_date):
         raise RuntimeError(
@@ -755,7 +806,10 @@ def ensure_strategy_files(
         can_reuse_index
         and current_index_end is not None
         and pd.Timestamp(current_index_end).normalize() >= pd.Timestamp(target_end_date).normalize()
-        and proxy_tail_is_suspiciously_flat(args.index_csv, target_end_date)
+        and (
+            proxy_tail_is_suspiciously_flat(args.index_csv, target_end_date)
+            or proxy_latest_row_is_flat_placeholder(args.index_csv, target_end_date)
+        )
     )
     files_fresh = (
         can_reuse_proxy

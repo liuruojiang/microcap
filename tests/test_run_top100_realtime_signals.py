@@ -1,7 +1,9 @@
 import contextlib
 import io
+import os
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from types import ModuleType
@@ -253,6 +255,70 @@ class RunTop100RealtimeSignalsTest(unittest.TestCase):
         )
 
         self.assertEqual(value, 0.0)
+
+    def test_same_day_panel_shadow_cache_expires(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            panel_shadow = Path(tmpdir) / "panel_refreshed.csv"
+            panel_shadow.write_text("date,1.000852\n2026-05-06,8462.02\n", encoding="utf-8")
+            old_mtime = time.mktime(pd.Timestamp("2026-05-06 09:27:00").to_pydatetime().timetuple())
+            os.utime(panel_shadow, (old_mtime, old_mtime))
+
+            reusable = base.panel_shadow_cache_is_reusable(
+                panel_shadow,
+                pd.Timestamp("2026-05-06"),
+                now=pd.Timestamp("2026-05-06 17:15:00"),
+                same_day_max_age_seconds=600,
+            )
+
+            self.assertFalse(reusable)
+
+    def test_fresh_same_day_panel_shadow_cache_is_reusable(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            panel_shadow = Path(tmpdir) / "panel_refreshed.csv"
+            panel_shadow.write_text("date,1.000852\n2026-05-06,8574.56\n", encoding="utf-8")
+            fresh_mtime = time.mktime(pd.Timestamp("2026-05-06 17:14:00").to_pydatetime().timetuple())
+            os.utime(panel_shadow, (fresh_mtime, fresh_mtime))
+
+            reusable = base.panel_shadow_cache_is_reusable(
+                panel_shadow,
+                pd.Timestamp("2026-05-06"),
+                now=pd.Timestamp("2026-05-06 17:15:00"),
+                same_day_max_age_seconds=600,
+            )
+
+            self.assertTrue(reusable)
+
+    def test_latest_flat_proxy_row_is_treated_as_placeholder(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            index_csv = Path(tmpdir) / "top100_proxy.csv"
+            pd.DataFrame(
+                [
+                    {"date": "2026-04-30", "close": 339030.10633422533, "daily_return": 0.020949225760141684},
+                    {"date": "2026-05-06", "close": 339030.10633422533, "daily_return": 0.0},
+                ]
+            ).to_csv(index_csv, index=False)
+
+            self.assertTrue(base.proxy_latest_row_is_flat_placeholder(index_csv, pd.Timestamp("2026-05-06")))
+
+    def test_latest_nonflat_proxy_row_is_not_placeholder(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            index_csv = Path(tmpdir) / "top100_proxy.csv"
+            pd.DataFrame(
+                [
+                    {"date": "2026-04-30", "close": 339030.10633422533, "daily_return": 0.020949225760141684},
+                    {"date": "2026-05-06", "close": 340759.8954480781, "daily_return": 0.005101},
+                ]
+            ).to_csv(index_csv, index=False)
+
+            self.assertFalse(base.proxy_latest_row_is_flat_placeholder(index_csv, pd.Timestamp("2026-05-06")))
 
 
 if __name__ == "__main__":
