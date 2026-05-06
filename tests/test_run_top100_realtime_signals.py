@@ -1,6 +1,7 @@
 import contextlib
 import io
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import ModuleType
@@ -35,6 +36,7 @@ class RunTop100RealtimeSignalsTest(unittest.TestCase):
         for module_name in [
             "fake_v16_realtime_module",
             "fake_v18_realtime_module",
+            "fake_cache_builder_module",
         ]:
             sys.modules.pop(module_name, None)
 
@@ -97,9 +99,24 @@ class RunTop100RealtimeSignalsTest(unittest.TestCase):
             runner.StrategySpec("v1.8", v18.__name__, "build_realtime_v1_8_outputs", "REALTIME_SIGNAL_CSV"),
         ]
 
-        stdout = io.StringIO()
-        with contextlib.redirect_stdout(stdout):
-            exit_code = runner.main([], specs=specs)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_dir = Path(tmpdir)
+            cache_builder = ModuleType("fake_cache_builder_module")
+            cache_builder.UNIVERSE_CACHE = cache_dir / "active_universe.csv"
+            cache_builder.CURRENT_ST_CACHE = cache_dir / "current_st.csv"
+            cache_builder.fetch_active_universe = lambda force_refresh=False: cache_builder.UNIVERSE_CACHE.write_text(
+                "symbol,name,code\nsz000001,test,000001\n",
+                encoding="utf-8",
+            )
+            cache_builder.fetch_current_st_codes = lambda force_refresh=False: (
+                cache_builder.CURRENT_ST_CACHE.write_text("code,name\n", encoding="utf-8")
+                or set()
+            )
+            sys.modules[cache_builder.__name__] = cache_builder
+
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                exit_code = runner.main([], specs=specs, static_inputs_module=cache_builder.__name__)
 
         output = stdout.getvalue()
         self.assertEqual(exit_code, 0)
@@ -113,6 +130,35 @@ class RunTop100RealtimeSignalsTest(unittest.TestCase):
         self.assertIn("next_session_actionable_scale: 2.00", output)
         self.assertIn("quote_coverage: 99/100", output)
         self.assertIn("realtime_signal_csv: outputs/fake_v18.csv", output)
+
+    def test_ensures_static_realtime_inputs_when_cache_files_are_missing(self):
+        import run_top100_v1_6_v1_8_realtime_signals as runner
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_dir = Path(tmpdir)
+            module = ModuleType("fake_cache_builder_module")
+            module.UNIVERSE_CACHE = cache_dir / "active_universe.csv"
+            module.CURRENT_ST_CACHE = cache_dir / "current_st.csv"
+            calls = []
+
+            def fetch_active_universe(force_refresh=False):
+                calls.append(("active", force_refresh))
+                module.UNIVERSE_CACHE.write_text("symbol,name,code\nsz000001,test,000001\n", encoding="utf-8")
+
+            def fetch_current_st_codes(force_refresh=False):
+                calls.append(("st", force_refresh))
+                module.CURRENT_ST_CACHE.write_text("code,name\n", encoding="utf-8")
+                return set()
+
+            module.fetch_active_universe = fetch_active_universe
+            module.fetch_current_st_codes = fetch_current_st_codes
+            sys.modules[module.__name__] = module
+
+            runner.ensure_static_realtime_inputs(module_name=module.__name__)
+
+            self.assertTrue(module.UNIVERSE_CACHE.exists())
+            self.assertTrue(module.CURRENT_ST_CACHE.exists())
+            self.assertEqual(calls, [("active", False), ("st", False)])
 
 
 if __name__ == "__main__":
