@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import sys
@@ -7,25 +7,26 @@ from pathlib import Path
 import matplotlib
 import numpy as np
 import pandas as pd
+import requests
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import top100_v14_base_context as v14_context
 
-# v1.6 intentionally reuses the shared v1.4 base/context adapter; recheck this
+# v1.8 intentionally reuses the shared v1.4 base/context adapter; recheck this
 # module when that adapter changes its v1_1_mod/base_mod or context API.
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
-OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_6"
+OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_8"
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol25_max1p5_v1_6_costed_nav.csv"
-LEGACY_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol15_max1p5_v1_6_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom11_targetvol30_max2_v1_8_costed_nav.csv"
+LEGACY_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol25_max1p5_v1_8_costed_nav.csv"
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
 PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
 PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
@@ -33,51 +34,65 @@ PERF_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.json"
 PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
 
 EXPECTED_VERSION_ROLE = "target_vol_overlay_on_v1_4"
-EXPECTED_VERSION_NOTE_PREFIX = "Target-volatility overlay on top of v1.4."
+EXPECTED_VERSION_NOTE_PREFIX = "Recommended v1.8 overlay on top of v1.4 data/context."
+STRATEGY_VERSION = "1.8"
 BASE_HEDGE_RATIO = 0.8
-V1_6_MOMENTUM_GAP_EXIT_BUFFER = 0.0030
-DECAY_RATIO_THRESHOLD = 0.25
+LOOKBACK = 11
+ENTRY_GAP_THRESHOLD = 0.006
+V1_8_MOMENTUM_GAP_EXIT_BUFFER = 0.006
+DECAY_RATIO_THRESHOLD = 0.30
 DERISK_SCALE = 0.0
-RECOVERY_RATIO_THRESHOLD = 0.35
-TARGET_VOL = 0.25
-TARGET_VOL_WINDOW = 60
-TARGET_VOL_MAX_LEVERAGE = 1.5
+RECOVERY_RATIO_THRESHOLD = 0.30
+TARGET_VOL = 0.30
+TARGET_VOL_WINDOW = 20
+TARGET_VOL_MAX_LEVERAGE = 2.0
 TARGET_VOL_MIN_LEVERAGE = 0.0
 TARGET_VOL_TRADING_DAYS = 244
 TARGET_VOL_SCALE_CHANGE_COST = 0.001
-TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
+TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.25
 TARGET_VOL_FINANCING_RATE = 0.03
+VOLUME_FILTER_FAMILY = "zz2000_and_cyb"
+VOLUME_FILTER_MA = 53
+VOLUME_FILTER_CONSECUTIVE_DAYS = 13
+VOLUME_FILTER_SCALE = 0.25
+VOLUME_FILTER_SCALE_CHANGE_COST = 0.003
+NAV_DD_TRIGGER = 0.13
+NAV_DD_SCALE = 0.80
+NAV_DD_RECOVER = 0.06
+NAV_DD_SCALE_CHANGE_COST = 0.0002
 PNL_RETURN_SOURCE = "v1_4_overlay_pre_cost_return_explicit_or_return_net_cost_reversal_fallback"
-LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_6.json"
+LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_8.json"
 
 
 def validate_base_hedge_ratio() -> None:
     v1_1_mod = getattr(v14_context, "v1_1_mod", None)
     if v1_1_mod is None:
-        raise RuntimeError("missing v14_context.v1_1_mod; cannot validate v1.6 base hedge ratio")
+        raise RuntimeError("missing v14_context.v1_1_mod; cannot validate v1.8 base hedge ratio")
     base_mod = getattr(v1_1_mod, "base_mod", None)
     if base_mod is None:
-        raise RuntimeError("missing v14_context.v1_1_mod.base_mod; cannot validate v1.6 base hedge ratio")
+        raise RuntimeError("missing v14_context.v1_1_mod.base_mod; cannot validate v1.8 base hedge ratio")
     checks = {
         "v14_context.BASE_HEDGE_RATIO": getattr(v14_context, "BASE_HEDGE_RATIO", None),
         "v14_context.v1_1_mod.base_mod.FIXED_HEDGE_RATIO": getattr(base_mod, "FIXED_HEDGE_RATIO", None),
     }
     for name, value in checks.items():
         if value is None:
-            raise RuntimeError(f"missing {name}; cannot validate v1.6 base hedge ratio")
+            raise RuntimeError(f"missing {name}; cannot validate v1.8 base hedge ratio")
         if abs(float(value) - float(BASE_HEDGE_RATIO)) > 1e-9:
-            raise ValueError(f"hedge ratio mismatch: v1.6={BASE_HEDGE_RATIO}, {name}={value}")
+            raise ValueError(f"hedge ratio mismatch: v1.8={BASE_HEDGE_RATIO}, {name}={value}")
 
 
 def current_base_fingerprint() -> dict[str, object]:
     validate_base_hedge_ratio()
     base = dict(v14_context.current_base_fingerprint())
-    base["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
+    base["momentum_gap_exit_buffer"] = V1_8_MOMENTUM_GAP_EXIT_BUFFER
     return {
         "base_version": "1.4",
         "base_v1_4_fingerprint": base,
-        "overlay_type": "target_volatility_scaling",
+        "overlay_type": "target_volatility_nav_dd_scaling",
         "base_hedge_ratio": BASE_HEDGE_RATIO,
+        "lookback": LOOKBACK,
+        "momentum_gap_entry_threshold": ENTRY_GAP_THRESHOLD,
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
@@ -90,17 +105,25 @@ def current_base_fingerprint() -> dict[str, object]:
         "volatility_return_source_priority": ["return_raw", "base_gross_return", "return_net_fallback_warning"],
         "pnl_return_source": PNL_RETURN_SOURCE,
         "financing_rate": TARGET_VOL_FINANCING_RATE,
-        "momentum_gap_exit_buffer": V1_6_MOMENTUM_GAP_EXIT_BUFFER,
+        "momentum_gap_exit_buffer": V1_8_MOMENTUM_GAP_EXIT_BUFFER,
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
+        "broad_volume_filter": "not_used_in_official_v1_8_chain",
+        "nav_drawdown_throttle": {
+            "trigger_drawdown": NAV_DD_TRIGGER,
+            "scale": NAV_DD_SCALE,
+            "recover_drawdown": NAV_DD_RECOVER,
+            "scale_change_cost": NAV_DD_SCALE_CHANGE_COST,
+            "timing": "T close confirmed, T+1 execution",
+        },
     }
 
 
-def summary_matches_current_v1_6_base(summary: dict[str, object]) -> bool:
+def summary_matches_current_v1_8_base(summary: dict[str, object]) -> bool:
     if not isinstance(summary, dict):
         return False
-    if str(summary.get("version")) != "1.6":
+    if str(summary.get("version")) != STRATEGY_VERSION:
         return False
     if str(summary.get("version_role")) != EXPECTED_VERSION_ROLE:
         return False
@@ -109,8 +132,8 @@ def summary_matches_current_v1_6_base(summary: dict[str, object]) -> bool:
     return summary.get("base_fingerprint") == current_base_fingerprint()
 
 
-def invalidate_incompatible_v1_6_outputs() -> list[Path]:
-    stale = incompatible_v1_6_outputs()
+def invalidate_incompatible_v1_8_outputs() -> list[Path]:
+    stale = incompatible_v1_8_outputs()
     removed: list[Path] = []
     for path in stale:
         if path.exists():
@@ -119,14 +142,14 @@ def invalidate_incompatible_v1_6_outputs() -> list[Path]:
     return removed
 
 
-def incompatible_v1_6_outputs() -> list[Path]:
+def incompatible_v1_8_outputs() -> list[Path]:
     if not SUMMARY_JSON.exists():
         return []
     try:
         summary = json.loads(SUMMARY_JSON.read_text(encoding="utf-8"))
     except Exception:
         summary = None
-    if summary_matches_current_v1_6_base(summary):
+    if summary_matches_current_v1_8_base(summary):
         return []
     return [
         SUMMARY_JSON,
@@ -147,7 +170,7 @@ def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.8 signal paths.
 def load_live_context_cache(path: Path = LIVE_CONTEXT_CACHE) -> dict[str, object] | None:
     if not path.exists():
         return None
@@ -162,7 +185,7 @@ def load_live_context_cache(path: Path = LIVE_CONTEXT_CACHE) -> dict[str, object
     return payload
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.8 signal paths.
 def _live_close_df(live_context: dict[str, object] | None) -> pd.DataFrame | None:
     if not isinstance(live_context, dict):
         return None
@@ -178,7 +201,7 @@ def _live_close_df(live_context: dict[str, object] | None) -> pd.DataFrame | Non
     return live_close if not live_close.empty else None
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.8 signal paths.
 def _recent_microcap_tail_is_flat(close_df: pd.DataFrame, tail_days: int = 5) -> bool:
     if close_df.empty or "microcap" not in close_df.columns:
         return False
@@ -188,7 +211,7 @@ def _recent_microcap_tail_is_flat(close_df: pd.DataFrame, tail_days: int = 5) ->
     return bool(tail.pct_change().dropna().abs().le(1e-12).all())
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.8 signal paths.
 def overlay_live_microcap_tail(
     close_df: pd.DataFrame,
     live_context: dict[str, object] | None,
@@ -225,6 +248,82 @@ def overlay_live_microcap_tail(
         }
     )
     return out, meta
+
+
+def run_candidate_momentum_signal(close_df: pd.DataFrame) -> pd.DataFrame:
+    base_mod = v14_context.v1_1_mod.base_mod
+    return base_mod.hedge_mod.run_backtest(
+        close_df=close_df,
+        signal_model="momentum",
+        lookback=LOOKBACK,
+        bias_n=base_mod.hedge_mod.DEFAULT_BIAS_N,
+        bias_mom_day=base_mod.hedge_mod.DEFAULT_BIAS_MOM_DAY,
+        futures_drag=base_mod.FUTURES_DRAG * BASE_HEDGE_RATIO,
+        require_positive_microcap_mom=base_mod.REQUIRE_POSITIVE_MICROCAP_MOM,
+        r2_window=base_mod.hedge_mod.DEFAULT_R2_WINDOW,
+        r2_threshold=0.0,
+        vol_scale_enabled=False,
+        target_vol=base_mod.hedge_mod.DEFAULT_TARGET_VOL,
+        vol_window=base_mod.hedge_mod.DEFAULT_VOL_WINDOW,
+        max_lev=base_mod.hedge_mod.DEFAULT_MAX_LEV,
+        min_lev=base_mod.hedge_mod.DEFAULT_MIN_LEV,
+        scale_threshold=base_mod.hedge_mod.DEFAULT_SCALE_THRESHOLD,
+        hedge_ratio=BASE_HEDGE_RATIO,
+    ).sort_index()
+
+
+def apply_entry_exit_thresholds(gross_result: pd.DataFrame) -> pd.DataFrame:
+    base_mod = v14_context.v1_1_mod.base_mod
+    out = gross_result.copy().sort_index()
+    required = {"microcap_ret", "hedge_ret", "microcap_mom", "momentum_gap"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for v1.8 entry/exit threshold logic: {sorted(missing)}")
+
+    holding = False
+    exit_gap_threshold = -float(V1_8_MOMENTUM_GAP_EXIT_BUFFER)
+    rows: list[dict[str, object]] = []
+    for _, row in out.iterrows():
+        active_ret = 0.0
+        drag = base_mod.FUTURES_DRAG * BASE_HEDGE_RATIO if holding else 0.0
+        if holding and pd.notna(row["microcap_ret"]) and pd.notna(row["hedge_ret"]):
+            active_ret = float(row["microcap_ret"] - BASE_HEDGE_RATIO * row["hedge_ret"])
+
+        gap = float(row["momentum_gap"]) if pd.notna(row["momentum_gap"]) else np.nan
+        microcap_mom = float(row["microcap_mom"]) if pd.notna(row["microcap_mom"]) else np.nan
+        valid = pd.notna(gap)
+        if base_mod.REQUIRE_POSITIVE_MICROCAP_MOM:
+            valid = valid and pd.notna(microcap_mom) and microcap_mom > 0.0
+        if not valid:
+            signal_on = False
+        elif holding:
+            signal_on = gap >= exit_gap_threshold
+        else:
+            signal_on = gap > ENTRY_GAP_THRESHOLD
+
+        day_ret = active_ret - drag
+        rows.append(
+            {
+                "holding": "long_microcap_short_zz1000" if holding else "cash",
+                "next_holding": "long_microcap_short_zz1000" if signal_on else "cash",
+                "signal_on": bool(signal_on),
+                "return_raw": day_ret,
+                "return": day_ret,
+                "futures_drag": drag,
+                "active_spread_ret": active_ret,
+            }
+        )
+        holding = bool(signal_on)
+
+    adjusted = pd.DataFrame(rows, index=out.index)
+    for col in adjusted.columns:
+        out[col] = adjusted[col]
+    out["entry_gap_threshold"] = ENTRY_GAP_THRESHOLD
+    out["exit_gap_buffer"] = V1_8_MOMENTUM_GAP_EXIT_BUFFER
+    out["exit_gap_threshold"] = exit_gap_threshold
+    out["momentum_gap_entry_threshold"] = ENTRY_GAP_THRESHOLD
+    out["momentum_gap_exit_buffer"] = V1_8_MOMENTUM_GAP_EXIT_BUFFER
+    return out
 
 
 def target_vol_legs_for_state(
@@ -439,10 +538,206 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     out["nav_net"] = (1.0 + out["return_net"].fillna(0.0)).cumprod()
     out["return"] = out["return_net"]
     out["nav"] = out["nav_net"]
-    out["version"] = "1.6"
+    out["version"] = STRATEGY_VERSION
     out["base_version"] = "1.4"
     out["overlay_type"] = "target_volatility_scaling"
     return out
+
+
+def fetch_eastmoney_amount(secid: str, name: str) -> pd.DataFrame:
+    url = "https://push2his.eastmoney.com/api/qt/stock/kline/get"
+    params = {
+        "secid": secid,
+        "fields1": "f1,f2,f3,f4,f5,f6",
+        "fields2": "f51,f52,f53,f54,f55,f56,f57",
+        "klt": "101",
+        "fqt": "0",
+        "beg": "20100101",
+        "end": pd.Timestamp.today().strftime("%Y%m%d"),
+    }
+    last_error: Exception | None = None
+    for _ in range(3):
+        try:
+            response = requests.get(url, params=params, timeout=40)
+            response.raise_for_status()
+            data = response.json().get("data")
+            if not data or not data.get("klines"):
+                raise RuntimeError(f"empty EastMoney kline data for {secid}")
+            rows = []
+            for item in data["klines"]:
+                parts = item.split(",")
+                rows.append((pd.to_datetime(parts[0], errors="coerce"), pd.to_numeric(parts[6], errors="coerce")))
+            out = (
+                pd.DataFrame(rows, columns=["date", name])
+                .dropna()
+                .sort_values("date")
+                .drop_duplicates("date", keep="last")
+                .set_index("date")
+            )
+            if out.empty:
+                raise RuntimeError(f"no valid amount rows for {secid}")
+            return out
+        except Exception as exc:  # noqa: BLE001 - retry and report final upstream failure.
+            last_error = exc
+    raise RuntimeError(f"failed EastMoney amount fetch for {secid}: {last_error}")
+
+
+def load_broad_volume_amount() -> pd.DataFrame:
+    frames = [
+        fetch_eastmoney_amount("2.932000", "zz2000"),
+        fetch_eastmoney_amount("0.399006", "cyb"),
+    ]
+    return pd.concat(frames, axis=1).dropna(how="all").sort_index()
+
+
+def build_broad_volume_signal(amount: pd.DataFrame) -> pd.Series:
+    amount = amount.sort_index()
+    zz_below = amount["zz2000"] < amount["zz2000"].rolling(VOLUME_FILTER_MA).mean()
+    cyb_below = amount["cyb"] < amount["cyb"].rolling(VOLUME_FILTER_MA).mean()
+    condition = zz_below.fillna(False) & cyb_below.fillna(False)
+    run_id = condition.ne(condition.shift(fill_value=False)).cumsum()
+    consecutive = condition.groupby(run_id).cumcount() + 1
+    return (condition & consecutive.ge(VOLUME_FILTER_CONSECUTIVE_DAYS)).rename("volume_signal")
+
+
+def apply_broad_volume_filter(base_result: pd.DataFrame, amount_signal: pd.Series) -> pd.DataFrame:
+    out = base_result.copy().sort_index()
+    base_return = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
+    signal_on_nav_dates = amount_signal.reindex(out.index).astype("boolean").fillna(False).astype(bool)
+    execution_scale = pd.Series(1.0, index=out.index, dtype=float)
+    execution_scale.loc[signal_on_nav_dates.shift(1, fill_value=False)] = float(VOLUME_FILTER_SCALE)
+    next_session_scale = pd.Series(1.0, index=out.index, dtype=float)
+    next_session_scale.loc[signal_on_nav_dates] = float(VOLUME_FILTER_SCALE)
+    scale_change = execution_scale.diff().abs().fillna(0.0)
+    active_exposure = pd.to_numeric(
+        out.get("current_execution_scale", pd.Series(1.0, index=out.index)),
+        errors="coerce",
+    ).fillna(0.0).gt(1e-12).astype(float)
+    overlay_cost = scale_change * active_exposure * VOLUME_FILTER_SCALE_CHANGE_COST
+    ret = base_return * execution_scale - overlay_cost
+
+    out["return_net_before_volume_filter"] = base_return
+    out["nav_net_before_volume_filter"] = (1.0 + base_return).cumprod()
+    out["volume_signal"] = signal_on_nav_dates
+    out["volume_execution_scale"] = execution_scale
+    out["volume_next_session_scale"] = next_session_scale
+    out["volume_scale_change"] = scale_change
+    out["volume_cost_active"] = active_exposure
+    out["volume_overlay_cost"] = overlay_cost
+    out["return_net"] = ret
+    out["nav_net"] = (1.0 + ret.fillna(0.0)).cumprod()
+    out["return"] = out["return_net"]
+    out["nav"] = out["nav_net"]
+    out["version"] = STRATEGY_VERSION
+    out["overlay_type"] = "target_volatility_plus_broad_volume_filter"
+    return out
+
+
+def apply_nav_drawdown_throttle(base_result: pd.DataFrame) -> pd.DataFrame:
+    out = base_result.copy().sort_index()
+    base_return = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
+    pre_dd_active = (
+        pd.to_numeric(out.get("current_execution_scale", pd.Series(1.0, index=out.index)), errors="coerce").fillna(1.0)
+        * pd.to_numeric(out.get("volume_execution_scale", pd.Series(1.0, index=out.index)), errors="coerce").fillna(1.0)
+    ).gt(1e-12).astype(float)
+    execution_scale_values: list[float] = []
+    next_scale_values: list[float] = []
+    scale_change_values: list[float] = []
+    cost_values: list[float] = []
+    ret_values: list[float] = []
+    dd_values: list[float] = []
+
+    nav = 1.0
+    high_water = 1.0
+    prev_scale = 1.0
+    current_scale = 1.0
+    for value, active_cost_flag in zip(base_return, pre_dd_active):
+        scale_change = abs(current_scale - prev_scale)
+        cost = scale_change * float(active_cost_flag) * NAV_DD_SCALE_CHANGE_COST
+        ret = float(value) * current_scale - cost
+        nav *= 1.0 + ret
+        high_water = max(high_water, nav)
+        drawdown = nav / high_water - 1.0 if high_water > 0 else 0.0
+        if drawdown <= -NAV_DD_TRIGGER:
+            next_scale = NAV_DD_SCALE
+        elif drawdown >= -NAV_DD_RECOVER:
+            next_scale = 1.0
+        else:
+            next_scale = current_scale
+
+        execution_scale_values.append(float(current_scale))
+        next_scale_values.append(float(next_scale))
+        scale_change_values.append(float(scale_change))
+        cost_values.append(float(cost))
+        ret_values.append(float(ret))
+        dd_values.append(float(drawdown))
+        prev_scale = current_scale
+        current_scale = float(next_scale)
+
+    execution_scale = pd.Series(execution_scale_values, index=out.index, dtype=float)
+    next_session_scale = pd.Series(next_scale_values, index=out.index, dtype=float)
+    scale_change = pd.Series(scale_change_values, index=out.index, dtype=float)
+    overlay_cost = pd.Series(cost_values, index=out.index, dtype=float)
+    ret = pd.Series(ret_values, index=out.index, dtype=float)
+
+    out["return_net_before_nav_dd"] = base_return
+    out["nav_net_before_nav_dd"] = (1.0 + base_return).cumprod()
+    out["nav_dd_execution_scale"] = execution_scale
+    out["nav_dd_next_session_scale"] = next_session_scale
+    out["nav_dd_scale_change"] = scale_change
+    out["nav_dd_cost_active"] = pre_dd_active
+    out["nav_dd_overlay_cost"] = overlay_cost
+    out["nav_dd_drawdown"] = pd.Series(dd_values, index=out.index, dtype=float)
+    out["nav_dd_triggered"] = next_session_scale.lt(1.0 - 1e-12)
+    out["return_net"] = ret
+    out["nav_net"] = (1.0 + ret.fillna(0.0)).cumprod()
+    out["return"] = out["return_net"]
+    out["nav"] = out["nav_net"]
+    out["version"] = STRATEGY_VERSION
+    out["overlay_type"] = "target_volatility_plus_nav_dd_throttle"
+    return out
+
+
+def finalize_overlay_execution_scales(out: pd.DataFrame) -> pd.DataFrame:
+    result = out.copy()
+    target_current = pd.to_numeric(result.get("current_execution_scale", pd.Series(0.0, index=result.index)), errors="coerce").fillna(0.0)
+    target_next = pd.to_numeric(
+        result.get("next_session_actionable_scale", result.get("target_vol_scale_next_session", target_current)),
+        errors="coerce",
+    ).fillna(target_current)
+    volume_current = pd.to_numeric(result.get("volume_execution_scale", pd.Series(1.0, index=result.index)), errors="coerce").fillna(1.0)
+    volume_next = pd.to_numeric(result.get("volume_next_session_scale", volume_current), errors="coerce").fillna(volume_current)
+    dd_current = pd.to_numeric(result.get("nav_dd_execution_scale", pd.Series(1.0, index=result.index)), errors="coerce").fillna(1.0)
+    dd_next = pd.to_numeric(result.get("nav_dd_next_session_scale", dd_current), errors="coerce").fillna(dd_current)
+
+    result["target_vol_current_execution_scale"] = target_current
+    result["target_vol_next_session_actionable_scale"] = target_next
+    result["current_execution_scale"] = target_current * volume_current * dd_current
+    result["execution_scale"] = result["current_execution_scale"]
+    result["next_session_actionable_scale"] = target_next * volume_next * dd_next
+    result["target_vol_scale_next_session"] = result["next_session_actionable_scale"]
+    result["next_session_target_scale"] = result["next_session_actionable_scale"]
+    result["raw_next_target_scale"] = target_next * volume_next * dd_next
+    holding = result.get("holding", pd.Series("cash", index=result.index)).astype(str)
+    next_holding = result.get("next_holding", holding).astype(str)
+    result["next_session_turnover"] = [
+        calc_target_vol_turnover(h, s, nh, ns)
+        for h, s, nh, ns in zip(
+            holding,
+            result["current_execution_scale"],
+            next_holding,
+            result["next_session_actionable_scale"],
+        )
+    ]
+    result["next_session_leg_turnover"] = result["next_session_turnover"]
+    result["version"] = STRATEGY_VERSION
+    result["overlay_type"] = "target_volatility_plus_nav_dd_throttle"
+    return result
+
+
+def apply_v1_8_overlays(target_vol_result: pd.DataFrame) -> pd.DataFrame:
+    dd_throttled = apply_nav_drawdown_throttle(target_vol_result)
+    return finalize_overlay_execution_scales(dd_throttled)
 
 
 def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]) -> pd.DataFrame:
@@ -539,6 +834,17 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "target_vol_scale_next_session",
         "target_vol_turnover",
         "target_vol_costed_turnover",
+        "target_vol_current_execution_scale",
+        "target_vol_next_session_actionable_scale",
+        "volume_execution_scale",
+        "volume_next_session_scale",
+        "volume_scale_change",
+        "volume_overlay_cost",
+        "nav_dd_execution_scale",
+        "nav_dd_next_session_scale",
+        "nav_dd_scale_change",
+        "nav_dd_overlay_cost",
+        "nav_dd_drawdown",
         "next_session_turnover",
         "next_session_leg_turnover",
         "next_session_leg_cost_est_raw",
@@ -559,14 +865,22 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["next_session_overlay_cost_est"] = float(next_session_overlay_cost_est)
     latest_signal["next_session_trade_cost_est"] = float(next_session_trade_cost_est)
     latest_signal["signal_quality_derisk_triggered"] = bool(latest_row.get("signal_quality_derisk_triggered", False))
+    latest_signal["volume_signal"] = bool(latest_row.get("volume_signal", False))
+    latest_signal["nav_dd_triggered"] = bool(latest_row.get("nav_dd_triggered", False))
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
-    latest_signal["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
+    latest_signal["lookback"] = LOOKBACK
+    latest_signal["momentum_gap_entry_threshold"] = ENTRY_GAP_THRESHOLD
+    latest_signal["momentum_gap_exit_buffer"] = V1_8_MOMENTUM_GAP_EXIT_BUFFER
     latest_signal["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
     latest_signal["derisk_scale"] = DERISK_SCALE
     latest_signal["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
-    latest_signal["version"] = "1.6"
+    latest_signal["broad_volume_filter_active"] = False
+    latest_signal["nav_dd_trigger"] = NAV_DD_TRIGGER
+    latest_signal["nav_dd_scale"] = NAV_DD_SCALE
+    latest_signal["nav_dd_recover"] = NAV_DD_RECOVER
+    latest_signal["version"] = STRATEGY_VERSION
     latest_signal["base_version"] = "1.4"
-    latest_signal["overlay_type"] = "target_volatility_scaling"
+    latest_signal["overlay_type"] = "target_volatility_plus_nav_dd_throttle"
     latest_signal["target_vol"] = TARGET_VOL
     latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
     latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
@@ -642,7 +956,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], linewidth=2.0)
-    plt.title("Top100 Microcap Mom16 Biweekly v1.6 Target Volatility")
+    plt.title("Top100 Microcap Mom11 Biweekly v1.8 Recommended")
     plt.ylabel("NAV")
     plt.grid(alpha=0.25)
     plt.tight_layout()
@@ -651,7 +965,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
     payload = {
         "period_label": "full_sample",
-        "source": "costed_v1_6",
+        "source": "costed_v1_8",
         "start_date": summary["start_date"],
         "end_date": summary["end_date"],
         "summary": summary,
@@ -667,9 +981,9 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
     return payload
 
 
-def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
-    stale_outputs = incompatible_v1_6_outputs()
+    stale_outputs = incompatible_v1_8_outputs()
     reference_summary, _, base_gross_cached, turnover_df = v14_context._load_base_v1_1_context()
     close_df = base_gross_cached[["microcap_close", "hedge_close"]].rename(
         columns={"microcap_close": "microcap", "hedge_close": "hedge"}
@@ -678,11 +992,8 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "applied": False,
         "reason": "close_confirmed_signal_uses_official_base_series",
     }
-    base_gross = v14_context.v1_1_mod.base_mod.run_signal(close_df).sort_index()
-    gross = v14_context.v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
-        base_gross,
-        V1_6_MOMENTUM_GAP_EXIT_BUFFER,
-    )
+    base_gross = run_candidate_momentum_signal(close_df)
+    gross = apply_entry_exit_thresholds(base_gross)
     base_v1_4 = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
         gross_result=gross,
         turnover_df=turnover_df,
@@ -690,7 +1001,9 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         derisk_scale=DERISK_SCALE,
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
-    out = apply_target_vol_scaling(base_v1_4)
+    base_v1_4 = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base_v1_4)
+    target_vol = apply_target_vol_scaling(base_v1_4)
+    out = apply_v1_8_overlays(target_vol)
     out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     out.rename_axis("date").reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
 
@@ -701,18 +1014,19 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
     summary = dict(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
-    summary["version"] = "1.6"
+    summary["version"] = STRATEGY_VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Target-volatility overlay on top of v1.4. Uses v1.6-specific 0.30% momentum-gap exit buffer, "
-        "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, "
-        "10bp leg-turnover scale-change cost, scaled v1.4 base trading cost, "
-        "and 3% annual financing cost on exposure above 1.0x."
+        "Recommended v1.8 overlay on top of v1.4 data/context. Uses 11-day relative momentum, "
+        "0.60% entry gap threshold, 0.60% momentum-gap exit buffer, 30-day signal-quality decay/recovery, "
+        "20-day realized volatility, 30% annual target volatility, max 2.0x leverage, "
+        "and NAV drawdown throttle DD13/80/rec6. Broad-volume is not used in the official v1.8 chain."
     )
     summary.setdefault("core_params", {})
+    summary["core_params"]["lookback"] = LOOKBACK
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
-    summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
-    summary["core_params"]["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
+    summary["core_params"]["momentum_gap_entry_threshold"] = ENTRY_GAP_THRESHOLD
+    summary["core_params"]["momentum_gap_exit_buffer"] = V1_8_MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {
         "type": "momentum_gap_peak_decay_derisk_new_peak_guard",
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
@@ -741,6 +1055,14 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "trading_days": TARGET_VOL_TRADING_DAYS,
         "timing": "current execution scale uses T-1 realized volatility; next-session target scale uses T close realized volatility",
     }
+    summary["core_params"]["broad_volume_filter"] = "not_used_in_official_v1_8_chain"
+    summary["core_params"]["nav_drawdown_throttle"] = {
+        "trigger_drawdown": NAV_DD_TRIGGER,
+        "scale": NAV_DD_SCALE,
+        "recover_drawdown": NAV_DD_RECOVER,
+        "scale_change_cost": NAV_DD_SCALE_CHANGE_COST,
+        "timing": "T close confirmed, T+1 execution",
+    }
     summary["latest_trade_date"] = str(pd.Timestamp(signal_row.iloc[0]["date"]).date())
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
@@ -765,12 +1087,34 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     return summary, signal_row, out
 
 
-def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
-    v1_4_signal, meta, v1_4_realtime = v14_context.build_realtime_v1_4_outputs()
-    reference_summary = v14_context._load_reference_summary()
-    out = apply_target_vol_scaling(v1_4_realtime)
+    context, turnover_df, reference_summary = v14_context._load_realtime_v1_1_context()
+    _, meta = v14_context.v1_1_mod.base_mod.build_realtime_signal_fast(context)
+    snapshot_ts = pd.Timestamp(meta["snapshot_time"])
+    close_df = context["close_df"].copy().sort_index()
+    close_df = v14_context.v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
+        close_df=close_df,
+        latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
+        snapshot_ts=snapshot_ts,
+        microcap_rt_close=float(meta["microcap_rt_close"]),
+        hedge_rt_close=float(meta["hedge_rt_close"]),
+        quote_trade_date=meta.get("quote_trade_date", ""),
+    )
+    base_gross = run_candidate_momentum_signal(close_df)
+    gross = apply_entry_exit_thresholds(base_gross)
+    base = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
+        gross_result=gross,
+        turnover_df=turnover_df,
+        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
+        derisk_scale=DERISK_SCALE,
+        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
+    )
+    base = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base)
+    target_vol = apply_target_vol_scaling(base)
+    out = apply_v1_8_overlays(target_vol)
     signal_row = _build_signal_row(out, reference_summary)
+    signal_row = v14_context.v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
     passthrough_cols = [
         "member_rebalance_state",
         "member_rebalance_required",
@@ -789,8 +1133,8 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         "tail_jitter_note",
     ]
     for col in passthrough_cols:
-        if col in v1_4_signal.columns:
-            signal_row[col] = v1_4_signal.iloc[0].get(col)
+        if col in signal_row.columns:
+            continue
     for key, value in meta.items():
         signal_row[key] = value
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
@@ -802,14 +1146,14 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
 
 
 def _print_signal_query() -> None:
-    _, signal_df, _ = generate_v1_6_outputs()
+    _, signal_df, _ = generate_v1_8_outputs()
     row = signal_df.iloc[0]
     print("signal")
-    print("strategy_version: v1.6")
+    print("strategy_version: v1.8")
     print("base_version: v1.4")
     print(
-        "overlay: target volatility "
-        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+        "overlay: target volatility + NAV-DD "
+        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x, broad_volume=False)"
     )
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
@@ -819,6 +1163,12 @@ def _print_signal_query() -> None:
     print(f"signal_date: {pd.Timestamp(row['date']).strftime('%Y-%m-%d')}")
     print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
     print(f"current_execution_scale: {float(row.get('current_execution_scale', row.get('execution_scale', 0.0))):.2f}")
+    print(f"target_vol_current_execution_scale: {float(row.get('target_vol_current_execution_scale', row.get('current_execution_scale', 0.0))):.2f}")
+    print(f"broad_volume_filter_active: {row.get('broad_volume_filter_active', False)}")
+    print(f"nav_dd_triggered: {row.get('nav_dd_triggered', False)}")
+    print(f"nav_dd_execution_scale: {float(row.get('nav_dd_execution_scale', 1.0)):.2f}")
+    print(f"nav_dd_next_session_scale: {float(row.get('nav_dd_next_session_scale', 1.0)):.2f}")
+    print(f"nav_dd_drawdown: {float(row.get('nav_dd_drawdown', 0.0)):+.2%}")
     print(f"target_vol_realized_vol: {float(row.get('target_vol_realized_vol', 0.0)):.4%}")
     print(f"raw_next_target_scale: {float(row.get('raw_next_target_scale', row.get('next_session_target_scale', 0.0))):.2f}")
     print(f"next_session_actionable_scale: {float(row.get('next_session_actionable_scale', row.get('next_session_target_scale', 0.0))):.2f}")
@@ -837,14 +1187,14 @@ def _print_signal_query() -> None:
 
 
 def _print_realtime_signal_query() -> None:
-    signal_df, meta, _ = build_realtime_v1_6_outputs()
+    signal_df, meta, _ = build_realtime_v1_8_outputs()
     row = signal_df.iloc[0]
     print("realtime_signal")
-    print("strategy_version: v1.6")
+    print("strategy_version: v1.8")
     print("base_version: v1.4")
     print(
-        "overlay: target volatility "
-        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+        "overlay: target volatility + NAV-DD "
+        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x, broad_volume=False)"
     )
     print(f"snapshot_time: {meta.get('snapshot_time')}")
     print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
@@ -856,6 +1206,12 @@ def _print_realtime_signal_query() -> None:
     print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
     print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
     print(f"current_execution_scale: {float(row.get('current_execution_scale', row.get('execution_scale', 0.0))):.2f}")
+    print(f"target_vol_current_execution_scale: {float(row.get('target_vol_current_execution_scale', row.get('current_execution_scale', 0.0))):.2f}")
+    print(f"broad_volume_filter_active: {row.get('broad_volume_filter_active', False)}")
+    print(f"nav_dd_triggered: {row.get('nav_dd_triggered', False)}")
+    print(f"nav_dd_execution_scale: {float(row.get('nav_dd_execution_scale', 1.0)):.2f}")
+    print(f"nav_dd_next_session_scale: {float(row.get('nav_dd_next_session_scale', 1.0)):.2f}")
+    print(f"nav_dd_drawdown: {float(row.get('nav_dd_drawdown', 0.0)):+.2%}")
     print(f"target_vol_realized_vol: {float(row.get('target_vol_realized_vol', 0.0)):.4%}")
     print(f"raw_next_target_scale: {float(row.get('raw_next_target_scale', row.get('next_session_target_scale', 0.0))):.2f}")
     print(f"next_session_actionable_scale: {float(row.get('next_session_actionable_scale', row.get('next_session_target_scale', 0.0))):.2f}")
@@ -879,13 +1235,13 @@ def _print_realtime_signal_query() -> None:
 
 
 def _print_performance_query(query: str) -> None:
-    generate_v1_6_outputs()
+    generate_v1_8_outputs()
     perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
     v14_context.v1_1_mod.base_mod.build_performance_outputs(
         perf_df=perf_df,
         ret_col="return_net",
         nav_col="nav_net",
-        source_label="costed_v1_6",
+        source_label="costed_v1_8",
         query_text=query,
         paths={
             "performance_summary": PERF_SUMMARY_CSV,
@@ -912,7 +1268,7 @@ def _handle_query(query: str) -> None:
     if v14_context.v1_1_mod.base_mod.PERFORMANCE_PATTERN.search(query):
         _print_performance_query(query)
         return
-    raise ValueError("v1.6 supports: 信号 / 实时信号 / 表现 <区间>")
+    raise ValueError("v1.8 supports: 信号 / 实时信号 / 表现 <区间>")
 
 
 def main() -> None:
@@ -920,7 +1276,7 @@ def main() -> None:
     if query:
         _handle_query(query)
         return
-    generate_v1_6_outputs()
+    generate_v1_8_outputs()
     print(str(SUMMARY_JSON))
     print(str(LATEST_SIGNAL_CSV))
     print(str(COSTED_NAV_CSV))
@@ -928,3 +1284,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+

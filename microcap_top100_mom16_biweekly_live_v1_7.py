@@ -13,19 +13,20 @@ import matplotlib.pyplot as plt
 
 import top100_v14_base_context as v14_context
 
-# v1.6 intentionally reuses the shared v1.4 base/context adapter; recheck this
+# v1.7 intentionally reuses the shared v1.4 base/context adapter; recheck this
 # module when that adapter changes its v1_1_mod/base_mod or context API.
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
-OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_6"
+STRATEGY_VERSION = "1.7"
+OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_7"
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol25_max1p5_v1_6_costed_nav.csv"
-LEGACY_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol15_max1p5_v1_6_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol20_max1p5_v1_7_costed_nav.csv"
+LEGACY_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol25_max1p5_v1_7_costed_nav.csv"
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
 PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
 PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
@@ -35,49 +36,53 @@ PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
 EXPECTED_VERSION_ROLE = "target_vol_overlay_on_v1_4"
 EXPECTED_VERSION_NOTE_PREFIX = "Target-volatility overlay on top of v1.4."
 BASE_HEDGE_RATIO = 0.8
-V1_6_MOMENTUM_GAP_EXIT_BUFFER = 0.0030
+LOOKBACK = 12
+ENTRY_GAP_THRESHOLD = 0.008
+V1_7_MOMENTUM_GAP_EXIT_BUFFER = 0.0035
 DECAY_RATIO_THRESHOLD = 0.25
 DERISK_SCALE = 0.0
-RECOVERY_RATIO_THRESHOLD = 0.35
-TARGET_VOL = 0.25
-TARGET_VOL_WINDOW = 60
+RECOVERY_RATIO_THRESHOLD = 0.25
+TARGET_VOL = 0.20
+TARGET_VOL_WINDOW = 40
 TARGET_VOL_MAX_LEVERAGE = 1.5
 TARGET_VOL_MIN_LEVERAGE = 0.0
 TARGET_VOL_TRADING_DAYS = 244
 TARGET_VOL_SCALE_CHANGE_COST = 0.001
-TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
+TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.15
 TARGET_VOL_FINANCING_RATE = 0.03
 PNL_RETURN_SOURCE = "v1_4_overlay_pre_cost_return_explicit_or_return_net_cost_reversal_fallback"
-LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_6.json"
+LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_7.json"
 
 
 def validate_base_hedge_ratio() -> None:
     v1_1_mod = getattr(v14_context, "v1_1_mod", None)
     if v1_1_mod is None:
-        raise RuntimeError("missing v14_context.v1_1_mod; cannot validate v1.6 base hedge ratio")
+        raise RuntimeError("missing v14_context.v1_1_mod; cannot validate v1.7 base hedge ratio")
     base_mod = getattr(v1_1_mod, "base_mod", None)
     if base_mod is None:
-        raise RuntimeError("missing v14_context.v1_1_mod.base_mod; cannot validate v1.6 base hedge ratio")
+        raise RuntimeError("missing v14_context.v1_1_mod.base_mod; cannot validate v1.7 base hedge ratio")
     checks = {
         "v14_context.BASE_HEDGE_RATIO": getattr(v14_context, "BASE_HEDGE_RATIO", None),
         "v14_context.v1_1_mod.base_mod.FIXED_HEDGE_RATIO": getattr(base_mod, "FIXED_HEDGE_RATIO", None),
     }
     for name, value in checks.items():
         if value is None:
-            raise RuntimeError(f"missing {name}; cannot validate v1.6 base hedge ratio")
+            raise RuntimeError(f"missing {name}; cannot validate v1.7 base hedge ratio")
         if abs(float(value) - float(BASE_HEDGE_RATIO)) > 1e-9:
-            raise ValueError(f"hedge ratio mismatch: v1.6={BASE_HEDGE_RATIO}, {name}={value}")
+            raise ValueError(f"hedge ratio mismatch: v1.7={BASE_HEDGE_RATIO}, {name}={value}")
 
 
 def current_base_fingerprint() -> dict[str, object]:
     validate_base_hedge_ratio()
     base = dict(v14_context.current_base_fingerprint())
-    base["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
+    base["momentum_gap_exit_buffer"] = V1_7_MOMENTUM_GAP_EXIT_BUFFER
     return {
         "base_version": "1.4",
         "base_v1_4_fingerprint": base,
         "overlay_type": "target_volatility_scaling",
         "base_hedge_ratio": BASE_HEDGE_RATIO,
+        "lookback": LOOKBACK,
+        "momentum_gap_entry_threshold": ENTRY_GAP_THRESHOLD,
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
@@ -90,17 +95,17 @@ def current_base_fingerprint() -> dict[str, object]:
         "volatility_return_source_priority": ["return_raw", "base_gross_return", "return_net_fallback_warning"],
         "pnl_return_source": PNL_RETURN_SOURCE,
         "financing_rate": TARGET_VOL_FINANCING_RATE,
-        "momentum_gap_exit_buffer": V1_6_MOMENTUM_GAP_EXIT_BUFFER,
+        "momentum_gap_exit_buffer": V1_7_MOMENTUM_GAP_EXIT_BUFFER,
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
     }
 
 
-def summary_matches_current_v1_6_base(summary: dict[str, object]) -> bool:
+def summary_matches_current_v1_7_base(summary: dict[str, object]) -> bool:
     if not isinstance(summary, dict):
         return False
-    if str(summary.get("version")) != "1.6":
+    if str(summary.get("version")) != STRATEGY_VERSION:
         return False
     if str(summary.get("version_role")) != EXPECTED_VERSION_ROLE:
         return False
@@ -109,8 +114,8 @@ def summary_matches_current_v1_6_base(summary: dict[str, object]) -> bool:
     return summary.get("base_fingerprint") == current_base_fingerprint()
 
 
-def invalidate_incompatible_v1_6_outputs() -> list[Path]:
-    stale = incompatible_v1_6_outputs()
+def invalidate_incompatible_v1_7_outputs() -> list[Path]:
+    stale = incompatible_v1_7_outputs()
     removed: list[Path] = []
     for path in stale:
         if path.exists():
@@ -119,14 +124,14 @@ def invalidate_incompatible_v1_6_outputs() -> list[Path]:
     return removed
 
 
-def incompatible_v1_6_outputs() -> list[Path]:
+def incompatible_v1_7_outputs() -> list[Path]:
     if not SUMMARY_JSON.exists():
         return []
     try:
         summary = json.loads(SUMMARY_JSON.read_text(encoding="utf-8"))
     except Exception:
         summary = None
-    if summary_matches_current_v1_6_base(summary):
+    if summary_matches_current_v1_7_base(summary):
         return []
     return [
         SUMMARY_JSON,
@@ -147,7 +152,7 @@ def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.7 signal paths.
 def load_live_context_cache(path: Path = LIVE_CONTEXT_CACHE) -> dict[str, object] | None:
     if not path.exists():
         return None
@@ -162,7 +167,7 @@ def load_live_context_cache(path: Path = LIVE_CONTEXT_CACHE) -> dict[str, object
     return payload
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.7 signal paths.
 def _live_close_df(live_context: dict[str, object] | None) -> pd.DataFrame | None:
     if not isinstance(live_context, dict):
         return None
@@ -178,7 +183,7 @@ def _live_close_df(live_context: dict[str, object] | None) -> pd.DataFrame | Non
     return live_close if not live_close.empty else None
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.7 signal paths.
 def _recent_microcap_tail_is_flat(close_df: pd.DataFrame, tail_days: int = 5) -> bool:
     if close_df.empty or "microcap" not in close_df.columns:
         return False
@@ -188,7 +193,7 @@ def _recent_microcap_tail_is_flat(close_df: pd.DataFrame, tail_days: int = 5) ->
     return bool(tail.pct_change().dropna().abs().le(1e-12).all())
 
 
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
+# Experimental helper: currently unused by the close-confirmed and realtime v1.7 signal paths.
 def overlay_live_microcap_tail(
     close_df: pd.DataFrame,
     live_context: dict[str, object] | None,
@@ -225,6 +230,81 @@ def overlay_live_microcap_tail(
         }
     )
     return out, meta
+
+
+def run_candidate_momentum_signal(close_df: pd.DataFrame) -> pd.DataFrame:
+    base_mod = v14_context.v1_1_mod.base_mod
+    return base_mod.hedge_mod.run_backtest(
+        close_df=close_df,
+        signal_model="momentum",
+        lookback=LOOKBACK,
+        bias_n=base_mod.hedge_mod.DEFAULT_BIAS_N,
+        bias_mom_day=base_mod.hedge_mod.DEFAULT_BIAS_MOM_DAY,
+        futures_drag=base_mod.FUTURES_DRAG * BASE_HEDGE_RATIO,
+        require_positive_microcap_mom=base_mod.REQUIRE_POSITIVE_MICROCAP_MOM,
+        r2_window=base_mod.hedge_mod.DEFAULT_R2_WINDOW,
+        r2_threshold=0.0,
+        vol_scale_enabled=False,
+        target_vol=base_mod.hedge_mod.DEFAULT_TARGET_VOL,
+        vol_window=base_mod.hedge_mod.DEFAULT_VOL_WINDOW,
+        max_lev=base_mod.hedge_mod.DEFAULT_MAX_LEV,
+        min_lev=base_mod.hedge_mod.DEFAULT_MIN_LEV,
+        scale_threshold=base_mod.hedge_mod.DEFAULT_SCALE_THRESHOLD,
+        hedge_ratio=BASE_HEDGE_RATIO,
+    ).sort_index()
+
+
+def apply_entry_exit_thresholds(gross_result: pd.DataFrame) -> pd.DataFrame:
+    base_mod = v14_context.v1_1_mod.base_mod
+    out = gross_result.copy().sort_index()
+    required = {"microcap_ret", "hedge_ret", "microcap_mom", "momentum_gap"}
+    missing = required.difference(out.columns)
+    if missing:
+        raise KeyError(f"Missing columns for v1.7 entry/exit threshold logic: {sorted(missing)}")
+
+    holding = False
+    exit_gap_threshold = -float(V1_7_MOMENTUM_GAP_EXIT_BUFFER)
+    rows: list[dict[str, object]] = []
+    for _, row in out.iterrows():
+        active_ret = 0.0
+        drag = base_mod.FUTURES_DRAG * BASE_HEDGE_RATIO if holding else 0.0
+        if holding and pd.notna(row["microcap_ret"]) and pd.notna(row["hedge_ret"]):
+            active_ret = float(row["microcap_ret"] - BASE_HEDGE_RATIO * row["hedge_ret"])
+
+        gap = float(row["momentum_gap"]) if pd.notna(row["momentum_gap"]) else np.nan
+        microcap_mom = float(row["microcap_mom"]) if pd.notna(row["microcap_mom"]) else np.nan
+        valid = pd.notna(gap)
+        if base_mod.REQUIRE_POSITIVE_MICROCAP_MOM:
+            valid = valid and pd.notna(microcap_mom) and microcap_mom > 0.0
+        if not valid:
+            signal_on = False
+        elif holding:
+            signal_on = gap >= exit_gap_threshold
+        else:
+            signal_on = gap > ENTRY_GAP_THRESHOLD
+
+        day_ret = active_ret - drag
+        rows.append(
+            {
+                "holding": "long_microcap_short_zz1000" if holding else "cash",
+                "next_holding": "long_microcap_short_zz1000" if signal_on else "cash",
+                "signal_on": bool(signal_on),
+                "return_raw": day_ret,
+                "return": day_ret,
+                "futures_drag": drag,
+                "active_spread_ret": active_ret,
+            }
+        )
+        holding = bool(signal_on)
+
+    adjusted = pd.DataFrame(rows, index=out.index)
+    for col in adjusted.columns:
+        out[col] = adjusted[col]
+    out["entry_gap_threshold"] = ENTRY_GAP_THRESHOLD
+    out["exit_gap_buffer"] = V1_7_MOMENTUM_GAP_EXIT_BUFFER
+    out["exit_gap_threshold"] = exit_gap_threshold
+    out["momentum_gap_exit_buffer"] = V1_7_MOMENTUM_GAP_EXIT_BUFFER
+    return out
 
 
 def target_vol_legs_for_state(
@@ -439,7 +519,7 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     out["nav_net"] = (1.0 + out["return_net"].fillna(0.0)).cumprod()
     out["return"] = out["return_net"]
     out["nav"] = out["nav_net"]
-    out["version"] = "1.6"
+    out["version"] = STRATEGY_VERSION
     out["base_version"] = "1.4"
     out["overlay_type"] = "target_volatility_scaling"
     return out
@@ -560,17 +640,18 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["next_session_trade_cost_est"] = float(next_session_trade_cost_est)
     latest_signal["signal_quality_derisk_triggered"] = bool(latest_row.get("signal_quality_derisk_triggered", False))
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
-    latest_signal["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
+    latest_signal["momentum_gap_entry_threshold"] = ENTRY_GAP_THRESHOLD
+    latest_signal["momentum_gap_exit_buffer"] = V1_7_MOMENTUM_GAP_EXIT_BUFFER
     latest_signal["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
     latest_signal["derisk_scale"] = DERISK_SCALE
     latest_signal["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
-    latest_signal["version"] = "1.6"
+    latest_signal["version"] = STRATEGY_VERSION
     latest_signal["base_version"] = "1.4"
     latest_signal["overlay_type"] = "target_volatility_scaling"
     latest_signal["target_vol"] = TARGET_VOL
     latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
     latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
-    latest_signal.setdefault("signal_label", next_holding)
+    latest_signal["signal_label"] = next_holding
     return pd.DataFrame([{**latest_signal, "date": pd.Timestamp(net_df.index.max())}])
 
 
@@ -642,7 +723,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], linewidth=2.0)
-    plt.title("Top100 Microcap Mom16 Biweekly v1.6 Target Volatility")
+    plt.title("Top100 Microcap Mom12 Biweekly v1.7 Target Volatility")
     plt.ylabel("NAV")
     plt.grid(alpha=0.25)
     plt.tight_layout()
@@ -651,7 +732,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
 
     payload = {
         "period_label": "full_sample",
-        "source": "costed_v1_6",
+        "source": "costed_v1_7",
         "start_date": summary["start_date"],
         "end_date": summary["end_date"],
         "summary": summary,
@@ -667,9 +748,9 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
     return payload
 
 
-def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+def generate_v1_7_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
-    stale_outputs = incompatible_v1_6_outputs()
+    stale_outputs = incompatible_v1_7_outputs()
     reference_summary, _, base_gross_cached, turnover_df = v14_context._load_base_v1_1_context()
     close_df = base_gross_cached[["microcap_close", "hedge_close"]].rename(
         columns={"microcap_close": "microcap", "hedge_close": "hedge"}
@@ -678,11 +759,8 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "applied": False,
         "reason": "close_confirmed_signal_uses_official_base_series",
     }
-    base_gross = v14_context.v1_1_mod.base_mod.run_signal(close_df).sort_index()
-    gross = v14_context.v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
-        base_gross,
-        V1_6_MOMENTUM_GAP_EXIT_BUFFER,
-    )
+    base_gross = run_candidate_momentum_signal(close_df)
+    gross = apply_entry_exit_thresholds(base_gross)
     base_v1_4 = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
         gross_result=gross,
         turnover_df=turnover_df,
@@ -701,18 +779,20 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
     summary = dict(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
-    summary["version"] = "1.6"
+    summary["version"] = STRATEGY_VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Target-volatility overlay on top of v1.4. Uses v1.6-specific 0.30% momentum-gap exit buffer, "
-        "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, "
+        "Target-volatility overlay on top of v1.4. Uses v1.7 candidate parameters: "
+        "12-day relative momentum, 0.80% entry gap threshold, 0.35% momentum-gap exit buffer, "
+        "40-day realized volatility, 20% annual target volatility, max 1.5x leverage, "
         "10bp leg-turnover scale-change cost, scaled v1.4 base trading cost, "
         "and 3% annual financing cost on exposure above 1.0x."
     )
     summary.setdefault("core_params", {})
+    summary["core_params"]["lookback"] = LOOKBACK
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
-    summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
-    summary["core_params"]["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
+    summary["core_params"]["momentum_gap_entry_threshold"] = ENTRY_GAP_THRESHOLD
+    summary["core_params"]["momentum_gap_exit_buffer"] = V1_7_MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {
         "type": "momentum_gap_peak_decay_derisk_new_peak_guard",
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
@@ -765,12 +845,33 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     return summary, signal_row, out
 
 
-def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+def build_realtime_v1_7_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
-    v1_4_signal, meta, v1_4_realtime = v14_context.build_realtime_v1_4_outputs()
-    reference_summary = v14_context._load_reference_summary()
-    out = apply_target_vol_scaling(v1_4_realtime)
+    context, turnover_df, reference_summary = v14_context._load_realtime_v1_1_context()
+    _, meta = v14_context.v1_1_mod.base_mod.build_realtime_signal_fast(context)
+    snapshot_ts = pd.Timestamp(meta["snapshot_time"])
+    close_df = context["close_df"].copy().sort_index()
+    close_df = v14_context.v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
+        close_df=close_df,
+        latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
+        snapshot_ts=snapshot_ts,
+        microcap_rt_close=float(meta["microcap_rt_close"]),
+        hedge_rt_close=float(meta["hedge_rt_close"]),
+        quote_trade_date=meta.get("quote_trade_date", ""),
+    )
+    base_gross = run_candidate_momentum_signal(close_df)
+    gross = apply_entry_exit_thresholds(base_gross)
+    base = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
+        gross_result=gross,
+        turnover_df=turnover_df,
+        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
+        derisk_scale=DERISK_SCALE,
+        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
+    )
+    base = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base)
+    out = apply_target_vol_scaling(base)
     signal_row = _build_signal_row(out, reference_summary)
+    signal_row = v14_context.v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
     passthrough_cols = [
         "member_rebalance_state",
         "member_rebalance_required",
@@ -789,8 +890,8 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         "tail_jitter_note",
     ]
     for col in passthrough_cols:
-        if col in v1_4_signal.columns:
-            signal_row[col] = v1_4_signal.iloc[0].get(col)
+        if col in signal_row.columns:
+            signal_row[col] = signal_row.iloc[0].get(col)
     for key, value in meta.items():
         signal_row[key] = value
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
@@ -802,10 +903,10 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
 
 
 def _print_signal_query() -> None:
-    _, signal_df, _ = generate_v1_6_outputs()
+    _, signal_df, _ = generate_v1_7_outputs()
     row = signal_df.iloc[0]
     print("signal")
-    print("strategy_version: v1.6")
+    print("strategy_version: v1.7")
     print("base_version: v1.4")
     print(
         "overlay: target volatility "
@@ -837,10 +938,10 @@ def _print_signal_query() -> None:
 
 
 def _print_realtime_signal_query() -> None:
-    signal_df, meta, _ = build_realtime_v1_6_outputs()
+    signal_df, meta, _ = build_realtime_v1_7_outputs()
     row = signal_df.iloc[0]
     print("realtime_signal")
-    print("strategy_version: v1.6")
+    print("strategy_version: v1.7")
     print("base_version: v1.4")
     print(
         "overlay: target volatility "
@@ -879,13 +980,13 @@ def _print_realtime_signal_query() -> None:
 
 
 def _print_performance_query(query: str) -> None:
-    generate_v1_6_outputs()
+    generate_v1_7_outputs()
     perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
     v14_context.v1_1_mod.base_mod.build_performance_outputs(
         perf_df=perf_df,
         ret_col="return_net",
         nav_col="nav_net",
-        source_label="costed_v1_6",
+        source_label="costed_v1_7",
         query_text=query,
         paths={
             "performance_summary": PERF_SUMMARY_CSV,
@@ -912,7 +1013,7 @@ def _handle_query(query: str) -> None:
     if v14_context.v1_1_mod.base_mod.PERFORMANCE_PATTERN.search(query):
         _print_performance_query(query)
         return
-    raise ValueError("v1.6 supports: 信号 / 实时信号 / 表现 <区间>")
+    raise ValueError("v1.7 supports: 信号 / 实时信号 / 表现 <区间>")
 
 
 def main() -> None:
@@ -920,7 +1021,7 @@ def main() -> None:
     if query:
         _handle_query(query)
         return
-    generate_v1_6_outputs()
+    generate_v1_7_outputs()
     print(str(SUMMARY_JSON))
     print(str(LATEST_SIGNAL_CSV))
     print(str(COSTED_NAV_CSV))

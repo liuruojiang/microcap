@@ -1,0 +1,107 @@
+{
+  "strategy_version": "v1.7",
+  "v1_7_summary_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v1_7_summary.json",
+  "v1_7_costed_nav_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_targetvol20_max1p5_v1_7_costed_nav.csv",
+  "return_column": "return_net",
+  "source": "akshare.index_zh_a_hist amount",
+  "symbols": {
+    "zz2000": "932000",
+    "cyb": "399006"
+  },
+  "start_date": "2010-06-01",
+  "end_date": "2026-04-30",
+  "row_count": 3864,
+  "duplicate_date_count": 0,
+  "common_index_row_count": 3864,
+  "amount_start": "2010-06-01",
+  "amount_end": "2026-04-30",
+  "scale_change_cost": 0.003,
+  "timing": "index amount signal at T close controls v1.7 return_net from T+1",
+  "baseline": {
+    "full": {
+      "start_date": "2010-06-01",
+      "end_date": "2026-04-30",
+      "row_count": 3864,
+      "annual": 39.74179099084314,
+      "vol": 14.140650286672802,
+      "sharpe": 2.8104641713895404,
+      "max_dd": -17.60868647176207,
+      "total_return": 20434.714319826788
+    },
+    "last_10y": {
+      "start_date": "2016-05-03",
+      "end_date": "2026-04-30",
+      "row_count": 2428,
+      "annual": 35.09094928293401,
+      "vol": 15.764838800286924,
+      "sharpe": 2.2258996572990872,
+      "max_dd": -17.608686471762034,
+      "total_return": 1918.4166107923272
+    },
+    "last_5y": {
+      "start_date": "2021-05-06",
+      "end_date": "2026-04-30",
+      "row_count": 1210,
+      "annual": 37.09431821777378,
+      "vol": 18.315057829147893,
+      "sharpe": 2.02534540506551,
+      "max_dd": -17.60868647176208,
+      "total_return": 381.6733994392762
+    },
+    "last_3y": {
+      "start_date": "2023-05-04",
+      "end_date": "2026-04-30",
+      "row_count": 726,
+      "annual": 49.9242425004123,
+      "vol": 17.962270116789956,
+      "sharpe": 2.7793949303627485,
+      "max_dd": -15.79382192406853,
+      "total_return": 235.59070518115576
+    },
+    "last_1y": {
+      "start_date": "2025-05-06",
+      "end_date": "2026-04-30",
+      "row_count": 242,
+      "annual": 31.48023527570645,
+      "vol": 19.23188970976682,
+      "sharpe": 1.6368768618571774,
+      "max_dd": -15.79382192406853,
+      "total_return": 30.86592630275138
+    }
+  },
+  "invariant_checks": [
+    {
+      "rule": "zz2000_and_cyb_below_ma53_days13:scale0.00",
+      "steady_blocked_cash_days": 282,
+      "bad_cash_return_days": 0,
+      "max_return_formula_abs_diff": 0.0
+    },
+    {
+      "rule": "zz2000_and_cyb_below_ma53_days13:scale0.25",
+      "steady_blocked_cash_days": 0,
+      "bad_cash_return_days": 0,
+      "max_return_formula_abs_diff": 0.0
+    },
+    {
+      "rule": "zz2000_and_cyb_below_ma53_days13:scale0.50",
+      "steady_blocked_cash_days": 0,
+      "bad_cash_return_days": 0,
+      "max_return_formula_abs_diff": 0.0
+    }
+  ],
+  "latest_v1_7_summary": {
+    "latest_nav_date": "2026-04-30",
+    "latest_trade_date": "2026-04-30",
+    "performance_snapshot": {
+      "start_date": "2010-02-26",
+      "end_date": "2026-04-30",
+      "days": 3930,
+      "final_nav": 200.3381010222571,
+      "total_return_pct": 19933.81010222571,
+      "annual_pct": 38.77968833942309,
+      "max_drawdown_pct": -17.60868647176206,
+      "sharpe": 2.7591175084166957,
+      "vol_pct": 14.055105743458023
+    }
+  }
+}
