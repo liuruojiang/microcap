@@ -48,6 +48,25 @@ class MicrocapTop100V18ParametersTest(unittest.TestCase):
         pd.testing.assert_series_equal(out["volume_overlay_cost"], expected_cost, check_names=False)
         pd.testing.assert_series_equal(out["return_net"], expected_return, check_names=False)
 
+    def test_official_v1_8_overlay_chain_skips_broad_volume_filter(self):
+        index = pd.date_range("2024-01-01", periods=6, freq="D")
+        base = pd.DataFrame(
+            {
+                "return_net": [0.0, -0.14, 0.10, 0.10, 0.10, 0.0],
+                "current_execution_scale": [1.0] * 6,
+                "next_session_actionable_scale": [1.0] * 6,
+            },
+            index=index,
+        )
+
+        out = v18.apply_v1_8_overlays(base)
+
+        self.assertNotIn("volume_execution_scale", out.columns)
+        self.assertNotIn("volume_overlay_cost", out.columns)
+        expected_nav_scale = pd.Series([1.0, 1.0, 0.8, 0.8, 1.0, 1.0], index=index)
+        pd.testing.assert_series_equal(out["nav_dd_execution_scale"], expected_nav_scale, check_names=False)
+        pd.testing.assert_series_equal(out["current_execution_scale"], expected_nav_scale, check_names=False)
+
     def test_nav_dd_overlay_uses_t_plus_1_execution_and_cost(self):
         index = pd.date_range("2024-01-01", periods=6, freq="D")
         base = pd.DataFrame({"return_net": [0.0, -0.14, 0.10, 0.10, 0.10, 0.0]}, index=index)

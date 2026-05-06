@@ -34,7 +34,7 @@ PERF_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.json"
 PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
 
 EXPECTED_VERSION_ROLE = "target_vol_overlay_on_v1_4"
-EXPECTED_VERSION_NOTE_PREFIX = "Target-volatility overlay on top of v1.4."
+EXPECTED_VERSION_NOTE_PREFIX = "Recommended v1.8 overlay on top of v1.4 data/context."
 STRATEGY_VERSION = "1.8"
 BASE_HEDGE_RATIO = 0.8
 LOOKBACK = 11
@@ -89,7 +89,7 @@ def current_base_fingerprint() -> dict[str, object]:
     return {
         "base_version": "1.4",
         "base_v1_4_fingerprint": base,
-        "overlay_type": "target_volatility_broad_volume_nav_dd_scaling",
+        "overlay_type": "target_volatility_nav_dd_scaling",
         "base_hedge_ratio": BASE_HEDGE_RATIO,
         "lookback": LOOKBACK,
         "momentum_gap_entry_threshold": ENTRY_GAP_THRESHOLD,
@@ -109,14 +109,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
-        "broad_volume_filter": {
-            "family": VOLUME_FILTER_FAMILY,
-            "ma": VOLUME_FILTER_MA,
-            "consecutive_days": VOLUME_FILTER_CONSECUTIVE_DAYS,
-            "scale": VOLUME_FILTER_SCALE,
-            "scale_change_cost": VOLUME_FILTER_SCALE_CHANGE_COST,
-            "timing": "T close confirmed, T+1 execution",
-        },
+        "broad_volume_filter": "not_used_in_official_v1_8_chain",
         "nav_drawdown_throttle": {
             "trigger_drawdown": NAV_DD_TRIGGER,
             "scale": NAV_DD_SCALE,
@@ -701,7 +694,7 @@ def apply_nav_drawdown_throttle(base_result: pd.DataFrame) -> pd.DataFrame:
     out["return"] = out["return_net"]
     out["nav"] = out["nav_net"]
     out["version"] = STRATEGY_VERSION
-    out["overlay_type"] = "target_volatility_plus_broad_volume_filter_plus_nav_dd_throttle"
+    out["overlay_type"] = "target_volatility_plus_nav_dd_throttle"
     return out
 
 
@@ -738,16 +731,12 @@ def finalize_overlay_execution_scales(out: pd.DataFrame) -> pd.DataFrame:
     ]
     result["next_session_leg_turnover"] = result["next_session_turnover"]
     result["version"] = STRATEGY_VERSION
-    result["overlay_type"] = "target_volatility_plus_broad_volume_filter_plus_nav_dd_throttle"
+    result["overlay_type"] = "target_volatility_plus_nav_dd_throttle"
     return result
 
 
-def apply_v1_8_overlays(target_vol_result: pd.DataFrame, amount_signal: pd.Series) -> pd.DataFrame:
-    common = pd.DatetimeIndex(target_vol_result.index.intersection(amount_signal.index)).sort_values()
-    if common.empty:
-        raise RuntimeError("empty common index between target-vol result and broad-volume amount signal")
-    volume_filtered = apply_broad_volume_filter(target_vol_result.loc[common], amount_signal.loc[common])
-    dd_throttled = apply_nav_drawdown_throttle(volume_filtered)
+def apply_v1_8_overlays(target_vol_result: pd.DataFrame) -> pd.DataFrame:
+    dd_throttled = apply_nav_drawdown_throttle(target_vol_result)
     return finalize_overlay_execution_scales(dd_throttled)
 
 
@@ -885,15 +874,13 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
     latest_signal["derisk_scale"] = DERISK_SCALE
     latest_signal["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
-    latest_signal["volume_filter_ma"] = VOLUME_FILTER_MA
-    latest_signal["volume_filter_consecutive_days"] = VOLUME_FILTER_CONSECUTIVE_DAYS
-    latest_signal["volume_filter_scale"] = VOLUME_FILTER_SCALE
+    latest_signal["broad_volume_filter_active"] = False
     latest_signal["nav_dd_trigger"] = NAV_DD_TRIGGER
     latest_signal["nav_dd_scale"] = NAV_DD_SCALE
     latest_signal["nav_dd_recover"] = NAV_DD_RECOVER
     latest_signal["version"] = STRATEGY_VERSION
     latest_signal["base_version"] = "1.4"
-    latest_signal["overlay_type"] = "target_volatility_plus_broad_volume_filter_plus_nav_dd_throttle"
+    latest_signal["overlay_type"] = "target_volatility_plus_nav_dd_throttle"
     latest_signal["target_vol"] = TARGET_VOL
     latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
     latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
@@ -1016,9 +1003,7 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     )
     base_v1_4 = v1_4_mod.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base_v1_4)
     target_vol = apply_target_vol_scaling(base_v1_4)
-    amount = load_broad_volume_amount()
-    amount_signal = build_broad_volume_signal(amount)
-    out = apply_v1_8_overlays(target_vol, amount_signal)
+    out = apply_v1_8_overlays(target_vol)
     out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     out.rename_axis("date").reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
 
@@ -1035,7 +1020,7 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "Recommended v1.8 overlay on top of v1.4 data/context. Uses 11-day relative momentum, "
         "0.60% entry gap threshold, 0.60% momentum-gap exit buffer, 30-day signal-quality decay/recovery, "
         "20-day realized volatility, 30% annual target volatility, max 2.0x leverage, "
-        "MA53/13-day broad-volume filter at 25% scale, and NAV drawdown throttle DD13/80/rec6."
+        "and NAV drawdown throttle DD13/80/rec6. Broad-volume is not used in the official v1.8 chain."
     )
     summary.setdefault("core_params", {})
     summary["core_params"]["lookback"] = LOOKBACK
@@ -1070,17 +1055,7 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "trading_days": TARGET_VOL_TRADING_DAYS,
         "timing": "current execution scale uses T-1 realized volatility; next-session target scale uses T close realized volatility",
     }
-    summary["core_params"]["broad_volume_filter"] = {
-        "family": VOLUME_FILTER_FAMILY,
-        "ma": VOLUME_FILTER_MA,
-        "consecutive_days": VOLUME_FILTER_CONSECUTIVE_DAYS,
-        "scale": VOLUME_FILTER_SCALE,
-        "scale_change_cost": VOLUME_FILTER_SCALE_CHANGE_COST,
-        "timing": "T close confirmed, T+1 execution",
-        "amount_source": "EastMoney daily kline amount for 932000 and 399006",
-        "amount_start": str(pd.Timestamp(amount.index.min()).date()),
-        "amount_end": str(pd.Timestamp(amount.index.max()).date()),
-    }
+    summary["core_params"]["broad_volume_filter"] = "not_used_in_official_v1_8_chain"
     summary["core_params"]["nav_drawdown_throttle"] = {
         "trigger_drawdown": NAV_DD_TRIGGER,
         "scale": NAV_DD_SCALE,
@@ -1137,9 +1112,7 @@ def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     )
     base = v1_4_mod.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base)
     target_vol = apply_target_vol_scaling(base)
-    amount = load_broad_volume_amount()
-    amount_signal = build_broad_volume_signal(amount)
-    out = apply_v1_8_overlays(target_vol, amount_signal)
+    out = apply_v1_8_overlays(target_vol)
     signal_row = _build_signal_row(out, reference_summary)
     signal_row = v1_4_mod.v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
     passthrough_cols = [
@@ -1179,8 +1152,8 @@ def _print_signal_query() -> None:
     print("strategy_version: v1.8")
     print("base_version: v1.4")
     print(
-        "overlay: target volatility "
-        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+        "overlay: target volatility + NAV-DD "
+        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x, broad_volume=False)"
     )
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
@@ -1191,9 +1164,7 @@ def _print_signal_query() -> None:
     print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
     print(f"current_execution_scale: {float(row.get('current_execution_scale', row.get('execution_scale', 0.0))):.2f}")
     print(f"target_vol_current_execution_scale: {float(row.get('target_vol_current_execution_scale', row.get('current_execution_scale', 0.0))):.2f}")
-    print(f"volume_signal: {row.get('volume_signal', False)}")
-    print(f"volume_execution_scale: {float(row.get('volume_execution_scale', 1.0)):.2f}")
-    print(f"volume_next_session_scale: {float(row.get('volume_next_session_scale', 1.0)):.2f}")
+    print(f"broad_volume_filter_active: {row.get('broad_volume_filter_active', False)}")
     print(f"nav_dd_triggered: {row.get('nav_dd_triggered', False)}")
     print(f"nav_dd_execution_scale: {float(row.get('nav_dd_execution_scale', 1.0)):.2f}")
     print(f"nav_dd_next_session_scale: {float(row.get('nav_dd_next_session_scale', 1.0)):.2f}")
@@ -1222,8 +1193,8 @@ def _print_realtime_signal_query() -> None:
     print("strategy_version: v1.8")
     print("base_version: v1.4")
     print(
-        "overlay: target volatility "
-        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+        "overlay: target volatility + NAV-DD "
+        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x, broad_volume=False)"
     )
     print(f"snapshot_time: {meta.get('snapshot_time')}")
     print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
@@ -1236,9 +1207,7 @@ def _print_realtime_signal_query() -> None:
     print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
     print(f"current_execution_scale: {float(row.get('current_execution_scale', row.get('execution_scale', 0.0))):.2f}")
     print(f"target_vol_current_execution_scale: {float(row.get('target_vol_current_execution_scale', row.get('current_execution_scale', 0.0))):.2f}")
-    print(f"volume_signal: {row.get('volume_signal', False)}")
-    print(f"volume_execution_scale: {float(row.get('volume_execution_scale', 1.0)):.2f}")
-    print(f"volume_next_session_scale: {float(row.get('volume_next_session_scale', 1.0)):.2f}")
+    print(f"broad_volume_filter_active: {row.get('broad_volume_filter_active', False)}")
     print(f"nav_dd_triggered: {row.get('nav_dd_triggered', False)}")
     print(f"nav_dd_execution_scale: {float(row.get('nav_dd_execution_scale', 1.0)):.2f}")
     print(f"nav_dd_next_session_scale: {float(row.get('nav_dd_next_session_scale', 1.0)):.2f}")
