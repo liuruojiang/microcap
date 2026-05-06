@@ -1,5 +1,6 @@
 import unittest
 from pathlib import Path
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +29,35 @@ class Top100RealtimeWorkflowTest(unittest.TestCase):
         self.assertIn("GITHUB_STEP_SUMMARY", text)
         self.assertIn("realtime_signal_result.txt", text)
         self.assertIn("actions/upload-artifact@v4", text)
+
+    def test_workflow_restores_generated_strategy_cache(self):
+        text = (WORKFLOWS / "top100_realtime_signals.yml").read_text(encoding="utf-8")
+
+        self.assertIn("actions/cache@v4", text)
+        self.assertIn("outputs", text)
+        self.assertIn(".microcap_index_cache", text)
+
+    def test_clean_checkout_contains_realtime_seed_artifacts(self):
+        required = [
+            "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+            "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json",
+            "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv",
+            "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
+            "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
+            "outputs/microcap_top100_mom16_biweekly_live_summary.json",
+            ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_meta.json",
+            ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_target_members.csv",
+            ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_effective_members.csv",
+            ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_rebalance_changes.csv",
+        ]
+
+        result = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", *required],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
 
 if __name__ == "__main__":

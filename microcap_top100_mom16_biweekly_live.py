@@ -398,11 +398,15 @@ def refresh_price_cache_tail(end_date: pd.Timestamp, max_workers: int, symbols: 
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
     failures: list[str] = []
     workers = max(1, min(int(max_workers), 16))
+
+    def refresh_symbol(symbol: str) -> None:
+        fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, False)
+        fetch_share_change = getattr(fetch_mod, "fetch_share_change", None)
+        if fetch_share_change is not None:
+            fetch_share_change(symbol, freq_mod.START_DATE, end_text, False)
+
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futures = {
-            pool.submit(fetch_mod.fetch_price_history, symbol, freq_mod.START_DATE, end_text, False): symbol
-            for symbol in symbols
-        }
+        futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in symbols}
         for fut in as_completed(futures):
             symbol = futures[fut]
             try:

@@ -26,6 +26,16 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Restore generated strategy cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            outputs
+            .microcap_index_cache
+          key: top100-realtime-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            top100-realtime-${{ runner.os }}-
+
       - name: Install runtime dependencies
         run: |
           python -m pip install --upgrade pip
