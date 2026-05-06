@@ -69,5 +69,24 @@ class Top100RealtimeWorkflowTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
 
 
+class Top100RealtimeCloseConsistencyWorkflowTest(unittest.TestCase):
+    def test_close_consistency_workflow_runs_by_manual_dispatch(self):
+        path = WORKFLOWS / "top100_realtime_close_consistency.yml"
+        self.assertTrue(path.exists())
+        text = path.read_text(encoding="utf-8")
+
+        self.assertIn("workflow_dispatch:", text)
+        self.assertIn("python verify_top100_realtime_close_consistency.py", text)
+        self.assertIn("QVERIS_API_KEY: ${{ secrets.QVERIS_API_KEY }}", text)
+        self.assertNotIn("schedule:", text)
+
+    def test_close_consistency_workflow_uploads_audit_outputs(self):
+        text = (WORKFLOWS / "top100_realtime_close_consistency.yml").read_text(encoding="utf-8")
+
+        self.assertIn("actions/upload-artifact@v7", text)
+        self.assertIn("GITHUB_STEP_SUMMARY", text)
+        self.assertIn("top100-realtime-close-consistency", text)
+
+
 if __name__ == "__main__":
     unittest.main()
