@@ -28,19 +28,21 @@ class Top100RealtimeWorkflowTest(unittest.TestCase):
         self.assertNotIn("SMTP", text)
         self.assertIn("GITHUB_STEP_SUMMARY", text)
         self.assertIn("realtime_signal_result.txt", text)
-        self.assertIn("actions/upload-artifact@v4", text)
+        self.assertIn("actions/upload-artifact@v7", text)
 
     def test_workflow_restores_generated_strategy_cache(self):
         text = (WORKFLOWS / "top100_realtime_signals.yml").read_text(encoding="utf-8")
 
-        self.assertIn("actions/cache@v4", text)
+        self.assertIn("actions/cache@v5", text)
         self.assertIn("outputs", text)
         self.assertIn(".microcap_index_cache", text)
 
-    def test_workflow_opts_into_node24_actions_runtime(self):
+    def test_workflow_uses_node24_actions_versions(self):
         text = (WORKFLOWS / "top100_realtime_signals.yml").read_text(encoding="utf-8")
 
-        self.assertIn("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true", text)
+        self.assertIn("actions/checkout@v6", text)
+        self.assertIn("actions/setup-python@v6", text)
+        self.assertNotIn("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24", text)
 
     def test_clean_checkout_contains_realtime_seed_artifacts(self):
         required = [
