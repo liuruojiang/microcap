@@ -37,6 +37,11 @@ class Top100RealtimeWorkflowTest(unittest.TestCase):
         self.assertIn("outputs", text)
         self.assertIn(".microcap_index_cache", text)
 
+    def test_workflow_opts_into_node24_actions_runtime(self):
+        text = (WORKFLOWS / "top100_realtime_signals.yml").read_text(encoding="utf-8")
+
+        self.assertIn("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true", text)
+
     def test_clean_checkout_contains_realtime_seed_artifacts(self):
         required = [
             "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
