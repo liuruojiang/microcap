@@ -75,6 +75,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _SECURITY_MASTER_MEMO: pd.DataFrame | None = None
 
 
+def _first_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str:
+    for candidate in candidates:
+        if candidate in frame.columns:
+            return candidate
+    raise KeyError(f"missing expected columns {candidates}; got {list(frame.columns)}")
+
+
 def resolve_cache_path(local_dir: Path, shared_dir: Path | None, symbol: str) -> Path | None:
     local_path = local_dir / f"{symbol}.csv"
     if local_path.exists():
@@ -173,23 +180,29 @@ def _build_master_rows_from_cache(symbols: set[str]) -> pd.DataFrame:
 
 
 def _fetch_sz_current_security_master() -> pd.DataFrame:
-    response = requests.get(
-        "https://www.szse.cn/api/report/ShowReport",
-        params={"SHOWTYPE": "xlsx", "CATALOGID": "1110", "TABKEY": "tab1"},
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=30,
-        verify=False,
-    )
-    response.raise_for_status()
-    frame = pd.read_excel(BytesIO(response.content), dtype=str)
+    try:
+        frame = ak.stock_info_sz_name_code()
+    except Exception:
+        response = requests.get(
+            "https://www.szse.cn/api/report/ShowReport",
+            params={"SHOWTYPE": "xlsx", "CATALOGID": "1110", "TABKEY": "tab1"},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=30,
+            verify=False,
+        )
+        response.raise_for_status()
+        frame = pd.read_excel(BytesIO(response.content), dtype=str)
+    symbol_col = _first_existing_column(frame, ["A股代码", "证券代码"])
+    list_date_col = _first_existing_column(frame, ["A股上市日期", "上市日期"])
+    name_col = _first_existing_column(frame, ["A股简称", "证券简称"])
     return pd.DataFrame(
         {
-            "symbol": frame["A股代码"],
+            "symbol": frame[symbol_col],
             "exchange": "SZSE",
             "board": frame.get("板块"),
-            "list_date": frame["A股上市日期"],
+            "list_date": frame[list_date_col],
             "delist_date": None,
-            "name": frame["A股简称"],
+            "name": frame[name_col],
             "source": "sz_current",
         }
     )
@@ -198,75 +211,96 @@ def _fetch_sz_current_security_master() -> pd.DataFrame:
 def build_security_master() -> pd.DataFrame:
     frames: list[pd.DataFrame] = []
 
-    sh_current = ak.stock_info_sh_name_code()
-    frames.append(
-        pd.DataFrame(
-            {
-                "symbol": sh_current["证券代码"],
-                "exchange": "SSE",
-                "board": sh_current["证券代码"].astype(str).map(
-                    lambda value: "科创板" if str(value).zfill(6).startswith("688") else "主板"
-                ),
-                "list_date": sh_current["上市日期"],
-                "delist_date": None,
-                "name": sh_current["证券简称"],
-                "source": "sh_current",
-            }
+    try:
+        sh_current = ak.stock_info_sh_name_code()
+        frames.append(
+            pd.DataFrame(
+                {
+                    "symbol": sh_current["证券代码"],
+                    "exchange": "SSE",
+                    "board": sh_current["证券代码"].astype(str).map(
+                        lambda value: "科创板" if str(value).zfill(6).startswith("688") else "主板"
+                    ),
+                    "list_date": sh_current["上市日期"],
+                    "delist_date": None,
+                    "name": sh_current["证券简称"],
+                    "source": "sh_current",
+                }
+            )
         )
-    )
+    except Exception:
+        pass
 
-    frames.append(_fetch_sz_current_security_master())
+    try:
+        frames.append(_fetch_sz_current_security_master())
+    except Exception:
+        pass
 
-    bj_current = ak.stock_info_bj_name_code()
-    frames.append(
-        pd.DataFrame(
-            {
-                "symbol": bj_current["证券代码"],
-                "exchange": "BSE",
-                "board": "北交所",
-                "list_date": bj_current["上市日期"],
-                "delist_date": None,
-                "name": bj_current["证券简称"],
-                "source": "bj_current",
-            }
+    try:
+        bj_current = ak.stock_info_bj_name_code()
+        symbol_col = _first_existing_column(bj_current, ["证券代码", "A股代码"])
+        list_date_col = _first_existing_column(bj_current, ["上市日期", "A股上市日期"])
+        name_col = _first_existing_column(bj_current, ["证券简称", "A股简称"])
+        frames.append(
+            pd.DataFrame(
+                {
+                    "symbol": bj_current[symbol_col],
+                    "exchange": "BSE",
+                    "board": "北交所",
+                    "list_date": bj_current[list_date_col],
+                    "delist_date": None,
+                    "name": bj_current[name_col],
+                    "source": "bj_current",
+                }
+            )
         )
-    )
+    except Exception:
+        pass
 
-    sh_delist = ak.stock_info_sh_delist()
-    frames.append(
-        pd.DataFrame(
-            {
-                "symbol": sh_delist["公司代码"],
-                "exchange": "SSE",
-                "board": sh_delist["公司代码"].astype(str).map(
-                    lambda value: "科创板" if str(value).zfill(6).startswith("688") else "主板"
-                ),
-                "list_date": sh_delist["上市日期"],
-                "delist_date": sh_delist["暂停上市日期"],
-                "name": sh_delist["公司简称"],
-                "source": "sh_delist",
-            }
+    try:
+        sh_delist = ak.stock_info_sh_delist()
+        frames.append(
+            pd.DataFrame(
+                {
+                    "symbol": sh_delist["公司代码"],
+                    "exchange": "SSE",
+                    "board": sh_delist["公司代码"].astype(str).map(
+                        lambda value: "科创板" if str(value).zfill(6).startswith("688") else "主板"
+                    ),
+                    "list_date": sh_delist["上市日期"],
+                    "delist_date": sh_delist["暂停上市日期"],
+                    "name": sh_delist["公司简称"],
+                    "source": "sh_delist",
+                }
+            )
         )
-    )
+    except Exception:
+        pass
 
-    sz_delist = ak.stock_info_sz_delist()
-    frames.append(
-        pd.DataFrame(
-            {
-                "symbol": sz_delist["证券代码"],
-                "exchange": "SZSE",
-                "board": sz_delist["证券代码"].astype(str).map(
-                    lambda value: "创业板" if str(value).zfill(6).startswith(("300", "301")) else "主板"
-                ),
-                "list_date": sz_delist["上市日期"],
-                "delist_date": sz_delist["终止上市日期"],
-                "name": sz_delist["证券简称"],
-                "source": "sz_delist",
-            }
+    try:
+        sz_delist = ak.stock_info_sz_delist()
+        frames.append(
+            pd.DataFrame(
+                {
+                    "symbol": sz_delist["证券代码"],
+                    "exchange": "SZSE",
+                    "board": sz_delist["证券代码"].astype(str).map(
+                        lambda value: "创业板" if str(value).zfill(6).startswith(("300", "301")) else "主板"
+                    ),
+                    "list_date": sz_delist["上市日期"],
+                    "delist_date": sz_delist["终止上市日期"],
+                    "name": sz_delist["证券简称"],
+                    "source": "sz_delist",
+                }
+            )
         )
-    )
+    except Exception:
+        pass
 
-    master = _normalize_security_master_frame(pd.concat(frames, ignore_index=True))
+    if frames:
+        master = _normalize_security_master_frame(pd.concat(frames, ignore_index=True))
+    else:
+        master = _normalize_security_master_frame(pd.DataFrame())
     cached_symbols = _existing_symbols(PRICE_DIR, SHARED_PRICE_DIR) & _existing_symbols(SHARE_DIR, SHARED_SHARE_DIR)
     missing_symbols = cached_symbols - set(master["symbol"].dropna().astype(str).str.zfill(6))
     if missing_symbols:
@@ -667,7 +701,14 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
 
 
 def resolve_security_meta_path(symbol: str) -> Path | None:
-    return resolve_cache_path(SECURITY_META_DIR, SHARED_SECURITY_META_DIR, symbol)
+    local_path = SECURITY_META_DIR / f"{str(symbol).zfill(6)}.json"
+    if local_path.exists():
+        return local_path
+    if SHARED_SECURITY_META_DIR is not None:
+        shared_path = SHARED_SECURITY_META_DIR / f"{str(symbol).zfill(6)}.json"
+        if shared_path.exists():
+            return shared_path
+    return None
 
 
 def build_security_meta(symbol: str) -> dict[str, object] | None:
@@ -1213,8 +1254,8 @@ def simulate_rebalance_path(
             )
 
         if current_members:
-            day_ret = returns_df.loc[dt, current_members].dropna()
-            portfolio_ret = float(day_ret.mean()) if len(day_ret) else 0.0
+            day_ret = returns_df.loc[dt, current_members].reindex(current_members)
+            portfolio_ret = float(day_ret.fillna(0.0).mean()) if len(day_ret) else 0.0
         else:
             portfolio_ret = 0.0
         current_level *= 1.0 + portfolio_ret
