@@ -3533,6 +3533,34 @@ def quote_trade_date_matches_anchor(quote_trade_date: object, latest_trade_date:
         return False
 
 
+def compute_member_realtime_return(
+    symbol: str,
+    last_close_map: dict[str, float],
+    quotes_df: pd.DataFrame,
+    latest_trade_date: pd.Timestamp,
+) -> float | None:
+    code = str(symbol).zfill(6)
+    if code not in quotes_df.index:
+        return None
+    rt_price = pd.to_numeric(quotes_df.at[code, "rt_price"], errors="coerce")
+    if pd.isna(rt_price) or float(rt_price) <= 0:
+        return None
+
+    last_close = last_close_map.get(code)
+    if last_close is not None and float(last_close) > 0:
+        return float(rt_price) / float(last_close) - 1.0
+
+    quote_trade_date = quotes_df.at[code, "trade_date"] if "trade_date" in quotes_df.columns else ""
+    if quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
+        return 0.0
+
+    if "pre_close" in quotes_df.columns:
+        pre_close = pd.to_numeric(quotes_df.at[code, "pre_close"], errors="coerce")
+        if pd.notna(pre_close) and float(pre_close) > 0:
+            return float(rt_price) / float(pre_close) - 1.0
+    return None
+
+
 def apply_realtime_close_to_signal_frame(
     close_df: pd.DataFrame,
     latest_trade_date: pd.Timestamp,
@@ -3703,13 +3731,10 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     member_returns: list[float] = []
     available_rows = 0
     for symbol in member_symbols:
-        last_close = last_close_map.get(symbol)
-        if last_close is None or last_close <= 0 or symbol not in quotes_df.index:
+        member_return = compute_member_realtime_return(symbol, last_close_map, quotes_df, latest_trade_date)
+        if member_return is None:
             continue
-        rt_price = pd.to_numeric(quotes_df.at[symbol, "rt_price"], errors="coerce")
-        if pd.isna(rt_price) or rt_price <= 0:
-            continue
-        member_returns.append(float(rt_price / last_close - 1.0))
+        member_returns.append(float(member_return))
         available_rows += 1
 
     if not member_returns:

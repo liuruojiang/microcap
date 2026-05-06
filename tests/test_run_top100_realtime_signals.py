@@ -208,6 +208,52 @@ class RunTop100RealtimeSignalsTest(unittest.TestCase):
             ],
         )
 
+    def test_member_realtime_return_uses_quote_pre_close_when_local_close_cache_is_missing(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        quotes = pd.DataFrame(
+            [
+                {
+                    "code": "000001",
+                    "rt_price": 11.0,
+                    "pre_close": 10.0,
+                    "trade_date": "2026-05-06",
+                }
+            ]
+        ).set_index("code")
+
+        value = base.compute_member_realtime_return(
+            "000001",
+            last_close_map={},
+            quotes_df=quotes,
+            latest_trade_date=pd.Timestamp("2026-05-05"),
+        )
+
+        self.assertAlmostEqual(value, 0.1)
+
+    def test_member_realtime_return_is_zero_for_same_day_anchor_without_local_close_cache(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        quotes = pd.DataFrame(
+            [
+                {
+                    "code": "000001",
+                    "rt_price": 11.0,
+                    "pre_close": 10.0,
+                    "trade_date": "2026-05-06",
+                }
+            ]
+        ).set_index("code")
+
+        value = base.compute_member_realtime_return(
+            "000001",
+            last_close_map={},
+            quotes_df=quotes,
+            latest_trade_date=pd.Timestamp("2026-05-06"),
+        )
+
+        self.assertEqual(value, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
