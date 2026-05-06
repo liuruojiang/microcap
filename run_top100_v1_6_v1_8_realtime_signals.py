@@ -65,6 +65,23 @@ def _format_decimal(value: Any, digits: int = 2, signed: bool = False, percent: 
     return f"{number:{sign}.{digits}f}"
 
 
+def ensure_static_realtime_inputs(
+    module_name: str = "fetch_wind_microcap_index",
+    force_refresh: bool = False,
+) -> None:
+    module = importlib.import_module(module_name)
+    required = [
+        (Path(getattr(module, "UNIVERSE_CACHE")), getattr(module, "fetch_active_universe")),
+        (Path(getattr(module, "CURRENT_ST_CACHE")), getattr(module, "fetch_current_st_codes")),
+    ]
+    for path, builder in required:
+        if force_refresh or not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            builder(force_refresh=force_refresh)
+        if not path.exists():
+            raise FileNotFoundError(f"required realtime input was not created: {path}")
+
+
 def run_strategy(spec: StrategySpec) -> StrategyRun:
     module = importlib.import_module(spec.module_name)
     builder = getattr(module, spec.builder_name)
@@ -141,12 +158,26 @@ def _display_path(path: Path) -> str:
     return path.as_posix()
 
 
-def main(argv: Sequence[str] | None = None, specs: Sequence[StrategySpec] = DEFAULT_SPECS) -> int:
+def main(
+    argv: Sequence[str] | None = None,
+    specs: Sequence[StrategySpec] = DEFAULT_SPECS,
+    static_inputs_module: str = "fetch_wind_microcap_index",
+) -> int:
     parser = argparse.ArgumentParser(
         description="Run Top100 v1.6 and v1.8 realtime signals from the official strategy modules."
     )
     parser.add_argument("--json", action="store_true", help="print machine-readable JSON instead of text")
+    parser.add_argument(
+        "--force-refresh-static-inputs",
+        action="store_true",
+        help="refresh active universe and current ST cache before running realtime signals",
+    )
     args = parser.parse_args(argv)
+
+    ensure_static_realtime_inputs(
+        module_name=static_inputs_module,
+        force_refresh=args.force_refresh_static_inputs,
+    )
 
     runs: list[StrategyRun] = []
     failures: list[str] = []
