@@ -19,19 +19,13 @@ class Top100RealtimeWorkflowTest(unittest.TestCase):
         self.assertIn("python run_top100_v1_6_v1_8_realtime_signals.py", text)
         self.assertIn("QVERIS_API_KEY: ${{ secrets.QVERIS_API_KEY }}", text)
 
-    def test_workflow_emails_results_with_secret_backed_smtp_config(self):
+    def test_workflow_uses_github_native_run_notifications_and_summary(self):
         text = (WORKFLOWS / "top100_realtime_signals.yml").read_text(encoding="utf-8")
 
-        for secret_name in [
-            "MAIL_SERVER",
-            "MAIL_PORT",
-            "MAIL_USERNAME",
-            "MAIL_PASSWORD",
-            "MAIL_TO",
-            "MAIL_FROM",
-        ]:
-            self.assertIn(f"${{{{ secrets.{secret_name} }}}}", text)
-        self.assertIn("smtplib", text)
+        self.assertNotIn("MAIL_", text)
+        self.assertNotIn("smtplib", text)
+        self.assertNotIn("SMTP", text)
+        self.assertIn("GITHUB_STEP_SUMMARY", text)
         self.assertIn("realtime_signal_result.txt", text)
         self.assertIn("actions/upload-artifact@v4", text)
 

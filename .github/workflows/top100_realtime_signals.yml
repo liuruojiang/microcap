@@ -59,77 +59,19 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Email realtime signal result
+      - name: Add realtime signal result to job summary
         if: always()
-        env:
-          SIGNAL_EXIT_CODE: ${{ steps.signals.outputs.exit_code }}
-          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
-          MAIL_PORT: ${{ secrets.MAIL_PORT }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          MAIL_TO: ${{ secrets.MAIL_TO }}
-          MAIL_FROM: ${{ secrets.MAIL_FROM }}
-          MAIL_USE_SSL: ${{ secrets.MAIL_USE_SSL }}
         run: |
-          python - <<'PY'
-          import mimetypes
-          import os
-          import pathlib
-          import smtplib
-          import ssl
-          from email.message import EmailMessage
-
-          required = [
-              "MAIL_SERVER",
-              "MAIL_PORT",
-              "MAIL_USERNAME",
-              "MAIL_PASSWORD",
-              "MAIL_TO",
-              "MAIL_FROM",
-          ]
-          missing = [name for name in required if not os.environ.get(name)]
-          if missing:
-              raise SystemExit("Missing required GitHub Secrets: " + ", ".join(missing))
-
-          result_path = pathlib.Path("realtime_signal_result.txt")
-          body = result_path.read_text(encoding="utf-8", errors="replace") if result_path.exists() else ""
-          exit_code = os.environ.get("SIGNAL_EXIT_CODE") or "unknown"
-          prefix = "SUCCESS" if exit_code == "0" else "FAILURE"
-          subject = f"[{prefix}] Top100 v1.6/v1.8 realtime signals run {os.environ.get('GITHUB_RUN_NUMBER', '')}".strip()
-
-          message = EmailMessage()
-          message["Subject"] = subject
-          message["From"] = os.environ["MAIL_FROM"]
-          message["To"] = os.environ["MAIL_TO"]
-          message.set_content(body or f"Realtime signal script exit_code={exit_code}")
-
-          attachment_paths = [result_path, *sorted(pathlib.Path("outputs").glob("*_realtime_signal.csv"))]
-          for path in attachment_paths:
-              if not path.exists() or not path.is_file():
-                  continue
-              ctype, _ = mimetypes.guess_type(path.name)
-              maintype, subtype = (ctype or "application/octet-stream").split("/", 1)
-              message.add_attachment(
-                  path.read_bytes(),
-                  maintype=maintype,
-                  subtype=subtype,
-                  filename=path.name,
-              )
-
-          server = os.environ["MAIL_SERVER"]
-          port = int(os.environ["MAIL_PORT"])
-          use_ssl = os.environ.get("MAIL_USE_SSL", "").strip().lower() in {"1", "true", "yes"} or port == 465
-          context = ssl.create_default_context()
-          if use_ssl:
-              with smtplib.SMTP_SSL(server, port, context=context, timeout=30) as smtp:
-                  smtp.login(os.environ["MAIL_USERNAME"], os.environ["MAIL_PASSWORD"])
-                  smtp.send_message(message)
-          else:
-              with smtplib.SMTP(server, port, timeout=30) as smtp:
-                  smtp.starttls(context=context)
-                  smtp.login(os.environ["MAIL_USERNAME"], os.environ["MAIL_PASSWORD"])
-                  smtp.send_message(message)
-          PY
+          {
+            echo "## Top100 v1.6/v1.8 realtime signals"
+            echo
+            echo "- Script exit code: ${{ steps.signals.outputs.exit_code }}"
+            echo "- Artifact: top100-realtime-signal-outputs"
+            echo
+            echo '```text'
+            cat realtime_signal_result.txt
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Fail job when realtime signal script failed
         if: steps.signals.outputs.exit_code != '0'
