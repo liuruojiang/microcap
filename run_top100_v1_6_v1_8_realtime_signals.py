@@ -65,6 +65,70 @@ def _format_decimal(value: Any, digits: int = 2, signed: bool = False, percent: 
     return f"{number:{sign}.{digits}f}"
 
 
+def _has_present(row: dict[str, Any], meta: dict[str, Any], name: str) -> bool:
+    return row.get(name) not in (None, "") or meta.get(name) not in (None, "")
+
+
+def _append_v1_8_overlay_detail(lines: list[str], row: dict[str, Any], meta: dict[str, Any]) -> None:
+    if not any(
+        _has_present(row, meta, name)
+        for name in (
+            "target_vol_current_execution_scale",
+            "nav_dd_triggered",
+            "nav_dd_execution_scale",
+            "nav_dd_next_session_scale",
+        )
+    ):
+        return
+
+    target_current = _first_present(row, meta, ["target_vol_current_execution_scale"], "")
+    target_next = _first_present(
+        row,
+        meta,
+        ["target_vol_next_session_actionable_scale", "target_vol_scale_next_session"],
+        target_current,
+    )
+    volume_current = _first_present(row, meta, ["volume_execution_scale"], 1.0)
+    volume_next = _first_present(row, meta, ["volume_next_session_scale"], volume_current)
+    nav_dd_current = _first_present(row, meta, ["nav_dd_execution_scale"], 1.0)
+    nav_dd_next = _first_present(row, meta, ["nav_dd_next_session_scale"], nav_dd_current)
+    final_current = _first_present(row, meta, ["current_execution_scale", "execution_scale"], "")
+    final_next = _first_present(row, meta, ["next_session_actionable_scale", "next_session_target_scale"], "")
+
+    lines.extend(
+        [
+            "target_vol_scale: "
+            + _format_decimal(target_current)
+            + " -> "
+            + _format_decimal(target_next),
+            f"broad_volume_filter_active: {_first_present(row, meta, ['broad_volume_filter_active', 'volume_signal'], False)}",
+            f"nav_dd_triggered: {_first_present(row, meta, ['nav_dd_triggered'], False)}",
+            "nav_dd_scale: "
+            + _format_decimal(nav_dd_current)
+            + " -> "
+            + _format_decimal(nav_dd_next),
+            "nav_dd_drawdown: "
+            + _format_decimal(_first_present(row, meta, ["nav_dd_drawdown"], 0.0), digits=2, signed=True, percent=True),
+            "final_scale_formula: "
+            + _format_decimal(target_current)
+            + " * "
+            + _format_decimal(volume_current)
+            + " * "
+            + _format_decimal(nav_dd_current)
+            + " = "
+            + _format_decimal(final_current),
+            "final_next_scale_formula: "
+            + _format_decimal(target_next)
+            + " * "
+            + _format_decimal(volume_next)
+            + " * "
+            + _format_decimal(nav_dd_next)
+            + " = "
+            + _format_decimal(final_next),
+        ]
+    )
+
+
 def ensure_static_realtime_inputs(
     module_name: str = "fetch_wind_microcap_index",
     force_refresh: bool = False,
@@ -137,6 +201,8 @@ def format_run(result: StrategyRun) -> str:
         f"quote_coverage: {quote_coverage}",
         f"official_close_confirmed_signal: {_first_present(row, meta, ['official_close_confirmed_signal'], False)}",
     ]
+    if result.version == "v1.8":
+        _append_v1_8_overlay_detail(lines, row, meta)
 
     warning = _first_present(row, meta, ["fallback_warning", "stale_data_warning", "tail_jitter_note"], "")
     if warning:
