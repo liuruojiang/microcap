@@ -48,12 +48,23 @@ jobs:
             exit 1
           fi
 
-      - name: Run v1.6 and v1.8 realtime signals
+      - name: Run v1.4, v1.6 and v1.8 realtime signals
         id: signals
         shell: bash
         run: |
           set +e
-          python run_top100_v1_6_v1_8_realtime_signals.py 2>&1 | tee realtime_signal_result.txt
+          {
+            echo "### v1.4"
+            python microcap_top100_mom16_biweekly_live_v1_4.py "实时信号"
+            v14_status=$?
+            echo
+            echo "### v1.6/v1.8"
+            python run_top100_v1_6_v1_8_realtime_signals.py
+            v16_v18_status=$?
+            if [ "${v14_status}" -ne 0 ] || [ "${v16_v18_status}" -ne 0 ]; then
+              exit 1
+            fi
+          } 2>&1 | tee realtime_signal_result.txt
           status=${PIPESTATUS[0]}
           echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
           exit 0
@@ -73,7 +84,7 @@ jobs:
         if: always()
         run: |
           {
-            echo "## Top100 v1.6/v1.8 realtime signals"
+            echo "## Top100 v1.4/v1.6/v1.8 realtime signals"
             echo
             echo "- Script exit code: ${{ steps.signals.outputs.exit_code }}"
             echo "- Artifact: top100-realtime-signal-outputs"

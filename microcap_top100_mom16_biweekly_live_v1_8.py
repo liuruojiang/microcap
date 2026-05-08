@@ -1004,6 +1004,16 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     base_v1_4 = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base_v1_4)
     target_vol = apply_target_vol_scaling(base_v1_4)
     out = apply_v1_8_overlays(target_vol)
+    if COSTED_NAV_CSV.exists():
+        previous = pd.read_csv(COSTED_NAV_CSV)
+        v14_context.v1_1_mod.base_mod.assert_no_historical_rewrite(
+            previous=previous,
+            candidate=out.rename_axis("date").reset_index(),
+            key_columns=["return_net", "holding", "next_holding", "base_pre_cost_return"],
+            allowed_tail_rows=5,
+            label="v1.8 official costed NAV",
+            audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
+        )
     out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     out.rename_axis("date").reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
 
