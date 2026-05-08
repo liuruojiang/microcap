@@ -691,6 +691,16 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
     out = apply_target_vol_scaling(base_v1_4)
+    if COSTED_NAV_CSV.exists():
+        previous = pd.read_csv(COSTED_NAV_CSV)
+        v14_context.v1_1_mod.base_mod.assert_no_historical_rewrite(
+            previous=previous,
+            candidate=out.rename_axis("date").reset_index(),
+            key_columns=["return_net", "holding", "next_holding", "base_pre_cost_return"],
+            allowed_tail_rows=5,
+            label="v1.6 official costed NAV",
+            audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
+        )
     out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     out.rename_axis("date").reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
 

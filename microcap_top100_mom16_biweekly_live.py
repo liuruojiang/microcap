@@ -849,13 +849,13 @@ def ensure_strategy_files(
         and args.costed_nav_csv.exists()
         and current_costed_end is not None
         and pd.Timestamp(current_costed_end).normalize() < pd.Timestamp(target_end_date).normalize()
-        and try_extend_costed_nav_without_turnover(args, panel_path, target_end_date)
+        and try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"])
     ):
         return
 
     if can_reuse_index and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize():
         extend_index_recent_window(args, paths, panel_path, target_end_date)
-        if try_extend_costed_nav_without_turnover(args, panel_path, target_end_date):
+        if try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"]):
             return
         if paths["proxy_turnover"].exists():
             rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
@@ -2234,6 +2234,7 @@ def try_extend_costed_nav_without_turnover(
     args: argparse.Namespace,
     panel_path: Path,
     target_end_date: pd.Timestamp,
+    proxy_turnover_path: Path | None = None,
 ) -> bool:
     if not args.index_csv.exists() or not args.costed_nav_csv.exists():
         return False
@@ -2260,8 +2261,12 @@ def try_extend_costed_nav_without_turnover(
     if required_cols.difference(missing.columns):
         return False
 
-    rebalance_dates = build_biweekly_rebalance_dates(pd.DatetimeIndex(gross.index))
-    missing_rebalances = rebalance_dates[(rebalance_dates > current_costed_end) & (rebalance_dates <= target_end)]
+    missing_rebalances = find_missing_cost_rebalances(
+        gross_index=pd.DatetimeIndex(gross.index),
+        current_costed_end=current_costed_end,
+        target_end_date=target_end,
+        proxy_turnover_path=proxy_turnover_path,
+    )
     if len(missing_rebalances):
         return False
 
@@ -2297,6 +2302,30 @@ def try_extend_costed_nav_without_turnover(
     combined = combined.dropna(subset=["date"]).drop_duplicates(subset="date", keep="last")
     combined.to_csv(args.costed_nav_csv, index=False, encoding="utf-8")
     return True
+
+
+def load_proxy_turnover_rebalance_dates(proxy_turnover_path: Path | None) -> pd.DatetimeIndex:
+    if proxy_turnover_path is None or not proxy_turnover_path.exists():
+        return pd.DatetimeIndex([])
+    try:
+        turnover = pd.read_csv(proxy_turnover_path, usecols=["rebalance_date"])
+    except Exception:
+        return pd.DatetimeIndex([])
+    dates = pd.to_datetime(turnover["rebalance_date"], errors="coerce").dropna().drop_duplicates().sort_values()
+    return pd.DatetimeIndex(dates)
+
+
+def find_missing_cost_rebalances(
+    gross_index: pd.DatetimeIndex,
+    current_costed_end: pd.Timestamp,
+    target_end_date: pd.Timestamp,
+    proxy_turnover_path: Path | None = None,
+) -> pd.DatetimeIndex:
+    current_end = pd.Timestamp(current_costed_end).normalize()
+    target_end = pd.Timestamp(target_end_date).normalize()
+    turnover_rebalances = load_proxy_turnover_rebalance_dates(proxy_turnover_path)
+    rebalance_dates = turnover_rebalances if len(turnover_rebalances) else build_biweekly_rebalance_dates(gross_index)
+    return rebalance_dates[(rebalance_dates > current_end) & (rebalance_dates <= target_end)]
 
 
 def load_name_map() -> dict[str, str]:
@@ -2943,7 +2972,25 @@ def parse_date_range(text: str, now: pd.Timestamp | None = None) -> tuple[pd.Tim
                 start = now - pd.DateOffset(years=int(n))
             return start, now, f"last_{m.group(1)}_years"
 
+    m = re.fullmatch(r"([一二两三四五六七八九十\d半]+)\s*个?\s*年", text)
+    if m:
+        n = _parse_cn_num(m.group(1))
+        if n is not None:
+            if isinstance(n, float):
+                start = now - pd.DateOffset(months=int(n * 12))
+            else:
+                start = now - pd.DateOffset(years=int(n))
+            return start, now, f"last_{m.group(1)}_years"
+
     m = re.search(r"(?:最近|过去|近)\s*([一二两三四五六七八九十\d半]+)\s*个?\s*月", text)
+    if m:
+        n = _parse_cn_num(m.group(1))
+        if n is not None:
+            months = int(n if n >= 1 else 1)
+            start = now - pd.DateOffset(months=months)
+            return start, now, f"last_{m.group(1)}_months"
+
+    m = re.fullmatch(r"([一二两三四五六七八九十\d半]+)\s*个?\s*月", text)
     if m:
         n = _parse_cn_num(m.group(1))
         if n is not None:
@@ -3053,6 +3100,87 @@ def calc_max_drawdown_from_returns(returns: pd.Series) -> float:
     return float(drawdown.min())
 
 
+def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+    out = frame.copy()
+    if "date" in out.columns:
+        out["date"] = pd.to_datetime(out["date"], errors="coerce")
+        out = out.dropna(subset=["date"]).set_index("date")
+    elif isinstance(out.index, pd.DatetimeIndex):
+        out.index = pd.to_datetime(out.index)
+    else:
+        raise ValueError(f"{label} requires a date column or DatetimeIndex.")
+    out = out.sort_index()
+    if out.index.duplicated().any():
+        dupes = out.index[out.index.duplicated()].strftime("%Y-%m-%d").unique().tolist()
+        raise ValueError(f"{label} has duplicate dates: {dupes[:5]}")
+    return out
+
+
+def assert_no_historical_rewrite(
+    previous: pd.DataFrame,
+    candidate: pd.DataFrame,
+    key_columns: list[str],
+    allowed_tail_rows: int,
+    label: str,
+    audit_path: Path | None = None,
+    numeric_tolerance: float = 1e-10,
+) -> None:
+    prev = _normalise_dated_frame(previous, f"{label} previous")
+    cand = _normalise_dated_frame(candidate, f"{label} candidate")
+    common = prev.index.intersection(cand.index).sort_values()
+    if len(common) <= int(allowed_tail_rows):
+        return
+    frozen_common = common[:-int(allowed_tail_rows)] if allowed_tail_rows > 0 else common
+    changes: list[dict[str, object]] = []
+    for col in key_columns:
+        if col not in prev.columns or col not in cand.columns:
+            continue
+        left = prev.loc[frozen_common, col]
+        right = cand.loc[frozen_common, col]
+        left_num = pd.to_numeric(left, errors="coerce")
+        right_num = pd.to_numeric(right, errors="coerce")
+        numeric_like = left_num.notna().any() or right_num.notna().any()
+        if numeric_like:
+            changed = (left_num - right_num).abs().gt(float(numeric_tolerance))
+            changed = changed | (left_num.isna() ^ right_num.isna())
+        else:
+            changed = left.astype(str).ne(right.astype(str))
+        for dt in frozen_common[changed.fillna(False)]:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": col,
+                    "previous": prev.at[dt, col],
+                    "candidate": cand.at[dt, col],
+                }
+            )
+    if not changes:
+        return
+    diff_df = pd.DataFrame(changes)
+    if audit_path is not None:
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        diff_df.to_csv(audit_path, index=False, encoding="utf-8-sig")
+    examples = ", ".join(f"{row['date']}:{row['column']}" for row in changes[:5])
+    raise RuntimeError(
+        f"{label} historical rewrite detected on frozen dates; examples: {examples}. "
+        "Refusing to publish query/chart output until the data lineage is audited."
+    )
+
+
+def validate_performance_frame(perf_df: pd.DataFrame, ret_col: str, nav_col: str, source_label: str) -> pd.DataFrame:
+    data = _normalise_dated_frame(perf_df, f"{source_label} performance input")
+    missing = [col for col in [ret_col, nav_col] if col not in data.columns]
+    if missing:
+        raise ValueError(f"{source_label} performance input missing columns: {missing}")
+    data[ret_col] = pd.to_numeric(data[ret_col], errors="coerce")
+    data[nav_col] = pd.to_numeric(data[nav_col], errors="coerce")
+    if data[ret_col].isna().all():
+        raise ValueError(f"{source_label} performance input has no numeric {ret_col}.")
+    if data[nav_col].isna().all():
+        raise ValueError(f"{source_label} performance input has no numeric {nav_col}.")
+    return data
+
+
 def build_performance_outputs(
     perf_df: pd.DataFrame,
     ret_col: str,
@@ -3061,12 +3189,14 @@ def build_performance_outputs(
     query_text: str,
     paths: dict[str, Path],
 ) -> dict[str, object]:
-    start_date, end_date, period_label = parse_date_range(query_text)
-    data = perf_df.copy()
+    data = validate_performance_frame(perf_df, ret_col=ret_col, nav_col=nav_col, source_label=source_label)
+    source_start = pd.Timestamp(data.index.min())
+    source_end = pd.Timestamp(data.index.max())
+    start_date, end_date, period_label = parse_date_range(query_text, now=source_end)
     if start_date is None:
-        start_date = pd.Timestamp(data.index.min())
+        start_date = source_start
     if end_date is None:
-        end_date = pd.Timestamp(data.index.max())
+        end_date = source_end
 
     data = data.loc[(data.index >= start_date) & (data.index <= end_date)].copy()
     if data.empty:
@@ -3131,6 +3261,17 @@ def build_performance_outputs(
         "period_label": period_label,
         "source": source_label,
         "query_text": query_text,
+        "source_manifest": {
+            "source_start_date": str(source_start.date()),
+            "source_end_date": str(source_end.date()),
+            "source_rows": int(len(perf_df)),
+            "return_column": ret_col,
+            "nav_column": nav_col,
+            "duplicate_date_count": 0,
+            "window_start_date": str(data.index.min().date()),
+            "window_end_date": str(data.index.max().date()),
+            "window_rows": int(len(data)),
+        },
         "start_date": str(data.index.min().date()),
         "end_date": str(data.index.max().date()),
         "summary": summary_df.iloc[0].to_dict(),
@@ -3143,6 +3284,11 @@ def build_performance_outputs(
         },
     }
     paths["performance_json"].write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    manifest_path = paths.get(
+        "performance_manifest",
+        paths["performance_json"].with_name(paths["performance_json"].stem + "_manifest.json"),
+    )
+    manifest_path.write_text(json.dumps(payload["source_manifest"], ensure_ascii=False, indent=2), encoding="utf-8")
     return payload
 
 
@@ -3273,7 +3419,12 @@ def handle_performance_query_fast(
     target_end_date: pd.Timestamp,
     query_text: str,
 ) -> None:
-    ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    current_costed_end = read_csv_last_date(args.costed_nav_csv)
+    if current_costed_end is None or pd.Timestamp(current_costed_end).normalize() < pd.Timestamp(target_end_date).normalize():
+        try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"])
+    current_costed_end = read_csv_last_date(args.costed_nav_csv)
+    if current_costed_end is None or pd.Timestamp(current_costed_end).normalize() < pd.Timestamp(target_end_date).normalize():
+        ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
     perf_df, ret_col, nav_col, source_label = load_performance_source(
         args.costed_nav_csv,
         pd.DataFrame(),
