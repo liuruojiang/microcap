@@ -2,8 +2,8 @@ name: Top100 Realtime Signals
 
 on:
   schedule:
-    # 14:45 Asia/Shanghai == 06:45 UTC.
-    - cron: '45 6 * * *'
+    # 12:45 Asia/Shanghai == 04:45 UTC.
+    - cron: '45 4 * * *'
   workflow_dispatch:
 
 permissions:
