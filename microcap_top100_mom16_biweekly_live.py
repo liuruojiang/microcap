@@ -3566,11 +3566,14 @@ def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
             rt_price = float(prev) / 100.0
         else:
             return None
-        return {
+        row = {
             "code": str(data.get("f57") or code).zfill(6),
             "name": str(data.get("f58") or ""),
             "rt_price": rt_price,
         }
+        if pd.notna(prev) and prev > 0:
+            row["pre_close"] = float(prev) / 100.0
+        return row
     except Exception:
         return None
 
@@ -3898,6 +3901,28 @@ def ensure_realtime_last_close_map(
     return last_close_map
 
 
+def maybe_refresh_missing_realtime_last_close_map(
+    last_close_map: dict[str, float],
+    missing_symbols: list[dict[str, object]],
+    as_of_date: pd.Timestamp,
+) -> dict[str, float]:
+    missing_codes = [
+        str(item.get("symbol") or "").zfill(6)
+        for item in missing_symbols
+        if str(item.get("symbol") or "").strip()
+    ]
+    missing_codes = [symbol for symbol in dict.fromkeys(missing_codes) if symbol not in last_close_map]
+    if not missing_codes:
+        return last_close_map
+    try:
+        refreshed = ensure_realtime_last_close_map(missing_codes, as_of_date=as_of_date)
+    except Exception:
+        return last_close_map
+    out = dict(last_close_map)
+    out.update(refreshed)
+    return out
+
+
 def build_realtime_target_members(context: dict[str, object], cache_seconds: int, capital: float | None) -> tuple[pd.DataFrame, str]:
     shares_df = load_or_refresh_latest_shares()
     quotes_df, quote_source = build_realtime_quote_map(cache_seconds)
@@ -4007,7 +4032,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     effective_members = context["effective_members"].copy()
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
-    last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
+    last_close_map = load_latest_close_map(member_symbols, as_of_date=latest_trade_date)
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []
@@ -4029,6 +4054,21 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
             quotes_df=quotes_df,
             latest_trade_date=latest_trade_date,
         )
+        if missing_symbols:
+            refreshed_last_close_map = maybe_refresh_missing_realtime_last_close_map(
+                last_close_map=last_close_map,
+                missing_symbols=missing_symbols,
+                as_of_date=latest_trade_date,
+            )
+            if refreshed_last_close_map != last_close_map:
+                last_close_map = refreshed_last_close_map
+                member_returns, missing_symbols = compute_member_realtime_returns(
+                    member_symbols=member_symbols,
+                    effective_members=effective_members,
+                    last_close_map=last_close_map,
+                    quotes_df=quotes_df,
+                    latest_trade_date=latest_trade_date,
+                )
         available_rows = len(member_returns)
         if available_rows >= len(member_symbols):
             break

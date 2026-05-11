@@ -5,6 +5,37 @@ import pandas as pd
 
 
 class Top100RealtimeResilienceTest(unittest.TestCase):
+    def test_eastmoney_stock_spot_includes_previous_close(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        original_get = base.requests.get
+
+        class Response:
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return {
+                    "data": {
+                        "f43": 1234,
+                        "f57": "000001",
+                        "f58": "one",
+                        "f60": 1200,
+                    }
+                }
+
+        try:
+            base.requests.get = lambda *args, **kwargs: Response()
+
+            row = base.fetch_eastmoney_stock_spot("000001")
+        finally:
+            base.requests.get = original_get
+
+        self.assertEqual(row["code"], "000001")
+        self.assertEqual(row["name"], "one")
+        self.assertEqual(float(row["rt_price"]), 12.34)
+        self.assertEqual(float(row["pre_close"]), 12.0)
+
     def test_member_quote_fetch_falls_back_when_qveris_price_is_invalid(self):
         import microcap_top100_mom16_biweekly_live as base
 
@@ -28,6 +59,7 @@ class Top100RealtimeResilienceTest(unittest.TestCase):
                 "code": symbol,
                 "name": "two-fallback",
                 "rt_price": 21.0,
+                "pre_close": 20.0,
             }
 
             result = base.fetch_member_realtime_quotes(["000001", "000002"], max_workers=1)
@@ -41,6 +73,7 @@ class Top100RealtimeResilienceTest(unittest.TestCase):
 
         row = result.set_index("code").loc["000002"]
         self.assertEqual(float(row["rt_price"]), 21.0)
+        self.assertEqual(float(row["pre_close"]), 20.0)
         self.assertEqual(result.attrs["quote_source"], "qveris_test+eastmoney_stock_get_member_only")
 
     def test_realtime_last_close_map_refreshes_missing_member_price_cache(self):
@@ -74,6 +107,46 @@ class Top100RealtimeResilienceTest(unittest.TestCase):
 
         self.assertEqual(result, {"000001": 10.0, "000002": 20.0})
         self.assertEqual(refreshes, [(pd.Timestamp("2026-05-11"), 2, ["000002"])])
+
+    def test_missing_close_refresh_is_limited_to_unpriced_symbols_and_nonfatal(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        original_ensure = base.ensure_realtime_last_close_map
+        calls = []
+
+        try:
+            base.ensure_realtime_last_close_map = lambda symbols, as_of_date: calls.append(list(symbols)) or {
+                "000002": 20.0
+            }
+
+            result = base.maybe_refresh_missing_realtime_last_close_map(
+                {"000001": 10.0},
+                [
+                    {"symbol": "000001", "name": "one", "rank": 1},
+                    {"symbol": "000002", "name": "two", "rank": 2},
+                ],
+                as_of_date=pd.Timestamp("2026-05-11"),
+            )
+        finally:
+            base.ensure_realtime_last_close_map = original_ensure
+
+        self.assertEqual(calls, [["000002"]])
+        self.assertEqual(result, {"000001": 10.0, "000002": 20.0})
+
+        try:
+            base.ensure_realtime_last_close_map = lambda symbols, as_of_date: (_ for _ in ()).throw(
+                RuntimeError("network failure")
+            )
+
+            unchanged = base.maybe_refresh_missing_realtime_last_close_map(
+                {"000001": 10.0},
+                [{"symbol": "000002", "name": "two", "rank": 2}],
+                as_of_date=pd.Timestamp("2026-05-11"),
+            )
+        finally:
+            base.ensure_realtime_last_close_map = original_ensure
+
+        self.assertEqual(unchanged, {"000001": 10.0})
 
     def test_fast_realtime_signal_retries_when_first_quote_fetch_is_incomplete(self):
         import microcap_top100_mom16_biweekly_live as base
