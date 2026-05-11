@@ -41,6 +41,7 @@ RESEARCH_STACK_VERSION = "2026-04-11-p0-p1-history-meta-master-stv2"
 STATIC_CONTEXT_CACHE_VERSION = "2026-04-11-live-current-st-members-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
 REALTIME_QUOTE_RETRY_SECONDS = 5
+REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
 
 DEFAULT_INDEX_CSV = OUTPUT_DIR / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv"
 DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live"
@@ -3658,9 +3659,17 @@ def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24) -> p
         try:
             qveris_df, qveris_source = fetch_qveris_realtime_quotes(clean_symbols)
             source_parts.append(qveris_source)
-            if len(qveris_df) >= len(set(clean_symbols)):
+            if not qveris_df.empty:
+                qveris_df["code"] = qveris_df["code"].astype(str).str.zfill(6)
+                valid_price = pd.to_numeric(qveris_df["rt_price"], errors="coerce").gt(0)
+                qveris_valid_codes = set(qveris_df.loc[valid_price, "code"])
+            else:
+                valid_price = pd.Series(dtype=bool)
+                qveris_valid_codes = set()
+            if len(qveris_valid_codes) >= len(set(clean_symbols)):
                 qveris_df.attrs["quote_source"] = qveris_source
                 return qveris_df
+            qveris_df = qveris_df.loc[valid_price].copy()
         except Exception:
             qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
     qveris_codes = set(qveris_df["code"].astype(str).str.zfill(6)) if not qveris_df.empty else set()
@@ -3875,6 +3884,20 @@ def load_latest_close_map(symbols: list[str], as_of_date: pd.Timestamp) -> dict[
     return out
 
 
+def ensure_realtime_last_close_map(
+    symbols: list[str],
+    as_of_date: pd.Timestamp,
+    max_workers: int = REALTIME_CLOSE_REFRESH_MAX_WORKERS,
+) -> dict[str, float]:
+    clean_symbols = [str(symbol).zfill(6) for symbol in symbols if str(symbol).strip()]
+    last_close_map = load_latest_close_map(clean_symbols, as_of_date=as_of_date)
+    missing_symbols = [symbol for symbol in clean_symbols if symbol not in last_close_map]
+    if missing_symbols:
+        refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=missing_symbols)
+        last_close_map = load_latest_close_map(clean_symbols, as_of_date=as_of_date)
+    return last_close_map
+
+
 def build_realtime_target_members(context: dict[str, object], cache_seconds: int, capital: float | None) -> tuple[pd.DataFrame, str]:
     shares_df = load_or_refresh_latest_shares()
     quotes_df, quote_source = build_realtime_quote_map(cache_seconds)
@@ -3984,7 +4007,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     effective_members = context["effective_members"].copy()
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
-    last_close_map = load_latest_close_map(member_symbols, as_of_date=latest_trade_date)
+    last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []

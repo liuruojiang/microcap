@@ -32,6 +32,7 @@ jobs:
           path: |
             outputs
             .microcap_index_cache
+            .microcap_ohlc_cache
           key: top100-realtime-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             top100-realtime-${{ runner.os }}-

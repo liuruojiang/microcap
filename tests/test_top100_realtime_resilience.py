@@ -5,6 +5,76 @@ import pandas as pd
 
 
 class Top100RealtimeResilienceTest(unittest.TestCase):
+    def test_member_quote_fetch_falls_back_when_qveris_price_is_invalid(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        original_env = base.os.environ.get("QVERIS_API_KEY")
+        original_qveris = base.fetch_qveris_realtime_quotes
+        original_eastmoney = base.fetch_eastmoney_stock_spot
+
+        def fetch_qveris_realtime_quotes(symbols):
+            out = pd.DataFrame(
+                [
+                    {"code": "000001", "name": "one", "rt_price": 11.0},
+                    {"code": "000002", "name": "two", "rt_price": None},
+                ]
+            )
+            return out, "qveris_test"
+
+        try:
+            base.os.environ["QVERIS_API_KEY"] = "set"
+            base.fetch_qveris_realtime_quotes = fetch_qveris_realtime_quotes
+            base.fetch_eastmoney_stock_spot = lambda symbol: {
+                "code": symbol,
+                "name": "two-fallback",
+                "rt_price": 21.0,
+            }
+
+            result = base.fetch_member_realtime_quotes(["000001", "000002"], max_workers=1)
+        finally:
+            if original_env is None:
+                base.os.environ.pop("QVERIS_API_KEY", None)
+            else:
+                base.os.environ["QVERIS_API_KEY"] = original_env
+            base.fetch_qveris_realtime_quotes = original_qveris
+            base.fetch_eastmoney_stock_spot = original_eastmoney
+
+        row = result.set_index("code").loc["000002"]
+        self.assertEqual(float(row["rt_price"]), 21.0)
+        self.assertEqual(result.attrs["quote_source"], "qveris_test+eastmoney_stock_get_member_only")
+
+    def test_realtime_last_close_map_refreshes_missing_member_price_cache(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        original_load = base.load_latest_close_map
+        original_refresh = base.refresh_price_cache_tail
+        loads = []
+        refreshes = []
+
+        def load_latest_close_map(symbols, as_of_date):
+            loads.append(list(symbols))
+            if len(loads) == 1:
+                return {"000001": 10.0}
+            return {"000001": 10.0, "000002": 20.0}
+
+        try:
+            base.load_latest_close_map = load_latest_close_map
+            base.refresh_price_cache_tail = lambda as_of_date, max_workers, symbols=None: refreshes.append(
+                (as_of_date, max_workers, list(symbols or []))
+            )
+
+            result = base.ensure_realtime_last_close_map(
+                ["000001", "000002"],
+                as_of_date=pd.Timestamp("2026-05-11"),
+                max_workers=2,
+            )
+        finally:
+            base.load_latest_close_map = original_load
+            base.refresh_price_cache_tail = original_refresh
+
+        self.assertEqual(result, {"000001": 10.0, "000002": 20.0})
+        self.assertEqual(refreshes, [(pd.Timestamp("2026-05-11"), 2, ["000002"])])
+
     def test_fast_realtime_signal_retries_when_first_quote_fetch_is_incomplete(self):
         import microcap_top100_mom16_biweekly_live as base
 
