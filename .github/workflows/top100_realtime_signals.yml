@@ -48,6 +48,11 @@ jobs:
             exit 1
           fi
 
+      - name: Clear stale realtime outputs
+        run: |
+          mkdir -p outputs
+          rm -f realtime_signal_result.txt outputs/*_realtime_signal.csv
+
       - name: Run v1.4, v1.6 and v1.8 realtime signals
         id: signals
         shell: bash

@@ -39,6 +39,8 @@ EXECUTION_TIMING = "close"
 TRADE_CONSTRAINT_MODE = "close"
 RESEARCH_STACK_VERSION = "2026-04-11-p0-p1-history-meta-master-stv2"
 STATIC_CONTEXT_CACHE_VERSION = "2026-04-11-live-current-st-members-v1"
+REALTIME_QUOTE_FETCH_ATTEMPTS = 3
+REALTIME_QUOTE_RETRY_SECONDS = 5
 
 DEFAULT_INDEX_CSV = OUTPUT_DIR / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv"
 DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live"
@@ -3724,9 +3726,33 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str]:
     raise RuntimeError("无法获取中证1000实时价格")
 
 
-def ensure_realtime_quote_coverage(available_rows: int, member_count: int) -> None:
+def format_missing_realtime_symbols(missing_symbols: list[dict[str, object]], limit: int = 8) -> str:
+    parts: list[str] = []
+    for item in missing_symbols[:limit]:
+        symbol = str(item.get("symbol") or "").zfill(6)
+        name = str(item.get("name") or "").strip()
+        rank = item.get("rank")
+        rank_text = "" if rank in (None, "") else f" rank={rank}"
+        label = symbol if not name else f"{symbol} {name}"
+        parts.append(f"{label}{rank_text}")
+    if len(missing_symbols) > limit:
+        parts.append(f"... +{len(missing_symbols) - limit} more")
+    return "; ".join(parts)
+
+
+def ensure_realtime_quote_coverage(
+    available_rows: int,
+    member_count: int,
+    missing_symbols: list[dict[str, object]] | None = None,
+    quote_source: str | None = None,
+) -> None:
     if member_count > 0 and int(available_rows) < int(member_count):
-        raise ValueError(f"实时信号报价覆盖不足: {available_rows}/{member_count}，拒绝输出实盘信号。")
+        message = f"实时信号报价覆盖不足: {available_rows}/{member_count}，拒绝输出实盘信号。"
+        if missing_symbols:
+            message += f" missing_symbols={format_missing_realtime_symbols(missing_symbols)}."
+        if quote_source:
+            message += f" quote_source={quote_source}."
+        raise ValueError(message)
 
 
 def quote_trade_date_matches_anchor(quote_trade_date: object, latest_trade_date: pd.Timestamp) -> bool:
@@ -3764,6 +3790,37 @@ def compute_member_realtime_return(
         if pd.notna(pre_close) and float(pre_close) > 0:
             return float(rt_price) / float(pre_close) - 1.0
     return None
+
+
+def compute_member_realtime_returns(
+    member_symbols: list[str],
+    effective_members: pd.DataFrame,
+    last_close_map: dict[str, float],
+    quotes_df: pd.DataFrame,
+    latest_trade_date: pd.Timestamp,
+) -> tuple[list[float], list[dict[str, object]]]:
+    member_lookup = effective_members.copy()
+    member_lookup["symbol"] = member_lookup["symbol"].astype(str).str.zfill(6)
+    member_lookup = member_lookup.set_index("symbol", drop=False)
+    member_returns: list[float] = []
+    missing_symbols: list[dict[str, object]] = []
+    for symbol in member_symbols:
+        code = str(symbol).zfill(6)
+        member_return = compute_member_realtime_return(code, last_close_map, quotes_df, latest_trade_date)
+        if member_return is None:
+            if code in member_lookup.index:
+                row = member_lookup.loc[code]
+                if isinstance(row, pd.DataFrame):
+                    row = row.iloc[0]
+                name = row.get("name", "")
+                rank = row.get("rank", "")
+            else:
+                name = ""
+                rank = ""
+            missing_symbols.append({"symbol": code, "name": name, "rank": rank})
+            continue
+        member_returns.append(float(member_return))
+    return member_returns, missing_symbols
 
 
 def apply_realtime_close_to_signal_frame(
@@ -3929,22 +3986,40 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
     last_close_map = load_latest_close_map(member_symbols, as_of_date=latest_trade_date)
 
-    quotes_df = fetch_member_realtime_quotes(member_symbols)
-    quote_source = str(quotes_df.attrs.get("quote_source") or "eastmoney_stock_get_member_only")
-    quotes_df = quotes_df.set_index("code") if not quotes_df.empty else pd.DataFrame(index=pd.Index([], dtype=str))
-
     member_returns: list[float] = []
+    missing_symbols: list[dict[str, object]] = []
     available_rows = 0
-    for symbol in member_symbols:
-        member_return = compute_member_realtime_return(symbol, last_close_map, quotes_df, latest_trade_date)
-        if member_return is None:
-            continue
-        member_returns.append(float(member_return))
-        available_rows += 1
+    quote_source = "eastmoney_stock_get_member_only"
+    quotes_df = pd.DataFrame(index=pd.Index([], dtype=str))
+    for attempt in range(1, REALTIME_QUOTE_FETCH_ATTEMPTS + 1):
+        raw_quotes_df = fetch_member_realtime_quotes(member_symbols)
+        quote_source = str(raw_quotes_df.attrs.get("quote_source") or "eastmoney_stock_get_member_only")
+        quotes_df = (
+            raw_quotes_df.set_index("code")
+            if not raw_quotes_df.empty
+            else pd.DataFrame(index=pd.Index([], dtype=str))
+        )
+        member_returns, missing_symbols = compute_member_realtime_returns(
+            member_symbols=member_symbols,
+            effective_members=effective_members,
+            last_close_map=last_close_map,
+            quotes_df=quotes_df,
+            latest_trade_date=latest_trade_date,
+        )
+        available_rows = len(member_returns)
+        if available_rows >= len(member_symbols):
+            break
+        if attempt < REALTIME_QUOTE_FETCH_ATTEMPTS:
+            time.sleep(REALTIME_QUOTE_RETRY_SECONDS)
 
     if not member_returns:
         raise ValueError("无法计算实时信号: 当前成分股没有可用实时价格。")
-    ensure_realtime_quote_coverage(available_rows, len(member_symbols))
+    ensure_realtime_quote_coverage(
+        available_rows,
+        len(member_symbols),
+        missing_symbols=missing_symbols,
+        quote_source=quote_source,
+    )
 
     last_microcap_close = float(close_df["microcap"].iloc[-1])
     microcap_rt_close = last_microcap_close * (1.0 + float(np.mean(member_returns)))
