@@ -20,6 +20,20 @@ class Top100RealtimeAnchorRefreshTest(unittest.TestCase):
 
         self.assertEqual(latest, pd.Timestamp("2026-05-11"))
 
+    def test_early_post_close_history_anchor_still_ignores_same_day_hedge_history(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        hedge_hist = pd.DataFrame(
+            [
+                {"date": "2026-05-11", "close": 8866.78},
+                {"date": "2026-05-12", "close": 8790.34},
+            ]
+        )
+
+        latest = base.latest_closed_history_date(hedge_hist, now=pd.Timestamp("2026-05-12 15:35:00"))
+
+        self.assertEqual(latest, pd.Timestamp("2026-05-11"))
+
     def test_after_close_history_anchor_can_use_same_day_hedge_history(self):
         import microcap_top100_mom16_biweekly_live as base
 

@@ -367,7 +367,7 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
     if dates.empty:
         raise RuntimeError("No valid historical dates available.")
     current_day = current_ts.normalize()
-    close_confirm_ts = current_day + pd.Timedelta(hours=15, minutes=30)
+    close_confirm_ts = current_day + pd.Timedelta(hours=16, minutes=5)
     if current_ts < close_confirm_ts:
         dates = dates[dates.dt.normalize() < current_day]
     if dates.empty:
