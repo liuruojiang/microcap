@@ -25,6 +25,9 @@ QVERIS_REALTIME_TOOL_ID = "cn_financial_pro.real_time_quotation.v1"
 TOP_N = 100
 LOOKBACK = 16
 REBALANCE_WEEKDAY = "Thursday"
+CN_TIMEZONE = "Asia/Shanghai"
+REBALANCE_ANCHOR_DATE = "2016-01-07"
+CN_CLOSE_CONFIRM_TIME = "20:00"
 DEFAULT_PANEL_PATH = ROOT / "mnt_strategy_data_cn.csv"
 HEDGE_COLUMN = "1.000852"
 FIXED_HEDGE_RATIO = 1.0
@@ -37,8 +40,11 @@ DEFAULT_MAX_STALE_ANCHOR_DAYS = 5
 HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS = 40
 EXECUTION_TIMING = "close"
 TRADE_CONSTRAINT_MODE = "close"
-RESEARCH_STACK_VERSION = "2026-04-11-p0-p1-history-meta-master-stv2"
-STATIC_CONTEXT_CACHE_VERSION = "2026-04-11-live-current-st-members-v1"
+RESEARCH_STACK_VERSION = "2026-05-12-p0-p1-history-meta-master-stv3"
+STATIC_CONTEXT_CACHE_VERSION = "2026-05-12-live-current-st-members-v2"
+MEMBER_FILTER_POLICY_VERSION = "empty-name-reject-v1"
+REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
+PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
 REALTIME_QUOTE_RETRY_SECONDS = 5
 REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
@@ -206,7 +212,7 @@ if not runtime_bootstrap.find_missing_modules():
 def is_tradable_name(name: str) -> bool:
     text = str(name or "").strip()
     if not text:
-        return True
+        return False
     return NON_TRADABLE_NAME_PATTERN.search(text) is None
 
 
@@ -367,7 +373,8 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
     if dates.empty:
         raise RuntimeError("No valid historical dates available.")
     current_day = current_ts.normalize()
-    close_confirm_ts = current_day + pd.Timedelta(hours=20)
+    hour, minute = (int(part) for part in CN_CLOSE_CONFIRM_TIME.split(":", 1))
+    close_confirm_ts = current_day + pd.Timedelta(hours=hour, minutes=minute)
     if current_ts < close_confirm_ts:
         dates = dates[dates.dt.normalize() < current_day]
     if dates.empty:
@@ -419,10 +426,11 @@ def panel_shadow_cache_is_reusable(
     shadow_day = pd.Timestamp(existing_shadow_end).normalize()
     current_day = current_ts.normalize()
     if shadow_day > current_day:
-        return True
+        raise RuntimeError(f"panel shadow cache has future date: {shadow_day.date()} > {current_day.date()}")
     if shadow_day < current_day:
         return False
-    close_confirm_ts = current_day + pd.Timedelta(hours=20)
+    hour, minute = (int(part) for part in CN_CLOSE_CONFIRM_TIME.split(":", 1))
+    close_confirm_ts = current_day + pd.Timedelta(hours=hour, minutes=minute)
     if current_ts < close_confirm_ts:
         return False
     try:
@@ -432,7 +440,12 @@ def panel_shadow_cache_is_reusable(
     return bool(current_ts - mtime <= pd.Timedelta(seconds=max(0, int(same_day_max_age_seconds))))
 
 
-def refresh_price_cache_tail(end_date: pd.Timestamp, max_workers: int, symbols: list[str] | None = None) -> None:
+def refresh_price_cache_tail(
+    end_date: pd.Timestamp,
+    max_workers: int,
+    symbols: list[str] | None = None,
+    force_refresh: bool = False,
+) -> None:
     if symbols is None:
         symbols = freq_mod.load_current_universe()
     if not symbols:
@@ -443,10 +456,10 @@ def refresh_price_cache_tail(end_date: pd.Timestamp, max_workers: int, symbols: 
     workers = max(1, min(int(max_workers), 16))
 
     def refresh_symbol(symbol: str) -> None:
-        fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, False)
+        fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
         fetch_share_change = getattr(fetch_mod, "fetch_share_change", None)
         if fetch_share_change is not None:
-            fetch_share_change(symbol, freq_mod.START_DATE, end_text, False)
+            fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in symbols}
@@ -568,7 +581,12 @@ def extend_index_recent_window(
         target_end_date=target_end_date,
         max_workers=args.max_workers,
     )
-    refresh_price_cache_tail(target_end_date, args.max_workers, candidate_symbols)
+    refresh_price_cache_tail(
+        target_end_date,
+        args.max_workers,
+        candidate_symbols,
+        force_refresh=args.force_refresh,
+    )
 
     recent_index_df, recent_members_df, recent_turnover_df, meta = build_local_proxy_bundle(
         args=args,
@@ -643,11 +661,14 @@ def build_biweekly_rebalance_dates(
     if len(trading_dates) == 0:
         return pd.DatetimeIndex([])
     week_periods = trading_dates.to_period(freq)
-    unique_weeks = sorted(pd.Index(week_periods.unique()))
-    week_keys = pd.Series([i // 2 for i, _ in enumerate(unique_weeks)], index=unique_weeks)
-    aligned_keys = pd.Index(week_periods).map(lambda p: week_keys[p])
+    anchor_period = pd.Timestamp(REBALANCE_ANCHOR_DATE).to_period(freq)
+    selected_weeks = [period for period in sorted(pd.Index(week_periods.unique())) if (period.ordinal - anchor_period.ordinal) % 2 == 0]
+    if not selected_weeks:
+        return pd.DatetimeIndex([])
+    week_keys = pd.Series(range(len(selected_weeks)), index=selected_weeks)
+    aligned_keys = pd.Index(week_periods).map(lambda p: week_keys[p] if p in week_keys.index else np.nan)
     grouped = trading_dates.to_series().groupby(aligned_keys)
-    return pd.DatetimeIndex(grouped.min().tolist())
+    return pd.DatetimeIndex(grouped.min().dropna().tolist())
 
 
 def build_local_proxy_bundle(
@@ -708,11 +729,15 @@ def build_local_proxy_bundle(
             "block_limit_down_exit_at_close": True,
             "rebalance_frequency": "biweekly",
             "rebalance_weekday_anchor": REBALANCE_WEEKDAY,
+            "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
             "lookback": LOOKBACK,
             "hedge_column": HEDGE_COLUMN,
             "execution_timing": EXECUTION_TIMING,
             "trade_constraint_mode": TRADE_CONSTRAINT_MODE,
             "research_stack_version": RESEARCH_STACK_VERSION,
+            "member_filter_policy_version": MEMBER_FILTER_POLICY_VERSION,
+            "realtime_quote_policy_version": REALTIME_QUOTE_POLICY_VERSION,
+            "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
             "security_meta_version": getattr(freq_mod, "SECURITY_META_VERSION", None),
             "security_master_enabled": True,
         },
@@ -733,6 +758,10 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
         and core_params.get("research_stack_version") == RESEARCH_STACK_VERSION
+        and core_params.get("rebalance_phase_anchor_date") == REBALANCE_ANCHOR_DATE
+        and core_params.get("member_filter_policy_version") == MEMBER_FILTER_POLICY_VERSION
+        and core_params.get("realtime_quote_policy_version") == REALTIME_QUOTE_POLICY_VERSION
+        and core_params.get("proxy_rebalance_policy_version") == PROXY_REBALANCE_POLICY_VERSION
     )
 
 
@@ -879,23 +908,27 @@ def ensure_strategy_files(
         if try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"]):
             return
         if paths["proxy_turnover"].exists():
-            rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
+            rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path, target_end_date=target_end_date)
             return
 
     if can_reuse_index and frozen_proxy_tail:
         extend_index_recent_window(args, paths, panel_path, target_end_date)
         if paths["proxy_turnover"].exists():
-            rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
+            rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path, target_end_date=target_end_date)
             assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
             return
 
     if can_reuse_proxy:
         normalize_existing_proxy_outputs(args, paths)
-        rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
+        rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path, target_end_date=target_end_date)
         assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
         return
 
-    refresh_price_cache_tail(target_end_date, args.max_workers)
+    refresh_price_cache_tail(
+        target_end_date,
+        args.max_workers,
+        force_refresh=args.force_refresh,
+    )
 
     panel = pd.read_csv(panel_path, usecols=["date"])
     panel["date"] = pd.to_datetime(panel["date"])
@@ -909,7 +942,7 @@ def ensure_strategy_files(
     members_df.to_csv(paths["proxy_members"], index=False, encoding="utf-8")
     turnover_df.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
     paths["proxy_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path)
+    rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path, target_end_date=target_end_date)
     assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
 
 
@@ -2233,6 +2266,7 @@ def rebuild_costed_nav_from_proxy_turnover(
     args: argparse.Namespace,
     paths: dict[str, Path],
     panel_path: Path,
+    target_end_date: pd.Timestamp | None = None,
     stop_loss_threshold: float | None = None,
 ) -> None:
     turnover_path = paths["proxy_turnover"]
@@ -2245,7 +2279,7 @@ def rebuild_costed_nav_from_proxy_turnover(
     turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
     turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
 
-    close_df = load_close_df(panel_path, args.index_csv)
+    close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     gross = run_signal(close_df)
     if stop_loss_threshold is None:
         net = freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
@@ -2273,7 +2307,7 @@ def try_extend_costed_nav_without_turnover(
         return False
 
     current_costed_end = pd.Timestamp(costed["date"].max())
-    close_df = load_close_df(panel_path, args.index_csv)
+    close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     gross = run_signal(close_df).sort_index()
     if gross.empty or current_costed_end not in gross.index:
         return False
@@ -2509,6 +2543,9 @@ def load_cached_static_context(
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         expected = {
             "cache_version": STATIC_CONTEXT_CACHE_VERSION,
+            "member_filter_policy_version": MEMBER_FILTER_POLICY_VERSION,
+            "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
+            "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
             "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
             "prev_rebalance": None if prev_rebalance is None else str(pd.Timestamp(prev_rebalance).date()),
             "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
@@ -2538,6 +2575,9 @@ def save_static_context_cache(
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
     meta = {
         "cache_version": STATIC_CONTEXT_CACHE_VERSION,
+        "member_filter_policy_version": MEMBER_FILTER_POLICY_VERSION,
+        "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
+        "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
         "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
         "prev_rebalance": None if prev_rebalance is None else str(pd.Timestamp(prev_rebalance).date()),
         "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
@@ -2626,14 +2666,50 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
     member_price_count = int(meta.get("member_price_count") or 0)
     if member_count <= 0 or member_price_count != member_count:
         raise RuntimeError(f"实时信号报价覆盖不足: {member_price_count}/{member_count}，拒绝输出实盘信号。")
+    bad_symbols = meta.get("member_quote_bad_symbols") or []
+    if bad_symbols:
+        raise RuntimeError(f"成员股实时报价日期不可验证或早于历史锚点，拒绝输出实盘信号: {bad_symbols[:10]}")
+    min_date = str(meta.get("member_quote_trade_date_min") or "").strip()
+    max_date = str(meta.get("member_quote_trade_date_max") or "").strip()
+    if not min_date or not max_date:
+        raise RuntimeError("成员股实时报价缺少逐股票报价交易日，拒绝输出实盘信号。")
+    if min_date != max_date:
+        raise RuntimeError(f"成员股实时报价交易日不一致: min={min_date}, max={max_date}，拒绝输出实盘信号。")
+    member_trade_date_count = int(meta.get("member_quote_trade_date_count") or 0)
+    if member_trade_date_count != member_count:
+        raise RuntimeError(
+            f"Realtime member quotes missing per-symbol trade_date: {member_trade_date_count}/{member_count}; "
+            "downgrade to intraday_preview."
+        )
     hedge_source = str(meta.get("hedge_quote_source") or "")
     if "fallback" in hedge_source.lower():
         raise RuntimeError(f"实时中证1000报价使用 fallback ({hedge_source})，拒绝输出实盘信号。")
+    hedge_quote_trade_date = str(meta.get("hedge_quote_trade_date") or "").strip()
+    if not hedge_quote_trade_date:
+        raise RuntimeError("Realtime hedge quote missing trade_date; downgrade to intraday_preview.")
     quote_trade_date = str(meta.get("quote_trade_date") or "").strip()
     if not quote_trade_date:
         raise RuntimeError("实时信号缺少报价交易日，拒绝输出实盘信号。")
-    if pd.Timestamp(quote_trade_date).date() < pd.Timestamp(meta["latest_anchor_trade_date"]).date():
+    member_quote_date = pd.Timestamp(quote_trade_date).date()
+    hedge_quote_date = pd.Timestamp(hedge_quote_trade_date).date()
+    anchor_date = pd.Timestamp(meta["latest_anchor_trade_date"]).date()
+    if member_quote_date < anchor_date:
         raise RuntimeError("实时报价日期早于历史锚点，拒绝输出实盘信号。")
+    if hedge_quote_date < anchor_date:
+        raise RuntimeError("Realtime hedge quote date is earlier than the historical anchor.")
+    if hedge_quote_date != member_quote_date:
+        raise RuntimeError(
+            f"成员股报价交易日与对冲腿报价交易日不一致: "
+            f"member={member_quote_date}, hedge={hedge_quote_date}，拒绝输出实盘信号。"
+        )
+
+
+def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
+    try:
+        assert_realtime_meta_is_actionable(meta)
+        return True
+    except Exception:
+        return False
 
 
 def rebuild_realtime_result_from_meta(context: dict[str, object], meta: dict[str, object]) -> pd.DataFrame:
@@ -2688,6 +2764,7 @@ def build_summary(
             "exclude_current_st": True,
             "rebalance_schedule": "biweekly",
             "rebalance_weekday_anchor": REBALANCE_WEEKDAY,
+            "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
             "lookback": LOOKBACK,
             "signal_model": "relative_momentum",
             "momentum_gap_entry_threshold": 0.0,
@@ -2698,6 +2775,9 @@ def build_summary(
             "execution_timing": EXECUTION_TIMING,
             "trade_constraint_mode": TRADE_CONSTRAINT_MODE,
             "research_stack_version": RESEARCH_STACK_VERSION,
+            "member_filter_policy_version": MEMBER_FILTER_POLICY_VERSION,
+            "realtime_quote_policy_version": REALTIME_QUOTE_POLICY_VERSION,
+            "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
             "security_meta_version": getattr(freq_mod, "SECURITY_META_VERSION", None),
             "security_master_enabled": True,
         },
@@ -2742,7 +2822,7 @@ def build_base_context(args: argparse.Namespace, include_members: bool = True) -
     resolved_panel_path, target_end_date = build_refreshed_panel_shadow(args, paths)
     ensure_strategy_files(args, paths, resolved_panel_path, target_end_date)
 
-    close_df = load_close_df(resolved_panel_path, args.index_csv)
+    close_df = load_close_df(resolved_panel_path, args.index_csv, max_date=target_end_date)
     result = run_signal(close_df)
     latest_signal = enrich_signal_frame(hedge_mod.build_latest_signal(result), result)
     assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
@@ -3337,7 +3417,7 @@ def ensure_base_signal_fresh(
     target_end_date: pd.Timestamp,
 ) -> dict[str, object]:
     ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
-    close_df = load_close_df(panel_path, args.index_csv)
+    close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     return build_base_signal_context(args, paths, panel_path, target_end_date, close_df)
 
 
@@ -3381,7 +3461,7 @@ def ensure_realtime_query_base_context(
     ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
     if not args.index_csv.exists():
         raise FileNotFoundError(f"Missing proxy index required for realtime query: {args.index_csv}")
-    close_df = load_close_df(panel_path, args.index_csv)
+    close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     return build_base_signal_context(args, paths, panel_path, target_end_date, close_df)
 
 
@@ -3486,7 +3566,7 @@ def get_realtime_cache_file(name: str) -> Path:
     return REALTIME_DIR / name
 
 
-def load_or_refresh_stock_spot(cache_seconds: int) -> pd.DataFrame:
+def load_or_refresh_stock_spot(cache_seconds: int, allow_stale_cache: bool = False) -> pd.DataFrame:
     cache_file = get_realtime_cache_file("stock_spot_latest.csv")
     now = time.time()
     if cache_file.exists() and now - cache_file.stat().st_mtime <= cache_seconds:
@@ -3501,12 +3581,12 @@ def load_or_refresh_stock_spot(cache_seconds: int) -> pd.DataFrame:
         except Exception as exc:
             last_error = exc
 
-    if cache_file.exists():
+    if cache_file.exists() and allow_stale_cache:
         return pd.read_csv(cache_file, dtype={"代码": str})
-    raise RuntimeError(f"实时股票行情抓取失败: {last_error}") from last_error
+    raise RuntimeError(f"实时股票行情抓取失败，且缓存已过期: {last_error}") from last_error
 
 
-def load_or_refresh_index_spot(cache_seconds: int) -> pd.DataFrame:
+def load_or_refresh_index_spot(cache_seconds: int, allow_stale_cache: bool = False) -> pd.DataFrame:
     cache_file = get_realtime_cache_file("index_spot_latest.csv")
     now = time.time()
     if cache_file.exists() and now - cache_file.stat().st_mtime <= cache_seconds:
@@ -3517,9 +3597,27 @@ def load_or_refresh_index_spot(cache_seconds: int) -> pd.DataFrame:
         spot.to_csv(cache_file, index=False, encoding="utf-8")
         return spot
     except Exception as exc:
-        if cache_file.exists():
+        if cache_file.exists() and allow_stale_cache:
             return pd.read_csv(cache_file, dtype={"代码": str})
-        raise RuntimeError(f"实时指数行情抓取失败: {exc}") from exc
+        raise RuntimeError(f"实时指数行情抓取失败，且缓存已过期: {exc}") from exc
+
+
+def _first_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str:
+    for column in candidates:
+        if column in frame.columns:
+            return column
+    raise KeyError(f"Missing expected columns, tried: {candidates}")
+
+
+def normalize_index_spot_columns(index_spot: pd.DataFrame) -> pd.DataFrame:
+    out = index_spot.copy()
+    code_col = _first_existing_column(out, ["代码", "浠ｇ爜"])
+    latest_col = _first_existing_column(out, ["最新价", "鏈€鏂颁环"])
+    prev_col = _first_existing_column(out, ["昨收", "鏄ㄦ敹"])
+    out["代码"] = out[code_col]
+    out["最新价"] = out[latest_col]
+    out["昨收"] = out[prev_col]
+    return out
 
 
 def load_or_refresh_latest_shares(cache_seconds: int = 86400) -> pd.DataFrame:
@@ -3565,13 +3663,26 @@ def load_or_refresh_latest_shares(cache_seconds: int = 86400) -> pd.DataFrame:
     return latest_shares
 
 
+def parse_eastmoney_trade_date(value: object) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    digits = "".join(ch for ch in text if ch.isdigit())
+    if len(digits) < 8:
+        return ""
+    try:
+        return str(pd.Timestamp(digits[:8]).date())
+    except Exception:
+        return ""
+
+
 def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
     code = str(symbol).zfill(6)
     market = "1" if code.startswith(("5", "6", "9")) else "0"
     url = (
         "https://push2.eastmoney.com/api/qt/stock/get"
         f"?secid={market}.{code}"
-        "&fields=f43,f44,f45,f46,f57,f58,f60"
+        "&fields=f43,f44,f45,f46,f57,f58,f60,f86"
     )
     try:
         response = requests.get(
@@ -3596,6 +3707,9 @@ def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
         }
         if pd.notna(prev) and prev > 0:
             row["pre_close"] = float(prev) / 100.0
+        trade_date = parse_eastmoney_trade_date(data.get("f86"))
+        if trade_date:
+            row["trade_date"] = trade_date
         return row
     except Exception:
         return None
@@ -3679,56 +3793,53 @@ def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24) -> p
     clean_symbols = [str(symbol).zfill(6) for symbol in symbols if str(symbol).strip()]
     if not clean_symbols:
         return pd.DataFrame(columns=["code", "name", "rt_price"])
-    qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
     source_parts: list[str] = []
-    if os.environ.get("QVERIS_API_KEY", "").strip():
-        try:
-            qveris_df, qveris_source = fetch_qveris_realtime_quotes(clean_symbols)
-            source_parts.append(qveris_source)
-            if not qveris_df.empty:
-                qveris_df["code"] = qveris_df["code"].astype(str).str.zfill(6)
-                valid_price = pd.to_numeric(qveris_df["rt_price"], errors="coerce").gt(0)
-                qveris_valid_codes = set(qveris_df.loc[valid_price, "code"])
-            else:
-                valid_price = pd.Series(dtype=bool)
-                qveris_valid_codes = set()
-            if len(qveris_valid_codes) >= len(set(clean_symbols)):
-                qveris_df.attrs["quote_source"] = qveris_source
-                return qveris_df
-            qveris_df = qveris_df.loc[valid_price].copy()
-        except Exception:
-            qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
-    qveris_codes = set(qveris_df["code"].astype(str).str.zfill(6)) if not qveris_df.empty else set()
-    missing_symbols = [symbol for symbol in clean_symbols if symbol not in qveris_codes]
     rows: list[dict[str, object]] = []
     with ThreadPoolExecutor(max_workers=max(1, min(int(max_workers), 32))) as pool:
-        futures = {pool.submit(fetch_eastmoney_stock_spot, symbol): symbol for symbol in missing_symbols}
+        futures = {pool.submit(fetch_eastmoney_stock_spot, symbol): symbol for symbol in clean_symbols}
         for fut in as_completed(futures):
             row = fut.result()
             if row is not None:
                 rows.append(row)
     eastmoney_df = pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame(columns=["code", "name", "rt_price"])
     if not eastmoney_df.empty:
+        eastmoney_df["code"] = eastmoney_df["code"].astype(str).str.zfill(6)
         source_parts.append("eastmoney_stock_get_member_only")
+
+    valid_free_codes: set[str] = set()
+    if not eastmoney_df.empty:
+        valid_price = pd.to_numeric(eastmoney_df["rt_price"], errors="coerce").gt(0)
+        if "trade_date" in eastmoney_df.columns:
+            valid_trade_date = eastmoney_df["trade_date"].fillna("").astype(str).str.strip().ne("")
+        else:
+            valid_trade_date = pd.Series(False, index=eastmoney_df.index)
+        valid_free_codes = set(eastmoney_df.loc[valid_price & valid_trade_date, "code"])
+
+    qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
+    qveris_symbols = [symbol for symbol in clean_symbols if symbol not in valid_free_codes]
+    if qveris_symbols and os.environ.get("QVERIS_API_KEY", "").strip():
+        try:
+            qveris_df, qveris_source = fetch_qveris_realtime_quotes(qveris_symbols)
+            source_parts.append(qveris_source)
+            if not qveris_df.empty:
+                qveris_df["code"] = qveris_df["code"].astype(str).str.zfill(6)
+                valid_price = pd.to_numeric(qveris_df["rt_price"], errors="coerce").gt(0)
+                qveris_df = qveris_df.loc[valid_price].copy()
+        except Exception:
+            qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
+
     out = pd.concat([qveris_df, eastmoney_df], ignore_index=True).drop_duplicates(subset="code", keep="first")
     out.attrs["quote_source"] = "+".join(source_parts or ["eastmoney_stock_get_member_only"])
     return out
 
 
-def fetch_hedge_realtime_quote_fast() -> tuple[float, str]:
-    if os.environ.get("QVERIS_API_KEY", "").strip():
-        try:
-            quotes, source = fetch_qveris_realtime_quotes(["000852.SH"])
-            if not quotes.empty:
-                price = pd.to_numeric(quotes.iloc[0].get("rt_price"), errors="coerce")
-                if pd.notna(price) and price > 0:
-                    return float(price), source
-        except Exception:
-            pass
+def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
+    eastmoney_price: float | None = None
+    eastmoney_source = "eastmoney_stock_get"
     url = (
         "https://push2.eastmoney.com/api/qt/stock/get"
         "?secid=1.000852"
-        "&fields=f43,f60"
+        "&fields=f43,f60,f86"
     )
     try:
         response = requests.get(
@@ -3741,23 +3852,40 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str]:
         latest = pd.to_numeric(data.get("f43"), errors="coerce")
         prev = pd.to_numeric(data.get("f60"), errors="coerce")
         if pd.notna(latest) and latest > 0:
-            return float(latest) / 100.0, "eastmoney_stock_get"
-        if pd.notna(prev) and prev > 0:
-            return float(prev) / 100.0, "eastmoney_prev_close_fallback"
+            eastmoney_price = float(latest) / 100.0
+            trade_date = parse_eastmoney_trade_date(data.get("f86"))
+            if trade_date:
+                return eastmoney_price, eastmoney_source, trade_date
+        elif pd.notna(prev) and prev > 0:
+            eastmoney_price = float(prev) / 100.0
+            eastmoney_source = "eastmoney_prev_close_fallback"
     except Exception:
         pass
-    index_spot = load_or_refresh_index_spot(cache_seconds=86400)
-    index_spot["浠ｇ爜"] = index_spot["浠ｇ爜"].astype(str).str.zfill(6)
-    hedge_row = index_spot.loc[index_spot["浠ｇ爜"] == "000852"]
+    if os.environ.get("QVERIS_API_KEY", "").strip():
+        try:
+            quotes, source = fetch_qveris_realtime_quotes(["000852.SH"])
+            if not quotes.empty:
+                row = quotes.iloc[0]
+                price = pd.to_numeric(row.get("rt_price"), errors="coerce")
+                trade_date = str(row.get("trade_date") or "").strip()
+                if pd.notna(price) and price > 0:
+                    return float(price), source, trade_date
+        except Exception:
+            pass
+    if eastmoney_price is not None:
+        return eastmoney_price, f"{eastmoney_source}_missing_trade_date", ""
+    index_spot = normalize_index_spot_columns(load_or_refresh_index_spot(cache_seconds=86400))
+    index_spot["代码"] = index_spot["代码"].astype(str).str.zfill(6)
+    hedge_row = index_spot.loc[index_spot["代码"] == "000852"]
     if hedge_row.empty:
         raise RuntimeError("无法获取中证1000实时价格")
     hedge_row = hedge_row.iloc[0]
-    hedge_rt_close = pd.to_numeric(hedge_row.get("鏈€鏂颁环"), errors="coerce")
-    hedge_prev = pd.to_numeric(hedge_row.get("鏄ㄦ敹"), errors="coerce")
+    hedge_rt_close = pd.to_numeric(hedge_row.get("最新价"), errors="coerce")
+    hedge_prev = pd.to_numeric(hedge_row.get("昨收"), errors="coerce")
     if pd.notna(hedge_rt_close) and hedge_rt_close > 0:
-        return float(hedge_rt_close), "index_spot_latest_cached_fallback"
+        return float(hedge_rt_close), "index_spot_latest_cached_fallback", ""
     if pd.notna(hedge_prev) and hedge_prev > 0:
-        return float(hedge_prev), "index_prev_close_cached_fallback"
+        return float(hedge_prev), "index_prev_close_cached_fallback", ""
     raise RuntimeError("无法获取中证1000实时价格")
 
 
@@ -3799,6 +3927,65 @@ def quote_trade_date_matches_anchor(quote_trade_date: object, latest_trade_date:
         return False
 
 
+def normalize_hedge_realtime_quote_result(result: object) -> tuple[float, str, str]:
+    if isinstance(result, tuple):
+        if len(result) >= 3:
+            return float(result[0]), str(result[1]), str(result[2] or "")
+        if len(result) == 2:
+            return float(result[0]), str(result[1]), ""
+    raise ValueError(f"Unexpected hedge realtime quote result: {result!r}")
+
+
+def extract_member_quote_trade_date_stats(
+    quotes_df: pd.DataFrame,
+    member_symbols: list[str],
+    latest_anchor_trade_date: pd.Timestamp,
+) -> dict[str, object]:
+    if "trade_date" not in quotes_df.columns:
+        return {
+            "member_quote_trade_date_min": "",
+            "member_quote_trade_date_max": "",
+            "member_quote_trade_date_count": 0,
+            "member_quote_bad_symbols": [str(symbol).zfill(6) for symbol in member_symbols][:20],
+        }
+    anchor_date = pd.Timestamp(latest_anchor_trade_date).date()
+    dates: list[str] = []
+    bad_symbols: list[str] = []
+    for symbol in member_symbols:
+        code = str(symbol).zfill(6)
+        if code not in quotes_df.index:
+            bad_symbols.append(code)
+            continue
+        text = str(quotes_df.at[code, "trade_date"] or "").strip()
+        if not text:
+            bad_symbols.append(code)
+            continue
+        try:
+            quote_date = pd.Timestamp(text).date()
+        except Exception:
+            bad_symbols.append(code)
+            continue
+        if quote_date < anchor_date:
+            bad_symbols.append(code)
+            continue
+        dates.append(str(quote_date))
+    return {
+        "member_quote_trade_date_min": min(dates) if dates else "",
+        "member_quote_trade_date_max": max(dates) if dates else "",
+        "member_quote_trade_date_count": len(dates),
+        "member_quote_bad_symbols": bad_symbols[:20],
+    }
+
+
+def extract_member_quote_trade_date(quotes_df: pd.DataFrame, member_symbols: list[str]) -> tuple[str, int]:
+    stats = extract_member_quote_trade_date_stats(
+        quotes_df,
+        member_symbols,
+        latest_anchor_trade_date=pd.Timestamp.min,
+    )
+    return str(stats["member_quote_trade_date_max"]), int(stats["member_quote_trade_date_count"])
+
+
 def compute_member_realtime_return(
     symbol: str,
     last_close_map: dict[str, float],
@@ -3812,15 +3999,24 @@ def compute_member_realtime_return(
     if pd.isna(rt_price) or float(rt_price) <= 0:
         return None
 
-    last_close = last_close_map.get(code)
-    if last_close is not None and float(last_close) > 0:
-        return float(rt_price) / float(last_close) - 1.0
-
     quote_trade_date = quotes_df.at[code, "trade_date"] if "trade_date" in quotes_df.columns else ""
-    if quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
-        return 0.0
+    last_close = last_close_map.get(code)
+    if isinstance(last_close, dict):
+        close = pd.to_numeric(last_close.get("close"), errors="coerce")
+        close_date = last_close.get("date")
+        if (
+            pd.notna(close)
+            and float(close) > 0
+            and close_date is not None
+            and pd.Timestamp(close_date).date() == pd.Timestamp(latest_trade_date).date()
+        ):
+            return float(rt_price) / float(close) - 1.0
+    elif last_close is not None:
+        close = pd.to_numeric(last_close, errors="coerce")
+        if pd.notna(close) and float(close) > 0:
+            return float(rt_price) / float(close) - 1.0
 
-    if "pre_close" in quotes_df.columns:
+    if "pre_close" in quotes_df.columns and quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
         pre_close = pd.to_numeric(quotes_df.at[code, "pre_close"], errors="coerce")
         if pd.notna(pre_close) and float(pre_close) > 0:
             return float(rt_price) / float(pre_close) - 1.0
@@ -3890,8 +4086,8 @@ def build_realtime_quote_map(cache_seconds: int) -> tuple[pd.DataFrame, str]:
     return stock_spot, source
 
 
-def load_latest_close_map(symbols: list[str], as_of_date: pd.Timestamp) -> dict[str, float]:
-    out: dict[str, float] = {}
+def load_latest_close_snapshot_map(symbols: list[str], as_of_date: pd.Timestamp) -> dict[str, tuple[pd.Timestamp, float]]:
+    out: dict[str, tuple[pd.Timestamp, float]] = {}
     for symbol in symbols:
         path = freq_mod.PRICE_DIR / f"{symbol}.csv"
         if not path.exists():
@@ -3904,10 +4100,16 @@ def load_latest_close_map(symbols: list[str], as_of_date: pd.Timestamp) -> dict[
             price = price.loc[price["date"] <= as_of_date].sort_values("date")
             if price.empty:
                 continue
-            out[symbol] = float(price.iloc[-1]["close_raw"])
+            last_row = price.iloc[-1]
+            out[str(symbol).zfill(6)] = (pd.Timestamp(last_row["date"]).normalize(), float(last_row["close_raw"]))
         except Exception:
             continue
     return out
+
+
+def load_latest_close_map(symbols: list[str], as_of_date: pd.Timestamp) -> dict[str, float]:
+    snapshots = load_latest_close_snapshot_map(symbols, as_of_date=as_of_date)
+    return {symbol: close for symbol, (_date, close) in snapshots.items()}
 
 
 def ensure_realtime_last_close_map(
@@ -3916,12 +4118,17 @@ def ensure_realtime_last_close_map(
     max_workers: int = REALTIME_CLOSE_REFRESH_MAX_WORKERS,
 ) -> dict[str, float]:
     clean_symbols = [str(symbol).zfill(6) for symbol in symbols if str(symbol).strip()]
-    last_close_map = load_latest_close_map(clean_symbols, as_of_date=as_of_date)
-    missing_symbols = [symbol for symbol in clean_symbols if symbol not in last_close_map]
-    if missing_symbols:
-        refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=missing_symbols)
-        last_close_map = load_latest_close_map(clean_symbols, as_of_date=as_of_date)
-    return last_close_map
+    target_date = pd.Timestamp(as_of_date).normalize()
+    snapshots = load_latest_close_snapshot_map(clean_symbols, as_of_date=as_of_date)
+    stale_or_missing = [
+        symbol
+        for symbol in clean_symbols
+        if symbol not in snapshots or pd.Timestamp(snapshots[symbol][0]).normalize() < target_date
+    ]
+    if stale_or_missing:
+        refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)
+        snapshots = load_latest_close_snapshot_map(clean_symbols, as_of_date=as_of_date)
+    return {symbol: close for symbol, (date, close) in snapshots.items() if pd.Timestamp(date).normalize() >= target_date}
 
 
 def maybe_refresh_missing_realtime_last_close_map(
@@ -3969,7 +4176,7 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
     effective_members = context["effective_members"].copy()
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).tolist()
-    last_close_map = load_latest_close_map(member_symbols, as_of_date=latest_trade_date)
+    last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
 
     quotes_df, quote_source = build_realtime_quote_map(cache_seconds)
     quotes_df = quotes_df.set_index("code")
@@ -3995,7 +4202,7 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
     last_microcap_close = float(close_df["microcap"].iloc[-1])
     microcap_rt_close = last_microcap_close * (1.0 + float(np.mean(member_returns)))
 
-    index_spot = load_or_refresh_index_spot(cache_seconds)
+    index_spot = normalize_index_spot_columns(load_or_refresh_index_spot(cache_seconds))
     index_spot["代码"] = index_spot["代码"].astype(str).str.zfill(6)
     hedge_row = index_spot.loc[index_spot["代码"] == "000852"]
     if hedge_row.empty:
@@ -4055,7 +4262,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     effective_members = context["effective_members"].copy()
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
-    last_close_map = load_latest_close_map(member_symbols, as_of_date=latest_trade_date)
+    last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []
@@ -4111,17 +4318,17 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     microcap_rt_close = last_microcap_close * (1.0 + float(np.mean(member_returns)))
 
     try:
-        hedge_rt_close, hedge_source = fetch_hedge_realtime_quote_fast()
+        hedge_rt_close, hedge_source, hedge_quote_trade_date = normalize_hedge_realtime_quote_result(
+            fetch_hedge_realtime_quote_fast()
+        )
     except Exception:
         hedge_rt_close = float(close_df["hedge"].iloc[-1])
         hedge_source = "latest_cached_close_fallback"
+        hedge_quote_trade_date = ""
 
     snapshot_ts = pd.Timestamp.now()
-    quote_trade_date = ""
-    if "trade_date" in quotes_df.columns:
-        trade_dates = quotes_df["trade_date"].dropna().astype(str)
-        if not trade_dates.empty:
-            quote_trade_date = trade_dates.max()
+    quote_stats = extract_member_quote_trade_date_stats(quotes_df, member_symbols, latest_trade_date)
+    quote_trade_date = str(quote_stats["member_quote_trade_date_max"])
     rt_close_df = apply_realtime_close_to_signal_frame(
         close_df=close_df,
         latest_trade_date=latest_trade_date,
@@ -4142,6 +4349,11 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     signal_df["member_price_count"] = available_rows
     signal_df["member_count"] = len(member_symbols)
     signal_df["latest_anchor_trade_date"] = latest_trade_date
+    signal_df["member_quote_trade_date_count"] = quote_stats["member_quote_trade_date_count"]
+    signal_df["member_quote_trade_date_min"] = quote_stats["member_quote_trade_date_min"]
+    signal_df["member_quote_trade_date_max"] = quote_stats["member_quote_trade_date_max"]
+    signal_df["member_quote_bad_symbols"] = json.dumps(quote_stats["member_quote_bad_symbols"], ensure_ascii=False)
+    signal_df["hedge_quote_trade_date"] = hedge_quote_trade_date
     if quote_trade_date:
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
@@ -4157,6 +4369,8 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         "microcap_rt_close": float(microcap_rt_close),
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
+        **quote_stats,
+        "hedge_quote_trade_date": hedge_quote_trade_date,
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
@@ -4181,6 +4395,7 @@ def load_cached_fast_realtime_signal(
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         if meta.get("latest_anchor_trade_date") != str(pd.Timestamp(latest_anchor_trade_date).date()):
             return None
+        assert_realtime_meta_is_actionable(meta)
         signal_df = pd.read_csv(signal_path)
         signal_df["signal_timing"] = "intraday_hypothetical_if_now_close"
         signal_df["official_close_confirmed_signal"] = False
@@ -4190,6 +4405,7 @@ def load_cached_fast_realtime_signal(
 
 
 def save_cached_fast_realtime_signal(paths: dict[str, Path], signal_df: pd.DataFrame, meta: dict[str, object]) -> None:
+    assert_realtime_meta_is_actionable(meta)
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
     paths["cache_fast_realtime_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     signal_df.to_csv(paths["cache_fast_realtime_signal"], index=False, encoding="utf-8")
@@ -4335,7 +4551,7 @@ def compute_realtime_state_fast(
         changes_df["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
 
     signal_df, signal_meta = build_realtime_signal_fast(context)
-    signal_df["quote_source"] = quote_source
+    signal_df["member_list_quote_source"] = quote_source
     meta = {
         "snapshot_time": signal_meta["snapshot_time"],
         "latest_anchor_trade_date": signal_meta["latest_anchor_trade_date"],
@@ -4343,21 +4559,32 @@ def compute_realtime_state_fast(
         "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
         "rebalance_effective_date": None if rebalance_effective_date is None else str(pd.Timestamp(rebalance_effective_date).date()),
         "quote_source": quote_source,
+        "member_list_quote_source": quote_source,
+        "signal_member_quote_source": signal_meta["quote_source"],
+        "signal_hedge_quote_source": signal_meta["hedge_quote_source"],
         "hedge_quote_source": signal_meta["hedge_quote_source"],
         "member_price_count": signal_meta["member_price_count"],
         "member_count": signal_meta["member_count"],
         "microcap_rt_close": signal_meta["microcap_rt_close"],
         "hedge_rt_close": signal_meta["hedge_rt_close"],
+        "quote_trade_date": signal_meta.get("quote_trade_date", ""),
+        "member_quote_trade_date_count": signal_meta.get("member_quote_trade_date_count", 0),
+        "member_quote_trade_date_min": signal_meta.get("member_quote_trade_date_min", ""),
+        "member_quote_trade_date_max": signal_meta.get("member_quote_trade_date_max", ""),
+        "member_quote_bad_symbols": signal_meta.get("member_quote_bad_symbols", []),
+        "hedge_quote_trade_date": signal_meta.get("hedge_quote_trade_date", ""),
         "tail_jitter_risk": signal_meta.get("tail_jitter_risk"),
         "tail_jitter_note": signal_meta.get("tail_jitter_note"),
     }
-    save_realtime_state_cache(
-        paths=paths,
-        meta=meta,
-        signal_df=signal_df,
-        members_df=members_out.drop(columns=["target_notional"], errors="ignore"),
-        changes_df=changes_df,
-    )
+    members_out, changes_df = mark_realtime_preview_outputs(members_out, changes_df)
+    if realtime_meta_is_actionable(meta):
+        save_realtime_state_cache(
+            paths=paths,
+            meta=meta,
+            signal_df=signal_df,
+            members_df=members_out.drop(columns=["target_notional"], errors="ignore"),
+            changes_df=changes_df,
+        )
     return {
         "meta": meta,
         "signal": signal_df,
@@ -4397,10 +4624,12 @@ def load_cached_realtime_state(
         }
         if any(meta.get(key) != value for key, value in expected.items()):
             return None
+        assert_realtime_meta_is_actionable(meta)
         signal_df = pd.read_csv(signal_path)
         members_df = pd.read_csv(members_path, dtype={"symbol": str})
         changes_df = pd.read_csv(changes_path, dtype={"symbol": str})
         signal_df = augment_signal_with_member_rebalance(signal_df, changes_df)
+        members_df, changes_df = mark_realtime_preview_outputs(members_df, changes_df)
         members_df = add_capital_columns(members_df, capital)
         return {
             "meta": meta,
@@ -4421,11 +4650,24 @@ def save_realtime_state_cache(
     members_df: pd.DataFrame,
     changes_df: pd.DataFrame,
 ) -> None:
+    assert_realtime_meta_is_actionable(meta)
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
     paths["cache_realtime_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     signal_df.to_csv(paths["cache_realtime_signal"], index=False, encoding="utf-8")
     members_df.to_csv(paths["cache_realtime_members"], index=False, encoding="utf-8")
     changes_df.to_csv(paths["cache_realtime_changes"], index=False, encoding="utf-8")
+
+
+def mark_realtime_preview_outputs(
+    members_df: pd.DataFrame,
+    changes_df: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    members_out = members_df.copy()
+    changes_out = changes_df.copy()
+    for frame in (members_out, changes_out):
+        frame["member_list_type"] = "intraday_preview"
+        frame["official_rebalance"] = False
+    return members_out, changes_out
 
 
 def compute_realtime_state(
@@ -4491,7 +4733,7 @@ def compute_realtime_state(
     close_df = context["close_df"].copy()
     effective_members_df = context["effective_members"].copy()
     member_symbols = effective_members_df["symbol"].astype(str).tolist()
-    last_close_map = load_latest_close_map(member_symbols, as_of_date=latest_trade_date)
+    last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
     quotes_indexed = quotes_df.set_index("code")
     member_returns: list[float] = []
     available_rows = 0
@@ -4511,7 +4753,7 @@ def compute_realtime_state(
     last_microcap_close = float(close_df["microcap"].iloc[-1])
     microcap_rt_close = last_microcap_close * (1.0 + float(np.mean(member_returns)))
 
-    index_spot = load_or_refresh_index_spot(cache_seconds)
+    index_spot = normalize_index_spot_columns(load_or_refresh_index_spot(cache_seconds))
     index_spot["代码"] = index_spot["代码"].astype(str).str.zfill(6)
     hedge_row = index_spot.loc[index_spot["代码"] == "000852"]
     if hedge_row.empty:
@@ -4528,11 +4770,8 @@ def compute_realtime_state(
             hedge_source = "index_spot_latest"
 
     snapshot_ts = pd.Timestamp.now()
-    quote_trade_date = ""
-    if "trade_date" in quotes_indexed.columns:
-        trade_dates = quotes_indexed["trade_date"].dropna().astype(str)
-        if not trade_dates.empty:
-            quote_trade_date = trade_dates.max()
+    quote_stats = extract_member_quote_trade_date_stats(quotes_indexed, member_symbols, latest_trade_date)
+    quote_trade_date = str(quote_stats["member_quote_trade_date_max"])
     rt_close_df = apply_realtime_close_to_signal_frame(
         close_df=close_df,
         latest_trade_date=latest_trade_date,
@@ -4551,6 +4790,11 @@ def compute_realtime_state(
     signal_df["member_price_count"] = available_rows
     signal_df["member_count"] = len(member_symbols)
     signal_df["latest_anchor_trade_date"] = latest_trade_date
+    signal_df["member_quote_trade_date_count"] = quote_stats["member_quote_trade_date_count"]
+    signal_df["member_quote_trade_date_min"] = quote_stats["member_quote_trade_date_min"]
+    signal_df["member_quote_trade_date_max"] = quote_stats["member_quote_trade_date_max"]
+    signal_df["member_quote_bad_symbols"] = json.dumps(quote_stats["member_quote_bad_symbols"], ensure_ascii=False)
+    signal_df["hedge_quote_trade_date"] = ""
     if quote_trade_date:
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
@@ -4563,22 +4807,29 @@ def compute_realtime_state(
         "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
         "rebalance_effective_date": None if rebalance_effective_date is None else str(pd.Timestamp(rebalance_effective_date).date()),
         "quote_source": quote_source,
+        "member_list_quote_source": quote_source,
+        "signal_member_quote_source": quote_source,
+        "signal_hedge_quote_source": hedge_source,
         "hedge_quote_source": hedge_source,
         "member_price_count": available_rows,
         "member_count": len(member_symbols),
         "microcap_rt_close": float(microcap_rt_close),
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
+        **quote_stats,
+        "hedge_quote_trade_date": "",
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
-    save_realtime_state_cache(
-        paths=paths,
-        meta=meta,
-        signal_df=signal_df,
-        members_df=members_out.drop(columns=["target_notional"], errors="ignore"),
-        changes_df=changes_df,
-    )
+    members_out, changes_df = mark_realtime_preview_outputs(members_out, changes_df)
+    if realtime_meta_is_actionable(meta):
+        save_realtime_state_cache(
+            paths=paths,
+            meta=meta,
+            signal_df=signal_df,
+            members_df=members_out.drop(columns=["target_notional"], errors="ignore"),
+            changes_df=changes_df,
+        )
     return {
         "meta": meta,
         "signal": signal_df,
@@ -4617,11 +4868,12 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
             )
             if cached_fast is None:
                 rt_signal, meta = build_realtime_signal_fast(context)
-                save_cached_fast_realtime_signal(paths, rt_signal, meta)
+                fresh_fast = True
                 cache_age_seconds = 0.0
                 result_source = "fresh_fast"
             else:
                 rt_signal, meta, cache_age_seconds = cached_fast
+                fresh_fast = False
                 result_source = "cache_fast"
         except Exception:
             realtime_state = compute_realtime_state(
@@ -4634,8 +4886,11 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
             meta = realtime_state["meta"]
             cache_age_seconds = float(realtime_state.get("cache_age_seconds", 0.0))
             result_source = "cache" if realtime_state["from_cache"] else "fresh_fallback"
+            fresh_fast = False
         assert_realtime_meta_is_actionable(meta)
         assert_signal_matches_result(rt_signal, rebuild_realtime_result_from_meta(context, meta))
+        if fresh_fast:
+            save_cached_fast_realtime_signal(paths, rt_signal, meta)
         rt_signal.to_csv(paths["realtime_signal"], index=False, encoding="utf-8")
         gap_value = float(rt_signal.iloc[0]["momentum_gap"])
         jitter_risk = str(rt_signal.iloc[0].get("tail_jitter_risk", "normal"))
@@ -4644,8 +4899,8 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
         print(format_table(rt_signal))
         print(f"\u5b9e\u65f6\u5feb\u7167\u65f6\u95f4: {meta['snapshot_time']}")
         print(f"\u5386\u53f2\u951a\u70b9\u4ea4\u6613\u65e5: {meta['latest_anchor_trade_date']}")
-        print(f"\u5fae\u76d8\u5b9e\u65f6\u4ef7\u683c\u6765\u6e90: {meta['quote_source']}")
-        print(f"\u5bf9\u51b2\u817f\u5b9e\u65f6\u4ef7\u683c\u6765\u6e90: {meta['hedge_quote_source']}")
+        print(f"实时信号成员股报价来源: {meta.get('signal_member_quote_source', meta.get('quote_source'))}")
+        print(f"实时信号对冲腿报价来源: {meta.get('signal_hedge_quote_source', meta.get('hedge_quote_source'))}")
         print(f"\u5c3e\u76d8\u6296\u52a8\u98ce\u9669: {jitter_risk} (|gap|={abs(gap_value):.4%})")
         if jitter_risk != "normal" and jitter_note:
             print(f"\u63d0\u793a: {jitter_note}")
@@ -4719,7 +4974,10 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
             )
         realtime_members = realtime_state["members"]
         changes = realtime_state["changes"]
-        quote_source = realtime_state["meta"]["quote_source"]
+        meta = realtime_state["meta"]
+        member_list_quote_source = meta.get("member_list_quote_source", meta.get("quote_source"))
+        signal_member_quote_source = meta.get("signal_member_quote_source", meta.get("quote_source"))
+        signal_hedge_quote_source = meta.get("signal_hedge_quote_source", meta.get("hedge_quote_source"))
         snapshot_time = realtime_state["meta"].get("snapshot_time")
         cache_age_seconds = float(realtime_state.get("cache_age_seconds", 0.0))
         realtime_members.to_csv(paths["realtime_members"], index=False, encoding="utf-8")
@@ -4733,7 +4991,9 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
         )
         if snapshot_time:
             print(f"实时快照时间: {snapshot_time}")
-        print(f"实时价格来源: {quote_source}")
+        print(f"实时名单价格来源: {member_list_quote_source}")
+        print(f"实时信号成员股报价来源: {signal_member_quote_source}")
+        print(f"实时信号对冲腿报价来源: {signal_hedge_quote_source}")
         print(f"结果来源: {'cache' if realtime_state['from_cache'] else 'fresh'}")
         print(f"实时结果年龄: {cache_age_seconds:.1f} 秒")
         print(format_table(changes))
