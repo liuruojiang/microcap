@@ -1,0 +1,3 @@
+schedule,date,current_holding,next_holding,trade_state,microcap_mom,hedge_mom,momentum_gap,nav_net
+current_floating,2026-05-11,long_microcap_short_zz1000,long_microcap_short_zz1000,hold,0.13273928704401317,0.07891699694036403,0.05382229010364914,29.598415111791468
+fixed_anchor_2016_01_07,2026-05-11,long_microcap_short_zz1000,long_microcap_short_zz1000,hold,0.1327392870440136,0.07891699694036403,0.053822290103649584,27.993478375387557

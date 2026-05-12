@@ -1,0 +1,11 @@
+{
+  "anchor_date": "2016-01-07",
+  "trading_start": "2010-01-08",
+  "trading_end": "2026-05-11",
+  "trading_rows": 3964,
+  "symbols": 4975,
+  "selected_symbols": 1237,
+  "current_rebalance_count": 424,
+  "fixed_rebalance_count": 422,
+  "rebalance_diff_rows": 676
+}
