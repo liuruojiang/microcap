@@ -6,6 +6,31 @@ import pandas as pd
 
 
 class Top100RealtimeAnchorRefreshTest(unittest.TestCase):
+    def test_load_close_df_caps_panel_and_proxy_at_confirmed_anchor(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            panel_path = root / "panel.csv"
+            index_path = root / "index.csv"
+            dates = pd.bdate_range("2026-04-01", "2026-05-12")
+            pd.DataFrame({"date": dates, base.HEDGE_COLUMN: range(100, 100 + len(dates))}).to_csv(
+                panel_path,
+                index=False,
+            )
+            pd.DataFrame(
+                {
+                    "date": dates,
+                    "close": range(200, 200 + len(dates)),
+                    "holding_count": [100] * len(dates),
+                }
+            ).to_csv(index_path, index=False)
+
+            close_df = base.load_close_df(panel_path, index_path, max_date=pd.Timestamp("2026-05-11"))
+
+        self.assertEqual(close_df.index.max(), pd.Timestamp("2026-05-11"))
+        self.assertNotIn(pd.Timestamp("2026-05-12"), close_df.index)
+
     def test_intraday_history_anchor_ignores_same_day_hedge_history(self):
         import microcap_top100_mom16_biweekly_live as base
 
@@ -34,6 +59,20 @@ class Top100RealtimeAnchorRefreshTest(unittest.TestCase):
 
         self.assertEqual(latest, pd.Timestamp("2026-05-11"))
 
+    def test_late_afternoon_history_anchor_still_ignores_same_day_hedge_history(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        hedge_hist = pd.DataFrame(
+            [
+                {"date": "2026-05-11", "close": 8866.78},
+                {"date": "2026-05-12", "close": 8790.34},
+            ]
+        )
+
+        latest = base.latest_closed_history_date(hedge_hist, now=pd.Timestamp("2026-05-12 16:20:00"))
+
+        self.assertEqual(latest, pd.Timestamp("2026-05-11"))
+
     def test_after_close_history_anchor_can_use_same_day_hedge_history(self):
         import microcap_top100_mom16_biweekly_live as base
 
@@ -44,9 +83,25 @@ class Top100RealtimeAnchorRefreshTest(unittest.TestCase):
             ]
         )
 
-        latest = base.latest_closed_history_date(hedge_hist, now=pd.Timestamp("2026-05-12 16:05:00"))
+        latest = base.latest_closed_history_date(hedge_hist, now=pd.Timestamp("2026-05-12 20:05:00"))
 
         self.assertEqual(latest, pd.Timestamp("2026-05-12"))
+
+    def test_intraday_same_day_panel_shadow_cache_is_not_reused(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        with tempfile.TemporaryDirectory() as tmp:
+            panel_shadow = Path(tmp) / "shadow.csv"
+            panel_shadow.write_text("date,hedge\n2026-05-12,1\n", encoding="utf-8")
+
+            reusable = base.panel_shadow_cache_is_reusable(
+                panel_shadow,
+                pd.Timestamp("2026-05-12"),
+                now=pd.Timestamp("2026-05-12 14:55:00"),
+                same_day_max_age_seconds=86400,
+            )
+
+        self.assertFalse(reusable)
 
     def test_realtime_query_base_context_refreshes_strategy_files_before_loading_index(self):
         import microcap_top100_mom16_biweekly_live as base
