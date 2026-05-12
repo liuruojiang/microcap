@@ -361,6 +361,20 @@ def fetch_eastmoney_index_history(
     return out.reset_index(drop=True)
 
 
+def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | None = None) -> pd.Timestamp:
+    current_ts = pd.Timestamp.now() if now is None else pd.Timestamp(now)
+    dates = pd.to_datetime(history_df["date"], errors="coerce").dropna().sort_values()
+    if dates.empty:
+        raise RuntimeError("No valid historical dates available.")
+    current_day = current_ts.normalize()
+    close_confirm_ts = current_day + pd.Timedelta(hours=15, minutes=30)
+    if current_ts < close_confirm_ts:
+        dates = dates[dates.dt.normalize() < current_day]
+    if dates.empty:
+        raise RuntimeError("No close-confirmed historical dates available.")
+    return pd.Timestamp(dates.max()).normalize()
+
+
 def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
     existing_shadow_end = read_csv_last_date(paths["panel_shadow"])
     if panel_shadow_cache_is_reusable(paths["panel_shadow"], existing_shadow_end):
@@ -374,7 +388,8 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
     latest_panel_date = pd.Timestamp(panel["date"].max())
     history_start = latest_panel_date - pd.Timedelta(days=HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS)
     hedge_hist = fetch_eastmoney_index_history("1.000852", history_start)
-    latest_hedge_date = pd.Timestamp(hedge_hist["date"].max())
+    latest_hedge_date = latest_closed_history_date(hedge_hist)
+    hedge_hist = hedge_hist.loc[pd.to_datetime(hedge_hist["date"], errors="coerce") <= latest_hedge_date].copy()
 
     shadow = panel.set_index("date")
     for row in hedge_hist.itertuples(index=False):

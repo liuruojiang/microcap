@@ -6,6 +6,34 @@ import pandas as pd
 
 
 class Top100RealtimeAnchorRefreshTest(unittest.TestCase):
+    def test_intraday_history_anchor_ignores_same_day_hedge_history(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        hedge_hist = pd.DataFrame(
+            [
+                {"date": "2026-05-11", "close": 8866.78},
+                {"date": "2026-05-12", "close": 8790.34},
+            ]
+        )
+
+        latest = base.latest_closed_history_date(hedge_hist, now=pd.Timestamp("2026-05-12 14:55:00"))
+
+        self.assertEqual(latest, pd.Timestamp("2026-05-11"))
+
+    def test_after_close_history_anchor_can_use_same_day_hedge_history(self):
+        import microcap_top100_mom16_biweekly_live as base
+
+        hedge_hist = pd.DataFrame(
+            [
+                {"date": "2026-05-11", "close": 8866.78},
+                {"date": "2026-05-12", "close": 8790.34},
+            ]
+        )
+
+        latest = base.latest_closed_history_date(hedge_hist, now=pd.Timestamp("2026-05-12 16:05:00"))
+
+        self.assertEqual(latest, pd.Timestamp("2026-05-12"))
+
     def test_realtime_query_base_context_refreshes_strategy_files_before_loading_index(self):
         import microcap_top100_mom16_biweekly_live as base
 
