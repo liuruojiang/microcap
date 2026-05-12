@@ -422,6 +422,9 @@ def panel_shadow_cache_is_reusable(
         return True
     if shadow_day < current_day:
         return False
+    close_confirm_ts = current_day + pd.Timedelta(hours=20)
+    if current_ts < close_confirm_ts:
+        return False
     try:
         mtime = pd.Timestamp.fromtimestamp(panel_shadow.stat().st_mtime)
     except OSError:
@@ -910,13 +913,17 @@ def ensure_strategy_files(
     assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
 
 
-def load_close_df(panel_path: Path, index_csv: Path) -> pd.DataFrame:
+def load_close_df(panel_path: Path, index_csv: Path, max_date: pd.Timestamp | None = None) -> pd.DataFrame:
     panel = pd.read_csv(panel_path, usecols=["date", HEDGE_COLUMN])
     panel["date"] = pd.to_datetime(panel["date"])
-    hedge = panel.set_index("date")[HEDGE_COLUMN].rename("hedge").astype(float)
 
     proxy = pd.read_csv(index_csv)
     proxy["date"] = pd.to_datetime(proxy["date"])
+    if max_date is not None:
+        max_ts = pd.Timestamp(max_date).normalize()
+        panel = panel.loc[panel["date"].dt.normalize() <= max_ts].copy()
+        proxy = proxy.loc[proxy["date"].dt.normalize() <= max_ts].copy()
+    hedge = panel.set_index("date")[HEDGE_COLUMN].rename("hedge").astype(float)
     effective_start = infer_proxy_effective_start(proxy)
     microcap = proxy.set_index("date")["close"].rename("microcap").astype(float)
 
