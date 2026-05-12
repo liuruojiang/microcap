@@ -3356,6 +3356,7 @@ def ensure_realtime_query_base_context(
     panel_path: Path,
     target_end_date: pd.Timestamp,
 ) -> dict[str, object]:
+    ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
     if not args.index_csv.exists():
         raise FileNotFoundError(f"Missing proxy index required for realtime query: {args.index_csv}")
     close_df = load_close_df(panel_path, args.index_csv)
