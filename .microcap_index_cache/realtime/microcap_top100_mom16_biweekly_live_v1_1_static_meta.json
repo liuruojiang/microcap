@@ -1,5 +1,8 @@
 {
-  "cache_version": "2026-04-11-live-current-st-members-v1",
+  "cache_version": "2026-05-12-live-current-st-members-v2",
+  "member_filter_policy_version": "empty-name-reject-v1",
+  "proxy_rebalance_policy_version": "fixed-biweekly-anchor-20160107-v1",
+  "rebalance_phase_anchor_date": "2016-01-07",
   "latest_rebalance": "2026-04-30",
   "prev_rebalance": "2026-04-16",
   "effective_rebalance": "2026-04-30",

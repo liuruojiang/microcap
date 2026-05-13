@@ -11,18 +11,22 @@
     "block_limit_down_exit_at_close": true,
     "rebalance_frequency": "biweekly",
     "rebalance_weekday_anchor": "Thursday",
+    "rebalance_phase_anchor_date": "2016-01-07",
     "lookback": 16,
     "hedge_column": "1.000852",
     "execution_timing": "close",
     "trade_constraint_mode": "close",
-    "research_stack_version": "2026-04-11-p0-p1-history-meta-master-stv2",
+    "research_stack_version": "2026-05-12-p0-p1-history-meta-master-stv3",
+    "member_filter_policy_version": "empty-name-reject-v1",
+    "realtime_quote_policy_version": "strict-per-symbol-date-v1",
+    "proxy_rebalance_policy_version": "fixed-biweekly-anchor-20160107-v1",
     "security_meta_version": 2,
     "security_master_enabled": true
   },
   "start_date": "2010-01-08",
-  "end_date": "2026-05-11",
-  "rebalance_dates_count": 421,
+  "end_date": "2026-05-12",
+  "rebalance_dates_count": 420,
   "effective_start_date": "2010-01-08",
-  "recent_extension_start": "2026-03-11",
-  "recent_candidate_symbols": 511
+  "recent_extension_start": "2026-03-12",
+  "recent_candidate_symbols": 803
 }

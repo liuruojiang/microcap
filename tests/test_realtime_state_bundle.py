@@ -15,7 +15,7 @@ def _write_csv(path: Path, header: str, row: str) -> None:
     path.write_text(f"{header}\n{row}\n", encoding="utf-8")
 
 
-def _write_minimal_state(root: Path) -> None:
+def _write_minimal_state(root: Path, anchor_date: str = "2026-05-11") -> None:
     outputs = root / "outputs"
     cache = root / ".microcap_index_cache"
     outputs.mkdir(parents=True, exist_ok=True)
@@ -24,7 +24,7 @@ def _write_minimal_state(root: Path) -> None:
     _write_csv(
         outputs / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
         "date,close,daily_return",
-        "2026-05-11,1000,0.01",
+        f"{anchor_date},1000,0.01",
     )
     _write_csv(
         outputs / "microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv",
@@ -39,7 +39,7 @@ def _write_minimal_state(root: Path) -> None:
     _write_csv(
         outputs / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
         "date,nav_net",
-        "2026-05-11,1.1",
+        f"{anchor_date},1.1",
     )
     _write_csv(cache / "active_universe.csv", "code,name", "000001,example")
     _write_csv(cache / "current_st.csv", "code", "000002")
@@ -51,7 +51,7 @@ def _write_minimal_state(root: Path) -> None:
     _write_csv(
         cache / "prices_raw/000001.csv",
         "date,close_raw",
-        "2026-05-11,10.0",
+        f"{anchor_date},10.0",
     )
     _write_csv(
         cache / "share_change/000001.csv",
@@ -60,7 +60,7 @@ def _write_minimal_state(root: Path) -> None:
     )
 
     (outputs / "microcap_top100_mom16_biweekly_live_summary.json").write_text(
-        json.dumps({"latest_trade_date": "2026-05-11"}),
+        json.dumps({"latest_trade_date": anchor_date}),
         encoding="utf-8",
     )
     (outputs / "microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json").write_text(
@@ -91,6 +91,23 @@ def test_pack_restore_round_trip_validates_required_state(tmp_path: Path) -> Non
     assert (restored / ".microcap_index_cache/active_universe.csv").is_file()
     assert (restored / ".microcap_index_cache/prices_raw/000001.csv").is_file()
     assert (restored / ".microcap_index_cache/share_change/000001.csv").is_file()
+
+
+def test_restore_does_not_downgrade_newer_checkout_state(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    checkout = tmp_path / "checkout"
+    bundle = tmp_path / "state.zip"
+    _write_minimal_state(source, anchor_date="2026-05-11")
+    _write_minimal_state(checkout, anchor_date="2026-05-12")
+    pack_report = realtime_state_bundle.pack_state(source, bundle, max_anchor_age_days=None)
+
+    restore_report = realtime_state_bundle.restore_state(checkout, bundle, max_anchor_age_days=None)
+
+    assert pack_report["ok"] is True
+    assert restore_report["ok"] is True
+    assert restore_report["restore_source"] == "existing_checkout_state"
+    assert restore_report["anchor_dates"]["proxy_index"] == "2026-05-12"
+    assert restore_report["anchor_dates"]["costed_nav"] == "2026-05-12"
 
 
 def test_validate_rejects_missing_current_member_price_cache(tmp_path: Path) -> None:
@@ -137,7 +154,7 @@ def test_refresh_reuses_existing_valid_state_when_external_refresh_fails(
             "proxy_members": tmp_path / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv",
             "proxy_turnover": tmp_path / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
         },
-        build_refreshed_panel_shadow=lambda *_args: (tmp_path / "panel.csv", realtime_state_bundle.date.fromisoformat("2026-05-13")),
+        build_refreshed_panel_shadow=lambda *_args: (tmp_path / "panel.csv", realtime_state_bundle.date.fromisoformat("2026-05-11")),
         ensure_strategy_files=lambda *_args: (_ for _ in ()).throw(RuntimeError("provider refresh failed")),
     )
     core_module = types.ModuleType("top100_realtime_core")
@@ -155,3 +172,40 @@ def test_refresh_reuses_existing_valid_state_when_external_refresh_fails(
     assert report["refresh_source"] == "existing_validated_state"
     assert "provider refresh failed" in report["refresh_warning"]
     assert calls == ["static:False"]
+
+
+def test_refresh_rejects_existing_state_older_than_refresh_target(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _write_minimal_state(tmp_path)
+
+    runner_module = types.ModuleType("run_top100_v1_6_v1_8_realtime_signals")
+    runner_module.ensure_static_realtime_inputs = lambda force_refresh=False: None
+
+    base_mod = types.SimpleNamespace(
+        DEFAULT_OUTPUT_PREFIX="microcap_top100_mom16_biweekly_live_v1_1",
+        build_output_paths=lambda _prefix: {
+            "proxy_meta": tmp_path / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json",
+            "proxy_members": tmp_path / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv",
+            "proxy_turnover": tmp_path / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
+        },
+        build_refreshed_panel_shadow=lambda *_args: (
+            tmp_path / "panel.csv",
+            realtime_state_bundle.date.fromisoformat("2026-05-13"),
+        ),
+        ensure_strategy_files=lambda *_args: (_ for _ in ()).throw(RuntimeError("provider refresh failed")),
+    )
+    core_module = types.ModuleType("top100_realtime_core")
+    core_module.BASE_COSTED_NAV_CSV = (
+        tmp_path / "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv"
+    )
+    core_module.base_mod = base_mod
+    core_module.v1_1_mod = types.SimpleNamespace(prepare_current_v1_1_outputs=lambda **_kwargs: None)
+    core_module.build_v1_1_args = lambda max_workers=8: types.SimpleNamespace(max_workers=max_workers)
+
+    monkeypatch.setitem(sys.modules, "run_top100_v1_6_v1_8_realtime_signals", runner_module)
+    monkeypatch.setitem(sys.modules, "top100_realtime_core", core_module)
+
+    with pytest.raises(RuntimeError, match="older than refresh target"):
+        realtime_state_bundle.refresh_state(tmp_path, max_workers=1)

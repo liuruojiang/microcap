@@ -319,29 +319,45 @@ def refresh_state(
         paths=base_paths,
         costed_nav_csv=realtime_core.BASE_COSTED_NAV_CSV,
     )
+    target_end_date: date | None = None
     try:
-        panel_path, target_end_date = realtime_core.base_mod.build_refreshed_panel_shadow(args, base_paths)
-        realtime_core.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_date)
+        panel_path, target_end_ts = realtime_core.base_mod.build_refreshed_panel_shadow(args, base_paths)
+        target_end_date = _parse_date(str(target_end_ts))
+        if target_end_date is None:
+            raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
+        realtime_core.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_ts)
         base_context = realtime_core.base_mod.ensure_realtime_query_base_context(
             args,
             base_paths,
             panel_path,
-            target_end_date,
+            target_end_ts,
         )
         realtime_core.base_mod.ensure_static_members_fresh(
             args,
             base_paths,
             panel_path,
-            target_end_date,
+            target_end_ts,
             base_context,
         )
         report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
-        report["target_end_date"] = target_end_date.date().isoformat()
+        report["target_end_date"] = target_end_date.isoformat()
         report["panel_path"] = str(panel_path)
         report["refresh_source"] = "fresh"
         return report
     except Exception as exc:
         report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        if target_end_date is not None:
+            report["target_end_date"] = target_end_date.isoformat()
+            anchor_dates = report.get("anchor_dates", {})
+            if isinstance(anchor_dates, dict):
+                for name in ("proxy_index", "costed_nav"):
+                    anchor_date = _parse_date(str(anchor_dates.get(name) or ""))
+                    if anchor_date is None or anchor_date < target_end_date:
+                        report.setdefault("errors", []).append(
+                            f"{name} is older than refresh target: "
+                            f"last_date={anchor_dates.get(name)} target_end_date={target_end_date.isoformat()}"
+                        )
+            report["ok"] = not report.get("errors")
         report["refresh_source"] = "existing_validated_state"
         report["refresh_warning"] = f"state refresh failed; reused existing validated state: {exc}"
         if not report["ok"]:
@@ -357,6 +373,38 @@ def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> 
         return {"ok": False, "errors": [f"missing bundle: {bundle}"], "warnings": []}
     root = root.resolve()
     with zipfile.ZipFile(bundle, "r") as archive:
+        bundle_validation: dict[str, object] | None = None
+        if MANIFEST_NAME in archive.namelist():
+            manifest = json.loads(archive.read(MANIFEST_NAME).decode("utf-8"))
+            validation = manifest.get("validation")
+            if isinstance(validation, dict):
+                bundle_validation = validation
+
+        current_report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        if current_report.get("ok") and bundle_validation and bundle_validation.get("ok"):
+            current_anchors = current_report.get("anchor_dates", {})
+            bundle_anchors = bundle_validation.get("anchor_dates", {})
+            if isinstance(current_anchors, dict) and isinstance(bundle_anchors, dict):
+                current_dates = {
+                    name: _parse_date(str(current_anchors.get(name) or ""))
+                    for name in ("proxy_index", "costed_nav")
+                }
+                bundle_dates = {
+                    name: _parse_date(str(bundle_anchors.get(name) or ""))
+                    for name in ("proxy_index", "costed_nav")
+                }
+                comparable = all(current_dates[name] is not None and bundle_dates[name] is not None for name in current_dates)
+                if comparable and all(current_dates[name] >= bundle_dates[name] for name in current_dates) and any(
+                    current_dates[name] > bundle_dates[name] for name in current_dates
+                ):
+                    current_report["restore_source"] = "existing_checkout_state"
+                    current_report["restore_warning"] = (
+                        "skipped older state bundle: "
+                        f"bundle_proxy_index={bundle_anchors.get('proxy_index')} "
+                        f"bundle_costed_nav={bundle_anchors.get('costed_nav')}"
+                    )
+                    return current_report
+
         for member in archive.infolist():
             if member.is_dir() or member.filename == MANIFEST_NAME:
                 continue
@@ -367,7 +415,9 @@ def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> 
             target.parent.mkdir(parents=True, exist_ok=True)
             with archive.open(member, "r") as source, target.open("wb") as dest:
                 dest.write(source.read())
-    return validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    report["restore_source"] = "bundle"
+    return report
 
 
 def _print_report(report: dict[str, object]) -> None:

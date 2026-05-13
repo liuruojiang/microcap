@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 
@@ -27,3 +28,18 @@ def test_state_refresh_workflow_owns_state_bundle_production() -> None:
     assert "Pack validated realtime state bundle" in workflow
     assert "Upload validated realtime state bundle" in workflow
     assert "top100-realtime-state-bundle" in workflow
+
+
+def test_state_refresh_cache_does_not_restore_state_bundle_outputs() -> None:
+    workflow = (ROOT / ".github/workflows/top100_state_refresh.yml").read_text(encoding="utf-8")
+    match = re.search(
+        r"- name: Restore generated strategy cache(?P<body>.*?)- name: Restore previous state bundle",
+        workflow,
+        flags=re.S,
+    )
+
+    assert match is not None
+    cache_step = match.group("body")
+    assert "outputs" not in cache_step
+    assert ".microcap_index_cache" not in cache_step
+    assert ".microcap_ohlc_cache" in cache_step
