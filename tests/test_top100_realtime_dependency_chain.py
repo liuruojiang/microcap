@@ -128,3 +128,17 @@ def test_production_realtime_context_uses_cached_proxy_boundary(monkeypatch: pyt
     assert calls == ["cached_proxy"]
     assert context is cached_context
     assert summary == {"summary": "ok"}
+
+
+def test_production_realtime_refuses_price_cache_refresh(monkeypatch: pytest.MonkeyPatch) -> None:
+    base_mod = realtime_core.base_mod
+    monkeypatch.setenv(realtime_core.REQUIRE_STATE_ENV, "1")
+    monkeypatch.setattr(base_mod, "load_latest_close_snapshot_map", lambda *_args, **_kwargs: {})
+
+    def fail_refresh(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("production mode must not refresh price caches during realtime send")
+
+    monkeypatch.setattr(base_mod, "refresh_price_cache_tail", fail_refresh)
+
+    with pytest.raises(RuntimeError, match="refusing realtime refresh"):
+        base_mod.ensure_realtime_last_close_map(["000001"], as_of_date=pd.Timestamp("2026-05-11"))

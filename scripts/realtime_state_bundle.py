@@ -31,6 +31,13 @@ OPTIONAL_GLOBS = (
     ".microcap_index_cache/*_static_*.csv",
 )
 
+PRICE_CACHE_DIR = ".microcap_index_cache/prices_raw"
+SHARE_CACHE_DIR = ".microcap_index_cache/share_change"
+STATIC_EFFECTIVE_MEMBER_GLOBS = (
+    ".microcap_index_cache/realtime/*static_effective_members.csv",
+    ".microcap_index_cache/*_static_effective_members.csv",
+)
+
 
 def _repo_path(path: str) -> PurePosixPath:
     posix = path.replace("\\", "/").lstrip("/")
@@ -57,6 +64,9 @@ def _iter_bundle_files(root: Path) -> list[str]:
         for path in root.glob(pattern):
             if path.is_file():
                 found.add(path.relative_to(root).as_posix())
+    for rel in _iter_current_member_cache_files(root):
+        if (root / rel).is_file():
+            found.add(rel)
     return sorted(found)
 
 
@@ -91,6 +101,62 @@ def _csv_last_date(path: Path, candidates: Iterable[str]) -> date | None:
         if name in header:
             return _parse_date(last_row.get(name, ""))
     return None
+
+
+def _csv_symbols(path: Path) -> list[str]:
+    if not path.is_file():
+        return []
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if "symbol" not in (reader.fieldnames or []):
+            return []
+        symbols: list[str] = []
+        for row in reader:
+            value = str(row.get("symbol") or "").strip()
+            if value:
+                symbols.append(value.zfill(6))
+        return symbols
+
+
+def _latest_proxy_member_symbols(root: Path) -> list[str]:
+    path = root / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv"
+    if not path.is_file():
+        return []
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if "symbol" not in (reader.fieldnames or []) or "rebalance_date" not in (reader.fieldnames or []):
+            return []
+        rows = list(reader)
+    dated_rows = [(row, _parse_date(str(row.get("rebalance_date") or ""))) for row in rows]
+    dates = [value for _row, value in dated_rows if value is not None]
+    if not dates:
+        return []
+    latest = max(dates)
+    return [
+        str(row.get("symbol") or "").strip().zfill(6)
+        for row, value in dated_rows
+        if value == latest and str(row.get("symbol") or "").strip()
+    ]
+
+
+def _current_member_symbols(root: Path) -> list[str]:
+    symbols: set[str] = set()
+    for pattern in STATIC_EFFECTIVE_MEMBER_GLOBS:
+        for path in root.glob(pattern):
+            symbols.update(_csv_symbols(path))
+    if not symbols:
+        symbols.update(_latest_proxy_member_symbols(root))
+    return sorted(symbols)
+
+
+def _iter_current_member_cache_files(root: Path) -> list[str]:
+    files: list[str] = []
+    for symbol in _current_member_symbols(root):
+        for cache_dir in (PRICE_CACHE_DIR, SHARE_CACHE_DIR):
+            rel = f"{cache_dir}/{symbol}.csv"
+            if (root / rel).is_file():
+                files.append(rel)
+    return sorted(set(files))
 
 
 def validate_state(root: Path, max_anchor_age_days: int | None = None, today: date | None = None) -> dict[str, object]:
@@ -165,12 +231,46 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
             elif age_days < 0:
                 warnings.append(f"{name} has a future date: last_date={value.isoformat()}")
 
+    current_symbols = _current_member_symbols(root)
+    price_cache_files: list[dict[str, object]] = []
+    price_anchor = anchor_dates.get("proxy_index")
+    if not current_symbols:
+        errors.append("cannot identify current effective member symbols for realtime price-cache validation")
+    for symbol in current_symbols:
+        rel = f"{PRICE_CACHE_DIR}/{symbol}.csv"
+        path = root / rel
+        if not path.is_file():
+            errors.append(f"missing current member price cache: {rel}")
+            continue
+        if path.stat().st_size <= 0:
+            errors.append(f"current member price cache is empty: {rel}")
+            continue
+        last_date = _csv_last_date(path, ("date",))
+        if last_date is None:
+            errors.append(f"cannot read last date for current member price cache: {rel}")
+            continue
+        if price_anchor is not None and last_date < price_anchor:
+            errors.append(
+                f"current member price cache is stale: {rel} last_date={last_date.isoformat()} "
+                f"anchor_date={price_anchor.isoformat()}"
+            )
+        price_cache_files.append(
+            {
+                "path": rel,
+                "bytes": path.stat().st_size,
+                "sha256": _sha256(path),
+                "last_date": last_date.isoformat(),
+            }
+        )
+
     return {
         "ok": not errors,
         "errors": errors,
         "warnings": warnings,
         "files": files,
         "anchor_dates": {key: value.isoformat() if value else None for key, value in anchor_dates.items()},
+        "current_member_symbols": current_symbols,
+        "price_cache_files": price_cache_files,
     }
 
 
