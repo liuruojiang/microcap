@@ -57,6 +57,7 @@ REALTIME_QUOTE_RETRY_SECONDS = 5
 REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
 REALTIME_CACHE_LOCK_TIMEOUT_SECONDS = 30
 REALTIME_CACHE_STALE_LOCK_SECONDS = 300
+TOP100_REALTIME_REQUIRE_STATE_ENV = "TOP100_REALTIME_REQUIRE_STATE"
 ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES = {
     "eastmoney_stock_get",
     "qveris_cn_financial_pro_realtime",
@@ -4747,6 +4748,17 @@ def ensure_realtime_last_close_map(
         for symbol in clean_symbols
         if symbol not in snapshots or pd.Timestamp(snapshots[symbol][0]).normalize() < target_date
     ]
+    if stale_or_missing and os.environ.get(TOP100_REALTIME_REQUIRE_STATE_ENV, "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        sample = ", ".join(stale_or_missing[:10])
+        raise RuntimeError(
+            "Missing required current-member price cache in production state; refusing realtime refresh: "
+            f"{len(stale_or_missing)}/{len(clean_symbols)} missing or stale. Sample: {sample}"
+        )
     if stale_or_missing:
         try:
             refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)

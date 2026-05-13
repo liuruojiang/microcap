@@ -43,6 +43,21 @@ def _write_minimal_state(root: Path) -> None:
     )
     _write_csv(cache / "active_universe.csv", "code,name", "000001,example")
     _write_csv(cache / "current_st.csv", "code", "000002")
+    _write_csv(
+        cache / "realtime/microcap_top100_mom16_biweekly_live_v1_1_static_effective_members.csv",
+        "symbol,rank",
+        "000001,1",
+    )
+    _write_csv(
+        cache / "prices_raw/000001.csv",
+        "date,close_raw",
+        "2026-05-11,10.0",
+    )
+    _write_csv(
+        cache / "share_change/000001.csv",
+        "change_date,total_shares_10k",
+        "2026-05-01,10000",
+    )
 
     (outputs / "microcap_top100_mom16_biweekly_live_summary.json").write_text(
         json.dumps({"latest_trade_date": "2026-05-11"}),
@@ -74,6 +89,18 @@ def test_pack_restore_round_trip_validates_required_state(tmp_path: Path) -> Non
     assert restore_report["ok"] is True
     assert (restored / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json").is_file()
     assert (restored / ".microcap_index_cache/active_universe.csv").is_file()
+    assert (restored / ".microcap_index_cache/prices_raw/000001.csv").is_file()
+    assert (restored / ".microcap_index_cache/share_change/000001.csv").is_file()
+
+
+def test_validate_rejects_missing_current_member_price_cache(tmp_path: Path) -> None:
+    _write_minimal_state(tmp_path)
+    (tmp_path / ".microcap_index_cache/prices_raw/000001.csv").unlink()
+
+    report = realtime_state_bundle.validate_state(tmp_path)
+
+    assert report["ok"] is False
+    assert "missing current member price cache: .microcap_index_cache/prices_raw/000001.csv" in report["errors"]
 
 
 def test_validate_rejects_stale_anchor(tmp_path: Path) -> None:
