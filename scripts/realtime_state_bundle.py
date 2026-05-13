@@ -201,7 +201,12 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dic
     return {**report, "bundle": str(bundle), "bundle_files": file_names}
 
 
-def refresh_state(root: Path, max_workers: int = 8, force_refresh_static_inputs: bool = False) -> dict[str, object]:
+def refresh_state(
+    root: Path,
+    max_workers: int = 8,
+    force_refresh_static_inputs: bool = False,
+    max_anchor_age_days: int | None = None,
+) -> dict[str, object]:
     sys.path.insert(0, str(root.resolve()))
     from run_top100_v1_6_v1_8_realtime_signals import ensure_static_realtime_inputs
     import top100_realtime_core as realtime_core
@@ -214,25 +219,37 @@ def refresh_state(root: Path, max_workers: int = 8, force_refresh_static_inputs:
         paths=base_paths,
         costed_nav_csv=realtime_core.BASE_COSTED_NAV_CSV,
     )
-    panel_path, target_end_date = realtime_core.base_mod.build_refreshed_panel_shadow(args, base_paths)
-    realtime_core.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_date)
-    base_context = realtime_core.base_mod.ensure_realtime_query_base_context(
-        args,
-        base_paths,
-        panel_path,
-        target_end_date,
-    )
-    realtime_core.base_mod.ensure_static_members_fresh(
-        args,
-        base_paths,
-        panel_path,
-        target_end_date,
-        base_context,
-    )
-    report = validate_state(root)
-    report["target_end_date"] = target_end_date.date().isoformat()
-    report["panel_path"] = str(panel_path)
-    return report
+    try:
+        panel_path, target_end_date = realtime_core.base_mod.build_refreshed_panel_shadow(args, base_paths)
+        realtime_core.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_date)
+        base_context = realtime_core.base_mod.ensure_realtime_query_base_context(
+            args,
+            base_paths,
+            panel_path,
+            target_end_date,
+        )
+        realtime_core.base_mod.ensure_static_members_fresh(
+            args,
+            base_paths,
+            panel_path,
+            target_end_date,
+            base_context,
+        )
+        report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        report["target_end_date"] = target_end_date.date().isoformat()
+        report["panel_path"] = str(panel_path)
+        report["refresh_source"] = "fresh"
+        return report
+    except Exception as exc:
+        report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        report["refresh_source"] = "existing_validated_state"
+        report["refresh_warning"] = f"state refresh failed; reused existing validated state: {exc}"
+        if not report["ok"]:
+            raise RuntimeError(
+                "state refresh failed and no reusable validated state is available: "
+                + "; ".join(str(error) for error in report.get("errors", []))
+            ) from exc
+        return report
 
 
 def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dict[str, object]:
@@ -276,6 +293,7 @@ def main(argv: list[str] | None = None) -> int:
     refresh_parser.add_argument("--root", type=Path, default=Path("."), help="repository root")
     refresh_parser.add_argument("--max-workers", type=int, default=8)
     refresh_parser.add_argument("--force-refresh-static-inputs", action="store_true")
+    refresh_parser.add_argument("--max-anchor-age-days", type=int, default=None)
 
     restore_parser = subparsers.add_parser("restore")
     add_common(restore_parser)
@@ -291,6 +309,7 @@ def main(argv: list[str] | None = None) -> int:
             args.root,
             max_workers=args.max_workers,
             force_refresh_static_inputs=args.force_refresh_static_inputs,
+            max_anchor_age_days=args.max_anchor_age_days,
         )
     else:
         report = restore_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
