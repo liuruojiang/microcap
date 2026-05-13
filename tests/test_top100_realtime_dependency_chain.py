@@ -310,3 +310,16 @@ def test_sparse_member_quotes_can_use_last_close_flat_fallback() -> None:
     assert fallback["pre_close"] == pytest.approx(30.0)
     assert fallback["trade_date"] == "2026-05-13"
     assert fallback["quote_source"] == "latest_close_flat_fallback"
+
+
+def test_qveris_runtime_entries_are_disabled() -> None:
+    base_mod = realtime_core.base_mod
+
+    assert "qveris_cn_financial_pro_realtime" not in base_mod.ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES
+
+    with pytest.raises(RuntimeError, match="QVeris is disabled"):
+        base_mod.fetch_qveris_realtime_quotes(["000001"])
+    with pytest.raises(RuntimeError, match="QVeris is disabled"):
+        base_mod.fetch_qveris_index_history("1.000852", pd.Timestamp("2026-01-01"), pd.Timestamp("2026-01-02"))
+    with pytest.raises(RuntimeError, match="QVeris is disabled"):
+        base_mod.fetch_qveris_price_history("000001", "2026-01-01", "2026-01-02")

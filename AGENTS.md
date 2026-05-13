@@ -49,16 +49,12 @@
 - If that junction is missing, recreate an ASCII-only alias before replying with local image tags or file links. Use the desktop junction first; use a temporary `W:/...` mapping only as fallback.
 - Do not default back to the original Chinese-character workspace path when sharing local charts or image files in desktop responses if an ASCII alias is available.
 
-# QVeris API Defaults
+# Market Data Availability
 
-- Use QVeris only through the REST API at `https://qveris.ai/api/v1`.
-- For live market data, total market capitalization checks, microcap Top100 pool checks, and version-specific realtime signal quote snapshots, prefer free data sources first: Xinhua Finance, Sina, Eastmoney, Tencent, or local cache when fresh and coverage is sufficient. Use QVeris as a paid fallback only when free sources are stale, incomplete, unavailable, or inconsistent enough to block a reliable answer. Report any QVeris fallback/source caveat in the answer.
-- Never store QVeris API keys or other secrets in `AGENTS.md`, repo files, scripts, command lines, logs, or chat replies. Read the key from the `QVERIS_API_KEY` environment variable or a secure secret manager only.
-- Authenticate with `Authorization: Bearer $QVERIS_API_KEY` and `Content-Type: application/json`.
-- Capability discovery is free: `POST /search` with `{ "query": "...", "limit": 10, "session_id": "..." }`.
-- Inspect tool details with `POST /tools/by-ids` and execute tools with `POST /tools/execute?tool_id=...`.
-- Tool execution consumes credits. Before calling `/tools/execute`, search/inspect first, choose the smallest suitable tool, and report the expected operation clearly if the call may be expensive.
-- For long tool responses, set `max_response_size` deliberately and use returned `full_content_file_url` only when needed.
+- QVeris is no longer an available data source for future work in this workspace. Do not use QVeris discovery, tool execution, REST endpoints, or `QVERIS_API_KEY` as a fallback for live signals, pool checks, market-cap checks, history refreshes, or research inputs.
+- Prefer free sources and validated local cache first: Xinhua Finance / CNFin, Sina, Eastmoney, Tencent, exchange/vendor CSVs already checked into the workspace, and fresh workflow state bundles.
+- If free sources and local cache cannot provide the required field, freshness, or coverage, report the task as data-source blocked with the exact missing field/symbol/date. Do not silently fall back to QVeris or fabricate replacement data.
+- Historical documents and old output filenames may mention QVeris as provenance. Treat those as archived evidence only, not as an approved source for new runs.
 
 # Git Push Defaults
 

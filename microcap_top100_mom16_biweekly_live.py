@@ -24,6 +24,7 @@ QVERIS_API_BASE = "https://qveris.ai/api/v1"
 QVERIS_REALTIME_TOOL_ID = "cn_financial_pro.real_time_quotation.v1"
 QVERIS_INDEX_HISTORY_TOOL_QUERY = "A-share index daily historical close price by security code"
 QVERIS_STOCK_PRICE_HISTORY_TOOL_QUERY = "A-share stock daily historical raw close price by stock code"
+QVERIS_DISABLED_MESSAGE = "QVeris is disabled for future runs; use free sources or local cache."
 
 TOP_N = 100
 LOOKBACK = 16
@@ -61,7 +62,6 @@ REALTIME_CACHE_STALE_LOCK_SECONDS = 300
 TOP100_REALTIME_REQUIRE_STATE_ENV = "TOP100_REALTIME_REQUIRE_STATE"
 ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES = {
     "eastmoney_stock_get",
-    "qveris_cn_financial_pro_realtime",
     "tencent_batch_free",
 }
 _QVERIS_TOOL_ID_CACHE: dict[str, str] = {}
@@ -481,16 +481,9 @@ def fetch_eastmoney_index_history(
     except Exception as exc:
         last_error = exc
 
-    try:
-        qveris_out = fetch_qveris_index_history(secid, pd.Timestamp(start_date), end_ts)
-        if not qveris_out.empty:
-            qveris_out.attrs["source"] = "qveris_fallback_after_free_index_history_failure"
-            return qveris_out
-    except Exception as qveris_exc:
-        raise RuntimeError(
-            f"Free index history sources failed for {secid}; QVeris fallback also failed or is unavailable: {qveris_exc}"
-        ) from qveris_exc
-    raise RuntimeError(f"All free and QVeris index history sources returned empty data for {secid}: {last_error}")
+    raise RuntimeError(
+        f"Free index history sources returned empty data for {secid}; QVeris fallback is disabled: {last_error}"
+    )
 
 
 def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | None = None) -> pd.Timestamp:
@@ -585,13 +578,9 @@ def refresh_price_cache_tail(
             fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
             return
         except Exception as free_exc:
-            try:
-                qveris_frame = fetch_qveris_price_history(symbol, freq_mod.START_DATE, end_text)
-                write_qveris_price_history_cache(symbol, qveris_frame)
-            except Exception as qveris_exc:
-                raise RuntimeError(
-                    f"free price refresh failed for {symbol}; QVeris fallback also failed: {qveris_exc}"
-                ) from free_exc
+            raise RuntimeError(
+                f"free price refresh failed for {symbol}; QVeris fallback is disabled"
+            ) from free_exc
 
     def refresh_symbol(symbol: str) -> None:
         refresh_price_history_with_fallback(symbol)
@@ -4515,6 +4504,7 @@ def fetch_qveris_index_history(
     start_date: pd.Timestamp,
     end_date: pd.Timestamp,
 ) -> pd.DataFrame:
+    raise RuntimeError(QVERIS_DISABLED_MESSAGE)
     payload = _qveris_execute_discovered_tool(
         query=QVERIS_INDEX_HISTORY_TOOL_QUERY,
         cache_key="index_history",
@@ -4536,6 +4526,7 @@ def fetch_qveris_index_history(
 
 
 def fetch_qveris_price_history(symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    raise RuntimeError(QVERIS_DISABLED_MESSAGE)
     payload = _qveris_execute_discovered_tool(
         query=QVERIS_STOCK_PRICE_HISTORY_TOOL_QUERY,
         cache_key="stock_price_history",
@@ -4591,6 +4582,7 @@ def fetch_qveris_realtime_quotes(
     symbols: list[str],
     batch_size: int = 50,
 ) -> tuple[pd.DataFrame, str]:
+    raise RuntimeError(QVERIS_DISABLED_MESSAGE)
     api_key = os.environ.get("QVERIS_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("QVERIS_API_KEY is not set")
