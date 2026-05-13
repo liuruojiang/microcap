@@ -29,6 +29,7 @@ gcm-diagnose.log
 _tmp_test_cache/
 _poe_cold_start_test/outputs/
 _poe_sandbox_clean/
+.runtime_state/
 
 # Project caches and generated outputs
 .autobuild_top100_cache/

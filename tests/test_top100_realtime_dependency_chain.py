@@ -4,6 +4,7 @@ import ast
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 import top100_realtime_core as realtime_core
 
@@ -67,3 +68,63 @@ def test_realtime_meta_values_are_csv_safe_for_one_row_signal() -> None:
 
     assert signal_row.loc[0, "member_quote_bad_symbols"] == "[]"
     assert signal_row.loc[0, "snapshot_time"] == "2026-05-13T11:30:00+08:00"
+
+
+def test_production_realtime_requires_validated_state_before_rebuild(monkeypatch: pytest.MonkeyPatch) -> None:
+    paths = {
+        "proxy_meta": Path("missing_meta.json"),
+        "proxy_members": Path("missing_members.csv"),
+        "proxy_turnover": Path("missing_turnover.csv"),
+    }
+    monkeypatch.setenv(realtime_core.REQUIRE_STATE_ENV, "1")
+    monkeypatch.setattr(realtime_core.base_mod, "build_output_paths", lambda _prefix: paths)
+    monkeypatch.setattr(realtime_core.v1_1_mod, "prepare_current_v1_1_outputs", lambda **_kwargs: None)
+    monkeypatch.setattr(realtime_core, "_missing_base_state", lambda _paths: [Path("missing_turnover.csv")])
+
+    def fail_rebuild(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("production mode must not rebuild missing realtime state")
+
+    monkeypatch.setattr(realtime_core.base_mod, "build_refreshed_panel_shadow", fail_rebuild)
+    monkeypatch.setattr(realtime_core.base_mod, "ensure_strategy_files", fail_rebuild)
+
+    with pytest.raises(FileNotFoundError, match="refusing implicit rebuild"):
+        realtime_core.ensure_base_outputs()
+
+
+def test_production_realtime_context_uses_cached_proxy_boundary(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[str] = []
+    paths = {
+        "proxy_meta": Path("meta.json"),
+        "proxy_members": Path("members.csv"),
+        "proxy_turnover": Path("turnover.csv"),
+    }
+    cached_context = {"close_df": pd.DataFrame({"microcap": [1.0], "hedge": [1.0]}, index=[pd.Timestamp("2026-05-11")])}
+
+    monkeypatch.setenv(realtime_core.REQUIRE_STATE_ENV, "1")
+    monkeypatch.setattr(realtime_core, "ensure_base_outputs", lambda: None)
+    monkeypatch.setattr(realtime_core, "load_reference_summary", lambda: {"summary": "ok"})
+    monkeypatch.setattr(realtime_core.base_mod, "build_output_paths", lambda _prefix: paths)
+    monkeypatch.setattr(
+        realtime_core.base_mod,
+        "refresh_history_anchor",
+        lambda *_args: (Path("panel.csv"), pd.Timestamp("2026-05-13")),
+    )
+
+    def cached_proxy(*_args: object, **_kwargs: object) -> dict[str, object]:
+        calls.append("cached_proxy")
+        return cached_context
+
+    def fail_fresh(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("production mode must not call fresh/rebuild context path")
+
+    monkeypatch.setattr(realtime_core.base_mod, "build_realtime_context_from_cached_proxy", cached_proxy)
+    monkeypatch.setattr(realtime_core.base_mod, "ensure_realtime_query_base_context", fail_fresh)
+    monkeypatch.setattr(realtime_core.base_mod, "ensure_base_signal_fresh", fail_fresh)
+    monkeypatch.setattr(realtime_core.base_mod, "ensure_static_members_fresh", lambda *_args: cached_context)
+    monkeypatch.setattr(pd, "read_csv", lambda *_args, **_kwargs: pd.DataFrame({"rebalance_date": ["2026-05-07"]}))
+
+    context, _turnover, summary = realtime_core.load_realtime_context()
+
+    assert calls == ["cached_proxy"]
+    assert context is cached_context
+    assert summary == {"summary": "ok"}
