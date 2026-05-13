@@ -53,16 +53,6 @@ jobs:
             --json databaseId \
             --jq '.[0].databaseId // ""')"
           if [ -z "${run_id}" ]; then
-            run_id="$(gh run list \
-              --repo "${GITHUB_REPOSITORY}" \
-              --workflow "Top100 Realtime Signals" \
-              --branch main \
-              --status success \
-              --limit 20 \
-              --json databaseId \
-              --jq '.[0].databaseId // ""')"
-          fi
-          if [ -z "${run_id}" ]; then
             echo "::notice::No previous successful run found for state bundle restore."
             exit 0
           fi
