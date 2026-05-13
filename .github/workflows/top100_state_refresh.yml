@@ -1,0 +1,119 @@
+name: Top100 State Refresh
+
+on:
+  schedule:
+    # 12:00 Asia/Shanghai == 04:00 UTC. Runs before realtime signal send.
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  refresh_state:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      TZ: Asia/Shanghai
+      QVERIS_API_KEY: ${{ secrets.QVERIS_API_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Restore generated strategy cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            outputs
+            .microcap_index_cache
+            .microcap_ohlc_cache
+          key: top100-state-refresh-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            top100-state-refresh-v1-${{ runner.os }}-
+            top100-realtime-anchor-refresh-v1-${{ runner.os }}-
+
+      - name: Restore previous state bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .runtime_state
+          run_id="$(gh run list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --workflow "Top100 State Refresh" \
+            --branch main \
+            --status success \
+            --limit 20 \
+            --json databaseId \
+            --jq '.[0].databaseId // ""')"
+          if [ -z "${run_id}" ]; then
+            run_id="$(gh run list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --workflow "Top100 Realtime Signals" \
+              --branch main \
+              --status success \
+              --limit 20 \
+              --json databaseId \
+              --jq '.[0].databaseId // ""')"
+          fi
+          if [ -z "${run_id}" ]; then
+            echo "::notice::No previous successful run found for state bundle restore."
+            exit 0
+          fi
+          if gh run download "${run_id}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name top100-realtime-state-bundle \
+            --dir .runtime_state; then
+            python scripts/realtime_state_bundle.py restore \
+              --root . \
+              --bundle .runtime_state/top100-realtime-state-bundle.zip \
+              --max-anchor-age-days 7
+          else
+            echo "::notice::Previous successful run ${run_id} has no state bundle artifact; using restored cache only."
+          fi
+
+      - name: Install runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas requests akshare matplotlib
+
+      - name: Validate required realtime data secret
+        run: |
+          if [ -z "${QVERIS_API_KEY}" ]; then
+            echo "Missing required GitHub Secret: QVERIS_API_KEY"
+            exit 1
+          fi
+
+      - name: Refresh realtime production state
+        run: |
+          python scripts/realtime_state_bundle.py refresh \
+            --root . \
+            --max-workers 8
+
+      - name: Validate refreshed realtime production state
+        run: |
+          python scripts/realtime_state_bundle.py validate --root . --max-anchor-age-days 7
+
+      - name: Pack validated realtime state bundle
+        run: |
+          mkdir -p .runtime_state
+          python scripts/realtime_state_bundle.py pack \
+            --root . \
+            --bundle .runtime_state/top100-realtime-state-bundle.zip \
+            --max-anchor-age-days 7
+
+      - name: Upload validated realtime state bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: top100-realtime-state-bundle
+          path: .runtime_state/top100-realtime-state-bundle.zip
+          if-no-files-found: error
+          retention-days: 30
