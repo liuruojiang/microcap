@@ -72,10 +72,12 @@ jobs:
             --repo "${GITHUB_REPOSITORY}" \
             --name top100-realtime-state-bundle \
             --dir .runtime_state; then
-            python scripts/realtime_state_bundle.py restore \
+            if ! python scripts/realtime_state_bundle.py restore \
               --root . \
               --bundle .runtime_state/top100-realtime-state-bundle.zip \
-              --max-anchor-age-days 7
+              --max-anchor-age-days 7; then
+              echo "::warning::Previous state bundle ${run_id} is incomplete under current validation; continuing with restored generated cache."
+            fi
           else
             echo "::notice::Previous successful run ${run_id} has no state bundle artifact; using restored cache only."
           fi

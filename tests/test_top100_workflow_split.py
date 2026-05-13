@@ -21,6 +21,7 @@ def test_state_refresh_workflow_owns_state_bundle_production() -> None:
 
     assert "name: Top100 State Refresh" in workflow
     assert "python scripts/realtime_state_bundle.py refresh" in workflow
+    assert "Previous state bundle ${run_id} is incomplete under current validation" in workflow
     assert "Pack validated realtime state bundle" in workflow
     assert "Upload validated realtime state bundle" in workflow
     assert "top100-realtime-state-bundle" in workflow
