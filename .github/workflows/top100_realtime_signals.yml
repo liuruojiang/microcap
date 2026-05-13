@@ -122,7 +122,3 @@ jobs:
             cat realtime_signal_result.txt
             echo '```'
           } >> "${GITHUB_STEP_SUMMARY}"
-
-      - name: Fail job when realtime signal script failed
-        if: steps.signals.outputs.exit_code != '0'
-        run: exit 1

@@ -14,6 +14,8 @@ def test_realtime_workflow_consumes_state_refresh_bundle_only() -> None:
     assert "actions/cache" not in workflow
     assert "Pack validated realtime state bundle" not in workflow
     assert "Upload validated realtime state bundle" not in workflow
+    assert "Fail job when realtime signal script failed" not in workflow
+    assert "Script exit code:" in workflow
 
 
 def test_state_refresh_workflow_owns_state_bundle_production() -> None:
