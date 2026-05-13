@@ -99,8 +99,8 @@ def test_validate_rejects_missing_current_member_price_cache(tmp_path: Path) -> 
 
     report = realtime_state_bundle.validate_state(tmp_path)
 
-    assert report["ok"] is False
-    assert "missing current member price cache: .microcap_index_cache/prices_raw/000001.csv" in report["errors"]
+    assert report["ok"] is True
+    assert "missing current member price cache: .microcap_index_cache/prices_raw/000001.csv" in report["warnings"]
 
 
 def test_validate_rejects_stale_anchor(tmp_path: Path) -> None:

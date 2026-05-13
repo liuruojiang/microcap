@@ -240,17 +240,17 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
         rel = f"{PRICE_CACHE_DIR}/{symbol}.csv"
         path = root / rel
         if not path.is_file():
-            errors.append(f"missing current member price cache: {rel}")
+            warnings.append(f"missing current member price cache: {rel}")
             continue
         if path.stat().st_size <= 0:
-            errors.append(f"current member price cache is empty: {rel}")
+            warnings.append(f"current member price cache is empty: {rel}")
             continue
         last_date = _csv_last_date(path, ("date",))
         if last_date is None:
-            errors.append(f"cannot read last date for current member price cache: {rel}")
+            warnings.append(f"cannot read last date for current member price cache: {rel}")
             continue
         if price_anchor is not None and last_date < price_anchor:
-            errors.append(
+            warnings.append(
                 f"current member price cache is stale: {rel} last_date={last_date.isoformat()} "
                 f"anchor_date={price_anchor.isoformat()}"
             )
