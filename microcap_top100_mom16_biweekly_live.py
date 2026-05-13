@@ -2695,6 +2695,8 @@ def load_member_snapshot(
 def build_change_table(prev_df: pd.DataFrame | None, curr_df: pd.DataFrame) -> pd.DataFrame:
     prev_df = prev_df.copy() if prev_df is not None else pd.DataFrame(columns=["symbol", "rank", "name"])
     curr_df = curr_df.copy()
+    if prev_df.empty and "symbol" not in prev_df.columns:
+        prev_df = pd.DataFrame(columns=["symbol", "rank", "name"])
     for label, frame in (("previous", prev_df), ("current", curr_df)):
         if "symbol" not in frame.columns:
             raise KeyError(f"{label} member frame is missing column 'symbol'.")
