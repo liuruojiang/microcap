@@ -141,3 +141,33 @@ def test_production_realtime_skips_price_cache_refresh(monkeypatch: pytest.Monke
     monkeypatch.setattr(base_mod, "refresh_price_cache_tail", fail_refresh)
 
     assert base_mod.ensure_realtime_last_close_map(["000001"], as_of_date=pd.Timestamp("2026-05-11")) == {}
+
+
+def test_preclose_fallback_can_cover_missing_quote_trade_date_when_anchor_is_stale() -> None:
+    base_mod = realtime_core.base_mod
+    quotes = pd.DataFrame(
+        {
+            "code": ["000001"],
+            "rt_price": [11.0],
+            "pre_close": [10.0],
+            "trade_date": [""],
+        }
+    ).set_index("code")
+
+    blocked = base_mod.compute_member_realtime_return(
+        "000001",
+        last_close_map={},
+        quotes_df=quotes,
+        latest_trade_date=pd.Timestamp("2026-05-11"),
+        allow_quote_pre_close_after_anchor=False,
+    )
+    allowed = base_mod.compute_member_realtime_return(
+        "000001",
+        last_close_map={},
+        quotes_df=quotes,
+        latest_trade_date=pd.Timestamp("2026-05-11"),
+        allow_quote_pre_close_after_anchor=True,
+    )
+
+    assert blocked is None
+    assert allowed == pytest.approx(0.1)
