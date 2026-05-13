@@ -3653,6 +3653,57 @@ def ensure_strategy_nav_fresh(
     ensure_strategy_files(args, paths, panel_path, target_end_date)
 
 
+def reusable_cached_proxy_end_for_realtime(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    target_end_date: pd.Timestamp,
+) -> pd.Timestamp | None:
+    current_index_end = read_csv_last_date(args.index_csv)
+    current_costed_end = read_csv_last_date(args.costed_nav_csv)
+    if current_index_end is None or current_costed_end is None:
+        return None
+    if not args.index_csv.exists() or not args.costed_nav_csv.exists() or not paths["proxy_turnover"].exists():
+        return None
+    if paths["proxy_meta"].exists():
+        try:
+            meta_matches = proxy_meta_matches_execution_model(json.loads(paths["proxy_meta"].read_text(encoding="utf-8")))
+        except Exception:
+            meta_matches = False
+        if not meta_matches:
+            return None
+    cache_end = min(pd.Timestamp(current_index_end).normalize(), pd.Timestamp(current_costed_end).normalize())
+    cache_end = min(cache_end, pd.Timestamp(target_end_date).normalize())
+    freshness = assess_history_anchor_freshness(cache_end, args.max_stale_anchor_days)
+    if bool(freshness.get("is_stale")) and not bool(args.allow_stale_realtime):
+        return None
+    return cache_end
+
+
+def cached_universe_symbols_available() -> bool:
+    try:
+        return bool(freq_mod.load_current_universe())
+    except Exception:
+        return False
+
+
+def build_realtime_context_from_cached_proxy(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+    reason: str,
+) -> dict[str, object] | None:
+    cache_end = reusable_cached_proxy_end_for_realtime(args, paths, target_end_date)
+    if cache_end is None:
+        return None
+    close_df = load_close_df(panel_path, args.index_csv, max_date=cache_end)
+    context = build_base_signal_context(args, paths, panel_path, cache_end, close_df)
+    context["fallback_warning"] = (
+        f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    )
+    return context
+
+
 def ensure_base_signal_fresh(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -3701,7 +3752,34 @@ def ensure_realtime_query_base_context(
     panel_path: Path,
     target_end_date: pd.Timestamp,
 ) -> dict[str, object]:
-    ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    current_index_end = read_csv_last_date(args.index_csv)
+    if (
+        current_index_end is not None
+        and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize()
+        and not cached_universe_symbols_available()
+    ):
+        cached_context = build_realtime_context_from_cached_proxy(
+            args,
+            paths,
+            panel_path,
+            target_end_date,
+            "cached price/share universe is unavailable for recent proxy extension",
+        )
+        if cached_context is not None:
+            return cached_context
+    try:
+        ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    except RuntimeError as exc:
+        cached_context = build_realtime_context_from_cached_proxy(
+            args,
+            paths,
+            panel_path,
+            target_end_date,
+            f"recent proxy refresh failed: {exc}",
+        )
+        if cached_context is not None:
+            return cached_context
+        raise
     if not args.index_csv.exists():
         raise FileNotFoundError(f"Missing proxy index required for realtime query: {args.index_csv}")
     close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
@@ -4693,6 +4771,9 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
     latest_rt_signal["latest_anchor_trade_date"] = latest_trade_date
     if quote_trade_date:
         latest_rt_signal["quote_trade_date"] = quote_trade_date
+    fallback_warning = str(context.get("fallback_warning") or "")
+    if fallback_warning:
+        latest_rt_signal["fallback_warning"] = fallback_warning
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -4705,6 +4786,8 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
     }
+    if fallback_warning:
+        meta["fallback_warning"] = fallback_warning
     return latest_rt_signal, meta
 
 
@@ -4809,6 +4892,9 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
+    fallback_warning = str(context.get("fallback_warning") or "")
+    if fallback_warning:
+        signal_df["fallback_warning"] = fallback_warning
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -4825,6 +4911,8 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
+    if fallback_warning:
+        meta["fallback_warning"] = fallback_warning
     return signal_df, meta
 
 
@@ -5028,6 +5116,8 @@ def compute_realtime_state_fast(
         "tail_jitter_risk": signal_meta.get("tail_jitter_risk"),
         "tail_jitter_note": signal_meta.get("tail_jitter_note"),
     }
+    if signal_meta.get("fallback_warning"):
+        meta["fallback_warning"] = signal_meta["fallback_warning"]
     members_out, changes_df = mark_realtime_preview_outputs(members_out, changes_df)
     if realtime_meta_is_actionable(meta):
         save_realtime_state_cache(
@@ -5252,6 +5342,9 @@ def compute_realtime_state(
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
+    fallback_warning = str(context.get("fallback_warning") or "")
+    if fallback_warning:
+        signal_df["fallback_warning"] = fallback_warning
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -5274,6 +5367,8 @@ def compute_realtime_state(
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
+    if fallback_warning:
+        meta["fallback_warning"] = fallback_warning
     members_out, changes_df = mark_realtime_preview_outputs(members_out, changes_df)
     if realtime_meta_is_actionable(meta):
         save_realtime_state_cache(
