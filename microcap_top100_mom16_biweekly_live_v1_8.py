@@ -13,6 +13,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import top100_v14_base_context as v14_context
+import top100_realtime_core as realtime_core
 
 # v1.8 intentionally reuses the shared v1.4 base/context adapter; recheck this
 # module when that adapter changes its v1_1_mod/base_mod or context API.
@@ -1107,32 +1108,25 @@ def generate_v1_8_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
 def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
-    context, turnover_df, reference_summary = v14_context._load_realtime_v1_1_context()
-    _, meta = v14_context.v1_1_mod.base_mod.build_realtime_signal_fast(context)
-    snapshot_ts = pd.Timestamp(meta["snapshot_time"])
-    close_df = context["close_df"].copy().sort_index()
-    close_df = v14_context.v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
-        close_df=close_df,
-        latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
-        snapshot_ts=snapshot_ts,
-        microcap_rt_close=float(meta["microcap_rt_close"]),
-        hedge_rt_close=float(meta["hedge_rt_close"]),
-        quote_trade_date=meta.get("quote_trade_date", ""),
-    )
-    base_gross = run_candidate_momentum_signal(close_df)
+    realtime_base = realtime_core.load_realtime_base()
+    meta = realtime_base.meta
+    base_gross = run_candidate_momentum_signal(realtime_base.realtime_close_df)
     gross = apply_entry_exit_thresholds(base_gross)
-    base = v14_context.v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
+    base = realtime_core.base_mod.apply_momentum_gap_peak_decay_derisk(
         gross_result=gross,
-        turnover_df=turnover_df,
+        turnover_df=realtime_base.turnover_df,
         decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
         derisk_scale=DERISK_SCALE,
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
-    base = v14_context.v1_1_mod.base_mod.ensure_overlay_pre_cost_return(base)
+    base = realtime_core.base_mod.ensure_overlay_pre_cost_return(base)
     target_vol = apply_target_vol_scaling(base)
     out = apply_v1_8_overlays(target_vol)
-    signal_row = _build_signal_row(out, reference_summary)
-    signal_row = v14_context.v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
+    signal_row = _build_signal_row(out, realtime_base.reference_summary)
+    signal_row = realtime_core.base_mod.augment_signal_with_member_rebalance(
+        signal_row,
+        realtime_base.context.get("changes_df"),
+    )
     passthrough_cols = [
         "member_rebalance_state",
         "member_rebalance_required",
@@ -1153,8 +1147,7 @@ def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     for col in passthrough_cols:
         if col in signal_row.columns:
             continue
-    for key, value in meta.items():
-        signal_row[key] = _csv_safe_meta_value(value)
+    realtime_core.apply_realtime_meta_to_signal_row(signal_row, meta)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
     signal_row["target_vol_signal_timing"] = "intraday_hypothetical_if_now_close"
     signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"

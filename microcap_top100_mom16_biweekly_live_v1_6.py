@@ -14,6 +14,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import top100_v14_base_context as v14_context
+import top100_realtime_core as realtime_core
 
 # v1.6 intentionally reuses the shared v1.4 base/context adapter; recheck this
 # module when that adapter changes its v1_1_mod/base_mod or context API.
@@ -835,10 +836,11 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
 def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
-    v1_4_signal, meta, v1_4_realtime = v14_context.build_realtime_v1_4_outputs()
-    reference_summary = v14_context._load_reference_summary()
+    realtime_base = realtime_core.load_realtime_base()
+    v1_4_realtime = realtime_core.build_realtime_overlay_base(realtime_base)
+    meta = realtime_base.meta
     out = apply_target_vol_scaling(v1_4_realtime, treat_last_row_as_snapshot=True)
-    signal_row = _build_signal_row(out, reference_summary)
+    signal_row = _build_signal_row(out, realtime_base.reference_summary)
     passthrough_cols = [
         "member_rebalance_state",
         "member_rebalance_required",
@@ -856,9 +858,13 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         "tail_jitter_risk",
         "tail_jitter_note",
     ]
+    signal_row = realtime_core.base_mod.augment_signal_with_member_rebalance(
+        signal_row,
+        realtime_base.context.get("changes_df"),
+    )
     for col in passthrough_cols:
-        if col in v1_4_signal.columns:
-            signal_row[col] = v1_4_signal.iloc[0].get(col)
+        if col in signal_row.columns:
+            continue
     _apply_realtime_meta_to_signal_row(signal_row, meta)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
     signal_row["target_vol_signal_timing"] = "intraday_hypothetical_if_now_close"
