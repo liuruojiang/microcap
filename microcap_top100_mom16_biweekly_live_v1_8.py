@@ -64,6 +64,14 @@ PNL_RETURN_SOURCE = "v1_4_overlay_pre_cost_return_explicit_or_return_net_cost_re
 LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_8.json"
 
 
+def _csv_safe_meta_value(value: object) -> object:
+    if isinstance(value, (dict, list, tuple)):
+        return json.dumps(value, ensure_ascii=False, default=str)
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+    return value
+
+
 def validate_base_hedge_ratio() -> None:
     v1_1_mod = getattr(v14_context, "v1_1_mod", None)
     if v1_1_mod is None:
@@ -1146,7 +1154,7 @@ def build_realtime_v1_8_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         if col in signal_row.columns:
             continue
     for key, value in meta.items():
-        signal_row[key] = value
+        signal_row[key] = _csv_safe_meta_value(value)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
     signal_row["target_vol_signal_timing"] = "intraday_hypothetical_if_now_close"
     signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"

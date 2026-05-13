@@ -44,6 +44,10 @@ HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS = 40
 EXECUTION_TIMING = "close"
 TRADE_CONSTRAINT_MODE = "close"
 RESEARCH_STACK_VERSION = "2026-05-12-p0-p1-history-meta-master-stv3"
+COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS = {
+    RESEARCH_STACK_VERSION,
+    "2026-04-11-p0-p1-history-meta-master-stv2",
+}
 STATIC_CONTEXT_CACHE_VERSION = "2026-05-12-live-current-st-members-v2"
 MEMBER_FILTER_POLICY_VERSION = "empty-name-reject-v1"
 REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
@@ -960,14 +964,20 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     core_params = meta.get("core_params") if isinstance(meta, dict) else None
     if not isinstance(core_params, dict):
         return False
+    research_stack_version = core_params.get("research_stack_version")
+    if research_stack_version not in COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS:
+        return False
+    rebalance_phase_anchor_date = core_params.get("rebalance_phase_anchor_date")
+    member_filter_policy_version = core_params.get("member_filter_policy_version")
+    realtime_quote_policy_version = core_params.get("realtime_quote_policy_version")
+    proxy_rebalance_policy_version = core_params.get("proxy_rebalance_policy_version")
     return (
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
-        and core_params.get("research_stack_version") == RESEARCH_STACK_VERSION
-        and core_params.get("rebalance_phase_anchor_date") == REBALANCE_ANCHOR_DATE
-        and core_params.get("member_filter_policy_version") == MEMBER_FILTER_POLICY_VERSION
-        and core_params.get("realtime_quote_policy_version") == REALTIME_QUOTE_POLICY_VERSION
-        and core_params.get("proxy_rebalance_policy_version") == PROXY_REBALANCE_POLICY_VERSION
+        and rebalance_phase_anchor_date in (None, REBALANCE_ANCHOR_DATE)
+        and member_filter_policy_version in (None, MEMBER_FILTER_POLICY_VERSION)
+        and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
+        and proxy_rebalance_policy_version in (None, PROXY_REBALANCE_POLICY_VERSION)
     )
 
 
@@ -2682,9 +2692,76 @@ def load_member_snapshot(
     return snapshots
 
 
+def load_member_snapshot_from_proxy_members(
+    paths: dict[str, Path],
+    snapshot_dates: list[pd.Timestamp],
+) -> dict[pd.Timestamp, pd.DataFrame]:
+    if not snapshot_dates or not paths["proxy_members"].exists():
+        return {}
+    try:
+        members = pd.read_csv(paths["proxy_members"], dtype={"symbol": str})
+    except Exception:
+        return {}
+    required = {"rebalance_date", "symbol"}
+    if not required.issubset(members.columns):
+        return {}
+    members = members.copy()
+    members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="coerce")
+    members["symbol"] = members["symbol"].astype(str).str.zfill(6)
+    members = members.dropna(subset=["rebalance_date", "symbol"]).sort_values(["rebalance_date", "symbol"])
+    if members.empty:
+        return {}
+
+    snapshots: dict[pd.Timestamp, pd.DataFrame] = {}
+    for dt in sorted(set(pd.Timestamp(dt).normalize() for dt in snapshot_dates)):
+        frame = members.loc[members["rebalance_date"].dt.normalize() == dt].copy()
+        if frame.empty:
+            continue
+        if "rank" not in frame.columns:
+            frame["rank"] = np.arange(1, len(frame) + 1)
+        if "name" not in frame.columns:
+            frame["name"] = ""
+        if "market_cap" not in frame.columns:
+            frame["market_cap"] = np.nan
+        if "target_weight" not in frame.columns:
+            frame["target_weight"] = 1.0 / TOP_N
+        snapshots[dt] = frame[["rebalance_date", "rank", "symbol", "name", "market_cap", "target_weight"]].reset_index(drop=True)
+    return snapshots
+
+
+def fill_member_snapshots_from_proxy_members(
+    snapshots: dict[pd.Timestamp, pd.DataFrame],
+    paths: dict[str, Path],
+    snapshot_dates: list[pd.Timestamp],
+) -> dict[pd.Timestamp, pd.DataFrame]:
+    missing_dates = [
+        pd.Timestamp(dt)
+        for dt in snapshot_dates
+        if dt is not None
+        and (
+            pd.Timestamp(dt) not in snapshots
+            or snapshots[pd.Timestamp(dt)].empty
+            or "symbol" not in snapshots[pd.Timestamp(dt)].columns
+        )
+    ]
+    if not missing_dates:
+        return snapshots
+    proxy_snapshots = load_member_snapshot_from_proxy_members(paths, missing_dates)
+    if not proxy_snapshots:
+        return snapshots
+    out = dict(snapshots)
+    for dt in missing_dates:
+        key = pd.Timestamp(dt).normalize()
+        if key in proxy_snapshots:
+            out[pd.Timestamp(dt)] = proxy_snapshots[key]
+    return out
+
+
 def build_change_table(prev_df: pd.DataFrame | None, curr_df: pd.DataFrame) -> pd.DataFrame:
     prev_df = prev_df.copy() if prev_df is not None else pd.DataFrame(columns=["symbol", "rank", "name"])
     curr_df = curr_df.copy()
+    if prev_df.empty and "symbol" not in prev_df.columns:
+        prev_df = pd.DataFrame(columns=["symbol", "rank", "name"])
     for label, frame in (("previous", prev_df), ("current", curr_df)):
         if "symbol" not in frame.columns:
             raise KeyError(f"{label} member frame is missing column 'symbol'.")
@@ -3079,6 +3156,7 @@ def build_base_context(args: argparse.Namespace, include_members: bool = True) -
         if cached_static is None:
             snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
             snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+            snapshots = fill_member_snapshots_from_proxy_members(snapshots, paths, snapshot_dates)
             target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
             prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
             effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
@@ -3106,6 +3184,7 @@ def build_base_context(args: argparse.Namespace, include_members: bool = True) -
     if not include_members and changes_df.empty:
         snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
         snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+        snapshots = fill_member_snapshots_from_proxy_members(snapshots, paths, snapshot_dates)
         target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
         prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
         effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
@@ -3643,6 +3722,57 @@ def ensure_strategy_nav_fresh(
     ensure_strategy_files(args, paths, panel_path, target_end_date)
 
 
+def reusable_cached_proxy_end_for_realtime(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    target_end_date: pd.Timestamp,
+) -> pd.Timestamp | None:
+    current_index_end = read_csv_last_date(args.index_csv)
+    current_costed_end = read_csv_last_date(args.costed_nav_csv)
+    if current_index_end is None or current_costed_end is None:
+        return None
+    if not args.index_csv.exists() or not args.costed_nav_csv.exists() or not paths["proxy_turnover"].exists():
+        return None
+    if paths["proxy_meta"].exists():
+        try:
+            meta_matches = proxy_meta_matches_execution_model(json.loads(paths["proxy_meta"].read_text(encoding="utf-8")))
+        except Exception:
+            meta_matches = False
+        if not meta_matches:
+            return None
+    cache_end = min(pd.Timestamp(current_index_end).normalize(), pd.Timestamp(current_costed_end).normalize())
+    cache_end = min(cache_end, pd.Timestamp(target_end_date).normalize())
+    freshness = assess_history_anchor_freshness(cache_end, args.max_stale_anchor_days)
+    if bool(freshness.get("is_stale")) and not bool(args.allow_stale_realtime):
+        return None
+    return cache_end
+
+
+def cached_universe_symbols_available() -> bool:
+    try:
+        return bool(freq_mod.load_current_universe())
+    except Exception:
+        return False
+
+
+def build_realtime_context_from_cached_proxy(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+    reason: str,
+) -> dict[str, object] | None:
+    cache_end = reusable_cached_proxy_end_for_realtime(args, paths, target_end_date)
+    if cache_end is None:
+        return None
+    close_df = load_close_df(panel_path, args.index_csv, max_date=cache_end)
+    context = build_base_signal_context(args, paths, panel_path, cache_end, close_df)
+    context["fallback_warning"] = (
+        f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    )
+    return context
+
+
 def ensure_base_signal_fresh(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -3691,7 +3821,34 @@ def ensure_realtime_query_base_context(
     panel_path: Path,
     target_end_date: pd.Timestamp,
 ) -> dict[str, object]:
-    ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    current_index_end = read_csv_last_date(args.index_csv)
+    if (
+        current_index_end is not None
+        and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize()
+        and not cached_universe_symbols_available()
+    ):
+        cached_context = build_realtime_context_from_cached_proxy(
+            args,
+            paths,
+            panel_path,
+            target_end_date,
+            "cached price/share universe is unavailable for recent proxy extension",
+        )
+        if cached_context is not None:
+            return cached_context
+    try:
+        ensure_strategy_nav_fresh(args, paths, panel_path, target_end_date)
+    except RuntimeError as exc:
+        cached_context = build_realtime_context_from_cached_proxy(
+            args,
+            paths,
+            panel_path,
+            target_end_date,
+            f"recent proxy refresh failed: {exc}",
+        )
+        if cached_context is not None:
+            return cached_context
+        raise
     if not args.index_csv.exists():
         raise FileNotFoundError(f"Missing proxy index required for realtime query: {args.index_csv}")
     close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
@@ -3721,6 +3878,7 @@ def ensure_static_members_fresh(
     if cached_static is None:
         snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
         snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+        snapshots = fill_member_snapshots_from_proxy_members(snapshots, paths, snapshot_dates)
         target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
         prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
         effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
@@ -4362,6 +4520,15 @@ def quote_trade_date_matches_anchor(quote_trade_date: object, latest_trade_date:
         return False
 
 
+def quote_trade_date_on_or_after_anchor(quote_trade_date: object, latest_trade_date: pd.Timestamp) -> bool:
+    try:
+        if quote_trade_date is None or str(quote_trade_date).strip() == "":
+            return False
+        return pd.Timestamp(quote_trade_date).date() >= pd.Timestamp(latest_trade_date).date()
+    except Exception:
+        return False
+
+
 def normalize_hedge_realtime_quote_result(result: object) -> tuple[float, str, str]:
     if isinstance(result, tuple):
         if len(result) >= 3:
@@ -4426,6 +4593,7 @@ def compute_member_realtime_return(
     last_close_map: dict[str, float],
     quotes_df: pd.DataFrame,
     latest_trade_date: pd.Timestamp,
+    allow_quote_pre_close_after_anchor: bool = False,
 ) -> float | None:
     code = str(symbol).zfill(6)
     if code not in quotes_df.index:
@@ -4451,7 +4619,13 @@ def compute_member_realtime_return(
         if pd.notna(close) and float(close) > 0:
             return float(rt_price) / float(close) - 1.0
 
-    if "pre_close" in quotes_df.columns and quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
+    if "pre_close" in quotes_df.columns and (
+        quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date)
+        or (
+            allow_quote_pre_close_after_anchor
+            and quote_trade_date_on_or_after_anchor(quote_trade_date, latest_trade_date)
+        )
+    ):
         pre_close = pd.to_numeric(quotes_df.at[code, "pre_close"], errors="coerce")
         if pd.notna(pre_close) and float(pre_close) > 0:
             return float(rt_price) / float(pre_close) - 1.0
@@ -4464,6 +4638,7 @@ def compute_member_realtime_returns(
     last_close_map: dict[str, float],
     quotes_df: pd.DataFrame,
     latest_trade_date: pd.Timestamp,
+    allow_quote_pre_close_after_anchor: bool = False,
 ) -> tuple[list[float], list[dict[str, object]]]:
     member_lookup = effective_members.copy()
     member_lookup["symbol"] = member_lookup["symbol"].astype(str).str.zfill(6)
@@ -4472,7 +4647,13 @@ def compute_member_realtime_returns(
     missing_symbols: list[dict[str, object]] = []
     for symbol in member_symbols:
         code = str(symbol).zfill(6)
-        member_return = compute_member_realtime_return(code, last_close_map, quotes_df, latest_trade_date)
+        member_return = compute_member_realtime_return(
+            code,
+            last_close_map,
+            quotes_df,
+            latest_trade_date,
+            allow_quote_pre_close_after_anchor=allow_quote_pre_close_after_anchor,
+        )
         if member_return is None:
             if code in member_lookup.index:
                 row = member_lookup.loc[code]
@@ -4567,7 +4748,10 @@ def ensure_realtime_last_close_map(
         if symbol not in snapshots or pd.Timestamp(snapshots[symbol][0]).normalize() < target_date
     ]
     if stale_or_missing:
-        refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)
+        try:
+            refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)
+        except Exception:
+            pass
         snapshots = load_latest_close_snapshot_map(clean_symbols, as_of_date=as_of_date)
     return {symbol: close for symbol, (date, close) in snapshots.items() if pd.Timestamp(date).normalize() >= target_date}
 
@@ -4683,6 +4867,9 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
     latest_rt_signal["latest_anchor_trade_date"] = latest_trade_date
     if quote_trade_date:
         latest_rt_signal["quote_trade_date"] = quote_trade_date
+    fallback_warning = str(context.get("fallback_warning") or "")
+    if fallback_warning:
+        latest_rt_signal["fallback_warning"] = fallback_warning
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -4695,6 +4882,8 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
     }
+    if fallback_warning:
+        meta["fallback_warning"] = fallback_warning
     return latest_rt_signal, meta
 
 
@@ -4704,6 +4893,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
     last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
+    allow_quote_pre_close_after_anchor = bool(context.get("fallback_warning"))
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []
@@ -4724,6 +4914,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
             last_close_map=last_close_map,
             quotes_df=quotes_df,
             latest_trade_date=latest_trade_date,
+            allow_quote_pre_close_after_anchor=allow_quote_pre_close_after_anchor,
         )
         if missing_symbols:
             refreshed_last_close_map = maybe_refresh_missing_realtime_last_close_map(
@@ -4739,6 +4930,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
                     last_close_map=last_close_map,
                     quotes_df=quotes_df,
                     latest_trade_date=latest_trade_date,
+                    allow_quote_pre_close_after_anchor=allow_quote_pre_close_after_anchor,
                 )
         available_rows = len(member_returns)
         if available_rows >= len(member_symbols):
@@ -4799,6 +4991,9 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
+    fallback_warning = str(context.get("fallback_warning") or "")
+    if fallback_warning:
+        signal_df["fallback_warning"] = fallback_warning
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -4815,6 +5010,8 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
+    if fallback_warning:
+        meta["fallback_warning"] = fallback_warning
     return signal_df, meta
 
 
@@ -5018,6 +5215,8 @@ def compute_realtime_state_fast(
         "tail_jitter_risk": signal_meta.get("tail_jitter_risk"),
         "tail_jitter_note": signal_meta.get("tail_jitter_note"),
     }
+    if signal_meta.get("fallback_warning"):
+        meta["fallback_warning"] = signal_meta["fallback_warning"]
     members_out, changes_df = mark_realtime_preview_outputs(members_out, changes_df)
     if realtime_meta_is_actionable(meta):
         save_realtime_state_cache(
@@ -5242,6 +5441,9 @@ def compute_realtime_state(
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
+    fallback_warning = str(context.get("fallback_warning") or "")
+    if fallback_warning:
+        signal_df["fallback_warning"] = fallback_warning
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -5264,6 +5466,8 @@ def compute_realtime_state(
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
+    if fallback_warning:
+        meta["fallback_warning"] = fallback_warning
     members_out, changes_df = mark_realtime_preview_outputs(members_out, changes_df)
     if realtime_meta_is_actionable(meta):
         save_realtime_state_cache(
