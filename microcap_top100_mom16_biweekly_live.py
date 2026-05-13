@@ -55,12 +55,14 @@ PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
 REALTIME_QUOTE_RETRY_SECONDS = 5
 REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
+REALTIME_LAST_CLOSE_FLAT_FALLBACK_MIN_QUOTED_FRACTION = 0.95
 REALTIME_CACHE_LOCK_TIMEOUT_SECONDS = 30
 REALTIME_CACHE_STALE_LOCK_SECONDS = 300
 TOP100_REALTIME_REQUIRE_STATE_ENV = "TOP100_REALTIME_REQUIRE_STATE"
 ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES = {
     "eastmoney_stock_get",
     "qveris_cn_financial_pro_realtime",
+    "tencent_batch_free",
 }
 _QVERIS_TOOL_ID_CACHE: dict[str, str] = {}
 
@@ -4012,6 +4014,47 @@ def normalize_index_spot_columns(index_spot: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _optional_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str | None:
+    for column in candidates:
+        if column in frame.columns:
+            return column
+    return None
+
+
+def normalize_stock_spot_realtime_quotes(stock_spot: pd.DataFrame, source: str) -> pd.DataFrame:
+    if stock_spot.empty:
+        out = pd.DataFrame(columns=["code", "name", "rt_price", "pre_close", "trade_date", "quote_time"])
+        out.attrs["quote_source"] = source
+        return out
+    raw = stock_spot.copy()
+    code_col = _first_existing_column(raw, ["code", "代码", "浠ｇ爜"])
+    name_col = _optional_existing_column(raw, ["name", "名称", "鍚嶇О"])
+    latest_col = _first_existing_column(raw, ["rt_price", "最新价", "鏈€鏂颁环"])
+    prev_col = _optional_existing_column(raw, ["pre_close", "昨收", "鏄ㄦ敹"])
+    time_col = _optional_existing_column(raw, ["quote_time", "时间戳", "trade_time", "time"])
+    trade_date_col = _optional_existing_column(raw, ["trade_date", "交易日"])
+
+    out = pd.DataFrame()
+    out["code"] = normalize_symbol_code(raw[code_col])
+    out["name"] = raw[name_col].astype(str) if name_col else ""
+    out["rt_price"] = pd.to_numeric(raw[latest_col], errors="coerce")
+    if prev_col:
+        out["pre_close"] = pd.to_numeric(raw[prev_col], errors="coerce")
+        out.loc[out["rt_price"].isna() | (out["rt_price"] <= 0), "rt_price"] = out["pre_close"]
+    else:
+        out["pre_close"] = pd.NA
+    if trade_date_col:
+        out["trade_date"] = raw[trade_date_col].astype(str)
+    else:
+        out["trade_date"] = str(_cn_timestamp().date())
+    out["quote_time"] = raw[time_col].astype(str) if time_col else ""
+    out = out[out["code"].ne("")]
+    out = out[pd.to_numeric(out["rt_price"], errors="coerce").gt(0)]
+    out = out.drop_duplicates(subset="code", keep="last").reset_index(drop=True)
+    out.attrs["quote_source"] = source
+    return out
+
+
 def load_or_refresh_latest_shares(cache_seconds: int = 86400) -> pd.DataFrame:
     cache_file = get_realtime_cache_file("latest_total_shares.csv")
     now = time.time()
@@ -4066,6 +4109,223 @@ def parse_eastmoney_trade_date(value: object) -> str:
         return str(pd.Timestamp(digits[:8]).date())
     except Exception:
         return ""
+
+
+def parse_quote_epoch_trade_date(value: object) -> str:
+    numeric = pd.to_numeric(value, errors="coerce")
+    if pd.isna(numeric) or float(numeric) <= 0:
+        return ""
+    try:
+        return str(pd.to_datetime(float(numeric), unit="s", utc=True).tz_convert(CN_TIMEZONE).date())
+    except Exception:
+        return ""
+
+
+def eastmoney_secid(symbol: str) -> str:
+    code = str(symbol).strip().upper()
+    if "." in code:
+        raw_code, suffix = code.split(".", 1)
+        market = "1" if suffix == "SH" else "0"
+        return f"{market}.{raw_code.zfill(6)}"
+    code = re.sub(r"\D", "", code).zfill(6)
+    market = "1" if code.startswith(("5", "6", "9")) else "0"
+    return f"{market}.{code}"
+
+
+def _empty_realtime_quote_frame() -> pd.DataFrame:
+    return pd.DataFrame(columns=["code", "name", "rt_price", "pre_close", "trade_date", "quote_time"])
+
+
+def _normalize_realtime_quote_frame(frame: pd.DataFrame) -> pd.DataFrame:
+    if frame.empty:
+        return _empty_realtime_quote_frame()
+    out = frame.copy()
+    if "code" not in out.columns:
+        return _empty_realtime_quote_frame()
+    out["code"] = out["code"].astype(str).str.extract(r"(\d{6})", expand=False).fillna("").str.zfill(6)
+    out = out.loc[out["code"].ne("")].copy()
+    for column in ("rt_price", "pre_close"):
+        if column in out.columns:
+            out[column] = pd.to_numeric(out[column], errors="coerce")
+    for column in ("name", "trade_date", "quote_time"):
+        if column not in out.columns:
+            out[column] = ""
+    return out[["code", "name", "rt_price", "pre_close", "trade_date", "quote_time"]]
+
+
+def _valid_quote_code_set(frame: pd.DataFrame) -> set[str]:
+    if frame.empty:
+        return set()
+    out = _normalize_realtime_quote_frame(frame)
+    valid_price = pd.to_numeric(out["rt_price"], errors="coerce").gt(0)
+    valid_date = out["trade_date"].fillna("").astype(str).str.strip().ne("")
+    return set(out.loc[valid_price & valid_date, "code"])
+
+
+def add_last_close_flat_fallback_quotes(
+    quotes_df: pd.DataFrame,
+    member_symbols: list[str],
+    last_close_map: dict[str, float],
+    latest_trade_date: pd.Timestamp,
+    *,
+    max_missing_count: int = 5,
+    min_quoted_fraction: float = 0.95,
+) -> tuple[pd.DataFrame, int]:
+    out = _normalize_realtime_quote_frame(quotes_df)
+    member_codes = [str(symbol).zfill(6) for symbol in member_symbols if str(symbol).strip()]
+    if not member_codes:
+        return out, 0
+    quoted_codes = _valid_quote_code_set(out)
+    missing_codes = [code for code in member_codes if code not in quoted_codes]
+    if not missing_codes:
+        return out, 0
+    quoted_fraction = len(quoted_codes.intersection(member_codes)) / len(member_codes)
+    if len(missing_codes) > int(max_missing_count) or quoted_fraction < float(min_quoted_fraction):
+        return out, 0
+
+    valid_dates = pd.to_datetime(out["trade_date"], errors="coerce").dropna()
+    if not valid_dates.empty:
+        trade_date = str(valid_dates.max().date())
+    else:
+        trade_date = str(pd.Timestamp(latest_trade_date).date())
+    rows: list[dict[str, object]] = []
+    for code in missing_codes:
+        close = pd.to_numeric(last_close_map.get(code), errors="coerce")
+        if pd.isna(close) or float(close) <= 0:
+            continue
+        rows.append(
+            {
+                "code": code,
+                "name": "",
+                "rt_price": float(close),
+                "pre_close": float(close),
+                "trade_date": trade_date,
+                "quote_time": "",
+                "quote_source": "latest_close_flat_fallback",
+            }
+        )
+    if not rows:
+        return out, 0
+    supplemented = pd.concat([out, pd.DataFrame(rows)], ignore_index=True).drop_duplicates(subset="code", keep="first")
+    return supplemented, len(rows)
+
+
+def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 80) -> pd.DataFrame:
+    clean_secids = []
+    seen = set()
+    for symbol in symbols:
+        secid = eastmoney_secid(str(symbol))
+        if secid not in seen:
+            seen.add(secid)
+            clean_secids.append(secid)
+    rows: list[dict[str, object]] = []
+    for start in range(0, len(clean_secids), max(1, int(batch_size))):
+        batch = clean_secids[start : start + max(1, int(batch_size))]
+        if not batch:
+            continue
+        url = (
+            "https://push2.eastmoney.com/api/qt/ulist.np/get"
+            f"?fltt=2&secids={','.join(batch)}"
+            "&fields=f12,f14,f2,f18,f124,f297"
+        )
+        try:
+            response = requests.get(
+                url,
+                timeout=10,
+                headers={"Referer": "https://quote.eastmoney.com/", "User-Agent": "Mozilla/5.0"},
+            )
+            response.raise_for_status()
+            diff = (response.json().get("data") or {}).get("diff") or []
+        except Exception:
+            continue
+        for item in diff:
+            code = str(item.get("f12") or "").zfill(6)
+            latest = pd.to_numeric(item.get("f2"), errors="coerce")
+            prev = pd.to_numeric(item.get("f18"), errors="coerce")
+            if pd.isna(latest) or float(latest) <= 0:
+                latest = prev
+            if not code or pd.isna(latest) or float(latest) <= 0:
+                continue
+            trade_date = parse_eastmoney_trade_date(item.get("f297")) or parse_quote_epoch_trade_date(item.get("f124"))
+            rows.append(
+                {
+                    "code": code,
+                    "name": str(item.get("f14") or ""),
+                    "rt_price": float(latest),
+                    "pre_close": prev,
+                    "trade_date": trade_date,
+                    "quote_time": str(item.get("f124") or ""),
+                }
+            )
+    out = _normalize_realtime_quote_frame(pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame())
+    out.attrs["quote_source"] = "eastmoney_ulist_free"
+    return out
+
+
+def tencent_quote_symbol(symbol: str) -> str:
+    raw = str(symbol).strip().lower()
+    if raw.startswith(("sh", "sz")) and len(raw) >= 8:
+        return raw[:8]
+    upper = str(symbol).strip().upper()
+    if "." in upper:
+        code, suffix = upper.split(".", 1)
+        prefix = "sh" if suffix == "SH" else "sz"
+        return f"{prefix}{code.zfill(6)}"
+    code = re.sub(r"\D", "", upper).zfill(6)
+    prefix = "sh" if code.startswith(("5", "6", "9")) else "sz"
+    return f"{prefix}{code}"
+
+
+def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> pd.DataFrame:
+    quote_symbols = []
+    seen = set()
+    for symbol in symbols:
+        quote_symbol = tencent_quote_symbol(str(symbol))
+        if quote_symbol not in seen:
+            seen.add(quote_symbol)
+            quote_symbols.append(quote_symbol)
+    rows: list[dict[str, object]] = []
+    for start in range(0, len(quote_symbols), max(1, int(batch_size))):
+        batch = quote_symbols[start : start + max(1, int(batch_size))]
+        if not batch:
+            continue
+        url = f"https://qt.gtimg.cn/q={','.join(batch)}"
+        try:
+            response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+            response.raise_for_status()
+            response.encoding = response.encoding or "gbk"
+            text = response.text
+        except Exception:
+            continue
+        for line in text.split(";"):
+            if "~" not in line:
+                continue
+            payload = line.split("=", 1)[-1].strip().strip('"')
+            parts = payload.split("~")
+            if len(parts) < 5:
+                continue
+            code = str(parts[2] or "").zfill(6)
+            latest = pd.to_numeric(parts[3], errors="coerce")
+            prev = pd.to_numeric(parts[4], errors="coerce")
+            if pd.isna(latest) or float(latest) <= 0:
+                latest = prev
+            if not code or pd.isna(latest) or float(latest) <= 0:
+                continue
+            quote_time = parts[30] if len(parts) > 30 else ""
+            trade_date = parse_eastmoney_trade_date(quote_time)
+            rows.append(
+                {
+                    "code": code,
+                    "name": str(parts[1] or ""),
+                    "rt_price": float(latest),
+                    "pre_close": prev,
+                    "trade_date": trade_date,
+                    "quote_time": quote_time,
+                }
+            )
+    out = _normalize_realtime_quote_frame(pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame())
+    out.attrs["quote_source"] = "tencent_batch_free"
+    return out
 
 
 def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
@@ -4386,44 +4646,45 @@ def fetch_qveris_realtime_quotes(
 def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24) -> pd.DataFrame:
     clean_symbols = [str(symbol).zfill(6) for symbol in symbols if str(symbol).strip()]
     if not clean_symbols:
-        return pd.DataFrame(columns=["code", "name", "rt_price"])
+        return _empty_realtime_quote_frame()
     source_parts: list[str] = []
+    frames: list[pd.DataFrame] = []
+
+    eastmoney_batch_df = fetch_eastmoney_batch_realtime_quotes(clean_symbols)
+    if not eastmoney_batch_df.empty:
+        frames.append(eastmoney_batch_df)
+        source_parts.append(str(eastmoney_batch_df.attrs.get("quote_source") or "eastmoney_ulist_free"))
+
+    valid_free_codes = _valid_quote_code_set(pd.concat(frames, ignore_index=True) if frames else pd.DataFrame())
+    tencent_symbols = [symbol for symbol in clean_symbols if symbol not in valid_free_codes]
+    tencent_df = fetch_tencent_realtime_quotes(tencent_symbols) if tencent_symbols else _empty_realtime_quote_frame()
+    if not tencent_df.empty:
+        frames.append(tencent_df)
+        source_parts.append(str(tencent_df.attrs.get("quote_source") or "tencent_batch_free"))
+
+    valid_free_codes = _valid_quote_code_set(pd.concat(frames, ignore_index=True) if frames else pd.DataFrame())
+    per_symbol_symbols = [symbol for symbol in clean_symbols if symbol not in valid_free_codes]
     rows: list[dict[str, object]] = []
-    with ThreadPoolExecutor(max_workers=max(1, min(int(max_workers), 32))) as pool:
-        futures = {pool.submit(fetch_eastmoney_stock_spot, symbol): symbol for symbol in clean_symbols}
-        for fut in as_completed(futures):
-            row = fut.result()
-            if row is not None:
-                rows.append(row)
-    eastmoney_df = pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame(columns=["code", "name", "rt_price"])
+    if per_symbol_symbols:
+        with ThreadPoolExecutor(max_workers=max(1, min(int(max_workers), 32))) as pool:
+            futures = {pool.submit(fetch_eastmoney_stock_spot, symbol): symbol for symbol in per_symbol_symbols}
+            for fut in as_completed(futures):
+                row = fut.result()
+                if row is not None:
+                    rows.append(row)
+    eastmoney_df = _normalize_realtime_quote_frame(
+        pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame()
+    )
     if not eastmoney_df.empty:
-        eastmoney_df["code"] = eastmoney_df["code"].astype(str).str.zfill(6)
+        frames.append(eastmoney_df)
         source_parts.append("eastmoney_stock_get_member_only")
 
-    valid_free_codes: set[str] = set()
-    if not eastmoney_df.empty:
-        valid_price = pd.to_numeric(eastmoney_df["rt_price"], errors="coerce").gt(0)
-        if "trade_date" in eastmoney_df.columns:
-            valid_trade_date = eastmoney_df["trade_date"].fillna("").astype(str).str.strip().ne("")
-        else:
-            valid_trade_date = pd.Series(False, index=eastmoney_df.index)
-        valid_free_codes = set(eastmoney_df.loc[valid_price & valid_trade_date, "code"])
-
-    qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
-    qveris_symbols = [symbol for symbol in clean_symbols if symbol not in valid_free_codes]
-    if qveris_symbols and os.environ.get("QVERIS_API_KEY", "").strip():
-        try:
-            qveris_df, qveris_source = fetch_qveris_realtime_quotes(qveris_symbols)
-            source_parts.append(qveris_source)
-            if not qveris_df.empty:
-                qveris_df["code"] = qveris_df["code"].astype(str).str.zfill(6)
-                valid_price = pd.to_numeric(qveris_df["rt_price"], errors="coerce").gt(0)
-                qveris_df = qveris_df.loc[valid_price].copy()
-        except Exception:
-            qveris_df = pd.DataFrame(columns=["code", "name", "rt_price"])
-
-    out = pd.concat([qveris_df, eastmoney_df], ignore_index=True).drop_duplicates(subset="code", keep="first")
-    out.attrs["quote_source"] = "+".join(source_parts or ["eastmoney_stock_get_member_only"])
+    out = (
+        pd.concat(frames, ignore_index=True).drop_duplicates(subset="code", keep="first")
+        if frames
+        else _empty_realtime_quote_frame()
+    )
+    out.attrs["quote_source"] = "+".join(source_parts or ["free_realtime_quotes_empty"])
     return out
 
 
@@ -4455,17 +4716,16 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
             eastmoney_source = "eastmoney_prev_close_fallback"
     except Exception:
         pass
-    if os.environ.get("QVERIS_API_KEY", "").strip():
-        try:
-            quotes, source = fetch_qveris_realtime_quotes(["000852.SH"])
-            if not quotes.empty:
-                row = quotes.iloc[0]
-                price = pd.to_numeric(row.get("rt_price"), errors="coerce")
-                trade_date = str(row.get("trade_date") or "").strip()
-                if pd.notna(price) and price > 0:
-                    return float(price), source, trade_date
-        except Exception:
-            pass
+    try:
+        quotes = fetch_tencent_realtime_quotes(["sh000852"])
+        if not quotes.empty:
+            row = quotes.iloc[0]
+            price = pd.to_numeric(row.get("rt_price"), errors="coerce")
+            trade_date = str(row.get("trade_date") or "").strip()
+            if pd.notna(price) and price > 0 and trade_date:
+                return float(price), str(quotes.attrs.get("quote_source") or "tencent_batch_free"), trade_date
+    except Exception:
+        pass
     if eastmoney_price is not None:
         return eastmoney_price, f"{eastmoney_source}_missing_trade_date", ""
     index_spot = normalize_index_spot_columns(load_or_refresh_index_spot(cache_seconds=86400))
@@ -4672,6 +4932,54 @@ def compute_member_realtime_returns(
             continue
         member_returns.append(float(member_return))
     return member_returns, missing_symbols
+
+
+def add_last_close_flat_fallback_quotes(
+    quotes_df: pd.DataFrame,
+    member_symbols: list[str],
+    last_close_map: dict[str, float],
+    latest_trade_date: pd.Timestamp,
+    *,
+    max_missing_count: int = 5,
+    min_quoted_fraction: float = REALTIME_LAST_CLOSE_FLAT_FALLBACK_MIN_QUOTED_FRACTION,
+) -> tuple[pd.DataFrame, int]:
+    out = _normalize_realtime_quote_frame(quotes_df)
+    if "quote_source" not in out.columns:
+        out["quote_source"] = ""
+    clean_symbols = [str(symbol).zfill(6) for symbol in member_symbols if str(symbol).strip()]
+    if not clean_symbols:
+        return out, 0
+    quoted_codes = _valid_quote_code_set(out)
+    missing_symbols = [symbol for symbol in clean_symbols if symbol not in quoted_codes]
+    quoted_fraction = len(quoted_codes.intersection(clean_symbols)) / len(clean_symbols)
+    if len(missing_symbols) > int(max_missing_count) or quoted_fraction < float(min_quoted_fraction):
+        return out, 0
+    existing_dates = out["trade_date"].dropna().astype(str).str.strip()
+    existing_dates = existing_dates[existing_dates.ne("")]
+    fallback_trade_date = existing_dates.max() if not existing_dates.empty else str(pd.Timestamp(latest_trade_date).date())
+    rows: list[dict[str, object]] = []
+    for symbol in missing_symbols:
+        last_close = last_close_map.get(symbol)
+        if isinstance(last_close, dict):
+            last_close = last_close.get("close")
+        close = pd.to_numeric(last_close, errors="coerce")
+        if pd.isna(close) or float(close) <= 0:
+            continue
+        rows.append(
+            {
+                "code": symbol,
+                "name": "",
+                "rt_price": float(close),
+                "pre_close": float(close),
+                "trade_date": fallback_trade_date,
+                "quote_time": "",
+                "quote_source": "latest_close_flat_fallback",
+            }
+        )
+    if not rows:
+        return out, 0
+    merged = pd.concat([out, pd.DataFrame(rows)], ignore_index=True).drop_duplicates(subset="code", keep="first")
+    return merged, len(rows)
 
 
 def apply_realtime_close_to_signal_frame(
@@ -4915,9 +5223,18 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     available_rows = 0
     quote_source = "eastmoney_stock_get_member_only"
     quotes_df = pd.DataFrame(index=pd.Index([], dtype=str))
+    flat_fallback_count = 0
     for attempt in range(1, REALTIME_QUOTE_FETCH_ATTEMPTS + 1):
         raw_quotes_df = fetch_member_realtime_quotes(member_symbols)
         quote_source = str(raw_quotes_df.attrs.get("quote_source") or "eastmoney_stock_get_member_only")
+        raw_quotes_df, flat_fallback_count = add_last_close_flat_fallback_quotes(
+            raw_quotes_df,
+            member_symbols=member_symbols,
+            last_close_map=last_close_map,
+            latest_trade_date=latest_trade_date,
+        )
+        if flat_fallback_count:
+            quote_source = f"{quote_source}+latest_close_flat_fallback"
         quotes_df = (
             raw_quotes_df.set_index("code")
             if not raw_quotes_df.empty
@@ -5001,6 +5318,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     signal_df["member_quote_trade_date_min"] = quote_stats["member_quote_trade_date_min"]
     signal_df["member_quote_trade_date_max"] = quote_stats["member_quote_trade_date_max"]
     signal_df["member_quote_bad_symbols"] = json.dumps(quote_stats["member_quote_bad_symbols"], ensure_ascii=False)
+    signal_df["member_quote_flat_fallback_count"] = flat_fallback_count
     signal_df["hedge_quote_trade_date"] = hedge_quote_trade_date
     if quote_trade_date:
         signal_df["quote_trade_date"] = quote_trade_date
@@ -5021,6 +5339,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
         **quote_stats,
+        "member_quote_flat_fallback_count": flat_fallback_count,
         "hedge_quote_trade_date": hedge_quote_trade_date,
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,

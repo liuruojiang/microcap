@@ -171,3 +171,142 @@ def test_preclose_fallback_can_cover_missing_quote_trade_date_when_anchor_is_sta
 
     assert blocked is None
     assert allowed == pytest.approx(0.1)
+
+
+def test_member_realtime_quotes_use_free_batch_fallbacks_before_per_symbol_and_qveris(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    base_mod = realtime_core.base_mod
+    calls: list[tuple[str, tuple[str, ...]]] = []
+
+    def eastmoney_batch(symbols: list[str]) -> pd.DataFrame:
+        calls.append(("eastmoney_batch", tuple(symbols)))
+        return pd.DataFrame(
+            {
+                "code": ["000001"],
+                "name": ["batch"],
+                "rt_price": [11.0],
+                "pre_close": [10.0],
+                "trade_date": ["2026-05-13"],
+            }
+        )
+
+    def tencent_batch(symbols: list[str]) -> pd.DataFrame:
+        calls.append(("tencent_batch", tuple(symbols)))
+        return pd.DataFrame(
+            {
+                "code": ["000002"],
+                "name": ["tencent"],
+                "rt_price": [21.0],
+                "pre_close": [20.0],
+                "trade_date": ["2026-05-13"],
+            }
+        )
+
+    def per_symbol(symbol: str) -> dict[str, object] | None:
+        calls.append(("per_symbol", (symbol,)))
+        if symbol == "000003":
+            return {
+                "code": "000003",
+                "name": "single",
+                "rt_price": 31.0,
+                "pre_close": 30.0,
+                "trade_date": "2026-05-13",
+            }
+        return None
+
+    def qveris(*_args: object, **_kwargs: object) -> tuple[pd.DataFrame, str]:
+        calls.append(("qveris", ()))
+        raise AssertionError("QVeris must not be used for member realtime quotes")
+
+    monkeypatch.setenv("QVERIS_API_KEY", "present-but-should-not-be-used")
+    monkeypatch.setattr(base_mod, "fetch_eastmoney_batch_realtime_quotes", eastmoney_batch, raising=False)
+    monkeypatch.setattr(base_mod, "fetch_tencent_realtime_quotes", tencent_batch, raising=False)
+    monkeypatch.setattr(base_mod, "fetch_eastmoney_stock_spot", per_symbol)
+    monkeypatch.setattr(base_mod, "fetch_qveris_realtime_quotes", qveris)
+
+    out = base_mod.fetch_member_realtime_quotes(["000001", "000002", "000003"])
+
+    assert set(out["code"]) == {"000001", "000002", "000003"}
+    assert out.attrs["quote_source"] == (
+        "eastmoney_ulist_free+"
+        "tencent_batch_free+"
+        "eastmoney_stock_get_member_only"
+    )
+    assert ("qveris", ()) not in calls
+    assert [name for name, _symbols in calls] == ["eastmoney_batch", "tencent_batch", "per_symbol"]
+
+
+def test_hedge_realtime_quote_uses_tencent_free_fallback_without_qveris(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    base_mod = realtime_core.base_mod
+    calls: list[str] = []
+
+    class FailingResponse:
+        def raise_for_status(self) -> None:
+            raise RuntimeError("eastmoney unavailable")
+
+        def json(self) -> dict[str, object]:
+            return {}
+
+    def requests_get(*_args: object, **_kwargs: object) -> FailingResponse:
+        calls.append("eastmoney")
+        return FailingResponse()
+
+    def tencent_batch(symbols: list[str]) -> pd.DataFrame:
+        calls.append("tencent")
+        assert symbols == ["sh000852"]
+        return pd.DataFrame(
+            {
+                "code": ["000852"],
+                "name": ["zz1000"],
+                "rt_price": [8790.0],
+                "pre_close": [8780.0],
+                "trade_date": ["2026-05-13"],
+            }
+        )
+
+    def qveris(*_args: object, **_kwargs: object) -> tuple[pd.DataFrame, str]:
+        calls.append("qveris")
+        raise AssertionError("QVeris must not be used for hedge realtime quotes")
+
+    monkeypatch.setenv("QVERIS_API_KEY", "present-but-should-not-be-used")
+    monkeypatch.setattr(base_mod.requests, "get", requests_get)
+    monkeypatch.setattr(base_mod, "fetch_tencent_realtime_quotes", tencent_batch, raising=False)
+    monkeypatch.setattr(base_mod, "fetch_qveris_realtime_quotes", qveris)
+
+    price, source, trade_date = base_mod.fetch_hedge_realtime_quote_fast()
+
+    assert price == pytest.approx(8790.0)
+    assert source == "tencent_batch_free"
+    assert trade_date == "2026-05-13"
+    assert calls == ["eastmoney", "tencent"]
+
+
+def test_sparse_member_quotes_can_use_last_close_flat_fallback() -> None:
+    base_mod = realtime_core.base_mod
+    quotes = pd.DataFrame(
+        {
+            "code": ["000001", "000002"],
+            "name": ["one", "two"],
+            "rt_price": [11.0, 21.0],
+            "pre_close": [10.0, 20.0],
+            "trade_date": ["2026-05-13", "2026-05-13"],
+        }
+    )
+
+    out, added = base_mod.add_last_close_flat_fallback_quotes(
+        quotes,
+        member_symbols=["000001", "000002", "000003"],
+        last_close_map={"000001": 10.0, "000002": 20.0, "000003": 30.0},
+        latest_trade_date=pd.Timestamp("2026-05-11"),
+        min_quoted_fraction=2 / 3,
+    )
+
+    fallback = out.set_index("code").loc["000003"]
+    assert added == 1
+    assert fallback["rt_price"] == pytest.approx(30.0)
+    assert fallback["pre_close"] == pytest.approx(30.0)
+    assert fallback["trade_date"] == "2026-05-13"
+    assert fallback["quote_source"] == "latest_close_flat_fallback"
