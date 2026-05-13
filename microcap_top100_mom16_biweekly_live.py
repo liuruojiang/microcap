@@ -44,6 +44,10 @@ HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS = 40
 EXECUTION_TIMING = "close"
 TRADE_CONSTRAINT_MODE = "close"
 RESEARCH_STACK_VERSION = "2026-05-12-p0-p1-history-meta-master-stv3"
+COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS = {
+    RESEARCH_STACK_VERSION,
+    "2026-04-11-p0-p1-history-meta-master-stv2",
+}
 STATIC_CONTEXT_CACHE_VERSION = "2026-05-12-live-current-st-members-v2"
 MEMBER_FILTER_POLICY_VERSION = "empty-name-reject-v1"
 REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
@@ -960,14 +964,20 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     core_params = meta.get("core_params") if isinstance(meta, dict) else None
     if not isinstance(core_params, dict):
         return False
+    research_stack_version = core_params.get("research_stack_version")
+    if research_stack_version not in COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS:
+        return False
+    rebalance_phase_anchor_date = core_params.get("rebalance_phase_anchor_date")
+    member_filter_policy_version = core_params.get("member_filter_policy_version")
+    realtime_quote_policy_version = core_params.get("realtime_quote_policy_version")
+    proxy_rebalance_policy_version = core_params.get("proxy_rebalance_policy_version")
     return (
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
-        and core_params.get("research_stack_version") == RESEARCH_STACK_VERSION
-        and core_params.get("rebalance_phase_anchor_date") == REBALANCE_ANCHOR_DATE
-        and core_params.get("member_filter_policy_version") == MEMBER_FILTER_POLICY_VERSION
-        and core_params.get("realtime_quote_policy_version") == REALTIME_QUOTE_POLICY_VERSION
-        and core_params.get("proxy_rebalance_policy_version") == PROXY_REBALANCE_POLICY_VERSION
+        and rebalance_phase_anchor_date in (None, REBALANCE_ANCHOR_DATE)
+        and member_filter_policy_version in (None, MEMBER_FILTER_POLICY_VERSION)
+        and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
+        and proxy_rebalance_policy_version in (None, PROXY_REBALANCE_POLICY_VERSION)
     )
 
 
