@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
@@ -16,6 +17,7 @@ jobs:
     env:
       TZ: Asia/Shanghai
       QVERIS_API_KEY: ${{ secrets.QVERIS_API_KEY }}
+      TOP100_REALTIME_REQUIRE_STATE: '1'
 
     steps:
       - name: Check out repository
@@ -37,6 +39,37 @@ jobs:
           restore-keys: |
             top100-realtime-anchor-refresh-v1-${{ runner.os }}-
 
+      - name: Restore validated realtime state bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .runtime_state
+          run_id="$(gh run list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --workflow "Top100 Realtime Signals" \
+            --branch main \
+            --status success \
+            --limit 20 \
+            --json databaseId \
+            --jq '.[0].databaseId // ""')"
+          if [ -z "${run_id}" ]; then
+            echo "::notice::No previous successful main run found for realtime state bundle restore."
+            exit 0
+          fi
+          if gh run download "${run_id}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name top100-realtime-state-bundle \
+            --dir .runtime_state; then
+            python scripts/realtime_state_bundle.py restore \
+              --root . \
+              --bundle .runtime_state/top100-realtime-state-bundle.zip \
+              --max-anchor-age-days 7
+          else
+            echo "::notice::Previous successful run ${run_id} has no realtime state bundle artifact; using restored cache only."
+          fi
+
       - name: Install runtime dependencies
         run: |
           python -m pip install --upgrade pip
@@ -48,6 +81,10 @@ jobs:
             echo "Missing required GitHub Secret: QVERIS_API_KEY"
             exit 1
           fi
+
+      - name: Validate realtime production state
+        run: |
+          python scripts/realtime_state_bundle.py validate --root . --max-anchor-age-days 7
 
       - name: Clear stale realtime outputs
         run: |
@@ -84,6 +121,24 @@ jobs:
             realtime_signal_result.txt
             outputs/*_realtime_signal.csv
           if-no-files-found: warn
+          retention-days: 30
+
+      - name: Pack validated realtime state bundle
+        if: steps.signals.outputs.exit_code == '0'
+        run: |
+          mkdir -p .runtime_state
+          python scripts/realtime_state_bundle.py pack \
+            --root . \
+            --bundle .runtime_state/top100-realtime-state-bundle.zip \
+            --max-anchor-age-days 7
+
+      - name: Upload validated realtime state bundle
+        if: steps.signals.outputs.exit_code == '0'
+        uses: actions/upload-artifact@v7
+        with:
+          name: top100-realtime-state-bundle
+          path: .runtime_state/top100-realtime-state-bundle.zip
+          if-no-files-found: error
           retention-days: 30
 
       - name: Add realtime signal result to job summary

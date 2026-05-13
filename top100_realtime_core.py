@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -24,6 +25,7 @@ DERISK_SCALE = 0.0
 RECOVERY_RATIO_THRESHOLD = 0.35
 
 base_mod = v1_1_mod.base_mod
+REQUIRE_STATE_ENV = "TOP100_REALTIME_REQUIRE_STATE"
 
 
 @dataclass(frozen=True)
@@ -66,11 +68,33 @@ def build_v1_1_args(max_workers: int = 8) -> argparse.Namespace:
     )
 
 
+def realtime_state_required() -> bool:
+    value = os.environ.get(REQUIRE_STATE_ENV, "")
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _missing_base_state(paths: dict[str, Path]) -> list[Path]:
+    required = [
+        base_mod.DEFAULT_INDEX_CSV,
+        BASE_COSTED_NAV_CSV,
+        paths["proxy_meta"],
+        paths["proxy_members"],
+        paths["proxy_turnover"],
+    ]
+    return [path for path in required if not path.exists()]
+
+
 def ensure_base_outputs() -> None:
     base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
     v1_1_mod.prepare_current_v1_1_outputs(paths=base_paths, costed_nav_csv=BASE_COSTED_NAV_CSV)
-    if base_paths["proxy_turnover"].exists() and BASE_COSTED_NAV_CSV.exists():
+    missing = _missing_base_state(base_paths)
+    if not missing:
         return
+    if realtime_state_required():
+        missing_text = ", ".join(path.as_posix() for path in missing)
+        raise FileNotFoundError(
+            f"Missing required Top100 realtime production state; refusing implicit rebuild: {missing_text}"
+        )
     args = build_v1_1_args()
     resolved_panel_path, target_end_date = base_mod.build_refreshed_panel_shadow(args, base_paths)
     base_mod.ensure_strategy_files(args, base_paths, resolved_panel_path, target_end_date)
@@ -94,10 +118,23 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
     args = build_v1_1_args()
     base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
     panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
-    try:
-        base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
-    except (FileNotFoundError, ValueError):
-        base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+    if realtime_state_required():
+        base_context = base_mod.build_realtime_context_from_cached_proxy(
+            args,
+            base_paths,
+            panel_path,
+            target_end_date,
+            "production state-only mode avoids implicit GitHub runner cache rebuilds",
+        )
+        if base_context is None:
+            raise RuntimeError(
+                "Validated realtime state is not reusable for production; refusing implicit proxy/cache rebuild."
+            )
+    else:
+        try:
+            base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
+        except (FileNotFoundError, ValueError):
+            base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
     member_context = base_mod.ensure_static_members_fresh(
         args,
         base_paths,
