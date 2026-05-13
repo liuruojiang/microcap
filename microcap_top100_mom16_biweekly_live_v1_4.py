@@ -13,6 +13,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import microcap_top100_mom16_biweekly_live_v1_1 as v1_1_mod
+import top100_realtime_core as realtime_core
 
 # v1.4 intentionally reuses v1.1 internal base_mod helpers; recheck this
 # module when v1.1 refactors base_mod or output/context APIs.
@@ -286,37 +287,17 @@ def _load_realtime_v1_1_context() -> tuple[dict[str, object], pd.DataFrame, dict
 def build_realtime_v1_4_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
     validate_base_hedge_ratio()
-    context, turnover_df, reference_summary = _load_realtime_v1_1_context()
-    _, meta = v1_1_mod.base_mod.build_realtime_signal_fast(context)
-    snapshot_ts = pd.Timestamp(meta["snapshot_time"])
-    close_df = context["close_df"].copy().sort_index()
-    close_df = v1_1_mod.base_mod.apply_realtime_close_to_signal_frame(
-        close_df=close_df,
-        latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
-        snapshot_ts=snapshot_ts,
-        microcap_rt_close=float(meta["microcap_rt_close"]),
-        hedge_rt_close=float(meta["hedge_rt_close"]),
-        quote_trade_date=meta.get("quote_trade_date", ""),
+    realtime_base = realtime_core.load_realtime_base()
+    out = realtime_core.build_realtime_overlay_base(realtime_base)
+    signal_row = _build_signal_row(out, realtime_base.reference_summary)
+    signal_row = v1_1_mod.base_mod.augment_signal_with_member_rebalance(
+        signal_row,
+        realtime_base.context.get("changes_df"),
     )
-    base_gross = v1_1_mod.base_mod.run_signal(close_df).sort_index()
-    gross = v1_1_mod.base_mod.apply_momentum_gap_exit_buffer(
-        base_gross,
-        V1_4_MOMENTUM_GAP_EXIT_BUFFER,
-    )
-    out = v1_1_mod.base_mod.apply_momentum_gap_peak_decay_derisk(
-        gross_result=gross,
-        turnover_df=turnover_df,
-        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
-        derisk_scale=DERISK_SCALE,
-        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
-    )
-    out = v1_1_mod.base_mod.ensure_overlay_pre_cost_return(out)
-    signal_row = _build_signal_row(out, reference_summary)
-    signal_row = v1_1_mod.base_mod.augment_signal_with_member_rebalance(signal_row, context.get("changes_df"))
+    meta = realtime_base.meta
     v1_1_mod.base_mod.assert_realtime_meta_is_actionable(meta)
     v1_1_mod.base_mod.assert_signal_matches_result(signal_row, out)
-    for key, value in meta.items():
-        signal_row[key] = _csv_safe_meta_value(value)
+    realtime_core.apply_realtime_meta_to_signal_row(signal_row, meta)
     signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"
     signal_row["official_close_confirmed_signal"] = False
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
