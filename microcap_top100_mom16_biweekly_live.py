@@ -4624,7 +4624,10 @@ def compute_member_realtime_return(
         quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date)
         or (
             allow_quote_pre_close_after_anchor
-            and quote_trade_date_on_or_after_anchor(quote_trade_date, latest_trade_date)
+            and (
+                quote_trade_date_on_or_after_anchor(quote_trade_date, latest_trade_date)
+                or not str(quote_trade_date or "").strip()
+            )
         )
     ):
         pre_close = pd.to_numeric(quotes_df.at[code, "pre_close"], errors="coerce")
