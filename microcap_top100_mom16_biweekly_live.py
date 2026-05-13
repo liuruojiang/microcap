@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import importlib
 import json
 import os
@@ -21,6 +22,8 @@ CACHE_DIR = ROOT / ".microcap_index_cache"
 REALTIME_DIR = CACHE_DIR / "realtime"
 QVERIS_API_BASE = "https://qveris.ai/api/v1"
 QVERIS_REALTIME_TOOL_ID = "cn_financial_pro.real_time_quotation.v1"
+QVERIS_INDEX_HISTORY_TOOL_QUERY = "A-share index daily historical close price by security code"
+QVERIS_STOCK_PRICE_HISTORY_TOOL_QUERY = "A-share stock daily historical raw close price by stock code"
 
 TOP_N = 100
 LOOKBACK = 16
@@ -48,6 +51,13 @@ PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
 REALTIME_QUOTE_RETRY_SECONDS = 5
 REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
+REALTIME_CACHE_LOCK_TIMEOUT_SECONDS = 30
+REALTIME_CACHE_STALE_LOCK_SECONDS = 300
+ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES = {
+    "eastmoney_stock_get",
+    "qveris_cn_financial_pro_realtime",
+}
+_QVERIS_TOOL_ID_CACHE: dict[str, str] = {}
 
 DEFAULT_INDEX_CSV = OUTPUT_DIR / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv"
 DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live"
@@ -250,14 +260,109 @@ def build_output_paths(output_prefix: str) -> dict[str, Path]:
     }
 
 
+def _cn_timestamp(now: pd.Timestamp | None = None) -> pd.Timestamp:
+    ts = pd.Timestamp.now(tz=CN_TIMEZONE) if now is None else pd.Timestamp(now)
+    if ts.tzinfo is None:
+        return ts.tz_localize(CN_TIMEZONE)
+    return ts.tz_convert(CN_TIMEZONE)
+
+
+def _cn_local_day(now: pd.Timestamp | None = None) -> pd.Timestamp:
+    return pd.Timestamp(_cn_timestamp(now).date())
+
+
+def _to_jsonable(value: object) -> object:
+    if np is not None:
+        if isinstance(value, np.integer):
+            return int(value)
+        if isinstance(value, np.floating):
+            return float(value) if np.isfinite(value) else None
+        if isinstance(value, np.ndarray):
+            return value.tolist()
+    if pd is not None:
+        if isinstance(value, pd.Timestamp):
+            return value.isoformat()
+        if value is pd.NaT:
+            return None
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+
+
+def _atomic_temp_path(path: Path) -> Path:
+    return path.with_name(f"{path.name}.{os.getpid()}.{time.time_ns()}.tmp")
+
+
+def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = _atomic_temp_path(path)
+    try:
+        tmp.write_text(text, encoding=encoding)
+        tmp.replace(path)
+    finally:
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except OSError:
+            pass
+
+
+def _atomic_write_json(path: Path, payload: object, encoding: str = "utf-8") -> None:
+    text = json.dumps(payload, ensure_ascii=False, indent=2, default=_to_jsonable)
+    _atomic_write_text(path, text, encoding=encoding)
+
+
+def _atomic_to_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = _atomic_temp_path(path)
+    try:
+        frame.to_csv(tmp, **kwargs)
+        tmp.replace(path)
+    finally:
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except OSError:
+            pass
+
+
+@contextmanager
+def _cache_write_lock(lock_path: Path):
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    start = time.time()
+    fd: int | None = None
+    while True:
+        try:
+            fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_RDWR)
+            os.write(fd, f"pid={os.getpid()} ts={time.time()}\n".encode("ascii", errors="ignore"))
+            break
+        except FileExistsError:
+            try:
+                age = time.time() - lock_path.stat().st_mtime
+                if age > REALTIME_CACHE_STALE_LOCK_SECONDS:
+                    lock_path.unlink()
+                    continue
+            except OSError:
+                continue
+            if time.time() - start > REALTIME_CACHE_LOCK_TIMEOUT_SECONDS:
+                raise TimeoutError(f"Timed out waiting for realtime cache lock: {lock_path}")
+            time.sleep(0.1)
+    try:
+        yield
+    finally:
+        if fd is not None:
+            os.close(fd)
+        try:
+            lock_path.unlink()
+        except OSError:
+            pass
+
+
 def assess_history_anchor_freshness(
     latest_trade_date: pd.Timestamp,
     max_stale_days: int,
     now: pd.Timestamp | None = None,
 ) -> dict[str, object]:
-    current_ts = pd.Timestamp.now() if now is None else pd.Timestamp(now)
     latest_trade_date = pd.Timestamp(latest_trade_date).normalize()
-    current_date = current_ts.normalize()
+    current_date = _cn_local_day(now)
     stale_days = max(0, int((current_date - latest_trade_date).days))
     is_stale = stale_days > max(0, int(max_stale_days))
     return {
@@ -300,7 +405,7 @@ def fetch_eastmoney_index_history(
     start_date: pd.Timestamp,
     end_date: pd.Timestamp | None = None,
 ) -> pd.DataFrame:
-    end_ts = pd.Timestamp.now().normalize() if end_date is None else pd.Timestamp(end_date)
+    end_ts = _cn_local_day() if end_date is None else pd.Timestamp(end_date)
     url = (
         "https://push2his.eastmoney.com/api/qt/stock/kline/get"
         f"?secid={secid}"
@@ -345,36 +450,50 @@ def fetch_eastmoney_index_history(
         "https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData"
         f"?symbol={symbol}&scale=240&ma=no&datalen=6000"
     )
-    response = requests.get(sina_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-    response.raise_for_status()
-    data = response.json()
-    if not isinstance(data, list) or not data:
-        raise RuntimeError(f"Failed index history fallback for {secid}: {last_error}")
-    rows = []
-    start_ts = pd.Timestamp(start_date)
-    for item in data:
-        day = item.get("day")
-        close = item.get("close")
-        if day is None or close is None:
-            continue
-        dt = pd.to_datetime(day)
-        if dt < start_ts or dt > end_ts:
-            continue
-        rows.append({"date": dt, "close": float(close)})
-    out = pd.DataFrame(rows).dropna().sort_values("date").drop_duplicates(subset="date")
-    if out.empty:
-        raise RuntimeError(f"Parsed empty index history fallback for {secid}: {last_error}")
-    return out.reset_index(drop=True)
+    try:
+        response = requests.get(sina_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+        data = response.json()
+        if not isinstance(data, list) or not data:
+            raise RuntimeError(f"Failed index history fallback for {secid}: {last_error}")
+        rows = []
+        start_ts = pd.Timestamp(start_date)
+        for item in data:
+            day = item.get("day")
+            close = item.get("close")
+            if day is None or close is None:
+                continue
+            dt = pd.to_datetime(day)
+            if dt < start_ts or dt > end_ts:
+                continue
+            rows.append({"date": dt, "close": float(close)})
+        out = pd.DataFrame(rows).dropna().sort_values("date").drop_duplicates(subset="date")
+        if not out.empty:
+            return out.reset_index(drop=True)
+        last_error = RuntimeError(f"Parsed empty index history fallback for {secid}: {last_error}")
+    except Exception as exc:
+        last_error = exc
+
+    try:
+        qveris_out = fetch_qveris_index_history(secid, pd.Timestamp(start_date), end_ts)
+        if not qveris_out.empty:
+            qveris_out.attrs["source"] = "qveris_fallback_after_free_index_history_failure"
+            return qveris_out
+    except Exception as qveris_exc:
+        raise RuntimeError(
+            f"Free index history sources failed for {secid}; QVeris fallback also failed or is unavailable: {qveris_exc}"
+        ) from qveris_exc
+    raise RuntimeError(f"All free and QVeris index history sources returned empty data for {secid}: {last_error}")
 
 
 def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | None = None) -> pd.Timestamp:
-    current_ts = pd.Timestamp.now() if now is None else pd.Timestamp(now)
+    current_ts = _cn_timestamp(now)
     dates = pd.to_datetime(history_df["date"], errors="coerce").dropna().sort_values()
     if dates.empty:
         raise RuntimeError("No valid historical dates available.")
-    current_day = current_ts.normalize()
+    current_day = pd.Timestamp(current_ts.date())
     hour, minute = (int(part) for part in CN_CLOSE_CONFIRM_TIME.split(":", 1))
-    close_confirm_ts = current_day + pd.Timedelta(hours=hour, minutes=minute)
+    close_confirm_ts = current_ts.normalize() + pd.Timedelta(hours=hour, minutes=minute)
     if current_ts < close_confirm_ts:
         dates = dates[dates.dt.normalize() < current_day]
     if dates.empty:
@@ -408,9 +527,8 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
             shadow.loc[dt, :] = np.nan
             shadow.at[dt, HEDGE_COLUMN] = close
 
-    shadow = shadow.sort_index().reset_index().rename(columns={"index": "date"})
-    paths["panel_shadow"].parent.mkdir(parents=True, exist_ok=True)
-    shadow.to_csv(paths["panel_shadow"], index=False, encoding="utf-8")
+    shadow = shadow.sort_index().reset_index()
+    _atomic_to_csv(shadow, paths["panel_shadow"], index=False, encoding="utf-8")
     return paths["panel_shadow"], latest_hedge_date
 
 
@@ -422,19 +540,19 @@ def panel_shadow_cache_is_reusable(
 ) -> bool:
     if existing_shadow_end is None:
         return False
-    current_ts = pd.Timestamp.now() if now is None else pd.Timestamp(now)
+    current_ts = _cn_timestamp(now)
     shadow_day = pd.Timestamp(existing_shadow_end).normalize()
-    current_day = current_ts.normalize()
+    current_day = pd.Timestamp(current_ts.date())
     if shadow_day > current_day:
         raise RuntimeError(f"panel shadow cache has future date: {shadow_day.date()} > {current_day.date()}")
     if shadow_day < current_day:
         return False
     hour, minute = (int(part) for part in CN_CLOSE_CONFIRM_TIME.split(":", 1))
-    close_confirm_ts = current_day + pd.Timedelta(hours=hour, minutes=minute)
+    close_confirm_ts = current_ts.normalize() + pd.Timedelta(hours=hour, minutes=minute)
     if current_ts < close_confirm_ts:
         return False
     try:
-        mtime = pd.Timestamp.fromtimestamp(panel_shadow.stat().st_mtime)
+        mtime = pd.Timestamp.fromtimestamp(panel_shadow.stat().st_mtime, tz=CN_TIMEZONE)
     except OSError:
         return False
     return bool(current_ts - mtime <= pd.Timedelta(seconds=max(0, int(same_day_max_age_seconds))))
@@ -455,8 +573,21 @@ def refresh_price_cache_tail(
     failures: list[str] = []
     workers = max(1, min(int(max_workers), 16))
 
+    def refresh_price_history_with_fallback(symbol: str) -> None:
+        try:
+            fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
+            return
+        except Exception as free_exc:
+            try:
+                qveris_frame = fetch_qveris_price_history(symbol, freq_mod.START_DATE, end_text)
+                write_qveris_price_history_cache(symbol, qveris_frame)
+            except Exception as qveris_exc:
+                raise RuntimeError(
+                    f"free price refresh failed for {symbol}; QVeris fallback also failed: {qveris_exc}"
+                ) from free_exc
+
     def refresh_symbol(symbol: str) -> None:
-        fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
+        refresh_price_history_with_fallback(symbol)
         fetch_share_change = getattr(fetch_mod, "fetch_share_change", None)
         if fetch_share_change is not None:
             fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
@@ -469,7 +600,11 @@ def refresh_price_cache_tail(
                 fut.result()
             except Exception:
                 failures.append(symbol)
-    if len(failures) > max(50, len(symbols) // 20):
+    if failures:
+        audit = pd.DataFrame({"symbol": failures})
+        audit_path = OUTPUT_DIR / f"price_cache_refresh_failures_{end_text}.csv"
+        _atomic_to_csv(audit, audit_path, index=False, encoding="utf-8")
+    if len(failures) > max(20, len(symbols) // 100):
         sample = ", ".join(failures[:10])
         raise RuntimeError(
             f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). Sample: {sample}"
@@ -515,6 +650,9 @@ def select_recent_candidate_symbols(
     max_workers: int,
     top_k: int = 500,
     recent_rebalance_count: int = 6,
+    top_n_for_boundary: int = TOP_N,
+    dynamic_cap_multiplier: float = 1.5,
+    max_dynamic_top_k: int = 1000,
 ) -> list[str]:
     symbols = set()
 
@@ -539,9 +677,76 @@ def select_recent_candidate_symbols(
             if result is not None:
                 caps.append(result)
 
-    ranked = sorted(caps, key=lambda item: item[1])[:top_k]
-    symbols.update(symbol for symbol, _ in ranked)
+    ranked = sorted(caps, key=lambda item: item[1])
+    base_count = max(0, int(top_k))
+    selected_ranked = ranked[:base_count]
+
+    boundary_count = min(max(1, int(top_n_for_boundary)), len(ranked))
+    if ranked and selected_ranked and dynamic_cap_multiplier > 0 and base_count < len(ranked):
+        boundary_cap = float(ranked[boundary_count - 1][1])
+        base_tail_cap = float(selected_ranked[-1][1])
+        cap_limit = boundary_cap * float(dynamic_cap_multiplier)
+        if base_tail_cap <= cap_limit:
+            dynamic_count = min(max(base_count, int(max_dynamic_top_k)), len(ranked))
+            dynamic_ranked = [item for item in ranked[:dynamic_count] if float(item[1]) <= cap_limit]
+            if len(dynamic_ranked) > len(selected_ranked):
+                selected_ranked = dynamic_ranked
+
+    symbols.update(symbol for symbol, _ in selected_ranked)
     return sorted(symbols)
+
+
+def validate_recent_bridge_alignment(
+    existing_index_df: pd.DataFrame,
+    recent_index_df: pd.DataFrame,
+    bridge_date: pd.Timestamp,
+    overlap_window: int = 5,
+    max_cumulative_return_error: float = 0.05,
+    min_return_correlation: float = 0.50,
+) -> None:
+    bridge_ts = pd.Timestamp(bridge_date).normalize()
+    old = existing_index_df[["date", "close"]].copy()
+    new = recent_index_df[["date", "close"]].copy()
+    old["date"] = pd.to_datetime(old["date"], errors="coerce").dt.normalize()
+    new["date"] = pd.to_datetime(new["date"], errors="coerce").dt.normalize()
+    old["close"] = pd.to_numeric(old["close"], errors="coerce")
+    new["close"] = pd.to_numeric(new["close"], errors="coerce")
+    overlap = (
+        old.dropna()
+        .merge(new.dropna(), on="date", how="inner", suffixes=("_old", "_new"))
+        .loc[lambda frame: frame["date"] <= bridge_ts]
+        .sort_values("date")
+        .tail(max(2, int(overlap_window) + 1))
+    )
+    if len(overlap) < 3:
+        return
+
+    old_close = overlap["close_old"].astype(float)
+    new_close = overlap["close_new"].astype(float)
+    if old_close.iloc[0] <= 0 or new_close.iloc[0] <= 0:
+        raise RuntimeError(f"Invalid bridge overlap close on or before {bridge_ts.date()}.")
+
+    old_cum = old_close.iloc[-1] / old_close.iloc[0] - 1.0
+    new_cum = new_close.iloc[-1] / new_close.iloc[0] - 1.0
+    cumulative_error = abs(float(new_cum - old_cum))
+    if cumulative_error > float(max_cumulative_return_error):
+        raise RuntimeError(
+            f"Recent proxy bridge cumulative-return drift is too large on {bridge_ts.date()}: "
+            f"old={old_cum:.4%}, new={new_cum:.4%}, error={cumulative_error:.4%}."
+        )
+
+    returns = pd.DataFrame(
+        {
+            "old": old_close.pct_change(fill_method=None),
+            "new": new_close.pct_change(fill_method=None),
+        }
+    ).replace([np.inf, -np.inf], np.nan).dropna()
+    if len(returns) >= 3 and returns["old"].std() > 0 and returns["new"].std() > 0:
+        corr = float(returns["old"].corr(returns["new"]))
+        if pd.notna(corr) and corr < float(min_return_correlation):
+            raise RuntimeError(
+                f"Recent proxy bridge return correlation is too low on {bridge_ts.date()}: corr={corr:.4f}."
+            )
 
 
 def extend_index_recent_window(
@@ -599,6 +804,7 @@ def extend_index_recent_window(
     if bridge_old.empty or bridge_new.empty:
         raise RuntimeError(f"Failed to bridge recent proxy extension on {bridge_date.date()}.")
 
+    validate_recent_bridge_alignment(index_df, recent_index_df, bridge_date)
     scale = float(bridge_old.iloc[0]) / float(bridge_new.iloc[0])
     recent_index_df = recent_index_df.copy()
     recent_index_df["close"] = recent_index_df["close"].astype(float) * scale
@@ -634,9 +840,9 @@ def extend_index_recent_window(
         combined_members,
         combined_turnover,
     )
-    combined_index.to_csv(args.index_csv, index=False, encoding="utf-8")
-    combined_members.to_csv(paths["proxy_members"], index=False, encoding="utf-8")
-    combined_turnover.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
+    _atomic_to_csv(combined_index, args.index_csv, index=False, encoding="utf-8")
+    _atomic_to_csv(combined_members, paths["proxy_members"], index=False, encoding="utf-8")
+    _atomic_to_csv(combined_turnover, paths["proxy_turnover"], index=False, encoding="utf-8")
 
     meta["start_date"] = str(pd.Timestamp(combined_index["date"].min()).date())
     meta["end_date"] = str(pd.Timestamp(combined_index["date"].max()).date())
@@ -648,7 +854,7 @@ def extend_index_recent_window(
     meta["source_used"] = "local_cache_proxy_recent_extension"
     meta["recent_extension_start"] = str(recent_start.date())
     meta["recent_candidate_symbols"] = int(len(candidate_symbols))
-    paths["proxy_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
 
 
 def build_biweekly_rebalance_dates(
@@ -938,10 +1144,10 @@ def ensure_strategy_files(
 
     index_df, members_df, turnover_df, meta = build_local_proxy_bundle(args, trading_dates)
     args.index_csv.parent.mkdir(parents=True, exist_ok=True)
-    index_df.to_csv(args.index_csv, index=False, encoding="utf-8")
-    members_df.to_csv(paths["proxy_members"], index=False, encoding="utf-8")
-    turnover_df.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
-    paths["proxy_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_to_csv(index_df, args.index_csv, index=False, encoding="utf-8")
+    _atomic_to_csv(members_df, paths["proxy_members"], index=False, encoding="utf-8")
+    _atomic_to_csv(turnover_df, paths["proxy_turnover"], index=False, encoding="utf-8")
+    _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
     rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path, target_end_date=target_end_date)
     assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
 
@@ -960,7 +1166,19 @@ def load_close_df(panel_path: Path, index_csv: Path, max_date: pd.Timestamp | No
     effective_start = infer_proxy_effective_start(proxy)
     microcap = proxy.set_index("date")["close"].rename("microcap").astype(float)
 
-    close_df = pd.concat([microcap, hedge], axis=1).sort_index().dropna()
+    aligned = pd.concat([microcap, hedge], axis=1).sort_index()
+    close_df = aligned.dropna()
+    proxy_tail = microcap.dropna().index.max() if not microcap.dropna().empty else None
+    aligned_tail = close_df.index.max() if not close_df.empty else None
+    if proxy_tail is not None and aligned_tail is not None and pd.Timestamp(aligned_tail) < pd.Timestamp(proxy_tail):
+        truncated_dates = microcap.loc[microcap.index > aligned_tail].dropna().index
+        warnings.warn(
+            "load_close_df truncated proxy tail because hedge data was missing: "
+            f"{len(truncated_dates)} rows, last_proxy_date={pd.Timestamp(proxy_tail).date()}, "
+            f"last_aligned_date={pd.Timestamp(aligned_tail).date()}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
     if effective_start is not None:
         close_df = close_df.loc[close_df.index >= effective_start].copy()
     if len(close_df) < LOOKBACK + 3:
@@ -1045,10 +1263,10 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
         return
 
     if len(trimmed_index) != len(index_df):
-        trimmed_index.to_csv(args.index_csv, index=False, encoding="utf-8")
+        _atomic_to_csv(trimmed_index, args.index_csv, index=False, encoding="utf-8")
 
     if members_df is not None and trimmed_members is not None and len(trimmed_members) != len(members_df):
-        trimmed_members.to_csv(paths["proxy_members"], index=False, encoding="utf-8")
+        _atomic_to_csv(trimmed_members, paths["proxy_members"], index=False, encoding="utf-8")
 
     if args.costed_nav_csv.exists():
         perf = pd.read_csv(args.costed_nav_csv)
@@ -1056,7 +1274,7 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
         perf = perf.dropna(subset=["date"]).sort_values("date")
         trimmed_perf = perf.loc[perf["date"] >= effective_start].copy()
         if len(trimmed_perf) != len(perf):
-            trimmed_perf.to_csv(args.costed_nav_csv, index=False, encoding="utf-8")
+            _atomic_to_csv(trimmed_perf, args.costed_nav_csv, index=False, encoding="utf-8")
 
     if paths["proxy_turnover"].exists():
         turnover = pd.read_csv(paths["proxy_turnover"])
@@ -1065,7 +1283,7 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
             turnover = turnover.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
             trimmed_turnover = turnover.loc[turnover["rebalance_date"] >= effective_start].copy()
             if len(trimmed_turnover) != len(turnover):
-                trimmed_turnover.to_csv(paths["proxy_turnover"], index=False, encoding="utf-8")
+                _atomic_to_csv(trimmed_turnover, paths["proxy_turnover"], index=False, encoding="utf-8")
 
     meta = {}
     if paths["proxy_meta"].exists():
@@ -1079,13 +1297,13 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
     if trimmed_members is not None and not trimmed_members.empty and "rebalance_date" in trimmed_members.columns:
         rebalance_dates = pd.to_datetime(trimmed_members["rebalance_date"], errors="coerce").dropna().drop_duplicates()
         meta["rebalance_dates_count"] = int(len(rebalance_dates))
-    paths["proxy_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
 
 
 def apply_momentum_gap_exit_buffer(gross_result: pd.DataFrame, exit_buffer: float = MOMENTUM_GAP_EXIT_BUFFER) -> pd.DataFrame:
     if exit_buffer < 0:
         raise ValueError("exit_buffer must be non-negative.")
-    if exit_buffer == 0 or gross_result.empty:
+    if gross_result.empty:
         return gross_result.copy()
 
     out = gross_result.copy().sort_index()
@@ -1286,14 +1504,19 @@ def apply_single_trade_forced_stop_loss(
         return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
         forced_stop_triggered = False
 
-        if current_active and desired_next_active and trade_nav * (1.0 + return_net) - 1.0 <= -float(stop_loss_threshold):
+        stop_decision_return_net = (1.0 + realized_daily_return) * (1.0 - freq_mod.cost_mod.EXIT_COST) - 1.0
+        if (
+            current_active
+            and desired_next_active
+            and trade_nav * (1.0 + stop_decision_return_net) - 1.0 <= -float(stop_loss_threshold)
+        ):
             desired_next_active = False
             forced_stop_triggered = True
             entry_cost = 0.0
             exit_cost = freq_mod.cost_mod.EXIT_COST
             rebalance_cost = 0.0
             total_cost = exit_cost
-            return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+            return_net = stop_decision_return_net
 
         if trade_participates:
             trade_nav *= 1.0 + return_net
@@ -1496,7 +1719,8 @@ def apply_peak_drawdown_forced_stop_loss(
         drawdown_event_count_in_window = 0
 
         if current_active and desired_next_active:
-            trial_trade_nav = trade_nav * (1.0 + return_net)
+            stop_decision_return_net = (1.0 + realized_daily_return) * (1.0 - freq_mod.cost_mod.EXIT_COST) - 1.0
+            trial_trade_nav = trade_nav * (1.0 + stop_decision_return_net)
             event_drawdown = (trial_trade_nav / event_reference_peak_nav - 1.0) if event_reference_peak_nav > 0 else 0.0
             if event_drawdown <= -float(stop_loss_threshold):
                 drawdown_event_triggered = True
@@ -1521,7 +1745,7 @@ def apply_peak_drawdown_forced_stop_loss(
                 exit_cost = freq_mod.cost_mod.EXIT_COST
                 rebalance_cost = 0.0
                 total_cost = exit_cost
-                return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+                return_net = stop_decision_return_net
 
         if trade_participates:
             trade_nav *= 1.0 + return_net
@@ -2051,7 +2275,6 @@ def apply_momentum_gap_peak_decay_derisk(
         trade_id_for_row = current_trade_id if trade_participates else None
 
         gross_daily_return = float(returns.loc[dt])
-        prior_gap_peak = gap_peak
         if current_active and current_gap is not None:
             gap_peak = current_gap if gap_peak is None else max(float(gap_peak), current_gap)
         if (
@@ -2258,7 +2481,7 @@ def run_forced_stop_loss_scan_from_proxy_turnover(
         thresholds=thresholds,
         reentry_momentum_strength_days=reentry_momentum_strength_days,
     )
-    summary.to_csv(paths["forced_stop_scan"], index=False, encoding="utf-8")
+    _atomic_to_csv(summary, paths["forced_stop_scan"], index=False, encoding="utf-8")
     return summary
 
 
@@ -2286,7 +2509,7 @@ def rebuild_costed_nav_from_proxy_turnover(
     else:
         net = apply_single_trade_forced_stop_loss(gross, turnover_df, stop_loss_threshold)
     ensure_overlay_pre_cost_return(net)
-    net.to_csv(args.costed_nav_csv, index_label="date", encoding="utf-8")
+    _atomic_to_csv(net, args.costed_nav_csv, index_label="date", encoding="utf-8")
 
 
 def try_extend_costed_nav_without_turnover(
@@ -2320,21 +2543,25 @@ def try_extend_costed_nav_without_turnover(
     if required_cols.difference(missing.columns):
         return False
 
+    panel_dates = pd.read_csv(panel_path, usecols=["date"])
+    panel_dates["date"] = pd.to_datetime(panel_dates["date"], errors="coerce")
+    panel_trading_dates = pd.DatetimeIndex(
+        panel_dates.loc[panel_dates["date"] <= target_end, "date"].dropna().drop_duplicates().sort_values()
+    )
     missing_rebalances = find_missing_cost_rebalances(
         gross_index=pd.DatetimeIndex(gross.index),
         current_costed_end=current_costed_end,
         target_end_date=target_end,
         proxy_turnover_path=proxy_turnover_path,
+        trading_dates=panel_trading_dates,
     )
     if len(missing_rebalances):
         return False
 
-    if EXECUTION_TIMING == freq_mod.EXECUTION_TIMING_CLOSE:
-        active = missing["next_holding"].ne("cash")
-        prev_active = missing["holding"].ne("cash")
-    else:
-        active = missing["holding"].ne("cash")
-        prev_active = active.shift(1, fill_value=False)
+    if EXECUTION_TIMING != freq_mod.EXECUTION_TIMING_CLOSE:
+        raise RuntimeError(f"Unsupported EXECUTION_TIMING for tail cost extension: {EXECUTION_TIMING}")
+    active = missing["next_holding"].ne("cash")
+    prev_active = missing["holding"].ne("cash")
 
     entry_cost = pd.Series(0.0, index=missing.index, dtype=float)
     entry_cost.loc[active & ~prev_active] = freq_mod.cost_mod.ENTRY_COST
@@ -2359,7 +2586,7 @@ def try_extend_costed_nav_without_turnover(
     ).sort_values("date")
     combined["date"] = pd.to_datetime(combined["date"], errors="coerce")
     combined = combined.dropna(subset=["date"]).drop_duplicates(subset="date", keep="last")
-    combined.to_csv(args.costed_nav_csv, index=False, encoding="utf-8")
+    _atomic_to_csv(combined, args.costed_nav_csv, index=False, encoding="utf-8")
     return True
 
 
@@ -2379,11 +2606,13 @@ def find_missing_cost_rebalances(
     current_costed_end: pd.Timestamp,
     target_end_date: pd.Timestamp,
     proxy_turnover_path: Path | None = None,
+    trading_dates: pd.DatetimeIndex | None = None,
 ) -> pd.DatetimeIndex:
     current_end = pd.Timestamp(current_costed_end).normalize()
     target_end = pd.Timestamp(target_end_date).normalize()
     turnover_rebalances = load_proxy_turnover_rebalance_dates(proxy_turnover_path)
-    rebalance_dates = turnover_rebalances if len(turnover_rebalances) else build_biweekly_rebalance_dates(gross_index)
+    fallback_dates = trading_dates if trading_dates is not None and len(trading_dates) else gross_index
+    rebalance_dates = turnover_rebalances if len(turnover_rebalances) else build_biweekly_rebalance_dates(fallback_dates)
     return rebalance_dates[(rebalance_dates > current_end) & (rebalance_dates <= target_end)]
 
 
@@ -2456,6 +2685,12 @@ def load_member_snapshot(
 def build_change_table(prev_df: pd.DataFrame | None, curr_df: pd.DataFrame) -> pd.DataFrame:
     prev_df = prev_df.copy() if prev_df is not None else pd.DataFrame(columns=["symbol", "rank", "name"])
     curr_df = curr_df.copy()
+    for label, frame in (("previous", prev_df), ("current", curr_df)):
+        if "symbol" not in frame.columns:
+            raise KeyError(f"{label} member frame is missing column 'symbol'.")
+        duplicated = frame["symbol"].astype(str)[frame["symbol"].astype(str).duplicated()].unique().tolist()
+        if duplicated:
+            raise ValueError(f"{label} member frame has duplicate symbols: {duplicated[:10]}")
 
     prev_rank = dict(zip(prev_df["symbol"], prev_df["rank"]))
     curr_rank = dict(zip(curr_df["symbol"], curr_df["rank"]))
@@ -2509,14 +2744,6 @@ def locate_rebalance_dates(
     if future:
         next_rebalance = future[0]
     return latest_rebalance, prev_rebalance, next_rebalance, effective_rebalance
-
-
-def get_next_trade_date(trading_dates: pd.DatetimeIndex, current_date: pd.Timestamp) -> pd.Timestamp | None:
-    future_dates = trading_dates[trading_dates > pd.Timestamp(current_date)]
-    if len(future_dates) == 0:
-        return None
-    return pd.Timestamp(future_dates[0])
-
 
 def add_capital_columns(members_df: pd.DataFrame, capital: float | None) -> pd.DataFrame:
     out = members_df.copy()
@@ -2583,10 +2810,11 @@ def save_static_context_cache(
         "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
         "rebalance_effective_date": None if rebalance_effective_date is None else str(pd.Timestamp(rebalance_effective_date).date()),
     }
-    paths["cache_static_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    target_members.to_csv(paths["cache_static_target"], index=False, encoding="utf-8")
-    effective_members.to_csv(paths["cache_static_effective"], index=False, encoding="utf-8")
-    changes_df.to_csv(paths["cache_static_changes"], index=False, encoding="utf-8")
+    with _cache_write_lock(REALTIME_DIR / f"{paths['cache_static_meta'].stem}.lock"):
+        _atomic_to_csv(target_members, paths["cache_static_target"], index=False, encoding="utf-8")
+        _atomic_to_csv(effective_members, paths["cache_static_effective"], index=False, encoding="utf-8")
+        _atomic_to_csv(changes_df, paths["cache_static_changes"], index=False, encoding="utf-8")
+        _atomic_write_json(paths["cache_static_meta"], meta, encoding="utf-8")
 
 
 def compute_trade_state(current_holding: str, next_holding: str) -> str:
@@ -2653,7 +2881,12 @@ def assert_signal_matches_result(signal_df: pd.DataFrame, result: pd.DataFrame) 
     for col in ["microcap_mom", "hedge_mom", "momentum_gap"]:
         signal_value = pd.to_numeric(signal_row.get(col), errors="coerce")
         result_value = pd.to_numeric(result_row.get(col), errors="coerce")
-        if pd.isna(signal_value) or pd.isna(result_value) or abs(float(signal_value) - float(result_value)) > 1e-10:
+        if pd.isna(signal_value) or pd.isna(result_value) or not np.isclose(
+            float(signal_value),
+            float(result_value),
+            rtol=1e-9,
+            atol=1e-12,
+        ):
             raise RuntimeError(f"信号字段 {col} 与策略结果不一致，拒绝输出实盘信号。")
     if str(signal_row.get("next_holding")) != str(result_row.get("next_holding")):
         raise RuntimeError("信号 next_holding 与策略结果不一致，拒绝输出实盘信号。")
@@ -2682,8 +2915,8 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
             "downgrade to intraday_preview."
         )
     hedge_source = str(meta.get("hedge_quote_source") or "")
-    if "fallback" in hedge_source.lower():
-        raise RuntimeError(f"实时中证1000报价使用 fallback ({hedge_source})，拒绝输出实盘信号。")
+    if hedge_source not in ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES:
+        raise RuntimeError(f"Realtime hedge quote source is not actionable: {hedge_source}")
     hedge_quote_trade_date = str(meta.get("hedge_quote_trade_date") or "").strip()
     if not hedge_quote_trade_date:
         raise RuntimeError("Realtime hedge quote missing trade_date; downgrade to intraday_preview.")
@@ -2929,12 +3162,12 @@ def save_base_outputs(context: dict[str, object]) -> None:
     summary = context["summary"]
     include_members = bool(context.get("include_members", True))
 
-    result.to_csv(paths["nav"], index_label="date", encoding="utf-8")
-    latest_signal.to_csv(paths["signal"], index=False, encoding="utf-8")
+    _atomic_to_csv(result, paths["nav"], index_label="date", encoding="utf-8")
+    _atomic_to_csv(latest_signal, paths["signal"], index=False, encoding="utf-8")
     if include_members:
-        target_members.to_csv(paths["members"], index=False, encoding="utf-8")
-        changes_df.to_csv(paths["changes"], index=False, encoding="utf-8")
-        paths["summary"].write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        _atomic_to_csv(target_members, paths["members"], index=False, encoding="utf-8")
+        _atomic_to_csv(changes_df, paths["changes"], index=False, encoding="utf-8")
+        _atomic_write_json(paths["summary"], summary, encoding="utf-8")
 
 
 def print_console_summary(summary: dict[str, object]) -> None:
@@ -3013,7 +3246,7 @@ def _strip_query_prefix(text: str) -> str:
 
 
 def parse_date_range(text: str, now: pd.Timestamp | None = None) -> tuple[pd.Timestamp | None, pd.Timestamp | None, str]:
-    now = (now or pd.Timestamp.now()).normalize()
+    now = _cn_local_day(now)
     raw = text.strip()
     text = re.sub(r"\s+", "", raw)
     text = text.replace("从", "")
@@ -3264,7 +3497,7 @@ def assert_no_historical_rewrite(
     diff_df = pd.DataFrame(changes)
     if audit_path is not None:
         audit_path.parent.mkdir(parents=True, exist_ok=True)
-        diff_df.to_csv(audit_path, index=False, encoding="utf-8-sig")
+        _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
     examples = ", ".join(f"{row['date']}:{row['column']}" for row in changes[:5])
     raise RuntimeError(
         f"{label} historical rewrite detected on frozen dates; examples: {examples}. "
@@ -3348,9 +3581,9 @@ def build_performance_outputs(
         ]
     )
 
-    data.reset_index().to_csv(paths["performance_nav"], index=False, encoding="utf-8")
-    summary_df.to_csv(paths["performance_summary"], index=False, encoding="utf-8")
-    yearly_df.to_csv(paths["performance_yearly"], index=False, encoding="utf-8")
+    _atomic_to_csv(data.reset_index(), paths["performance_nav"], index=False, encoding="utf-8")
+    _atomic_to_csv(summary_df, paths["performance_summary"], index=False, encoding="utf-8")
+    _atomic_to_csv(yearly_df, paths["performance_yearly"], index=False, encoding="utf-8")
 
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.plot(data.index, data["nav_rebased"], linewidth=2.0, color="#1f4e79")
@@ -3388,12 +3621,12 @@ def build_performance_outputs(
             "chart_png": str(paths["performance_chart"]),
         },
     }
-    paths["performance_json"].write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_json(paths["performance_json"], payload, encoding="utf-8")
     manifest_path = paths.get(
         "performance_manifest",
         paths["performance_json"].with_name(paths["performance_json"].stem + "_manifest.json"),
     )
-    manifest_path.write_text(json.dumps(payload["source_manifest"], ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_json(manifest_path, payload["source_manifest"], encoding="utf-8")
     return payload
 
 
@@ -3576,7 +3809,7 @@ def load_or_refresh_stock_spot(cache_seconds: int, allow_stale_cache: bool = Fal
     for fetcher in (ak.stock_zh_a_spot_em, ak.stock_zh_a_spot):
         try:
             spot = fetcher()
-            spot.to_csv(cache_file, index=False, encoding="utf-8")
+            _atomic_to_csv(spot, cache_file, index=False, encoding="utf-8")
             return spot
         except Exception as exc:
             last_error = exc
@@ -3594,7 +3827,7 @@ def load_or_refresh_index_spot(cache_seconds: int, allow_stale_cache: bool = Fal
 
     try:
         spot = ak.stock_zh_index_spot_em()
-        spot.to_csv(cache_file, index=False, encoding="utf-8")
+        _atomic_to_csv(spot, cache_file, index=False, encoding="utf-8")
         return spot
     except Exception as exc:
         if cache_file.exists() and allow_stale_cache:
@@ -3659,7 +3892,7 @@ def load_or_refresh_latest_shares(cache_seconds: int = 86400) -> pd.DataFrame:
             continue
 
     latest_shares = pd.DataFrame(rows)
-    latest_shares.to_csv(cache_file, index=False, encoding="utf-8")
+    _atomic_to_csv(latest_shares, cache_file, index=False, encoding="utf-8")
     return latest_shares
 
 
@@ -3717,6 +3950,10 @@ def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
 
 def qveris_security_code(symbol: str) -> str:
     raw = str(symbol).strip().upper()
+    if re.fullmatch(r"[01]\.\d{6}", raw):
+        market, code = raw.split(".", 1)
+        suffix = "SH" if market == "1" else "SZ"
+        return f"{code}.{suffix}"
     if "." in raw:
         return raw
     code = raw.zfill(6)
@@ -3731,6 +3968,204 @@ def _iter_qveris_records(data: object):
     if isinstance(data, list):
         for item in data:
             yield from _iter_qveris_records(item)
+
+
+def _qveris_api_key() -> str:
+    api_key = os.environ.get("QVERIS_API_KEY", "").strip()
+    if not api_key:
+        raise RuntimeError("QVERIS_API_KEY is not set")
+    return api_key
+
+
+def _qveris_post(path: str, body: dict[str, object], timeout: int = 30) -> dict[str, object]:
+    requests_mod = requests if requests is not None else importlib.import_module("requests")
+    response = requests_mod.post(
+        f"{QVERIS_API_BASE}{path}",
+        headers={"Authorization": f"Bearer {_qveris_api_key()}", "Content-Type": "application/json"},
+        json=body,
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return payload if isinstance(payload, dict) else {"payload": payload}
+
+
+def _extract_qveris_tool_ids(payload: object) -> list[str]:
+    out: list[str] = []
+    if isinstance(payload, dict):
+        for key in ("id", "tool_id", "toolId"):
+            value = payload.get(key)
+            if isinstance(value, str) and value not in out:
+                out.append(value)
+        for value in payload.values():
+            for tool_id in _extract_qveris_tool_ids(value):
+                if tool_id not in out:
+                    out.append(tool_id)
+    elif isinstance(payload, list):
+        for item in payload:
+            for tool_id in _extract_qveris_tool_ids(item):
+                if tool_id not in out:
+                    out.append(tool_id)
+    return out
+
+
+def _qveris_discover_tool_id(query: str, cache_key: str, session_id: str) -> str:
+    cached = _QVERIS_TOOL_ID_CACHE.get(cache_key)
+    if cached:
+        return cached
+    search_payload = _qveris_post(
+        "/search",
+        {"query": query, "limit": 5, "session_id": session_id},
+        timeout=20,
+    )
+    tool_ids = _extract_qveris_tool_ids(search_payload)
+    if not tool_ids:
+        raise RuntimeError(f"QVeris search found no tool for query: {query}")
+    inspect_ids = tool_ids[:3]
+    _qveris_post("/tools/by-ids", {"tool_ids": inspect_ids, "ids": inspect_ids}, timeout=20)
+    _QVERIS_TOOL_ID_CACHE[cache_key] = tool_ids[0]
+    return tool_ids[0]
+
+
+def _qveris_execute_discovered_tool(
+    query: str,
+    cache_key: str,
+    parameters: dict[str, object],
+    session_id: str,
+    max_response_size: int = 200000,
+) -> dict[str, object]:
+    tool_id = _qveris_discover_tool_id(query, cache_key, session_id)
+    return _qveris_post(
+        f"/tools/execute?tool_id={tool_id}",
+        {
+            "parameters": parameters,
+            "session_id": session_id,
+            "max_response_size": int(max_response_size),
+        },
+        timeout=45,
+    )
+
+
+def _iter_qveris_data_records(data: object):
+    if isinstance(data, dict):
+        if any(key in data for key in ("date", "trade_date", "tradeDate", "day", "close", "close_raw", "收盘价")):
+            yield data
+        for value in data.values():
+            yield from _iter_qveris_data_records(value)
+    elif isinstance(data, list):
+        for item in data:
+            yield from _iter_qveris_data_records(item)
+
+
+def _first_record_value(record: dict[str, object], keys: tuple[str, ...]) -> object | None:
+    for key in keys:
+        if key in record and record.get(key) not in (None, ""):
+            return record.get(key)
+    lower_map = {str(key).lower(): value for key, value in record.items()}
+    for key in keys:
+        value = lower_map.get(key.lower())
+        if value not in (None, ""):
+            return value
+    return None
+
+
+def _qveris_history_frame(payload: dict[str, object], close_column: str) -> pd.DataFrame:
+    result = payload.get("result", payload)
+    rows: list[dict[str, object]] = []
+    for record in _iter_qveris_data_records(result):
+        date_value = _first_record_value(record, ("date", "trade_date", "tradeDate", "day", "datetime", "time", "日期"))
+        close_value = _first_record_value(
+            record,
+            ("close", "close_raw", "closePrice", "收盘价", "收盘", "price", "latest", "最新价"),
+        )
+        if date_value is None or close_value is None:
+            continue
+        dt = pd.to_datetime(date_value, errors="coerce")
+        close = pd.to_numeric(close_value, errors="coerce")
+        if pd.isna(dt) or pd.isna(close) or float(close) <= 0:
+            continue
+        rows.append({"date": pd.Timestamp(dt).normalize(), close_column: float(close)})
+    out = pd.DataFrame(rows)
+    if out.empty:
+        return pd.DataFrame(columns=["date", close_column])
+    return out.drop_duplicates(subset="date", keep="last").sort_values("date").reset_index(drop=True)
+
+
+def fetch_qveris_index_history(
+    secid: str,
+    start_date: pd.Timestamp,
+    end_date: pd.Timestamp,
+) -> pd.DataFrame:
+    payload = _qveris_execute_discovered_tool(
+        query=QVERIS_INDEX_HISTORY_TOOL_QUERY,
+        cache_key="index_history",
+        parameters={
+            "code": qveris_security_code(secid),
+            "symbol": qveris_security_code(secid),
+            "start_date": pd.Timestamp(start_date).strftime("%Y-%m-%d"),
+            "end_date": pd.Timestamp(end_date).strftime("%Y-%m-%d"),
+            "period": "daily",
+            "fields": "date,close",
+        },
+        session_id="microcap_index_history_fallback",
+    )
+    out = _qveris_history_frame(payload, close_column="close")
+    return out.loc[
+        (out["date"] >= pd.Timestamp(start_date).normalize())
+        & (out["date"] <= pd.Timestamp(end_date).normalize())
+    ].reset_index(drop=True)
+
+
+def fetch_qveris_price_history(symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    payload = _qveris_execute_discovered_tool(
+        query=QVERIS_STOCK_PRICE_HISTORY_TOOL_QUERY,
+        cache_key="stock_price_history",
+        parameters={
+            "code": qveris_security_code(symbol),
+            "symbol": qveris_security_code(symbol),
+            "start_date": str(start_date),
+            "end_date": str(end_date),
+            "period": "daily",
+            "adjust": "none",
+            "fields": "date,close",
+        },
+        session_id="microcap_price_history_fallback",
+    )
+    out = _qveris_history_frame(payload, close_column="close_raw")
+    if out.empty:
+        raise RuntimeError(f"QVeris returned empty price history for {symbol}")
+    return out.loc[
+        (out["date"] >= pd.Timestamp(start_date).normalize())
+        & (out["date"] <= pd.Timestamp(end_date).normalize())
+    ].reset_index(drop=True)
+
+
+def _price_cache_dir() -> Path:
+    path = getattr(fetch_mod, "PRICE_CACHE_DIR", None)
+    if path is None:
+        path = getattr(freq_mod, "PRICE_DIR", None)
+    if path is None:
+        raise RuntimeError("No local raw-price cache directory is configured.")
+    return Path(path)
+
+
+def write_qveris_price_history_cache(symbol: str, frame: pd.DataFrame) -> None:
+    cache_dir = _price_cache_dir()
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_path = cache_dir / f"{str(symbol).zfill(6)}.csv"
+    incoming = frame[["date", "close_raw"]].copy()
+    incoming["date"] = pd.to_datetime(incoming["date"], errors="coerce")
+    incoming["close_raw"] = pd.to_numeric(incoming["close_raw"], errors="coerce")
+    incoming = incoming.dropna(subset=["date", "close_raw"])
+    existing = pd.read_csv(cache_path) if cache_path.exists() else pd.DataFrame(columns=["date", "close_raw"])
+    if not existing.empty:
+        existing["date"] = pd.to_datetime(existing["date"], errors="coerce")
+        existing["close_raw"] = pd.to_numeric(existing["close_raw"], errors="coerce")
+        existing = existing.dropna(subset=["date", "close_raw"])
+    frames = [frame for frame in (existing[["date", "close_raw"]], incoming) if not frame.empty]
+    merged = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=["date", "close_raw"])
+    merged = merged.drop_duplicates(subset="date", keep="last").sort_values("date")
+    _atomic_to_csv(merged, cache_path, index=False, encoding="utf-8")
 
 
 def fetch_qveris_realtime_quotes(
@@ -4063,13 +4498,19 @@ def apply_realtime_close_to_signal_frame(
     quote_trade_date: object = "",
 ) -> pd.DataFrame:
     out = close_df.copy()
+    latest_day = pd.Timestamp(latest_trade_date).normalize()
     if quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
-        out.loc[pd.Timestamp(latest_trade_date), ["microcap", "hedge"]] = [microcap_rt_close, hedge_rt_close]
+        target_ts = latest_day
     else:
-        insert_ts = pd.Timestamp(snapshot_ts)
-        if insert_ts <= pd.Timestamp(latest_trade_date):
-            insert_ts = pd.Timestamp(latest_trade_date) + pd.Timedelta(seconds=1)
-        out.loc[insert_ts, ["microcap", "hedge"]] = [microcap_rt_close, hedge_rt_close]
+        snapshot_day = pd.Timestamp(snapshot_ts).tz_localize(None).normalize()
+        target_ts = snapshot_day if snapshot_day > latest_day else latest_day
+
+    index = pd.DatetimeIndex(out.index)
+    normalized = index.normalize()
+    drop_mask = (normalized == target_ts) & (index != target_ts)
+    if bool(drop_mask.any()):
+        out = out.loc[~drop_mask].copy()
+    out.loc[target_ts, ["microcap", "hedge"]] = [microcap_rt_close, hedge_rt_close]
     return out.sort_index()
 
 
@@ -4218,7 +4659,7 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
         else:
             hedge_source = "index_spot_latest"
 
-    snapshot_ts = pd.Timestamp.now()
+    snapshot_ts = _cn_timestamp()
     quote_trade_date = ""
     if "trade_date" in quotes_df.columns:
         trade_dates = quotes_df["trade_date"].dropna().astype(str)
@@ -4326,7 +4767,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
         hedge_source = "latest_cached_close_fallback"
         hedge_quote_trade_date = ""
 
-    snapshot_ts = pd.Timestamp.now()
+    snapshot_ts = _cn_timestamp()
     quote_stats = extract_member_quote_trade_date_stats(quotes_df, member_symbols, latest_trade_date)
     quote_trade_date = str(quote_stats["member_quote_trade_date_max"])
     rt_close_df = apply_realtime_close_to_signal_frame(
@@ -4407,8 +4848,9 @@ def load_cached_fast_realtime_signal(
 def save_cached_fast_realtime_signal(paths: dict[str, Path], signal_df: pd.DataFrame, meta: dict[str, object]) -> None:
     assert_realtime_meta_is_actionable(meta)
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
-    paths["cache_fast_realtime_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    signal_df.to_csv(paths["cache_fast_realtime_signal"], index=False, encoding="utf-8")
+    with _cache_write_lock(REALTIME_DIR / f"{paths['cache_fast_realtime_meta'].stem}.lock"):
+        _atomic_to_csv(signal_df, paths["cache_fast_realtime_signal"], index=False, encoding="utf-8")
+        _atomic_write_json(paths["cache_fast_realtime_meta"], meta, encoding="utf-8")
 
 
 def load_realtime_eligible_codes() -> set[str]:
@@ -4474,7 +4916,7 @@ def fetch_realtime_smallcap_members_fast(
                     "low_price": pd.to_numeric(item.get("f16"), errors="coerce"),
                     "prev_close": pd.to_numeric(item.get("f18"), errors="coerce"),
                     "amount": pd.to_numeric(item.get("f6"), errors="coerce"),
-                    "signal_date": pd.Timestamp.now().normalize().date(),
+                    "signal_date": _cn_local_day().date(),
                     "effective_date": None if effective_date is None else pd.Timestamp(effective_date).date(),
                 }
             )
@@ -4652,10 +5094,11 @@ def save_realtime_state_cache(
 ) -> None:
     assert_realtime_meta_is_actionable(meta)
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
-    paths["cache_realtime_meta"].write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
-    signal_df.to_csv(paths["cache_realtime_signal"], index=False, encoding="utf-8")
-    members_df.to_csv(paths["cache_realtime_members"], index=False, encoding="utf-8")
-    changes_df.to_csv(paths["cache_realtime_changes"], index=False, encoding="utf-8")
+    with _cache_write_lock(REALTIME_DIR / f"{paths['cache_realtime_meta'].stem}.lock"):
+        _atomic_to_csv(signal_df, paths["cache_realtime_signal"], index=False, encoding="utf-8")
+        _atomic_to_csv(members_df, paths["cache_realtime_members"], index=False, encoding="utf-8")
+        _atomic_to_csv(changes_df, paths["cache_realtime_changes"], index=False, encoding="utf-8")
+        _atomic_write_json(paths["cache_realtime_meta"], meta, encoding="utf-8")
 
 
 def mark_realtime_preview_outputs(
@@ -4769,7 +5212,7 @@ def compute_realtime_state(
         else:
             hedge_source = "index_spot_latest"
 
-    snapshot_ts = pd.Timestamp.now()
+    snapshot_ts = _cn_timestamp()
     quote_stats = extract_member_quote_trade_date_stats(quotes_indexed, member_symbols, latest_trade_date)
     quote_trade_date = str(quote_stats["member_quote_trade_date_max"])
     rt_close_df = apply_realtime_close_to_signal_frame(
@@ -4891,7 +5334,7 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
         assert_signal_matches_result(rt_signal, rebuild_realtime_result_from_meta(context, meta))
         if fresh_fast:
             save_cached_fast_realtime_signal(paths, rt_signal, meta)
-        rt_signal.to_csv(paths["realtime_signal"], index=False, encoding="utf-8")
+        _atomic_to_csv(rt_signal, paths["realtime_signal"], index=False, encoding="utf-8")
         gap_value = float(rt_signal.iloc[0]["momentum_gap"])
         jitter_risk = str(rt_signal.iloc[0].get("tail_jitter_risk", "normal"))
         jitter_note = str(rt_signal.iloc[0].get("tail_jitter_note", "") or "")
@@ -4914,7 +5357,7 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
         latest_signal = context["latest_signal"]
         assert_proxy_tail_is_actionable(args.index_csv, pd.Timestamp(context["close_df"].index[-1]))
         assert_signal_matches_result(latest_signal, context["result"])
-        latest_signal.to_csv(paths["signal"], index=False, encoding="utf-8")
+        _atomic_to_csv(latest_signal, paths["signal"], index=False, encoding="utf-8")
         print("确认信号")
         print(format_table(latest_signal))
         if anchor_freshness:
@@ -4931,7 +5374,7 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
 
     if query == "成分股":
         members = context["target_members"]
-        members.to_csv(paths["members"], index=False, encoding="utf-8")
+        _atomic_to_csv(members, paths["members"], index=False, encoding="utf-8")
         print("最新成分股")
         print(f"信号日: {latest_rebalance.date()}")
         print(
@@ -4945,7 +5388,7 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
 
     if query == "进出名单":
         changes = context["changes_df"]
-        changes.to_csv(paths["changes"], index=False, encoding="utf-8")
+        _atomic_to_csv(changes, paths["changes"], index=False, encoding="utf-8")
         print("最新进出名单")
         print(f"信号日: {latest_rebalance.date()}")
         print(
@@ -4980,8 +5423,8 @@ def handle_query(context: dict[str, object], args: argparse.Namespace, query: st
         signal_hedge_quote_source = meta.get("signal_hedge_quote_source", meta.get("hedge_quote_source"))
         snapshot_time = realtime_state["meta"].get("snapshot_time")
         cache_age_seconds = float(realtime_state.get("cache_age_seconds", 0.0))
-        realtime_members.to_csv(paths["realtime_members"], index=False, encoding="utf-8")
-        changes.to_csv(paths["realtime_changes"], index=False, encoding="utf-8")
+        _atomic_to_csv(realtime_members, paths["realtime_members"], index=False, encoding="utf-8")
+        _atomic_to_csv(changes, paths["realtime_changes"], index=False, encoding="utf-8")
         print("实时进出名单")
         print(f"基准调仓信号日: {latest_rebalance.date()}")
         print(

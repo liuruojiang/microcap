@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
+import time
 from pathlib import Path
 
 import matplotlib
@@ -20,12 +22,37 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v1_6"
+TARGET_VOL = 0.25
+TARGET_VOL_WINDOW = 60
+TARGET_VOL_MAX_LEVERAGE = 1.5
+TARGET_VOL_MIN_LEVERAGE = 0.0
+TARGET_VOL_TRADING_DAYS = 244
+TARGET_VOL_SCALE_CHANGE_COST = 0.001
+TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
+TARGET_VOL_FINANCING_RATE = 0.03
+IDLE_CASH_YIELD = 0.02
+SCALE_TRADE_REQUIRED_EPSILON = 1e-6
+HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP = (0.15,)
+DEFAULT_ALLOWED_TAIL_ROWS = max(int(getattr(v14_context.v1_1_mod.base_mod, "LOOKBACK", 16)) + 20, 40)
+
+
+def _costed_nav_path(target_vol: float) -> Path:
+    return OUTPUT_DIR / f"microcap_top100_mom16_targetvol{int(round(float(target_vol) * 100))}_max1p5_v1_6_costed_nav.csv"
+
+
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol25_max1p5_v1_6_costed_nav.csv"
-LEGACY_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_targetvol15_max1p5_v1_6_costed_nav.csv"
+COSTED_NAV_CSV = _costed_nav_path(TARGET_VOL)
+LEGACY_COSTED_NAV_CSVS = [_costed_nav_path(value) for value in HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP]
+
+
+def _first_legacy_costed_nav_alias(paths: list[Path]) -> Path | None:
+    return paths[0] if paths else None
+
+
+LEGACY_COSTED_NAV_CSV = _first_legacy_costed_nav_alias(LEGACY_COSTED_NAV_CSVS)
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
 PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
 PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
@@ -39,16 +66,7 @@ V1_6_MOMENTUM_GAP_EXIT_BUFFER = 0.0030
 DECAY_RATIO_THRESHOLD = 0.25
 DERISK_SCALE = 0.0
 RECOVERY_RATIO_THRESHOLD = 0.35
-TARGET_VOL = 0.25
-TARGET_VOL_WINDOW = 60
-TARGET_VOL_MAX_LEVERAGE = 1.5
-TARGET_VOL_MIN_LEVERAGE = 0.0
-TARGET_VOL_TRADING_DAYS = 244
-TARGET_VOL_SCALE_CHANGE_COST = 0.001
-TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
-TARGET_VOL_FINANCING_RATE = 0.03
 PNL_RETURN_SOURCE = "v1_4_overlay_pre_cost_return_explicit_or_return_net_cost_reversal_fallback"
-LIVE_CONTEXT_CACHE = ROOT / ".autobuild_top100_cache" / "context_cache_v1_6.json"
 
 
 def validate_base_hedge_ratio() -> None:
@@ -69,6 +87,92 @@ def validate_base_hedge_ratio() -> None:
             raise ValueError(f"hedge ratio mismatch: v1.6={BASE_HEDGE_RATIO}, {name}={value}")
 
 
+def _to_jsonable(value: object) -> object:
+    if isinstance(value, np.integer):
+        return int(value)
+    if isinstance(value, np.floating):
+        return float(value) if np.isfinite(value) else None
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, pd.Timestamp):
+        return value.isoformat()
+    if value is pd.NaT:
+        return None
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+
+
+def _json_dumps(payload: object) -> str:
+    return json.dumps(payload, ensure_ascii=False, indent=2, default=_to_jsonable)
+
+
+def _safe_float(value: object, default: float = 0.0) -> float:
+    if value is None:
+        return float(default)
+    try:
+        if pd.isna(value):
+            return float(default)
+    except (TypeError, ValueError):
+        pass
+    return float(value)
+
+
+def _atomic_temp_path(path: Path) -> Path:
+    return path.with_suffix(path.suffix + f".tmp.{os.getpid()}.{time.time_ns()}")
+
+
+def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = _atomic_temp_path(path)
+    try:
+        tmp.write_text(text, encoding=encoding)
+        tmp.replace(path)
+    finally:
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except OSError:
+            pass
+
+
+def _atomic_write_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = _atomic_temp_path(path)
+    try:
+        frame.to_csv(tmp, **kwargs)
+        tmp.replace(path)
+    finally:
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except OSError:
+            pass
+
+
+def _csv_safe_value(value: object) -> object:
+    if isinstance(value, (dict, list, tuple)):
+        return json.dumps(value, ensure_ascii=False, default=_to_jsonable)
+    if isinstance(value, np.bool_):
+        return bool(value)
+    if isinstance(value, np.datetime64):
+        return pd.Timestamp(value).isoformat()
+    if isinstance(value, pd.Timestamp):
+        return value.isoformat()
+    if isinstance(value, np.integer):
+        return int(value)
+    if isinstance(value, np.floating):
+        return float(value) if np.isfinite(value) else ""
+    return value
+
+
+def _apply_realtime_meta_to_signal_row(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:
+    for key, value in meta.items():
+        signal_row[key] = _csv_safe_value(value)
+
+
+def _read_costed_nav_csv(path: Path = COSTED_NAV_CSV, **kwargs: object) -> pd.DataFrame:
+    return pd.read_csv(path, encoding="utf-8-sig", **kwargs)
+
+
 def current_base_fingerprint() -> dict[str, object]:
     validate_base_hedge_ratio()
     base = dict(v14_context.current_base_fingerprint())
@@ -86,10 +190,12 @@ def current_base_fingerprint() -> dict[str, object]:
         "scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
         "scale_change_cost_model": "microcap_long_plus_hedge_leg_net_turnover",
         "scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+        "scale_trade_required_epsilon": SCALE_TRADE_REQUIRED_EPSILON,
         "base_trade_cost_model": "v1_4_total_cost_scaled_by_target_vol_exposure",
         "volatility_return_source_priority": ["return_raw", "base_gross_return", "return_net_fallback_warning"],
         "pnl_return_source": PNL_RETURN_SOURCE,
         "financing_rate": TARGET_VOL_FINANCING_RATE,
+        "idle_cash_yield": IDLE_CASH_YIELD,
         "momentum_gap_exit_buffer": V1_6_MOMENTUM_GAP_EXIT_BUFFER,
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
@@ -134,7 +240,7 @@ def incompatible_v1_6_outputs() -> list[Path]:
         REALTIME_SIGNAL_CSV,
         NAV_CSV,
         COSTED_NAV_CSV,
-        LEGACY_COSTED_NAV_CSV,
+        *LEGACY_COSTED_NAV_CSVS,
         PERF_SUMMARY_CSV,
         PERF_YEARLY_CSV,
         PERF_NAV_CSV,
@@ -143,88 +249,16 @@ def incompatible_v1_6_outputs() -> list[Path]:
     ]
 
 
+def _stale_outputs_to_remove_after_generate(stale_outputs: list[Path], regenerated_outputs: set[Path]) -> list[Path]:
+    preserved = set(regenerated_outputs)
+    # Close-confirmed generation does not own the realtime signal artifact; the
+    # realtime route refreshes it atomically when queried.
+    preserved.add(REALTIME_SIGNAL_CSV)
+    return [path for path in stale_outputs if path not in preserved]
+
+
 def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
-def load_live_context_cache(path: Path = LIVE_CONTEXT_CACHE) -> dict[str, object] | None:
-    if not path.exists():
-        return None
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return None
-    if isinstance(payload, dict) and isinstance(payload.get("context"), dict):
-        payload = payload["context"]
-    if not isinstance(payload, dict) or not payload.get("close_df"):
-        return None
-    return payload
-
-
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
-def _live_close_df(live_context: dict[str, object] | None) -> pd.DataFrame | None:
-    if not isinstance(live_context, dict):
-        return None
-    try:
-        live_close = pd.DataFrame(live_context.get("close_df") or [])
-    except Exception:
-        return None
-    if live_close.empty or not {"date", "microcap", "hedge"}.issubset(live_close.columns):
-        return None
-    live_close["date"] = pd.to_datetime(live_close["date"], errors="coerce")
-    live_close = live_close.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset="date", keep="last")
-    live_close = live_close.set_index("date")[["microcap", "hedge"]].apply(pd.to_numeric, errors="coerce").dropna()
-    return live_close if not live_close.empty else None
-
-
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
-def _recent_microcap_tail_is_flat(close_df: pd.DataFrame, tail_days: int = 5) -> bool:
-    if close_df.empty or "microcap" not in close_df.columns:
-        return False
-    tail = pd.to_numeric(close_df["microcap"], errors="coerce").dropna().tail(tail_days)
-    if len(tail) < max(3, tail_days):
-        return False
-    return bool(tail.pct_change().dropna().abs().le(1e-12).all())
-
-
-# Experimental helper: currently unused by the close-confirmed and realtime v1.6 signal paths.
-def overlay_live_microcap_tail(
-    close_df: pd.DataFrame,
-    live_context: dict[str, object] | None,
-) -> tuple[pd.DataFrame, dict[str, object]]:
-    out = close_df.copy().sort_index()
-    meta: dict[str, object] = {"applied": False, "source": str(LIVE_CONTEXT_CACHE)}
-    live_close = _live_close_df(live_context)
-    if live_close is None:
-        meta["reason"] = "missing_live_close_df"
-        return out, meta
-
-    overlap = out.index.intersection(live_close.index)
-    if overlap.empty:
-        meta["reason"] = "no_overlap"
-        return out, meta
-    bridge_date = pd.Timestamp(overlap.min())
-    base_bridge = float(out.at[bridge_date, "microcap"])
-    live_bridge = float(live_close.at[bridge_date, "microcap"])
-    if not np.isfinite(base_bridge) or not np.isfinite(live_bridge) or abs(live_bridge) <= 1e-12:
-        meta["reason"] = "invalid_bridge"
-        return out, meta
-
-    scale = base_bridge / live_bridge
-    out.loc[overlap, "microcap"] = pd.to_numeric(live_close.loc[overlap, "microcap"], errors="coerce") * scale
-    out.loc[overlap, "hedge"] = pd.to_numeric(live_close.loc[overlap, "hedge"], errors="coerce")
-    meta.update(
-        {
-            "applied": True,
-            "bridge_date": str(bridge_date.date()),
-            "scale": float(scale),
-            "live_start": str(pd.Timestamp(live_close.index.min()).date()),
-            "live_end": str(pd.Timestamp(live_close.index.max()).date()),
-            "replaced_rows": int(len(overlap)),
-        }
-    )
-    return out, meta
 
 
 def target_vol_legs_for_state(
@@ -268,6 +302,7 @@ def _target_vol_turnover_series(holding: pd.Series, execution_scale: pd.Series) 
 
 
 def calc_scale_change_cost(holding: pd.Series, target_vol_turnover: pd.Series) -> pd.Series:
+    """Charge only same-holding scale changes; transition days are zeroed inside calc_target_vol_costed_turnover."""
     return calc_target_vol_costed_turnover(holding, target_vol_turnover) * TARGET_VOL_SCALE_CHANGE_COST
 
 
@@ -327,6 +362,23 @@ def calc_next_session_actionable_scale(
     return actionable.astype(float)
 
 
+def calc_next_session_actionable_scale_value(
+    current_execution_scale: float,
+    next_session_target_scale: float,
+    next_holding: str,
+    threshold: float = TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+) -> float:
+    current = 0.0 if pd.isna(current_execution_scale) else float(current_execution_scale)
+    target = current if pd.isna(next_session_target_scale) else float(next_session_target_scale)
+    if str(next_holding) == "cash":
+        return 0.0
+    if current <= 1e-12 and target > 1e-12:
+        return target
+    if abs(target - current) >= float(threshold):
+        return target
+    return current
+
+
 def calc_base_trade_cost_scale(
     holding: pd.Series,
     next_holding: pd.Series,
@@ -346,6 +398,8 @@ def calc_base_trade_cost_scale(
 
 
 def _select_target_vol_return_source(out: pd.DataFrame, fallback: pd.Series) -> tuple[pd.Series, str]:
+    # TODO: cash-day zeros can understate realized volatility and inflate re-entry leverage.
+    # Compare active-day or microcap-spread regime-vol proxies before changing production semantics.
     for col in ["return_raw", "base_gross_return"]:
         if col in out.columns:
             series = pd.to_numeric(out[col], errors="coerce")
@@ -363,7 +417,7 @@ def _select_base_pre_cost_return(out: pd.DataFrame, base_return_net: pd.Series, 
     return (1.0 + base_return_net).div(1.0 - safe_cost).sub(1.0), "return_net_cost_reversal"
 
 
-def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
+def apply_target_vol_scaling(base_result: pd.DataFrame, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
     validate_base_hedge_ratio()
     out = base_result.copy().sort_index()
     base_return_net = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
@@ -372,6 +426,10 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     next_holding = out.get("next_holding", holding).astype(str)
     active = holding.ne("cash")
     realized_vol = target_vol_return.rolling(TARGET_VOL_WINDOW).std(ddof=1) * np.sqrt(TARGET_VOL_TRADING_DAYS)
+    realtime_snapshot_vol_frozen = pd.Series(False, index=out.index, dtype=bool)
+    if treat_last_row_as_snapshot and len(realized_vol) >= 2:
+        realized_vol.iloc[-1] = realized_vol.iloc[-2]
+        realtime_snapshot_vol_frozen.iloc[-1] = True
     scale_from_realized_vol = _scale_from_realized_vol(realized_vol)
     target_execution_scale = scale_from_realized_vol.shift(1).fillna(1.0)
     execution_scale = apply_scale_rebalance_threshold(
@@ -392,6 +450,12 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     target_vol_turnover = _target_vol_turnover_series(holding, execution_scale)
     scale_change_cost = calc_scale_change_cost(holding, target_vol_turnover)
     financing_cost = execution_scale.sub(1.0).clip(lower=0.0) * TARGET_VOL_FINANCING_RATE / TARGET_VOL_TRADING_DAYS
+    idle_cash_yield = (
+        active.astype(float)
+        * execution_scale.rsub(1.0).clip(lower=0.0, upper=1.0)
+        * IDLE_CASH_YIELD
+        / TARGET_VOL_TRADING_DAYS
+    )
     base_trade_cost = pd.to_numeric(out.get("total_cost", pd.Series(0.0, index=out.index)), errors="coerce").fillna(0.0)
     base_pre_cost_return, base_pre_cost_return_source = _select_base_pre_cost_return(out, base_return_net, base_trade_cost)
     base_trade_cost_scale = calc_base_trade_cost_scale(
@@ -402,7 +466,7 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     )
     base_trade_cost_scaled = (base_trade_cost * base_trade_cost_scale).clip(lower=0.0, upper=0.99)
     ret = (
-        (1.0 + base_pre_cost_return * execution_scale)
+        (1.0 + base_pre_cost_return * execution_scale + idle_cash_yield)
         * (1.0 - base_trade_cost_scaled)
         * (1.0 - scale_change_cost)
         * (1.0 - financing_cost)
@@ -414,6 +478,7 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     out["target_vol_return"] = target_vol_return
     out["target_vol_return_source"] = target_vol_return_source
     out["target_vol_realized_vol"] = realized_vol
+    out["target_vol_realtime_snapshot_vol_frozen"] = realtime_snapshot_vol_frozen
     out["latest_realized_vol"] = realized_vol
     out["target_vol_scale_raw"] = scale_from_realized_vol
     out["target_vol_execution_scale_raw"] = target_execution_scale
@@ -428,6 +493,7 @@ def apply_target_vol_scaling(base_result: pd.DataFrame) -> pd.DataFrame:
     out["scale_change_cost"] = scale_change_cost
     out["target_vol_trade_cost"] = scale_change_cost
     out["financing_cost"] = financing_cost
+    out["idle_cash_yield"] = idle_cash_yield
     out["base_trade_cost"] = base_trade_cost
     out["base_trade_cost_scale"] = base_trade_cost_scale
     out["base_trade_cost_scaled"] = base_trade_cost_scaled
@@ -451,30 +517,31 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     current_holding = str(latest_row.get("holding", latest_signal.get("current_holding", "cash")))
     next_holding = str(latest_row.get("next_holding", latest_signal.get("next_holding", current_holding)))
     holding_trade_state = v14_context.v1_1_mod.base_mod.compute_trade_state(current_holding, next_holding)
-    current_execution_scale = float(latest_row.get("current_execution_scale", latest_row.get("execution_scale", 0.0)) or 0.0)
-    next_session_target_scale = float(
+    current_execution_scale = _safe_float(
+        latest_row.get("current_execution_scale", latest_row.get("execution_scale")),
+        0.0,
+    )
+    next_session_target_scale = _safe_float(
         latest_row.get(
             "next_session_target_scale",
             latest_row.get("target_vol_scale_next_session", current_execution_scale),
-        )
-        or 0.0
+        ),
+        current_execution_scale,
     )
     raw_next_session_actionable_scale = latest_row.get("next_session_actionable_scale", np.nan)
     if pd.notna(raw_next_session_actionable_scale):
         next_session_actionable_scale = float(raw_next_session_actionable_scale)
     else:
-        next_session_actionable_scale = float(
-            calc_next_session_actionable_scale(
-                pd.Series([current_execution_scale]),
-                pd.Series([next_session_target_scale]),
-                pd.Series([next_holding]),
-                threshold=TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
-            ).iloc[0]
+        next_session_actionable_scale = calc_next_session_actionable_scale_value(
+            current_execution_scale,
+            next_session_target_scale,
+            next_holding,
+            threshold=TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
         )
     raw_scale_delta = next_session_target_scale - current_execution_scale
     actionable_scale_delta = next_session_actionable_scale - current_execution_scale
     scale_delta = actionable_scale_delta
-    scale_trade_required = bool(abs(actionable_scale_delta) >= 1e-12)
+    scale_trade_required = bool(abs(actionable_scale_delta) >= SCALE_TRADE_REQUIRED_EPSILON)
     scale_trade_state = "rebalance_scale" if scale_trade_required else "hold_scale"
     next_session_leg_turnover = calc_target_vol_turnover(
         current_holding,
@@ -521,6 +588,11 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["target_vol_signal_timing"] = "close_confirmed"
     latest_signal["signal_timing"] = "close_confirmed"
     latest_signal["official_close_confirmed_signal"] = True
+    latest_signal["target_vol_realtime_snapshot_vol_frozen"] = bool(
+        latest_row.get("target_vol_realtime_snapshot_vol_frozen", False)
+    )
+    # Numeric-only passthrough fields. Derived scale and next-session cost fields
+    # above remain authoritative and are intentionally excluded here.
     for src_col in [
         "microcap_close",
         "hedge_close",
@@ -530,34 +602,17 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "gap_peak",
         "gap_decay_ratio",
         "execution_scale",
-        "current_execution_scale",
         "target_vol_realized_vol",
         "latest_realized_vol",
-        "next_session_target_scale",
-        "raw_next_target_scale",
-        "next_session_actionable_scale",
-        "target_vol_scale_next_session",
         "target_vol_turnover",
         "target_vol_costed_turnover",
-        "next_session_turnover",
-        "next_session_leg_turnover",
-        "next_session_leg_cost_est_raw",
-        "next_session_overlay_cost_est",
-        "next_session_trade_cost_est",
-        "next_session_overlay_trade_cost_est",
         "scale_change_cost",
         "target_vol_trade_cost",
         "financing_cost",
+        "idle_cash_yield",
     ]:
         if src_col in latest_row and pd.notna(latest_row[src_col]):
             latest_signal[src_col] = float(latest_row[src_col])
-    latest_signal["target_vol_scale_next_session"] = float(next_session_actionable_scale)
-    latest_signal["next_session_actionable_scale"] = float(next_session_actionable_scale)
-    latest_signal["next_session_turnover"] = float(next_session_leg_turnover)
-    latest_signal["next_session_leg_turnover"] = float(next_session_leg_turnover)
-    latest_signal["next_session_leg_cost_est_raw"] = float(next_session_leg_cost_est_raw)
-    latest_signal["next_session_overlay_cost_est"] = float(next_session_overlay_cost_est)
-    latest_signal["next_session_trade_cost_est"] = float(next_session_trade_cost_est)
     latest_signal["signal_quality_derisk_triggered"] = bool(latest_row.get("signal_quality_derisk_triggered", False))
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
     latest_signal["momentum_gap_exit_buffer"] = V1_6_MOMENTUM_GAP_EXIT_BUFFER
@@ -628,7 +683,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
     ensure_output_dir()
     summary = summarize_returns(ret)
     yearly_df = summarize_yearly(ret)
-    yearly_df.to_csv(PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
 
     nav_df = pd.DataFrame(
         {
@@ -637,8 +692,8 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
             "nav_net": (1.0 + ret.fillna(0.0)).cumprod().values,
         }
     )
-    nav_df.to_csv(PERF_NAV_CSV, index=False, encoding="utf-8-sig")
-    pd.DataFrame([summary]).to_csv(PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(pd.DataFrame([summary]), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
 
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], linewidth=2.0)
@@ -663,7 +718,7 @@ def build_performance_payload(ret: pd.Series) -> dict[str, object]:
             "chart_png": str(PERF_PNG),
         },
     }
-    PERF_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_text(PERF_JSON, _json_dumps(payload), encoding="utf-8")
     return payload
 
 
@@ -691,21 +746,21 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
     )
     out = apply_target_vol_scaling(base_v1_4)
-    if COSTED_NAV_CSV.exists():
-        previous = pd.read_csv(COSTED_NAV_CSV)
+    if COSTED_NAV_CSV.exists() and COSTED_NAV_CSV not in stale_outputs:
+        previous = _read_costed_nav_csv(COSTED_NAV_CSV)
         v14_context.v1_1_mod.base_mod.assert_no_historical_rewrite(
             previous=previous,
             candidate=out.rename_axis("date").reset_index(),
             key_columns=["return_net", "holding", "next_holding", "base_pre_cost_return"],
-            allowed_tail_rows=5,
+            allowed_tail_rows=DEFAULT_ALLOWED_TAIL_ROWS,
             label="v1.6 official costed NAV",
             audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
         )
-    out.to_csv(COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
-    out.rename_axis("date").reset_index().to_csv(NAV_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
+    _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
 
     signal_row = _build_signal_row(out, reference_summary)
-    LATEST_SIGNAL_CSV.write_text(signal_row.to_csv(index=False), encoding="utf-8")
+    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
 
     perf_payload = build_performance_payload(out["return_net"].fillna(0.0))
 
@@ -738,13 +793,16 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
         "scale_change_cost_model": "microcap_long_plus_hedge_leg_net_turnover",
         "scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+        "scale_trade_required_epsilon": SCALE_TRADE_REQUIRED_EPSILON,
         "base_trade_cost_model": (
             "v1_4_total_cost scaled by transition timing: entry uses next actionable scale, "
             "exit and active rebalance use current execution scale"
         ),
         "entry_exit_overlay_cost_model": "target-vol scale-change cost is skipped on holding transition days to avoid double-counting v1.4 entry/exit cost",
         "target_vol_scale_next_session_semantics": "actionable scale after rebalance threshold; raw model target is raw_next_target_scale",
-        "idle_cash_return": "not credited when execution_scale < 1.0",
+        "idle_cash_yield": IDLE_CASH_YIELD,
+        "idle_credit_on_cash_day": False,
+        "idle_cash_return": "credited only on active holding days when execution_scale < 1.0",
         "volatility_return_source_priority": ["return_raw", "base_gross_return", "return_net_fallback_warning"],
         "pnl_return_source": PNL_RETURN_SOURCE,
         "financing_rate": TARGET_VOL_FINANCING_RATE,
@@ -757,7 +815,7 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     summary["live_microcap_tail_overlay"] = live_overlay_meta
-    SUMMARY_JSON.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
     regenerated_outputs = {
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -769,8 +827,8 @@ def generate_v1_6_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         PERF_JSON,
         PERF_PNG,
     }
-    for stale_path in stale_outputs:
-        if stale_path not in regenerated_outputs and stale_path.exists():
+    for stale_path in _stale_outputs_to_remove_after_generate(stale_outputs, regenerated_outputs):
+        if stale_path.exists():
             stale_path.unlink(missing_ok=True)
     return summary, signal_row, out
 
@@ -779,7 +837,7 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     ensure_output_dir()
     v1_4_signal, meta, v1_4_realtime = v14_context.build_realtime_v1_4_outputs()
     reference_summary = v14_context._load_reference_summary()
-    out = apply_target_vol_scaling(v1_4_realtime)
+    out = apply_target_vol_scaling(v1_4_realtime, treat_last_row_as_snapshot=True)
     signal_row = _build_signal_row(out, reference_summary)
     passthrough_cols = [
         "member_rebalance_state",
@@ -801,14 +859,37 @@ def build_realtime_v1_6_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     for col in passthrough_cols:
         if col in v1_4_signal.columns:
             signal_row[col] = v1_4_signal.iloc[0].get(col)
-    for key, value in meta.items():
-        signal_row[key] = value
+    _apply_realtime_meta_to_signal_row(signal_row, meta)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
     signal_row["target_vol_signal_timing"] = "intraday_hypothetical_if_now_close"
     signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"
     signal_row["official_close_confirmed_signal"] = False
-    REALTIME_SIGNAL_CSV.write_text(signal_row.to_csv(index=False), encoding="utf-8")
+    _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
     return signal_row, meta, out
+
+
+def _print_scale_fields(row: pd.Series, include_frozen: bool = False) -> None:
+    print(f"current_execution_scale: {_safe_float(row.get('current_execution_scale', row.get('execution_scale')), 0.0):.2f}")
+    print(f"target_vol_realized_vol: {_safe_float(row.get('target_vol_realized_vol'), 0.0):.4%}")
+    if include_frozen:
+        print(f"realized_vol_frozen_from_snapshot: {bool(row.get('target_vol_realtime_snapshot_vol_frozen', False))}")
+    print(f"raw_next_target_scale: {_safe_float(row.get('raw_next_target_scale', row.get('next_session_target_scale')), 0.0):.2f}")
+    print(
+        "next_session_actionable_scale: "
+        f"{_safe_float(row.get('next_session_actionable_scale', row.get('next_session_target_scale')), 0.0):.2f}"
+    )
+    print(f"raw_scale_delta: {_safe_float(row.get('raw_scale_delta', row.get('scale_delta')), 0.0):+.2f}")
+    print(f"actionable_scale_delta: {_safe_float(row.get('actionable_scale_delta', row.get('scale_delta')), 0.0):+.2f}")
+    print(f"scale_delta: {_safe_float(row.get('scale_delta'), 0.0):+.2f}")
+    print(f"next_session_turnover: {_safe_float(row.get('next_session_turnover'), 0.0):.4f}")
+    print(f"next_session_leg_turnover: {_safe_float(row.get('next_session_leg_turnover', row.get('next_session_turnover')), 0.0):.4f}")
+    print(f"next_session_leg_cost_est_raw: {_safe_float(row.get('next_session_leg_cost_est_raw'), 0.0):.4%}")
+    print(
+        "next_session_overlay_cost_est: "
+        f"{_safe_float(row.get('next_session_overlay_cost_est', row.get('next_session_trade_cost_est')), 0.0):.4%}"
+    )
+    print(f"next_session_trade_cost_est: {_safe_float(row.get('next_session_trade_cost_est'), 0.0):.4%}")
+    print(f"next_session_trade_cost_est_type: {row.get('next_session_trade_cost_est_type', 'overlay_only')}")
 
 
 def _print_signal_query() -> None:
@@ -828,19 +909,7 @@ def _print_signal_query() -> None:
     print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
     print(f"signal_date: {pd.Timestamp(row['date']).strftime('%Y-%m-%d')}")
     print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
-    print(f"current_execution_scale: {float(row.get('current_execution_scale', row.get('execution_scale', 0.0))):.2f}")
-    print(f"target_vol_realized_vol: {float(row.get('target_vol_realized_vol', 0.0)):.4%}")
-    print(f"raw_next_target_scale: {float(row.get('raw_next_target_scale', row.get('next_session_target_scale', 0.0))):.2f}")
-    print(f"next_session_actionable_scale: {float(row.get('next_session_actionable_scale', row.get('next_session_target_scale', 0.0))):.2f}")
-    print(f"raw_scale_delta: {float(row.get('raw_scale_delta', row.get('scale_delta', 0.0))):+.2f}")
-    print(f"actionable_scale_delta: {float(row.get('actionable_scale_delta', row.get('scale_delta', 0.0))):+.2f}")
-    print(f"scale_delta: {float(row.get('scale_delta', 0.0)):+.2f}")
-    print(f"next_session_turnover: {float(row.get('next_session_turnover', 0.0)):.4f}")
-    print(f"next_session_leg_turnover: {float(row.get('next_session_leg_turnover', row.get('next_session_turnover', 0.0))):.4f}")
-    print(f"next_session_leg_cost_est_raw: {float(row.get('next_session_leg_cost_est_raw', 0.0)):.4%}")
-    print(f"next_session_overlay_cost_est: {float(row.get('next_session_overlay_cost_est', row.get('next_session_trade_cost_est', 0.0))):.4%}")
-    print(f"next_session_trade_cost_est: {float(row.get('next_session_trade_cost_est', 0.0)):.4%}")
-    print(f"next_session_trade_cost_est_type: {row.get('next_session_trade_cost_est_type', 'overlay_only')}")
+    _print_scale_fields(row, include_frozen=False)
     print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', True)}")
     print(SUMMARY_JSON)
     print(LATEST_SIGNAL_CSV)
@@ -865,19 +934,7 @@ def _print_realtime_signal_query() -> None:
     print(f"holding_trade_state: {row.get('holding_trade_state', row.get('momentum_trade_state', 'hold'))}")
     print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
     print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
-    print(f"current_execution_scale: {float(row.get('current_execution_scale', row.get('execution_scale', 0.0))):.2f}")
-    print(f"target_vol_realized_vol: {float(row.get('target_vol_realized_vol', 0.0)):.4%}")
-    print(f"raw_next_target_scale: {float(row.get('raw_next_target_scale', row.get('next_session_target_scale', 0.0))):.2f}")
-    print(f"next_session_actionable_scale: {float(row.get('next_session_actionable_scale', row.get('next_session_target_scale', 0.0))):.2f}")
-    print(f"raw_scale_delta: {float(row.get('raw_scale_delta', row.get('scale_delta', 0.0))):+.2f}")
-    print(f"actionable_scale_delta: {float(row.get('actionable_scale_delta', row.get('scale_delta', 0.0))):+.2f}")
-    print(f"scale_delta: {float(row.get('scale_delta', 0.0)):+.2f}")
-    print(f"next_session_turnover: {float(row.get('next_session_turnover', 0.0)):.4f}")
-    print(f"next_session_leg_turnover: {float(row.get('next_session_leg_turnover', row.get('next_session_turnover', 0.0))):.4f}")
-    print(f"next_session_leg_cost_est_raw: {float(row.get('next_session_leg_cost_est_raw', 0.0)):.4%}")
-    print(f"next_session_overlay_cost_est: {float(row.get('next_session_overlay_cost_est', row.get('next_session_trade_cost_est', 0.0))):.4%}")
-    print(f"next_session_trade_cost_est: {float(row.get('next_session_trade_cost_est', 0.0)):.4%}")
-    print(f"next_session_trade_cost_est_type: {row.get('next_session_trade_cost_est_type', 'overlay_only')}")
+    _print_scale_fields(row, include_frozen=True)
     print("official_close_confirmed_signal: False")
     print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
     print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
@@ -890,21 +947,26 @@ def _print_realtime_signal_query() -> None:
 
 def _print_performance_query(query: str) -> None:
     generate_v1_6_outputs()
-    perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-    v14_context.v1_1_mod.base_mod.build_performance_outputs(
-        perf_df=perf_df,
-        ret_col="return_net",
-        nav_col="nav_net",
-        source_label="costed_v1_6",
-        query_text=query,
-        paths={
-            "performance_summary": PERF_SUMMARY_CSV,
-            "performance_yearly": PERF_YEARLY_CSV,
-            "performance_nav": PERF_NAV_CSV,
-            "performance_chart": PERF_PNG,
-            "performance_json": PERF_JSON,
-        },
-    )
+    perf_df = _read_costed_nav_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
+    old_title = v14_context.v1_1_mod.base_mod.STRATEGY_TITLE
+    v14_context.v1_1_mod.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v1.6 Target Volatility"
+    try:
+        v14_context.v1_1_mod.base_mod.build_performance_outputs(
+            perf_df=perf_df,
+            ret_col="return_net",
+            nav_col="nav_net",
+            source_label="costed_v1_6",
+            query_text=query,
+            paths={
+                "performance_summary": PERF_SUMMARY_CSV,
+                "performance_yearly": PERF_YEARLY_CSV,
+                "performance_nav": PERF_NAV_CSV,
+                "performance_chart": PERF_PNG,
+                "performance_json": PERF_JSON,
+            },
+        )
+    finally:
+        v14_context.v1_1_mod.base_mod.STRATEGY_TITLE = old_title
     print(PERF_PNG)
     print(PERF_SUMMARY_CSV)
     print(PERF_YEARLY_CSV)
@@ -913,6 +975,8 @@ def _print_performance_query(query: str) -> None:
 
 
 def _handle_query(query: str) -> None:
+    # Mojibake aliases preserve compatibility with older Windows scheduled tasks
+    # that passed UTF-8 bytes through a legacy code page.
     if query in {"信号", "淇″彿"}:
         _print_signal_query()
         return

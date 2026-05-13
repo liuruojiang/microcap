@@ -232,8 +232,13 @@ def _load_base_v1_1_context() -> tuple[dict[str, object], pd.DataFrame, pd.DataF
     args = _build_v1_1_args()
     base_paths = v1_1_mod.base_mod.build_output_paths(v1_1_mod.base_mod.DEFAULT_OUTPUT_PREFIX)
     panel_path, target_end_date = v1_1_mod.base_mod.refresh_history_anchor(args, base_paths)
-    v1_1_mod.base_mod.ensure_strategy_nav_fresh(args, base_paths, panel_path, target_end_date)
-    close_df = v1_1_mod.base_mod.load_close_df(panel_path, args.index_csv)
+    index_end_date = v1_1_mod.base_mod.read_csv_last_date(args.index_csv)
+    if index_end_date is not None:
+        target_end_date = min(pd.Timestamp(target_end_date), pd.Timestamp(index_end_date))
+    costed_end_date = v1_1_mod.base_mod.read_csv_last_date(BASE_COSTED_NAV_CSV)
+    if costed_end_date is None or pd.Timestamp(costed_end_date).normalize() < pd.Timestamp(target_end_date).normalize():
+        v1_1_mod.base_mod.ensure_strategy_nav_fresh(args, base_paths, panel_path, target_end_date)
+    close_df = v1_1_mod.base_mod.load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     gross = v1_1_mod.base_mod.run_signal(close_df).sort_index()
     turnover_df = pd.read_csv(base_paths["proxy_turnover"])
     if "rebalance_date" not in turnover_df.columns:
@@ -538,20 +543,25 @@ def _print_realtime_signal_query() -> None:
 def _print_performance_query(query: str) -> None:
     generate_v1_4_outputs()
     perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-    v1_1_mod.base_mod.build_performance_outputs(
-        perf_df=perf_df,
-        ret_col="return_net",
-        nav_col="nav_net",
-        source_label="costed_v1_4",
-        query_text=query,
-        paths={
-            "performance_summary": PERF_SUMMARY_CSV,
-            "performance_yearly": PERF_YEARLY_CSV,
-            "performance_nav": PERF_NAV_CSV,
-            "performance_chart": PERF_PNG,
-            "performance_json": PERF_JSON,
-        },
-    )
+    old_title = v1_1_mod.base_mod.STRATEGY_TITLE
+    v1_1_mod.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v1.4 Signal-Quality Derisk"
+    try:
+        v1_1_mod.base_mod.build_performance_outputs(
+            perf_df=perf_df,
+            ret_col="return_net",
+            nav_col="nav_net",
+            source_label="costed_v1_4",
+            query_text=query,
+            paths={
+                "performance_summary": PERF_SUMMARY_CSV,
+                "performance_yearly": PERF_YEARLY_CSV,
+                "performance_nav": PERF_NAV_CSV,
+                "performance_chart": PERF_PNG,
+                "performance_json": PERF_JSON,
+            },
+        )
+    finally:
+        v1_1_mod.base_mod.STRATEGY_TITLE = old_title
     print(PERF_PNG)
     print(PERF_SUMMARY_CSV)
     print(PERF_YEARLY_CSV)
