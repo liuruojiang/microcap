@@ -4520,6 +4520,15 @@ def quote_trade_date_matches_anchor(quote_trade_date: object, latest_trade_date:
         return False
 
 
+def quote_trade_date_on_or_after_anchor(quote_trade_date: object, latest_trade_date: pd.Timestamp) -> bool:
+    try:
+        if quote_trade_date is None or str(quote_trade_date).strip() == "":
+            return False
+        return pd.Timestamp(quote_trade_date).date() >= pd.Timestamp(latest_trade_date).date()
+    except Exception:
+        return False
+
+
 def normalize_hedge_realtime_quote_result(result: object) -> tuple[float, str, str]:
     if isinstance(result, tuple):
         if len(result) >= 3:
@@ -4584,6 +4593,7 @@ def compute_member_realtime_return(
     last_close_map: dict[str, float],
     quotes_df: pd.DataFrame,
     latest_trade_date: pd.Timestamp,
+    allow_quote_pre_close_after_anchor: bool = False,
 ) -> float | None:
     code = str(symbol).zfill(6)
     if code not in quotes_df.index:
@@ -4609,7 +4619,13 @@ def compute_member_realtime_return(
         if pd.notna(close) and float(close) > 0:
             return float(rt_price) / float(close) - 1.0
 
-    if "pre_close" in quotes_df.columns and quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
+    if "pre_close" in quotes_df.columns and (
+        quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date)
+        or (
+            allow_quote_pre_close_after_anchor
+            and quote_trade_date_on_or_after_anchor(quote_trade_date, latest_trade_date)
+        )
+    ):
         pre_close = pd.to_numeric(quotes_df.at[code, "pre_close"], errors="coerce")
         if pd.notna(pre_close) and float(pre_close) > 0:
             return float(rt_price) / float(pre_close) - 1.0
@@ -4622,6 +4638,7 @@ def compute_member_realtime_returns(
     last_close_map: dict[str, float],
     quotes_df: pd.DataFrame,
     latest_trade_date: pd.Timestamp,
+    allow_quote_pre_close_after_anchor: bool = False,
 ) -> tuple[list[float], list[dict[str, object]]]:
     member_lookup = effective_members.copy()
     member_lookup["symbol"] = member_lookup["symbol"].astype(str).str.zfill(6)
@@ -4630,7 +4647,13 @@ def compute_member_realtime_returns(
     missing_symbols: list[dict[str, object]] = []
     for symbol in member_symbols:
         code = str(symbol).zfill(6)
-        member_return = compute_member_realtime_return(code, last_close_map, quotes_df, latest_trade_date)
+        member_return = compute_member_realtime_return(
+            code,
+            last_close_map,
+            quotes_df,
+            latest_trade_date,
+            allow_quote_pre_close_after_anchor=allow_quote_pre_close_after_anchor,
+        )
         if member_return is None:
             if code in member_lookup.index:
                 row = member_lookup.loc[code]
@@ -4725,7 +4748,10 @@ def ensure_realtime_last_close_map(
         if symbol not in snapshots or pd.Timestamp(snapshots[symbol][0]).normalize() < target_date
     ]
     if stale_or_missing:
-        refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)
+        try:
+            refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)
+        except Exception:
+            pass
         snapshots = load_latest_close_snapshot_map(clean_symbols, as_of_date=as_of_date)
     return {symbol: close for symbol, (date, close) in snapshots.items() if pd.Timestamp(date).normalize() >= target_date}
 
@@ -4867,6 +4893,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
     last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
+    allow_quote_pre_close_after_anchor = bool(context.get("fallback_warning"))
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []
@@ -4887,6 +4914,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
             last_close_map=last_close_map,
             quotes_df=quotes_df,
             latest_trade_date=latest_trade_date,
+            allow_quote_pre_close_after_anchor=allow_quote_pre_close_after_anchor,
         )
         if missing_symbols:
             refreshed_last_close_map = maybe_refresh_missing_realtime_last_close_map(
@@ -4902,6 +4930,7 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
                     last_close_map=last_close_map,
                     quotes_df=quotes_df,
                     latest_trade_date=latest_trade_date,
+                    allow_quote_pre_close_after_anchor=allow_quote_pre_close_after_anchor,
                 )
         available_rows = len(member_returns)
         if available_rows >= len(member_symbols):
