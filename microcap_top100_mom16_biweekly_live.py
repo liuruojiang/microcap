@@ -2692,6 +2692,71 @@ def load_member_snapshot(
     return snapshots
 
 
+def load_member_snapshot_from_proxy_members(
+    paths: dict[str, Path],
+    snapshot_dates: list[pd.Timestamp],
+) -> dict[pd.Timestamp, pd.DataFrame]:
+    if not snapshot_dates or not paths["proxy_members"].exists():
+        return {}
+    try:
+        members = pd.read_csv(paths["proxy_members"], dtype={"symbol": str})
+    except Exception:
+        return {}
+    required = {"rebalance_date", "symbol"}
+    if not required.issubset(members.columns):
+        return {}
+    members = members.copy()
+    members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="coerce")
+    members["symbol"] = members["symbol"].astype(str).str.zfill(6)
+    members = members.dropna(subset=["rebalance_date", "symbol"]).sort_values(["rebalance_date", "symbol"])
+    if members.empty:
+        return {}
+
+    snapshots: dict[pd.Timestamp, pd.DataFrame] = {}
+    for dt in sorted(set(pd.Timestamp(dt).normalize() for dt in snapshot_dates)):
+        frame = members.loc[members["rebalance_date"].dt.normalize() == dt].copy()
+        if frame.empty:
+            continue
+        if "rank" not in frame.columns:
+            frame["rank"] = np.arange(1, len(frame) + 1)
+        if "name" not in frame.columns:
+            frame["name"] = ""
+        if "market_cap" not in frame.columns:
+            frame["market_cap"] = np.nan
+        if "target_weight" not in frame.columns:
+            frame["target_weight"] = 1.0 / TOP_N
+        snapshots[dt] = frame[["rebalance_date", "rank", "symbol", "name", "market_cap", "target_weight"]].reset_index(drop=True)
+    return snapshots
+
+
+def fill_member_snapshots_from_proxy_members(
+    snapshots: dict[pd.Timestamp, pd.DataFrame],
+    paths: dict[str, Path],
+    snapshot_dates: list[pd.Timestamp],
+) -> dict[pd.Timestamp, pd.DataFrame]:
+    missing_dates = [
+        pd.Timestamp(dt)
+        for dt in snapshot_dates
+        if dt is not None
+        and (
+            pd.Timestamp(dt) not in snapshots
+            or snapshots[pd.Timestamp(dt)].empty
+            or "symbol" not in snapshots[pd.Timestamp(dt)].columns
+        )
+    ]
+    if not missing_dates:
+        return snapshots
+    proxy_snapshots = load_member_snapshot_from_proxy_members(paths, missing_dates)
+    if not proxy_snapshots:
+        return snapshots
+    out = dict(snapshots)
+    for dt in missing_dates:
+        key = pd.Timestamp(dt).normalize()
+        if key in proxy_snapshots:
+            out[pd.Timestamp(dt)] = proxy_snapshots[key]
+    return out
+
+
 def build_change_table(prev_df: pd.DataFrame | None, curr_df: pd.DataFrame) -> pd.DataFrame:
     prev_df = prev_df.copy() if prev_df is not None else pd.DataFrame(columns=["symbol", "rank", "name"])
     curr_df = curr_df.copy()
@@ -3091,6 +3156,7 @@ def build_base_context(args: argparse.Namespace, include_members: bool = True) -
         if cached_static is None:
             snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
             snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+            snapshots = fill_member_snapshots_from_proxy_members(snapshots, paths, snapshot_dates)
             target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
             prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
             effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
@@ -3118,6 +3184,7 @@ def build_base_context(args: argparse.Namespace, include_members: bool = True) -
     if not include_members and changes_df.empty:
         snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
         snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+        snapshots = fill_member_snapshots_from_proxy_members(snapshots, paths, snapshot_dates)
         target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
         prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
         effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
@@ -3811,6 +3878,7 @@ def ensure_static_members_fresh(
     if cached_static is None:
         snapshot_dates = [dt for dt in [latest_rebalance, prev_rebalance, effective_rebalance] if dt is not None]
         snapshots = load_member_snapshot(snapshot_dates=snapshot_dates, max_workers=args.max_workers)
+        snapshots = fill_member_snapshots_from_proxy_members(snapshots, paths, snapshot_dates)
         target_members = snapshots[pd.Timestamp(latest_rebalance)].copy()
         prev_members = snapshots.get(pd.Timestamp(prev_rebalance)) if prev_rebalance is not None else None
         effective_members = snapshots.get(pd.Timestamp(effective_rebalance)) if effective_rebalance is not None else target_members.copy()
