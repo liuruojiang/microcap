@@ -96,7 +96,8 @@ jobs:
         run: |
           python scripts/realtime_state_bundle.py refresh \
             --root . \
-            --max-workers 8
+            --max-workers 8 \
+            --max-anchor-age-days 7
 
       - name: Validate refreshed realtime production state
         run: |
