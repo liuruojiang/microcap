@@ -201,6 +201,40 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dic
     return {**report, "bundle": str(bundle), "bundle_files": file_names}
 
 
+def refresh_state(root: Path, max_workers: int = 8, force_refresh_static_inputs: bool = False) -> dict[str, object]:
+    sys.path.insert(0, str(root.resolve()))
+    from run_top100_v1_6_v1_8_realtime_signals import ensure_static_realtime_inputs
+    import top100_realtime_core as realtime_core
+
+    ensure_static_realtime_inputs(force_refresh=force_refresh_static_inputs)
+
+    args = realtime_core.build_v1_1_args(max_workers=max_workers)
+    base_paths = realtime_core.base_mod.build_output_paths(realtime_core.base_mod.DEFAULT_OUTPUT_PREFIX)
+    realtime_core.v1_1_mod.prepare_current_v1_1_outputs(
+        paths=base_paths,
+        costed_nav_csv=realtime_core.BASE_COSTED_NAV_CSV,
+    )
+    panel_path, target_end_date = realtime_core.base_mod.build_refreshed_panel_shadow(args, base_paths)
+    realtime_core.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_date)
+    base_context = realtime_core.base_mod.ensure_realtime_query_base_context(
+        args,
+        base_paths,
+        panel_path,
+        target_end_date,
+    )
+    realtime_core.base_mod.ensure_static_members_fresh(
+        args,
+        base_paths,
+        panel_path,
+        target_end_date,
+        base_context,
+    )
+    report = validate_state(root)
+    report["target_end_date"] = target_end_date.date().isoformat()
+    report["panel_path"] = str(panel_path)
+    return report
+
+
 def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dict[str, object]:
     if not bundle.is_file():
         return {"ok": False, "errors": [f"missing bundle: {bundle}"], "warnings": []}
@@ -238,6 +272,11 @@ def main(argv: list[str] | None = None) -> int:
     add_common(pack_parser)
     pack_parser.add_argument("--bundle", type=Path, required=True)
 
+    refresh_parser = subparsers.add_parser("refresh")
+    refresh_parser.add_argument("--root", type=Path, default=Path("."), help="repository root")
+    refresh_parser.add_argument("--max-workers", type=int, default=8)
+    refresh_parser.add_argument("--force-refresh-static-inputs", action="store_true")
+
     restore_parser = subparsers.add_parser("restore")
     add_common(restore_parser)
     restore_parser.add_argument("--bundle", type=Path, required=True)
@@ -247,6 +286,12 @@ def main(argv: list[str] | None = None) -> int:
         report = validate_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "pack":
         report = pack_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
+    elif args.command == "refresh":
+        report = refresh_state(
+            args.root,
+            max_workers=args.max_workers,
+            force_refresh_static_inputs=args.force_refresh_static_inputs,
+        )
     else:
         report = restore_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
     _print_report(report)
