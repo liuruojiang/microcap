@@ -57,6 +57,14 @@ SIGNAL_QUALITY_REBALANCE_COST_DESCRIPTION = (
 V1_4_OVERLAY_ENGINE_VERSION = "2026-05-03-sq-scale-rebalance-cost-v2"
 
 
+def _csv_safe_meta_value(value: object) -> object:
+    if isinstance(value, (dict, list, tuple)):
+        return json.dumps(value, ensure_ascii=False, default=str)
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+    return value
+
+
 def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -308,7 +316,7 @@ def build_realtime_v1_4_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     v1_1_mod.base_mod.assert_realtime_meta_is_actionable(meta)
     v1_1_mod.base_mod.assert_signal_matches_result(signal_row, out)
     for key, value in meta.items():
-        signal_row[key] = value
+        signal_row[key] = _csv_safe_meta_value(value)
     signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"
     signal_row["official_close_confirmed_signal"] = False
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
