@@ -40,7 +40,7 @@ LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
-LIMIT_PRICE_EPS = 0.011
+LIMIT_PRICE_REL_EPS = 1e-6
 SCHEDULES = {
     "monthly": "month_start",
     "biweekly": "biweek_start",
@@ -443,6 +443,21 @@ def build_st_intervals_from_name_changes(
     return merge_st_intervals(intervals)
 
 
+def build_st_interval_from_current_name_snapshot(
+    first_trade_date: pd.Timestamp,
+    last_trade_date: pd.Timestamp,
+    current_name: str | None,
+) -> list[dict[str, str | None]]:
+    if not is_st_name(current_name):
+        return []
+    last_trade = pd.Timestamp(last_trade_date).normalize()
+    if pd.isna(last_trade):
+        return []
+    first_trade = pd.Timestamp(first_trade_date).normalize()
+    start = max(first_trade, last_trade)
+    return [{"start": str(start.date()), "end": None, "source": "current_name_snapshot"}]
+
+
 def merge_st_intervals(intervals: list[dict[str, str | None]]) -> list[dict[str, str | None]]:
     if not intervals:
         return []
@@ -731,6 +746,7 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
             master_row = matched.iloc[-1]
     name_intervals: list[dict[str, str | None]] = []
     notice_intervals: list[dict[str, str | None]] = []
+    current_name_intervals: list[dict[str, str | None]] = []
 
     if str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
         try:
@@ -750,7 +766,14 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     except Exception:
         notice_intervals = []
 
-    st_intervals = merge_st_intervals([*name_intervals, *notice_intervals])
+    if master_row is not None:
+        current_name_intervals = build_st_interval_from_current_name_snapshot(
+            first_trade,
+            last_trade,
+            None if pd.isna(master_row.get("name")) else str(master_row.get("name")),
+        )
+
+    st_intervals = merge_st_intervals([*name_intervals, *notice_intervals, *current_name_intervals])
 
     meta = {
         "meta_version": SECURITY_META_VERSION,
@@ -824,6 +847,8 @@ def round_limit_price(value: float) -> float:
 
 def get_price_limit_ratio(symbol: str, trade_date: pd.Timestamp, is_st: bool = False) -> float:
     code = str(symbol).zfill(6)
+    if code.startswith(("4", "8", "920")):
+        return 0.3
     if is_st and code.startswith(("300", "301")) and pd.Timestamp(trade_date) < CHINEXT_LIMIT_SWITCH:
         return 0.05
     if code.startswith(("300", "301")):
@@ -833,6 +858,22 @@ def get_price_limit_ratio(symbol: str, trade_date: pd.Timestamp, is_st: bool = F
     if is_st:
         return 0.05
     return 0.1
+
+
+def is_price_at_limit(
+    price: float,
+    prev_close: float,
+    limit_ratio: float,
+    direction: int,
+) -> bool:
+    if pd.isna(price) or pd.isna(prev_close) or float(prev_close) <= 0:
+        return False
+    if direction not in {-1, 1}:
+        raise ValueError(f"unsupported limit direction: {direction}")
+    limit_price = round_limit_price(float(prev_close) * (1.0 + direction * float(limit_ratio)))
+    expected_return = limit_price / float(prev_close) - 1.0
+    actual_return = float(price) / float(prev_close) - 1.0
+    return abs(actual_return - expected_return) <= LIMIT_PRICE_REL_EPS
 
 
 def detect_limit_locks(
@@ -849,10 +890,8 @@ def detect_limit_locks(
         return False, False
 
     ratio = get_price_limit_ratio(symbol, trade_date, is_st=is_st)
-    up_limit = round_limit_price(prev_close * (1.0 + ratio))
-    down_limit = round_limit_price(prev_close * (1.0 - ratio))
-    up_locked = all(abs(float(price) - up_limit) <= LIMIT_PRICE_EPS for price in prices)
-    down_locked = all(abs(float(price) - down_limit) <= LIMIT_PRICE_EPS for price in prices)
+    up_locked = all(is_price_at_limit(float(price), float(prev_close), ratio, 1) for price in prices)
+    down_locked = all(is_price_at_limit(float(price), float(prev_close), ratio, -1) for price in prices)
     return up_locked, down_locked
 
 
@@ -866,10 +905,8 @@ def detect_close_limit_blocks(
     if pd.isna(prev_close) or pd.isna(close_price):
         return False, False
     ratio = get_price_limit_ratio(symbol, trade_date, is_st=is_st)
-    up_limit = round_limit_price(prev_close * (1.0 + ratio))
-    down_limit = round_limit_price(prev_close * (1.0 - ratio))
-    up_blocked = abs(float(close_price) - up_limit) <= LIMIT_PRICE_EPS
-    down_blocked = abs(float(close_price) - down_limit) <= LIMIT_PRICE_EPS
+    up_blocked = is_price_at_limit(float(close_price), float(prev_close), ratio, 1)
+    down_blocked = is_price_at_limit(float(close_price), float(prev_close), ratio, -1)
     return up_blocked, down_blocked
 
 

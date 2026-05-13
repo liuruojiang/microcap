@@ -138,7 +138,7 @@ HEDGE_SECID = "1.000852"
 TAIL_JITTER_WARNING_GAP = 0.001
 TAIL_JITTER_CAUTION_GAP = 0.002
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
-LIMIT_PRICE_EPS = 0.011
+LIMIT_PRICE_REL_EPS = 1e-6
 
 CMD_PERFORMANCE = "表现"
 DAY_SUFFIX = r"[日号]?"
@@ -2320,6 +2320,17 @@ def get_price_limit_ratio(symbol, trade_date):
     return 0.1
 
 
+def is_price_at_limit(price, prev_close, limit_ratio, direction):
+    if pd.isna(price) or pd.isna(prev_close) or float(prev_close) <= 0:
+        return False
+    if direction not in {-1, 1}:
+        raise ValueError(f"unsupported limit direction: {direction}")
+    limit_price = round_limit_price(float(prev_close) * (1.0 + direction * float(limit_ratio)))
+    expected_return = limit_price / float(prev_close) - 1.0
+    actual_return = float(price) / float(prev_close) - 1.0
+    return abs(actual_return - expected_return) <= LIMIT_PRICE_REL_EPS
+
+
 def detect_limit_locks(symbol, trade_date, prev_close, row):
     if pd.isna(prev_close):
         return False, False
@@ -2327,10 +2338,8 @@ def detect_limit_locks(symbol, trade_date, prev_close, row):
     if any(pd.isna(price) for price in prices):
         return False, False
     ratio = get_price_limit_ratio(symbol, trade_date)
-    up_limit = round_limit_price(prev_close * (1.0 + ratio))
-    down_limit = round_limit_price(prev_close * (1.0 - ratio))
-    up_locked = all(abs(float(price) - up_limit) <= LIMIT_PRICE_EPS for price in prices)
-    down_locked = all(abs(float(price) - down_limit) <= LIMIT_PRICE_EPS for price in prices)
+    up_locked = all(is_price_at_limit(float(price), float(prev_close), ratio, 1) for price in prices)
+    down_locked = all(is_price_at_limit(float(price), float(prev_close), ratio, -1) for price in prices)
     return up_locked, down_locked
 
 
@@ -2338,10 +2347,8 @@ def detect_close_limit_blocks(symbol, trade_date, prev_close, close_price):
     if pd.isna(prev_close) or pd.isna(close_price):
         return False, False
     ratio = get_price_limit_ratio(symbol, trade_date)
-    up_limit = round_limit_price(prev_close * (1.0 + ratio))
-    down_limit = round_limit_price(prev_close * (1.0 - ratio))
-    up_blocked = abs(float(close_price) - up_limit) <= LIMIT_PRICE_EPS
-    down_blocked = abs(float(close_price) - down_limit) <= LIMIT_PRICE_EPS
+    up_blocked = is_price_at_limit(float(close_price), float(prev_close), ratio, 1)
+    down_blocked = is_price_at_limit(float(close_price), float(prev_close), ratio, -1)
     return up_blocked, down_blocked
 
 

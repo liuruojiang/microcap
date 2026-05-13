@@ -298,12 +298,27 @@ def _atomic_temp_path(path: Path) -> Path:
     return path.with_name(f"{path.name}.{os.getpid()}.{time.time_ns()}.tmp")
 
 
+def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05) -> None:
+    last_exc: OSError | None = None
+    for attempt in range(max(1, int(attempts))):
+        try:
+            tmp.replace(path)
+            return
+        except OSError as exc:
+            last_exc = exc
+            if attempt >= max(1, int(attempts)) - 1:
+                break
+            time.sleep(delay_seconds * (2**attempt))
+    if last_exc is not None:
+        raise last_exc
+
+
 def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = _atomic_temp_path(path)
     try:
         tmp.write_text(text, encoding=encoding)
-        tmp.replace(path)
+        _replace_with_retry(tmp, path)
     finally:
         try:
             if tmp.exists():
@@ -322,7 +337,7 @@ def _atomic_to_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None:
     tmp = _atomic_temp_path(path)
     try:
         frame.to_csv(tmp, **kwargs)
-        tmp.replace(path)
+        _replace_with_retry(tmp, path)
     finally:
         try:
             if tmp.exists():
@@ -339,7 +354,16 @@ def _cache_write_lock(lock_path: Path):
     while True:
         try:
             fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_RDWR)
-            os.write(fd, f"pid={os.getpid()} ts={time.time()}\n".encode("ascii", errors="ignore"))
+            try:
+                os.write(fd, f"pid={os.getpid()} ts={time.time()}\n".encode("ascii", errors="ignore"))
+            except Exception:
+                os.close(fd)
+                fd = None
+                try:
+                    lock_path.unlink()
+                except OSError:
+                    pass
+                raise
             break
         except FileExistsError:
             try:
@@ -367,15 +391,28 @@ def assess_history_anchor_freshness(
     latest_trade_date: pd.Timestamp,
     max_stale_days: int,
     now: pd.Timestamp | None = None,
+    trading_dates: pd.DatetimeIndex | None = None,
 ) -> dict[str, object]:
     latest_trade_date = pd.Timestamp(latest_trade_date).normalize()
     current_date = _cn_local_day(now)
     stale_days = max(0, int((current_date - latest_trade_date).days))
-    is_stale = stale_days > max(0, int(max_stale_days))
+    stale_trading_days: int | None = None
+    staleness_unit = "calendar_days"
+    stale_value = stale_days
+    if trading_dates is not None and len(trading_dates):
+        calendar = pd.DatetimeIndex(pd.to_datetime(trading_dates, errors="coerce")).dropna().normalize().unique().sort_values()
+        calendar = calendar[calendar <= current_date]
+        if len(calendar):
+            stale_trading_days = int(((calendar > latest_trade_date) & (calendar <= calendar.max())).sum())
+            stale_value = stale_trading_days
+            staleness_unit = "trading_days"
+    is_stale = stale_value > max(0, int(max_stale_days))
     return {
         "latest_trade_date": str(latest_trade_date.date()),
         "current_date": str(current_date.date()),
         "stale_calendar_days": stale_days,
+        "stale_trading_days": stale_trading_days,
+        "staleness_unit": staleness_unit,
         "max_stale_anchor_days": int(max_stale_days),
         "is_stale": bool(is_stale),
         "status": "stale" if is_stale else "fresh",
@@ -3201,6 +3238,7 @@ def build_base_context(args: argparse.Namespace, include_members: bool = True) -
         anchor_freshness=assess_history_anchor_freshness(
             latest_trade_date=pd.Timestamp(result.index[-1]),
             max_stale_days=args.max_stale_anchor_days,
+            trading_dates=pd.DatetimeIndex(close_df.index),
         ),
     )
     return {
@@ -3790,6 +3828,7 @@ def build_base_signal_context(
     anchor_freshness = assess_history_anchor_freshness(
         latest_trade_date=pd.Timestamp(result.index[-1]),
         max_stale_days=args.max_stale_anchor_days,
+        trading_dates=pd.DatetimeIndex(close_df.index),
     )
     return {
         "paths": paths,
@@ -3989,6 +4028,18 @@ def _first_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str:
     for column in candidates:
         if column in frame.columns:
             return column
+    lowered_candidates = {str(item).strip().lower().replace("_", "").replace(" ", "") for item in candidates}
+    semantic_tokens: list[str] = []
+    if lowered_candidates & {"rtprice", "latestprice"} or any("最新" in str(item) for item in candidates):
+        semantic_tokens.extend(["latest", "lastprice", "最新"])
+    if lowered_candidates & {"preclose", "prevclose", "previousclose"} or any("昨收" in str(item) for item in candidates):
+        semantic_tokens.extend(["previousclose", "prevclose", "preclose", "昨收"])
+    if lowered_candidates & {"quotedate", "tradedate"} or any("交易" in str(item) for item in candidates):
+        semantic_tokens.extend(["tradedate", "quotedate", "交易日"])
+    for column in frame.columns:
+        normalized = str(column).strip().lower().replace("_", "").replace(" ", "")
+        if any(token in normalized for token in semantic_tokens):
+            return column
     raise KeyError(f"Missing expected columns, tried: {candidates}")
 
 
@@ -4004,10 +4055,10 @@ def normalize_index_spot_columns(index_spot: pd.DataFrame) -> pd.DataFrame:
 
 
 def _optional_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str | None:
-    for column in candidates:
-        if column in frame.columns:
-            return column
-    return None
+    try:
+        return _first_existing_column(frame, candidates)
+    except KeyError:
+        return None
 
 
 def normalize_stock_spot_realtime_quotes(stock_spot: pd.DataFrame, source: str) -> pd.DataFrame:
@@ -4984,11 +5035,13 @@ def apply_realtime_close_to_signal_frame(
 ) -> pd.DataFrame:
     out = close_df.copy()
     latest_day = pd.Timestamp(latest_trade_date).normalize()
-    if quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date):
-        target_ts = latest_day
-    else:
+    quote_day = pd.to_datetime(quote_trade_date, errors="coerce")
+    if pd.notna(quote_day):
+        quote_day = pd.Timestamp(quote_day).normalize()
         snapshot_day = pd.Timestamp(snapshot_ts).tz_localize(None).normalize()
-        target_ts = snapshot_day if snapshot_day > latest_day else latest_day
+        target_ts = quote_day if latest_day < quote_day <= snapshot_day else latest_day
+    else:
+        target_ts = latest_day
 
     index = pd.DatetimeIndex(out.index)
     normalized = index.normalize()

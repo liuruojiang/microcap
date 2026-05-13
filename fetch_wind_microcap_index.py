@@ -83,7 +83,10 @@ def parse_args() -> argparse.Namespace:
         "--exclude-current-st",
         action="store_true",
         default=True,
-        help="Public proxy only. Exclude stocks on the current ST board from the whole sample.",
+        help=(
+            "Public proxy only. Exclude ST stocks from rebalance selection using historical ST masks "
+            "where available; the current ST board is retained as a snapshot diagnostic."
+        ),
     )
     parser.add_argument(
         "--limit-symbols",
@@ -183,6 +186,17 @@ def fetch_current_st_codes(force_refresh: bool = False) -> set[str]:
     frame.columns = ["code", "name"]
     frame.to_csv(CURRENT_ST_CACHE, index=False, encoding="utf-8")
     return set(frame["code"].dropna())
+
+
+def build_historical_st_status_series(symbol: str, trading_dates: pd.DatetimeIndex) -> pd.Series:
+    try:
+        import analyze_top100_rebalance_frequency as freq_mod
+
+        meta = freq_mod.load_security_meta(str(symbol).zfill(6))
+        series = freq_mod.build_st_status_series(meta, trading_dates)
+    except Exception:
+        series = pd.Series(False, index=trading_dates, dtype=bool)
+    return series.reindex(trading_dates).fillna(False).astype(bool)
 
 
 def _read_csv_cached(path: Path, date_col: str) -> pd.DataFrame:
@@ -535,10 +549,10 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
     current_st_codes: set[str] = set()
     if args.exclude_current_st:
         current_st_codes = fetch_current_st_codes(force_refresh=args.force_refresh)
-        universe = universe[~universe["code"].isin(current_st_codes)].copy()
 
     if args.limit_symbols:
         universe = universe.head(args.limit_symbols).copy()
+    current_st_snapshot_count = int(universe["code"].isin(current_st_codes).sum()) if current_st_codes else 0
 
     symbol_panels: dict[str, pd.DataFrame] = {}
     failures: dict[str, str] = {}
@@ -581,6 +595,13 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
 
     returns_df = pd.DataFrame(index=trading_dates)
     caps_by_date: dict[pd.Timestamp, dict[str, float]] = {}
+    st_status_by_symbol: dict[str, pd.Series] = {}
+    historical_st_cap_excluded = 0
+    if args.exclude_current_st:
+        st_status_by_symbol = {
+            symbol: build_historical_st_status_series(symbol, trading_dates)
+            for symbol in symbol_panels
+        }
 
     rebalance_dates = build_rebalance_dates(
         trading_dates=trading_dates,
@@ -599,6 +620,11 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
             on="date",
             direction="backward",
         )
+        st_status = st_status_by_symbol.get(symbol)
+        if st_status is not None and not st_status.empty:
+            st_on_rebalance = st_status.reindex(pd.DatetimeIndex(cap_lookup["date"])).fillna(False).to_numpy()
+            historical_st_cap_excluded += int((st_on_rebalance & cap_lookup["market_cap"].notna().to_numpy()).sum())
+            cap_lookup.loc[st_on_rebalance, "market_cap"] = np.nan
         for row in cap_lookup.itertuples(index=False):
             if pd.notna(row.market_cap):
                 caps_by_date.setdefault(pd.Timestamp(row.date), {})[symbol] = float(row.market_cap)
@@ -681,8 +707,8 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
             f"Post-switch schedule is inferred as {args.post_switch_schedule}."
         ),
         "limitations": [
-            "Current ST board exclusion is applied to the whole sample when --exclude-current-st is on.",
-            "Historical ST status is not reconstructed day by day.",
+            "Historical ST exclusion uses CNInfo ST notices, SZSE name-change records, and current-name snapshots where available.",
+            "ST gaps can remain when public notices/name evidence is unavailable; unresolved symbols are not excluded from the whole sample solely because they are current ST.",
             "Returns use raw close, so corporate-action handling will differ from the official index divisor methodology.",
             "Active universe is built from current SH/SZ A-shares; delisted historical names are not fully backfilled.",
         ],
@@ -691,11 +717,12 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
                 symbols_total=int(len(universe)),
                 symbols_success=int(len(symbol_panels)),
                 symbols_failed=int(len(failures)),
-                current_st_excluded=int(len(current_st_codes)),
+                current_st_excluded=int(current_st_snapshot_count),
                 rebalance_dates=int(len(rebalance_dates)),
                 active_days=int(active_days),
             )
         ),
+        "historical_st_cap_excluded": int(historical_st_cap_excluded),
         "failures_sample": dict(list(failures.items())[:20]),
         "params": {
             "start_date": args.start_date,

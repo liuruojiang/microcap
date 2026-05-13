@@ -195,12 +195,27 @@ def _atomic_temp_path(path: Path) -> Path:
     return path.with_suffix(path.suffix + f".tmp.{os.getpid()}.{time.time_ns()}")
 
 
+def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05) -> None:
+    last_exc: OSError | None = None
+    for attempt in range(max(1, int(attempts))):
+        try:
+            tmp.replace(path)
+            return
+        except OSError as exc:
+            last_exc = exc
+            if attempt >= max(1, int(attempts)) - 1:
+                break
+            time.sleep(delay_seconds * (2**attempt))
+    if last_exc is not None:
+        raise last_exc
+
+
 def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = _atomic_temp_path(path)
     try:
         tmp.write_text(text, encoding=encoding)
-        tmp.replace(path)
+        _replace_with_retry(tmp, path)
     finally:
         try:
             if tmp.exists():
@@ -214,7 +229,7 @@ def _atomic_write_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None
     tmp = _atomic_temp_path(path)
     try:
         frame.to_csv(tmp, **kwargs)
-        tmp.replace(path)
+        _replace_with_retry(tmp, path)
     finally:
         try:
             if tmp.exists():
@@ -555,8 +570,10 @@ def apply_target_vol_scaling(base_result: pd.DataFrame, treat_last_row_as_snapsh
     realized_vol = target_vol_return.rolling(TARGET_VOL_WINDOW).std(ddof=1) * np.sqrt(TARGET_VOL_TRADING_DAYS)
     realtime_snapshot_vol_frozen = pd.Series(False, index=out.index, dtype=bool)
     if treat_last_row_as_snapshot and len(realized_vol) >= 2:
-        realized_vol.iloc[-1] = realized_vol.iloc[-2]
-        realtime_snapshot_vol_frozen.iloc[-1] = True
+        previous_realized_vol = realized_vol.iloc[:-1].dropna()
+        if not previous_realized_vol.empty:
+            realized_vol.iloc[-1] = previous_realized_vol.iloc[-1]
+            realtime_snapshot_vol_frozen.iloc[-1] = True
     scale_from_realized_vol = _scale_from_realized_vol(realized_vol)
     target_execution_scale = scale_from_realized_vol.shift(1).fillna(1.0)
     execution_scale = apply_scale_rebalance_threshold(
