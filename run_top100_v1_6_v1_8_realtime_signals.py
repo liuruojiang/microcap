@@ -234,11 +234,33 @@ def main(
     )
     parser.add_argument("--json", action="store_true", help="print machine-readable JSON instead of text")
     parser.add_argument(
+        "--versions",
+        action="append",
+        metavar="VERSION",
+        help="strategy version(s) to run, e.g. --versions v1.6 or --versions v1.6,v1.8",
+    )
+    parser.add_argument(
         "--force-refresh-static-inputs",
         action="store_true",
         help="refresh active universe and current ST cache before running realtime signals",
     )
     args = parser.parse_args(argv)
+
+    selected_specs = tuple(specs)
+    if args.versions:
+        requested = {
+            version.strip()
+            for value in args.versions
+            for version in value.split(",")
+            if version.strip()
+        }
+        known = {spec.version for spec in specs}
+        unknown = sorted(requested - known)
+        if unknown:
+            parser.error(f"unknown strategy version(s): {', '.join(unknown)}")
+        selected_specs = tuple(spec for spec in specs if spec.version in requested)
+        if not selected_specs:
+            parser.error("no strategy versions selected")
 
     ensure_static_realtime_inputs(
         module_name=static_inputs_module,
@@ -247,7 +269,7 @@ def main(
 
     runs: list[StrategyRun] = []
     failures: list[str] = []
-    for spec in specs:
+    for spec in selected_specs:
         try:
             runs.append(run_strategy(spec))
         except Exception as exc:

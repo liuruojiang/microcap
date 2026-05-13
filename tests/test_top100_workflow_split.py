@@ -19,6 +19,17 @@ def test_realtime_workflow_consumes_state_refresh_bundle_only() -> None:
     assert "Script exit code:" in workflow
 
 
+def test_realtime_workflow_reports_only_v1_6() -> None:
+    workflow = (ROOT / ".github/workflows/top100_realtime_signals.yml").read_text(encoding="utf-8")
+
+    assert "Run v1.6 realtime signal" in workflow
+    assert "run_top100_v1_6_v1_8_realtime_signals.py --versions v1.6" in workflow
+    assert "Top100 v1.6 realtime signal" in workflow
+    assert "microcap_top100_mom16_biweekly_live_v1_4.py" not in workflow
+    assert "v1.4" not in workflow
+    assert "v1.8" not in workflow
+
+
 def test_state_refresh_workflow_owns_state_bundle_production() -> None:
     workflow = (ROOT / ".github/workflows/top100_state_refresh.yml").read_text(encoding="utf-8")
 
