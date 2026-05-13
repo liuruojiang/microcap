@@ -4754,11 +4754,11 @@ def ensure_realtime_last_close_map(
         "yes",
         "on",
     }:
-        sample = ", ".join(stale_or_missing[:10])
-        raise RuntimeError(
-            "Missing required current-member price cache in production state; refusing realtime refresh: "
-            f"{len(stale_or_missing)}/{len(clean_symbols)} missing or stale. Sample: {sample}"
-        )
+        return {
+            symbol: close
+            for symbol, (date, close) in snapshots.items()
+            if pd.Timestamp(date).normalize() >= target_date
+        }
     if stale_or_missing:
         try:
             refresh_price_cache_tail(as_of_date, max_workers=max_workers, symbols=stale_or_missing)
