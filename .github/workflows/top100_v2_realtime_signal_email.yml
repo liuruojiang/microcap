@@ -106,7 +106,7 @@ jobs:
                   "email_sent=false\nmissing_mail_secrets=" + ",".join(missing) + "\n",
                   encoding="utf-8",
               )
-              raise SystemExit(0)
+              raise SystemExit(2)
 
           result_path = pathlib.Path("realtime_signal_result.txt")
           body = result_path.read_text(encoding="utf-8", errors="replace") if result_path.exists() else ""
