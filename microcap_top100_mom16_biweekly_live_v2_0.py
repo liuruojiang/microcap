@@ -7909,6 +7909,22 @@ def quote_trade_date_on_or_after_anchor(quote_trade_date: object, latest_trade_d
         return False
 
 
+def quote_trade_date_is_next_session_candidate(
+    quote_trade_date: object,
+    latest_trade_date: pd.Timestamp,
+    max_calendar_gap_days: int = 7,
+) -> bool:
+    try:
+        if quote_trade_date is None or str(quote_trade_date).strip() == "":
+            return False
+        quote_day = pd.Timestamp(quote_trade_date).normalize()
+        anchor_day = pd.Timestamp(latest_trade_date).normalize()
+    except Exception:
+        return False
+    gap_days = int((quote_day - anchor_day).days)
+    return 0 < gap_days <= int(max_calendar_gap_days)
+
+
 def normalize_hedge_realtime_quote_result(result: object) -> tuple[float, str, str]:
     if isinstance(result, tuple):
         if len(result) >= 3:
@@ -8001,6 +8017,7 @@ def compute_member_realtime_return(
 
     if "pre_close" in quotes_df.columns and (
         quote_trade_date_matches_anchor(quote_trade_date, latest_trade_date)
+        or quote_trade_date_is_next_session_candidate(quote_trade_date, latest_trade_date)
         or (
             allow_quote_pre_close_after_anchor
             and (
