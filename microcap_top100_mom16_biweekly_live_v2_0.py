@@ -9475,11 +9475,15 @@ def _load_reference_summary() -> dict[str, object]:
 
 def current_base_fingerprint() -> dict[str, object]:
     validate_base_hedge_ratio()
+    base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
     return {
         "base_version": "embedded_v2_base",
         "base_hedge_ratio": BASE_HEDGE_RATIO,
         "base_costed_nav_csv": str(base_mod.DEFAULT_COSTED_NAV_CSV),
         "base_costed_nav_sha1": _file_sha1(base_mod.DEFAULT_COSTED_NAV_CSV),
+        "base_index_csv_sha1": _file_sha1(base_mod.DEFAULT_INDEX_CSV),
+        "base_panel_shadow_sha1": _file_sha1(base_paths["panel_shadow"]),
+        "base_proxy_turnover_sha1": _file_sha1(base_paths["proxy_turnover"]),
         "research_stack_version": base_mod.RESEARCH_STACK_VERSION,
         "embedded_cost_model": V2_BASE_COST_MODEL,
         "overlay_type": "momentum_gap_peak_decay_derisk_new_peak_guard",

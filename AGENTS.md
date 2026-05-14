@@ -1,14 +1,14 @@
 # Workspace Defaults
 
-- The Top100 mainline defaults to `microcap_top100_mom16_biweekly_live_v1_6.py` (`v1.6`) unless the user explicitly asks for another version.
-- If the user does not mention a Top100 version, treat the selected version as `v1.6` for all Top100 queries.
+- The Top100 mainline defaults to `microcap_top100_mom16_biweekly_live_v2_0.py` (`v2.0`) unless the user explicitly asks for another version.
+- If the user does not mention a Top100 version, treat the selected version as `v2.0` for all Top100 queries.
 - `microcap_top100_mom16_biweekly_live_v1_1.py` and `microcap_top100_mom16_biweekly_live_v1_2.py` are backup/alternative scripts, not the default line.
-- For signal, realtime signal, drawdown/performance, holdings, and member queries, default to `v1.6` unless the user explicitly specifies another version.
+- For signal, realtime signal, drawdown/performance, holdings, and member queries, default to `v2.0` unless the user explicitly specifies another version.
 - Before any Top100 test, signal output, or chart generation, refresh the selected strategy data to the latest trading date first.
-- The default practical/live performance caliber is `v1.6 + costed`. Do not silently mix `gross` and `costed`.
+- The default practical/live performance caliber is `v2.0 + costed`. Do not silently mix `gross` and `costed`.
 - When the user asks for a chart or image, regenerate it from refreshed source data instead of reusing an old export.
 - For `信号`, `实时信号`, `成分股名单`, `进出名单`, `实时进出名单`, `净值图`, and `净值表现`, prefer the current fast command-aware query routing in `microcap_top100_mom16_biweekly_live.py`. Do not fall back to the old full `build_base_context()` query path unless the fast path is unavailable or the user explicitly asks to debug the old path.
-- Treat `outputs/` as disposable export space. Keep the current core strategy artifacts for `v1.0`, `v1.1`, `v1.2`, and `v1.6`; test and comparison exports can be cleaned when requested.
+- Treat `outputs/` as disposable export space. Keep the current core strategy artifacts for `v1.0`, `v1.1`, `v1.2`, `v1.6`, and `v2.0`; test and comparison exports can be cleaned when requested.
 
 # Signal Query Defaults
 
