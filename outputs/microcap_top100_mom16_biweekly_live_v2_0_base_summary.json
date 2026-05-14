@@ -1,0 +1,72 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live_v2_0_base",
+  "version": "2.0_base",
+  "version_note": "Standalone v2.0 embedded base with 0.8x hedge ratio.",
+  "core_params": {
+    "top_n": 100,
+    "exclude_current_st": true,
+    "rebalance_schedule": "biweekly",
+    "rebalance_weekday_anchor": "Thursday",
+    "rebalance_phase_anchor_date": "2016-01-07",
+    "lookback": 16,
+    "signal_model": "relative_momentum",
+    "momentum_gap_entry_threshold": 0.0,
+    "momentum_gap_exit_buffer": 0.0,
+    "hedge_column": "1.000852",
+    "fixed_hedge_ratio": 0.8,
+    "futures_drag_per_day": 0.0003,
+    "execution_timing": "close",
+    "trade_constraint_mode": "close",
+    "research_stack_version": "2026-05-12-p0-p1-history-meta-master-stv3",
+    "member_filter_policy_version": "empty-name-reject-v1",
+    "realtime_quote_policy_version": "strict-per-symbol-date-v1",
+    "proxy_rebalance_policy_version": "fixed-biweekly-anchor-20160107-v1",
+    "security_meta_version": 2,
+    "security_master_enabled": true
+  },
+  "latest_trade_date": "2026-05-13",
+  "latest_rebalance_date": "2026-04-30",
+  "previous_rebalance_date": "2026-04-16",
+  "next_rebalance_date": null,
+  "history_anchor": {
+    "latest_trade_date": "2026-05-13",
+    "current_date": "2026-05-14",
+    "stale_calendar_days": 1,
+    "stale_trading_days": 0,
+    "staleness_value": 1,
+    "staleness_unit": "calendar_days",
+    "max_stale_anchor_days": 5,
+    "is_stale": false,
+    "status": "fresh"
+  },
+  "latest_signal": {
+    "signal_label": "long_microcap_short_zz1000",
+    "current_holding": "long_microcap_short_zz1000",
+    "next_holding": "long_microcap_short_zz1000",
+    "trade_state": "hold",
+    "momentum_trade_state": "hold",
+    "member_rebalance_state": "rebalance",
+    "member_rebalance_required": true,
+    "member_enter_count": 21,
+    "member_exit_count": 21,
+    "member_rebalance_label": "名单调仓（调入 21，调出 21）",
+    "microcap_mom": 0.09482875927681111,
+    "hedge_mom": 0.08775239788543221,
+    "momentum_gap": 0.007076361391378905,
+    "microcap_close": 341607.0094549088,
+    "hedge_close": 8955.447
+  },
+  "target_members": {
+    "count": 100,
+    "enter_count": 21,
+    "exit_count": 21,
+    "equal_weight": 0.01
+  },
+  "capital_plan": {
+    "gross_stock_capital": null,
+    "per_stock_target_notional": null,
+    "hedge_notional": 0.0
+  },
+  "version_role": "standalone_embedded_base",
+  "summary_version_key": "hedge_0.8"
+}
