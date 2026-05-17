@@ -5571,6 +5571,7 @@ def apply_momentum_gap_peak_decay_derisk(
     decay_ratio_threshold: float,
     derisk_scale: float,
     recovery_ratio_threshold: float | None = None,
+    signal_quality_derisk_enabled: bool = True,
 ) -> pd.DataFrame:
     if decay_ratio_threshold < 0:
         raise ValueError("decay_ratio_threshold must be non-negative.")
@@ -5589,6 +5590,7 @@ def apply_momentum_gap_peak_decay_derisk(
         out["execution_scale"] = pd.Series(dtype=float)
         out["signal_quality_scale_turnover"] = pd.Series(dtype=float)
         out["signal_quality_scale_cost"] = pd.Series(dtype=float)
+        out["signal_quality_derisk_enabled"] = pd.Series(dtype=bool)
         out["trade_id"] = pd.Series(dtype="Int64")
         out["trade_return_net"] = pd.Series(dtype=float)
         out["entry_exit_cost"] = pd.Series(dtype=float)
@@ -5617,6 +5619,7 @@ def apply_momentum_gap_peak_decay_derisk(
     executed_signal_on: list[bool] = []
     derisk_flags: list[bool] = []
     execution_scales: list[float] = []
+    next_execution_scales: list[float] = []
     signal_quality_scale_turnovers: list[float] = []
     signal_quality_scale_costs: list[float] = []
     trade_ids: list[int | None] = []
@@ -5628,40 +5631,36 @@ def apply_momentum_gap_peak_decay_derisk(
     total_costs: list[float] = []
     return_nets: list[float] = []
     nav_nets: list[float] = []
+    overlay_pre_cost_returns: list[float] = []
 
-    current_active = str(out["base_holding"].iloc[0]) != "cash"
-    current_trade_id: int | None = 1 if current_active else None
-    next_trade_id = 1 if current_active else 0
+    signal_quality_scale = 1.0 if str(out["base_holding"].iloc[0]) != "cash" else 0.0
+    current_trade_id: int | None = 1 if signal_quality_scale > 0.0 else None
+    next_trade_id = 1 if signal_quality_scale > 0.0 else 0
     nav_net = 1.0
     trade_nav = 1.0
     gap_peak: float | None = None
-    active_scale = 1.0
     derisked_in_trade = False
     waiting_for_new_peak_after_recovery = False
     rearm_peak_level: float | None = None
 
     for dt in out.index:
-        desired_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
+        base_current_active = bool(out.at[dt, "base_holding"] != "cash")
+        base_next_active = bool(out.at[dt, "base_next_holding"] != "cash")
         current_gap = float(momentum_gap_series.loc[dt]) if pd.notna(momentum_gap_series.loc[dt]) else None
 
-        if not current_active and desired_next_active:
+        if not base_current_active and base_next_active:
             next_trade_id += 1
             current_trade_id = next_trade_id
             trade_nav = 1.0
             gap_peak = current_gap
-            active_scale = 1.0
             derisked_in_trade = False
             waiting_for_new_peak_after_recovery = False
             rearm_peak_level = None
 
-        trade_participates = bool(current_active or desired_next_active)
-        trade_id_for_row = current_trade_id if trade_participates else None
-
-        gross_daily_return = float(returns.loc[dt])
-        if current_active and current_gap is not None:
+        if base_current_active and current_gap is not None:
             gap_peak = current_gap if gap_peak is None else max(float(gap_peak), current_gap)
         if (
-            current_active
+            base_current_active
             and waiting_for_new_peak_after_recovery
             and rearm_peak_level is not None
             and gap_peak is not None
@@ -5670,44 +5669,45 @@ def apply_momentum_gap_peak_decay_derisk(
             waiting_for_new_peak_after_recovery = False
             rearm_peak_level = None
         gap_decay_ratio = None
-        if current_active and current_gap is not None and gap_peak is not None and gap_peak > 0:
+        if base_current_active and current_gap is not None and gap_peak is not None and gap_peak > 0:
             gap_decay_ratio = current_gap / gap_peak
 
+        current_scale = float(signal_quality_scale) if base_current_active else 0.0
+        next_scale = 1.0 if base_next_active else 0.0
         signal_quality_derisk_triggered = False
-        previous_active_scale = active_scale if current_active else 0.0
-        applied_scale = active_scale if current_active else 0.0
-        if (
-            current_active
-            and desired_next_active
-            and derisked_in_trade
-            and recovery_ratio_threshold is not None
-            and gap_decay_ratio is not None
-            and gap_decay_ratio >= recovery_ratio_threshold
-        ):
-            active_scale = 1.0
-            applied_scale = active_scale
-            derisked_in_trade = False
-            waiting_for_new_peak_after_recovery = True
-            rearm_peak_level = gap_peak
-        if (
-            current_active
-            and desired_next_active
-            and not derisked_in_trade
-            and not waiting_for_new_peak_after_recovery
-            and gap_decay_ratio is not None
-            and gap_decay_ratio <= float(decay_ratio_threshold)
-        ):
-            active_scale = float(derisk_scale)
-            applied_scale = active_scale
-            derisked_in_trade = True
-            signal_quality_derisk_triggered = True
+        if signal_quality_derisk_enabled and base_current_active and base_next_active:
+            next_scale = current_scale
+            if (
+                derisked_in_trade
+                and recovery_ratio_threshold is not None
+                and gap_decay_ratio is not None
+                and gap_decay_ratio >= recovery_ratio_threshold
+            ):
+                next_scale = 1.0
+                derisked_in_trade = False
+                waiting_for_new_peak_after_recovery = True
+                rearm_peak_level = gap_peak
+            elif (
+                not derisked_in_trade
+                and not waiting_for_new_peak_after_recovery
+                and gap_decay_ratio is not None
+                and gap_decay_ratio <= float(decay_ratio_threshold)
+            ):
+                next_scale = float(derisk_scale)
+                derisked_in_trade = True
+                signal_quality_derisk_triggered = True
 
-        realized_daily_return = gross_daily_return * applied_scale if current_active else 0.0
+        current_active = base_current_active and current_scale > 0.0
+        next_active = base_next_active and next_scale > 0.0
+        trade_participates = bool(current_active or next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return * current_scale if base_current_active else 0.0
 
-        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not current_active and desired_next_active) else 0.0
-        exit_cost = freq_mod.cost_mod.EXIT_COST if (current_active and not desired_next_active) else 0.0
-        scale_delta = float(applied_scale - previous_active_scale) if (current_active and desired_next_active) else 0.0
-        rebalance_exposure_scale = max(float(previous_active_scale), float(applied_scale)) if (current_active and desired_next_active) else 0.0
+        entry_cost = freq_mod.cost_mod.ENTRY_COST if (not base_current_active and base_next_active and next_active) else 0.0
+        exit_cost = freq_mod.cost_mod.EXIT_COST if (base_current_active and not base_next_active and current_active) else 0.0
+        scale_delta = float(next_scale - current_scale) if (base_current_active and base_next_active) else 0.0
+        rebalance_exposure_scale = max(float(current_scale), float(next_scale)) if (current_active and next_active) else 0.0
         rebalance_cost = float(rebalance_base.loc[dt]) * rebalance_exposure_scale
         signal_quality_scale_turnover = abs(scale_delta)
         if scale_delta < 0:
@@ -5728,10 +5728,11 @@ def apply_momentum_gap_peak_decay_derisk(
         nav_net *= 1.0 + return_net
 
         executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
-        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
-        executed_signal_on.append(bool(desired_next_active))
+        executed_next_holding.append("long_microcap_short_zz1000" if next_active else "cash")
+        executed_signal_on.append(bool(next_active))
         derisk_flags.append(bool(signal_quality_derisk_triggered))
-        execution_scales.append(float(applied_scale))
+        execution_scales.append(float(current_scale))
+        next_execution_scales.append(float(next_scale))
         signal_quality_scale_turnovers.append(float(signal_quality_scale_turnover))
         signal_quality_scale_costs.append(float(signal_quality_scale_cost))
         trade_ids.append(trade_id_for_row)
@@ -5743,13 +5744,14 @@ def apply_momentum_gap_peak_decay_derisk(
         total_costs.append(float(total_cost))
         return_nets.append(float(return_net))
         nav_nets.append(float(nav_net))
+        overlay_pre_cost_returns.append(float(realized_daily_return))
 
-        current_active = desired_next_active
-        if not current_active:
+        signal_quality_scale = float(next_scale)
+        if not base_next_active:
             current_trade_id = None
             trade_nav = 1.0
             gap_peak = None
-            active_scale = 1.0
+            signal_quality_scale = 0.0
             derisked_in_trade = False
             waiting_for_new_peak_after_recovery = False
             rearm_peak_level = None
@@ -5761,8 +5763,11 @@ def apply_momentum_gap_peak_decay_derisk(
     out["gap_decay_ratio"] = pd.Series(gap_decay_ratios, index=out.index, dtype=float)
     out["signal_quality_derisk_triggered"] = pd.Series(derisk_flags, index=out.index, dtype=bool)
     out["execution_scale"] = pd.Series(execution_scales, index=out.index, dtype=float)
+    out["signal_quality_execution_scale"] = pd.Series(execution_scales, index=out.index, dtype=float)
+    out["signal_quality_next_scale"] = pd.Series(next_execution_scales, index=out.index, dtype=float)
     out["signal_quality_scale_turnover"] = pd.Series(signal_quality_scale_turnovers, index=out.index, dtype=float)
     out["signal_quality_scale_cost"] = pd.Series(signal_quality_scale_costs, index=out.index, dtype=float)
+    out["signal_quality_derisk_enabled"] = bool(signal_quality_derisk_enabled)
     out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
     out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
     out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
@@ -5770,8 +5775,22 @@ def apply_momentum_gap_peak_decay_derisk(
     out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
     out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
     out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
-    ensure_overlay_pre_cost_return(out)
+    out["overlay_pre_cost_return"] = pd.Series(overlay_pre_cost_returns, index=out.index, dtype=float)
     return out
+
+
+def apply_momentum_gap_no_peak_decay_cost_model(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+) -> pd.DataFrame:
+    return apply_momentum_gap_peak_decay_derisk(
+        gross_result=gross_result,
+        turnover_df=turnover_df,
+        decay_ratio_threshold=0.0,
+        derisk_scale=1.0,
+        recovery_ratio_threshold=None,
+        signal_quality_derisk_enabled=False,
+    )
 
 
 def run_momentum_gap_peak_decay_derisk_scan(
@@ -9515,11 +9534,9 @@ def current_base_fingerprint() -> dict[str, object]:
         "base_proxy_turnover_sha1": _file_sha1(base_paths["proxy_turnover"]),
         "research_stack_version": base_mod.RESEARCH_STACK_VERSION,
         "embedded_cost_model": V2_BASE_COST_MODEL,
-        "overlay_type": "momentum_gap_peak_decay_derisk_new_peak_guard",
+        "overlay_type": "momentum_gap_buffer_no_peak_decay",
         "momentum_gap_exit_buffer": V2_0_MOMENTUM_GAP_EXIT_BUFFER,
-        "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
-        "derisk_scale": DERISK_SCALE,
-        "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
+        "signal_quality_derisk_enabled": False,
         "trading_days": TARGET_VOL_TRADING_DAYS,
         "overlay_pre_cost_return_field": True,
     }
@@ -9657,14 +9674,7 @@ def load_realtime_base() -> RealtimeBase:
 
 def build_realtime_overlay_base(realtime_base: RealtimeBase) -> pd.DataFrame:
     gross = base_mod.apply_momentum_gap_exit_buffer(realtime_base.base_gross, V2_0_MOMENTUM_GAP_EXIT_BUFFER)
-    out = base_mod.apply_momentum_gap_peak_decay_derisk(
-        gross_result=gross,
-        turnover_df=realtime_base.turnover_df,
-        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
-        derisk_scale=DERISK_SCALE,
-        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
-    )
-    return base_mod.ensure_overlay_pre_cost_return(out)
+    return base_mod.apply_momentum_gap_no_peak_decay_cost_model(gross, realtime_base.turnover_df)
 
 
 embedded_base_adapter = SimpleNamespace(
@@ -9673,6 +9683,7 @@ embedded_base_adapter = SimpleNamespace(
     DECAY_RATIO_THRESHOLD=DECAY_RATIO_THRESHOLD,
     DERISK_SCALE=DERISK_SCALE,
     RECOVERY_RATIO_THRESHOLD=RECOVERY_RATIO_THRESHOLD,
+    SIGNAL_QUALITY_DERISK_ENABLED=False,
     TARGET_VOL_TRADING_DAYS=TARGET_VOL_TRADING_DAYS,
     base_mod=base_mod,
     current_base_fingerprint=current_base_fingerprint,
@@ -10002,9 +10013,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "financing_rate": TARGET_VOL_FINANCING_RATE,
         "idle_cash_yield": IDLE_CASH_YIELD,
         "momentum_gap_exit_buffer": V2_0_MOMENTUM_GAP_EXIT_BUFFER,
-        "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
-        "derisk_scale": DERISK_SCALE,
-        "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
+        "signal_quality_derisk_enabled": False,
     }
 
 
@@ -10470,9 +10479,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     )
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
     latest_signal["momentum_gap_exit_buffer"] = V2_0_MOMENTUM_GAP_EXIT_BUFFER
-    latest_signal["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
-    latest_signal["derisk_scale"] = DERISK_SCALE
-    latest_signal["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
+    latest_signal["signal_quality_derisk_enabled"] = False
     latest_signal["version"] = "2.0"
     latest_signal["base_version"] = "embedded_v2_base"
     latest_signal["overlay_type"] = "target_volatility_scaling"
@@ -10635,13 +10642,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         base_gross,
         V2_0_MOMENTUM_GAP_EXIT_BUFFER,
     )
-    embedded_lineage_base = embedded_context.base_mod.apply_momentum_gap_peak_decay_derisk(
-        gross_result=gross,
-        turnover_df=turnover_df,
-        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
-        derisk_scale=DERISK_SCALE,
-        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
-    )
+    embedded_lineage_base = embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(gross, turnover_df)
     out = apply_target_vol_scaling(embedded_lineage_base)
     if COSTED_NAV_CSV.exists() and COSTED_NAV_CSV not in stale_outputs:
         previous = _read_costed_nav_csv(COSTED_NAV_CSV)
@@ -10672,6 +10673,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
         "Standalone target-volatility overlay matching repaired v1.6 behavior. Uses v2.0-specific 0.30% momentum-gap exit buffer, "
+        "no peak-decay signal-quality derisk, "
         "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, "
         "10bp leg-turnover scale-change cost, scaled embedded-lineage base trading cost, "
         "and 3% annual financing cost on exposure above 1.0x."
@@ -10680,13 +10682,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
     summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
     summary["core_params"]["momentum_gap_exit_buffer"] = V2_0_MOMENTUM_GAP_EXIT_BUFFER
-    summary["core_params"]["signal_quality_derisk"] = {
-        "type": "momentum_gap_peak_decay_derisk_new_peak_guard",
-        "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
-        "derisk_scale": DERISK_SCALE,
-        "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
-        "rearm_rule": "must set a new trade gap peak after recovery before a later derisk can trigger again",
-    }
+    summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
     summary["core_params"]["target_volatility_scaling"] = {
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
@@ -10802,7 +10798,7 @@ def _print_signal_query() -> None:
     print("strategy_version: v2.0")
     print("base_version: embedded_v2_base")
     print(
-        "overlay: target volatility "
+        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
         f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
     )
     print(f"current_holding: {row['current_holding']}")
@@ -10825,7 +10821,7 @@ def _print_realtime_signal_query() -> None:
     print("strategy_version: v2.0")
     print("base_version: embedded_v2_base")
     print(
-        "overlay: target volatility "
+        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
         f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
     )
     print(f"snapshot_time: {meta.get('snapshot_time')}")

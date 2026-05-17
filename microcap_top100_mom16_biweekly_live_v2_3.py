@@ -24,7 +24,10 @@ SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_decay35_recovery50_targetvol25_scale030_v2_3_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv"
+LEGACY_COSTED_NAV_CSVS = [
+    OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_decay35_recovery50_targetvol25_scale030_v2_3_costed_nav.csv"
+]
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
 PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
 PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
@@ -37,14 +40,11 @@ PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 VERSION = "2.3"
-EXPECTED_VERSION_ROLE = "spread_nav_log_wls_gap_peak_decay_target_vol_overlay"
+EXPECTED_VERSION_ROLE = "spread_nav_log_wls_gap_target_vol_overlay"
 EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS target-volatility overlay."
 LOOKBACK = 17
 HALFLIFE = 4.0
 MOMENTUM_GAP_EXIT_BUFFER = 0.13
-DECAY_RATIO_THRESHOLD = 0.35
-DERISK_SCALE = 0.0
-RECOVERY_RATIO_THRESHOLD = 0.50
 TARGET_VOL = 0.25
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.30
 FORMAL_START_DATE = pd.Timestamp("2010-05-05")
@@ -246,7 +246,7 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
         v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD = old_threshold_attr
     out["version"] = VERSION
     out["base_version"] = "embedded_v2_base"
-    out["overlay_type"] = "spread_nav_log_wls_gap_peak_decay_target_vol"
+    out["overlay_type"] = "spread_nav_log_wls_gap_target_vol"
     out["scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
     return out
 
@@ -262,14 +262,8 @@ def build_v2_3_result(
     common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
     gross = build_spread_log_wls_gross(close_df, common_index)
     buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
-    derisked = v2_0.base_mod.apply_momentum_gap_peak_decay_derisk(
-        buffered,
-        turnover_df,
-        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
-        derisk_scale=DERISK_SCALE,
-        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
-    )
-    return apply_target_vol(derisked, TARGET_VOL)
+    costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, turnover_df)
+    return apply_target_vol(costed, TARGET_VOL)
 
 
 def current_base_fingerprint() -> dict[str, object]:
@@ -289,9 +283,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "execution_hedge_ratio": EXECUTION_HEDGE_RATIO,
         "base_hedge_ratio": BASE_HEDGE_RATIO,
         "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
-        "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
-        "derisk_scale": DERISK_SCALE,
-        "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
+        "signal_quality_derisk_enabled": False,
         "target_vol": TARGET_VOL,
         "target_vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
         "target_vol_max_leverage": float(v2_0.overlay_mod.TARGET_VOL_MAX_LEVERAGE),
@@ -320,6 +312,7 @@ def incompatible_v2_3_outputs() -> list[Path]:
         REALTIME_SIGNAL_CSV,
         NAV_CSV,
         COSTED_NAV_CSV,
+        *LEGACY_COSTED_NAV_CSVS,
         PERF_SUMMARY_CSV,
         PERF_YEARLY_CSV,
         PERF_NAV_CSV,
@@ -434,16 +427,14 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
-    row["overlay_type"] = "spread_nav_log_wls_gap_peak_decay_target_vol"
+    row["overlay_type"] = "spread_nav_log_wls_gap_target_vol"
     row["signal_model"] = "spread_nav_log_wls_exp_halflife_4p0_lb17_signal1p0_exec0p8"
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     row["halflife"] = HALFLIFE
     row["lookback"] = LOOKBACK
     row["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
-    row["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
-    row["derisk_scale"] = DERISK_SCALE
-    row["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
+    row["signal_quality_derisk_enabled"] = False
     row["signal_score_label"] = "annualized_log_wls_score"
     row["momentum_gap_legacy_note"] = (
         "legacy field contains annualized spread-NAV log-WLS score, not plain microcap-minus-hedge momentum gap"
@@ -497,7 +488,7 @@ def generate_v2_3_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["version_note"] = (
         "Formal v2.3 spread-NAV log-WLS target-volatility overlay. Uses exp half-life 4.0 weighted log slope on "
         "17 trading days of always-on 1.0x hedged signal spread NAV, executes with 0.8x CSI1000 hedge, no R2 gate, "
-        "13% score exit buffer, peak-decay derisk with decay/recovery thresholds 0.35/0.50 and derisk scale 0.0, "
+        "13% score exit buffer, no peak-decay signal-quality derisk, "
         "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, 30% scale rebalance threshold, "
         "10bp leg-turnover scale-change cost, scaled embedded-lineage base "
         "trading cost, and 3% annual financing cost on exposure above 1.0x."
@@ -517,12 +508,7 @@ def generate_v2_3_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     }
     summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
     summary["core_params"]["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
-    summary["core_params"]["signal_quality_derisk"] = {
-        "type": "momentum_gap_peak_decay_derisk_new_peak_guard",
-        "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
-        "derisk_scale": DERISK_SCALE,
-        "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
-    }
+    summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
     summary["core_params"]["target_volatility_scaling"] = {
         "target_vol": TARGET_VOL,
         "vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
@@ -555,14 +541,8 @@ def build_realtime_v2_3_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     common_index = _valid_log_wls_index(close_df)
     gross = build_spread_log_wls_gross(close_df, common_index)
     buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
-    derisked = v2_0.base_mod.apply_momentum_gap_peak_decay_derisk(
-        buffered,
-        realtime_base.turnover_df,
-        decay_ratio_threshold=DECAY_RATIO_THRESHOLD,
-        derisk_scale=DERISK_SCALE,
-        recovery_ratio_threshold=RECOVERY_RATIO_THRESHOLD,
-    )
-    out = apply_target_vol(derisked, TARGET_VOL, treat_last_row_as_snapshot=True)
+    costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, realtime_base.turnover_df)
+    out = apply_target_vol(costed, TARGET_VOL, treat_last_row_as_snapshot=True)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     signal_row = v2_0.realtime_core.base_mod.augment_signal_with_member_rebalance(
         signal_row,
@@ -588,10 +568,7 @@ def _print_signal_query() -> None:
     print("strategy_version: v2.3")
     print("base_version: embedded_v2_base")
     print("signal_model: spread-NAV log-WLS exp half-life 4.0, lookback 17, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
-    print(
-        f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, peak-decay "
-        f"{DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, target volatility {TARGET_VOL:.0%}"
-    )
+    print(f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, no peak-decay derisk, target volatility {TARGET_VOL:.0%}")
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
     print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
@@ -614,10 +591,7 @@ def _print_realtime_signal_query() -> None:
     print("strategy_version: v2.3")
     print("base_version: embedded_v2_base")
     print("signal_model: spread-NAV log-WLS exp half-life 4.0, lookback 17, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
-    print(
-        f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, peak-decay "
-        f"{DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, target volatility {TARGET_VOL:.0%}"
-    )
+    print(f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, no peak-decay derisk, target volatility {TARGET_VOL:.0%}")
     print(f"snapshot_time: {meta.get('snapshot_time')}")
     print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
     print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
