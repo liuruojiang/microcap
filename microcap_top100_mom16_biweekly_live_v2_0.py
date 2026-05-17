@@ -7999,6 +7999,16 @@ def compute_member_realtime_return(
         return None
 
     quote_trade_date = quotes_df.at[code, "trade_date"] if "trade_date" in quotes_df.columns else ""
+    if str(quote_trade_date or "").strip():
+        quote_day = pd.to_datetime(quote_trade_date, errors="coerce")
+        if pd.notna(quote_day):
+            quote_day = pd.Timestamp(quote_day).normalize()
+            anchor_day = pd.Timestamp(latest_trade_date).normalize()
+            if quote_day < anchor_day:
+                return None
+            if quote_day == anchor_day:
+                return 0.0
+
     last_close = last_close_map.get(code)
     if isinstance(last_close, dict):
         close = pd.to_numeric(last_close.get("close"), errors="coerce")
@@ -8136,7 +8146,9 @@ def apply_realtime_close_to_signal_frame(
             raise ValueError(
                 f"quote_trade_date {quote_day.date()} earlier than anchor {latest_day.date()}; refusing overlay"
             )
-        target_ts = quote_day if latest_day < quote_day <= snapshot_day else latest_day
+        if not latest_day < quote_day <= snapshot_day:
+            return out.sort_index()
+        target_ts = quote_day
     else:
         target_ts = latest_day
 
