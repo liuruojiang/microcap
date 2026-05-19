@@ -9637,14 +9637,60 @@ def realtime_state_required() -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _cached_realtime_context_after_anchor_refresh_failure(
+    args: argparse.Namespace,
+    base_paths: dict[str, Path],
+    exc: RuntimeError,
+) -> tuple[Path, pd.Timestamp, dict[str, object]]:
+    panel_path = base_paths["panel_shadow"]
+    if not panel_path.exists():
+        raise RuntimeError(
+            "Realtime anchor refresh failed and no panel shadow cache is available for fallback."
+        ) from exc
+
+    candidate_dates = [
+        base_mod.read_csv_last_date(panel_path),
+        base_mod.read_csv_last_date(args.index_csv),
+        base_mod.read_csv_last_date(args.costed_nav_csv),
+    ]
+    candidate_dates = [pd.Timestamp(dt).normalize() for dt in candidate_dates if dt is not None]
+    if not candidate_dates:
+        raise RuntimeError(
+            "Realtime anchor refresh failed and cached outputs have no usable date for fallback."
+        ) from exc
+
+    target_end_date = min(candidate_dates)
+    reason = f"history anchor refresh failed: {exc}"
+    base_context = base_mod.build_realtime_context_from_cached_proxy(
+        args,
+        base_paths,
+        panel_path,
+        target_end_date,
+        reason,
+    )
+    if base_context is None:
+        raise RuntimeError(
+            "Realtime anchor refresh failed and cached proxy outputs are not reusable."
+        ) from exc
+    return panel_path, target_end_date, base_context
+
+
 def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, object]]:
     with _v2_base_build_lock():
         _ensure_base_outputs_unlocked()
         args = _build_base_args()
         base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
-        panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
+        fallback_context = None
+        try:
+            panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
+        except RuntimeError as exc:
+            panel_path, target_end_date, fallback_context = _cached_realtime_context_after_anchor_refresh_failure(
+                args,
+                base_paths,
+                exc,
+            )
         if realtime_state_required():
-            base_context = base_mod.build_realtime_context_from_cached_proxy(
+            base_context = fallback_context or base_mod.build_realtime_context_from_cached_proxy(
                 args,
                 base_paths,
                 panel_path,
@@ -9654,10 +9700,13 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
             if base_context is None:
                 raise RuntimeError("Validated realtime state is not reusable for production; refusing implicit proxy/cache rebuild.")
         else:
-            try:
-                base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
-            except (FileNotFoundError, ValueError):
-                base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+            if fallback_context is not None:
+                base_context = fallback_context
+            else:
+                try:
+                    base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
+                except (FileNotFoundError, ValueError):
+                    base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
