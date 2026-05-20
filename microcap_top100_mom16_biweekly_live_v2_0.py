@@ -9637,16 +9637,18 @@ def realtime_state_required() -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
-def _cached_realtime_context_after_anchor_refresh_failure(
+def _cached_realtime_context_from_existing_state(
     args: argparse.Namespace,
     base_paths: dict[str, Path],
-    exc: RuntimeError,
+    reason: str,
+    exc: RuntimeError | None = None,
 ) -> tuple[Path, pd.Timestamp, dict[str, object]]:
     panel_path = base_paths["panel_shadow"]
     if not panel_path.exists():
-        raise RuntimeError(
-            "Realtime anchor refresh failed and no panel shadow cache is available for fallback."
-        ) from exc
+        message = "No panel shadow cache is available for realtime state-only mode."
+        if exc is not None:
+            message = "Realtime anchor refresh failed and no panel shadow cache is available for fallback."
+        raise RuntimeError(message) from exc
 
     candidate_dates = [
         base_mod.read_csv_last_date(panel_path),
@@ -9655,12 +9657,12 @@ def _cached_realtime_context_after_anchor_refresh_failure(
     ]
     candidate_dates = [pd.Timestamp(dt).normalize() for dt in candidate_dates if dt is not None]
     if not candidate_dates:
-        raise RuntimeError(
-            "Realtime anchor refresh failed and cached outputs have no usable date for fallback."
-        ) from exc
+        message = "Cached outputs have no usable date for realtime state-only mode."
+        if exc is not None:
+            message = "Realtime anchor refresh failed and cached outputs have no usable date for fallback."
+        raise RuntimeError(message) from exc
 
     target_end_date = min(candidate_dates)
-    reason = f"history anchor refresh failed: {exc}"
     base_context = base_mod.build_realtime_context_from_cached_proxy(
         args,
         base_paths,
@@ -9669,10 +9671,24 @@ def _cached_realtime_context_after_anchor_refresh_failure(
         reason,
     )
     if base_context is None:
-        raise RuntimeError(
-            "Realtime anchor refresh failed and cached proxy outputs are not reusable."
-        ) from exc
+        message = "Validated realtime state is not reusable for production."
+        if exc is not None:
+            message = "Realtime anchor refresh failed and cached proxy outputs are not reusable."
+        raise RuntimeError(message) from exc
     return panel_path, target_end_date, base_context
+
+
+def _cached_realtime_context_after_anchor_refresh_failure(
+    args: argparse.Namespace,
+    base_paths: dict[str, Path],
+    exc: RuntimeError,
+) -> tuple[Path, pd.Timestamp, dict[str, object]]:
+    return _cached_realtime_context_from_existing_state(
+        args,
+        base_paths,
+        f"history anchor refresh failed: {exc}",
+        exc,
+    )
 
 
 def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, object]]:
@@ -9680,26 +9696,22 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
         _ensure_base_outputs_unlocked()
         args = _build_base_args()
         base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
-        fallback_context = None
-        try:
-            panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
-        except RuntimeError as exc:
-            panel_path, target_end_date, fallback_context = _cached_realtime_context_after_anchor_refresh_failure(
-                args,
-                base_paths,
-                exc,
-            )
         if realtime_state_required():
-            base_context = fallback_context or base_mod.build_realtime_context_from_cached_proxy(
+            panel_path, target_end_date, base_context = _cached_realtime_context_from_existing_state(
                 args,
                 base_paths,
-                panel_path,
-                target_end_date,
                 "production state-only mode avoids implicit cache rebuilds",
             )
-            if base_context is None:
-                raise RuntimeError("Validated realtime state is not reusable for production; refusing implicit proxy/cache rebuild.")
         else:
+            fallback_context = None
+            try:
+                panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
+            except RuntimeError as exc:
+                panel_path, target_end_date, fallback_context = _cached_realtime_context_after_anchor_refresh_failure(
+                    args,
+                    base_paths,
+                    exc,
+                )
             if fallback_context is not None:
                 base_context = fallback_context
             else:

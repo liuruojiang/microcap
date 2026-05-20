@@ -100,6 +100,39 @@ def ensure_base_outputs() -> None:
     base_mod.ensure_strategy_files(args, base_paths, resolved_panel_path, target_end_date)
 
 
+def cached_realtime_context_from_existing_state(
+    args: argparse.Namespace,
+    base_paths: dict[str, Path],
+    reason: str,
+) -> tuple[Path, pd.Timestamp, dict[str, object]]:
+    panel_path = base_paths["panel_shadow"]
+    if not panel_path.exists():
+        raise RuntimeError("No panel shadow cache is available for realtime state-only mode.")
+
+    candidate_dates = [
+        base_mod.read_csv_last_date(panel_path),
+        base_mod.read_csv_last_date(args.index_csv),
+        base_mod.read_csv_last_date(args.costed_nav_csv),
+    ]
+    candidate_dates = [pd.Timestamp(dt).normalize() for dt in candidate_dates if dt is not None]
+    if not candidate_dates:
+        raise RuntimeError("Cached outputs have no usable date for realtime state-only mode.")
+
+    target_end_date = min(candidate_dates)
+    base_context = base_mod.build_realtime_context_from_cached_proxy(
+        args,
+        base_paths,
+        panel_path,
+        target_end_date,
+        reason,
+    )
+    if base_context is None:
+        raise RuntimeError(
+            "Validated realtime state is not reusable for production; refusing implicit proxy/cache rebuild."
+        )
+    return panel_path, target_end_date, base_context
+
+
 def load_reference_summary() -> dict[str, object]:
     if BASE_SUMMARY_JSON.exists():
         try:
@@ -117,20 +150,14 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
     ensure_base_outputs()
     args = build_v1_1_args()
     base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
-    panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
     if realtime_state_required():
-        base_context = base_mod.build_realtime_context_from_cached_proxy(
+        panel_path, target_end_date, base_context = cached_realtime_context_from_existing_state(
             args,
             base_paths,
-            panel_path,
-            target_end_date,
             "production state-only mode avoids implicit GitHub runner cache rebuilds",
         )
-        if base_context is None:
-            raise RuntimeError(
-                "Validated realtime state is not reusable for production; refusing implicit proxy/cache rebuild."
-            )
     else:
+        panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
         try:
             base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
         except (FileNotFoundError, ValueError):
