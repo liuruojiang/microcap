@@ -9637,6 +9637,29 @@ def realtime_state_required() -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _refresh_realtime_state_for_local_query() -> None:
+    from scripts import realtime_state_bundle
+
+    report = realtime_state_bundle.refresh_state(ROOT, max_workers=8)
+    if not report.get("ok"):
+        errors = "; ".join(str(item) for item in report.get("errors", []))
+        raise RuntimeError(f"Realtime state refresh failed before local signal query: {errors}")
+
+
+def run_realtime_query_with_fresh_state(action):
+    previous = os.environ.get("TOP100_REALTIME_REQUIRE_STATE")
+    if not realtime_state_required():
+        _refresh_realtime_state_for_local_query()
+    os.environ["TOP100_REALTIME_REQUIRE_STATE"] = "1"
+    try:
+        return action()
+    finally:
+        if previous is None:
+            os.environ.pop("TOP100_REALTIME_REQUIRE_STATE", None)
+        else:
+            os.environ["TOP100_REALTIME_REQUIRE_STATE"] = previous
+
+
 def _cached_realtime_context_from_existing_state(
     args: argparse.Namespace,
     base_paths: dict[str, Path],
@@ -10876,33 +10899,36 @@ def _print_signal_query() -> None:
 
 
 def _print_realtime_signal_query() -> None:
-    signal_df, meta, _ = build_realtime_v2_0_outputs()
-    row = signal_df.iloc[0]
-    print("realtime_signal")
-    print("strategy_version: v2.0")
-    print("base_version: embedded_v2_base")
-    print(
-        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
-        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
-    )
-    print(f"snapshot_time: {meta.get('snapshot_time')}")
-    print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
-    print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
-    print(f"current_holding: {row['current_holding']}")
-    print(f"next_holding: {row['next_holding']}")
-    print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
-    print(f"holding_trade_state: {row.get('holding_trade_state', row.get('momentum_trade_state', 'hold'))}")
-    print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
-    print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
-    _print_scale_fields(row, include_frozen=True)
-    print("official_close_confirmed_signal: False")
-    print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
-    print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
-    print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
-    print(f"quote_source: {meta.get('quote_source')}")
-    print(f"hedge_quote_source: {meta.get('hedge_quote_source')}")
-    print(f"quote_coverage: {meta.get('member_price_count')}/{meta.get('member_count')}")
-    print(REALTIME_SIGNAL_CSV)
+    def emit() -> None:
+        signal_df, meta, _ = build_realtime_v2_0_outputs()
+        row = signal_df.iloc[0]
+        print("realtime_signal")
+        print("strategy_version: v2.0")
+        print("base_version: embedded_v2_base")
+        print(
+            f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
+            f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+        )
+        print(f"snapshot_time: {meta.get('snapshot_time')}")
+        print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
+        print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
+        print(f"current_holding: {row['current_holding']}")
+        print(f"next_holding: {row['next_holding']}")
+        print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
+        print(f"holding_trade_state: {row.get('holding_trade_state', row.get('momentum_trade_state', 'hold'))}")
+        print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
+        print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
+        _print_scale_fields(row, include_frozen=True)
+        print("official_close_confirmed_signal: False")
+        print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
+        print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
+        print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
+        print(f"quote_source: {meta.get('quote_source')}")
+        print(f"hedge_quote_source: {meta.get('hedge_quote_source')}")
+        print(f"quote_coverage: {meta.get('member_price_count')}/{meta.get('member_count')}")
+        print(REALTIME_SIGNAL_CSV)
+
+    run_realtime_query_with_fresh_state(emit)
 
 
 def _print_performance_query(query: str) -> None:

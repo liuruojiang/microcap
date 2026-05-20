@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 import sys
+import os
 from contextlib import nullcontext
 from types import SimpleNamespace
 
@@ -191,6 +192,34 @@ def test_v2_state_only_realtime_context_does_not_refresh_anchor(tmp_path, monkey
     assert context["latest_rebalance"] == pd.Timestamp("2026-05-15")
     assert turnover_df["rebalance_date"].iloc[0] == pd.Timestamp("2026-05-15")
     assert reference_summary == {"source": "test"}
+
+
+def test_local_realtime_query_refreshes_then_runs_state_only(monkeypatch):
+    calls = []
+    seen = {}
+    monkeypatch.delenv("TOP100_REALTIME_REQUIRE_STATE", raising=False)
+    monkeypatch.setattr(live_v20, "_refresh_realtime_state_for_local_query", lambda: calls.append(os.environ.get("TOP100_REALTIME_REQUIRE_STATE")))
+
+    def action():
+        seen["during"] = os.environ.get("TOP100_REALTIME_REQUIRE_STATE")
+        return "ok"
+
+    assert live_v20.run_realtime_query_with_fresh_state(action) == "ok"
+    assert calls == [None]
+    assert seen["during"] == "1"
+    assert os.environ.get("TOP100_REALTIME_REQUIRE_STATE") is None
+
+
+def test_local_realtime_query_respects_existing_state_only_env(monkeypatch):
+    monkeypatch.setenv("TOP100_REALTIME_REQUIRE_STATE", "1")
+    monkeypatch.setattr(
+        live_v20,
+        "_refresh_realtime_state_for_local_query",
+        lambda: (_ for _ in ()).throw(AssertionError("should not refresh when state-only env is already set")),
+    )
+
+    assert live_v20.run_realtime_query_with_fresh_state(lambda: os.environ.get("TOP100_REALTIME_REQUIRE_STATE")) == "1"
+    assert os.environ.get("TOP100_REALTIME_REQUIRE_STATE") == "1"
 
 
 def test_refresh_state_rejects_fresh_run_when_anchor_lags_target(tmp_path, monkeypatch):
