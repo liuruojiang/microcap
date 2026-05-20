@@ -1,10 +1,12 @@
 import pandas as pd
 import pytest
+import sys
 from contextlib import nullcontext
 from types import SimpleNamespace
 
 import microcap_top100_mom16_biweekly_live as live
 import microcap_top100_mom16_biweekly_live_v2_0 as live_v20
+from scripts import realtime_state_bundle
 
 REALTIME_MODULES = [live, live_v20.realtime_core.base_mod]
 
@@ -129,3 +131,45 @@ def test_v2_realtime_context_uses_cached_proxy_when_anchor_refresh_fails(tmp_pat
     assert context["latest_rebalance"] == pd.Timestamp("2026-05-15")
     assert turnover_df["rebalance_date"].iloc[0] == pd.Timestamp("2026-05-15")
     assert reference_summary == {"source": "test"}
+
+
+def test_refresh_state_rejects_fresh_run_when_anchor_lags_target(tmp_path, monkeypatch):
+    root = tmp_path
+    for rel in realtime_state_bundle.REQUIRED_FILES:
+        path = root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if rel.endswith(".json"):
+            path.write_text("{}", encoding="utf-8")
+        elif rel.endswith("proxy_turnover.csv"):
+            path.write_text("rebalance_date\n2026-05-15\n", encoding="utf-8")
+        else:
+            path.write_text("date\n2026-05-15\n", encoding="utf-8")
+
+    def ensure_static_realtime_inputs(force_refresh=False):
+        return None
+
+    fake_runner = SimpleNamespace(ensure_static_realtime_inputs=ensure_static_realtime_inputs)
+
+    def build_v1_1_args(max_workers=8):
+        return SimpleNamespace(max_workers=max_workers)
+
+    fake_base_mod = SimpleNamespace(
+        DEFAULT_OUTPUT_PREFIX="microcap_top100_mom16_biweekly_live_v1_1",
+        build_output_paths=lambda _prefix: {},
+        build_refreshed_panel_shadow=lambda _args, _paths: (root / "panel.csv", pd.Timestamp("2026-05-19")),
+        ensure_strategy_files=lambda _args, _paths, _panel_path, _target_end_ts: None,
+        ensure_realtime_query_base_context=lambda _args, _paths, _panel_path, _target_end_ts: {"ok": True},
+        ensure_static_members_fresh=lambda _args, _paths, _panel_path, _target_end_ts, _base_context: None,
+    )
+    fake_v1_1_mod = SimpleNamespace(prepare_current_v1_1_outputs=lambda paths, costed_nav_csv: None)
+    fake_core = SimpleNamespace(
+        build_v1_1_args=build_v1_1_args,
+        base_mod=fake_base_mod,
+        v1_1_mod=fake_v1_1_mod,
+        BASE_COSTED_NAV_CSV=root / "base_nav.csv",
+    )
+    monkeypatch.setitem(sys.modules, "run_top100_v1_6_v1_8_realtime_signals", fake_runner)
+    monkeypatch.setitem(sys.modules, "top100_realtime_core", fake_core)
+
+    with pytest.raises(RuntimeError, match="older than refresh target"):
+        realtime_state_bundle.refresh_state(root)

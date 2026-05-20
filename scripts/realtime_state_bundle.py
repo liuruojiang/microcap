@@ -274,6 +274,20 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
     }
 
 
+def enforce_anchor_target(report: dict[str, object], target_end_date: date) -> dict[str, object]:
+    anchor_dates = report.get("anchor_dates", {})
+    if isinstance(anchor_dates, dict):
+        for name in ("proxy_index", "costed_nav"):
+            anchor_date = _parse_date(str(anchor_dates.get(name) or ""))
+            if anchor_date is None or anchor_date < target_end_date:
+                report.setdefault("errors", []).append(
+                    f"{name} is older than refresh target: "
+                    f"last_date={anchor_dates.get(name)} target_end_date={target_end_date.isoformat()}"
+                )
+    report["ok"] = not report.get("errors")
+    return report
+
+
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dict[str, object]:
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
     if not report["ok"]:
@@ -343,21 +357,18 @@ def refresh_state(
         report["target_end_date"] = target_end_date.isoformat()
         report["panel_path"] = str(panel_path)
         report["refresh_source"] = "fresh"
+        enforce_anchor_target(report, target_end_date)
+        if not report["ok"]:
+            raise RuntimeError(
+                "state refresh completed but produced stale anchors: "
+                + "; ".join(str(error) for error in report.get("errors", []))
+            )
         return report
     except Exception as exc:
         report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
         if target_end_date is not None:
             report["target_end_date"] = target_end_date.isoformat()
-            anchor_dates = report.get("anchor_dates", {})
-            if isinstance(anchor_dates, dict):
-                for name in ("proxy_index", "costed_nav"):
-                    anchor_date = _parse_date(str(anchor_dates.get(name) or ""))
-                    if anchor_date is None or anchor_date < target_end_date:
-                        report.setdefault("errors", []).append(
-                            f"{name} is older than refresh target: "
-                            f"last_date={anchor_dates.get(name)} target_end_date={target_end_date.isoformat()}"
-                        )
-            report["ok"] = not report.get("errors")
+            enforce_anchor_target(report, target_end_date)
         report["refresh_source"] = "existing_validated_state"
         report["refresh_warning"] = f"state refresh failed; reused existing validated state: {exc}"
         if not report["ok"]:
