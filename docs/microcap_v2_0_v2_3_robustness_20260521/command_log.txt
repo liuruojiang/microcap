@@ -1,0 +1,29 @@
+init_quant_param_scan_run.py
+run_id=20260521_microcap_top100_v2_0_v2_3_signal_targetvol_overlay_lookback_halflife_gap_targetvol_scale_hedge
+project=microcap Top100
+strategy=v2.0_v2.3
+subsystem=signal_targetvol_overlay
+parameter_group=lookback_halflife_gap_targetvol_scale_hedge
+repo=C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\动量策略\微盘股对冲策略
+
+# robustness scan
+python run_v20_v23_robustness_scan.py
+
+# robustness scan
+python run_v20_v23_robustness_scan.py
+
+# postprocess after completed scan body
+python inline: rebuild window_metrics/sensitivity/stability/meta from scan_summary.csv
+
+finalize_quant_param_scan_run.py
+finalized_at=2026-05-21T11:26:29+08:00
+decision=research_only_no_source_promotion; v2.3 shows better drawdown robustness, v2.0 has higher return but materially higher drawdown sensitivity
+stability_label=mixed_v23_risk_stable_v20_drawdown_sensitive
+
+# add v2.0 official default candidate
+python inline: append v2_0 official default and rebuild derived CSVs
+
+finalize_quant_param_scan_run.py
+finalized_at=2026-05-21T11:28:11+08:00
+decision=research_only_no_source_promotion; v2.3 shows better drawdown robustness, v2.0 has higher return but materially higher drawdown sensitivity
+stability_label=mixed_v23_risk_stable_v20_drawdown_sensitive

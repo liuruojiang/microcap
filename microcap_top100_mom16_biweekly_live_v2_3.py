@@ -1,5 +1,6 @@
 ﻿from __future__ import annotations
 
+import argparse
 import json
 import math
 import sys
@@ -20,11 +21,13 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_3"
+DEFAULT_OUTPUT_PREFIX = OUTPUT_PREFIX
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
 COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv"
+DEFAULT_COSTED_NAV_CSV = COSTED_NAV_CSV
 LEGACY_COSTED_NAV_CSVS = [
     OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_decay35_recovery50_targetvol25_scale030_v2_3_costed_nav.csv"
 ]
@@ -53,6 +56,91 @@ SIGNAL_SPREAD_HEDGE_RATIO = 1.0
 EXECUTION_HEDGE_RATIO = float(v2_0.BASE_HEDGE_RATIO)
 BASE_HEDGE_RATIO = EXECUTION_HEDGE_RATIO
 TRADING_DAYS = int(v2_0.overlay_mod.TARGET_VOL_TRADING_DAYS)
+
+
+def parse_v2_3_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Top100 Mom16 Biweekly v2.3 spread-NAV log-WLS target-vol overlay"
+    )
+    parser.add_argument("query_tokens", nargs="*", help="信号 / 实时信号 / 表现 <区间>")
+    parser.add_argument("--panel-path", type=Path, default=None)
+    parser.add_argument("--index-csv", type=Path, default=None)
+    parser.add_argument("--v23-costed-nav-csv", "--costed-nav-csv", dest="v23_costed_nav_csv", type=Path, default=None)
+    parser.add_argument("--base-costed-nav-csv", type=Path, default=None)
+    parser.add_argument("--capital", type=float, default=None)
+    parser.add_argument("--max-workers", type=int, default=8)
+    parser.add_argument("--realtime-cache-seconds", type=int, default=30)
+    parser.add_argument("--allow-stale-realtime", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--bootstrap-deps", action="store_true")
+    parser.add_argument("--wheelhouse", type=Path, default=None)
+    parser.add_argument("--v23-output-prefix", "--output-prefix", dest="v23_output_prefix", default=None)
+    parser.add_argument("--base-output-prefix", default=None)
+    return parser.parse_args(argv)
+
+
+def configure_output_paths(output_prefix: str | None = None, costed_nav_csv: Path | None = None) -> None:
+    global OUTPUT_PREFIX
+    global SUMMARY_JSON, LATEST_SIGNAL_CSV, REALTIME_SIGNAL_CSV, NAV_CSV, COSTED_NAV_CSV
+    global PERF_SUMMARY_CSV, PERF_YEARLY_CSV, PERF_NAV_CSV, PERF_JSON, PERF_PNG
+    global PERF_QUERY_SUMMARY_CSV, PERF_QUERY_YEARLY_CSV, PERF_QUERY_NAV_CSV, PERF_QUERY_JSON, PERF_QUERY_PNG
+
+    OUTPUT_PREFIX = str(output_prefix or DEFAULT_OUTPUT_PREFIX)
+    SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
+    LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
+    REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
+    NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
+    if costed_nav_csv is not None:
+        COSTED_NAV_CSV = Path(costed_nav_csv)
+    elif OUTPUT_PREFIX == DEFAULT_OUTPUT_PREFIX:
+        COSTED_NAV_CSV = DEFAULT_COSTED_NAV_CSV
+    else:
+        COSTED_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_costed_nav.csv"
+    PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
+    PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
+    PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
+    PERF_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.json"
+    PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
+    PERF_QUERY_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.csv"
+    PERF_QUERY_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_yearly.csv"
+    PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
+    PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
+    PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
+
+
+def configure_runtime(args: argparse.Namespace) -> None:
+    configure_output_paths(
+        output_prefix=getattr(args, "v23_output_prefix", None),
+        costed_nav_csv=getattr(args, "v23_costed_nav_csv", None),
+    )
+    v2_0._V2_RUNTIME_ARGS = argparse.Namespace(
+        query_tokens=[],
+        panel_path=getattr(args, "panel_path", None),
+        index_csv=getattr(args, "index_csv", None),
+        costed_nav_csv=getattr(args, "base_costed_nav_csv", None),
+        output_prefix=getattr(args, "base_output_prefix", None),
+        capital=getattr(args, "capital", None),
+        max_workers=getattr(args, "max_workers", 8),
+        realtime_cache_seconds=getattr(args, "realtime_cache_seconds", 30),
+        allow_stale_realtime=getattr(args, "allow_stale_realtime", False),
+        bootstrap_deps=getattr(args, "bootstrap_deps", False),
+        wheelhouse=getattr(args, "wheelhouse", None),
+    )
+
+
+def v2_3_output_lock(wait_timeout_seconds: float = 900.0, stale_lock_seconds: float = 7200.0):
+    return v2_0._v2_file_lock(
+        f"{OUTPUT_PREFIX}_generation.lock",
+        wait_timeout_seconds=wait_timeout_seconds,
+        stale_lock_seconds=stale_lock_seconds,
+    )
+
+
+def v2_3_realtime_output_lock(wait_timeout_seconds: float = 60.0, stale_lock_seconds: float = 300.0):
+    return v2_0._v2_file_lock(
+        f"{OUTPUT_PREFIX}_realtime.lock",
+        wait_timeout_seconds=wait_timeout_seconds,
+        stale_lock_seconds=stale_lock_seconds,
+    )
 
 
 def _json_sanitize(value: object) -> object:
@@ -87,12 +175,23 @@ def _atomic_temp_path(path: Path) -> Path:
     return path.with_suffix(path.suffix + f".tmp.{time.time_ns()}")
 
 
+def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05) -> None:
+    for attempt in range(int(attempts)):
+        try:
+            tmp.replace(path)
+            return
+        except OSError:
+            if attempt >= int(attempts) - 1:
+                raise
+            time.sleep(float(delay_seconds) * (2**attempt))
+
+
 def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = _atomic_temp_path(path)
     try:
         tmp.write_text(text, encoding=encoding)
-        tmp.replace(path)
+        _replace_with_retry(tmp, path)
     finally:
         try:
             if tmp.exists():
@@ -106,7 +205,7 @@ def _atomic_write_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None
     tmp = _atomic_temp_path(path)
     try:
         frame.to_csv(tmp, **kwargs)
-        tmp.replace(path)
+        _replace_with_retry(tmp, path)
     finally:
         try:
             if tmp.exists():
@@ -172,6 +271,17 @@ def _valid_log_wls_index(close_df: pd.DataFrame) -> pd.DatetimeIndex:
     return pd.DatetimeIndex(log_wls.index[valid])
 
 
+def build_v2_3_common_index(
+    close_df: pd.DataFrame,
+    official_index: pd.DatetimeIndex | pd.Index | None = None,
+) -> pd.DatetimeIndex:
+    idx = pd.DatetimeIndex(_valid_log_wls_index(close_df))
+    if official_index is not None:
+        idx = pd.DatetimeIndex(idx.intersection(pd.DatetimeIndex(official_index)))
+    idx = pd.DatetimeIndex(idx)
+    return idx[idx >= FORMAL_START_DATE].sort_values()
+
+
 def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
     close_df = close_df.sort_index()
     spread_nav, micro_ret, hedge_ret, _signal_daily_drag = always_on_spread_nav(close_df)
@@ -228,22 +338,12 @@ def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, *, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
-    globals_dict = v2_0.overlay_mod.apply_target_vol_scaling.__globals__
-    old_target_global = globals_dict.get("TARGET_VOL")
-    old_target_attr = v2_0.overlay_mod.TARGET_VOL
-    old_threshold_global = globals_dict.get("TARGET_VOL_SCALE_REBALANCE_THRESHOLD")
-    old_threshold_attr = v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD
-    try:
-        globals_dict["TARGET_VOL"] = float(target_vol)
-        v2_0.overlay_mod.TARGET_VOL = float(target_vol)
-        globals_dict["TARGET_VOL_SCALE_REBALANCE_THRESHOLD"] = float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD)
-        v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD = float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD)
-        out = v2_0.overlay_mod.apply_target_vol_scaling(costed_base, treat_last_row_as_snapshot=treat_last_row_as_snapshot)
-    finally:
-        globals_dict["TARGET_VOL"] = old_target_global
-        v2_0.overlay_mod.TARGET_VOL = old_target_attr
-        globals_dict["TARGET_VOL_SCALE_REBALANCE_THRESHOLD"] = old_threshold_global
-        v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD = old_threshold_attr
+    out = v2_0.overlay_mod.apply_target_vol_scaling(
+        costed_base,
+        treat_last_row_as_snapshot=treat_last_row_as_snapshot,
+        target_vol=float(target_vol),
+        scale_rebalance_threshold=float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD),
+    )
     out["version"] = VERSION
     out["base_version"] = "embedded_v2_base"
     out["overlay_type"] = "spread_nav_log_wls_gap_target_vol"
@@ -257,13 +357,20 @@ def build_v2_3_result(
     common_index: pd.DatetimeIndex | None = None,
 ) -> pd.DataFrame:
     if common_index is None:
-        common_index = _valid_log_wls_index(close_df)
-    common_index = pd.DatetimeIndex(common_index)
-    common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
+        common_index = build_v2_3_common_index(close_df)
+    else:
+        common_index = pd.DatetimeIndex(common_index)
+        common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
     gross = build_spread_log_wls_gross(close_df, common_index)
     buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
     costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, turnover_df)
-    return apply_target_vol(costed, TARGET_VOL)
+    out = apply_target_vol(costed, TARGET_VOL)
+    if out.empty:
+        raise ValueError(
+            "v2.3 output is empty: check close_df, official_v2_0_out.index, "
+            "FORMAL_START_DATE, and valid log-WLS window."
+        )
+    return out
 
 
 def current_base_fingerprint() -> dict[str, object]:
@@ -454,21 +561,35 @@ def _close_df_from_base(base_gross_cached: pd.DataFrame) -> pd.DataFrame:
     ).sort_index()
 
 
-def generate_v2_3_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+V2_3_REWRITE_AUDIT_KEY_COLUMNS = [
+    "return_net",
+    "holding",
+    "next_holding",
+    "base_pre_cost_return",
+    "current_execution_scale",
+    "next_session_actionable_scale",
+    "target_vol_realized_vol",
+    "base_trade_cost_scaled",
+    "scale_change_cost",
+    "financing_cost",
+    "annualized_log_wls_score",
+]
+
+
+def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     _, _, official_v2_0_out = v2_0.generate_v2_0_outputs()
     reference_summary, base_gross_cached, turnover_df = v2_0.embedded_context._load_embedded_base_context()
     stale_outputs = incompatible_v2_3_outputs()
     close_df = _close_df_from_base(base_gross_cached)
-    common_index = pd.DatetimeIndex(_valid_log_wls_index(close_df).intersection(official_v2_0_out.index)).sort_values()
-    common_index = common_index[common_index >= FORMAL_START_DATE]
+    common_index = build_v2_3_common_index(close_df, official_v2_0_out.index)
     out = build_v2_3_result(close_df, turnover_df, common_index)
     if COSTED_NAV_CSV.exists() and COSTED_NAV_CSV not in stale_outputs:
         previous = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"])
         v2_0.base_mod.assert_no_historical_rewrite(
             previous=previous,
             candidate=out.rename_axis("date").reset_index(),
-            key_columns=["return_net", "holding", "next_holding", "base_pre_cost_return"],
+            key_columns=V2_3_REWRITE_AUDIT_KEY_COLUMNS,
             allowed_tail_rows=max(LOOKBACK + 20, 40),
             label="v2.3 official costed NAV",
             audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
@@ -534,15 +655,24 @@ def generate_v2_3_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     return summary, signal_row, out
 
 
-def build_realtime_v2_3_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+def generate_v2_3_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+    with v2_3_output_lock():
+        return _generate_v2_3_outputs_unlocked()
+
+
+def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
     realtime_base = v2_0.realtime_core.load_realtime_base()
     close_df = realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index()
-    common_index = _valid_log_wls_index(close_df)
+    _, _, official_v2_0_out = v2_0.generate_v2_0_outputs()
+    official_index = pd.DatetimeIndex(official_v2_0_out.index).union(pd.DatetimeIndex([close_df.index[-1]]))
+    common_index = build_v2_3_common_index(close_df, official_index)
     gross = build_spread_log_wls_gross(close_df, common_index)
     buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
     costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, realtime_base.turnover_df)
-    out = apply_target_vol(costed, TARGET_VOL, treat_last_row_as_snapshot=True)
+    is_snapshot = bool(realtime_base.meta.get("snapshot_row_appended", False))
+    signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
+    out = apply_target_vol(costed, TARGET_VOL, treat_last_row_as_snapshot=is_snapshot)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     signal_row = v2_0.realtime_core.base_mod.augment_signal_with_member_rebalance(
         signal_row,
@@ -550,11 +680,16 @@ def build_realtime_v2_3_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     )
     v2_0.overlay_mod._apply_realtime_meta_columns_to_signal_row(signal_row, realtime_base.meta)
     signal_row["quote_coverage"] = f"{realtime_base.meta.get('member_price_count', 0)}/{realtime_base.meta.get('member_count', 0)}"
-    signal_row["target_vol_signal_timing"] = "intraday_hypothetical_if_now_close"
-    signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"
-    signal_row["official_close_confirmed_signal"] = False
+    signal_row["target_vol_signal_timing"] = signal_timing
+    signal_row["signal_timing"] = signal_timing
+    signal_row["official_close_confirmed_signal"] = not is_snapshot
     _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
     return signal_row, realtime_base.meta, out
+
+
+def build_realtime_v2_3_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+    with v2_3_realtime_output_lock():
+        return _build_realtime_v2_3_outputs_unlocked()
 
 
 def _print_scale_fields(row: pd.Series, include_frozen: bool = False) -> None:
@@ -601,9 +736,10 @@ def _print_realtime_signal_query() -> None:
         print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
         print(f"holding_trade_state: {row.get('holding_trade_state', row.get('momentum_trade_state', 'hold'))}")
         print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
-        print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
+        print(f"target_vol_signal_timing: {row.get('target_vol_signal_timing', row.get('signal_timing', ''))}")
         _print_scale_fields(row, include_frozen=True)
-        print("official_close_confirmed_signal: False")
+        print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', False)}")
+        print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
         print(f"annualized_log_wls_score: {float(row.get('annualized_log_wls_score', row.get('momentum_gap', 0.0))):+.4%}")
         print(f"log_wls_r2: {float(row.get('log_wls_r2', 0.0)):.4f}")
         print("momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap")
@@ -621,20 +757,21 @@ def _print_performance_query(query: str) -> None:
     old_title = v2_0.embedded_context.base_mod.STRATEGY_TITLE
     v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.3"
     try:
-        v2_0.embedded_context.base_mod.build_performance_outputs(
-            perf_df=perf_df,
-            ret_col="return_net",
-            nav_col="nav_net",
-            source_label="costed_v2_3",
-            query_text=query,
-            paths={
-                "performance_summary": PERF_QUERY_SUMMARY_CSV,
-                "performance_yearly": PERF_QUERY_YEARLY_CSV,
-                "performance_nav": PERF_QUERY_NAV_CSV,
-                "performance_chart": PERF_QUERY_PNG,
-                "performance_json": PERF_QUERY_JSON,
-            },
-        )
+        with v2_3_output_lock():
+            v2_0.embedded_context.base_mod.build_performance_outputs(
+                perf_df=perf_df,
+                ret_col="return_net",
+                nav_col="nav_net",
+                source_label="costed_v2_3",
+                query_text=query,
+                paths={
+                    "performance_summary": PERF_QUERY_SUMMARY_CSV,
+                    "performance_yearly": PERF_QUERY_YEARLY_CSV,
+                    "performance_nav": PERF_QUERY_NAV_CSV,
+                    "performance_chart": PERF_QUERY_PNG,
+                    "performance_json": PERF_QUERY_JSON,
+                },
+            )
     finally:
         v2_0.embedded_context.base_mod.STRATEGY_TITLE = old_title
     print(PERF_QUERY_PNG)
@@ -658,8 +795,10 @@ def _handle_query(query: str) -> None:
     raise ValueError("v2.3 supports: 信号 / 实时信号 / 表现 <区间>")
 
 
-def main() -> None:
-    query = " ".join(sys.argv[1:]).strip()
+def main(argv: list[str] | None = None) -> None:
+    args = parse_v2_3_args(sys.argv[1:] if argv is None else argv)
+    configure_runtime(args)
+    query = " ".join(args.query_tokens).strip()
     if query:
         _handle_query(query)
         return

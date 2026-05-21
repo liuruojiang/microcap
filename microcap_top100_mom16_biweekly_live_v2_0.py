@@ -55,12 +55,14 @@ def parse_v2_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("query_tokens", nargs="*", help="信号 / 实时信号 / 表现 <区间>")
     parser.add_argument("--panel-path", type=Path, default=None)
     parser.add_argument("--index-csv", type=Path, default=None)
+    parser.add_argument("--costed-nav-csv", type=Path, default=None)
     parser.add_argument("--capital", type=float, default=None)
     parser.add_argument("--max-workers", type=int, default=8)
     parser.add_argument("--realtime-cache-seconds", type=int, default=30)
     parser.add_argument("--allow-stale-realtime", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--bootstrap-deps", action="store_true")
     parser.add_argument("--wheelhouse", type=Path, default=None)
+    parser.add_argument("--output-prefix", default=None)
     return parser.parse_args(argv)
 
 
@@ -8383,6 +8385,23 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
     return latest_rt_signal, meta
 
 
+def realtime_snapshot_row_appended(
+    latest_anchor_trade_date: object,
+    quote_trade_date: object,
+    snapshot_time: object,
+) -> bool:
+    try:
+        quote_text = str(quote_trade_date or "").strip()
+        if not quote_text:
+            return False
+        latest_day = pd.Timestamp(latest_anchor_trade_date).date()
+        quote_day = pd.Timestamp(quote_text).date()
+        snapshot_day = pd.Timestamp(snapshot_time).date()
+    except Exception:
+        return False
+    return bool(latest_day < quote_day <= snapshot_day)
+
+
 def build_realtime_signal_fast(
     context: dict[str, object],
 ) -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame, pd.DataFrame]:
@@ -8469,6 +8488,11 @@ def build_realtime_signal_fast(
     snapshot_ts = _cn_timestamp()
     quote_stats = extract_member_quote_trade_date_stats(quotes_df, member_symbols, latest_trade_date)
     quote_trade_date = str(quote_stats["member_quote_trade_date_max"])
+    snapshot_row_appended = realtime_snapshot_row_appended(
+        latest_anchor_trade_date=latest_trade_date,
+        quote_trade_date=quote_trade_date,
+        snapshot_time=snapshot_ts,
+    )
     rt_close_df = apply_realtime_close_to_signal_frame(
         close_df=close_df,
         latest_trade_date=latest_trade_date,
@@ -8495,6 +8519,7 @@ def build_realtime_signal_fast(
     signal_df["member_quote_bad_symbols"] = json.dumps(quote_stats["member_quote_bad_symbols"], ensure_ascii=False)
     signal_df["member_quote_flat_fallback_count"] = flat_fallback_count
     signal_df["hedge_quote_trade_date"] = hedge_quote_trade_date
+    signal_df["snapshot_row_appended"] = snapshot_row_appended
     if quote_trade_date:
         signal_df["quote_trade_date"] = quote_trade_date
     signal_df["tail_jitter_risk"] = jitter_level
@@ -8516,6 +8541,7 @@ def build_realtime_signal_fast(
         **quote_stats,
         "member_quote_flat_fallback_count": flat_fallback_count,
         "hedge_quote_trade_date": hedge_quote_trade_date,
+        "snapshot_row_appended": snapshot_row_appended,
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
@@ -9382,15 +9408,19 @@ def _build_base_args(
         allow_stale_realtime = bool(getattr(runtime_args, "allow_stale_realtime", allow_stale_realtime))
         panel_path = getattr(runtime_args, "panel_path", None) or base_mod.hedge_mod.DEFAULT_PANEL
         index_csv = getattr(runtime_args, "index_csv", None) or base_mod.DEFAULT_INDEX_CSV
+        costed_nav_csv = getattr(runtime_args, "costed_nav_csv", None) or base_mod.DEFAULT_COSTED_NAV_CSV
+        output_prefix = getattr(runtime_args, "output_prefix", None) or base_mod.DEFAULT_OUTPUT_PREFIX
     else:
         panel_path = base_mod.hedge_mod.DEFAULT_PANEL
         index_csv = base_mod.DEFAULT_INDEX_CSV
+        costed_nav_csv = base_mod.DEFAULT_COSTED_NAV_CSV
+        output_prefix = base_mod.DEFAULT_OUTPUT_PREFIX
     return argparse.Namespace(
         query_tokens=[],
         panel_path=panel_path,
         index_csv=index_csv,
-        costed_nav_csv=base_mod.DEFAULT_COSTED_NAV_CSV,
-        output_prefix=base_mod.DEFAULT_OUTPUT_PREFIX,
+        costed_nav_csv=costed_nav_csv,
+        output_prefix=output_prefix,
         capital=capital,
         max_workers=max_workers,
         realtime_cache_seconds=realtime_cache_seconds,
@@ -9638,7 +9668,16 @@ def realtime_state_required() -> bool:
 
 
 def _refresh_realtime_state_for_local_query() -> None:
-    from scripts import realtime_state_bundle
+    try:
+        from scripts import realtime_state_bundle
+    except ModuleNotFoundError as exc:
+        if exc.name in {"scripts", "scripts.realtime_state_bundle"}:
+            raise RuntimeError(
+                "Realtime state refresh requires scripts/realtime_state_bundle.py. "
+                "Deploy that helper with the standalone scripts or run with an already refreshed realtime state "
+                "and TOP100_REALTIME_REQUIRE_STATE=1."
+            ) from exc
+        raise
 
     report = realtime_state_bundle.refresh_state(ROOT, max_workers=8)
     if not report.get("ok"):
@@ -9752,8 +9791,24 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
 
 def load_realtime_base() -> RealtimeBase:
     context, turnover_df, reference_summary = load_realtime_context()
-    _, meta, realtime_close_df, base_gross = base_mod.build_realtime_signal_fast(context)
-    return RealtimeBase(context, turnover_df, reference_summary, meta, realtime_close_df, base_gross)
+    signal_df, meta, _realtime_close_df, _base_gross = base_mod.build_realtime_signal_fast(context)
+    base_mod.assert_realtime_meta_is_actionable(meta)
+    meta["snapshot_row_appended"] = base_mod.realtime_snapshot_row_appended(
+        latest_anchor_trade_date=meta.get("latest_anchor_trade_date"),
+        quote_trade_date=meta.get("quote_trade_date", ""),
+        snapshot_time=meta.get("snapshot_time"),
+    )
+    rebuilt = base_mod.rebuild_realtime_result_from_meta(context, meta)
+    base_mod.assert_signal_matches_result(signal_df, rebuilt)
+    realtime_close_df = base_mod.apply_realtime_close_to_signal_frame(
+        close_df=context["close_df"].copy(),
+        latest_trade_date=pd.Timestamp(meta["latest_anchor_trade_date"]),
+        snapshot_ts=pd.Timestamp(meta["snapshot_time"]),
+        microcap_rt_close=float(meta["microcap_rt_close"]),
+        hedge_rt_close=float(meta["hedge_rt_close"]),
+        quote_trade_date=meta.get("quote_trade_date", ""),
+    )
+    return RealtimeBase(context, turnover_df, reference_summary, meta, realtime_close_df, rebuilt.sort_index())
 
 
 def build_realtime_overlay_base(realtime_base: RealtimeBase) -> pd.DataFrame:
@@ -10217,8 +10272,8 @@ def calc_target_vol_costed_turnover(holding: pd.Series, target_vol_turnover: pd.
     return pd.to_numeric(target_vol_turnover, errors="coerce").fillna(0.0).where(same_holding, 0.0)
 
 
-def _scale_from_realized_vol(realized_vol: pd.Series) -> pd.Series:
-    scale = TARGET_VOL / realized_vol.replace(0.0, np.nan)
+def _scale_from_realized_vol(realized_vol: pd.Series, target_vol: float = TARGET_VOL) -> pd.Series:
+    scale = float(target_vol) / realized_vol.replace(0.0, np.nan)
     return scale.replace([np.inf, -np.inf], np.nan).clip(
         lower=TARGET_VOL_MIN_LEVERAGE,
         upper=TARGET_VOL_MAX_LEVERAGE,
@@ -10329,8 +10384,19 @@ def _select_base_pre_cost_return(out: pd.DataFrame, base_return_net: pd.Series, 
     return (1.0 + base_return_net).div(1.0 - safe_cost).sub(1.0), "return_net_cost_reversal"
 
 
-def apply_target_vol_scaling(base_result: pd.DataFrame, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
+def apply_target_vol_scaling(
+    base_result: pd.DataFrame,
+    treat_last_row_as_snapshot: bool = False,
+    target_vol: float | None = None,
+    scale_rebalance_threshold: float | None = None,
+) -> pd.DataFrame:
     validate_base_hedge_ratio()
+    target_vol_value = float(TARGET_VOL if target_vol is None else target_vol)
+    scale_rebalance_threshold_value = float(
+        TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+        if scale_rebalance_threshold is None
+        else scale_rebalance_threshold
+    )
     out = base_result.copy().sort_index()
     base_return_net = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
     target_vol_return, target_vol_return_source = _select_target_vol_return_source(out, base_return_net)
@@ -10360,12 +10426,12 @@ def apply_target_vol_scaling(base_result: pd.DataFrame, treat_last_row_as_snapsh
                     f"target_vol snapshot using realized vol from {lag_days} calendar days ago",
                     RuntimeWarning,
                 )
-    scale_from_realized_vol = _scale_from_realized_vol(realized_vol)
+    scale_from_realized_vol = _scale_from_realized_vol(realized_vol, target_vol=target_vol_value)
     target_execution_scale = scale_from_realized_vol.shift(1).fillna(1.0)
     execution_scale = apply_scale_rebalance_threshold(
         target_execution_scale,
         active,
-        threshold=TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+        threshold=scale_rebalance_threshold_value,
     )
     next_session_target_scale = scale_from_realized_vol.copy()
     next_session_target_scale.loc[next_holding.eq("cash")] = 0.0
@@ -10375,7 +10441,7 @@ def apply_target_vol_scaling(base_result: pd.DataFrame, treat_last_row_as_snapsh
         execution_scale,
         next_session_target_scale,
         next_holding,
-        threshold=TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+        threshold=scale_rebalance_threshold_value,
     )
     target_vol_turnover = _target_vol_turnover_series(holding, execution_scale)
     scale_change_cost = calc_scale_change_cost(holding, target_vol_turnover)
@@ -10403,7 +10469,7 @@ def apply_target_vol_scaling(base_result: pd.DataFrame, treat_last_row_as_snapsh
         - 1.0
     )
 
-    out["target_vol"] = TARGET_VOL
+    out["target_vol"] = target_vol_value
     out["target_vol_window"] = TARGET_VOL_WINDOW
     out["target_vol_return"] = target_vol_return.fillna(0.0)
     out["target_vol_return_source"] = target_vol_return_source
@@ -10836,7 +10902,9 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     realtime_base = realtime_core.load_realtime_base()
     embedded_lineage_realtime = realtime_core.build_realtime_overlay_base(realtime_base)
     meta = realtime_base.meta
-    out = apply_target_vol_scaling(embedded_lineage_realtime, treat_last_row_as_snapshot=True)
+    is_snapshot = bool(meta.get("snapshot_row_appended", False))
+    signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
+    out = apply_target_vol_scaling(embedded_lineage_realtime, treat_last_row_as_snapshot=is_snapshot)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     signal_row = realtime_core.base_mod.augment_signal_with_member_rebalance(
         signal_row,
@@ -10844,9 +10912,9 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     )
     _apply_realtime_meta_columns_to_signal_row(signal_row, meta)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
-    signal_row["target_vol_signal_timing"] = "intraday_hypothetical_if_now_close"
-    signal_row["signal_timing"] = "intraday_hypothetical_if_now_close"
-    signal_row["official_close_confirmed_signal"] = False
+    signal_row["target_vol_signal_timing"] = signal_timing
+    signal_row["signal_timing"] = signal_timing
+    signal_row["official_close_confirmed_signal"] = not is_snapshot
     _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
     return signal_row, meta, out
 
@@ -10917,9 +10985,10 @@ def _print_realtime_signal_query() -> None:
         print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
         print(f"holding_trade_state: {row.get('holding_trade_state', row.get('momentum_trade_state', 'hold'))}")
         print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
-        print("target_vol_signal_timing: intraday_hypothetical_if_now_close")
+        print(f"target_vol_signal_timing: {row.get('target_vol_signal_timing', row.get('signal_timing', ''))}")
         _print_scale_fields(row, include_frozen=True)
-        print("official_close_confirmed_signal: False")
+        print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', False)}")
+        print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
         print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
         print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
         print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")

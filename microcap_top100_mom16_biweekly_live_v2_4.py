@@ -409,22 +409,12 @@ def apply_close_executed_peak_decay_derisk(
 
 
 def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, *, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
-    globals_dict = v2_0.overlay_mod.apply_target_vol_scaling.__globals__
-    old_target_global = globals_dict.get("TARGET_VOL")
-    old_target_attr = v2_0.overlay_mod.TARGET_VOL
-    old_threshold_global = globals_dict.get("TARGET_VOL_SCALE_REBALANCE_THRESHOLD")
-    old_threshold_attr = v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD
-    try:
-        globals_dict["TARGET_VOL"] = float(target_vol)
-        v2_0.overlay_mod.TARGET_VOL = float(target_vol)
-        globals_dict["TARGET_VOL_SCALE_REBALANCE_THRESHOLD"] = float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD)
-        v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD = float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD)
-        out = v2_0.overlay_mod.apply_target_vol_scaling(costed_base, treat_last_row_as_snapshot=treat_last_row_as_snapshot)
-    finally:
-        globals_dict["TARGET_VOL"] = old_target_global
-        v2_0.overlay_mod.TARGET_VOL = old_target_attr
-        globals_dict["TARGET_VOL_SCALE_REBALANCE_THRESHOLD"] = old_threshold_global
-        v2_0.overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD = old_threshold_attr
+    out = v2_0.overlay_mod.apply_target_vol_scaling(
+        costed_base,
+        treat_last_row_as_snapshot=treat_last_row_as_snapshot,
+        target_vol=float(target_vol),
+        scale_rebalance_threshold=float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD),
+    )
     out["version"] = VERSION
     out["base_version"] = "embedded_v2_base"
     out["overlay_type"] = "spread_nav_power_wma_gap_peak_decay_target_vol"

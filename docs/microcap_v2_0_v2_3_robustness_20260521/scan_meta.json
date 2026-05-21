@@ -1,0 +1,103 @@
+{
+  "run_id": "20260521_microcap_top100_v2_0_v2_3_signal_targetvol_overlay_lookback_halflife_gap_targetvol_scale_hedge",
+  "created_at": "2026-05-21T10:44:36+08:00",
+  "phase": "complete",
+  "project": "microcap Top100",
+  "strategy": "v2.0_v2.3",
+  "subsystem": "signal_targetvol_overlay",
+  "repo_root": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Desktop\\动量策略\\微盘股对冲策略",
+  "entrypoint": "microcap_top100_mom16_biweekly_live_v2_0.py; microcap_top100_mom16_biweekly_live_v2_3.py",
+  "git_branch": "main",
+  "git_commit": "0104f2d476e60fd605944d0479e50925b199f26a",
+  "git_status_before": "M microcap_top100_mom16_biweekly_live_v2_0.py\n M microcap_top100_mom16_biweekly_live_v2_3.py\n M microcap_top100_mom16_biweekly_live_v2_4.py\n M outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json\n M outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv\n M tests/test_realtime_anchor_quote_guard.py",
+  "git_status_after": "M microcap_top100_mom16_biweekly_live_v2_0.py\n M microcap_top100_mom16_biweekly_live_v2_3.py\n M microcap_top100_mom16_biweekly_live_v2_4.py\n M outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv\n M outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv\n M tests/test_realtime_anchor_quote_guard.py\n?? quant_param_scan_runs/",
+  "scan_type": "full_factorial_local_robustness_grid",
+  "parameter_group": "lookback_halflife_gap_targetvol_scale_hedge",
+  "baseline": {
+    "v2_3": {
+      "lookback": 17,
+      "halflife": 4.0,
+      "signal_spread_hedge_ratio": 1.0,
+      "execution_hedge_ratio": 0.8,
+      "exit_buffer": 0.13,
+      "target_vol": 0.25,
+      "scale_threshold": 0.3
+    },
+    "v2_0": {
+      "lookback": 16,
+      "execution_hedge_ratio": 0.8,
+      "exit_buffer": 0.003,
+      "target_vol": 0.25,
+      "scale_threshold": 0.1
+    }
+  },
+  "candidate_grid": {
+    "lookback": [
+      12,
+      15,
+      17,
+      20,
+      24
+    ],
+    "halflife_v2_3_only": [
+      3.0,
+      4.0,
+      5.0,
+      6.0,
+      8.0
+    ],
+    "exit_buffer": [
+      0.05,
+      0.08,
+      0.13,
+      0.2
+    ],
+    "target_vol": [
+      0.15,
+      0.2,
+      0.25,
+      0.3
+    ],
+    "scale_threshold": [
+      0.1,
+      0.2,
+      0.3,
+      0.5
+    ],
+    "execution_hedge_ratio": [
+      0.6,
+      0.8,
+      1.0
+    ],
+    "signal_spread_hedge_ratio_v2_3_fixed": 1.0,
+    "v2_3_candidates": 4800,
+    "v2_0_candidates": 961,
+    "v2_0_official_default_extra_candidate": true
+  },
+  "data_snapshot": {
+    "scan_start": "2010-05-05",
+    "scan_end": "2026-05-20",
+    "scan_rows": 3884,
+    "candidate_rows_scan_summary": 34566,
+    "candidate_rows_window_metrics": 5761
+  },
+  "cost_model": {
+    "base_cost_model": "v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model",
+    "target_vol_scale_change_cost": 0.001,
+    "target_vol_financing_rate": 0.03,
+    "idle_cash_yield": 0.02,
+    "futures_drag_daily": 0.0003,
+    "execution_timing": "close-confirmed signal; holding applies from next row, same as official gap-buffer semantics",
+    "return_column": "return_net"
+  },
+  "outputs": {
+    "record": "record.md",
+    "scan_summary": "scan_summary.csv",
+    "window_metrics": "window_metrics.csv",
+    "scan_meta": "scan_meta.json",
+    "command_log": "command_log.txt"
+  },
+  "decision": "research_only_no_source_promotion; v2.3 shows better drawdown robustness, v2.0 has higher return but materially higher drawdown sensitivity",
+  "stability_label": "mixed_v23_risk_stable_v20_drawdown_sensitive",
+  "finalized_at": "2026-05-21T11:28:11+08:00"
+}
