@@ -31,7 +31,7 @@ LOOKBACK = 16
 REBALANCE_WEEKDAY = "Thursday"
 CN_TIMEZONE = "Asia/Shanghai"
 REBALANCE_ANCHOR_DATE = "2016-01-07"
-CN_CLOSE_CONFIRM_TIME = "20:00"
+CN_CLOSE_CONFIRM_TIME = "15:30"
 DEFAULT_PANEL_PATH = ROOT / "mnt_strategy_data_cn.csv"
 HEDGE_COLUMN = "1.000852"
 FIXED_HEDGE_RATIO = 1.0
@@ -575,7 +575,7 @@ def panel_shadow_cache_is_reusable(
     panel_shadow: Path,
     existing_shadow_end: pd.Timestamp | None,
     now: pd.Timestamp | None = None,
-    same_day_max_age_seconds: int = 600,
+    same_day_max_age_seconds: int = 86400,
 ) -> bool:
     if existing_shadow_end is None:
         return False
