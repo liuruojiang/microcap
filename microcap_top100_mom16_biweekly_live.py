@@ -607,7 +607,7 @@ def refresh_price_cache_tail(
         raise RuntimeError("No cached-universe symbols available for price-cache refresh.")
 
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
-    failures: list[str] = []
+    failures: list[dict[str, str]] = []
     workers = max(1, min(int(max_workers), 16))
 
     def refresh_price_history_with_fallback(symbol: str) -> None:
@@ -620,27 +620,65 @@ def refresh_price_cache_tail(
             ) from free_exc
 
     def refresh_symbol(symbol: str) -> None:
-        refresh_price_history_with_fallback(symbol)
+        try:
+            refresh_price_history_with_fallback(symbol)
+        except Exception as exc:
+            root_exc = exc.__cause__ if exc.__cause__ is not None else exc
+            return {
+                "symbol": symbol,
+                "stage": "price",
+                "error_type": type(root_exc).__name__,
+                "error": str(root_exc),
+                "cause_type": type(exc.__cause__).__name__ if exc.__cause__ is not None else "",
+                "cause": str(exc.__cause__) if exc.__cause__ is not None else "",
+            }
         fetch_share_change = getattr(fetch_mod, "fetch_share_change", None)
         if fetch_share_change is not None:
-            fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
+            try:
+                fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
+            except Exception as exc:
+                return {
+                    "symbol": symbol,
+                    "stage": "share_change",
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                    "cause_type": "",
+                    "cause": "",
+                }
+        return None
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in symbols}
         for fut in as_completed(futures):
             symbol = futures[fut]
             try:
-                fut.result()
-            except Exception:
-                failures.append(symbol)
+                failure = fut.result()
+                if failure is not None:
+                    failures.append(failure)
+            except Exception as exc:
+                failures.append(
+                    {
+                        "symbol": symbol,
+                        "stage": "unknown",
+                        "error_type": type(exc).__name__,
+                        "error": str(exc),
+                        "cause_type": "",
+                        "cause": "",
+                    }
+                )
     if failures:
-        audit = pd.DataFrame({"symbol": failures})
+        audit = pd.DataFrame(failures)
         audit_path = OUTPUT_DIR / f"price_cache_refresh_failures_{end_text}.csv"
         _atomic_to_csv(audit, audit_path, index=False, encoding="utf-8")
     if len(failures) > max(20, len(symbols) // 100):
-        sample = ", ".join(failures[:10])
+        sample = ", ".join(item["symbol"] for item in failures[:10])
+        reason_sample = "; ".join(
+            f"{item['symbol']} {item['stage']} {item['error_type']}: {item['error'] or item['cause']}"
+            for item in failures[:3]
+        )
         raise RuntimeError(
-            f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). Sample: {sample}"
+            f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). "
+            f"Sample: {sample}. Reasons: {reason_sample}"
         )
 
 
