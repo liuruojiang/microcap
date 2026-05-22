@@ -16,6 +16,7 @@ MANIFEST_NAME = "top100_realtime_state_manifest.json"
 REQUIRED_FILES = (
     "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
     "outputs/microcap_top100_mom16_biweekly_live_summary.json",
+    "outputs/microcap_top100_mom16_biweekly_live_v1_1_panel_refreshed.csv",
     "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json",
     "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv",
     "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
@@ -207,6 +208,10 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
             root / "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
             ("date",),
         ),
+        "panel_shadow": _csv_last_date(
+            root / "outputs/microcap_top100_mom16_biweekly_live_v1_1_panel_refreshed.csv",
+            ("date",),
+        ),
         "proxy_turnover": _csv_last_date(
             root / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
             ("rebalance_date", "date"),
@@ -218,7 +223,7 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
 
     if max_anchor_age_days is not None and not errors:
         today_value = today or date.today()
-        for name in ("proxy_index", "costed_nav"):
+        for name in ("proxy_index", "costed_nav", "panel_shadow"):
             value = anchor_dates.get(name)
             if value is None:
                 continue
@@ -277,7 +282,7 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
 def enforce_anchor_target(report: dict[str, object], target_end_date: date) -> dict[str, object]:
     anchor_dates = report.get("anchor_dates", {})
     if isinstance(anchor_dates, dict):
-        for name in ("proxy_index", "costed_nav"):
+        for name in ("proxy_index", "costed_nav", "panel_shadow"):
             anchor_date = _parse_date(str(anchor_dates.get(name) or ""))
             if anchor_date is None or anchor_date < target_end_date:
                 report.setdefault("errors", []).append(
@@ -354,10 +359,18 @@ def refresh_state(
             base_context,
         )
         report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        context_anchor_date = base_context["close_df"].index[-1].date()
+        report["context_anchor_date"] = context_anchor_date.isoformat()
         report["target_end_date"] = target_end_date.isoformat()
         report["panel_path"] = str(panel_path)
         report["refresh_source"] = "fresh"
         enforce_anchor_target(report, target_end_date)
+        if context_anchor_date < target_end_date:
+            report.setdefault("errors", []).append(
+                f"aligned close_df anchor is older than refresh target: "
+                f"last_date={context_anchor_date.isoformat()} target_end_date={target_end_date.isoformat()}"
+            )
+            report["ok"] = False
         if not report["ok"]:
             raise RuntimeError(
                 "state refresh completed but produced stale anchors: "

@@ -105,12 +105,12 @@ def cached_realtime_context_from_existing_state(
     base_paths: dict[str, Path],
     reason: str,
 ) -> tuple[Path, pd.Timestamp, dict[str, object]]:
-    panel_path = base_paths["panel_shadow"]
+    panel_path, panel_target_end = base_mod.build_refreshed_panel_shadow(args, base_paths)
     if not panel_path.exists():
         raise RuntimeError("No panel shadow cache is available for realtime state-only mode.")
 
     candidate_dates = [
-        base_mod.read_csv_last_date(panel_path),
+        panel_target_end,
         base_mod.read_csv_last_date(args.index_csv),
         base_mod.read_csv_last_date(args.costed_nav_csv),
     ]
@@ -129,6 +129,12 @@ def cached_realtime_context_from_existing_state(
     if base_context is None:
         raise RuntimeError(
             "Validated realtime state is not reusable for production; refusing implicit proxy/cache rebuild."
+        )
+    actual_anchor = pd.Timestamp(base_context["close_df"].index[-1]).normalize()
+    if actual_anchor < target_end_date:
+        raise RuntimeError(
+            "Validated realtime state produced an older aligned close anchor: "
+            f"close_df_last_date={actual_anchor.date()} target_end_date={target_end_date.date()}"
         )
     return panel_path, target_end_date, base_context
 
