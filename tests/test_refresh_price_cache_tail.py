@@ -6,11 +6,33 @@ from pathlib import Path
 from unittest import mock
 
 import pandas as pd
+import requests
 
 import microcap_top100_mom16_biweekly_live as live
 
 
 class RefreshPriceCacheTailTests(unittest.TestCase):
+    def test_retries_transient_price_refresh_disconnect(self) -> None:
+        symbols = ["000001"]
+        calls = {"price": 0}
+
+        def flaky_price(symbol: str, *_args: object, **_kwargs: object) -> pd.DataFrame:
+            calls["price"] += 1
+            if calls["price"] == 1:
+                raise requests.exceptions.ConnectionError("RemoteDisconnected test")
+            return pd.DataFrame({"date": [pd.Timestamp("2026-05-21")], "close_raw": [10.0]})
+
+        with (
+            mock.patch.object(live, "PRICE_REFRESH_RETRY_DELAY_SECONDS", 0.0),
+            mock.patch.object(live.freq_mod, "load_current_universe", return_value=symbols),
+            mock.patch.object(live.freq_mod, "START_DATE", "2025-01-02"),
+            mock.patch.object(live.fetch_mod, "fetch_price_history", side_effect=flaky_price),
+            mock.patch.object(live.fetch_mod, "fetch_share_change", return_value=pd.DataFrame()),
+        ):
+            live.refresh_price_cache_tail(pd.Timestamp("2026-05-21"), max_workers=1)
+
+        self.assertEqual(calls["price"], 2)
+
     def test_creates_underlying_fetch_cache_directories_before_refresh(self) -> None:
         symbols = ["000001"]
 

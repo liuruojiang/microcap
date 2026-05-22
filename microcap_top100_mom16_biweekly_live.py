@@ -55,6 +55,8 @@ REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
 PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
 REALTIME_QUOTE_RETRY_SECONDS = 5
+PRICE_REFRESH_MAX_ATTEMPTS = 3
+PRICE_REFRESH_RETRY_DELAY_SECONDS = 2.0
 REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
 REALTIME_LAST_CLOSE_FLAT_FALLBACK_MIN_QUOTED_FRACTION = 0.95
 REALTIME_CACHE_LOCK_TIMEOUT_SECONDS = 30
@@ -595,6 +597,25 @@ def panel_shadow_cache_is_reusable(
     return bool(current_ts - mtime <= pd.Timedelta(seconds=max(0, int(same_day_max_age_seconds))))
 
 
+def _is_transient_price_refresh_error(exc: Exception) -> bool:
+    seen: set[int] = set()
+    current: BaseException | None = exc
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        name = type(current).__name__
+        text = str(current)
+        if name in {"ConnectionError", "Timeout", "ReadTimeout", "RemoteDisconnected", "ProtocolError"}:
+            return True
+        request_exceptions = getattr(requests, "exceptions", None)
+        request_exception = getattr(request_exceptions, "RequestException", None)
+        if request_exception is not None and isinstance(current, request_exception):
+            return True
+        if "RemoteDisconnected" in text or "timed out" in text or "Connection aborted" in text:
+            return True
+        current = current.__cause__ if current.__cause__ is not None else current.__context__
+    return False
+
+
 def refresh_price_cache_tail(
     end_date: pd.Timestamp,
     max_workers: int,
@@ -625,13 +646,18 @@ def refresh_price_cache_tail(
     workers = max(1, min(int(max_workers), 16))
 
     def refresh_price_history_with_fallback(symbol: str) -> None:
-        try:
-            fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
-            return
-        except Exception as free_exc:
-            raise RuntimeError(
-                f"free price refresh failed for {symbol}; QVeris fallback is disabled"
-            ) from free_exc
+        attempts = max(1, int(PRICE_REFRESH_MAX_ATTEMPTS))
+        for attempt in range(attempts):
+            try:
+                fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
+                return
+            except Exception as free_exc:
+                if attempt + 1 < attempts and _is_transient_price_refresh_error(free_exc):
+                    time.sleep(max(0.0, float(PRICE_REFRESH_RETRY_DELAY_SECONDS)) * (attempt + 1))
+                    continue
+                raise RuntimeError(
+                    f"free price refresh failed for {symbol}; QVeris fallback is disabled"
+                ) from free_exc
 
     def refresh_symbol(symbol: str) -> None:
         try:
