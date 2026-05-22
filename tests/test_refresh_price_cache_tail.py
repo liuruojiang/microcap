@@ -11,6 +11,48 @@ import microcap_top100_mom16_biweekly_live as live
 
 
 class RefreshPriceCacheTailTests(unittest.TestCase):
+    def test_creates_underlying_fetch_cache_directories_before_refresh(self) -> None:
+        symbols = ["000001"]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir = Path(tmp) / ".microcap_index_cache"
+            price_dir = cache_dir / "prices_raw"
+            share_dir = cache_dir / "share_change"
+
+            def write_price(symbol: str, *_args: object, **_kwargs: object) -> pd.DataFrame:
+                frame = pd.DataFrame({"date": [pd.Timestamp("2026-05-21")], "close_raw": [10.0]})
+                frame.to_csv(price_dir / f"{symbol}.csv", index=False)
+                return frame
+
+            def write_share(symbol: str, *_args: object, **_kwargs: object) -> pd.DataFrame:
+                frame = pd.DataFrame(
+                    {
+                        "change_date": [pd.Timestamp("2026-05-21")],
+                        "total_shares_10k": [100.0],
+                        "reason": ["test"],
+                    }
+                )
+                frame.to_csv(share_dir / f"{symbol}.csv", index=False)
+                return frame
+
+            with (
+                mock.patch.object(live.fetch_mod, "ensure_dirs", None, create=True),
+                mock.patch.object(live.fetch_mod, "PRICE_CACHE_DIR", price_dir),
+                mock.patch.object(live.fetch_mod, "ADJ_PRICE_CACHE_DIR", cache_dir / "prices_qfq"),
+                mock.patch.object(live.fetch_mod, "SHARE_CACHE_DIR", share_dir),
+                mock.patch.object(live.freq_mod, "PRICE_DIR", price_dir),
+                mock.patch.object(live.freq_mod, "ADJ_PRICE_DIR", cache_dir / "prices_qfq"),
+                mock.patch.object(live.freq_mod, "SHARE_DIR", share_dir),
+                mock.patch.object(live.freq_mod, "load_current_universe", return_value=symbols),
+                mock.patch.object(live.freq_mod, "START_DATE", "2025-01-02"),
+                mock.patch.object(live.fetch_mod, "fetch_price_history", side_effect=write_price),
+                mock.patch.object(live.fetch_mod, "fetch_share_change", side_effect=write_share),
+            ):
+                live.refresh_price_cache_tail(pd.Timestamp("2026-05-21"), max_workers=1)
+
+            self.assertTrue((price_dir / "000001.csv").exists())
+            self.assertTrue((share_dir / "000001.csv").exists())
+
     def test_failure_audit_records_stage_and_exception_message(self) -> None:
         symbols = [f"{idx:06d}" for idx in range(21)]
 

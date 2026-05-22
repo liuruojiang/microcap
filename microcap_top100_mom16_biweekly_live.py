@@ -601,6 +601,20 @@ def refresh_price_cache_tail(
     symbols: list[str] | None = None,
     force_refresh: bool = False,
 ) -> None:
+    ensure_dirs = getattr(fetch_mod, "ensure_dirs", None)
+    if ensure_dirs is not None:
+        ensure_dirs()
+    for cache_dir in (
+        getattr(fetch_mod, "PRICE_CACHE_DIR", None),
+        getattr(fetch_mod, "ADJ_PRICE_CACHE_DIR", None),
+        getattr(fetch_mod, "SHARE_CACHE_DIR", None),
+        getattr(freq_mod, "PRICE_DIR", None),
+        getattr(freq_mod, "ADJ_PRICE_DIR", None),
+        getattr(freq_mod, "SHARE_DIR", None),
+    ):
+        if cache_dir is not None:
+            Path(cache_dir).mkdir(parents=True, exist_ok=True)
+
     if symbols is None:
         symbols = freq_mod.load_current_universe()
     if not symbols:
