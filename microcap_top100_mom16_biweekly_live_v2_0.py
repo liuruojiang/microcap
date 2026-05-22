@@ -9705,7 +9705,17 @@ def _cached_realtime_context_from_existing_state(
     reason: str,
     exc: RuntimeError | None = None,
 ) -> tuple[Path, pd.Timestamp, dict[str, object]]:
-    panel_path = base_paths["panel_shadow"]
+    try:
+        panel_path, panel_target_end = base_mod.build_refreshed_panel_shadow(args, base_paths)
+    except RuntimeError as refresh_exc:
+        if exc is None:
+            raise
+        panel_path = base_paths["panel_shadow"]
+        panel_target_end = base_mod.read_csv_last_date(panel_path)
+        if panel_target_end is None:
+            raise RuntimeError("Realtime anchor refresh failed and panel shadow has no usable date.") from refresh_exc
+    else:
+        panel_target_end = pd.Timestamp(panel_target_end)
     if not panel_path.exists():
         message = "No panel shadow cache is available for realtime state-only mode."
         if exc is not None:
@@ -9713,7 +9723,7 @@ def _cached_realtime_context_from_existing_state(
         raise RuntimeError(message) from exc
 
     candidate_dates = [
-        base_mod.read_csv_last_date(panel_path),
+        panel_target_end,
         base_mod.read_csv_last_date(args.index_csv),
         base_mod.read_csv_last_date(args.costed_nav_csv),
     ]
@@ -9736,6 +9746,13 @@ def _cached_realtime_context_from_existing_state(
         message = "Validated realtime state is not reusable for production."
         if exc is not None:
             message = "Realtime anchor refresh failed and cached proxy outputs are not reusable."
+        raise RuntimeError(message) from exc
+    actual_anchor = pd.Timestamp(base_context["close_df"].index[-1]).normalize()
+    if actual_anchor < target_end_date:
+        message = (
+            "Validated realtime state produced an older aligned close anchor: "
+            f"close_df_last_date={actual_anchor.date()} target_end_date={target_end_date.date()}"
+        )
         raise RuntimeError(message) from exc
     return panel_path, target_end_date, base_context
 
