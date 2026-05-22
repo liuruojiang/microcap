@@ -1,9 +1,11 @@
 ﻿from __future__ import annotations
 
+import copy
 import json
 import math
 import sys
 import time
+import warnings
 from pathlib import Path
 
 import matplotlib
@@ -20,12 +22,73 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_4"
+VERSION = "2.4"
+EXPECTED_VERSION_ROLE = "spread_nav_power_wma_gap_peak_decay_target_vol_overlay"
+EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.4 spread-NAV Power-WMA target-volatility overlay."
+LOOKBACK = 20
+POWER = 0.75
+MOMENTUM_GAP_EXIT_BUFFER = 0.18
+DECAY_RATIO_THRESHOLD = 0.35
+DERISK_SCALE = 0.0
+RECOVERY_RATIO_THRESHOLD = 0.40
+MIN_PEAK_TO_ARM_DECAY = 0.15
+TARGET_VOL = 0.25
+TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
+FORMAL_START_DATE = pd.Timestamp("2010-05-05")
+
+SIGNAL_SPREAD_HEDGE_RATIO = 1.0
+EXECUTION_HEDGE_RATIO = float(v2_0.BASE_HEDGE_RATIO)
+BASE_HEDGE_RATIO = EXECUTION_HEDGE_RATIO
+TRADING_DAYS = int(v2_0.overlay_mod.TARGET_VOL_TRADING_DAYS)
+
+
+def _format_float_tag(value: float) -> str:
+    text = f"{float(value):.6f}".rstrip("0").rstrip(".")
+    if "." not in text:
+        text += ".0"
+    return text.replace("-", "m").replace(".", "p")
+
+
+def execution_tag() -> str:
+    return f"exec{_format_float_tag(EXECUTION_HEDGE_RATIO)}"
+
+
+POWER_TAG = f"p{_format_float_tag(POWER)}"
+SIGNAL_TAG = f"signal{_format_float_tag(SIGNAL_SPREAD_HEDGE_RATIO)}"
+BUFFER_TAG = f"gap{int(round(MOMENTUM_GAP_EXIT_BUFFER * 100)):02d}"
+DECAY_TAG = f"decay{int(round(DECAY_RATIO_THRESHOLD * 100)):02d}"
+RECOVERY_TAG = f"recovery{int(round(RECOVERY_RATIO_THRESHOLD * 100)):02d}"
+TARGET_VOL_TAG = f"targetvol{int(round(TARGET_VOL * 100)):02d}"
+SCALE_TAG = f"scale{int(round(TARGET_VOL_SCALE_REBALANCE_THRESHOLD * 100)):03d}"
+
+
+def signal_model_slug() -> str:
+    return (
+        f"spread_nav_power_wma_{POWER_TAG}_lb{LOOKBACK}"
+        f"_{SIGNAL_TAG}_{execution_tag()}"
+    )
+
+
+def signal_model_human() -> str:
+    return (
+        f"spread-NAV Power-WMA daily return, power {POWER:g}, lookback {LOOKBACK}, "
+        f"signal spread {SIGNAL_SPREAD_HEDGE_RATIO:.1f}x, "
+        f"execution hedge {EXECUTION_HEDGE_RATIO:.2f}x, no R2 gate"
+    )
+
+
+EXECUTION_TAG = execution_tag()
+
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_power_p0p75_lb20_signal1p0_exec0p8_gap18_decay35_recovery40_targetvol25_scale010_v2_4_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / (
+    f"microcap_top100_mom16_power_{POWER_TAG}_lb{LOOKBACK}_{SIGNAL_TAG}_{EXECUTION_TAG}_"
+    f"{BUFFER_TAG}_{DECAY_TAG}_{RECOVERY_TAG}_{TARGET_VOL_TAG}_{SCALE_TAG}_v2_4_costed_nav.csv"
+)
 LEGACY_COSTED_NAV_CSVS = [
+    OUTPUT_DIR / "microcap_top100_mom16_power_p0p75_lb20_signal1p0_exec0p8_gap18_decay35_recovery40_targetvol25_scale010_v2_4_costed_nav.csv",
     OUTPUT_DIR / "microcap_top100_mom16_power_p0p75_lb20_signal1p0_exec0p8_gap18_decay35_recovery40_targetvol20_scale010_v2_4_costed_nav.csv"
 ]
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
@@ -39,23 +102,7 @@ PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
 PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
-VERSION = "2.4"
-EXPECTED_VERSION_ROLE = "spread_nav_power_wma_gap_peak_decay_target_vol_overlay"
-EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.4 spread-NAV Power-WMA target-volatility overlay."
-LOOKBACK = 20
-POWER = 0.75
-MOMENTUM_GAP_EXIT_BUFFER = 0.18
-DECAY_RATIO_THRESHOLD = 0.35
-DERISK_SCALE = 0.0
-RECOVERY_RATIO_THRESHOLD = 0.40
-TARGET_VOL = 0.25
-TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
-FORMAL_START_DATE = pd.Timestamp("2010-05-05")
-
-SIGNAL_SPREAD_HEDGE_RATIO = 1.0
-EXECUTION_HEDGE_RATIO = float(v2_0.BASE_HEDGE_RATIO)
-BASE_HEDGE_RATIO = EXECUTION_HEDGE_RATIO
-TRADING_DAYS = int(v2_0.overlay_mod.TARGET_VOL_TRADING_DAYS)
+SIGNAL_MODEL = signal_model_slug()
 
 
 def _json_sanitize(value: object) -> object:
@@ -84,6 +131,17 @@ def _json_sanitize(value: object) -> object:
 
 def _json_dumps(payload: object) -> str:
     return json.dumps(_json_sanitize(payload), ensure_ascii=False, indent=2, allow_nan=False, default=str)
+
+
+def _canonical_json_obj(payload: object) -> object:
+    return json.loads(_json_dumps(payload))
+
+
+def _first_notna(row: pd.Series, *cols: str, default: object = np.nan) -> object:
+    for col in cols:
+        if col in row and pd.notna(row[col]):
+            return row[col]
+    return default
 
 
 def _atomic_temp_path(path: Path) -> Path:
@@ -122,18 +180,49 @@ def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _validate_close_df(close_df: pd.DataFrame) -> pd.DataFrame:
+    required = {"microcap", "hedge"}
+    missing = required.difference(close_df.columns)
+    if missing:
+        raise KeyError(f"close_df missing columns: {sorted(missing)}")
+    out = close_df.copy()
+    if not isinstance(out.index, pd.DatetimeIndex):
+        out.index = pd.to_datetime(out.index, errors="raise")
+    out = out.sort_index()
+    if not out.index.is_unique:
+        dupes = out.index[out.index.duplicated()].unique()[:5]
+        examples = [str(pd.Timestamp(dt).date()) for dt in dupes]
+        raise ValueError(f"close_df contains duplicated dates: {examples}")
+    out[["microcap", "hedge"]] = out[["microcap", "hedge"]].apply(pd.to_numeric, errors="coerce")
+    finite = np.isfinite(out[["microcap", "hedge"]].to_numpy(dtype=float))
+    bad = out[["microcap", "hedge"]].isna().any(axis=1) | ~pd.Series(finite.all(axis=1), index=out.index)
+    if bad.any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in out.index[bad][:5]]
+        raise ValueError(f"close_df contains missing close prices / missing prices: {examples}")
+    non_positive = out[["microcap", "hedge"]].le(0).any(axis=1)
+    if non_positive.any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in out.index[non_positive][:5]]
+        raise ValueError(f"close_df contains non-positive close prices: {examples}")
+    return out
+
+
 def power_weights(lookback: int = LOOKBACK, power: float = POWER) -> tuple[float, ...]:
     raw = np.arange(1, int(lookback) + 1, dtype=float) ** float(power)
     return tuple((raw / raw.sum()).tolist())
 
 
 def always_on_spread_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series, float]:
-    close_df = close_df.sort_index()
+    close_df = _validate_close_df(close_df)
     micro_ret = close_df["microcap"].pct_change(fill_method=None)
     hedge_ret = close_df["hedge"].pct_change(fill_method=None)
     daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * SIGNAL_SPREAD_HEDGE_RATIO
-    spread_ret = micro_ret.fillna(0.0) - SIGNAL_SPREAD_HEDGE_RATIO * hedge_ret.fillna(0.0) - daily_drag
-    spread_nav = (1.0 + spread_ret.fillna(0.0)).cumprod()
+    spread_ret = micro_ret - SIGNAL_SPREAD_HEDGE_RATIO * hedge_ret - daily_drag
+    if not spread_ret.empty:
+        spread_ret.iloc[0] = 0.0
+    if spread_ret.iloc[1:].isna().any():
+        bad_dates = [str(pd.Timestamp(dt).date()) for dt in spread_ret.index[spread_ret.isna()][:5]]
+        raise ValueError(f"spread return contains missing close prices / missing prices: {bad_dates}")
+    spread_nav = (1.0 + spread_ret).cumprod()
     spread_nav.name = "spread_nav"
     return spread_nav, micro_ret, hedge_ret, daily_drag
 
@@ -151,25 +240,59 @@ def power_wma_score(spread_ret: pd.Series, lookback: int = LOOKBACK, power: floa
 
 def _valid_power_wma_index(close_df: pd.DataFrame) -> pd.DatetimeIndex:
     spread_nav, _micro_ret, _hedge_ret, _daily_drag = always_on_spread_nav(close_df)
-    spread_ret = spread_nav.pct_change(fill_method=None).fillna(0.0)
+    spread_ret = spread_nav.pct_change(fill_method=None)
+    if not spread_ret.empty:
+        spread_ret.iloc[0] = 0.0
     score = power_wma_score(spread_ret)
     valid = score.notna()
     return pd.DatetimeIndex(score.index[valid])
 
 
+def build_v2_4_common_index(
+    close_df: pd.DataFrame,
+    official_index: pd.DatetimeIndex | pd.Index | None = None,
+    include_snapshot: bool = False,
+) -> pd.DatetimeIndex:
+    clean_close_df = _validate_close_df(close_df)
+    valid_idx = pd.DatetimeIndex(_valid_power_wma_index(clean_close_df))
+    idx = valid_idx
+    if official_index is not None:
+        idx = pd.DatetimeIndex(idx.intersection(pd.DatetimeIndex(official_index)))
+    idx = idx[idx >= FORMAL_START_DATE]
+    if include_snapshot and not clean_close_df.empty:
+        snapshot_date = pd.Timestamp(clean_close_df.index[-1])
+        if snapshot_date >= FORMAL_START_DATE:
+            if snapshot_date not in valid_idx:
+                raise ValueError(f"snapshot date has no valid v2.4 Power-WMA score: {snapshot_date.date()}")
+            if snapshot_date not in idx:
+                idx = idx.append(pd.DatetimeIndex([snapshot_date]))
+    return pd.DatetimeIndex(idx).unique().sort_values()
+
+
 def build_spread_power_wma_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
-    close_df = close_df.sort_index()
+    close_df = _validate_close_df(close_df)
     spread_nav, micro_ret, hedge_ret, _signal_daily_drag = always_on_spread_nav(close_df)
-    spread_ret = spread_nav.pct_change(fill_method=None).fillna(0.0)
+    spread_ret = spread_nav.pct_change(fill_method=None)
+    if not spread_ret.empty:
+        spread_ret.iloc[0] = 0.0
     score_full = power_wma_score(spread_ret)
-    common_index = _valid_power_wma_index(close_df) if index is None else pd.DatetimeIndex(index)
+    common_index = build_v2_4_common_index(close_df) if index is None else pd.DatetimeIndex(index).sort_values()
+    if common_index.empty:
+        raise ValueError("v2.4 common_index is empty")
     score = pd.to_numeric(score_full.loc[common_index], errors="coerce")
+    if score.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in score.index[score.isna()][:5]]
+        raise ValueError(f"v2.4 score is missing for common_index dates: {examples}")
     signal_on = score.gt(0.0)
     current_active = signal_on.shift(1, fill_value=False)
     microcap_ret = micro_ret.loc[common_index]
     hedge_ret_part = hedge_ret.loc[common_index]
     execution_daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * EXECUTION_HEDGE_RATIO
-    active_spread_ret = microcap_ret.fillna(0.0) - EXECUTION_HEDGE_RATIO * hedge_ret_part.fillna(0.0)
+    active_spread_ret = microcap_ret - EXECUTION_HEDGE_RATIO * hedge_ret_part
+    bad_return = current_active & active_spread_ret.isna()
+    if bad_return.any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in common_index[bad_return][:5]]
+        raise ValueError(f"close_df contains missing close prices / missing prices for active returns: {examples}")
     futures_drag = pd.Series(
         np.where(current_active, execution_daily_drag, 0.0),
         index=common_index,
@@ -205,12 +328,6 @@ def build_spread_power_wma_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex
     )
 
 
-def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
-    out = v2_0.base_mod.freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
-    out["overlay_pre_cost_return"] = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
-    return out
-
-
 def apply_close_executed_peak_decay_derisk(
     gross_result: pd.DataFrame,
     turnover_df: pd.DataFrame,
@@ -240,6 +357,7 @@ def apply_close_executed_peak_decay_derisk(
     if out.empty:
         out["gap_peak"] = pd.Series(dtype=float)
         out["gap_decay_ratio"] = pd.Series(dtype=float)
+        out["min_peak_to_arm_decay"] = pd.Series(dtype=float)
         out["signal_quality_derisk_triggered"] = pd.Series(dtype=bool)
         out["signal_quality_execution_scale"] = pd.Series(dtype=float)
         out["signal_quality_next_scale"] = pd.Series(dtype=float)
@@ -255,8 +373,15 @@ def apply_close_executed_peak_decay_derisk(
         return out
 
     rebalance_base = v2_0.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
-    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+    returns = pd.to_numeric(out["return"], errors="coerce")
+    if returns.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in returns.index[returns.isna()][:5]]
+        raise ValueError(f"gross_result contains missing returns: {examples}")
     momentum_gap_series = pd.to_numeric(out["momentum_gap"], errors="coerce")
+    bad_momentum_gap = momentum_gap_series.isna() | ~np.isfinite(momentum_gap_series.to_numpy(dtype=float))
+    if bad_momentum_gap.any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in momentum_gap_series.index[bad_momentum_gap][:5]]
+        raise ValueError(f"momentum_gap contains NaN or infinite values after exit buffer: {examples}")
     entry_rate = float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
     exit_rate = float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
 
@@ -330,6 +455,8 @@ def apply_close_executed_peak_decay_derisk(
                 not derisked_in_trade
                 and not waiting_for_new_peak_after_recovery
                 and gap_decay_ratio is not None
+                and gap_peak is not None
+                and float(gap_peak) >= float(MIN_PEAK_TO_ARM_DECAY)
                 and gap_decay_ratio <= float(decay_ratio_threshold)
             ):
                 next_quality_scale = float(derisk_scale)
@@ -393,6 +520,7 @@ def apply_close_executed_peak_decay_derisk(
     out["signal_on"] = executed_signal_on
     out["gap_peak"] = pd.Series(gap_peaks, index=out.index, dtype=float)
     out["gap_decay_ratio"] = pd.Series(gap_decay_ratios, index=out.index, dtype=float)
+    out["min_peak_to_arm_decay"] = float(MIN_PEAK_TO_ARM_DECAY)
     out["signal_quality_derisk_triggered"] = pd.Series(derisk_flags, index=out.index, dtype=bool)
     out["signal_quality_execution_scale"] = pd.Series(current_quality_scales, index=out.index, dtype=float)
     out["signal_quality_next_scale"] = pd.Series(next_quality_scales, index=out.index, dtype=float)
@@ -419,6 +547,31 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     out["base_version"] = "embedded_v2_base"
     out["overlay_type"] = "spread_nav_power_wma_gap_peak_decay_target_vol"
     out["scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+    required_after_target_vol = {
+        "return_net",
+        "nav_net",
+        "holding",
+        "next_holding",
+        "base_pre_cost_return",
+    }
+    missing = required_after_target_vol.difference(out.columns)
+    if missing:
+        raise KeyError(f"v2.4 target-vol output missing columns: {sorted(missing)}")
+    after_financing = pd.to_numeric(out["return_net"], errors="coerce")
+    if after_financing.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in after_financing.index[after_financing.isna()][:5]]
+        raise ValueError(f"target-vol output contains missing return_net: {examples}")
+    if "financing_cost" in out.columns:
+        financing_cost = pd.to_numeric(out["financing_cost"], errors="coerce")
+        if financing_cost.isna().any():
+            examples = [str(pd.Timestamp(dt).date()) for dt in financing_cost.index[financing_cost.isna()][:5]]
+            raise ValueError(f"target-vol output contains missing financing_cost: {examples}")
+    else:
+        financing_cost = pd.Series(0.0, index=out.index)
+    out["target_vol_return_after_financing"] = after_financing
+    out["target_vol_return_before_financing"] = (1.0 + after_financing).div(
+        (1.0 - financing_cost).clip(lower=1e-12)
+    ).sub(1.0)
     return out
 
 
@@ -428,9 +581,11 @@ def build_v2_4_result(
     common_index: pd.DatetimeIndex | None = None,
 ) -> pd.DataFrame:
     if common_index is None:
-        common_index = _valid_power_wma_index(close_df)
+        common_index = build_v2_4_common_index(close_df)
     common_index = pd.DatetimeIndex(common_index)
     common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
+    if common_index.empty:
+        raise ValueError("v2.4 common_index is empty after valid WMA / official index / FORMAL_START_DATE filters")
     gross = build_spread_power_wma_gross(close_df, common_index)
     buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
     derisked = apply_close_executed_peak_decay_derisk(
@@ -448,8 +603,13 @@ def current_base_fingerprint() -> dict[str, object]:
     return {
         "base_version": "embedded_v2_base",
         "strategy_version": VERSION,
+        "version_role": EXPECTED_VERSION_ROLE,
+        "formal_start_date": str(FORMAL_START_DATE.date()),
+        "output_prefix": OUTPUT_PREFIX,
+        "costed_nav_filename": COSTED_NAV_CSV.name,
         "base_fingerprint": base,
-        "signal_model": "spread_nav_power_wma_p0p75_lb20_signal1p0_exec0p8",
+        "signal_model": signal_model_slug(),
+        "signal_model_human": signal_model_human(),
         "lookback": LOOKBACK,
         "power": POWER,
         "power_weight_oldest_to_newest": list(power_weights()),
@@ -463,6 +623,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
+        "min_peak_to_arm_decay": MIN_PEAK_TO_ARM_DECAY,
         "signal_quality_execution_timing": "close_decision_next_session_return_v2_4_20260517",
         "target_vol": TARGET_VOL,
         "target_vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
@@ -471,6 +632,13 @@ def current_base_fingerprint() -> dict[str, object]:
         "target_vol_financing_rate": float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE),
         "target_vol_scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
     }
+
+
+def current_base_fingerprint_canonical() -> dict[str, object]:
+    canonical = _canonical_json_obj(current_base_fingerprint())
+    if not isinstance(canonical, dict):
+        raise TypeError("canonical v2.4 base fingerprint must be a dict")
+    return canonical
 
 
 def summary_matches_current_v2_4_base(summary: dict[str, object]) -> bool:
@@ -482,7 +650,7 @@ def summary_matches_current_v2_4_base(summary: dict[str, object]) -> bool:
         return False
     if not str(summary.get("version_note", "")).startswith(EXPECTED_VERSION_NOTE_PREFIX):
         return False
-    return summary.get("base_fingerprint") == current_base_fingerprint()
+    return summary.get("base_fingerprint") == current_base_fingerprint_canonical()
 
 
 def incompatible_v2_4_outputs() -> list[Path]:
@@ -512,11 +680,33 @@ def incompatible_v2_4_outputs() -> list[Path]:
         summary = None
     if summary_matches_current_v2_4_base(summary):
         return []
+    unmanaged_candidates = [
+        path for path in _candidate_v2_4_costed_nav_files()
+        if path not in set(outputs)
+    ]
+    if unmanaged_candidates:
+        examples = ", ".join(path.name for path in unmanaged_candidates[:5])
+        warnings.warn(
+            "stale v2.4 cleanup skipped unmanaged costed NAV files matching the version-family pattern; "
+            f"archive or remove manually if obsolete: {examples}",
+            RuntimeWarning,
+        )
     return outputs
 
 
+def _candidate_v2_4_costed_nav_files() -> list[Path]:
+    pattern = (
+        "microcap_top100_mom16_power_*_lb*_signal*_exec*_gap*_decay*_"
+        "recovery*_targetvol*_scale*_v2_4_costed_nav.csv"
+    )
+    return list(OUTPUT_DIR.glob(pattern))
+
+
 def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
-    ret = ret.dropna().astype(float)
+    ret = pd.to_numeric(ret, errors="coerce").astype(float)
+    if ret.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in ret.index[ret.isna()][:5]]
+        raise ValueError(f"return_net contains NaN: {examples}")
     if ret.empty:
         raise ValueError("empty return series")
     nav = (1.0 + ret).cumprod()
@@ -539,9 +729,12 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
 
 
 def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
+    ret = pd.to_numeric(ret, errors="coerce").astype(float)
+    if ret.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in ret.index[ret.isna()][:5]]
+        raise ValueError(f"return_net contains NaN: {examples}")
     rows: list[dict[str, object]] = []
     for year, part in ret.groupby(ret.index.year):
-        part = part.dropna()
         if part.empty:
             continue
         nav = (1.0 + part).cumprod()
@@ -566,13 +759,17 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
 
 def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_4") -> dict[str, object]:
     ensure_output_dir()
+    ret = pd.to_numeric(ret, errors="coerce").astype(float)
+    if ret.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in ret.index[ret.isna()][:5]]
+        raise ValueError(f"return_net contains NaN: {examples}")
     summary = summarize_returns(ret)
     yearly_df = summarize_yearly(ret)
     nav_df = pd.DataFrame(
         {
             "date": ret.index,
             "return_net": ret.values,
-            "nav_net": (1.0 + ret.fillna(0.0)).cumprod().values,
+            "nav_net": (1.0 + ret).cumprod().values,
         }
     )
     _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
@@ -608,7 +805,8 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
     row["overlay_type"] = "spread_nav_power_wma_gap_peak_decay_target_vol"
-    row["signal_model"] = "spread_nav_power_wma_p0p75_lb20_signal1p0_exec0p8"
+    row["signal_model"] = signal_model_slug()
+    row["signal_model_human"] = signal_model_human()
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     row["power"] = POWER
@@ -617,6 +815,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["decay_ratio_threshold"] = DECAY_RATIO_THRESHOLD
     row["derisk_scale"] = DERISK_SCALE
     row["recovery_ratio_threshold"] = RECOVERY_RATIO_THRESHOLD
+    row["min_peak_to_arm_decay"] = MIN_PEAK_TO_ARM_DECAY
     row["signal_score_label"] = "annualized_power_wma_score"
     row["momentum_gap_legacy_note"] = (
         "legacy field contains annualized spread-NAV Power-WMA score, not plain microcap-minus-hedge momentum gap"
@@ -625,15 +824,62 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     for col in ["annualized_power_wma_score", "spread_nav"]:
         if col in latest and pd.notna(latest[col]):
             row[col] = float(latest[col])
+    realized_vol = latest.get("target_vol_realized_vol", np.nan)
+    if pd.notna(realized_vol):
+        realized_vol_float = float(realized_vol)
+        row["realized_vol_60d"] = realized_vol_float
+        if realized_vol_float > 0:
+            row["target_scale_raw"] = float(TARGET_VOL) / realized_vol_float
+    scale_after_cap = latest.get("target_vol_scale_raw", np.nan)
+    if pd.notna(scale_after_cap):
+        row["target_scale_after_cap"] = float(scale_after_cap)
+        if "target_scale_raw" not in row.columns:
+            row["target_scale_raw"] = float(scale_after_cap)
+    current_scale = _first_notna(latest, "current_execution_scale", "execution_scale")
+    if pd.notna(current_scale):
+        row["target_scale_previous"] = float(current_scale)
+    actionable_scale = _first_notna(latest, "next_session_actionable_scale", "target_vol_scale_next_session")
+    if pd.notna(current_scale) and pd.notna(actionable_scale):
+        change_abs = abs(float(actionable_scale) - float(current_scale))
+        row["target_scale_change_abs"] = float(change_abs)
+        signal = row.iloc[0] if not row.empty else pd.Series(dtype=object)
+        scale_trade_state = _first_notna(signal, "scale_trade_state", default=None)
+        if scale_trade_state is not None:
+            row["scale_rebalance_triggered"] = str(scale_trade_state) != "hold_scale"
+        else:
+            current_holding = str(_first_notna(signal, "current_holding", default=latest.get("holding", "cash")))
+            next_holding = str(_first_notna(signal, "next_holding", default=latest.get("next_holding", current_holding)))
+            same_active_holding = current_holding == next_holding and current_holding != "cash"
+            row["scale_rebalance_triggered"] = bool(
+                same_active_holding
+                and change_abs >= v2_0.overlay_mod.SCALE_TRADE_REQUIRED_EPSILON
+            )
+    for src_col, dst_col in [
+        ("financing_cost", "financing_cost_today"),
+        ("target_vol_return_before_financing", "target_vol_return_before_financing"),
+        ("target_vol_return_after_financing", "target_vol_return_after_financing"),
+    ]:
+        if src_col in latest and pd.notna(latest[src_col]):
+            row[dst_col] = float(latest[src_col])
     row["target_vol"] = TARGET_VOL
     row["target_vol_scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
     return row
 
 
 def _close_df_from_base(base_gross_cached: pd.DataFrame) -> pd.DataFrame:
-    return base_gross_cached[["microcap_close", "hedge_close"]].rename(
+    close_df = base_gross_cached[["microcap_close", "hedge_close"]].rename(
         columns={"microcap_close": "microcap", "hedge_close": "hedge"}
-    ).sort_index()
+    )
+    return _validate_close_df(close_df)
+
+
+def _validated_realtime_base_gross_index(base_gross: pd.DataFrame) -> pd.DatetimeIndex:
+    base_index = pd.DatetimeIndex(pd.to_datetime(base_gross.index, errors="raise"))
+    if not base_index.is_unique:
+        dupes = base_index[base_index.duplicated()].unique()[:5]
+        examples = [str(pd.Timestamp(dt).date()) for dt in dupes]
+        raise ValueError(f"realtime base_gross contains duplicated dates: {examples}")
+    return base_index.sort_values()
 
 
 def generate_v2_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
@@ -642,8 +888,7 @@ def generate_v2_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     reference_summary, base_gross_cached, turnover_df = v2_0.embedded_context._load_embedded_base_context()
     stale_outputs = incompatible_v2_4_outputs()
     close_df = _close_df_from_base(base_gross_cached)
-    common_index = pd.DatetimeIndex(_valid_power_wma_index(close_df).intersection(official_v2_0_out.index)).sort_values()
-    common_index = common_index[common_index >= FORMAL_START_DATE]
+    common_index = build_v2_4_common_index(close_df, official_v2_0_out.index)
     out = build_v2_4_result(close_df, turnover_df, common_index)
     if COSTED_NAV_CSV.exists() and COSTED_NAV_CSV not in stale_outputs:
         previous = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"])
@@ -660,20 +905,29 @@ def generate_v2_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
     signal_row = _build_signal_row(out, reference_summary)
     _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
-    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_4")
+    ret = pd.to_numeric(out["return_net"], errors="coerce")
+    if ret.isna().any():
+        examples = [str(pd.Timestamp(dt).date()) for dt in ret.index[ret.isna()][:5]]
+        raise ValueError(f"v2.4 return_net contains NaN before performance output: {examples}")
+    perf_payload = build_performance_payload(ret, source_label="costed_v2_4")
 
     data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
-    summary = dict(reference_summary)
+    summary = copy.deepcopy(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Formal v2.4 spread-NAV Power-WMA target-volatility overlay. Uses power=0.75 recency-weighted mean of "
-        "20 trading days of always-on 1.0x hedged signal spread daily returns, annualized by trading days, "
-        "executes with 0.8x CSI1000 hedge, no R2 gate, 18% score exit buffer, close-executed peak-decay "
-        "derisk with decay/recovery thresholds 0.35/0.40 and derisk scale 0.0, 60-day realized volatility, 25% annual "
-        "target volatility, max 1.5x leverage, 10% scale rebalance threshold, 10bp leg-turnover scale-change "
-        "cost, scaled embedded-lineage base trading cost, and 3% annual financing cost on exposure above 1.0x."
+        f"Formal v2.4 spread-NAV Power-WMA target-volatility overlay. Uses power={POWER:g} recency-weighted mean of "
+        f"{LOOKBACK} trading days of always-on {SIGNAL_SPREAD_HEDGE_RATIO:.1f}x hedged signal spread daily returns, "
+        f"annualized by trading days, executes with {EXECUTION_HEDGE_RATIO:.2f}x CSI1000 hedge, no R2 gate, "
+        f"{MOMENTUM_GAP_EXIT_BUFFER:.0%} score exit buffer, close-executed peak-decay derisk with decay/recovery "
+        f"thresholds {DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, min peak {MIN_PEAK_TO_ARM_DECAY:.2f}, "
+        f"and derisk scale {DERISK_SCALE:.1f}, {int(v2_0.overlay_mod.TARGET_VOL_WINDOW)}-day realized volatility, "
+        f"{TARGET_VOL:.0%} annual target volatility, max {float(v2_0.overlay_mod.TARGET_VOL_MAX_LEVERAGE):.1f}x leverage, "
+        f"{TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%} scale rebalance threshold, "
+        f"{float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST) * 10000:.0f}bp leg-turnover scale-change cost, "
+        "scaled embedded-lineage base trading cost, and "
+        f"{float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE):.0%} annual financing cost on exposure above 1.0x."
     )
     summary.setdefault("core_params", {})
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
@@ -693,6 +947,7 @@ def generate_v2_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["core_params"]["signal_quality_derisk"] = {
         "type": "momentum_gap_peak_decay_derisk_new_peak_guard",
         "decay_ratio_threshold": DECAY_RATIO_THRESHOLD,
+        "min_peak_to_arm_decay": MIN_PEAK_TO_ARM_DECAY,
         "derisk_scale": DERISK_SCALE,
         "recovery_ratio_threshold": RECOVERY_RATIO_THRESHOLD,
     }
@@ -713,7 +968,7 @@ def generate_v2_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["data_lineage"] = data_lineage
     summary["performance_source_label"] = "costed_v2_4"
     summary["performance_snapshot"] = perf_payload["summary"]
-    summary["base_fingerprint"] = current_base_fingerprint()
+    summary["base_fingerprint"] = current_base_fingerprint_canonical()
     _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
     for path in stale_outputs:
         if path not in {SUMMARY_JSON, LATEST_SIGNAL_CSV, NAV_CSV, COSTED_NAV_CSV, PERF_SUMMARY_CSV, PERF_YEARLY_CSV, PERF_NAV_CSV, PERF_JSON, PERF_PNG}:
@@ -724,8 +979,33 @@ def generate_v2_4_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 def build_realtime_v2_4_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
     realtime_base = v2_0.realtime_core.load_realtime_base()
-    close_df = realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index()
-    common_index = _valid_power_wma_index(close_df)
+    close_df = _validate_close_df(realtime_base.realtime_close_df[["microcap", "hedge"]])
+    _, _, official_v2_0_out = v2_0.generate_v2_0_outputs()
+    official_index = pd.DatetimeIndex(official_v2_0_out.index).sort_values()
+    base_gross = getattr(realtime_base, "base_gross", None)
+    if base_gross is not None:
+        base_index = _validated_realtime_base_gross_index(base_gross)
+        snapshot_date = pd.Timestamp(close_df.index[-1])
+        allowed_extra = pd.DatetimeIndex([])
+        if snapshot_date not in official_index:
+            allowed_extra = pd.DatetimeIndex([snapshot_date])
+        if not official_index.empty:
+            base_index_to_check = base_index[base_index >= official_index.min()]
+        else:
+            base_index_to_check = base_index
+        unexpected_extra = base_index_to_check.difference(official_index.union(allowed_extra))
+        if len(unexpected_extra) > 0:
+            examples = [str(pd.Timestamp(dt).date()) for dt in unexpected_extra[:5]]
+            raise ValueError(f"realtime base_gross has unexpected extra dates: {examples}")
+    common_index = build_v2_4_common_index(
+        close_df,
+        official_index,
+        include_snapshot=True,
+    )
+    if common_index.empty:
+        raise ValueError(
+            "v2.4 realtime common_index is empty after valid WMA / official index / snapshot filters"
+        )
     gross = build_spread_power_wma_gross(close_df, common_index)
     buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
     derisked = apply_close_executed_peak_decay_derisk(
@@ -760,10 +1040,11 @@ def _print_signal_query() -> None:
     print("signal")
     print("strategy_version: v2.4")
     print("base_version: embedded_v2_base")
-    print("signal_model: spread-NAV Power-WMA daily return, power 0.75, lookback 20, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
+    print(f"signal_model: {signal_model_human()}")
     print(
         f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, peak-decay "
-        f"{DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, target volatility {TARGET_VOL:.0%}"
+        f"{DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, min peak {MIN_PEAK_TO_ARM_DECAY:.2f}, "
+        f"target volatility {TARGET_VOL:.0%}"
     )
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
@@ -785,10 +1066,11 @@ def _print_realtime_signal_query() -> None:
     print("realtime_signal")
     print("strategy_version: v2.4")
     print("base_version: embedded_v2_base")
-    print("signal_model: spread-NAV Power-WMA daily return, power 0.75, lookback 20, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
+    print(f"signal_model: {signal_model_human()}")
     print(
         f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, peak-decay "
-        f"{DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, target volatility {TARGET_VOL:.0%}"
+        f"{DECAY_RATIO_THRESHOLD:.2f}/{RECOVERY_RATIO_THRESHOLD:.2f}, min peak {MIN_PEAK_TO_ARM_DECAY:.2f}, "
+        f"target volatility {TARGET_VOL:.0%}"
     )
     print(f"snapshot_time: {meta.get('snapshot_time')}")
     print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
