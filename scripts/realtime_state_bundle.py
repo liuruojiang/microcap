@@ -15,12 +15,12 @@ MANIFEST_NAME = "top100_realtime_state_manifest.json"
 
 REQUIRED_FILES = (
     "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
-    "outputs/microcap_top100_mom16_biweekly_live_summary.json",
-    "outputs/microcap_top100_mom16_biweekly_live_v1_1_panel_refreshed.csv",
-    "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_meta.json",
-    "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv",
-    "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
-    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
     ".microcap_index_cache/active_universe.csv",
     ".microcap_index_cache/current_st.csv",
 )
@@ -120,7 +120,7 @@ def _csv_symbols(path: Path) -> list[str]:
 
 
 def _latest_proxy_member_symbols(root: Path) -> list[str]:
-    path = root / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_members.csv"
+    path = root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv"
     if not path.is_file():
         return []
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
@@ -205,15 +205,15 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
             ("date",),
         ),
         "costed_nav": _csv_last_date(
-            root / "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_costed_nav.csv",
+            root / "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
             ("date",),
         ),
         "panel_shadow": _csv_last_date(
-            root / "outputs/microcap_top100_mom16_biweekly_live_v1_1_panel_refreshed.csv",
+            root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
             ("date",),
         ),
         "proxy_turnover": _csv_last_date(
-            root / "outputs/microcap_top100_mom16_biweekly_live_v1_1_proxy_turnover.csv",
+            root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
             ("rebalance_date", "date"),
         ),
     }
@@ -328,30 +328,27 @@ def refresh_state(
 ) -> dict[str, object]:
     sys.path.insert(0, str(root.resolve()))
     from run_top100_v1_6_v1_8_realtime_signals import ensure_static_realtime_inputs
-    import top100_realtime_core as realtime_core
+    import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 
     ensure_static_realtime_inputs(force_refresh=force_refresh_static_inputs)
 
-    args = realtime_core.build_v1_1_args(max_workers=max_workers)
-    base_paths = realtime_core.base_mod.build_output_paths(realtime_core.base_mod.DEFAULT_OUTPUT_PREFIX)
-    realtime_core.v1_1_mod.prepare_current_v1_1_outputs(
-        paths=base_paths,
-        costed_nav_csv=realtime_core.BASE_COSTED_NAV_CSV,
-    )
+    v2_0._sync_embedded_base_config()
+    args = v2_0._build_base_args(max_workers=max_workers)
+    base_paths = v2_0.base_mod.build_output_paths(v2_0.base_mod.DEFAULT_OUTPUT_PREFIX)
     target_end_date: date | None = None
     try:
-        panel_path, target_end_ts = realtime_core.base_mod.build_refreshed_panel_shadow(args, base_paths)
+        panel_path, target_end_ts = v2_0.base_mod.build_refreshed_panel_shadow(args, base_paths)
         target_end_date = _parse_date(str(target_end_ts))
         if target_end_date is None:
             raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
-        realtime_core.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_ts)
-        base_context = realtime_core.base_mod.ensure_realtime_query_base_context(
+        v2_0.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_ts)
+        base_context = v2_0.base_mod.ensure_realtime_query_base_context(
             args,
             base_paths,
             panel_path,
             target_end_ts,
         )
-        realtime_core.base_mod.ensure_static_members_fresh(
+        v2_0.base_mod.ensure_static_members_fresh(
             args,
             base_paths,
             panel_path,

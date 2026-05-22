@@ -9604,12 +9604,12 @@ def _load_embedded_base_context() -> tuple[dict[str, object], pd.DataFrame, pd.D
         args = _build_base_args()
         base_paths = base_mod.build_output_paths(base_mod.DEFAULT_OUTPUT_PREFIX)
         panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
-        index_end_date = base_mod.read_csv_last_date(args.index_csv)
-        if index_end_date is not None:
-            target_end_date = min(pd.Timestamp(target_end_date), pd.Timestamp(index_end_date))
         costed_end_date = base_mod.read_csv_last_date(base_mod.DEFAULT_COSTED_NAV_CSV)
         if costed_end_date is None or pd.Timestamp(costed_end_date).normalize() < pd.Timestamp(target_end_date).normalize():
             base_mod.ensure_strategy_nav_fresh(args, base_paths, panel_path, target_end_date)
+        index_end_date = base_mod.read_csv_last_date(args.index_csv)
+        if index_end_date is not None:
+            target_end_date = min(pd.Timestamp(target_end_date), pd.Timestamp(index_end_date))
         close_df = base_mod.load_close_df(panel_path, args.index_csv, max_date=target_end_date)
         gross = base_mod.run_signal(close_df).sort_index()
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
@@ -9722,19 +9722,25 @@ def _cached_realtime_context_from_existing_state(
             message = "Realtime anchor refresh failed and no panel shadow cache is available for fallback."
         raise RuntimeError(message) from exc
 
-    candidate_dates = [
-        panel_target_end,
-        base_mod.read_csv_last_date(args.index_csv),
-        base_mod.read_csv_last_date(args.costed_nav_csv),
-    ]
-    candidate_dates = [pd.Timestamp(dt).normalize() for dt in candidate_dates if dt is not None]
-    if not candidate_dates:
+    panel_target_end = pd.Timestamp(panel_target_end).normalize()
+    index_end_date = base_mod.read_csv_last_date(args.index_csv)
+    costed_end_date = base_mod.read_csv_last_date(args.costed_nav_csv)
+    cached_dates = [pd.Timestamp(dt).normalize() for dt in (index_end_date, costed_end_date) if dt is not None]
+    if len(cached_dates) < 2:
         message = "Cached outputs have no usable date for realtime state-only mode."
         if exc is not None:
             message = "Realtime anchor refresh failed and cached outputs have no usable date for fallback."
         raise RuntimeError(message) from exc
+    stale_cached_dates = [dt for dt in cached_dates if dt < panel_target_end]
+    if stale_cached_dates:
+        oldest = min(stale_cached_dates)
+        message = (
+            "Validated realtime state cached proxy outputs are older than refreshed panel: "
+            f"cached_last_date={oldest.date()} panel_target_end={panel_target_end.date()}"
+        )
+        raise RuntimeError(message) from exc
 
-    target_end_date = min(candidate_dates)
+    target_end_date = panel_target_end
     base_context = base_mod.build_realtime_context_from_cached_proxy(
         args,
         base_paths,

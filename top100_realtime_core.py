@@ -109,16 +109,21 @@ def cached_realtime_context_from_existing_state(
     if not panel_path.exists():
         raise RuntimeError("No panel shadow cache is available for realtime state-only mode.")
 
-    candidate_dates = [
-        panel_target_end,
-        base_mod.read_csv_last_date(args.index_csv),
-        base_mod.read_csv_last_date(args.costed_nav_csv),
-    ]
-    candidate_dates = [pd.Timestamp(dt).normalize() for dt in candidate_dates if dt is not None]
-    if not candidate_dates:
+    panel_target_end = pd.Timestamp(panel_target_end).normalize()
+    index_end_date = base_mod.read_csv_last_date(args.index_csv)
+    costed_end_date = base_mod.read_csv_last_date(args.costed_nav_csv)
+    cached_dates = [pd.Timestamp(dt).normalize() for dt in (index_end_date, costed_end_date) if dt is not None]
+    if len(cached_dates) < 2:
         raise RuntimeError("Cached outputs have no usable date for realtime state-only mode.")
+    stale_cached_dates = [dt for dt in cached_dates if dt < panel_target_end]
+    if stale_cached_dates:
+        oldest = min(stale_cached_dates)
+        raise RuntimeError(
+            "Validated realtime state cached proxy outputs are older than refreshed panel: "
+            f"cached_last_date={oldest.date()} panel_target_end={panel_target_end.date()}"
+        )
 
-    target_end_date = min(candidate_dates)
+    target_end_date = panel_target_end
     base_context = base_mod.build_realtime_context_from_cached_proxy(
         args,
         base_paths,
