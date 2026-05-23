@@ -36,3 +36,4 @@ _poe_sandbox_clean/
 .microcap_index_cache/
 .microcap_ohlc_cache/
 outputs/
+quant_param_scan_runs/

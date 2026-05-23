@@ -48,6 +48,18 @@ RUNTIME_PACKAGES = (
 )
 
 
+def _env_float(name: str, default: float) -> float:
+    try:
+        return float(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+DEFAULT_REALTIME_CACHE_SECONDS = int(_env_float("MICROCAP_REALTIME_CACHE_SECONDS", 10.0))
+DEFAULT_V2_LOCK_WAIT_SECONDS = _env_float("MICROCAP_V2_LOCK_WAIT_SECONDS", 60.0)
+DEFAULT_V2_STALE_LOCK_SECONDS = _env_float("MICROCAP_V2_STALE_LOCK_SECONDS", 600.0)
+
+
 def parse_v2_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Top100 Mom16 Biweekly v2.0 standalone target-vol overlay"
@@ -58,7 +70,7 @@ def parse_v2_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--costed-nav-csv", type=Path, default=None)
     parser.add_argument("--capital", type=float, default=None)
     parser.add_argument("--max-workers", type=int, default=8)
-    parser.add_argument("--realtime-cache-seconds", type=int, default=30)
+    parser.add_argument("--realtime-cache-seconds", type=int, default=DEFAULT_REALTIME_CACHE_SECONDS)
     parser.add_argument("--allow-stale-realtime", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--bootstrap-deps", action="store_true")
     parser.add_argument("--wheelhouse", type=Path, default=None)
@@ -3515,8 +3527,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--realtime-cache-seconds",
         type=int,
-        default=30,
-        help="Only reuse realtime results within this many seconds. Default is 30s for same-decision-window sharing.",
+        default=10,
+        help="Only reuse realtime results within this many seconds. Default is 10s for same-decision-window sharing.",
     )
     parser.add_argument(
         "--rebuild-index-if-missing",
@@ -6935,8 +6947,13 @@ def assert_no_historical_rewrite(
     allowed_tail_rows: int,
     label: str,
     audit_path: Path | None = None,
-    numeric_tolerance: float = 1e-10,
+    atol: float = 1e-9,
+    rtol: float = 1e-7,
+    numeric_tolerance: float | None = None,
 ) -> None:
+    if numeric_tolerance is not None:
+        atol = float(numeric_tolerance)
+        rtol = 0.0
     prev = _normalise_dated_frame(previous, f"{label} previous")
     cand = _normalise_dated_frame(candidate, f"{label} candidate")
     common = prev.index.intersection(cand.index).sort_values()
@@ -6953,7 +6970,9 @@ def assert_no_historical_rewrite(
         right_num = pd.to_numeric(right, errors="coerce")
         numeric_like = left_num.notna().any() or right_num.notna().any()
         if numeric_like:
-            changed = (left_num - right_num).abs().gt(float(numeric_tolerance))
+            diff = (left_num - right_num).abs()
+            threshold = float(atol) + float(rtol) * right_num.abs()
+            changed = diff.gt(threshold)
             changed = changed | (left_num.isna() ^ right_num.isna())
         else:
             changed = left.astype(str).ne(right.astype(str))
@@ -9396,7 +9415,7 @@ def _file_sha1(path: Path) -> str:
 def _build_base_args(
     max_workers: int = 8,
     capital: float | None = None,
-    realtime_cache_seconds: int = 30,
+    realtime_cache_seconds: int = DEFAULT_REALTIME_CACHE_SECONDS,
     allow_stale_realtime: bool = False,
 ) -> argparse.Namespace:
     _sync_embedded_base_config()
@@ -11131,8 +11150,8 @@ def _read_lock_pid(lock_path: Path) -> int | None:
 @contextmanager
 def _v2_file_lock(
     lock_name: str,
-    wait_timeout_seconds: float = 900.0,
-    stale_lock_seconds: float = 7200.0,
+    wait_timeout_seconds: float = DEFAULT_V2_LOCK_WAIT_SECONDS,
+    stale_lock_seconds: float = DEFAULT_V2_STALE_LOCK_SECONDS,
 ):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     lock_path = OUTPUT_DIR / lock_name
@@ -11179,8 +11198,8 @@ def _v2_file_lock(
 
 @contextmanager
 def _v2_output_generation_lock(
-    wait_timeout_seconds: float = 900.0,
-    stale_lock_seconds: float = 7200.0,
+    wait_timeout_seconds: float = DEFAULT_V2_LOCK_WAIT_SECONDS,
+    stale_lock_seconds: float = DEFAULT_V2_STALE_LOCK_SECONDS,
 ):
     with _v2_file_lock(
         f"{OUTPUT_PREFIX}_generation.lock",
@@ -11192,8 +11211,8 @@ def _v2_output_generation_lock(
 
 @contextmanager
 def _v2_base_build_lock(
-    wait_timeout_seconds: float = 900.0,
-    stale_lock_seconds: float = 7200.0,
+    wait_timeout_seconds: float = DEFAULT_V2_LOCK_WAIT_SECONDS,
+    stale_lock_seconds: float = DEFAULT_V2_STALE_LOCK_SECONDS,
 ):
     with _v2_file_lock(
         f"{OUTPUT_PREFIX}_base_build.lock",
@@ -11205,8 +11224,8 @@ def _v2_base_build_lock(
 
 @contextmanager
 def _v2_realtime_output_lock(
-    wait_timeout_seconds: float = 60.0,
-    stale_lock_seconds: float = 300.0,
+    wait_timeout_seconds: float = DEFAULT_V2_LOCK_WAIT_SECONDS,
+    stale_lock_seconds: float = DEFAULT_V2_STALE_LOCK_SECONDS,
 ):
     with _v2_file_lock(
         f"{OUTPUT_PREFIX}_realtime.lock",

@@ -21,18 +21,15 @@ import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
-OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_3"
+OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_5"
 DEFAULT_OUTPUT_PREFIX = OUTPUT_PREFIX
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_exp_h3_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_microcap_only_exp_h3_lb17_entry40_exit40_targetvol30_max1p3_scale030_v2_5_costed_nav.csv"
 DEFAULT_COSTED_NAV_CSV = COSTED_NAV_CSV
-LEGACY_COSTED_NAV_CSVS = [
-    OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv",
-    OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_decay35_recovery50_targetvol25_scale030_v2_3_costed_nav.csv"
-]
+LEGACY_COSTED_NAV_CSVS: list[Path] = []
 PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
 PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
 PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
@@ -44,40 +41,45 @@ PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
 PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
-VERSION = "2.3"
-EXPECTED_VERSION_ROLE = "spread_nav_log_wls_gap_target_vol_overlay"
-EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS target-volatility overlay."
+VERSION = "2.5"
+EXPECTED_VERSION_ROLE = "microcap_only_log_wls_threshold_target_vol_overlay"
+EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.5 microcap-only log-WLS threshold target-volatility overlay."
 LOOKBACK = 17
 HALFLIFE = 3.0
-MOMENTUM_GAP_EXIT_BUFFER = 0.13
-TARGET_VOL = 0.25
+ENTRY_THRESHOLD = 0.40
+EXIT_THRESHOLD = 0.40
+TARGET_VOL = 0.30
+TARGET_VOL_MAX_LEVERAGE = 1.3
+TARGET_VOL_MIN_LEVERAGE = float(v2_0.overlay_mod.TARGET_VOL_MIN_LEVERAGE)
+TARGET_VOL_WINDOW = int(v2_0.overlay_mod.TARGET_VOL_WINDOW)
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.30
+TARGET_VOL_SCALE_CHANGE_COST = float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST)
+TARGET_VOL_FINANCING_RATE = float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE)
+IDLE_CASH_YIELD = float(v2_0.overlay_mod.IDLE_CASH_YIELD)
 FORMAL_START_DATE = pd.Timestamp("2010-05-05")
-CASH_DAY_YIELD = float(v2_0.overlay_mod.IDLE_CASH_YIELD)
-MISMATCH_DIAGNOSTIC_ROLLING_WINDOW = 60
 MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS = 5
 _OFFICIAL_V2_0_OUT_CACHE: tuple[str, pd.DataFrame] | None = None
 
-SIGNAL_SPREAD_HEDGE_RATIO = 1.0
-EXECUTION_HEDGE_RATIO = float(v2_0.BASE_HEDGE_RATIO)
-BASE_HEDGE_RATIO = EXECUTION_HEDGE_RATIO
+SIGNAL_SPREAD_HEDGE_RATIO = 0.0
+EXECUTION_HEDGE_RATIO = 0.0
+BASE_HEDGE_RATIO = 0.0
 TRADING_DAYS = int(v2_0.overlay_mod.TARGET_VOL_TRADING_DAYS)
 
 
-def parse_v2_3_args(argv: list[str] | None = None) -> argparse.Namespace:
+def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Top100 Mom16 Biweekly v2.3 spread-NAV log-WLS target-vol overlay"
+        description="Top100 Mom16 Biweekly v2.5 microcap-only log-WLS target-vol overlay"
     )
     parser.add_argument("query_tokens", nargs="*", help="信号 / 实时信号 / 表现 <区间>")
     parser.add_argument("--panel-path", type=Path, default=None)
     parser.add_argument("--index-csv", type=Path, default=None)
     parser.add_argument(
-        "--v23-costed-nav-csv",
+        "--v25-costed-nav-csv",
         "--costed-nav-csv",
-        dest="v23_costed_nav_csv",
+        dest="v25_costed_nav_csv",
         type=Path,
         default=None,
-        help="Override the v2.3 costed NAV CSV written/read by queries.",
+        help="Override the v2.5 costed NAV CSV written/read by queries.",
     )
     parser.add_argument("--base-costed-nav-csv", type=Path, default=None)
     parser.add_argument("--capital", type=float, default=None)
@@ -87,11 +89,11 @@ def parse_v2_3_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--bootstrap-deps", action="store_true")
     parser.add_argument("--wheelhouse", type=Path, default=None)
     parser.add_argument(
-        "--v23-output-prefix",
+        "--v25-output-prefix",
         "--output-prefix",
-        dest="v23_output_prefix",
+        dest="v25_output_prefix",
         default=None,
-        help="Override the v2.3 output prefix for summary, signal, performance, and NAV files.",
+        help="Override the v2.5 output prefix for summary, signal, performance, and NAV files.",
     )
     parser.add_argument("--base-output-prefix", default=None)
     return parser.parse_args(argv)
@@ -128,8 +130,8 @@ def configure_output_paths(output_prefix: str | None = None, costed_nav_csv: Pat
 
 def configure_runtime(args: argparse.Namespace) -> None:
     configure_output_paths(
-        output_prefix=getattr(args, "v23_output_prefix", None),
-        costed_nav_csv=getattr(args, "v23_costed_nav_csv", None),
+        output_prefix=getattr(args, "v25_output_prefix", None),
+        costed_nav_csv=getattr(args, "v25_costed_nav_csv", None),
     )
     v2_0._V2_RUNTIME_ARGS = argparse.Namespace(
         query_tokens=[],
@@ -146,7 +148,7 @@ def configure_runtime(args: argparse.Namespace) -> None:
     )
 
 
-def v2_3_output_lock(
+def v2_5_output_lock(
     wait_timeout_seconds: float = v2_0.DEFAULT_V2_LOCK_WAIT_SECONDS,
     stale_lock_seconds: float = v2_0.DEFAULT_V2_STALE_LOCK_SECONDS,
 ):
@@ -157,7 +159,7 @@ def v2_3_output_lock(
     )
 
 
-def v2_3_realtime_output_lock(
+def v2_5_realtime_output_lock(
     wait_timeout_seconds: float = v2_0.DEFAULT_V2_LOCK_WAIT_SECONDS,
     stale_lock_seconds: float = v2_0.DEFAULT_V2_STALE_LOCK_SECONDS,
 ):
@@ -249,15 +251,13 @@ def exp_weights(lookback: int = LOOKBACK, halflife: float = HALFLIFE) -> tuple[f
     return tuple((raw / raw.sum()).tolist())
 
 
-def always_on_spread_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series, float]:
+def microcap_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series]:
     close_df = close_df.sort_index()
     micro_ret = close_df["microcap"].pct_change(fill_method=None)
     hedge_ret = close_df["hedge"].pct_change(fill_method=None)
-    daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * SIGNAL_SPREAD_HEDGE_RATIO
-    spread_ret = micro_ret.fillna(0.0) - SIGNAL_SPREAD_HEDGE_RATIO * hedge_ret.fillna(0.0) - daily_drag
-    spread_nav = (1.0 + spread_ret.fillna(0.0)).cumprod()
-    spread_nav.name = "spread_nav"
-    return spread_nav, micro_ret, hedge_ret, daily_drag
+    nav = (1.0 + micro_ret.fillna(0.0)).cumprod()
+    nav.name = "microcap_nav"
+    return nav, micro_ret, hedge_ret
 
 
 def log_wls_score_and_r2(
@@ -301,13 +301,13 @@ def log_wls_score_and_r2(
 
 
 def _valid_log_wls_index(close_df: pd.DataFrame) -> pd.DatetimeIndex:
-    spread_nav, _micro_ret, _hedge_ret, _daily_drag = always_on_spread_nav(close_df)
-    log_wls = log_wls_score_and_r2(spread_nav)
+    nav, _micro_ret, _hedge_ret = microcap_nav(close_df)
+    log_wls = log_wls_score_and_r2(nav)
     valid = log_wls["annualized_log_wls_score"].notna() & log_wls["log_wls_r2"].notna()
     return pd.DatetimeIndex(log_wls.index[valid])
 
 
-def build_v2_3_common_index(
+def build_v2_5_common_index(
     close_df: pd.DataFrame,
     official_index: pd.DatetimeIndex | pd.Index | None = None,
 ) -> pd.DatetimeIndex:
@@ -318,32 +318,45 @@ def build_v2_3_common_index(
     return idx[idx >= FORMAL_START_DATE].sort_values()
 
 
-def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
+def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
     close_df = close_df.sort_index()
-    spread_nav, micro_ret, hedge_ret, _signal_daily_drag = always_on_spread_nav(close_df)
-    log_wls = log_wls_score_and_r2(spread_nav)
+    nav, micro_ret, hedge_ret = microcap_nav(close_df)
+    log_wls = log_wls_score_and_r2(nav)
     common_index = _valid_log_wls_index(close_df) if index is None else pd.DatetimeIndex(index)
     score = pd.to_numeric(log_wls["annualized_log_wls_score"].loc[common_index], errors="coerce")
     r2 = pd.to_numeric(log_wls["log_wls_r2"].loc[common_index], errors="coerce")
-    signal_on = score.gt(0.0)
-    current_active = signal_on.shift(1, fill_value=False)
     microcap_ret = micro_ret.loc[common_index]
     hedge_ret_part = hedge_ret.loc[common_index]
-    execution_daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * EXECUTION_HEDGE_RATIO
-    active_spread_ret = microcap_ret.fillna(0.0) - EXECUTION_HEDGE_RATIO * hedge_ret_part.fillna(0.0)
-    futures_drag = pd.Series(
-        np.where(current_active, execution_daily_drag, 0.0),
-        index=common_index,
-        dtype=float,
-    )
-    gross_ret = pd.Series(np.where(current_active, active_spread_ret - futures_drag, 0.0), index=common_index, dtype=float)
+
+    current_active = False
+    holdings: list[str] = []
+    next_holdings: list[str] = []
+    signal_on_values: list[bool] = []
+    returns: list[float] = []
+    for dt in common_index:
+        active_before_signal = bool(current_active)
+        holdings.append("long_microcap_top100" if active_before_signal else "cash")
+        returns.append(float(microcap_ret.loc[dt]) if active_before_signal else 0.0)
+        current_score = score.loc[dt]
+        if pd.isna(current_score):
+            next_active = False
+        elif active_before_signal:
+            next_active = float(current_score) > EXIT_THRESHOLD
+        else:
+            next_active = float(current_score) > ENTRY_THRESHOLD
+        next_holdings.append("long_microcap_top100" if next_active else "cash")
+        signal_on_values.append(bool(next_active))
+        current_active = bool(next_active)
+
+    gross_ret = pd.Series(returns, index=common_index, dtype=float)
+    futures_drag = pd.Series(0.0, index=common_index, dtype=float)
     return pd.DataFrame(
         {
             "return_raw": gross_ret,
             "return": gross_ret,
-            "holding": np.where(current_active, "long_microcap_short_zz1000", "cash"),
-            "next_holding": np.where(signal_on, "long_microcap_short_zz1000", "cash"),
-            "signal_on": signal_on.astype(bool),
+            "holding": holdings,
+            "next_holding": next_holdings,
+            "signal_on": signal_on_values,
             "microcap_close": close_df["microcap"].loc[common_index],
             "hedge_close": close_df["hedge"].loc[common_index],
             "microcap_ret": microcap_ret,
@@ -353,13 +366,15 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
             "momentum_gap": score,
             "annualized_log_wls_score": score,
             "log_wls_r2": r2,
-            "spread_nav": spread_nav.loc[common_index],
+            "microcap_nav": nav.loc[common_index],
             "halflife": HALFLIFE,
             "exp_weight_oldest_to_newest": ",".join(f"{w:.8f}" for w in exp_weights()),
-            "signal_score_label": "annualized_log_wls_score",
-            "momentum_gap_legacy_note": "legacy field contains annualized spread-NAV log-WLS score, not plain microcap-minus-hedge momentum gap",
+            "signal_score_label": "microcap_only_annualized_log_wls_score",
+            "entry_threshold": ENTRY_THRESHOLD,
+            "exit_threshold": EXIT_THRESHOLD,
+            "momentum_gap_legacy_note": "legacy field contains annualized microcap-only log-WLS score, not plain microcap-minus-hedge momentum gap",
             "futures_drag": futures_drag,
-            "active_spread_ret": pd.Series(np.where(current_active, active_spread_ret, 0.0), index=common_index, dtype=float),
+            "active_spread_ret": gross_ret,
             "weight": 1.0,
             "target_vol_execution_scale": 1.0,
         },
@@ -373,22 +388,6 @@ def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def apply_cash_day_yield(out: pd.DataFrame) -> pd.DataFrame:
-    adjusted = out.copy()
-    holding = adjusted["holding"].astype(str) if "holding" in adjusted.columns else pd.Series("cash", index=adjusted.index)
-    cash_day = holding.eq("cash")
-    daily_yield = float(CASH_DAY_YIELD) / float(TRADING_DAYS)
-    cash_day_yield = pd.Series(0.0, index=adjusted.index, dtype=float)
-    cash_day_yield.loc[cash_day] = daily_yield
-    ret = pd.to_numeric(adjusted["return_net"], errors="coerce").fillna(0.0)
-    adjusted["return_net"] = (1.0 + ret) * (1.0 + cash_day_yield) - 1.0
-    adjusted["nav_net"] = (1.0 + adjusted["return_net"].fillna(0.0)).cumprod()
-    adjusted["cash_day_yield"] = cash_day_yield
-    adjusted["cash_day_yield_annual"] = CASH_DAY_YIELD
-    adjusted["cash_day_yield_enabled"] = True
-    return adjusted
-
-
 def _safe_float(value: object, default: float = 0.0) -> float:
     try:
         if pd.isna(value):
@@ -396,57 +395,6 @@ def _safe_float(value: object, default: float = 0.0) -> float:
         return float(value)
     except (TypeError, ValueError):
         return float(default)
-
-
-def build_signal_execution_mismatch_diagnostics(
-    close_df: pd.DataFrame,
-    out: pd.DataFrame,
-    rolling_window: int = MISMATCH_DIAGNOSTIC_ROLLING_WINDOW,
-) -> dict[str, object]:
-    close_df = close_df.sort_index()
-    micro_ret = close_df["microcap"].pct_change(fill_method=None)
-    hedge_ret = close_df["hedge"].pct_change(fill_method=None)
-    daily_drag = float(v2_0.base_mod.FUTURES_DRAG)
-    signal_ret = micro_ret - SIGNAL_SPREAD_HEDGE_RATIO * hedge_ret - daily_drag * SIGNAL_SPREAD_HEDGE_RATIO
-    execution_ret = micro_ret - EXECUTION_HEDGE_RATIO * hedge_ret - daily_drag * EXECUTION_HEDGE_RATIO
-    frame = pd.DataFrame(
-        {
-            "signal_ret": signal_ret,
-            "execution_ret": execution_ret,
-            "exec_minus_signal_ret": execution_ret - signal_ret,
-        }
-    ).replace([np.inf, -np.inf], np.nan)
-    frame = frame.loc[frame.index.intersection(pd.DatetimeIndex(out.index))].dropna()
-    active = out["holding"].astype(str).ne("cash").reindex(frame.index).fillna(False) if "holding" in out.columns else pd.Series(False, index=frame.index)
-    active_frame = frame.loc[active]
-    rolling_window = max(2, int(rolling_window))
-    rolling_corr = frame["signal_ret"].rolling(rolling_window, min_periods=min(rolling_window, len(frame))).corr(frame["execution_ret"])
-    active_rolling_corr = active_frame["signal_ret"].rolling(
-        rolling_window,
-        min_periods=min(rolling_window, len(active_frame)),
-    ).corr(active_frame["execution_ret"]) if len(active_frame) else pd.Series(dtype=float)
-    return {
-        "signal_spread_hedge_ratio": SIGNAL_SPREAD_HEDGE_RATIO,
-        "execution_hedge_ratio": EXECUTION_HEDGE_RATIO,
-        "net_unhedged_zz1000_ratio": SIGNAL_SPREAD_HEDGE_RATIO - EXECUTION_HEDGE_RATIO,
-        "rolling_window": rolling_window,
-        "rows": int(len(frame)),
-        "active_rows": int(len(active_frame)),
-        "rolling_corr_latest": _safe_float(rolling_corr.dropna().iloc[-1], np.nan) if rolling_corr.dropna().size else None,
-        f"rolling_corr_{rolling_window}d_latest": _safe_float(rolling_corr.dropna().iloc[-1], np.nan) if rolling_corr.dropna().size else None,
-        "active_rolling_corr_latest": _safe_float(active_rolling_corr.dropna().iloc[-1], np.nan) if active_rolling_corr.dropna().size else None,
-        f"active_rolling_corr_{rolling_window}d_latest": _safe_float(active_rolling_corr.dropna().iloc[-1], np.nan) if active_rolling_corr.dropna().size else None,
-        "cumulative_exec_minus_signal_component": float((1.0 + frame["exec_minus_signal_ret"]).prod() - 1.0) if len(frame) else 0.0,
-        "active_cumulative_exec_minus_signal_component": float((1.0 + active_frame["exec_minus_signal_ret"]).prod() - 1.0) if len(active_frame) else 0.0,
-        "mean_daily_exec_minus_signal": float(frame["exec_minus_signal_ret"].mean()) if len(frame) else 0.0,
-        "active_mean_daily_exec_minus_signal": float(active_frame["exec_minus_signal_ret"].mean()) if len(active_frame) else 0.0,
-    }
-
-
-def apply_signal_execution_mismatch_columns(signal_row: pd.DataFrame, diagnostics: dict[str, object]) -> pd.DataFrame:
-    for key, value in diagnostics.items():
-        signal_row[f"signal_execution_mismatch_{key}"] = value
-    return signal_row
 
 
 def assert_realtime_target_vol_lag_fresh(out: pd.DataFrame) -> None:
@@ -463,38 +411,164 @@ def assert_realtime_target_vol_lag_fresh(out: pd.DataFrame) -> None:
     )
 
 
+def _apply_scale_rebalance_threshold(desired_scale: pd.Series, active: pd.Series) -> pd.Series:
+    desired = pd.to_numeric(desired_scale, errors="coerce").fillna(1.0)
+    active_flags = active.reindex(desired.index).fillna(False).astype(bool)
+    values: list[float] = []
+    last_scale = 0.0
+    for dt, target in desired.items():
+        if not bool(active_flags.loc[dt]):
+            values.append(0.0)
+            last_scale = 0.0
+            continue
+        target = float(target)
+        if last_scale <= 1e-12 or abs(target - last_scale) >= TARGET_VOL_SCALE_REBALANCE_THRESHOLD:
+            last_scale = target
+        values.append(float(last_scale))
+    return pd.Series(values, index=desired.index, dtype=float)
+
+
+def _calc_next_session_actionable_scale(
+    current_execution_scale: pd.Series,
+    next_session_target_scale: pd.Series,
+    next_holding: pd.Series,
+) -> pd.Series:
+    current = pd.to_numeric(current_execution_scale, errors="coerce").fillna(0.0)
+    target = pd.to_numeric(next_session_target_scale, errors="coerce").fillna(current)
+    next_holding = next_holding.fillna("cash").astype(str)
+    actionable = current.copy()
+    to_cash = next_holding.eq("cash")
+    enter_from_cash = current.le(1e-12) & next_holding.ne("cash") & target.gt(1e-12)
+    rebalance = target.sub(current).abs().ge(TARGET_VOL_SCALE_REBALANCE_THRESHOLD)
+    actionable.loc[to_cash] = 0.0
+    actionable.loc[~to_cash & (enter_from_cash | rebalance)] = target.loc[~to_cash & (enter_from_cash | rebalance)]
+    return actionable.astype(float)
+
+
+def _microcap_turnover_series(holding: pd.Series, execution_scale: pd.Series) -> pd.Series:
+    holding = holding.fillna("cash").astype(str)
+    scale = pd.to_numeric(execution_scale, errors="coerce").fillna(0.0)
+    leg = scale.where(holding.ne("cash"), 0.0)
+    return leg.sub(leg.shift(1).fillna(0.0)).abs().astype(float)
+
+
+def _base_trade_cost_scale(
+    holding: pd.Series,
+    next_holding: pd.Series,
+    current_execution_scale: pd.Series,
+    next_session_actionable_scale: pd.Series,
+) -> pd.Series:
+    holding = holding.fillna("cash").astype(str)
+    next_holding = next_holding.fillna(holding).astype(str)
+    current = pd.to_numeric(current_execution_scale, errors="coerce").fillna(0.0)
+    actionable = pd.to_numeric(next_session_actionable_scale, errors="coerce").fillna(current)
+    scale = pd.Series(0.0, index=holding.index, dtype=float)
+    current_active = holding.ne("cash")
+    next_active = next_holding.ne("cash")
+    scale.loc[~current_active & next_active] = actionable.loc[~current_active & next_active]
+    scale.loc[current_active] = current.loc[current_active]
+    return scale.clip(lower=0.0)
+
+
 def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, *, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
-    out = v2_0.overlay_mod.apply_target_vol_scaling(
-        costed_base,
-        treat_last_row_as_snapshot=treat_last_row_as_snapshot,
-        target_vol=float(target_vol),
-        scale_rebalance_threshold=float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD),
+    del treat_last_row_as_snapshot
+    out = costed_base.copy().sort_index()
+    target_vol_value = float(target_vol)
+    holding = out["holding"].fillna("cash").astype(str)
+    next_holding = out["next_holding"].fillna(holding).astype(str)
+    active = holding.ne("cash")
+    base_return_net = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
+    base_trade_cost = pd.to_numeric(out.get("total_cost", pd.Series(0.0, index=out.index)), errors="coerce").fillna(0.0)
+    base_pre_cost_return = (1.0 + base_return_net).div(1.0 - base_trade_cost.clip(lower=0.0, upper=0.99)).sub(1.0)
+    target_vol_return = pd.to_numeric(out["microcap_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan)
+    realized_vol = target_vol_return.rolling(TARGET_VOL_WINDOW, min_periods=TARGET_VOL_WINDOW).std(ddof=1) * math.sqrt(TRADING_DAYS)
+    raw_scale = (target_vol_value / realized_vol.replace(0.0, np.nan)).replace([np.inf, -np.inf], np.nan).clip(
+        lower=TARGET_VOL_MIN_LEVERAGE,
+        upper=TARGET_VOL_MAX_LEVERAGE,
     )
-    out = apply_cash_day_yield(out)
+    target_execution_scale = raw_scale.shift(1).fillna(1.0)
+    execution_scale = _apply_scale_rebalance_threshold(target_execution_scale, active)
+    next_session_target_scale = raw_scale.copy()
+    next_session_target_scale.loc[next_holding.eq("cash")] = 0.0
+    next_session_target_scale.loc[next_holding.ne("cash")] = next_session_target_scale.loc[next_holding.ne("cash")].fillna(1.0)
+    next_session_target_scale = next_session_target_scale.fillna(0.0)
+    next_session_actionable_scale = _calc_next_session_actionable_scale(
+        execution_scale,
+        next_session_target_scale,
+        next_holding,
+    )
+    target_vol_turnover = _microcap_turnover_series(holding, execution_scale)
+    same_holding = holding.eq(holding.shift(1))
+    target_vol_costed_turnover = target_vol_turnover.where(same_holding, 0.0)
+    scale_change_cost = target_vol_costed_turnover * TARGET_VOL_SCALE_CHANGE_COST
+    financing_cost = execution_scale.sub(1.0).clip(lower=0.0) * TARGET_VOL_FINANCING_RATE / TRADING_DAYS
+    idle_cash_yield = active.astype(float) * execution_scale.rsub(1.0).clip(lower=0.0, upper=1.0) * IDLE_CASH_YIELD / TRADING_DAYS
+    base_cost_scale = _base_trade_cost_scale(holding, next_holding, execution_scale, next_session_actionable_scale)
+    base_trade_cost_scaled = (base_trade_cost * base_cost_scale).clip(lower=0.0, upper=0.99)
+    ret = (
+        (1.0 + base_pre_cost_return * execution_scale + idle_cash_yield)
+        * (1.0 - base_trade_cost_scaled)
+        * (1.0 - scale_change_cost)
+        * (1.0 - financing_cost)
+        - 1.0
+    )
+    out["target_vol_enabled"] = True
+    out["target_vol"] = target_vol_value
+    out["target_vol_window"] = TARGET_VOL_WINDOW
+    out["target_vol_return"] = target_vol_return.fillna(0.0)
+    out["target_vol_return_source"] = "microcap_pct_change_unhedged"
+    out["target_vol_realized_vol"] = realized_vol
+    out["target_vol_scale_raw"] = raw_scale
+    out["target_vol_execution_scale_raw"] = target_execution_scale
+    out["current_execution_scale"] = execution_scale
+    out["execution_scale"] = execution_scale
+    out["next_session_target_scale"] = next_session_target_scale
+    out["next_session_actionable_scale"] = next_session_actionable_scale
+    out["target_vol_scale_next_session"] = next_session_actionable_scale
+    out["target_vol_turnover"] = target_vol_turnover
+    out["target_vol_costed_turnover"] = target_vol_costed_turnover
+    out["scale_change_cost"] = scale_change_cost
+    out["target_vol_trade_cost"] = scale_change_cost
+    out["financing_cost"] = financing_cost
+    out["idle_cash_yield"] = idle_cash_yield
+    out["cash_day_yield"] = 0.0
+    out["cash_day_yield_annual"] = 0.0
+    out["cash_day_yield_enabled"] = False
+    out["base_trade_cost"] = base_trade_cost
+    out["base_trade_cost_scale"] = base_cost_scale
+    out["base_trade_cost_scaled"] = base_trade_cost_scaled
+    out["base_pre_cost_return"] = base_pre_cost_return
+    out["embedded_lineage_return_net"] = base_return_net
+    out["embedded_lineage_nav_net"] = pd.to_numeric(out.get("nav_net", pd.Series(np.nan, index=out.index)), errors="coerce")
+    out["return_net"] = ret
+    out["nav_net"] = (1.0 + out["return_net"].fillna(0.0)).cumprod()
+    out["return"] = out["return_net"]
+    out["nav"] = out["nav_net"]
     out["version"] = VERSION
     out["base_version"] = "embedded_v2_base"
-    out["overlay_type"] = "spread_nav_log_wls_gap_target_vol"
+    out["overlay_type"] = "microcap_only_log_wls_threshold_target_vol"
     out["scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+    out["target_vol_max_leverage"] = TARGET_VOL_MAX_LEVERAGE
+    out["hedge_removed"] = True
     return out
 
 
-def build_v2_3_result(
+def build_v2_5_result(
     close_df: pd.DataFrame,
     turnover_df: pd.DataFrame,
     common_index: pd.DatetimeIndex | None = None,
 ) -> pd.DataFrame:
     if common_index is None:
-        common_index = build_v2_3_common_index(close_df)
+        common_index = build_v2_5_common_index(close_df)
     else:
         common_index = pd.DatetimeIndex(common_index)
         common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
-    gross = build_spread_log_wls_gross(close_df, common_index)
-    buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
-    costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, turnover_df)
+    gross = build_microcap_log_wls_gross(close_df, common_index)
+    costed = apply_cost(gross, turnover_df)
     out = apply_target_vol(costed, TARGET_VOL)
     if out.empty:
         raise ValueError(
-            "v2.3 output is empty: check close_df, official_v2_0_out.index, "
+            "v2.5 output is empty: check close_df, official_v2_0_out.index, "
             "FORMAL_START_DATE, and valid log-WLS window."
         )
     return out
@@ -506,33 +580,39 @@ def current_base_fingerprint() -> dict[str, object]:
         "base_version": "embedded_v2_base",
         "strategy_version": VERSION,
         "base_fingerprint": base,
-        "signal_model": "spread_nav_log_wls_exp_halflife_3p0_lb17_signal1p0_exec0p8",
+        "signal_model": "microcap_only_log_wls_exp_halflife_3p0_lb17_entry40_exit40_targetvol30_max1p3",
         "lookback": LOOKBACK,
         "halflife": HALFLIFE,
         "exp_weight_oldest_to_newest": list(exp_weights()),
-        "common_index_source": "intersection of valid spread-NAV log-WLS signal dates and official v2.0 output index, filtered from 2010-05-05",
-        "score_definition": "annualized weighted log slope of always-on 1.0x hedged signal spread NAV",
-        "nav_csv_momentum_gap_column_alias_note": "momentum_gap stores annualized_log_wls_score for v2.0 compatibility, not raw microcap minus hedge gap",
+        "common_index_source": "intersection of valid microcap-only log-WLS signal dates and official v2.0 output index, filtered from 2010-05-05",
+        "score_definition": "annualized weighted log slope of unhedged microcap Top100 NAV",
+        "nav_csv_momentum_gap_column_alias_note": "momentum_gap stores annualized microcap-only log-WLS score for v2.0 compatibility, not raw microcap-minus-hedge momentum gap",
         "r2_gate": None,
         "signal_spread_hedge_ratio": SIGNAL_SPREAD_HEDGE_RATIO,
         "execution_hedge_ratio": EXECUTION_HEDGE_RATIO,
         "base_hedge_ratio": BASE_HEDGE_RATIO,
-        "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
+        "entry_threshold": ENTRY_THRESHOLD,
+        "exit_threshold": EXIT_THRESHOLD,
         "signal_quality_derisk_enabled": False,
+        "single_trade_stop_loss_enabled": False,
+        "equity_drawdown_overlay_enabled": False,
+        "momentum_decay_overlay_enabled": False,
+        "overheat_overlay_enabled": False,
         "target_vol": TARGET_VOL,
-        "target_vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
-        "target_vol_max_leverage": float(v2_0.overlay_mod.TARGET_VOL_MAX_LEVERAGE),
-        "target_vol_scale_change_cost": float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST),
-        "target_vol_financing_rate": float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE),
+        "target_vol_window": TARGET_VOL_WINDOW,
+        "target_vol_max_leverage": TARGET_VOL_MAX_LEVERAGE,
+        "target_vol_min_leverage": TARGET_VOL_MIN_LEVERAGE,
+        "target_vol_scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
+        "target_vol_financing_rate": TARGET_VOL_FINANCING_RATE,
         "target_vol_scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
-        "cash_day_yield": CASH_DAY_YIELD,
-        "idle_credit_on_cash_day": True,
-        "signal_execution_mismatch_rolling_window": MISMATCH_DIAGNOSTIC_ROLLING_WINDOW,
+        "idle_cash_yield": IDLE_CASH_YIELD,
+        "idle_credit_on_full_cash_day": False,
+        "hedge_removed": True,
         "max_realtime_target_vol_frozen_lag_days": MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS,
     }
 
 
-def summary_matches_current_v2_3_base(summary: dict[str, object]) -> bool:
+def summary_matches_current_v2_5_base(summary: dict[str, object]) -> bool:
     if not isinstance(summary, dict):
         return False
     if str(summary.get("version")) != VERSION:
@@ -544,7 +624,7 @@ def summary_matches_current_v2_3_base(summary: dict[str, object]) -> bool:
     return summary.get("base_fingerprint") == current_base_fingerprint()
 
 
-def incompatible_v2_3_outputs() -> list[Path]:
+def incompatible_v2_5_outputs() -> list[Path]:
     outputs = [
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -569,7 +649,7 @@ def incompatible_v2_3_outputs() -> list[Path]:
         summary = json.loads(SUMMARY_JSON.read_text(encoding="utf-8"))
     except Exception:
         summary = None
-    if summary_matches_current_v2_3_base(summary):
+    if summary_matches_current_v2_5_base(summary):
         return []
     return outputs
 
@@ -631,7 +711,7 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3") -> dict[str, object]:
+def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_5") -> dict[str, object]:
     ensure_output_dir()
     summary = summarize_returns(ret)
     yearly_df = summarize_yearly(ret)
@@ -646,8 +726,8 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
     _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
     _atomic_write_csv(pd.DataFrame([summary]), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
     plt.figure(figsize=(12, 6))
-    plt.plot(nav_df["date"], nav_df["nav_net"], label="v2.3 nav_net")
-    plt.title("Top100 Microcap Mom16 v2.3 Costed NAV")
+    plt.plot(nav_df["date"], nav_df["nav_net"], label="v2.5 nav_net")
+    plt.title("Top100 Microcap Mom16 v2.5 Costed NAV")
     plt.xlabel("date")
     plt.ylabel("nav_net")
     plt.grid(True, alpha=0.3)
@@ -674,27 +754,34 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
-    row["overlay_type"] = "spread_nav_log_wls_gap_target_vol"
-    row["signal_model"] = "spread_nav_log_wls_exp_halflife_3p0_lb17_signal1p0_exec0p8"
+    row["overlay_type"] = "microcap_only_log_wls_threshold_target_vol"
+    row["signal_model"] = "microcap_only_log_wls_exp_halflife_3p0_lb17_entry40_exit40_targetvol30_max1p3"
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
+    row["hedge_removed"] = True
     row["halflife"] = HALFLIFE
     row["lookback"] = LOOKBACK
-    row["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
+    row["entry_threshold"] = ENTRY_THRESHOLD
+    row["exit_threshold"] = EXIT_THRESHOLD
     row["signal_quality_derisk_enabled"] = False
-    row["signal_score_label"] = "annualized_log_wls_score"
+    row["single_trade_stop_loss_enabled"] = False
+    row["equity_drawdown_overlay_enabled"] = False
+    row["momentum_decay_overlay_enabled"] = False
+    row["overheat_overlay_enabled"] = False
+    row["signal_score_label"] = "microcap_only_annualized_log_wls_score"
     row["momentum_gap_legacy_note"] = (
-        "legacy field contains annualized spread-NAV log-WLS score, not plain microcap-minus-hedge momentum gap"
+        "legacy field contains annualized microcap-only log-WLS score, not plain microcap-minus-hedge momentum gap"
     )
     latest = net_df.iloc[-1]
-    for col in ["annualized_log_wls_score", "log_wls_r2", "spread_nav"]:
+    for col in ["annualized_log_wls_score", "log_wls_r2", "microcap_nav"]:
         if col in latest and pd.notna(latest[col]):
             row[col] = float(latest[col])
     row["target_vol"] = TARGET_VOL
     row["target_vol_scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+    row["target_vol_max_leverage"] = TARGET_VOL_MAX_LEVERAGE
     row["cash_day_yield"] = float(latest.get("cash_day_yield", 0.0)) if "cash_day_yield" in latest else 0.0
-    row["cash_day_yield_annual"] = CASH_DAY_YIELD
-    row["cash_day_yield_enabled"] = True
+    row["cash_day_yield_annual"] = 0.0
+    row["cash_day_yield_enabled"] = False
     return row
 
 
@@ -726,7 +813,7 @@ def _load_official_v2_0_out() -> pd.DataFrame:
     return official_v2_0_out
 
 
-V2_3_REWRITE_AUDIT_KEY_COLUMNS = [
+V2_5_REWRITE_AUDIT_KEY_COLUMNS = [
     "return_net",
     "holding",
     "next_holding",
@@ -741,32 +828,30 @@ V2_3_REWRITE_AUDIT_KEY_COLUMNS = [
 ]
 
 
-def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     official_v2_0_out = _load_official_v2_0_out()
     reference_summary, base_gross_cached, turnover_df = v2_0.embedded_context._load_embedded_base_context()
-    stale_outputs = incompatible_v2_3_outputs()
+    stale_outputs = incompatible_v2_5_outputs()
     close_df = _close_df_from_base(base_gross_cached)
-    common_index = build_v2_3_common_index(close_df, official_v2_0_out.index)
-    out = build_v2_3_result(close_df, turnover_df, common_index)
-    mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
+    common_index = build_v2_5_common_index(close_df, official_v2_0_out.index)
+    out = build_v2_5_result(close_df, turnover_df, common_index)
     if COSTED_NAV_CSV.exists() and COSTED_NAV_CSV not in stale_outputs:
         previous = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"])
         v2_0.base_mod.assert_no_historical_rewrite(
             previous=previous,
             candidate=out.rename_axis("date").reset_index(),
-            key_columns=V2_3_REWRITE_AUDIT_KEY_COLUMNS,
+            key_columns=V2_5_REWRITE_AUDIT_KEY_COLUMNS,
             allowed_tail_rows=max(LOOKBACK + 20, 40),
-            label="v2.3 official costed NAV",
+            label="v2.5 official costed NAV",
             audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
         )
 
     _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
     signal_row = _build_signal_row(out, reference_summary)
-    apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
     _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
-    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_3")
+    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_5")
 
     data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
     summary = dict(reference_summary)
@@ -774,52 +859,58 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["version"] = VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Formal v2.3 spread-NAV log-WLS target-volatility overlay. Uses exp half-life 3.0 weighted log slope on "
-        "17 trading days of always-on 1.0x hedged signal spread NAV, executes with 0.8x CSI1000 hedge, no R2 gate, "
-        "13% score exit buffer, no peak-decay signal-quality derisk, cash-day yield credited at 2% annualized, "
-        "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, 30% scale rebalance threshold, "
+        "Formal v2.5 microcap-only log-WLS target-volatility overlay. Uses exp half-life 3.0 weighted log slope on "
+        "17 trading days of unhedged microcap Top100 NAV, enters and exits only when score is above 40%, "
+        "removes the hedge leg, applies no R2 gate, no single-trade stop-loss, no equity drawdown stop, "
+        "no momentum-decay exit, no overheat exit, no full-cash-day yield, "
+        "60-day realized volatility, 30% annual target volatility, max 1.3x leverage, 30% scale rebalance threshold, "
         "10bp leg-turnover scale-change cost, scaled embedded-lineage base "
         "trading cost, and 3% annual financing cost on exposure above 1.0x."
     )
     summary.setdefault("core_params", {})
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
+    summary["core_params"]["lookback"] = LOOKBACK
     summary["core_params"]["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     summary["core_params"]["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
+    summary["core_params"]["hedge_removed"] = True
     summary["core_params"]["signal_model"] = {
-        "type": "spread_nav_log_wls_exp",
+        "type": "microcap_only_log_wls_exp",
         "lookback": LOOKBACK,
         "halflife": HALFLIFE,
         "weights_oldest_to_newest": list(exp_weights()),
-        "score_definition": "annualized weighted log slope of always-on 1.0x hedged signal spread NAV",
+        "score_definition": "annualized weighted log slope of unhedged microcap Top100 NAV",
         "nav_csv_momentum_gap_column_alias_note": (
-            "momentum_gap stores annualized_log_wls_score for v2.0 compatibility, not raw microcap minus hedge gap"
+            "momentum_gap stores annualized microcap-only log-WLS score for v2.0 compatibility, not raw microcap minus hedge gap"
         ),
         "r2_gate": None,
         "legacy_momentum_gap_field": "same value as annualized_log_wls_score for v2.0 compatibility",
     }
-    summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
-    summary["core_params"]["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
+    summary["core_params"]["entry_threshold"] = ENTRY_THRESHOLD
+    summary["core_params"]["exit_threshold"] = EXIT_THRESHOLD
     summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
+    summary["core_params"]["single_trade_stop_loss"] = {"enabled": False}
+    summary["core_params"]["equity_drawdown_overlay"] = {"enabled": False}
+    summary["core_params"]["momentum_decay_overlay"] = {"enabled": False}
+    summary["core_params"]["overheat_overlay"] = {"enabled": False}
     summary["core_params"]["target_volatility_scaling"] = {
         "target_vol": TARGET_VOL,
-        "vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
-        "max_leverage": float(v2_0.overlay_mod.TARGET_VOL_MAX_LEVERAGE),
-        "min_leverage": float(v2_0.overlay_mod.TARGET_VOL_MIN_LEVERAGE),
-        "scale_change_cost": float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST),
+        "vol_window": TARGET_VOL_WINDOW,
+        "max_leverage": TARGET_VOL_MAX_LEVERAGE,
+        "min_leverage": TARGET_VOL_MIN_LEVERAGE,
+        "scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
         "scale_rebalance_threshold": float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD),
-        "financing_rate": float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE),
-        "cash_day_yield": CASH_DAY_YIELD,
-        "idle_credit_on_cash_day": True,
-        "idle_cash_return": "credited on full cash days; active partial idle cash remains handled by target-vol overlay",
+        "financing_rate": TARGET_VOL_FINANCING_RATE,
+        "idle_cash_yield": IDLE_CASH_YIELD,
+        "idle_credit_on_cash_day": False,
+        "idle_cash_return": "credited only on active under-1x exposure; full cash days receive zero return",
         "trading_days": TRADING_DAYS,
         "timing": "current execution scale uses T-1 realized volatility; next-session target scale uses T close realized volatility",
     }
-    summary["core_params"]["signal_execution_mismatch_diagnostics"] = mismatch_diagnostics
     summary["latest_trade_date"] = str(pd.Timestamp(signal_row.iloc[0]["date"]).date())
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
-    summary["performance_source_label"] = "costed_v2_3"
+    summary["performance_source_label"] = "costed_v2_5"
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
@@ -839,27 +930,24 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     return summary, signal_row, out
 
 
-def generate_v2_3_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
-    with v2_3_output_lock():
-        return _generate_v2_3_outputs_unlocked()
+def generate_v2_5_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+    with v2_5_output_lock():
+        return _generate_v2_5_outputs_unlocked()
 
 
-def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
     realtime_base = v2_0.realtime_core.load_realtime_base()
     close_df = realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index()
     official_index = pd.DatetimeIndex(close_df.index)
-    common_index = build_v2_3_common_index(close_df, official_index)
-    gross = build_spread_log_wls_gross(close_df, common_index)
-    buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
-    costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, realtime_base.turnover_df)
+    common_index = build_v2_5_common_index(close_df, official_index)
+    gross = build_microcap_log_wls_gross(close_df, common_index)
+    costed = apply_cost(gross, realtime_base.turnover_df)
     is_snapshot = bool(realtime_base.meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
     out = apply_target_vol(costed, TARGET_VOL, treat_last_row_as_snapshot=is_snapshot)
     assert_realtime_target_vol_lag_fresh(out)
-    mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
-    apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
     signal_row = v2_0.realtime_core.base_mod.augment_signal_with_member_rebalance(
         signal_row,
         realtime_base.context.get("changes_df"),
@@ -873,9 +961,9 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     return signal_row, realtime_base.meta, out
 
 
-def build_realtime_v2_3_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
-    with v2_3_realtime_output_lock():
-        return _build_realtime_v2_3_outputs_unlocked()
+def build_realtime_v2_5_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+    with v2_5_realtime_output_lock():
+        return _build_realtime_v2_5_outputs_unlocked()
 
 
 def _print_scale_fields(row: pd.Series, include_frozen: bool = False) -> None:
@@ -883,13 +971,13 @@ def _print_scale_fields(row: pd.Series, include_frozen: bool = False) -> None:
 
 
 def _print_signal_query() -> None:
-    _, signal_df, _ = generate_v2_3_outputs()
+    _, signal_df, _ = generate_v2_5_outputs()
     row = signal_df.iloc[0]
     print("signal")
-    print("strategy_version: v2.3")
+    print("strategy_version: v2.5")
     print("base_version: embedded_v2_base")
-    print("signal_model: spread-NAV log-WLS exp half-life 3.0, lookback 17, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
-    print(f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, no peak-decay derisk, target volatility {TARGET_VOL:.0%}, cash-day yield {CASH_DAY_YIELD:.0%}")
+    print("signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry/exit threshold 40%, no R2 gate")
+    print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}")
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
     print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
@@ -898,7 +986,7 @@ def _print_signal_query() -> None:
     print(f"signal_date: {pd.Timestamp(row['date']).strftime('%Y-%m-%d')}")
     print(f"annualized_log_wls_score: {float(row.get('annualized_log_wls_score', row.get('momentum_gap', 0.0))):+.4%}")
     print(f"log_wls_r2: {float(row.get('log_wls_r2', 0.0)):.4f}")
-    print("momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap")
+    print("momentum_gap_legacy_note: legacy field is the annualized microcap-only log-WLS score, not plain gap")
     _print_scale_fields(row, include_frozen=False)
     print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', True)}")
     print(SUMMARY_JSON)
@@ -907,13 +995,13 @@ def _print_signal_query() -> None:
 
 def _print_realtime_signal_query() -> None:
     def emit() -> None:
-        signal_df, meta, _ = build_realtime_v2_3_outputs()
+        signal_df, meta, _ = build_realtime_v2_5_outputs()
         row = signal_df.iloc[0]
         print("realtime_signal")
-        print("strategy_version: v2.3")
+        print("strategy_version: v2.5")
         print("base_version: embedded_v2_base")
-        print("signal_model: spread-NAV log-WLS exp half-life 3.0, lookback 17, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
-        print(f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, no peak-decay derisk, target volatility {TARGET_VOL:.0%}, cash-day yield {CASH_DAY_YIELD:.0%}")
+        print("signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry/exit threshold 40%, no R2 gate")
+        print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}")
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
@@ -928,7 +1016,7 @@ def _print_realtime_signal_query() -> None:
         print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
         print(f"annualized_log_wls_score: {float(row.get('annualized_log_wls_score', row.get('momentum_gap', 0.0))):+.4%}")
         print(f"log_wls_r2: {float(row.get('log_wls_r2', 0.0)):.4f}")
-        print("momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap")
+        print("momentum_gap_legacy_note: legacy field is the annualized microcap-only log-WLS score, not plain gap")
         print(f"quote_source: {meta.get('quote_source')}")
         print(f"hedge_quote_source: {meta.get('hedge_quote_source')}")
         print(f"quote_coverage: {meta.get('member_price_count')}/{meta.get('member_count')}")
@@ -938,17 +1026,17 @@ def _print_realtime_signal_query() -> None:
 
 
 def _print_performance_query(query: str) -> None:
-    generate_v2_3_outputs()
+    generate_v2_5_outputs()
     perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
     old_title = v2_0.embedded_context.base_mod.STRATEGY_TITLE
-    v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.3"
+    v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.5"
     try:
-        with v2_3_output_lock():
+        with v2_5_output_lock():
             v2_0.embedded_context.base_mod.build_performance_outputs(
                 perf_df=perf_df,
                 ret_col="return_net",
                 nav_col="nav_net",
-                source_label="costed_v2_3",
+                source_label="costed_v2_5",
                 query_text=query,
                 paths={
                     "performance_summary": PERF_QUERY_SUMMARY_CSV,
@@ -967,7 +1055,7 @@ def _print_performance_query(query: str) -> None:
     print(PERF_QUERY_JSON)
 
 
-def normalize_v2_3_query_text(query: str) -> str:
+def normalize_v2_5_query_text(query: str) -> str:
     text = str(query or "").strip()
     embedded_context = getattr(v2_0, "embedded_context", None)
     base_mod = getattr(embedded_context, "base_mod", None)
@@ -987,7 +1075,7 @@ def normalize_v2_3_query_text(query: str) -> str:
 
 
 def _handle_query(query: str) -> None:
-    normalized = normalize_v2_3_query_text(query)
+    normalized = normalize_v2_5_query_text(query)
     if normalized == "信号":
         _print_signal_query()
         return
@@ -999,20 +1087,21 @@ def _handle_query(query: str) -> None:
     ):
         _print_performance_query(query)
         return
-    raise ValueError("v2.3 supports: 信号 / 实时信号 / 表现 <区间>")
+    raise ValueError("v2.5 supports: 信号 / 实时信号 / 表现 <区间>")
 
 
 def main(argv: list[str] | None = None) -> None:
-    args = parse_v2_3_args(sys.argv[1:] if argv is None else argv)
+    args = parse_v2_5_args(sys.argv[1:] if argv is None else argv)
     configure_runtime(args)
     query = " ".join(args.query_tokens).strip()
     if query:
         _handle_query(query)
         return
-    generate_v2_3_outputs()
+    generate_v2_5_outputs()
     print(str(SUMMARY_JSON))
     print(str(LATEST_SIGNAL_CSV))
     print(str(COSTED_NAV_CSV))
 
 if __name__ == "__main__":
     main()
+
