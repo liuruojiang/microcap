@@ -9425,11 +9425,13 @@ def _build_base_args(
         capital = getattr(runtime_args, "capital", capital)
         realtime_cache_seconds = int(getattr(runtime_args, "realtime_cache_seconds", realtime_cache_seconds))
         allow_stale_realtime = bool(getattr(runtime_args, "allow_stale_realtime", allow_stale_realtime))
+        force_refresh = bool(getattr(runtime_args, "force_refresh", False))
         panel_path = getattr(runtime_args, "panel_path", None) or base_mod.hedge_mod.DEFAULT_PANEL
         index_csv = getattr(runtime_args, "index_csv", None) or base_mod.DEFAULT_INDEX_CSV
         costed_nav_csv = getattr(runtime_args, "costed_nav_csv", None) or base_mod.DEFAULT_COSTED_NAV_CSV
         output_prefix = getattr(runtime_args, "output_prefix", None) or base_mod.DEFAULT_OUTPUT_PREFIX
     else:
+        force_refresh = False
         panel_path = base_mod.hedge_mod.DEFAULT_PANEL
         index_csv = base_mod.DEFAULT_INDEX_CSV
         costed_nav_csv = base_mod.DEFAULT_COSTED_NAV_CSV
@@ -9444,7 +9446,7 @@ def _build_base_args(
         max_workers=max_workers,
         realtime_cache_seconds=realtime_cache_seconds,
         rebuild_index_if_missing=True,
-        force_refresh=False,
+        force_refresh=force_refresh,
         max_stale_anchor_days=base_mod.DEFAULT_MAX_STALE_ANCHOR_DAYS,
         allow_stale_realtime=allow_stale_realtime,
     )

@@ -8,6 +8,60 @@ import sys
 import time
 from pathlib import Path
 
+
+RUNTIME_PACKAGES = (
+    "numpy",
+    "pandas",
+    "requests",
+    "urllib3",
+    "akshare",
+    "matplotlib",
+    "openpyxl",
+)
+
+
+def _early_parse_bootstrap(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--bootstrap-deps", action="store_true")
+    parser.add_argument("--wheelhouse", type=Path, default=None)
+    return parser.parse_known_args(argv)[0]
+
+
+def _run_early_bootstrap_if_requested(argv: list[str]) -> None:
+    early = _early_parse_bootstrap(argv)
+    if not early.bootstrap_deps:
+        return
+    from microcap_runtime_bootstrap import (
+        bootstrap_from_wheelhouse,
+        find_missing_modules,
+        format_bootstrap_failure_message,
+        format_missing_dependencies_message,
+        resolve_wheelhouse,
+    )
+
+    missing = find_missing_modules(RUNTIME_PACKAGES)
+    if not missing:
+        return
+    wheelhouse = resolve_wheelhouse(Path(__file__).resolve().parent, early.wheelhouse)
+    if wheelhouse is None:
+        print(format_missing_dependencies_message(missing, bootstrap_requested=True), file=sys.stderr)
+        raise SystemExit(2)
+    result = bootstrap_from_wheelhouse(wheelhouse, RUNTIME_PACKAGES)
+    if result.returncode != 0:
+        print(format_bootstrap_failure_message(wheelhouse, result), file=sys.stderr)
+        raise SystemExit(2)
+    remaining = find_missing_modules(RUNTIME_PACKAGES)
+    if remaining:
+        print(
+            "Runtime dependencies are still missing after bootstrap: "
+            + ", ".join(str(item) for item in remaining),
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+
+
+_run_early_bootstrap_if_requested(sys.argv[1:] if __name__ == "__main__" else [])
+
 import matplotlib
 import numpy as np
 import pandas as pd
@@ -17,6 +71,35 @@ import matplotlib.pyplot as plt
 
 import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 
+REQUIRED_BASE_VERSION = "2.0"
+
+
+def _require_v2_0_attr(parent: object, attr: str, label: str) -> object:
+    if not hasattr(parent, attr):
+        raise RuntimeError(f"v2_0 {label} missing")
+    return getattr(parent, attr)
+
+
+def validate_v2_0_contract() -> None:
+    module_name = str(getattr(v2_0, "__name__", ""))
+    if not module_name.endswith("_v2_0"):
+        raise RuntimeError(f"v2_0 module version mismatch: expected suffix _v2_0, got {module_name!r}")
+    actual_version = str(getattr(v2_0, "VERSION", REQUIRED_BASE_VERSION))
+    if actual_version != REQUIRED_BASE_VERSION:
+        raise RuntimeError(f"v2_0 VERSION mismatch: expected {REQUIRED_BASE_VERSION}, got {actual_version}")
+    embedded_context = _require_v2_0_attr(v2_0, "embedded_context", "embedded_context")
+    _require_v2_0_attr(v2_0, "_V2_RUNTIME_ARGS", "_V2_RUNTIME_ARGS")
+    _require_v2_0_attr(v2_0, "_v2_file_lock", "_v2_file_lock")
+    _require_v2_0_attr(embedded_context, "_load_embedded_base_context", "embedded_context._load_embedded_base_context")
+    _require_v2_0_attr(embedded_context, "current_base_fingerprint", "embedded_context.current_base_fingerprint")
+    overlay_mod = _require_v2_0_attr(v2_0, "overlay_mod", "overlay_mod")
+    _require_v2_0_attr(overlay_mod, "_build_signal_row", "overlay_mod._build_signal_row")
+    _require_v2_0_attr(overlay_mod, "_build_v2_data_lineage", "overlay_mod._build_v2_data_lineage")
+    _require_v2_0_attr(overlay_mod, "TARGET_VOL_TRADING_DAYS", "overlay_mod.TARGET_VOL_TRADING_DAYS")
+
+
+validate_v2_0_contract()
+
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
@@ -24,6 +107,7 @@ OUTPUT_DIR = ROOT / "outputs"
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_5"
 DEFAULT_OUTPUT_PREFIX = OUTPUT_PREFIX
 SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
+COMPATIBILITY_AUDIT_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_compatibility_audit.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
@@ -86,6 +170,7 @@ def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--max-workers", type=int, default=8)
     parser.add_argument("--realtime-cache-seconds", type=int, default=v2_0.DEFAULT_REALTIME_CACHE_SECONDS)
     parser.add_argument("--allow-stale-realtime", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--force-refresh", action="store_true")
     parser.add_argument("--bootstrap-deps", action="store_true")
     parser.add_argument("--wheelhouse", type=Path, default=None)
     parser.add_argument(
@@ -101,12 +186,13 @@ def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def configure_output_paths(output_prefix: str | None = None, costed_nav_csv: Path | None = None) -> None:
     global OUTPUT_PREFIX
-    global SUMMARY_JSON, LATEST_SIGNAL_CSV, REALTIME_SIGNAL_CSV, NAV_CSV, COSTED_NAV_CSV
+    global SUMMARY_JSON, COMPATIBILITY_AUDIT_JSON, LATEST_SIGNAL_CSV, REALTIME_SIGNAL_CSV, NAV_CSV, COSTED_NAV_CSV
     global PERF_SUMMARY_CSV, PERF_YEARLY_CSV, PERF_NAV_CSV, PERF_JSON, PERF_PNG
     global PERF_QUERY_SUMMARY_CSV, PERF_QUERY_YEARLY_CSV, PERF_QUERY_NAV_CSV, PERF_QUERY_JSON, PERF_QUERY_PNG
 
     OUTPUT_PREFIX = str(output_prefix or DEFAULT_OUTPUT_PREFIX)
     SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
+    COMPATIBILITY_AUDIT_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_compatibility_audit.json"
     LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
     REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
     NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
@@ -143,6 +229,7 @@ def configure_runtime(args: argparse.Namespace) -> None:
         max_workers=getattr(args, "max_workers", 8),
         realtime_cache_seconds=getattr(args, "realtime_cache_seconds", v2_0.DEFAULT_REALTIME_CACHE_SECONDS),
         allow_stale_realtime=getattr(args, "allow_stale_realtime", False),
+        force_refresh=getattr(args, "force_refresh", False),
         bootstrap_deps=getattr(args, "bootstrap_deps", False),
         wheelhouse=getattr(args, "wheelhouse", None),
     )
@@ -252,12 +339,30 @@ def exp_weights(lookback: int = LOOKBACK, halflife: float = HALFLIFE) -> tuple[f
 
 
 def microcap_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series]:
+    validate_close_df(close_df)
     close_df = close_df.sort_index()
     micro_ret = close_df["microcap"].pct_change(fill_method=None)
     hedge_ret = close_df["hedge"].pct_change(fill_method=None)
     nav = (1.0 + micro_ret.fillna(0.0)).cumprod()
     nav.name = "microcap_nav"
     return nav, micro_ret, hedge_ret
+
+
+def validate_close_df(close_df: pd.DataFrame) -> None:
+    required = {"microcap", "hedge"}
+    missing = required - set(close_df.columns)
+    if missing:
+        raise ValueError(f"close_df missing columns: {sorted(missing)}")
+    if close_df.index.has_duplicates:
+        raise ValueError("close_df index has duplicate dates")
+    if not close_df.index.is_monotonic_increasing:
+        raise ValueError("close_df index must be monotonic increasing")
+    price_cols = ["microcap", "hedge"]
+    prices = close_df[price_cols].apply(pd.to_numeric, errors="coerce")
+    if prices.isna().any().any():
+        raise ValueError("close_df contains NaN prices")
+    if (prices <= 0).any().any():
+        raise ValueError("close_df contains non-positive prices")
 
 
 def log_wls_score_and_r2(
@@ -401,13 +506,15 @@ def assert_realtime_target_vol_lag_fresh(out: pd.DataFrame) -> None:
     if out.empty or "target_vol_frozen_lag_days" not in out.columns:
         return
     latest = out.iloc[-1]
-    lag_days = int(_safe_float(latest.get("target_vol_frozen_lag_days"), 0.0))
-    if lag_days <= MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS:
+    trading_lag_days = int(_safe_float(latest.get("target_vol_frozen_lag_trading_days", latest.get("target_vol_frozen_lag_days")), 0.0))
+    calendar_lag_days = int(_safe_float(latest.get("target_vol_frozen_lag_calendar_days", latest.get("target_vol_frozen_lag_days")), 0.0))
+    if trading_lag_days <= MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS:
         return
     source_date = latest.get("target_vol_frozen_source_date", "")
     raise RuntimeError(
         "target-vol frozen lag exceeds realtime limit: "
-        f"lag_days={lag_days}, limit={MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS}, source_date={source_date}"
+        f"trading_lag_days={trading_lag_days}, calendar_lag_days={calendar_lag_days}, "
+        f"limit={MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS}, source_date={source_date}"
     )
 
 
@@ -471,15 +578,18 @@ def _base_trade_cost_scale(
 
 
 def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, *, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
-    del treat_last_row_as_snapshot
     out = costed_base.copy().sort_index()
+    required_cols = {"return_net", "total_cost", "overlay_pre_cost_return", "microcap_ret", "holding", "next_holding"}
+    missing = required_cols - set(out.columns)
+    if missing:
+        raise RuntimeError(f"apply_target_vol missing required columns: {sorted(missing)}")
     target_vol_value = float(target_vol)
     holding = out["holding"].fillna("cash").astype(str)
     next_holding = out["next_holding"].fillna(holding).astype(str)
     active = holding.ne("cash")
     base_return_net = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
-    base_trade_cost = pd.to_numeric(out.get("total_cost", pd.Series(0.0, index=out.index)), errors="coerce").fillna(0.0)
-    base_pre_cost_return = (1.0 + base_return_net).div(1.0 - base_trade_cost.clip(lower=0.0, upper=0.99)).sub(1.0)
+    base_trade_cost = pd.to_numeric(out["total_cost"], errors="coerce").fillna(0.0)
+    base_pre_cost_return = pd.to_numeric(out["overlay_pre_cost_return"], errors="coerce").fillna(0.0)
     target_vol_return = pd.to_numeric(out["microcap_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan)
     realized_vol = target_vol_return.rolling(TARGET_VOL_WINDOW, min_periods=TARGET_VOL_WINDOW).std(ddof=1) * math.sqrt(TRADING_DAYS)
     raw_scale = (target_vol_value / realized_vol.replace(0.0, np.nan)).replace([np.inf, -np.inf], np.nan).clip(
@@ -488,6 +598,21 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     )
     target_execution_scale = raw_scale.shift(1).fillna(1.0)
     execution_scale = _apply_scale_rebalance_threshold(target_execution_scale, active)
+    frozen_source_dates = pd.Series(
+        [str(pd.Timestamp(idx).date()) for idx in out.index],
+        index=out.index,
+        dtype=object,
+    )
+    frozen_lag_calendar_days = pd.Series(0, index=out.index, dtype=int)
+    frozen_lag_trading_days = pd.Series(0, index=out.index, dtype=int)
+    if treat_last_row_as_snapshot and len(out.index) >= 2:
+        snapshot_idx = out.index[-1]
+        source_idx = out.index[-2]
+        frozen_source_dates.loc[snapshot_idx] = str(pd.Timestamp(source_idx).date())
+        frozen_lag_calendar_days.loc[snapshot_idx] = int(
+            (pd.Timestamp(snapshot_idx).date() - pd.Timestamp(source_idx).date()).days
+        )
+        frozen_lag_trading_days.loc[snapshot_idx] = int(out.index.get_loc(snapshot_idx) - out.index.get_loc(source_idx))
     next_session_target_scale = raw_scale.copy()
     next_session_target_scale.loc[next_holding.eq("cash")] = 0.0
     next_session_target_scale.loc[next_holding.ne("cash")] = next_session_target_scale.loc[next_holding.ne("cash")].fillna(1.0)
@@ -520,6 +645,10 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     out["target_vol_realized_vol"] = realized_vol
     out["target_vol_scale_raw"] = raw_scale
     out["target_vol_execution_scale_raw"] = target_execution_scale
+    out["target_vol_frozen_source_date"] = frozen_source_dates
+    out["target_vol_frozen_lag_days"] = frozen_lag_calendar_days
+    out["target_vol_frozen_lag_calendar_days"] = frozen_lag_calendar_days
+    out["target_vol_frozen_lag_trading_days"] = frozen_lag_trading_days
     out["current_execution_scale"] = execution_scale
     out["execution_scale"] = execution_scale
     out["next_session_target_scale"] = next_session_target_scale
@@ -576,10 +705,26 @@ def build_v2_5_result(
 
 def current_base_fingerprint() -> dict[str, object]:
     base = dict(v2_0.embedded_context.current_base_fingerprint())
+    runtime_args = getattr(v2_0, "_V2_RUNTIME_ARGS", None)
+
+    def runtime_value(name: str) -> str | None:
+        if runtime_args is None:
+            return None
+        value = getattr(runtime_args, name, None)
+        return None if value is None else str(value)
+
     return {
         "base_version": "embedded_v2_base",
         "strategy_version": VERSION,
         "base_fingerprint": base,
+        "runtime_overrides": {
+            "panel_path": runtime_value("panel_path"),
+            "index_csv": runtime_value("index_csv"),
+            "base_costed_nav_csv": runtime_value("costed_nav_csv"),
+            "base_output_prefix": runtime_value("output_prefix"),
+            "v25_costed_nav_csv": str(COSTED_NAV_CSV),
+            "v25_output_prefix": OUTPUT_PREFIX,
+        },
         "signal_model": "microcap_only_log_wls_exp_halflife_3p0_lb17_entry40_exit40_targetvol30_max1p3",
         "lookback": LOOKBACK,
         "halflife": HALFLIFE,
@@ -612,16 +757,69 @@ def current_base_fingerprint() -> dict[str, object]:
     }
 
 
+def current_realtime_fingerprint() -> dict[str, object]:
+    runtime_args = getattr(v2_0, "_V2_RUNTIME_ARGS", None)
+    return {
+        "historical_base_fingerprint": current_base_fingerprint(),
+        "realtime_runtime_options": {
+            "force_refresh": bool(getattr(runtime_args, "force_refresh", False)) if runtime_args is not None else False,
+            "realtime_cache_seconds": getattr(runtime_args, "realtime_cache_seconds", None) if runtime_args is not None else None,
+            "allow_stale_realtime": bool(getattr(runtime_args, "allow_stale_realtime", False)) if runtime_args is not None else False,
+        },
+    }
+
+
 def summary_matches_current_v2_5_base(summary: dict[str, object]) -> bool:
+    audit = build_v2_5_compatibility_audit(summary)
+    return bool(
+        audit["version_match"]
+        and audit["version_role_match"]
+        and audit["version_note_prefix_match"]
+        and audit["fingerprint_match"]
+    )
+
+
+def build_v2_5_compatibility_audit(summary: dict[str, object] | None) -> dict[str, object]:
+    expected_fingerprint = current_base_fingerprint()
     if not isinstance(summary, dict):
-        return False
-    if str(summary.get("version")) != VERSION:
-        return False
-    if str(summary.get("version_role")) != EXPECTED_VERSION_ROLE:
-        return False
-    if not str(summary.get("version_note", "")).startswith(EXPECTED_VERSION_NOTE_PREFIX):
-        return False
-    return summary.get("base_fingerprint") == current_base_fingerprint()
+        return {
+            "summary_is_dict": False,
+            "version_match": False,
+            "version_role_match": False,
+            "version_note_prefix_match": False,
+            "fingerprint_match": False,
+            "expected_version": VERSION,
+            "actual_version": None,
+            "expected_version_role": EXPECTED_VERSION_ROLE,
+            "actual_version_role": None,
+            "expected_version_note_prefix": EXPECTED_VERSION_NOTE_PREFIX,
+            "actual_version_note": None,
+            "expected_fingerprint": expected_fingerprint,
+            "actual_fingerprint": None,
+        }
+    actual_fingerprint = summary.get("base_fingerprint")
+    return {
+        "summary_is_dict": True,
+        "version_match": str(summary.get("version")) == VERSION,
+        "version_role_match": str(summary.get("version_role")) == EXPECTED_VERSION_ROLE,
+        "version_note_prefix_match": str(summary.get("version_note", "")).startswith(EXPECTED_VERSION_NOTE_PREFIX),
+        "fingerprint_match": actual_fingerprint == expected_fingerprint,
+        "expected_version": VERSION,
+        "actual_version": summary.get("version"),
+        "expected_version_role": EXPECTED_VERSION_ROLE,
+        "actual_version_role": summary.get("version_role"),
+        "expected_version_note_prefix": EXPECTED_VERSION_NOTE_PREFIX,
+        "actual_version_note": summary.get("version_note"),
+        "expected_fingerprint": expected_fingerprint,
+        "actual_fingerprint": actual_fingerprint,
+    }
+
+
+def write_v2_5_compatibility_audit(summary: dict[str, object] | None, read_error: str | None = None) -> None:
+    audit = build_v2_5_compatibility_audit(summary)
+    if read_error is not None:
+        audit["summary_read_error"] = read_error
+    _atomic_write_text(COMPATIBILITY_AUDIT_JSON, _json_dumps(audit), encoding="utf-8")
 
 
 def incompatible_v2_5_outputs() -> list[Path]:
@@ -647,10 +845,14 @@ def incompatible_v2_5_outputs() -> list[Path]:
         return [path for path in outputs if path.exists()]
     try:
         summary = json.loads(SUMMARY_JSON.read_text(encoding="utf-8"))
-    except Exception:
+        read_error = None
+    except Exception as exc:
         summary = None
+        read_error = repr(exc)
     if summary_matches_current_v2_5_base(summary):
+        COMPATIBILITY_AUDIT_JSON.unlink(missing_ok=True)
         return []
+    write_v2_5_compatibility_audit(summary, read_error=read_error)
     return outputs
 
 
@@ -670,7 +872,8 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     years = (ret.index[-1] - ret.index[0]).days / 365.25
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
     vol = ret.std(ddof=1) * (TRADING_DAYS**0.5)
-    sharpe = annual / vol if vol > 0 else 0.0
+    sharpe_cagr = annual / vol if vol > 0 else 0.0
+    sharpe_mean = ret.mean() * TRADING_DAYS / vol if vol > 0 else 0.0
     drawdown = nav.div(nav.cummax()).sub(1.0)
     return {
         "start_date": str(pd.Timestamp(ret.index[0]).date()),
@@ -680,7 +883,11 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
         "total_return_pct": float((nav.iloc[-1] - 1.0) * 100.0),
         "annual_pct": float(annual * 100.0),
         "max_drawdown_pct": float(drawdown.min() * 100.0),
-        "sharpe": float(sharpe),
+        "sharpe": float(sharpe_cagr),
+        "sharpe_cagr": float(sharpe_cagr),
+        "cagr_to_vol": float(sharpe_cagr),
+        "sharpe_mean": float(sharpe_mean),
+        "sharpe_note": "sharpe is retained as backward-compatible alias for sharpe_cagr = CAGR / annualized volatility; sharpe_mean = mean daily return * trading days / annualized volatility",
         "vol_pct": float(vol * 100.0),
     }
 
@@ -778,6 +985,12 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
             row[col] = float(latest[col])
     row["target_vol"] = TARGET_VOL
     row["target_vol_scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+    for col in [
+        "target_vol_frozen_lag_calendar_days",
+        "target_vol_frozen_lag_trading_days",
+    ]:
+        if col in latest and pd.notna(latest[col]):
+            row[col] = latest[col]
     row["target_vol_max_leverage"] = TARGET_VOL_MAX_LEVERAGE
     row["cash_day_yield"] = float(latest.get("cash_day_yield", 0.0)) if "cash_day_yield" in latest else 0.0
     row["cash_day_yield_annual"] = 0.0
@@ -859,7 +1072,7 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["version"] = VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Formal v2.5 microcap-only log-WLS target-volatility overlay. Uses exp half-life 3.0 weighted log slope on "
+        "Formal v2.5 microcap-only log-WLS threshold target-volatility overlay. Uses exp half-life 3.0 weighted log slope on "
         "17 trading days of unhedged microcap Top100 NAV, enters and exits only when score is above 40%, "
         "removes the hedge leg, applies no R2 gate, no single-trade stop-loss, no equity drawdown stop, "
         "no momentum-decay exit, no overheat exit, no full-cash-day yield, "
@@ -914,6 +1127,7 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
+    COMPATIBILITY_AUDIT_JSON.unlink(missing_ok=True)
     regenerated_outputs = {
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -957,6 +1171,8 @@ def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     signal_row["target_vol_signal_timing"] = signal_timing
     signal_row["signal_timing"] = signal_timing
     signal_row["official_close_confirmed_signal"] = not is_snapshot
+    signal_row["base_fingerprint"] = _json_dumps(current_base_fingerprint())
+    signal_row["strategy_fingerprint"] = _json_dumps(current_realtime_fingerprint())
     _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
     return signal_row, realtime_base.meta, out
 
@@ -977,7 +1193,7 @@ def _print_signal_query() -> None:
     print("strategy_version: v2.5")
     print("base_version: embedded_v2_base")
     print("signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry/exit threshold 40%, no R2 gate")
-    print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}")
+    print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}, no R2 execution-scale gate")
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
     print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
@@ -1001,7 +1217,7 @@ def _print_realtime_signal_query() -> None:
         print("strategy_version: v2.5")
         print("base_version: embedded_v2_base")
         print("signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry/exit threshold 40%, no R2 gate")
-        print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}")
+        print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}, no R2 execution-scale gate")
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
