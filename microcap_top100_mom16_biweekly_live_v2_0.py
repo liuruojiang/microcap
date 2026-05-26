@@ -3971,7 +3971,7 @@ def refresh_price_cache_tail(
         raise RuntimeError("No cached-universe symbols available for price-cache refresh.")
 
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
-    failures: list[str] = []
+    failures: dict[str, str] = {}
     workers = max(1, min(int(max_workers), 16))
 
     def refresh_price_history_with_fallback(symbol: str) -> None:
@@ -3995,14 +3995,27 @@ def refresh_price_cache_tail(
             symbol = futures[fut]
             try:
                 fut.result()
-            except Exception:
-                failures.append(symbol)
+            except Exception as exc:
+                failures[symbol] = str(exc)
+    for retry_attempt in range(2):
+        if not failures:
+            break
+        retry_symbols = list(failures)
+        failures = {}
+        for symbol in retry_symbols:
+            try:
+                time.sleep(0.25 * (retry_attempt + 1))
+                refresh_symbol(symbol)
+            except Exception as exc:
+                failures[symbol] = str(exc)
     if failures:
-        audit = pd.DataFrame({"symbol": failures})
+        audit = pd.DataFrame(
+            [{"symbol": symbol, "error": error} for symbol, error in failures.items()]
+        )
         audit_path = OUTPUT_DIR / f"price_cache_refresh_failures_{end_text}.csv"
         _atomic_to_csv(audit, audit_path, index=False, encoding="utf-8")
     if len(failures) > max(20, len(symbols) // 100):
-        sample = ", ".join(failures[:10])
+        sample = ", ".join(list(failures)[:10])
         raise RuntimeError(
             f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). Sample: {sample}"
         )

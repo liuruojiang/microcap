@@ -105,6 +105,46 @@ class RealtimeRefreshCacheDirTests(unittest.TestCase):
                 live.base_mod.build_refreshed_panel_shadow = original_build_shadow
                 live.base_mod.build_realtime_context_from_cached_proxy = original_build_context
 
+    def test_refresh_price_cache_tail_retries_transient_symbol_failures(self) -> None:
+        attempts: dict[str, int] = {}
+        original_price_history = live.fetch_mod.fetch_price_history
+        original_share_change = getattr(live.fetch_mod, "fetch_share_change", None)
+        original_sleep = live._base_ns.get("time").sleep
+
+        def flaky_price_history(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
+            attempts[symbol] = attempts.get(symbol, 0) + 1
+            if attempts[symbol] == 1:
+                raise RuntimeError("transient public source failure")
+            return pd.DataFrame({"date": [pd.Timestamp(end_date)], "close_raw": [1.0]})
+
+        def fake_share_change(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
+            return pd.DataFrame(
+                {
+                    "change_date": [pd.Timestamp(end_date)],
+                    "total_shares_10k": [1.0],
+                    "reason": ["test"],
+                }
+            )
+
+        try:
+            setattr(live.fetch_mod, "fetch_price_history", flaky_price_history)
+            setattr(live.fetch_mod, "fetch_share_change", fake_share_change)
+            live._base_ns["time"].sleep = lambda seconds: None
+
+            live.base_mod.refresh_price_cache_tail(
+                pd.Timestamp("2026-05-25"),
+                max_workers=1,
+                symbols=["000001"],
+                force_refresh=True,
+            )
+
+            self.assertEqual(attempts["000001"], 2)
+        finally:
+            setattr(live.fetch_mod, "fetch_price_history", original_price_history)
+            if original_share_change is not None:
+                setattr(live.fetch_mod, "fetch_share_change", original_share_change)
+            live._base_ns["time"].sleep = original_sleep
+
 
 if __name__ == "__main__":
     unittest.main()
