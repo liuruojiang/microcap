@@ -1467,6 +1467,7 @@ def _merge_cache_frames(
 
 def fetch_price_history(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
     cache_path = PRICE_CACHE_DIR / f"{symbol}.csv"
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
     start_ts = pd.Timestamp(start_date)
     end_ts = pd.Timestamp(end_date)
     cached = _read_local_or_shared_cache(cache_path, "date", SHARED_PRICE_CACHE_DIR)
@@ -1510,6 +1511,7 @@ def fetch_price_history(symbol: str, start_date: str, end_date: str, force_refre
 
 def fetch_adjusted_price_history(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
     cache_path = ADJ_PRICE_CACHE_DIR / f"{symbol}.csv"
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
     start_ts = pd.Timestamp(start_date)
     end_ts = pd.Timestamp(end_date)
     cached = _read_local_or_shared_cache(cache_path, "date", SHARED_ADJ_PRICE_CACHE_DIR)
@@ -1554,6 +1556,7 @@ def fetch_adjusted_price_history(symbol: str, start_date: str, end_date: str, fo
 
 def fetch_share_change(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
     cache_path = SHARE_CACHE_DIR / f"{symbol}.csv"
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
     start_ts = pd.Timestamp(start_date)
     end_ts = pd.Timestamp(end_date)
     cached = _read_local_or_shared_cache(cache_path, "change_date", SHARED_SHARE_CACHE_DIR)
@@ -3959,6 +3962,9 @@ def refresh_price_cache_tail(
     symbols: list[str] | None = None,
     force_refresh: bool = False,
 ) -> None:
+    ensure_fetch_dirs = getattr(fetch_mod, "ensure_dirs", None)
+    if ensure_fetch_dirs is not None:
+        ensure_fetch_dirs()
     if symbols is None:
         symbols = freq_mod.load_current_universe()
     if not symbols:
