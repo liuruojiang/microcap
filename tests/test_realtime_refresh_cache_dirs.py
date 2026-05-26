@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from types import SimpleNamespace
 from pathlib import Path
 
 import pandas as pd
@@ -68,6 +69,41 @@ class RealtimeRefreshCacheDirTests(unittest.TestCase):
                     if value is not None:
                         setattr(live.fetch_mod, name, value)
                         live._fetch_ns[name] = value
+
+    def test_state_only_context_uses_existing_panel_without_refreshing_shadow(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            panel_shadow = root / "panel_shadow.csv"
+            index_csv = root / "proxy_index.csv"
+            costed_nav_csv = root / "costed_nav.csv"
+            for path in (panel_shadow, index_csv, costed_nav_csv):
+                path.write_text("date,close\n2026-05-25,1.0\n", encoding="utf-8")
+
+            original_build_shadow = live.base_mod.build_refreshed_panel_shadow
+            original_build_context = live.base_mod.build_realtime_context_from_cached_proxy
+            try:
+                def fail_refresh(*args, **kwargs):
+                    raise AssertionError("state-only mode must not refresh panel shadow")
+
+                def fake_context(args, base_paths, panel_path, target_end_date, reason):
+                    return {"close_df": pd.DataFrame(index=[pd.Timestamp("2026-05-25")])}
+
+                live.base_mod.build_refreshed_panel_shadow = fail_refresh
+                live.base_mod.build_realtime_context_from_cached_proxy = fake_context
+
+                panel_path, target_end_date, context = live._cached_realtime_context_from_existing_state(
+                    SimpleNamespace(index_csv=index_csv, costed_nav_csv=costed_nav_csv),
+                    {"panel_shadow": panel_shadow},
+                    "production state-only mode avoids implicit cache rebuilds",
+                    refresh_panel=False,
+                )
+
+                self.assertEqual(panel_path, panel_shadow)
+                self.assertEqual(pd.Timestamp(target_end_date).date().isoformat(), "2026-05-25")
+                self.assertEqual(context["close_df"].index[-1].date().isoformat(), "2026-05-25")
+            finally:
+                live.base_mod.build_refreshed_panel_shadow = original_build_shadow
+                live.base_mod.build_realtime_context_from_cached_proxy = original_build_context
 
 
 if __name__ == "__main__":

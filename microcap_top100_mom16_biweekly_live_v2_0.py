@@ -9731,18 +9731,25 @@ def _cached_realtime_context_from_existing_state(
     base_paths: dict[str, Path],
     reason: str,
     exc: RuntimeError | None = None,
+    refresh_panel: bool = True,
 ) -> tuple[Path, pd.Timestamp, dict[str, object]]:
-    try:
-        panel_path, panel_target_end = base_mod.build_refreshed_panel_shadow(args, base_paths)
-    except RuntimeError as refresh_exc:
-        if exc is None:
-            raise
+    if refresh_panel:
+        try:
+            panel_path, panel_target_end = base_mod.build_refreshed_panel_shadow(args, base_paths)
+        except RuntimeError as refresh_exc:
+            if exc is None:
+                raise
+            panel_path = base_paths["panel_shadow"]
+            panel_target_end = base_mod.read_csv_last_date(panel_path)
+            if panel_target_end is None:
+                raise RuntimeError("Realtime anchor refresh failed and panel shadow has no usable date.") from refresh_exc
+        else:
+            panel_target_end = pd.Timestamp(panel_target_end)
+    else:
         panel_path = base_paths["panel_shadow"]
         panel_target_end = base_mod.read_csv_last_date(panel_path)
         if panel_target_end is None:
-            raise RuntimeError("Realtime anchor refresh failed and panel shadow has no usable date.") from refresh_exc
-    else:
-        panel_target_end = pd.Timestamp(panel_target_end)
+            raise RuntimeError("No panel shadow cache has a usable date for realtime state-only mode.") from exc
     if not panel_path.exists():
         message = "No panel shadow cache is available for realtime state-only mode."
         if exc is not None:
@@ -9813,6 +9820,7 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                 args,
                 base_paths,
                 "production state-only mode avoids implicit cache rebuilds",
+                refresh_panel=False,
             )
         else:
             fallback_context = None
