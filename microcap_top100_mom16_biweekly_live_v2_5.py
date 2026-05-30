@@ -6,6 +6,7 @@ import math
 import re
 import sys
 import time
+import warnings
 from pathlib import Path
 
 
@@ -80,21 +81,59 @@ def _require_v2_0_attr(parent: object, attr: str, label: str) -> object:
     return getattr(parent, attr)
 
 
+def _require_v2_0_callable(parent: object, attr: str, label: str) -> object:
+    value = _require_v2_0_attr(parent, attr, label)
+    if not callable(value):
+        raise RuntimeError(f"v2_0 {label} must be callable")
+    return value
+
+
+def _base_version_is_compatible(actual_version: object) -> bool:
+    version = str(actual_version)
+    return version == REQUIRED_BASE_VERSION or version.startswith(f"{REQUIRED_BASE_VERSION}.")
+
+
 def validate_v2_0_contract() -> None:
     module_name = str(getattr(v2_0, "__name__", ""))
     if not module_name.endswith("_v2_0"):
         raise RuntimeError(f"v2_0 module version mismatch: expected suffix _v2_0, got {module_name!r}")
     actual_version = str(getattr(v2_0, "VERSION", REQUIRED_BASE_VERSION))
-    if actual_version != REQUIRED_BASE_VERSION:
+    if not _base_version_is_compatible(actual_version):
         raise RuntimeError(f"v2_0 VERSION mismatch: expected {REQUIRED_BASE_VERSION}, got {actual_version}")
+    base_mod = _require_v2_0_attr(v2_0, "base_mod", "base_mod")
     embedded_context = _require_v2_0_attr(v2_0, "embedded_context", "embedded_context")
+    realtime_core = _require_v2_0_attr(v2_0, "realtime_core", "realtime_core")
     _require_v2_0_attr(v2_0, "_V2_RUNTIME_ARGS", "_V2_RUNTIME_ARGS")
-    _require_v2_0_attr(v2_0, "_v2_file_lock", "_v2_file_lock")
-    _require_v2_0_attr(embedded_context, "_load_embedded_base_context", "embedded_context._load_embedded_base_context")
-    _require_v2_0_attr(embedded_context, "current_base_fingerprint", "embedded_context.current_base_fingerprint")
+    _require_v2_0_attr(v2_0, "DEFAULT_REALTIME_CACHE_SECONDS", "DEFAULT_REALTIME_CACHE_SECONDS")
+    _require_v2_0_attr(v2_0, "DEFAULT_V2_LOCK_WAIT_SECONDS", "DEFAULT_V2_LOCK_WAIT_SECONDS")
+    _require_v2_0_attr(v2_0, "DEFAULT_V2_STALE_LOCK_SECONDS", "DEFAULT_V2_STALE_LOCK_SECONDS")
+    _require_v2_0_callable(v2_0, "_v2_file_lock", "_v2_file_lock")
+    _require_v2_0_callable(v2_0, "generate_v2_0_outputs", "generate_v2_0_outputs")
+    _require_v2_0_callable(v2_0, "current_base_fingerprint", "current_base_fingerprint")
+    _require_v2_0_callable(v2_0, "run_realtime_query_with_fresh_state", "run_realtime_query_with_fresh_state")
+    _require_v2_0_attr(embedded_context, "base_mod", "embedded_context.base_mod")
+    _require_v2_0_callable(embedded_context, "_load_embedded_base_context", "embedded_context._load_embedded_base_context")
+    _require_v2_0_callable(embedded_context, "current_base_fingerprint", "embedded_context.current_base_fingerprint")
+    _require_v2_0_callable(realtime_core, "load_realtime_base", "realtime_core.load_realtime_base")
+    _require_v2_0_attr(realtime_core, "base_mod", "realtime_core.base_mod")
+    freq_mod = _require_v2_0_attr(base_mod, "freq_mod", "base_mod.freq_mod")
+    cost_mod = _require_v2_0_attr(freq_mod, "cost_mod", "base_mod.freq_mod.cost_mod")
+    _require_v2_0_callable(cost_mod, "apply_cost_model", "base_mod.freq_mod.cost_mod.apply_cost_model")
+    _require_v2_0_attr(cost_mod, "ENTRY_COST", "base_mod.freq_mod.cost_mod.ENTRY_COST")
+    _require_v2_0_attr(cost_mod, "EXIT_COST", "base_mod.freq_mod.cost_mod.EXIT_COST")
+    _require_v2_0_callable(base_mod, "assert_no_historical_rewrite", "base_mod.assert_no_historical_rewrite")
+    _require_v2_0_callable(base_mod, "augment_signal_with_member_rebalance", "base_mod.augment_signal_with_member_rebalance")
+    _require_v2_0_callable(base_mod, "build_performance_outputs", "base_mod.build_performance_outputs")
+    _require_v2_0_attr(base_mod, "STRATEGY_TITLE", "base_mod.STRATEGY_TITLE")
+    _require_v2_0_attr(base_mod, "PERFORMANCE_PATTERN", "base_mod.PERFORMANCE_PATTERN")
     overlay_mod = _require_v2_0_attr(v2_0, "overlay_mod", "overlay_mod")
-    _require_v2_0_attr(overlay_mod, "_build_signal_row", "overlay_mod._build_signal_row")
-    _require_v2_0_attr(overlay_mod, "_build_v2_data_lineage", "overlay_mod._build_v2_data_lineage")
+    _require_v2_0_callable(overlay_mod, "_build_signal_row", "overlay_mod._build_signal_row")
+    _require_v2_0_callable(overlay_mod, "_build_v2_data_lineage", "overlay_mod._build_v2_data_lineage")
+    _require_v2_0_callable(
+        overlay_mod,
+        "_apply_realtime_meta_columns_to_signal_row",
+        "overlay_mod._apply_realtime_meta_columns_to_signal_row",
+    )
     _require_v2_0_attr(overlay_mod, "TARGET_VOL_TRADING_DAYS", "overlay_mod.TARGET_VOL_TRADING_DAYS")
 
 
@@ -137,7 +176,9 @@ TARGET_VOL_MAX_LEVERAGE = 1.3
 TARGET_VOL_MIN_LEVERAGE = float(v2_0.overlay_mod.TARGET_VOL_MIN_LEVERAGE)
 TARGET_VOL_WINDOW = int(v2_0.overlay_mod.TARGET_VOL_WINDOW)
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.30
-TARGET_VOL_SCALE_CHANGE_COST = float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST)
+TARGET_VOL_SCALE_CHANGE_ENTRY_COST = float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
+TARGET_VOL_SCALE_CHANGE_EXIT_COST = float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+TARGET_VOL_SCALE_CHANGE_COST = TARGET_VOL_SCALE_CHANGE_ENTRY_COST
 TARGET_VOL_FINANCING_RATE = float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE)
 IDLE_CASH_YIELD = float(v2_0.overlay_mod.IDLE_CASH_YIELD)
 FORMAL_START_DATE = pd.Timestamp("2010-05-05")
@@ -416,11 +457,32 @@ def build_v2_5_common_index(
     close_df: pd.DataFrame,
     official_index: pd.DatetimeIndex | pd.Index | None = None,
 ) -> pd.DatetimeIndex:
-    idx = pd.DatetimeIndex(_valid_log_wls_index(close_df))
+    valid_idx = pd.DatetimeIndex(_valid_log_wls_index(close_df))
+    valid_idx = pd.DatetimeIndex(valid_idx[valid_idx >= FORMAL_START_DATE]).sort_values()
+    idx = valid_idx
     if official_index is not None:
         idx = pd.DatetimeIndex(idx.intersection(pd.DatetimeIndex(official_index)))
-    idx = pd.DatetimeIndex(idx)
-    return idx[idx >= FORMAL_START_DATE].sort_values()
+        _warn_on_missing_common_index_sessions(idx, valid_idx)
+    return pd.DatetimeIndex(idx).sort_values()
+
+
+def _warn_on_missing_common_index_sessions(common_index: pd.DatetimeIndex, expected_index: pd.DatetimeIndex) -> None:
+    if len(common_index) == 0:
+        return
+    common = pd.DatetimeIndex(common_index).sort_values()
+    expected = pd.DatetimeIndex(expected_index).sort_values()
+    expected_span = expected[(expected >= common.min()) & (expected <= common.max())]
+    missing = expected_span.difference(common)
+    if len(missing) == 0:
+        return
+    first_missing = pd.Timestamp(missing[0]).date()
+    warnings.warn(
+        "v2.5 common index missing trading sessions inside the official overlap; "
+        f"first_missing={first_missing}, missing_count={len(missing)}. "
+        "Using the v2.0 official overlap index; performance may omit those base-valid sessions.",
+        RuntimeWarning,
+        stacklevel=2,
+    )
 
 
 def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
@@ -489,8 +551,24 @@ def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex
 
 def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
     out = v2_0.base_mod.freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
+    _assert_apply_cost_model_preserves_gross_return(gross, out)
     out["overlay_pre_cost_return"] = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
     return out
+
+
+def _assert_apply_cost_model_preserves_gross_return(gross: pd.DataFrame, costed: pd.DataFrame) -> None:
+    if "return" not in gross.columns or "return" not in costed.columns:
+        raise RuntimeError("v2_0 cost model contract changed: gross and costed outputs must contain return")
+    common_index = pd.Index(costed.index).intersection(pd.Index(gross.index))
+    if len(common_index) != len(costed.index):
+        raise RuntimeError("v2_0 cost model contract changed: costed output index must stay aligned with gross input")
+    expected = pd.to_numeric(gross.loc[common_index, "return"], errors="coerce").fillna(0.0)
+    actual = pd.to_numeric(costed.loc[common_index, "return"], errors="coerce").fillna(0.0)
+    if not np.allclose(actual.to_numpy(dtype=float), expected.to_numpy(dtype=float), rtol=1e-9, atol=1e-9):
+        raise RuntimeError(
+            "v2_0 cost model contract changed: apply_cost_model must preserve gross return in out['return']; "
+            "costed values belong in return_net and total_cost"
+        )
 
 
 def _safe_float(value: object, default: float = 0.0) -> float:
@@ -559,6 +637,25 @@ def _microcap_turnover_series(holding: pd.Series, execution_scale: pd.Series) ->
     return leg.sub(leg.shift(1).fillna(0.0)).abs().astype(float)
 
 
+def _target_vol_scale_change_cost(holding: pd.Series, execution_scale: pd.Series) -> pd.Series:
+    holding = holding.fillna("cash").astype(str)
+    scale = pd.to_numeric(execution_scale, errors="coerce").fillna(0.0)
+    scale_delta = scale.sub(scale.shift(1).fillna(0.0))
+    same_holding = holding.eq(holding.shift(1))
+    cost_rate = pd.Series(TARGET_VOL_SCALE_CHANGE_ENTRY_COST, index=holding.index, dtype=float)
+    cost_rate.loc[scale_delta < 0.0] = TARGET_VOL_SCALE_CHANGE_EXIT_COST
+    return scale_delta.abs().where(same_holding, 0.0).mul(cost_rate).astype(float)
+
+
+def _target_vol_scale_change_cost_note() -> str:
+    if math.isclose(TARGET_VOL_SCALE_CHANGE_ENTRY_COST, TARGET_VOL_SCALE_CHANGE_EXIT_COST, rel_tol=0.0, abs_tol=1e-12):
+        return f"{TARGET_VOL_SCALE_CHANGE_ENTRY_COST:.2%} one-side microcap exposure scale-change cost"
+    return (
+        f"{TARGET_VOL_SCALE_CHANGE_ENTRY_COST:.2%} entry / "
+        f"{TARGET_VOL_SCALE_CHANGE_EXIT_COST:.2%} exit one-side microcap exposure scale-change cost"
+    )
+
+
 def _base_trade_cost_scale(
     holding: pd.Series,
     next_holding: pd.Series,
@@ -625,13 +722,14 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     target_vol_turnover = _microcap_turnover_series(holding, execution_scale)
     same_holding = holding.eq(holding.shift(1))
     target_vol_costed_turnover = target_vol_turnover.where(same_holding, 0.0)
-    scale_change_cost = target_vol_costed_turnover * TARGET_VOL_SCALE_CHANGE_COST
+    scale_change_cost = _target_vol_scale_change_cost(holding, execution_scale)
     financing_cost = execution_scale.sub(1.0).clip(lower=0.0) * TARGET_VOL_FINANCING_RATE / TRADING_DAYS
     idle_cash_yield = active.astype(float) * execution_scale.rsub(1.0).clip(lower=0.0, upper=1.0) * IDLE_CASH_YIELD / TRADING_DAYS
+    cash_day_yield = active.astype(float).rsub(1.0) * IDLE_CASH_YIELD / TRADING_DAYS
     base_cost_scale = _base_trade_cost_scale(holding, next_holding, execution_scale, next_session_actionable_scale)
     base_trade_cost_scaled = (base_trade_cost * base_cost_scale).clip(lower=0.0, upper=0.99)
     ret = (
-        (1.0 + base_pre_cost_return * execution_scale + idle_cash_yield)
+        (1.0 + base_pre_cost_return * execution_scale + idle_cash_yield + cash_day_yield)
         * (1.0 - base_trade_cost_scaled)
         * (1.0 - scale_change_cost)
         * (1.0 - financing_cost)
@@ -651,6 +749,7 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     out["target_vol_frozen_lag_trading_days"] = frozen_lag_trading_days
     out["current_execution_scale"] = execution_scale
     out["execution_scale"] = execution_scale
+    out["weight"] = execution_scale
     out["next_session_target_scale"] = next_session_target_scale
     out["next_session_actionable_scale"] = next_session_actionable_scale
     out["target_vol_scale_next_session"] = next_session_actionable_scale
@@ -660,9 +759,9 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     out["target_vol_trade_cost"] = scale_change_cost
     out["financing_cost"] = financing_cost
     out["idle_cash_yield"] = idle_cash_yield
-    out["cash_day_yield"] = 0.0
-    out["cash_day_yield_annual"] = 0.0
-    out["cash_day_yield_enabled"] = False
+    out["cash_day_yield"] = cash_day_yield
+    out["cash_day_yield_annual"] = IDLE_CASH_YIELD
+    out["cash_day_yield_enabled"] = True
     out["base_trade_cost"] = base_trade_cost
     out["base_trade_cost_scale"] = base_cost_scale
     out["base_trade_cost_scaled"] = base_trade_cost_scaled
@@ -748,10 +847,12 @@ def current_base_fingerprint() -> dict[str, object]:
         "target_vol_max_leverage": TARGET_VOL_MAX_LEVERAGE,
         "target_vol_min_leverage": TARGET_VOL_MIN_LEVERAGE,
         "target_vol_scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
+        "target_vol_scale_change_entry_cost": TARGET_VOL_SCALE_CHANGE_ENTRY_COST,
+        "target_vol_scale_change_exit_cost": TARGET_VOL_SCALE_CHANGE_EXIT_COST,
         "target_vol_financing_rate": TARGET_VOL_FINANCING_RATE,
         "target_vol_scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
         "idle_cash_yield": IDLE_CASH_YIELD,
-        "idle_credit_on_full_cash_day": False,
+        "idle_credit_on_full_cash_day": True,
         "hedge_removed": True,
         "max_realtime_target_vol_frozen_lag_days": MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS,
     }
@@ -933,15 +1034,17 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_5")
     _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
     _atomic_write_csv(pd.DataFrame([summary]), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
     plt.figure(figsize=(12, 6))
-    plt.plot(nav_df["date"], nav_df["nav_net"], label="v2.5 nav_net")
-    plt.title("Top100 Microcap Mom16 v2.5 Costed NAV")
-    plt.xlabel("date")
-    plt.ylabel("nav_net")
-    plt.grid(True, alpha=0.3)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(PERF_PNG, dpi=150)
-    plt.close()
+    try:
+        plt.plot(nav_df["date"], nav_df["nav_net"], label="v2.5 nav_net")
+        plt.title("Top100 Microcap Mom16 v2.5 Costed NAV")
+        plt.xlabel("date")
+        plt.ylabel("nav_net")
+        plt.grid(True, alpha=0.3)
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(PERF_PNG, dpi=150)
+    finally:
+        plt.close()
     payload = {
         "source_label": source_label,
         "summary": summary,
@@ -993,8 +1096,8 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
             row[col] = latest[col]
     row["target_vol_max_leverage"] = TARGET_VOL_MAX_LEVERAGE
     row["cash_day_yield"] = float(latest.get("cash_day_yield", 0.0)) if "cash_day_yield" in latest else 0.0
-    row["cash_day_yield_annual"] = 0.0
-    row["cash_day_yield_enabled"] = False
+    row["cash_day_yield_annual"] = IDLE_CASH_YIELD
+    row["cash_day_yield_enabled"] = True
     return row
 
 
@@ -1026,6 +1129,29 @@ def _load_official_v2_0_out() -> pd.DataFrame:
     return official_v2_0_out
 
 
+def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
+    cache_key = _official_v2_0_cache_key()
+    if _OFFICIAL_V2_0_OUT_CACHE is not None and _OFFICIAL_V2_0_OUT_CACHE[0] == cache_key:
+        return pd.DatetimeIndex(_OFFICIAL_V2_0_OUT_CACHE[1].index).sort_values()
+    costed_nav_csv = Path(getattr(v2_0, "COSTED_NAV_CSV", ""))
+    if costed_nav_csv.exists():
+        try:
+            dates = pd.read_csv(costed_nav_csv, usecols=["date"], parse_dates=["date"])["date"]
+            return pd.DatetimeIndex(dates).dropna().sort_values()
+        except Exception:
+            pass
+    return pd.DatetimeIndex(_load_official_v2_0_out().index).sort_values()
+
+
+def _build_realtime_v2_5_official_index(close_df: pd.DataFrame, meta: dict[str, object]) -> pd.DatetimeIndex:
+    official_index = _load_realtime_v2_0_official_index()
+    close_index = pd.DatetimeIndex(close_df.index).sort_values()
+    official_index = pd.DatetimeIndex(official_index.intersection(close_index)).sort_values()
+    if bool(meta.get("snapshot_row_appended", False)) and len(close_index):
+        official_index = official_index.union(pd.DatetimeIndex([close_index[-1]])).sort_values()
+    return pd.DatetimeIndex(official_index)
+
+
 V2_5_REWRITE_AUDIT_KEY_COLUMNS = [
     "return_net",
     "holding",
@@ -1055,7 +1181,7 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
             previous=previous,
             candidate=out.rename_axis("date").reset_index(),
             key_columns=V2_5_REWRITE_AUDIT_KEY_COLUMNS,
-            allowed_tail_rows=max(LOOKBACK + 20, 40),
+            allowed_tail_rows=_v2_5_rewrite_allowed_tail_rows(),
             label="v2.5 official costed NAV",
             audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
         )
@@ -1075,9 +1201,9 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         "Formal v2.5 microcap-only log-WLS threshold target-volatility overlay. Uses exp half-life 3.0 weighted log slope on "
         "17 trading days of unhedged microcap Top100 NAV, enters and exits only when score is above 40%, "
         "removes the hedge leg, applies no R2 gate, no single-trade stop-loss, no equity drawdown stop, "
-        "no momentum-decay exit, no overheat exit, no full-cash-day yield, "
+        "no momentum-decay exit, no overheat exit, credits full-cash-day idle yield, "
         "60-day realized volatility, 30% annual target volatility, max 1.3x leverage, 30% scale rebalance threshold, "
-        "10bp leg-turnover scale-change cost, scaled embedded-lineage base "
+        f"{_target_vol_scale_change_cost_note()}, scaled embedded-lineage base "
         "trading cost, and 3% annual financing cost on exposure above 1.0x."
     )
     summary.setdefault("core_params", {})
@@ -1111,11 +1237,13 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
         "min_leverage": TARGET_VOL_MIN_LEVERAGE,
         "scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
+        "scale_change_entry_cost": TARGET_VOL_SCALE_CHANGE_ENTRY_COST,
+        "scale_change_exit_cost": TARGET_VOL_SCALE_CHANGE_EXIT_COST,
         "scale_rebalance_threshold": float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD),
         "financing_rate": TARGET_VOL_FINANCING_RATE,
         "idle_cash_yield": IDLE_CASH_YIELD,
-        "idle_credit_on_cash_day": False,
-        "idle_cash_return": "credited only on active under-1x exposure; full cash days receive zero return",
+        "idle_credit_on_cash_day": True,
+        "idle_cash_return": "credited on active under-1x exposure and on full cash days",
         "trading_days": TRADING_DAYS,
         "timing": "current execution scale uses T-1 realized volatility; next-session target scale uses T close realized volatility",
     }
@@ -1144,6 +1272,16 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     return summary, signal_row, out
 
 
+def _v2_5_rewrite_allowed_tail_rows() -> int:
+    # v2.5 depends on both the signal lookback and the 60-day target-vol window;
+    # scale thresholding is path-dependent, so the frozen audit tail must cover
+    # the full short-horizon recalculation span. The threshold state can still
+    # propagate farther if a revised row flips a rebalance decision and does not
+    # quickly resync; such audit failures should be reviewed as possible
+    # path-dependent transmission before treating them as true historical rewrites.
+    return max(TARGET_VOL_WINDOW + LOOKBACK, TARGET_VOL_WINDOW + 20, LOOKBACK + 20, 40)
+
+
 def generate_v2_5_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     with v2_5_output_lock():
         return _generate_v2_5_outputs_unlocked()
@@ -1153,7 +1291,7 @@ def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     ensure_output_dir()
     realtime_base = v2_0.realtime_core.load_realtime_base()
     close_df = realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index()
-    official_index = pd.DatetimeIndex(close_df.index)
+    official_index = _build_realtime_v2_5_official_index(close_df, realtime_base.meta)
     common_index = build_v2_5_common_index(close_df, official_index)
     gross = build_microcap_log_wls_gross(close_df, common_index)
     costed = apply_cost(gross, realtime_base.turnover_df)
@@ -1193,7 +1331,7 @@ def _print_signal_query() -> None:
     print("strategy_version: v2.5")
     print("base_version: embedded_v2_base")
     print("signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry/exit threshold 40%, no R2 gate")
-    print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}, no R2 execution-scale gate")
+    print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}, cash-day yield {IDLE_CASH_YIELD:.0%}, no R2 execution-scale gate")
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
     print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
@@ -1217,7 +1355,7 @@ def _print_realtime_signal_query() -> None:
         print("strategy_version: v2.5")
         print("base_version: embedded_v2_base")
         print("signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry/exit threshold 40%, no R2 gate")
-        print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}, no R2 execution-scale gate")
+        print(f"overlay: no hedge, no stop-loss/DD/decay/overheat overlay, target volatility {TARGET_VOL:.0%}, max leverage {TARGET_VOL_MAX_LEVERAGE:.1f}x, scale threshold {TARGET_VOL_SCALE_REBALANCE_THRESHOLD:.0%}, cash-day yield {IDLE_CASH_YIELD:.0%}, no R2 execution-scale gate")
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
@@ -1242,12 +1380,12 @@ def _print_realtime_signal_query() -> None:
 
 
 def _print_performance_query(query: str) -> None:
-    generate_v2_5_outputs()
-    perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-    old_title = v2_0.embedded_context.base_mod.STRATEGY_TITLE
-    v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.5"
-    try:
-        with v2_5_output_lock():
+    with v2_5_output_lock():
+        _summary, _signal_row, perf_df = _generate_v2_5_outputs_unlocked()
+        perf_df = perf_df.rename_axis("date").sort_index()
+        old_title = v2_0.embedded_context.base_mod.STRATEGY_TITLE
+        v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.5"
+        try:
             v2_0.embedded_context.base_mod.build_performance_outputs(
                 perf_df=perf_df,
                 ret_col="return_net",
@@ -1262,8 +1400,8 @@ def _print_performance_query(query: str) -> None:
                     "performance_json": PERF_QUERY_JSON,
                 },
             )
-    finally:
-        v2_0.embedded_context.base_mod.STRATEGY_TITLE = old_title
+        finally:
+            v2_0.embedded_context.base_mod.STRATEGY_TITLE = old_title
     print(PERF_QUERY_PNG)
     print(PERF_QUERY_SUMMARY_CSV)
     print(PERF_QUERY_YEARLY_CSV)
