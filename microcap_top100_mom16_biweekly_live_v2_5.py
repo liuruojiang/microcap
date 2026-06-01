@@ -1,10 +1,12 @@
 ﻿from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import math
 import re
 import sys
+import threading
 import time
 import warnings
 from pathlib import Path
@@ -70,7 +72,26 @@ import pandas as pd
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
+
+class _LazyV2_0Module:
+    def __init__(self) -> None:
+        object.__setattr__(self, "_module", None)
+
+    def _load(self) -> object:
+        module = object.__getattribute__(self, "_module")
+        if module is None:
+            module = importlib.import_module("microcap_top100_mom16_biweekly_live_v2_0")
+            object.__setattr__(self, "_module", module)
+        return module
+
+    def __getattr__(self, name: str) -> object:
+        return getattr(self._load(), name)
+
+    def __setattr__(self, name: str, value: object) -> None:
+        setattr(self._load(), name, value)
+
+
+v2_0 = _LazyV2_0Module()
 
 REQUIRED_BASE_VERSION = "2.0"
 
@@ -122,6 +143,7 @@ def validate_v2_0_contract() -> None:
     _require_v2_0_attr(cost_mod, "ENTRY_COST", "base_mod.freq_mod.cost_mod.ENTRY_COST")
     _require_v2_0_attr(cost_mod, "EXIT_COST", "base_mod.freq_mod.cost_mod.EXIT_COST")
     _require_v2_0_callable(base_mod, "assert_no_historical_rewrite", "base_mod.assert_no_historical_rewrite")
+    _require_v2_0_callable(base_mod, "_normalise_dated_frame", "base_mod._normalise_dated_frame")
     _require_v2_0_callable(base_mod, "augment_signal_with_member_rebalance", "base_mod.augment_signal_with_member_rebalance")
     _require_v2_0_callable(base_mod, "build_performance_outputs", "base_mod.build_performance_outputs")
     _require_v2_0_attr(base_mod, "STRATEGY_TITLE", "base_mod.STRATEGY_TITLE")
@@ -135,9 +157,31 @@ def validate_v2_0_contract() -> None:
         "overlay_mod._apply_realtime_meta_columns_to_signal_row",
     )
     _require_v2_0_attr(overlay_mod, "TARGET_VOL_TRADING_DAYS", "overlay_mod.TARGET_VOL_TRADING_DAYS")
+    expected_constants = {
+        "overlay_mod.TARGET_VOL_MIN_LEVERAGE": (float(overlay_mod.TARGET_VOL_MIN_LEVERAGE), TARGET_VOL_MIN_LEVERAGE),
+        "overlay_mod.TARGET_VOL_WINDOW": (int(overlay_mod.TARGET_VOL_WINDOW), TARGET_VOL_WINDOW),
+        "base_mod.freq_mod.cost_mod.ENTRY_COST": (float(cost_mod.ENTRY_COST), TARGET_VOL_SCALE_CHANGE_ENTRY_COST),
+        "base_mod.freq_mod.cost_mod.EXIT_COST": (float(cost_mod.EXIT_COST), TARGET_VOL_SCALE_CHANGE_EXIT_COST),
+        "overlay_mod.TARGET_VOL_FINANCING_RATE": (float(overlay_mod.TARGET_VOL_FINANCING_RATE), TARGET_VOL_FINANCING_RATE),
+        "overlay_mod.IDLE_CASH_YIELD": (float(overlay_mod.IDLE_CASH_YIELD), IDLE_CASH_YIELD),
+        "overlay_mod.TARGET_VOL_TRADING_DAYS": (int(overlay_mod.TARGET_VOL_TRADING_DAYS), TRADING_DAYS),
+    }
+    for label, (actual, expected) in expected_constants.items():
+        if isinstance(expected, float):
+            if not math.isclose(float(actual), float(expected), rel_tol=0.0, abs_tol=1e-12):
+                raise RuntimeError(f"v2_0 {label} mismatch: expected {expected}, got {actual}")
+        elif actual != expected:
+            raise RuntimeError(f"v2_0 {label} mismatch: expected {expected}, got {actual}")
+
+_V2_0_CONTRACT_VALIDATED = False
 
 
-validate_v2_0_contract()
+def _ensure_v2_0_contract_validated() -> None:
+    global _V2_0_CONTRACT_VALIDATED
+    if _V2_0_CONTRACT_VALIDATED:
+        return
+    validate_v2_0_contract()
+    _V2_0_CONTRACT_VALIDATED = True
 
 
 ROOT = Path(__file__).resolve().parent
@@ -173,22 +217,23 @@ ENTRY_THRESHOLD = 0.40
 EXIT_THRESHOLD = 0.40
 TARGET_VOL = 0.30
 TARGET_VOL_MAX_LEVERAGE = 1.3
-TARGET_VOL_MIN_LEVERAGE = float(v2_0.overlay_mod.TARGET_VOL_MIN_LEVERAGE)
-TARGET_VOL_WINDOW = int(v2_0.overlay_mod.TARGET_VOL_WINDOW)
+TARGET_VOL_MIN_LEVERAGE = 0.0
+TARGET_VOL_WINDOW = 60
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.30
-TARGET_VOL_SCALE_CHANGE_ENTRY_COST = float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
-TARGET_VOL_SCALE_CHANGE_EXIT_COST = float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+TARGET_VOL_SCALE_CHANGE_ENTRY_COST = 0.003
+TARGET_VOL_SCALE_CHANGE_EXIT_COST = 0.003
 TARGET_VOL_SCALE_CHANGE_COST = TARGET_VOL_SCALE_CHANGE_ENTRY_COST
-TARGET_VOL_FINANCING_RATE = float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE)
-IDLE_CASH_YIELD = float(v2_0.overlay_mod.IDLE_CASH_YIELD)
+TARGET_VOL_FINANCING_RATE = 0.03
+IDLE_CASH_YIELD = 0.02
 FORMAL_START_DATE = pd.Timestamp("2010-05-05")
 MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS = 5
 _OFFICIAL_V2_0_OUT_CACHE: tuple[str, pd.DataFrame] | None = None
+_OFFICIAL_V2_0_OUT_CACHE_LOCK = threading.Lock()
 
 SIGNAL_SPREAD_HEDGE_RATIO = 0.0
 EXECUTION_HEDGE_RATIO = 0.0
 BASE_HEDGE_RATIO = 0.0
-TRADING_DAYS = int(v2_0.overlay_mod.TARGET_VOL_TRADING_DAYS)
+TRADING_DAYS = 244
 
 
 def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -209,7 +254,7 @@ def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--base-costed-nav-csv", type=Path, default=None)
     parser.add_argument("--capital", type=float, default=None)
     parser.add_argument("--max-workers", type=int, default=8)
-    parser.add_argument("--realtime-cache-seconds", type=int, default=v2_0.DEFAULT_REALTIME_CACHE_SECONDS)
+    parser.add_argument("--realtime-cache-seconds", type=int, default=None)
     parser.add_argument("--allow-stale-realtime", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--force-refresh", action="store_true")
     parser.add_argument("--bootstrap-deps", action="store_true")
@@ -256,6 +301,7 @@ def configure_output_paths(output_prefix: str | None = None, costed_nav_csv: Pat
 
 
 def configure_runtime(args: argparse.Namespace) -> None:
+    _ensure_v2_0_contract_validated()
     configure_output_paths(
         output_prefix=getattr(args, "v25_output_prefix", None),
         costed_nav_csv=getattr(args, "v25_costed_nav_csv", None),
@@ -268,7 +314,11 @@ def configure_runtime(args: argparse.Namespace) -> None:
         output_prefix=getattr(args, "base_output_prefix", None),
         capital=getattr(args, "capital", None),
         max_workers=getattr(args, "max_workers", 8),
-        realtime_cache_seconds=getattr(args, "realtime_cache_seconds", v2_0.DEFAULT_REALTIME_CACHE_SECONDS),
+        realtime_cache_seconds=(
+            v2_0.DEFAULT_REALTIME_CACHE_SECONDS
+            if getattr(args, "realtime_cache_seconds", None) is None
+            else getattr(args, "realtime_cache_seconds")
+        ),
         allow_stale_realtime=getattr(args, "allow_stale_realtime", False),
         force_refresh=getattr(args, "force_refresh", False),
         bootstrap_deps=getattr(args, "bootstrap_deps", False),
@@ -277,24 +327,26 @@ def configure_runtime(args: argparse.Namespace) -> None:
 
 
 def v2_5_output_lock(
-    wait_timeout_seconds: float = v2_0.DEFAULT_V2_LOCK_WAIT_SECONDS,
-    stale_lock_seconds: float = v2_0.DEFAULT_V2_STALE_LOCK_SECONDS,
+    wait_timeout_seconds: float | None = None,
+    stale_lock_seconds: float | None = None,
 ):
+    _ensure_v2_0_contract_validated()
     return v2_0._v2_file_lock(
         f"{OUTPUT_PREFIX}_generation.lock",
-        wait_timeout_seconds=wait_timeout_seconds,
-        stale_lock_seconds=stale_lock_seconds,
+        wait_timeout_seconds=v2_0.DEFAULT_V2_LOCK_WAIT_SECONDS if wait_timeout_seconds is None else wait_timeout_seconds,
+        stale_lock_seconds=v2_0.DEFAULT_V2_STALE_LOCK_SECONDS if stale_lock_seconds is None else stale_lock_seconds,
     )
 
 
 def v2_5_realtime_output_lock(
-    wait_timeout_seconds: float = v2_0.DEFAULT_V2_LOCK_WAIT_SECONDS,
-    stale_lock_seconds: float = v2_0.DEFAULT_V2_STALE_LOCK_SECONDS,
+    wait_timeout_seconds: float | None = None,
+    stale_lock_seconds: float | None = None,
 ):
+    _ensure_v2_0_contract_validated()
     return v2_0._v2_file_lock(
         f"{OUTPUT_PREFIX}_realtime.lock",
-        wait_timeout_seconds=wait_timeout_seconds,
-        stale_lock_seconds=stale_lock_seconds,
+        wait_timeout_seconds=v2_0.DEFAULT_V2_LOCK_WAIT_SECONDS if wait_timeout_seconds is None else wait_timeout_seconds,
+        stale_lock_seconds=v2_0.DEFAULT_V2_STALE_LOCK_SECONDS if stale_lock_seconds is None else stale_lock_seconds,
     )
 
 
@@ -324,6 +376,10 @@ def _json_sanitize(value: object) -> object:
 
 def _json_dumps(payload: object) -> str:
     return json.dumps(_json_sanitize(payload), ensure_ascii=False, indent=2, allow_nan=False, default=str)
+
+
+def _json_canonical(payload: object) -> object:
+    return json.loads(_json_dumps(payload))
 
 
 def _atomic_temp_path(path: Path) -> Path:
@@ -383,14 +439,17 @@ def microcap_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Serie
     validate_close_df(close_df)
     close_df = close_df.sort_index()
     micro_ret = close_df["microcap"].pct_change(fill_method=None)
-    hedge_ret = close_df["hedge"].pct_change(fill_method=None)
+    if "hedge" in close_df.columns:
+        hedge_ret = close_df["hedge"].pct_change(fill_method=None)
+    else:
+        hedge_ret = pd.Series(0.0, index=close_df.index, dtype=float)
     nav = (1.0 + micro_ret.fillna(0.0)).cumprod()
     nav.name = "microcap_nav"
     return nav, micro_ret, hedge_ret
 
 
 def validate_close_df(close_df: pd.DataFrame) -> None:
-    required = {"microcap", "hedge"}
+    required = {"microcap"}
     missing = required - set(close_df.columns)
     if missing:
         raise ValueError(f"close_df missing columns: {sorted(missing)}")
@@ -398,7 +457,7 @@ def validate_close_df(close_df: pd.DataFrame) -> None:
         raise ValueError("close_df index has duplicate dates")
     if not close_df.index.is_monotonic_increasing:
         raise ValueError("close_df index must be monotonic increasing")
-    price_cols = ["microcap", "hedge"]
+    price_cols = ["microcap"] + (["hedge"] if "hedge" in close_df.columns else [])
     prices = close_df[price_cols].apply(pd.to_numeric, errors="coerce")
     if prices.isna().any().any():
         raise ValueError("close_df contains NaN prices")
@@ -437,7 +496,7 @@ def log_wls_score_and_r2(
         fitted = y_bar[:, None] + slope[:, None] * x_centered[None, :]
         ss_tot = (weights * y_centered**2).sum(axis=1)
         ss_res = (weights * (valid_windows - fitted) ** 2).sum(axis=1)
-        r2_values = np.ones_like(ss_tot, dtype=float)
+        r2_values = np.zeros_like(ss_tot, dtype=float)
         nonzero_tot = ss_tot > 0
         r2_values[nonzero_tot] = np.clip(1.0 - ss_res[nonzero_tot] / ss_tot[nonzero_tot], 0.0, 1.0)
         target_positions = np.flatnonzero(valid) + lookback - 1
@@ -467,22 +526,63 @@ def build_v2_5_common_index(
 
 
 def _warn_on_missing_common_index_sessions(common_index: pd.DatetimeIndex, expected_index: pd.DatetimeIndex) -> None:
-    if len(common_index) == 0:
+    gap = _common_index_gap_summary(common_index, expected_index)
+    if int(gap["missing_count"]) == 0:
         return
-    common = pd.DatetimeIndex(common_index).sort_values()
-    expected = pd.DatetimeIndex(expected_index).sort_values()
-    expected_span = expected[(expected >= common.min()) & (expected <= common.max())]
-    missing = expected_span.difference(common)
-    if len(missing) == 0:
-        return
-    first_missing = pd.Timestamp(missing[0]).date()
     warnings.warn(
         "v2.5 common index missing trading sessions inside the official overlap; "
-        f"first_missing={first_missing}, missing_count={len(missing)}. "
+        f"first_missing={gap['first_missing']}, missing_count={gap['missing_count']}. "
         "Using the v2.0 official overlap index; performance may omit those base-valid sessions.",
         RuntimeWarning,
         stacklevel=2,
     )
+
+
+def _date_ranges_for_missing_sessions(missing: pd.DatetimeIndex, expected_span: pd.DatetimeIndex) -> list[dict[str, str | int]]:
+    if len(missing) == 0:
+        return []
+    expected_pos = {pd.Timestamp(dt): i for i, dt in enumerate(expected_span)}
+    ranges: list[dict[str, str | int]] = []
+    start = pd.Timestamp(missing[0])
+    prev = start
+    count = 1
+    for raw_dt in missing[1:]:
+        dt = pd.Timestamp(raw_dt)
+        if expected_pos.get(dt, -10) == expected_pos.get(prev, -20) + 1:
+            prev = dt
+            count += 1
+            continue
+        ranges.append({"start": str(start.date()), "end": str(prev.date()), "count": count})
+        start = prev = dt
+        count = 1
+    ranges.append({"start": str(start.date()), "end": str(prev.date()), "count": count})
+    return ranges
+
+
+def _common_index_gap_summary(common_index: pd.DatetimeIndex, expected_index: pd.DatetimeIndex) -> dict[str, object]:
+    common = pd.DatetimeIndex(common_index).sort_values()
+    expected = pd.DatetimeIndex(expected_index).sort_values()
+    if len(common) == 0 or len(expected) == 0:
+        return {
+            "missing_count": 0,
+            "first_missing": None,
+            "last_missing": None,
+            "missing_ranges_head": [],
+            "note": "no overlap span available",
+        }
+    expected_span = expected[(expected >= common.min()) & (expected <= common.max())]
+    missing = expected_span.difference(common)
+    ranges = _date_ranges_for_missing_sessions(missing, expected_span)
+    return {
+        "missing_count": int(len(missing)),
+        "first_missing": str(pd.Timestamp(missing[0]).date()) if len(missing) else None,
+        "last_missing": str(pd.Timestamp(missing[-1]).date()) if len(missing) else None,
+        "missing_ranges_head": ranges[:10],
+        "note": (
+            "Sessions are base-valid log-WLS dates omitted because v2.5 uses the intersection "
+            "with the official v2.0 output index."
+        ),
+    }
 
 
 def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
@@ -494,6 +594,7 @@ def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex
     r2 = pd.to_numeric(log_wls["log_wls_r2"].loc[common_index], errors="coerce")
     microcap_ret = micro_ret.loc[common_index]
     hedge_ret_part = hedge_ret.loc[common_index]
+    hedge_close = close_df["hedge"].loc[common_index] if "hedge" in close_df.columns else pd.Series(1.0, index=common_index)
 
     current_active = False
     holdings: list[str] = []
@@ -525,7 +626,7 @@ def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex
             "next_holding": next_holdings,
             "signal_on": signal_on_values,
             "microcap_close": close_df["microcap"].loc[common_index],
-            "hedge_close": close_df["hedge"].loc[common_index],
+            "hedge_close": hedge_close,
             "microcap_ret": microcap_ret,
             "hedge_ret": hedge_ret_part,
             "microcap_mom": score,
@@ -550,6 +651,7 @@ def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex
 
 
 def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
+    _ensure_v2_0_contract_validated()
     out = v2_0.base_mod.freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
     _assert_apply_cost_model_preserves_gross_return(gross, out)
     out["overlay_pre_cost_return"] = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
@@ -580,18 +682,82 @@ def _safe_float(value: object, default: float = 0.0) -> float:
         return float(default)
 
 
-def assert_realtime_target_vol_lag_fresh(out: pd.DataFrame) -> None:
+def _realtime_target_vol_trading_lag_from_calendar(
+    snapshot_date: object,
+    source_date: object,
+    official_index: pd.DatetimeIndex | pd.Index,
+) -> int | None:
+    official = pd.DatetimeIndex(official_index).dropna().sort_values()
+    if len(official) == 0:
+        warnings.warn(
+            "target-vol freshness guard could not compare trading lag: empty official index",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return None
+    snapshot_ts = pd.Timestamp(snapshot_date).normalize()
+    source_ts = pd.Timestamp(source_date).normalize()
+    official_days = pd.DatetimeIndex(pd.Series(official.normalize()).drop_duplicates().sort_values())
+    expected_pos = int(official_days.searchsorted(snapshot_ts, side="right") - 1)
+    source_pos = int(official_days.searchsorted(source_ts, side="right") - 1)
+    if expected_pos < 0 or source_pos < 0:
+        warnings.warn(
+            "target-vol freshness guard could not compare trading lag: "
+            f"snapshot_date={snapshot_ts.date()}, source_date={source_ts.date()}, "
+            f"official_start={official_days[0].date()}, official_end={official_days[-1].date()}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return None
+    if official_days[source_pos] != source_ts:
+        warnings.warn(
+            "target-vol freshness guard aligned source_date to previous official trading day: "
+            f"source_date={source_ts.date()}, aligned_source_date={official_days[source_pos].date()}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+    if snapshot_ts <= official_days[-1] and official_days[expected_pos] != snapshot_ts:
+        warnings.warn(
+            "target-vol freshness guard aligned snapshot date to previous official trading day: "
+            f"snapshot_date={snapshot_ts.date()}, aligned_snapshot_date={official_days[expected_pos].date()}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+    return max(0, expected_pos - source_pos)
+
+
+def assert_realtime_target_vol_lag_fresh(
+    out: pd.DataFrame,
+    official_index: pd.DatetimeIndex | pd.Index | None = None,
+) -> None:
+    """Guard realtime target-vol freshness against the v2.0 official output index.
+
+    This catches cases where recent sessions exist in the official index but
+    the v2.5 common index dropped them. It cannot detect a shared upstream
+    panel outage that also truncates the official index itself.
+    """
     if out.empty or "target_vol_frozen_lag_days" not in out.columns:
         return
     latest = out.iloc[-1]
     trading_lag_days = int(_safe_float(latest.get("target_vol_frozen_lag_trading_days", latest.get("target_vol_frozen_lag_days")), 0.0))
     calendar_lag_days = int(_safe_float(latest.get("target_vol_frozen_lag_calendar_days", latest.get("target_vol_frozen_lag_days")), 0.0))
-    if trading_lag_days <= MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS:
-        return
     source_date = latest.get("target_vol_frozen_source_date", "")
+    guard_trading_lag_days = trading_lag_days
+    if official_index is not None and source_date != "":
+        official_days = pd.DatetimeIndex(official_index).dropna().normalize().drop_duplicates().sort_values()
+        source_ts = pd.Timestamp(source_date).normalize()
+        latest_ts = pd.Timestamp(out.index[-1]).normalize()
+        snapshot_mode = bool(trading_lag_days > 0 or calendar_lag_days > 0 or source_ts != latest_ts)
+        expected_date = latest_ts if snapshot_mode or len(official_days) == 0 else official_days[-1]
+        calendar_lag = _realtime_target_vol_trading_lag_from_calendar(expected_date, source_date, official_index)
+        if calendar_lag is not None:
+            guard_trading_lag_days = calendar_lag
+    if guard_trading_lag_days <= MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS:
+        return
     raise RuntimeError(
         "target-vol frozen lag exceeds realtime limit: "
-        f"trading_lag_days={trading_lag_days}, calendar_lag_days={calendar_lag_days}, "
+        f"trading_lag_days={guard_trading_lag_days}, stored_trading_lag_days={trading_lag_days}, "
+        f"calendar_lag_days={calendar_lag_days}, "
         f"limit={MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS}, source_date={source_date}"
     )
 
@@ -674,7 +840,13 @@ def _base_trade_cost_scale(
     return scale.clip(lower=0.0)
 
 
-def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, *, treat_last_row_as_snapshot: bool = False) -> pd.DataFrame:
+def apply_target_vol(
+    costed_base: pd.DataFrame,
+    target_vol: float = TARGET_VOL,
+    *,
+    treat_last_row_as_snapshot: bool = False,
+    snapshot_date: object | None = None,
+) -> pd.DataFrame:
     out = costed_base.copy().sort_index()
     required_cols = {"return_net", "total_cost", "overlay_pre_cost_return", "microcap_ret", "holding", "next_holding"}
     missing = required_cols - set(out.columns)
@@ -704,6 +876,12 @@ def apply_target_vol(costed_base: pd.DataFrame, target_vol: float = TARGET_VOL, 
     frozen_lag_trading_days = pd.Series(0, index=out.index, dtype=int)
     if treat_last_row_as_snapshot and len(out.index) >= 2:
         snapshot_idx = out.index[-1]
+        if snapshot_date is not None and pd.Timestamp(snapshot_idx).date() != pd.Timestamp(snapshot_date).date():
+            raise RuntimeError(
+                "target-vol snapshot row mismatch: "
+                f"expected_snapshot_date={pd.Timestamp(snapshot_date).date()}, "
+                f"actual_last_date={pd.Timestamp(snapshot_idx).date()}"
+            )
         source_idx = out.index[-2]
         frozen_source_dates.loc[snapshot_idx] = str(pd.Timestamp(source_idx).date())
         frozen_lag_calendar_days.loc[snapshot_idx] = int(
@@ -803,6 +981,7 @@ def build_v2_5_result(
 
 
 def current_base_fingerprint() -> dict[str, object]:
+    _ensure_v2_0_contract_validated()
     base = dict(v2_0.embedded_context.current_base_fingerprint())
     runtime_args = getattr(v2_0, "_V2_RUNTIME_ARGS", None)
 
@@ -829,6 +1008,10 @@ def current_base_fingerprint() -> dict[str, object]:
         "halflife": HALFLIFE,
         "exp_weight_oldest_to_newest": list(exp_weights()),
         "common_index_source": "intersection of valid microcap-only log-WLS signal dates and official v2.0 output index, filtered from 2010-05-05",
+        "rebalance_timing_note": (
+            "The biweekly file/output name is inherited from the embedded Top100 member proxy; "
+            "the v2.5 close-confirmed overlay evaluates its microcap-only log-WLS threshold daily."
+        ),
         "score_definition": "annualized weighted log slope of unhedged microcap Top100 NAV",
         "nav_csv_momentum_gap_column_alias_note": "momentum_gap stores annualized microcap-only log-WLS score for v2.0 compatibility, not raw microcap-minus-hedge momentum gap",
         "r2_gate": None,
@@ -904,7 +1087,7 @@ def build_v2_5_compatibility_audit(summary: dict[str, object] | None) -> dict[st
         "version_match": str(summary.get("version")) == VERSION,
         "version_role_match": str(summary.get("version_role")) == EXPECTED_VERSION_ROLE,
         "version_note_prefix_match": str(summary.get("version_note", "")).startswith(EXPECTED_VERSION_NOTE_PREFIX),
-        "fingerprint_match": actual_fingerprint == expected_fingerprint,
+        "fingerprint_match": _json_canonical(actual_fingerprint) == _json_canonical(expected_fingerprint),
         "expected_version": VERSION,
         "actual_version": summary.get("version"),
         "expected_version_role": EXPECTED_VERSION_ROLE,
@@ -1060,6 +1243,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_5")
 
 
 def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]) -> pd.DataFrame:
+    _ensure_v2_0_contract_validated()
     row = v2_0.overlay_mod._build_signal_row(net_df, reference_summary)
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
@@ -1102,12 +1286,23 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
 
 
 def _close_df_from_base(base_gross_cached: pd.DataFrame) -> pd.DataFrame:
-    return base_gross_cached[["microcap_close", "hedge_close"]].rename(
-        columns={"microcap_close": "microcap", "hedge_close": "hedge"}
-    ).sort_index()
+    if "microcap_close" not in base_gross_cached.columns:
+        raise RuntimeError("v2.5 base context missing required microcap_close column")
+    out = pd.DataFrame({"microcap": base_gross_cached["microcap_close"]}, index=base_gross_cached.index)
+    if "hedge_close" in base_gross_cached.columns:
+        out["hedge"] = base_gross_cached["hedge_close"]
+    return out.sort_index()
+
+
+def _close_df_from_realtime(realtime_close_df: pd.DataFrame) -> pd.DataFrame:
+    if "microcap" not in realtime_close_df.columns:
+        raise RuntimeError("v2.5 realtime base missing required microcap column")
+    cols = ["microcap"] + (["hedge"] if "hedge" in realtime_close_df.columns else [])
+    return realtime_close_df[cols].sort_index()
 
 
 def _official_v2_0_cache_key() -> str:
+    _ensure_v2_0_contract_validated()
     return json.dumps(
         _json_sanitize(v2_0.current_base_fingerprint()),
         ensure_ascii=False,
@@ -1120,19 +1315,31 @@ def _official_v2_0_cache_key() -> str:
 def _load_official_v2_0_out() -> pd.DataFrame:
     global _OFFICIAL_V2_0_OUT_CACHE
     cache_key = _official_v2_0_cache_key()
-    if _OFFICIAL_V2_0_OUT_CACHE is not None and _OFFICIAL_V2_0_OUT_CACHE[0] == cache_key:
-        return _OFFICIAL_V2_0_OUT_CACHE[1]
-    _, _, official_v2_0_out = v2_0.generate_v2_0_outputs()
-    # Recompute after generation because panel shadow/base files may refresh
-    # inside generate_v2_0_outputs(); cache the state subsequent calls will see.
-    _OFFICIAL_V2_0_OUT_CACHE = (_official_v2_0_cache_key(), official_v2_0_out)
-    return official_v2_0_out
+    with _OFFICIAL_V2_0_OUT_CACHE_LOCK:
+        if _OFFICIAL_V2_0_OUT_CACHE is not None and _OFFICIAL_V2_0_OUT_CACHE[0] == cache_key:
+            return _OFFICIAL_V2_0_OUT_CACHE[1]
+        _, _, official_v2_0_out = v2_0.generate_v2_0_outputs()
+        # Cache the post-generation base state because generation may refresh
+        # panel shadow/base files.
+        post_key = _official_v2_0_cache_key()
+        if cache_key != post_key:
+            warnings.warn(
+                "v2.0 base fingerprint changed during generation; "
+                "official v2.0 output cache is keyed to the post-generation state.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+        _OFFICIAL_V2_0_OUT_CACHE = (post_key, official_v2_0_out)
+        return official_v2_0_out
 
 
 def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
+    _ensure_v2_0_contract_validated()
     cache_key = _official_v2_0_cache_key()
-    if _OFFICIAL_V2_0_OUT_CACHE is not None and _OFFICIAL_V2_0_OUT_CACHE[0] == cache_key:
-        return pd.DatetimeIndex(_OFFICIAL_V2_0_OUT_CACHE[1].index).sort_values()
+    with _OFFICIAL_V2_0_OUT_CACHE_LOCK:
+        cached = _OFFICIAL_V2_0_OUT_CACHE
+    if cached is not None and cached[0] == cache_key:
+        return pd.DatetimeIndex(cached[1].index).sort_values()
     costed_nav_csv = Path(getattr(v2_0, "COSTED_NAV_CSV", ""))
     if costed_nav_csv.exists():
         try:
@@ -1143,10 +1350,15 @@ def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
     return pd.DatetimeIndex(_load_official_v2_0_out().index).sort_values()
 
 
-def _build_realtime_v2_5_official_index(close_df: pd.DataFrame, meta: dict[str, object]) -> pd.DatetimeIndex:
-    official_index = _load_realtime_v2_0_official_index()
+def _build_realtime_v2_5_official_index(
+    close_df: pd.DataFrame,
+    meta: dict[str, object],
+    official_index: pd.DatetimeIndex | pd.Index | None = None,
+) -> pd.DatetimeIndex:
+    if official_index is None:
+        official_index = _load_realtime_v2_0_official_index()
     close_index = pd.DatetimeIndex(close_df.index).sort_values()
-    official_index = pd.DatetimeIndex(official_index.intersection(close_index)).sort_values()
+    official_index = pd.DatetimeIndex(pd.DatetimeIndex(official_index).intersection(close_index)).sort_values()
     if bool(meta.get("snapshot_row_appended", False)) and len(close_index):
         official_index = official_index.union(pd.DatetimeIndex([close_index[-1]])).sort_values()
     return pd.DatetimeIndex(official_index)
@@ -1159,12 +1371,87 @@ V2_5_REWRITE_AUDIT_KEY_COLUMNS = [
     "base_pre_cost_return",
     "current_execution_scale",
     "next_session_actionable_scale",
+    "target_vol_scale_raw",
     "target_vol_realized_vol",
+    "base_trade_cost",
     "base_trade_cost_scaled",
     "scale_change_cost",
     "financing_cost",
     "annualized_log_wls_score",
 ]
+
+
+def _v2_5_changed_columns(
+    previous: pd.DataFrame,
+    candidate: pd.DataFrame,
+    key_columns: list[str],
+    allowed_tail_rows: int,
+    atol: float = 1e-9,
+    rtol: float = 1e-7,
+) -> dict[str, int]:
+    prev = v2_0.base_mod._normalise_dated_frame(previous, "v2.5 previous diagnostic")
+    cand = v2_0.base_mod._normalise_dated_frame(candidate, "v2.5 candidate diagnostic")
+    common = prev.index.intersection(cand.index).sort_values()
+    if len(common) <= int(allowed_tail_rows):
+        return {}
+    frozen_common = common[:-int(allowed_tail_rows)] if allowed_tail_rows > 0 else common
+    changed: dict[str, int] = {}
+    for col in key_columns:
+        if col not in prev.columns or col not in cand.columns:
+            continue
+        left = prev.loc[frozen_common, col]
+        right = cand.loc[frozen_common, col]
+        left_num = pd.to_numeric(left, errors="coerce")
+        right_num = pd.to_numeric(right, errors="coerce")
+        numeric_like = left_num.notna().any() or right_num.notna().any()
+        if numeric_like:
+            diff = (left_num - right_num).abs()
+            threshold = float(atol) + float(rtol) * right_num.abs()
+            mask = diff.gt(threshold) | (left_num.isna() ^ right_num.isna())
+        else:
+            mask = left.astype(str).ne(right.astype(str))
+        count = int(mask.fillna(False).sum())
+        if count:
+            changed[col] = count
+    return changed
+
+
+def _write_v2_5_rewrite_diagnostics(
+    previous: pd.DataFrame,
+    candidate: pd.DataFrame,
+    allowed_tail_rows: int,
+    audit_path: Path,
+) -> Path:
+    raw_input_cols = {
+        "base_pre_cost_return",
+        "target_vol_scale_raw",
+        "target_vol_realized_vol",
+        "base_trade_cost",
+        "annualized_log_wls_score",
+    }
+    changed = _v2_5_changed_columns(previous, candidate, V2_5_REWRITE_AUDIT_KEY_COLUMNS, allowed_tail_rows)
+    changed_cols = set(changed)
+    if changed_cols & raw_input_cols:
+        diagnosis = "raw_input_or_signal_changed"
+    elif changed_cols:
+        diagnosis = "threshold_path_dependent_state_changed"
+    else:
+        diagnosis = "no_key_column_change_detected"
+    diagnostics = {
+        "diagnosis": diagnosis,
+        "allowed_tail_rows": int(allowed_tail_rows),
+        "changed_columns": changed,
+        "raw_input_columns": sorted(raw_input_cols),
+        "audit_csv": str(audit_path),
+        "note": (
+            "raw_input_or_signal_changed means upstream returns/costs/signal inputs changed on frozen dates; "
+            "threshold_path_dependent_state_changed means frozen-date differences are confined to target-vol "
+            "threshold state, cost scaling, or derived returns and should be reviewed as path transmission."
+        ),
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
 
 
 def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
@@ -1177,14 +1464,31 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     out = build_v2_5_result(close_df, turnover_df, common_index)
     if COSTED_NAV_CSV.exists() and COSTED_NAV_CSV not in stale_outputs:
         previous = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"])
-        v2_0.base_mod.assert_no_historical_rewrite(
-            previous=previous,
-            candidate=out.rename_axis("date").reset_index(),
-            key_columns=V2_5_REWRITE_AUDIT_KEY_COLUMNS,
-            allowed_tail_rows=_v2_5_rewrite_allowed_tail_rows(),
-            label="v2.5 official costed NAV",
-            audit_path=OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv",
-        )
+        audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
+        allowed_tail_rows = _v2_5_rewrite_allowed_tail_rows()
+        candidate = out.rename_axis("date").reset_index()
+        try:
+            v2_0.base_mod.assert_no_historical_rewrite(
+                previous=previous,
+                candidate=candidate,
+                key_columns=V2_5_REWRITE_AUDIT_KEY_COLUMNS,
+                allowed_tail_rows=allowed_tail_rows,
+                label="v2.5 official costed NAV",
+                audit_path=audit_path,
+            )
+        except RuntimeError as exc:
+            try:
+                diagnostics_path = _write_v2_5_rewrite_diagnostics(
+                    previous=previous,
+                    candidate=candidate,
+                    allowed_tail_rows=allowed_tail_rows,
+                    audit_path=audit_path,
+                )
+            except Exception as diag_exc:
+                raise RuntimeError(
+                    f"{exc} v2.5 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
+                ) from exc
+            raise RuntimeError(f"{exc} v2.5 rewrite diagnostics written to {diagnostics_path}.") from exc
 
     _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
@@ -1192,7 +1496,14 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
     perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_5")
 
-    data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
+    data_lineage = dict(v2_0.overlay_mod._build_v2_data_lineage())
+    valid_log_wls_index = pd.DatetimeIndex(_valid_log_wls_index(close_df))
+    valid_log_wls_index = pd.DatetimeIndex(valid_log_wls_index[valid_log_wls_index >= FORMAL_START_DATE]).sort_values()
+    data_lineage["v2_5_common_index_gap"] = _common_index_gap_summary(common_index, valid_log_wls_index)
+    data_lineage["v2_5_rebalance_timing_note"] = (
+        "The biweekly file/output name is inherited from the embedded Top100 member proxy; "
+        "the v2.5 close-confirmed overlay evaluates its microcap-only log-WLS threshold daily."
+    )
     summary = dict(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
@@ -1290,15 +1601,22 @@ def generate_v2_5_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     ensure_output_dir()
     realtime_base = v2_0.realtime_core.load_realtime_base()
-    close_df = realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index()
-    official_index = _build_realtime_v2_5_official_index(close_df, realtime_base.meta)
+    close_df = _close_df_from_realtime(realtime_base.realtime_close_df)
+    official_calendar_index = _load_realtime_v2_0_official_index()
+    official_index = _build_realtime_v2_5_official_index(close_df, realtime_base.meta, official_calendar_index)
     common_index = build_v2_5_common_index(close_df, official_index)
     gross = build_microcap_log_wls_gross(close_df, common_index)
     costed = apply_cost(gross, realtime_base.turnover_df)
     is_snapshot = bool(realtime_base.meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
-    out = apply_target_vol(costed, TARGET_VOL, treat_last_row_as_snapshot=is_snapshot)
-    assert_realtime_target_vol_lag_fresh(out)
+    snapshot_date = close_df.index[-1]
+    out = apply_target_vol(
+        costed,
+        TARGET_VOL,
+        treat_last_row_as_snapshot=is_snapshot,
+        snapshot_date=snapshot_date if is_snapshot else None,
+    )
+    assert_realtime_target_vol_lag_fresh(out, official_calendar_index)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     signal_row = v2_0.realtime_core.base_mod.augment_signal_with_member_rebalance(
         signal_row,
