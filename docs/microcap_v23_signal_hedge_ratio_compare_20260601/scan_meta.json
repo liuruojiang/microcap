@@ -1,0 +1,17 @@
+{
+  "run_time": "2026-06-01T10:54:28.073053+08:00",
+  "comparison": "v2.3 official signal_spread_hedge_ratio=1.0 execution_hedge_ratio=0.8 vs counterfactual signal_spread_hedge_ratio=0.8 execution_hedge_ratio=0.8",
+  "common_start": "2010-05-05",
+  "common_end": "2026-05-29",
+  "common_rows": 3884,
+  "target_vol": 0.25,
+  "target_vol_window": 60,
+  "scale_rebalance_threshold": 0.3,
+  "exit_buffer": 0.13,
+  "cash_day_yield_annual": 0.02,
+  "cost_model": "v2.3 apply_momentum_gap_no_peak_decay_cost_model + target-vol scale cost + financing + cash-day yield",
+  "source_files": [
+    "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "microcap_top100_mom16_biweekly_live_v2_0.py"
+  ]
+}

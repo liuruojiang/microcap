@@ -3594,6 +3594,7 @@ def build_output_paths(output_prefix: str) -> dict[str, Path]:
         "nav": OUTPUT_DIR / f"{output_prefix}_nav.csv",
         "proxy_meta": OUTPUT_DIR / f"{output_prefix}_proxy_meta.json",
         "proxy_members": OUTPUT_DIR / f"{output_prefix}_proxy_members.csv",
+        "proxy_effective_members": OUTPUT_DIR / f"{output_prefix}_proxy_effective_members.csv",
         "proxy_turnover": OUTPUT_DIR / f"{output_prefix}_proxy_turnover.csv",
         "realtime_signal": OUTPUT_DIR / f"{output_prefix}_realtime_signal.csv",
         "realtime_members": OUTPUT_DIR / f"{output_prefix}_realtime_target_members.csv",
@@ -4454,6 +4455,255 @@ def assert_proxy_tail_is_actionable(index_csv: Path, target_end_date: pd.Timesta
             "微盘代理指数尾部连续冻结，拒绝输出实盘信号。请先重建最近窗口并复核价格缓存。"
         )
 
+def _proxy_target_members_map_from_saved_members(proxy_members_path: Path) -> dict[pd.Timestamp, list[str]]:
+    if not proxy_members_path.exists():
+        return {}
+    members = pd.read_csv(proxy_members_path, dtype={"symbol": str})
+    if members.empty or not {"rebalance_date", "rank", "symbol"}.issubset(members.columns):
+        return {}
+    members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="coerce")
+    members = members.dropna(subset=["rebalance_date", "symbol"]).sort_values(["rebalance_date", "rank"])
+    out: dict[pd.Timestamp, list[str]] = {}
+    for dt, group in members.groupby("rebalance_date", sort=True):
+        out[pd.Timestamp(dt).normalize()] = group["symbol"].astype(str).str.zfill(6).tolist()
+    return out
+
+
+def _minimal_tradeability_dates(panel_dates: pd.DatetimeIndex, rebalance_dates: pd.DatetimeIndex) -> pd.DatetimeIndex:
+    panel_dates = pd.DatetimeIndex(panel_dates).dropna().drop_duplicates().sort_values()
+    needed: set[pd.Timestamp] = set()
+    for dt in pd.DatetimeIndex(rebalance_dates).dropna().drop_duplicates().sort_values():
+        dt = pd.Timestamp(dt).normalize()
+        loc = panel_dates.searchsorted(dt)
+        if loc < len(panel_dates) and pd.Timestamp(panel_dates[loc]).normalize() == dt:
+            needed.add(pd.Timestamp(panel_dates[loc]))
+            if loc > 0:
+                needed.add(pd.Timestamp(panel_dates[loc - 1]))
+    return pd.DatetimeIndex(sorted(needed))
+
+
+def _load_buy_sell_for_symbols(
+    symbols: list[str],
+    trading_dates: pd.DatetimeIndex,
+    max_workers: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    buyable_df = pd.DataFrame(index=trading_dates)
+    sellable_df = pd.DataFrame(index=trading_dates)
+    workers = max(1, min(int(max_workers), 16))
+
+    def load_one(symbol: str) -> tuple[str, pd.Series, pd.Series] | None:
+        result = freq_mod.load_symbol_cache(
+            symbol,
+            trading_dates,
+            pd.DatetimeIndex([]),
+            TRADE_CONSTRAINT_MODE,
+            False,
+        )
+        if result is None:
+            return None
+        loaded_symbol, _ret, _cap, buyable, sellable = result
+        return loaded_symbol, buyable, sellable
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(load_one, symbol): symbol for symbol in symbols}
+        for fut in as_completed(futures):
+            result = fut.result()
+            if result is None:
+                continue
+            symbol, buyable, sellable = result
+            buyable_df[symbol] = buyable.reindex(trading_dates).fillna(False).astype(bool)
+            sellable_df[symbol] = sellable.reindex(trading_dates).fillna(False).astype(bool)
+    return buyable_df, sellable_df
+
+
+def _reconstruct_effective_members_from_saved_targets(
+    target_members_map: dict[pd.Timestamp, list[str]],
+    panel_dates: pd.DatetimeIndex,
+    as_of_date: pd.Timestamp,
+    max_workers: int,
+) -> list[str]:
+    rebalance_dates = pd.DatetimeIndex(
+        sorted(dt for dt in target_members_map if pd.Timestamp(dt).normalize() <= pd.Timestamp(as_of_date).normalize())
+    )
+    if len(rebalance_dates) == 0:
+        return []
+    trade_dates = _minimal_tradeability_dates(panel_dates, rebalance_dates)
+    if len(trade_dates) == 0:
+        return []
+    symbols = sorted({symbol for dt in rebalance_dates for symbol in target_members_map[pd.Timestamp(dt).normalize()]})
+    buyable_df, sellable_df = _load_buy_sell_for_symbols(symbols, trade_dates, max_workers)
+    current_members: list[str] = []
+    for dt in rebalance_dates:
+        dt = pd.Timestamp(dt).normalize()
+        if dt not in buyable_df.index or dt not in sellable_df.index:
+            continue
+        trade_result = freq_mod.apply_trade_constraints(
+            current_members=current_members,
+            target_members=target_members_map.get(dt, []),
+            trade_date=dt,
+            buyable_df=buyable_df,
+            sellable_df=sellable_df,
+            top_n=TOP_N,
+        )
+        current_members = trade_result["members_after"]
+    return current_members
+
+
+def _read_proxy_effective_members(path: Path | None, as_of_date: pd.Timestamp) -> list[str]:
+    if path is None or not path.exists():
+        return []
+    try:
+        frame = pd.read_csv(path, dtype={"symbol": str})
+    except Exception:
+        return []
+    if frame.empty or not {"as_of_date", "rank", "symbol"}.issubset(frame.columns):
+        return []
+    frame["as_of_date"] = pd.to_datetime(frame["as_of_date"], errors="coerce")
+    frame = frame.loc[frame["as_of_date"].dt.normalize().eq(pd.Timestamp(as_of_date).normalize())].copy()
+    if frame.empty:
+        return []
+    return frame.sort_values("rank")["symbol"].astype(str).str.zfill(6).tolist()
+
+
+def _write_proxy_effective_members(path: Path | None, as_of_date: pd.Timestamp, members: list[str]) -> None:
+    if path is None or not members:
+        return
+    rows = [
+        {"as_of_date": pd.Timestamp(as_of_date).date(), "rank": rank, "symbol": symbol}
+        for rank, symbol in enumerate(members, start=1)
+    ]
+    _atomic_to_csv(pd.DataFrame(rows), path, index=False, encoding="utf-8")
+
+
+def try_extend_proxy_index_without_rebalance(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    panel_path: Path,
+    target_end_date: pd.Timestamp,
+    max_tail_calendar_days: int = 10,
+) -> bool:
+    if not args.index_csv.exists() or not paths["proxy_members"].exists():
+        return False
+    proxy = pd.read_csv(args.index_csv)
+    if proxy.empty or not {"date", "close", "daily_return"}.issubset(proxy.columns):
+        return False
+    proxy["date"] = pd.to_datetime(proxy["date"], errors="coerce")
+    proxy["close"] = pd.to_numeric(proxy["close"], errors="coerce")
+    proxy["daily_return"] = pd.to_numeric(proxy["daily_return"], errors="coerce")
+    proxy = proxy.dropna(subset=["date", "close"]).sort_values("date").drop_duplicates(subset="date", keep="last")
+    if proxy.empty:
+        return False
+
+    current_end = pd.Timestamp(proxy["date"].max()).normalize()
+    target_end = pd.Timestamp(target_end_date).normalize()
+    if current_end >= target_end:
+        return False
+    if (target_end - current_end).days > int(max_tail_calendar_days):
+        return False
+
+    panel_dates_frame = pd.read_csv(panel_path, usecols=["date"])
+    panel_dates_frame["date"] = pd.to_datetime(panel_dates_frame["date"], errors="coerce")
+    panel_dates = pd.DatetimeIndex(
+        panel_dates_frame.loc[panel_dates_frame["date"].dt.normalize() <= target_end, "date"]
+        .dropna()
+        .drop_duplicates()
+        .sort_values()
+    )
+    if current_end not in set(pd.DatetimeIndex(panel_dates.normalize())):
+        return False
+    missing_dates = pd.DatetimeIndex([dt for dt in panel_dates if current_end < pd.Timestamp(dt).normalize() <= target_end])
+    if len(missing_dates) == 0:
+        return False
+
+    scheduled_rebalances = build_biweekly_rebalance_dates(panel_dates)
+    scheduled_tail = scheduled_rebalances[
+        (scheduled_rebalances.normalize() > current_end) & (scheduled_rebalances.normalize() <= target_end)
+    ]
+    if len(scheduled_tail):
+        return False
+
+    target_members_map = _proxy_target_members_map_from_saved_members(paths["proxy_members"])
+    if not target_members_map:
+        return False
+    effective_path = paths.get("proxy_effective_members")
+    effective_members = _read_proxy_effective_members(effective_path, current_end)
+    if not effective_members:
+        effective_members = _reconstruct_effective_members_from_saved_targets(
+            target_members_map=target_members_map,
+            panel_dates=panel_dates,
+            as_of_date=current_end,
+            max_workers=args.max_workers,
+        )
+        _write_proxy_effective_members(effective_path, current_end, effective_members)
+    if not effective_members:
+        return False
+
+    tail_dates = pd.DatetimeIndex([pd.Timestamp(current_end), *list(missing_dates)])
+    returns_df = pd.DataFrame(index=tail_dates)
+    workers = max(1, min(int(args.max_workers), 16))
+
+    def load_tail_return(symbol: str) -> tuple[str, pd.Series] | None:
+        result = freq_mod.load_symbol_cache(
+            symbol,
+            tail_dates,
+            pd.DatetimeIndex([]),
+            TRADE_CONSTRAINT_MODE,
+            False,
+        )
+        if result is None:
+            return None
+        loaded_symbol, ret, _cap, _buyable, _sellable = result
+        return loaded_symbol, ret.reindex(tail_dates)
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(load_tail_return, symbol): symbol for symbol in effective_members}
+        for fut in as_completed(futures):
+            result = fut.result()
+            if result is None:
+                continue
+            symbol, ret = result
+            returns_df[symbol] = pd.to_numeric(ret, errors="coerce")
+    if returns_df.empty:
+        return False
+
+    current_level = float(proxy.loc[proxy["date"].dt.normalize().eq(current_end), "close"].iloc[-1])
+    new_rows: list[dict[str, object]] = []
+    for dt in missing_dates:
+        day_ret = returns_df.reindex(columns=effective_members).loc[pd.Timestamp(dt)].reindex(effective_members)
+        portfolio_ret = float(day_ret.fillna(0.0).mean()) if len(day_ret) else 0.0
+        current_level *= 1.0 + portfolio_ret
+        new_rows.append(
+            {
+                "date": pd.Timestamp(dt),
+                "close": current_level,
+                "daily_return": portfolio_ret,
+                "holding_count": len(effective_members),
+                "holding_effective": True,
+            }
+        )
+    if not new_rows:
+        return False
+    combined = pd.concat([proxy, pd.DataFrame(new_rows)], ignore_index=True, sort=False)
+    combined["date"] = pd.to_datetime(combined["date"], errors="coerce")
+    combined = combined.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset="date", keep="last")
+    _atomic_to_csv(combined, args.index_csv, index=False, encoding="utf-8")
+
+    if paths["proxy_meta"].exists():
+        try:
+            meta = json.loads(paths["proxy_meta"].read_text(encoding="utf-8"))
+        except Exception:
+            meta = {}
+    else:
+        meta = {}
+    meta["end_date"] = str(target_end.date())
+    meta["tail_extension_method"] = "no_new_rebalance_saved_target_replay"
+    meta["tail_extension_start"] = str(current_end.date())
+    meta["tail_extension_end"] = str(target_end.date())
+    meta["tail_extension_rows"] = len(new_rows)
+    meta["tail_extension_effective_member_count"] = len(effective_members)
+    _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
+    return True
+
 
 def ensure_strategy_files(
     args: argparse.Namespace,
@@ -4521,6 +4771,14 @@ def ensure_strategy_files(
         and args.costed_nav_csv.exists()
         and current_costed_end is not None
         and pd.Timestamp(current_costed_end).normalize() < pd.Timestamp(target_end_date).normalize()
+        and try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"])
+    ):
+        return
+
+    if (
+        can_reuse_index
+        and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize()
+        and try_extend_proxy_index_without_rebalance(args, paths, panel_path, target_end_date)
         and try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"])
     ):
         return

@@ -4,7 +4,10 @@ Common rules live in `C:\Users\Administrator.DESKTOP-95I7VVU\AGENTS.md`. This fi
 
 - The Top100 mainline defaults to `microcap_top100_mom16_biweekly_live_v2_0.py` (`v2.0`) unless the user explicitly asks for another version.
 - For signal, realtime signal, performance, holdings, and member queries, default to `v2.0`.
-- Before any Top100 test, signal output, or chart generation, refresh the selected strategy data to the latest trading date.
+- Before any Top100 test, signal output, chart generation, or parameter/combo comparison, refresh the selected strategy data to the latest locally available trading date and prove freshness before using metrics.
+- Freshness proof is mandatory: read back and record the latest dates and row counts for the refreshed panel, proxy index, proxy turnover, base costed NAV, and every version/candidate return stream used in the test. These dates must share the same latest close-confirmed trading date unless the result is explicitly marked blocked.
+- Do not use stale official costed NAV CSVs, older `outputs/` exports, or same-base helper recomputes as a substitute for refresh proof. If refresh cannot advance the base costed NAV and all compared streams to the latest available trading date, stop and report the refresh blocker; do not publish performance, leverage, holdings, or charts as formal results.
+- When only a short tail is stale and no new rebalance date exists between the current costed NAV end and the target trading date, prefer an auditable no-new-rebalance tail extension over a broad `--force-refresh`; still verify the extended proxy index, base costed NAV, and downstream version streams by reading the written artifacts.
 - The default practical/live performance caliber is `v2.0 + costed`; do not silently mix `gross` and `costed`.
 - Prefer fast command-aware query routing in `microcap_top100_mom16_biweekly_live.py`; use the old full `build_base_context()` path only if requested or unavoidable.
 - Treat `outputs/` as disposable export space. Keep current core artifacts for `v1.0`, `v1.1`, `v1.2`, `v1.6`, and `v2.0`.
