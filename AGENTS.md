@@ -1,6 +1,6 @@
 # Workspace Defaults
 
-Common rules live in `C:\Users\Administrator.DESKTOP-95I7VVU\AGENTS.md`. This file only adds local Top100 microcap rules.
+Use this repo-local file as the source of workspace guidance for the Top100 microcap strategy. Do not depend on a user-home `AGENTS.md` or any machine-local Codex configuration path.
 
 - The Top100 mainline defaults to `microcap_top100_mom16_biweekly_live_v2_0.py` (`v2.0`) unless the user explicitly asks for another version.
 - For signal, realtime signal, performance, holdings, and member queries, default to `v2.0`.
@@ -32,6 +32,6 @@ Common rules live in `C:\Users\Administrator.DESKTOP-95I7VVU\AGENTS.md`. This fi
 
 # Desktop And Git Defaults
 
-- For local images/files in Codex desktop, prefer the ASCII alias `C:\Users\Administrator.DESKTOP-95I7VVU\Desktop\microcap_ascii\...` when available.
+- For local images/files in Codex desktop, prefer repo-relative paths or a documented local alias when one is explicitly provided in the current session.
 - Keep remote `origin = git@github.com:liuruojiang/microcap.git` unless the user asks otherwise.
-- Prefer SSH key `C:\Users\Administrator.DESKTOP-95I7VVU\.ssh\codex_github_ed25519` for pushes.
+- Use the configured Git credential or SSH setup for this machine; do not hard-code a user-specific SSH key path in repo instructions.
