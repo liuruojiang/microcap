@@ -934,7 +934,13 @@ def _print_realtime_signal_query() -> None:
         print(f"quote_coverage: {meta.get('member_price_count')}/{meta.get('member_count')}")
         print(REALTIME_SIGNAL_CSV)
 
-    v2_0.run_realtime_query_with_fresh_state(emit)
+    try:
+        v2_0.run_realtime_query_with_fresh_state(emit)
+    except Exception as exc:
+        if v2_0.is_realtime_actionability_error(exc):
+            v2_0.print_realtime_blocked_result("v2.3", exc)
+            return
+        raise
 
 
 def _print_performance_query(query: str) -> None:

@@ -6705,6 +6705,35 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
         return False
 
 
+REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
+    "Realtime hedge quote date is earlier than the historical anchor.",
+    "Realtime hedge quote missing trade_date",
+    "Realtime hedge quote source is not actionable",
+    "Realtime member quotes missing per-symbol trade_date",
+    "成员股实时报价日期",
+    "成员股实时报价交易日",
+    "实时报价日期早于历史锚点",
+    "实时报价缺少报价交易日",
+    "实时报价覆盖不足",
+)
+
+
+def is_realtime_actionability_error(exc: BaseException) -> bool:
+    message = str(exc)
+    return any(fragment in message for fragment in REALTIME_ACTIONABILITY_ERROR_FRAGMENTS)
+
+
+def print_realtime_blocked_result(version: str, exc: BaseException) -> None:
+    reason = f"Realtime signal blocked by actionability guard: {type(exc).__name__}: {exc}"
+    print("preflight_failed")
+    print("realtime_signal_blocked")
+    print(f"strategy_version: {version}")
+    print("status: BLOCKED")
+    print(f"reason: {reason}")
+    print("official_close_confirmed_signal: False")
+    print("actionability: blocked")
+
+
 def rebuild_realtime_result_from_meta(context: dict[str, object], meta: dict[str, object]) -> pd.DataFrame:
     rt_close_df = apply_realtime_close_to_signal_frame(
         close_df=context["close_df"].copy(),
@@ -10160,6 +10189,8 @@ embedded_base_adapter = SimpleNamespace(
     _load_reference_summary=_load_reference_summary,
 )
 embedded_context = embedded_base_adapter
+is_realtime_actionability_error = base_mod.is_realtime_actionability_error
+print_realtime_blocked_result = base_mod.print_realtime_blocked_result
 realtime_core = SimpleNamespace(
     base_mod=base_mod,
     apply_realtime_meta_to_signal_row=apply_realtime_meta_to_signal_row,
@@ -11326,7 +11357,13 @@ def _print_realtime_signal_query() -> None:
         print(f"quote_coverage: {meta.get('member_price_count')}/{meta.get('member_count')}")
         print(REALTIME_SIGNAL_CSV)
 
-    run_realtime_query_with_fresh_state(emit)
+    try:
+        run_realtime_query_with_fresh_state(emit)
+    except Exception as exc:
+        if embedded_context.base_mod.is_realtime_actionability_error(exc):
+            embedded_context.base_mod.print_realtime_blocked_result("v2.0", exc)
+            return
+        raise
 
 
 def _print_performance_query(query: str) -> None:
