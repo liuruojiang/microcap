@@ -30,6 +30,10 @@ Use this repo-local file as the source of workspace guidance for the Top100 micr
 - After overlay-triggered early exits, blocked `cash` days must have `return_net = 0` and must not inherit base `gross` return.
 - Suspiciously strong overlay results require lagged-trigger or equivalent sanity checks before trusting the table.
 
+# New Strategy Test Standard
+
+- New strategy tests and candidate promotions must follow `docs/new_strategy_test_standard_process.md`; every display/report must include full sample, 10Y, 5Y, 3Y, and 1Y annualized return plus max drawdown, or explicit `N/A` reasons.
+
 # Desktop And Git Defaults
 
 - For local images/files in Codex desktop, prefer repo-relative paths or a documented local alias when one is explicitly provided in the current session.
