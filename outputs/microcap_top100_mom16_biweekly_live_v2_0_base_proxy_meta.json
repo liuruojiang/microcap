@@ -24,9 +24,9 @@
     "security_master_enabled": true
   },
   "start_date": "2010-01-08",
-  "end_date": "2026-06-01",
-  "rebalance_dates_count": 423,
+  "end_date": "2026-06-17",
+  "rebalance_dates_count": 424,
   "effective_start_date": "2010-01-08",
-  "recent_extension_start": "2026-04-01",
-  "recent_candidate_symbols": 597
+  "recent_extension_start": "2026-04-20",
+  "recent_candidate_symbols": 553
 }
