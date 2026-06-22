@@ -8223,7 +8223,9 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
         prev = pd.to_numeric(data.get("f60"), errors="coerce")
         if pd.notna(latest) and latest > 0:
             eastmoney_price = float(latest) / 100.0
-            trade_date = parse_eastmoney_trade_date(data.get("f86"))
+            trade_date = parse_quote_epoch_trade_date(data.get("f86")) or parse_eastmoney_trade_date(
+                data.get("f86")
+            )
             if trade_date:
                 return eastmoney_price, eastmoney_source, trade_date
         elif pd.notna(prev) and prev > 0:
