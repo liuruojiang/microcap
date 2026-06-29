@@ -4249,6 +4249,20 @@ def validate_recent_bridge_alignment(
             )
 
 
+def recent_extension_replacement_start(
+    recent_dates: pd.DatetimeIndex,
+    recent_index_df: pd.DataFrame,
+) -> pd.Timestamp:
+    if recent_index_df is not None and not recent_index_df.empty and "date" in recent_index_df.columns:
+        dates = pd.to_datetime(recent_index_df["date"], errors="coerce").dropna().sort_values()
+        if not dates.empty:
+            return pd.Timestamp(dates.iloc[0]).normalize()
+    dates = pd.DatetimeIndex(pd.to_datetime(recent_dates, errors="coerce")).dropna().sort_values()
+    if len(dates) == 0:
+        raise ValueError("recent extension window has no valid dates")
+    return pd.Timestamp(dates[0]).normalize()
+
+
 def extend_index_recent_window(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -4309,7 +4323,7 @@ def extend_index_recent_window(
     recent_index_df = recent_index_df.copy()
     recent_index_df["close"] = recent_index_df["close"].astype(float) * scale
 
-    recent_start = pd.Timestamp(recent_dates.min())
+    recent_start = recent_extension_replacement_start(recent_dates, recent_index_df)
     combined_index = pd.concat(
         [index_df.loc[index_df["date"] < recent_start], recent_index_df],
         ignore_index=True,
@@ -6836,6 +6850,58 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
         )
 
 
+    assert_realtime_anchor_precedes_quote_trade_date(meta)
+
+
+def _read_date_index_csv(path: Path, date_column: str = "date") -> pd.DatetimeIndex:
+    if not Path(path).exists():
+        return pd.DatetimeIndex([])
+    try:
+        dates = pd.read_csv(path, usecols=[date_column], parse_dates=[date_column])[date_column]
+    except Exception:
+        return pd.DatetimeIndex([])
+    return pd.DatetimeIndex(dates).dropna().normalize().unique().sort_values()
+
+
+def _load_realtime_anchor_calendar_index() -> pd.DatetimeIndex:
+    calendars: list[pd.DatetimeIndex] = []
+    try:
+        calendars.append(pd.DatetimeIndex(_load_realtime_v2_0_official_index()).dropna().normalize())
+    except Exception:
+        pass
+    calendars.append(_read_date_index_csv(DEFAULT_INDEX_CSV))
+    calendar = pd.DatetimeIndex([])
+    for item in calendars:
+        calendar = calendar.union(pd.DatetimeIndex(item).dropna().normalize())
+    return calendar.unique().sort_values()
+
+
+def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) -> None:
+    quote_trade_date = str(meta.get("quote_trade_date") or "").strip()
+    anchor_trade_date = str(meta.get("latest_anchor_trade_date") or "").strip()
+    if not quote_trade_date or not anchor_trade_date:
+        raise RuntimeError("Realtime meta missing quote_trade_date or latest_anchor_trade_date.")
+    quote_day = pd.Timestamp(quote_trade_date).normalize()
+    anchor_day = pd.Timestamp(anchor_trade_date).normalize()
+    calendar = _load_realtime_anchor_calendar_index()
+    if len(calendar) == 0:
+        raise RuntimeError("Realtime trading calendar is empty; refusing realtime signal.")
+    completed_before_quote = calendar[calendar < quote_day]
+    if len(completed_before_quote) == 0:
+        raise RuntimeError(
+            "Realtime trading calendar has no completed trading day before quote_trade_date: "
+            f"quote_trade_date={quote_day.date()}"
+        )
+    expected_anchor = pd.Timestamp(completed_before_quote[-1]).normalize()
+    if anchor_day != expected_anchor:
+        raise RuntimeError(
+            "latest_anchor_trade_date is not the previous completed trading day before quote_trade_date: "
+            f"latest_anchor_trade_date={anchor_day.date()} "
+            f"expected_previous_completed_trading_day={expected_anchor.date()} "
+            f"quote_trade_date={quote_day.date()}"
+        )
+
+
 def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
     try:
         assert_realtime_meta_is_actionable(meta)
@@ -6846,6 +6912,7 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
     "Realtime hedge quote date is earlier than the historical anchor.",
+    "latest_anchor_trade_date is not the previous completed trading day",
     "Realtime hedge quote missing trade_date",
     "Realtime hedge quote source is not actionable",
     "Realtime member quotes missing per-symbol trade_date",
@@ -10229,7 +10296,11 @@ def _refresh_realtime_state_for_local_query() -> None:
             ) from exc
         raise
 
-    report = realtime_state_bundle.refresh_state(ROOT, max_workers=8)
+    report = realtime_state_bundle.refresh_state(
+        ROOT,
+        max_workers=8,
+        max_anchor_age_days=DEFAULT_MAX_STALE_ANCHOR_DAYS,
+    )
     if not report.get("ok"):
         errors = "; ".join(str(item) for item in report.get("errors", []))
         raise RuntimeError(f"Realtime state refresh failed before local signal query: {errors}")
@@ -10479,6 +10550,14 @@ V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN = {
     "next_holding": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "base_pre_cost_return": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
 }
+V2_0_AUDITED_REWRITE_ALLOWLIST: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("2017-07-17", "return_net"),
+        ("2017-07-17", "scale_change_cost"),
+        ("2022-04-28", "return_net"),
+        ("2022-04-28", "scale_change_cost"),
+    }
+)
 
 
 def _costed_nav_path(target_vol: float) -> Path:
@@ -11321,14 +11400,33 @@ def _target_vol_turnover_series(holding: pd.Series, execution_scale: pd.Series) 
     return pd.Series(values, index=holding.index, dtype=float)
 
 
-def calc_scale_change_cost(holding: pd.Series, target_vol_turnover: pd.Series) -> pd.Series:
+def calc_scale_change_cost(
+    holding: pd.Series,
+    target_vol_turnover: pd.Series,
+    next_holding: pd.Series | None = None,
+) -> pd.Series:
     """Charge only same-holding scale changes; transition days are zeroed inside calc_target_vol_costed_turnover."""
-    return calc_target_vol_costed_turnover(holding, target_vol_turnover) * TARGET_VOL_SCALE_CHANGE_COST
+    return calc_target_vol_costed_turnover(
+        holding,
+        target_vol_turnover,
+        next_holding=next_holding,
+    ) * TARGET_VOL_SCALE_CHANGE_COST
 
 
-def calc_target_vol_costed_turnover(holding: pd.Series, target_vol_turnover: pd.Series) -> pd.Series:
+def calc_target_vol_costed_turnover(
+    holding: pd.Series,
+    target_vol_turnover: pd.Series,
+    next_holding: pd.Series | None = None,
+) -> pd.Series:
     holding = _normalize_holding_series(holding, holding.index)
     same_holding = holding.eq(holding.shift(1))
+    if next_holding is not None:
+        next_holding = _normalize_holding_series(
+            next_holding,
+            holding.index,
+            fill_from=holding,
+        )
+        same_holding = same_holding & holding.eq(next_holding)
     return pd.to_numeric(target_vol_turnover, errors="coerce").fillna(0.0).where(same_holding, 0.0)
 
 
@@ -11677,7 +11775,7 @@ def apply_target_vol_scaling(
         threshold=scale_rebalance_threshold_value,
     )
     target_vol_turnover = _target_vol_turnover_series(holding, execution_scale)
-    scale_change_cost = calc_scale_change_cost(holding, target_vol_turnover)
+    scale_change_cost = calc_scale_change_cost(holding, target_vol_turnover, next_holding=next_holding)
     financing_cost = execution_scale.sub(1.0).clip(lower=0.0) * TARGET_VOL_FINANCING_RATE / TARGET_VOL_TRADING_DAYS
     idle_cash_yield = (
         active.astype(float)
@@ -11724,7 +11822,11 @@ def apply_target_vol_scaling(
     out["target_vol_scale_next_session"] = next_session_actionable_scale
     out["execution_scale"] = execution_scale
     out["target_vol_turnover"] = target_vol_turnover
-    out["target_vol_costed_turnover"] = calc_target_vol_costed_turnover(holding, target_vol_turnover)
+    out["target_vol_costed_turnover"] = calc_target_vol_costed_turnover(
+        holding,
+        target_vol_turnover,
+        next_holding=next_holding,
+    )
     out["scale_change_cost"] = scale_change_cost
     out["target_vol_trade_cost"] = scale_change_cost
     out["financing_cost"] = financing_cost
@@ -11941,6 +12043,55 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     }
 
 
+REQUIRED_PERFORMANCE_WINDOWS: tuple[tuple[str, int | None], ...] = (
+    ("full", None),
+    ("last_10y", 10),
+    ("last_5y", 5),
+    ("last_3y", 3),
+    ("last_1y", 1),
+)
+
+
+def _unavailable_window_summary(window: str, reason: str) -> dict[str, object]:
+    return {
+        "window": window,
+        "start_date": "",
+        "end_date": "",
+        "days": 0,
+        "final_nav": np.nan,
+        "total_return_pct": np.nan,
+        "annual_pct": np.nan,
+        "max_drawdown_pct": np.nan,
+        "sharpe": np.nan,
+        "vol_pct": np.nan,
+        "unavailable_reason": reason,
+    }
+
+
+def summarize_required_windows(ret: pd.Series) -> list[dict[str, object]]:
+    clean = ret.dropna().astype(float)
+    if clean.empty:
+        raise ValueError("empty return series")
+    end = pd.Timestamp(clean.index[-1])
+    rows: list[dict[str, object]] = []
+    for window, years in REQUIRED_PERFORMANCE_WINDOWS:
+        if years is None:
+            part = clean
+            required_start = pd.Timestamp(clean.index[0])
+        else:
+            required_start = end - pd.DateOffset(years=int(years))
+            part = clean.loc[clean.index >= required_start]
+        if part.empty:
+            rows.append(_unavailable_window_summary(window, "no data in requested window"))
+            continue
+        row = dict(summarize_returns(part))
+        row["window"] = window
+        row["required_start_date"] = str(required_start.date())
+        row["unavailable_reason"] = ""
+        rows.append(row)
+    return rows
+
+
 def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     rows = []
     for year, part in ret.groupby(ret.index.year):
@@ -11970,7 +12121,8 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
 
 def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0") -> dict[str, object]:
     ensure_output_dir()
-    summary = summarize_returns(ret)
+    window_summaries = summarize_required_windows(ret)
+    summary = dict(window_summaries[0])
     yearly_df = summarize_yearly(ret)
     _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
 
@@ -11982,7 +12134,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
         }
     )
     _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(pd.DataFrame([summary]), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(pd.DataFrame(window_summaries), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
 
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], linewidth=2.0)
@@ -11999,6 +12151,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
         "start_date": summary["start_date"],
         "end_date": summary["end_date"],
         "summary": summary,
+        "windows": window_summaries,
         "yearly": yearly_df.to_dict(orient="records"),
         "files": {
             "summary_csv": str(PERF_SUMMARY_CSV),
@@ -12115,8 +12268,17 @@ def _v2_0_changed_columns(
         right = cand.loc[frozen_common, col]
         left_num = pd.to_numeric(left, errors="coerce")
         right_num = pd.to_numeric(right, errors="coerce")
-        numeric_like = left_num.notna().any() or right_num.notna().any()
-        if numeric_like:
+        bool_like = (
+            pd.api.types.is_bool_dtype(left)
+            or pd.api.types.is_bool_dtype(right)
+            or pd.api.types.is_bool_dtype(left_num)
+            or pd.api.types.is_bool_dtype(right_num)
+        )
+        numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+        if bool_like:
+            mask = left.astype("boolean").ne(right.astype("boolean"))
+            mask = mask | (left.isna() ^ right.isna())
+        elif numeric_like:
             diff = (left_num - right_num).abs()
             threshold = float(atol) + float(rtol) * right_num.abs()
             mask = diff.gt(threshold) | (left_num.isna() ^ right_num.isna())
@@ -12208,6 +12370,45 @@ def _write_v2_0_rewrite_diagnostics(
     return diagnostics_path
 
 
+def v2_0_rewrite_audit_matches_allowlist(audit_path: Path) -> bool:
+    try:
+        audit = pd.read_csv(audit_path)
+    except Exception:
+        return False
+    if audit.empty or {"date", "column", "change_type"}.difference(audit.columns):
+        return False
+    cells: set[tuple[str, str]] = set()
+    for row in audit.itertuples(index=False):
+        if str(getattr(row, "change_type", "")) != "value_changed":
+            return False
+        try:
+            date_text = str(pd.Timestamp(getattr(row, "date")).date())
+        except Exception:
+            return False
+        cells.add((date_text, str(getattr(row, "column", ""))))
+    return bool(cells) and cells.issubset(V2_0_AUDITED_REWRITE_ALLOWLIST)
+
+
+def _write_v2_0_allowed_rewrite_diagnostics(audit_path: Path, allowed_tail_rows: int) -> Path:
+    diagnostics = {
+        "diagnosis": "audited_target_vol_scale_cost_transition_fix",
+        "allowed": True,
+        "allowed_tail_rows": int(allowed_tail_rows),
+        "allowlist": [
+            {"date": date_text, "column": column}
+            for date_text, column in sorted(V2_0_AUDITED_REWRITE_ALLOWLIST)
+        ],
+        "audit_csv": str(audit_path),
+        "note": (
+            "This audited allowance restates exactly two historical target-vol transition days where "
+            "scale-change cost had been charged on next-session exits. All other frozen-date changes remain blocked."
+        ),
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
+
+
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     reference_summary, base_gross_cached, turnover_df = embedded_context._load_embedded_base_context()
@@ -12227,6 +12428,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     )
     embedded_lineage_base = apply_volatility_overheat_exit(gross, turnover_df)
     out = apply_target_vol_scaling(embedded_lineage_base)
+    rewrite_audit_status: dict[str, object] = {"status": "not_checked", "reason": "no_previous_costed_nav"}
     if COSTED_NAV_CSV.exists():
         previous = _read_costed_nav_csv(COSTED_NAV_CSV)
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
@@ -12242,20 +12444,37 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
                 audit_path=audit_path,
                 column_allowed_tail_rows=V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
             )
+            rewrite_audit_status = {
+                "status": "clean",
+                "allowed_tail_rows": int(allowed_tail_rows),
+                "audit_csv": str(audit_path),
+            }
         except RuntimeError as exc:
-            try:
-                diagnostics_path = _write_v2_0_rewrite_diagnostics(
-                    previous=previous,
-                    candidate=candidate,
-                    allowed_tail_rows=allowed_tail_rows,
-                    audit_path=audit_path,
-                    column_allowed_tail_rows=V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
-                )
-            except Exception as diag_exc:
-                raise RuntimeError(
-                    f"{exc} v2.0 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
-                ) from exc
-            raise RuntimeError(f"{exc} v2.0 rewrite diagnostics written to {diagnostics_path}.") from exc
+            if v2_0_rewrite_audit_matches_allowlist(audit_path):
+                diagnostics_path = _write_v2_0_allowed_rewrite_diagnostics(audit_path, allowed_tail_rows)
+                rewrite_audit_status = {
+                    "status": "audited_allowlist_applied",
+                    "diagnostics_json": str(diagnostics_path),
+                    "audit_csv": str(audit_path),
+                    "allowlist": [
+                        {"date": date_text, "column": column}
+                        for date_text, column in sorted(V2_0_AUDITED_REWRITE_ALLOWLIST)
+                    ],
+                }
+            else:
+                try:
+                    diagnostics_path = _write_v2_0_rewrite_diagnostics(
+                        previous=previous,
+                        candidate=candidate,
+                        allowed_tail_rows=allowed_tail_rows,
+                        audit_path=audit_path,
+                        column_allowed_tail_rows=V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
+                    )
+                except Exception as diag_exc:
+                    raise RuntimeError(
+                        f"{exc} v2.0 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
+                    ) from exc
+                raise RuntimeError(f"{exc} v2.0 rewrite diagnostics written to {diagnostics_path}.") from exc
     _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
     freshness_proof = assert_top100_outputs_fresh(expected_latest_date=out.index.max())
@@ -12335,6 +12554,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
     summary["data_freshness_proof"] = freshness_proof
+    summary["historical_rewrite_audit"] = rewrite_audit_status
     summary["microcap_series_source"] = data_lineage.get("source_used")
     summary["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     summary["proxy_warning"] = data_lineage.get("public_proxy_note", "")

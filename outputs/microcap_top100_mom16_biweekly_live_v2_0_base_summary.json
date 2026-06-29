@@ -24,16 +24,16 @@
     "security_meta_version": 2,
     "security_master_enabled": true
   },
-  "latest_trade_date": "2026-06-26",
+  "latest_trade_date": "2026-06-29",
   "latest_rebalance_date": "2026-06-25",
   "previous_rebalance_date": "2026-06-11",
   "next_rebalance_date": null,
   "history_anchor": {
-    "latest_trade_date": "2026-06-26",
-    "current_date": "2026-06-28",
-    "stale_calendar_days": 2,
+    "latest_trade_date": "2026-06-29",
+    "current_date": "2026-06-29",
+    "stale_calendar_days": 0,
     "stale_trading_days": 0,
-    "staleness_value": 2,
+    "staleness_value": 0,
     "staleness_unit": "calendar_days",
     "max_stale_anchor_days": 5,
     "is_stale": false,
@@ -50,11 +50,11 @@
     "member_enter_count": 13,
     "member_exit_count": 13,
     "member_rebalance_label": "名单调仓（调入 13，调出 13）",
-    "microcap_mom": -0.13423551964702662,
-    "hedge_mom": 0.020009059990418132,
-    "momentum_gap": -0.15424457963744476,
+    "microcap_mom": -0.11330488456074583,
+    "hedge_mom": 0.021115913775319628,
+    "momentum_gap": -0.13442079833606546,
     "microcap_close": 201570.11456459216,
-    "hedge_close": 8601.41
+    "hedge_close": 8597.893
   },
   "target_members": {
     "count": 100,
