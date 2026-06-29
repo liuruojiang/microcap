@@ -98,6 +98,7 @@ MIN_V2_0_BASE_API_REVISION = 12
 MIN_V2_0_HISTORICAL_AUDIT_REVISION = 5
 MIN_V2_0_DATA_STATE_FINGERPRINT_REVISION = 2
 MIN_V2_0_REALTIME_CALENDAR_GUARD_REVISION = 3
+EXPECTED_V2_0_TARGET_VOL_WINDOW = 75
 
 
 def _require_v2_0_attr(parent: object, attr: str, label: str) -> object:
@@ -143,6 +144,7 @@ def validate_v2_0_contract() -> None:
     _require_v2_0_callable(v2_0, "current_base_fingerprint", "current_base_fingerprint")
     _require_v2_0_callable(v2_0, "current_strategy_fingerprint", "current_strategy_fingerprint")
     _require_v2_0_callable(v2_0, "current_data_state_fingerprint", "current_data_state_fingerprint")
+    _require_v2_0_callable(v2_0, "assert_top100_outputs_fresh", "assert_top100_outputs_fresh")
     _require_v2_0_callable(v2_0, "current_runtime_fingerprint", "current_runtime_fingerprint")
     _require_v2_0_callable(v2_0, "run_realtime_query_with_fresh_state", "run_realtime_query_with_fresh_state")
     _require_v2_0_attr(embedded_context, "base_mod", "embedded_context.base_mod")
@@ -172,7 +174,7 @@ def validate_v2_0_contract() -> None:
     _require_v2_0_attr(overlay_mod, "TARGET_VOL_TRADING_DAYS", "overlay_mod.TARGET_VOL_TRADING_DAYS")
     expected_constants = {
         "overlay_mod.TARGET_VOL_MIN_LEVERAGE": (float(overlay_mod.TARGET_VOL_MIN_LEVERAGE), TARGET_VOL_MIN_LEVERAGE),
-        "overlay_mod.TARGET_VOL_WINDOW": (int(overlay_mod.TARGET_VOL_WINDOW), TARGET_VOL_WINDOW),
+        "overlay_mod.TARGET_VOL_WINDOW": (int(overlay_mod.TARGET_VOL_WINDOW), EXPECTED_V2_0_TARGET_VOL_WINDOW),
         "base_mod.freq_mod.cost_mod.ENTRY_COST": (float(cost_mod.ENTRY_COST), TARGET_VOL_SCALE_CHANGE_ENTRY_COST),
         "base_mod.freq_mod.cost_mod.EXIT_COST": (float(cost_mod.EXIT_COST), TARGET_VOL_SCALE_CHANGE_EXIT_COST),
         "overlay_mod.TARGET_VOL_FINANCING_RATE": (float(overlay_mod.TARGET_VOL_FINANCING_RATE), TARGET_VOL_FINANCING_RATE),
@@ -1652,11 +1654,19 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
 
     _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
-    signal_row = _build_signal_row(out, reference_summary)
-    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
-    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_5")
-
+    freshness_proof = v2_0.assert_top100_outputs_fresh(
+        expected_latest_date=out.index.max(),
+        extra_daily_paths={"v2_5_costed_nav": COSTED_NAV_CSV},
+    )
     data_lineage = dict(v2_0.overlay_mod._build_v2_data_lineage())
+    performance_source_label = v2_0.overlay_mod.proxy_aware_performance_source_label(data_lineage, "costed_v2_5")
+    signal_row = _build_signal_row(out, reference_summary)
+    signal_row["microcap_series_source"] = data_lineage.get("source_used")
+    signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
+    signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
+    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
+    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label=performance_source_label)
+
     valid_log_wls_index = pd.DatetimeIndex(_valid_log_wls_index(close_df))
     valid_log_wls_index = pd.DatetimeIndex(valid_log_wls_index[valid_log_wls_index >= FORMAL_START_DATE]).sort_values()
     data_lineage["v2_5_common_index_gap"] = _common_index_gap_summary(common_index, valid_log_wls_index)
@@ -1722,7 +1732,17 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
-    summary["performance_source_label"] = "costed_v2_5"
+    summary["data_freshness_proof"] = freshness_proof
+    v2_0.overlay_mod.attach_proxy_source_summary_fields(
+        summary,
+        data_lineage,
+        source_label="costed_v2_5",
+        parameter_retest_status={
+            "required_before_parameter_scan": True,
+            "reason": "post-P0 proxy lineage changed from current-universe/current-ST to historical security master/historical-ST",
+            "recommended_windows": ["full", "10Y", "5Y", "3Y", "1Y"],
+        },
+    )
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")

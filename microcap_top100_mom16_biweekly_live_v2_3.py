@@ -135,7 +135,7 @@ MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS = 5
 _OFFICIAL_V2_0_OUT_CACHE: tuple[str, pd.DataFrame] | None = None
 _OFFICIAL_V2_0_OUT_CACHE_LOCK = threading.Lock()
 
-EXPECTED_V2_0_TARGET_VOL_WINDOW = 60
+EXPECTED_V2_0_TARGET_VOL_WINDOW = 75
 EXPECTED_V2_0_MAX_LEVERAGE = 1.5
 EXPECTED_V2_0_BASE_HEDGE_RATIO = 0.8
 EXPECTED_V2_0_TRADING_DAYS = 244
@@ -200,6 +200,7 @@ def validate_v2_0_contract() -> None:
     _require_v2_0_callable(v2_0, "current_base_fingerprint", "current_base_fingerprint")
     _require_v2_0_callable(v2_0, "current_strategy_fingerprint", "current_strategy_fingerprint")
     _require_v2_0_callable(v2_0, "current_data_state_fingerprint", "current_data_state_fingerprint")
+    _require_v2_0_callable(v2_0, "assert_top100_outputs_fresh", "assert_top100_outputs_fresh")
     _require_v2_0_callable(v2_0, "current_runtime_fingerprint", "current_runtime_fingerprint")
     _require_v2_0_callable(v2_0, "generate_v2_0_outputs", "generate_v2_0_outputs")
     _require_v2_0_callable(v2_0, "run_realtime_query_with_fresh_state", "run_realtime_query_with_fresh_state")
@@ -1301,12 +1302,20 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
 
     _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
+    freshness_proof = v2_0.assert_top100_outputs_fresh(
+        expected_latest_date=out.index.max(),
+        extra_daily_paths={"v2_3_costed_nav": COSTED_NAV_CSV},
+    )
+    data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
+    performance_source_label = v2_0.overlay_mod.proxy_aware_performance_source_label(data_lineage, "costed_v2_3")
     signal_row = _build_signal_row(out, reference_summary)
     apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
+    signal_row["microcap_series_source"] = data_lineage.get("source_used")
+    signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
+    signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
     _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
-    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_3")
+    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label=performance_source_label)
 
-    data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
     summary = dict(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
@@ -1357,7 +1366,17 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
-    summary["performance_source_label"] = "costed_v2_3"
+    summary["data_freshness_proof"] = freshness_proof
+    v2_0.overlay_mod.attach_proxy_source_summary_fields(
+        summary,
+        data_lineage,
+        source_label="costed_v2_3",
+        parameter_retest_status={
+            "required_before_parameter_scan": True,
+            "reason": "post-P0 proxy lineage changed from current-universe/current-ST to historical security master/historical-ST",
+            "recommended_windows": ["full", "10Y", "5Y", "3Y", "1Y"],
+        },
+    )
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")

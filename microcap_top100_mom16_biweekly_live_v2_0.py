@@ -30,7 +30,7 @@ REALTIME_DIR = CACHE_DIR / "realtime"
 VERSION = "2.0"
 BASE_API_REVISION = 12
 HISTORICAL_AUDIT_REVISION = 5
-DATA_STATE_FINGERPRINT_REVISION = 2
+DATA_STATE_FINGERPRINT_REVISION = 3
 REALTIME_CALENDAR_GUARD_REVISION = 3
 
 ak = None
@@ -2289,6 +2289,15 @@ def list_backtest_universe_symbols() -> list[str]:
     master = load_security_master()
     if master.empty or "symbol" not in master.columns:
         return sorted(cached_symbols)
+    master = master.copy()
+    master["symbol"] = master["symbol"].dropna().astype(str).str.zfill(6)
+    inferred_exchange = master["symbol"].map(lambda symbol: _infer_exchange_board(str(symbol))[0] or "")
+    if "exchange" in master.columns:
+        exchange = master["exchange"].fillna("").astype(str).str.strip()
+        exchange = exchange.where(exchange.ne(""), inferred_exchange)
+    else:
+        exchange = inferred_exchange
+    master = master.loc[exchange.astype(str).str.upper().ne("BSE")]
     master_symbols = set(master["symbol"].dropna().astype(str).str.zfill(6))
     return sorted(cached_symbols & master_symbols)
 
@@ -3963,23 +3972,88 @@ def panel_shadow_cache_is_reusable(
     return bool(current_ts - mtime <= pd.Timedelta(seconds=max(0, int(same_day_max_age_seconds))))
 
 
+def _price_cache_latest_date(symbol: str) -> pd.Timestamp | None:
+    price_path = freq_mod.resolve_cache_path(
+        freq_mod.PRICE_DIR,
+        getattr(freq_mod, "SHARED_PRICE_DIR", None),
+        str(symbol).zfill(6),
+    )
+    if price_path is None:
+        return None
+    try:
+        dates = pd.read_csv(price_path, usecols=["date"])["date"]
+    except Exception:
+        return None
+    dates = pd.to_datetime(dates, errors="coerce").dropna()
+    if dates.empty:
+        return None
+    return pd.Timestamp(dates.max()).normalize()
+
+
+def price_cache_refresh_preflight(
+    end_date: pd.Timestamp,
+    symbols: list[str],
+    force_refresh: bool = False,
+) -> dict[str, object]:
+    end_ts = pd.Timestamp(end_date).normalize()
+    clean_symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
+    missing: list[str] = []
+    stale: list[str] = []
+    current_count = 0
+    for symbol in clean_symbols:
+        latest = _price_cache_latest_date(symbol)
+        if latest is None:
+            missing.append(symbol)
+        elif force_refresh or latest < end_ts:
+            stale.append(symbol)
+        else:
+            current_count += 1
+    stale_or_missing = stale + missing
+    return {
+        "end_date": str(end_ts.date()),
+        "symbol_count": int(len(clean_symbols)),
+        "current_count": int(current_count),
+        "stale_count": int(len(stale)),
+        "missing_count": int(len(missing)),
+        "stale_or_missing_count": int(len(stale_or_missing)),
+        "force_refresh": bool(force_refresh),
+        "sample_stale_or_missing_symbols": stale_or_missing[:10],
+    }
+
+
+def _log_price_cache_refresh(message: str) -> None:
+    print(f"[top100-refresh] {message}", file=sys.stderr, flush=True)
+
+
 def refresh_price_cache_tail(
     end_date: pd.Timestamp,
     max_workers: int,
     symbols: list[str] | None = None,
     force_refresh: bool = False,
+    progress_interval: int | None = 250,
 ) -> None:
     ensure_fetch_dirs = getattr(fetch_mod, "ensure_dirs", None)
     if ensure_fetch_dirs is not None:
         ensure_fetch_dirs()
     if symbols is None:
-        symbols = freq_mod.load_current_universe()
+        symbols = freq_mod.load_universe()
+    symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
     if not symbols:
-        raise RuntimeError("No cached-universe symbols available for price-cache refresh.")
+        raise RuntimeError("No backtest-universe symbols available for price-cache refresh.")
 
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
     failures: dict[str, str] = {}
     workers = max(1, min(int(max_workers), 16))
+    preflight = price_cache_refresh_preflight(pd.Timestamp(end_date), symbols, force_refresh=force_refresh)
+    sample = ",".join(preflight.get("sample_stale_or_missing_symbols", []) or [])
+    _log_price_cache_refresh(
+        "price-cache refresh preflight "
+        f"end_date={end_text} symbols={preflight['symbol_count']} "
+        f"stale_or_missing={preflight['stale_or_missing_count']} "
+        f"missing={preflight['missing_count']} stale={preflight['stale_count']} "
+        f"current={preflight['current_count']} force_refresh={preflight['force_refresh']} "
+        f"workers={workers} sample={sample}"
+    )
 
     def refresh_price_history_with_fallback(symbol: str) -> None:
         try:
@@ -3996,6 +4070,9 @@ def refresh_price_cache_tail(
         if fetch_share_change is not None:
             fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
 
+    completed = 0
+    total_symbols = len(symbols)
+    interval = max(0, int(progress_interval or 0))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in symbols}
         for fut in as_completed(futures):
@@ -4004,6 +4081,11 @@ def refresh_price_cache_tail(
                 fut.result()
             except Exception as exc:
                 failures[symbol] = str(exc)
+            completed += 1
+            if interval and (completed % interval == 0 or completed == total_symbols):
+                _log_price_cache_refresh(
+                    f"price-cache refresh progress {completed}/{total_symbols} failures={len(failures)}"
+                )
     for retry_attempt in range(2):
         if not failures:
             break
@@ -4026,6 +4108,7 @@ def refresh_price_cache_tail(
         raise RuntimeError(
             f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). Sample: {sample}"
         )
+    _log_price_cache_refresh(f"price-cache refresh complete {total_symbols}/{total_symbols} failures={len(failures)}")
 
 
 def _load_cached_market_cap_asof(symbol: str, ref_date: pd.Timestamp) -> tuple[str, float] | None:
@@ -4084,7 +4167,7 @@ def select_recent_candidate_symbols(
         symbols.update(recent_members.astype(str).str.zfill(6).tolist())
 
     reference_date = min(pd.Timestamp(target_end_date), pd.Timestamp(current_index_end) + pd.Timedelta(days=14))
-    universe = freq_mod.load_current_universe()
+    universe = freq_mod.load_universe()
     workers = max(1, min(int(max_workers), 16))
     caps: list[tuple[str, float]] = []
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -4300,15 +4383,20 @@ def build_local_proxy_bundle(
     symbols: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]:
     rebalance_dates = build_biweekly_rebalance_dates(trading_dates)
+    universe_source = "explicit_symbols"
     if symbols is None:
-        symbols = freq_mod.load_current_universe()
+        symbols = freq_mod.load_universe()
+        universe_source = "backtest_cache_security_master"
+    symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
+    if not symbols:
+        raise RuntimeError("No backtest-universe symbols available for local proxy build.")
     returns_df, caps_by_date, buyable_df, sellable_df = freq_mod.load_cache_panels(
         symbols=symbols,
         trading_dates=trading_dates,
         cap_dates=rebalance_dates,
         max_workers=args.max_workers,
         trade_constraint_mode=TRADE_CONSTRAINT_MODE,
-        exclude_historical_st_from_caps=False,
+        exclude_historical_st_from_caps=True,
     )
     name_map = load_name_map()
     target_members_map = build_live_target_members_map(
@@ -4337,6 +4425,8 @@ def build_local_proxy_bundle(
     meta = {
         "index_code": INDEX_CODE,
         "source_used": "local_cache_proxy",
+        "universe_source": universe_source,
+        "universe_symbol_count": int(len(symbols)),
         "method_note": (
             "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. "
             "This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names "
@@ -4345,7 +4435,8 @@ def build_local_proxy_bundle(
         ),
         "core_params": {
             "top_n": TOP_N,
-            "exclude_current_st": True,
+            "exclude_current_st": False,
+            "exclude_historical_st": True,
             "exclude_bj_exchange": True,
             "exclude_suspended_on_signal_date": True,
             "block_limit_up_entry_at_close": True,
@@ -4387,6 +4478,8 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     return (
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
+        and core_params.get("exclude_current_st") is False
+        and core_params.get("exclude_historical_st") is True
         and rebalance_phase_anchor_date in (None, REBALANCE_ANCHOR_DATE)
         and member_filter_policy_version in (None, MEMBER_FILTER_POLICY_VERSION)
         and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
@@ -6337,8 +6430,26 @@ def find_missing_cost_rebalances(
 
 
 def load_name_map() -> dict[str, str]:
-    frame = pd.read_csv(freq_mod.ACTIVE_UNIVERSE, dtype=str)
-    return dict(zip(frame["code"].str.zfill(6), frame["name"]))
+    names: dict[str, str] = {}
+    try:
+        master = freq_mod.load_security_master()
+    except Exception:
+        master = pd.DataFrame()
+    if not master.empty and {"symbol", "name"}.issubset(master.columns):
+        work = master[["symbol", "name"]].copy()
+        work["symbol"] = work["symbol"].astype(str).str.extract(r"(\d{6})", expand=False).fillna("").str.zfill(6)
+        work["name"] = work["name"].fillna("").astype(str).str.strip()
+        work = work.loc[work["symbol"].str.len().eq(6) & work["name"].ne("")]
+        names.update(dict(zip(work["symbol"], work["name"])))
+    try:
+        frame = pd.read_csv(freq_mod.ACTIVE_UNIVERSE, dtype=str)
+        active_names = dict(zip(frame["code"].str.zfill(6), frame["name"].fillna("").astype(str).str.strip()))
+        for symbol, name in active_names.items():
+            if name and not names.get(symbol):
+                names[symbol] = name
+    except Exception:
+        pass
+    return names
 
 
 def build_live_target_members_map(
@@ -6354,7 +6465,8 @@ def build_live_target_members_map(
         tradable_members = [
             symbol
             for symbol, _ in ranked
-            if is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
+            if not str(name_map.get(str(symbol).zfill(6), "")).strip()
+            or is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
         ][:top_n]
         out[pd.Timestamp(dt)] = tradable_members
     return out
@@ -7371,8 +7483,17 @@ def assert_no_historical_rewrite(
         right = cand.loc[frozen_common, col]
         left_num = pd.to_numeric(left, errors="coerce")
         right_num = pd.to_numeric(right, errors="coerce")
-        numeric_like = left_num.notna().any() or right_num.notna().any()
-        if numeric_like:
+        bool_like = (
+            pd.api.types.is_bool_dtype(left)
+            or pd.api.types.is_bool_dtype(right)
+            or pd.api.types.is_bool_dtype(left_num)
+            or pd.api.types.is_bool_dtype(right_num)
+        )
+        numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+        if bool_like:
+            changed = left.astype("boolean").ne(right.astype("boolean"))
+            changed = changed | (left.isna() ^ right.isna())
+        elif numeric_like:
             diff = (left_num - right_num).abs()
             threshold = float(atol) + float(rtol) * right_num.abs()
             changed = diff.gt(threshold)
@@ -10308,8 +10429,8 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
 OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0"
-TARGET_VOL = 0.25
-TARGET_VOL_WINDOW = 60
+TARGET_VOL = 0.15
+TARGET_VOL_WINDOW = 75
 TARGET_VOL_MAX_LEVERAGE = 1.5
 TARGET_VOL_MIN_LEVERAGE = 0.0
 TARGET_VOL_TRADING_DAYS = 244
@@ -10318,7 +10439,14 @@ TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
 TARGET_VOL_FINANCING_RATE = 0.03
 IDLE_CASH_YIELD = 0.02
 SCALE_TRADE_REQUIRED_EPSILON = 1e-6
-HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP = (0.15,)
+OVERHEAT_ENABLED = True
+OVERHEAT_KIND = "volatility"
+OVERHEAT_WINDOW = 60
+OVERHEAT_THRESHOLD = 0.23
+OVERHEAT_METRIC = "microcap_minus_0p8x_hedge_realized_vol"
+OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN = True
+OVERHEAT_REQUIRE_SIGNAL_RESET = True
+HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP = (0.25,)
 DEFAULT_ALLOWED_TAIL_ROWS = max(
     TARGET_VOL_WINDOW + int(getattr(embedded_context.base_mod, "LOOKBACK", 16)),
     TARGET_VOL_WINDOW + 20,
@@ -10336,6 +10464,12 @@ V2_0_REWRITE_AUDIT_KEY_COLUMNS = [
     "next_session_actionable_scale",
     "base_trade_cost",
     "base_trade_cost_scaled",
+    "base_holding",
+    "base_next_holding",
+    "overheat_metric",
+    "overheat_triggered",
+    "blocked_until_signal_reset",
+    "trade_return_net",
     "scale_change_cost",
     "financing_cost",
 ]
@@ -10730,8 +10864,18 @@ def current_base_fingerprint() -> dict[str, object]:
     return {
         "base_version": "embedded_v2_base",
         "embedded_lineage_base_fingerprint": base,
-        "overlay_type": "target_volatility_scaling",
+        "overlay_type": "volatility_overheat_exit_then_target_volatility_scaling",
         "base_hedge_ratio": BASE_HEDGE_RATIO,
+        "overheat_defense": {
+            "enabled": OVERHEAT_ENABLED,
+            "kind": OVERHEAT_KIND,
+            "window": OVERHEAT_WINDOW,
+            "threshold": OVERHEAT_THRESHOLD,
+            "metric": OVERHEAT_METRIC,
+            "require_positive_trade_return": OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN,
+            "require_signal_reset": OVERHEAT_REQUIRE_SIGNAL_RESET,
+            "timing": "applied_to_base_state_before_target_vol_scaling",
+        },
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
@@ -10760,17 +10904,80 @@ def current_strategy_fingerprint() -> dict[str, object]:
     return current_base_fingerprint()
 
 
-def _csv_date_state(path: Path) -> tuple[str, int | None]:
-    if not path.exists():
-        return "", None
+FRESHNESS_DATE_COLUMNS = ("date", "trade_date", "rebalance_date", "effective_date")
+FRESHNESS_JSON_DATE_FIELDS = ("latest_nav_date", "latest_trade_date", "end_date", "target_end_date", "latest_date")
+FRESHNESS_JSON_COUNT_FIELDS = ("row_count", "rows", "rebalance_dates_count", "trading_days")
+TOP100_DAILY_FRESHNESS_KEYS = ("base_panel_shadow", "base_index_csv", "base_costed_nav", "v2_0_costed_nav")
+
+
+def _coerce_date_text(value: object) -> str:
+    if value is None:
+        return ""
     try:
-        dates = pd.read_csv(path, usecols=["date"], parse_dates=["date"])["date"]
+        ts = pd.Timestamp(value)
     except Exception:
-        return "", None
+        return ""
+    if pd.isna(ts):
+        return ""
+    return str(ts.date())
+
+
+def _coerce_row_count(value: object) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _csv_date_state(path: Path) -> tuple[str, int | None, str]:
+    if not path.exists():
+        return "", None, ""
+    try:
+        header = pd.read_csv(path, nrows=0)
+    except Exception:
+        return "", None, ""
+    date_column = next((column for column in FRESHNESS_DATE_COLUMNS if column in header.columns), "")
+    try:
+        if date_column:
+            frame = pd.read_csv(path, usecols=[date_column])
+        else:
+            frame = pd.read_csv(path)
+    except Exception:
+        return "", None, date_column
+    row_count = int(len(frame))
+    if not date_column:
+        return "", row_count, ""
+    dates = pd.to_datetime(frame[date_column], errors="coerce").dropna()
     dates = pd.to_datetime(dates, errors="coerce").dropna()
     if dates.empty:
-        return "", 0
-    return str(pd.Timestamp(dates.max()).date()), int(len(dates))
+        return "", row_count, date_column
+    return str(pd.Timestamp(dates.max()).date()), row_count, date_column
+
+
+def _json_date_state(path: Path) -> tuple[str, int | None, str]:
+    if not path.exists():
+        return "", None, ""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return "", None, ""
+    if not isinstance(payload, dict):
+        return "", None, ""
+    latest_date = ""
+    date_field = ""
+    for field in FRESHNESS_JSON_DATE_FIELDS:
+        latest_date = _coerce_date_text(payload.get(field))
+        if latest_date:
+            date_field = field
+            break
+    row_count = None
+    for field in FRESHNESS_JSON_COUNT_FIELDS:
+        row_count = _coerce_row_count(payload.get(field))
+        if row_count is not None:
+            break
+    return latest_date, row_count, date_field
 
 
 def _file_state_fingerprint(path: Path) -> dict[str, object]:
@@ -10779,19 +10986,193 @@ def _file_state_fingerprint(path: Path) -> dict[str, object]:
         "exists": path.exists(),
     }
     if not path.exists():
-        state.update({"size": None, "mtime_ns": None, "latest_date": "", "row_count": None})
+        state.update({"size": None, "mtime_ns": None, "latest_date": "", "row_count": None, "date_column": ""})
         return state
     stat = path.stat()
-    latest_date, row_count = _csv_date_state(path)
+    if path.suffix.lower() == ".json":
+        latest_date, row_count, date_column = _json_date_state(path)
+    else:
+        latest_date, row_count, date_column = _csv_date_state(path)
     state.update(
         {
             "size": int(stat.st_size),
             "mtime_ns": int(stat.st_mtime_ns),
             "latest_date": latest_date,
             "row_count": row_count,
+            "date_column": date_column,
         }
     )
     return state
+
+
+def validate_top100_freshness_proof(
+    files: dict[str, dict[str, object]],
+    expected_latest_date: object,
+    expected_latest_rebalance_date: object | None = None,
+    daily_keys: list[str] | tuple[str, ...] | None = None,
+) -> dict[str, object]:
+    expected = _coerce_date_text(expected_latest_date)
+    if not expected:
+        raise RuntimeError(f"Top100 freshness proof missing expected latest date: {expected_latest_date!r}")
+
+    keys = list(daily_keys or TOP100_DAILY_FRESHNESS_KEYS)
+    issues: list[str] = []
+    for key in keys:
+        state = files.get(key)
+        if not isinstance(state, dict):
+            issues.append(f"{key} missing from freshness proof")
+            continue
+        if not bool(state.get("exists")):
+            issues.append(f"{key} does not exist: {state.get('path', '')}")
+            continue
+        latest = _coerce_date_text(state.get("latest_date"))
+        if not latest:
+            issues.append(f"{key} has no readable latest_date")
+        elif latest != expected:
+            issues.append(f"{key} latest_date {latest} != expected {expected}")
+        row_count = _coerce_row_count(state.get("row_count"))
+        if row_count is None or row_count <= 0:
+            issues.append(f"{key} has invalid row_count {state.get('row_count')!r}")
+
+    expected_rebalance = _coerce_date_text(expected_latest_rebalance_date)
+    if expected_rebalance:
+        turnover = files.get("base_proxy_turnover")
+        if not isinstance(turnover, dict):
+            issues.append("base_proxy_turnover missing from freshness proof")
+        elif not bool(turnover.get("exists")):
+            issues.append(f"base_proxy_turnover does not exist: {turnover.get('path', '')}")
+        else:
+            turnover_latest = _coerce_date_text(turnover.get("latest_date"))
+            if not turnover_latest:
+                issues.append("base_proxy_turnover has no readable latest_date")
+            elif pd.Timestamp(turnover_latest) < pd.Timestamp(expected_rebalance):
+                issues.append(
+                    f"base_proxy_turnover latest_date {turnover_latest} < expected latest rebalance_date {expected_rebalance}"
+                )
+
+    if issues:
+        raise RuntimeError("Top100 freshness proof failed: " + "; ".join(issues))
+    return {
+        "expected_latest_date": expected,
+        "expected_latest_rebalance_date": expected_rebalance,
+        "daily_keys": keys,
+    }
+
+
+def _normalise_date_index(values: object) -> pd.DatetimeIndex:
+    if values is None:
+        return pd.DatetimeIndex([])
+    dates = pd.to_datetime(values, errors="coerce")
+    dates = pd.DatetimeIndex(dates).dropna().normalize().drop_duplicates().sort_values()
+    return pd.DatetimeIndex(dates)
+
+
+def validate_daily_stream_continuity(
+    panel_dates: pd.DatetimeIndex,
+    stream_dates: pd.DatetimeIndex,
+    label: str,
+) -> None:
+    panel_index = _normalise_date_index(panel_dates)
+    stream_index = _normalise_date_index(stream_dates)
+    if panel_index.empty:
+        raise RuntimeError(f"{label} continuity guard has no panel trading dates.")
+    if stream_index.empty:
+        raise RuntimeError(f"{label} continuity guard has no stream dates.")
+    missing_dates = pd.DatetimeIndex(panel_index.difference(stream_index)).sort_values()
+    if len(missing_dates):
+        sample = ", ".join(str(pd.Timestamp(dt).date()) for dt in missing_dates[:10])
+        raise RuntimeError(
+            f"{label} missing {len(missing_dates)} trading dates versus refreshed panel: {sample}"
+        )
+
+
+def _read_artifact_date_index(path: Path, date_column: object = "") -> pd.DatetimeIndex:
+    if not path.exists():
+        return pd.DatetimeIndex([])
+    column = str(date_column or "")
+    if not column:
+        try:
+            header = pd.read_csv(path, nrows=0)
+            column = next((candidate for candidate in FRESHNESS_DATE_COLUMNS if candidate in header.columns), "")
+        except Exception:
+            return pd.DatetimeIndex([])
+    if not column:
+        return pd.DatetimeIndex([])
+    try:
+        dates = pd.read_csv(path, usecols=[column])[column]
+    except Exception:
+        return pd.DatetimeIndex([])
+    return _normalise_date_index(dates)
+
+
+def _latest_required_rebalance_date(panel_dates: pd.DatetimeIndex, expected_latest_date: object) -> str:
+    expected_ts = pd.Timestamp(expected_latest_date).normalize()
+    usable_panel_dates = pd.DatetimeIndex(panel_dates[panel_dates <= expected_ts]).sort_values()
+    if usable_panel_dates.empty:
+        return ""
+    try:
+        rebalance_dates = base_mod.build_biweekly_rebalance_dates(usable_panel_dates)
+    except Exception:
+        return ""
+    rebalance_dates = pd.DatetimeIndex(rebalance_dates[rebalance_dates <= expected_ts]).sort_values()
+    if rebalance_dates.empty:
+        return ""
+    return str(pd.Timestamp(rebalance_dates[-1]).date())
+
+
+def assert_top100_outputs_fresh(
+    expected_latest_date: object | None = None,
+    extra_daily_paths: dict[str, Path] | None = None,
+    daily_keys: list[str] | tuple[str, ...] | None = None,
+    require_continuity: bool = True,
+) -> dict[str, object]:
+    state = current_data_state_fingerprint()
+    files = dict(state["files"])
+    extra_daily_paths = extra_daily_paths or {}
+    for key, path in extra_daily_paths.items():
+        files[key] = _file_state_fingerprint(Path(path))
+
+    expected = _coerce_date_text(expected_latest_date)
+    if not expected:
+        expected = _coerce_date_text(files.get("base_panel_shadow", {}).get("latest_date")) or _coerce_date_text(
+            files.get("base_panel", {}).get("latest_date")
+        )
+    if not expected:
+        raise RuntimeError("Top100 freshness proof cannot determine the expected latest trading date.")
+
+    panel_key = "base_panel_shadow" if bool(files.get("base_panel_shadow", {}).get("exists")) else "base_panel"
+    panel_state = files.get(panel_key, {})
+    panel_dates = _read_artifact_date_index(Path(panel_state.get("path", "")), panel_state.get("date_column", "date"))
+    expected_ts = pd.Timestamp(expected).normalize()
+    panel_dates = pd.DatetimeIndex(panel_dates[panel_dates <= expected_ts]).sort_values()
+    expected_rebalance = _latest_required_rebalance_date(panel_dates, expected)
+    proof_daily_keys = list(daily_keys or TOP100_DAILY_FRESHNESS_KEYS)
+    proof_daily_keys.extend(extra_daily_paths.keys())
+
+    proof = validate_top100_freshness_proof(
+        files,
+        expected_latest_date=expected,
+        expected_latest_rebalance_date=expected_rebalance,
+        daily_keys=proof_daily_keys,
+    )
+
+    if require_continuity:
+        for key in proof_daily_keys:
+            artifact = files.get(key, {})
+            path = Path(artifact.get("path", ""))
+            stream_dates = _read_artifact_date_index(path, artifact.get("date_column", ""))
+            stream_dates = pd.DatetimeIndex(stream_dates[stream_dates <= expected_ts]).sort_values()
+            if stream_dates.empty:
+                continue
+            window_panel_dates = pd.DatetimeIndex(
+                panel_dates[(panel_dates >= stream_dates.min()) & (panel_dates <= expected_ts)]
+            ).sort_values()
+            validate_daily_stream_continuity(window_panel_dates, stream_dates, key)
+
+    proof["files"] = {key: files[key] for key in proof_daily_keys if key in files}
+    if "base_proxy_turnover" in files:
+        proof["files"]["base_proxy_turnover"] = files["base_proxy_turnover"]
+    return proof
 
 
 def current_data_state_fingerprint() -> dict[str, object]:
@@ -10949,6 +11330,176 @@ def calc_target_vol_costed_turnover(holding: pd.Series, target_vol_turnover: pd.
     holding = _normalize_holding_series(holding, holding.index)
     same_holding = holding.eq(holding.shift(1))
     return pd.to_numeric(target_vol_turnover, errors="coerce").fillna(0.0).where(same_holding, 0.0)
+
+
+def _volatility_overheat_metric(gross: pd.DataFrame, window: int = OVERHEAT_WINDOW) -> pd.Series:
+    missing = {"microcap_ret", "hedge_ret"}.difference(gross.columns)
+    if missing:
+        raise ValueError(f"missing columns for v2.0 overheat metric: {sorted(missing)}")
+    micro = pd.to_numeric(gross["microcap_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    hedge = pd.to_numeric(gross["hedge_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    spread = micro - float(BASE_HEDGE_RATIO) * hedge
+    return spread.rolling(int(window), min_periods=int(window)).std(ddof=1) * np.sqrt(TARGET_VOL_TRADING_DAYS)
+
+
+def apply_volatility_overheat_exit(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    *,
+    overheat_window: int = OVERHEAT_WINDOW,
+    overheat_threshold: float = OVERHEAT_THRESHOLD,
+) -> pd.DataFrame:
+    """Apply the promoted v2.0 volatility-overheat exit before target-vol scaling."""
+    required = {"return", "holding", "next_holding", "microcap_ret", "hedge_ret"}
+    missing = required.difference(gross_result.columns)
+    if missing:
+        raise ValueError(f"missing columns for v2.0 overheat exit: {sorted(missing)}")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        return embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(out, turnover_df)
+
+    metric = _volatility_overheat_metric(out, window=int(overheat_window))
+    base_holding = _normalize_holding_series(out["holding"], out.index)
+    base_next_holding = _normalize_holding_series(out["next_holding"], out.index, fill_from=base_holding)
+    returns = pd.to_numeric(out["return"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    rebalance_base = embedded_context.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce").fillna(0.0)
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    trigger_flags: list[bool] = []
+    blocked_flags: list[bool] = []
+    signal_reset_seen_flags: list[bool] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+    overlay_pre_cost_returns: list[float] = []
+
+    current_active = bool(base_holding.iloc[0] != "cash")
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    blocked_until_reset = False
+    signal_reset_seen = False
+    nav_net = 1.0
+    trade_nav = 1.0
+
+    entry_cost_value = float(embedded_context.base_mod.freq_mod.cost_mod.ENTRY_COST)
+    exit_cost_value = float(embedded_context.base_mod.freq_mod.cost_mod.EXIT_COST)
+
+    for dt in out.index:
+        base_next_active = bool(base_next_holding.loc[dt] != "cash")
+        desired_next_active = current_active if blocked_until_reset else base_next_active
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+
+        trade_participates = bool(current_active or desired_next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+        entry_cost = entry_cost_value if (not current_active and desired_next_active) else 0.0
+        exit_cost = exit_cost_value if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        trade_return_before_exit: float | None = None
+        if current_active and desired_next_active:
+            trade_return_before_exit = trade_nav * (1.0 + return_net) - 1.0
+
+        metric_value = metric.loc[dt]
+        trigger = bool(
+            current_active
+            and desired_next_active
+            and pd.notna(metric_value)
+            and float(metric_value) >= float(overheat_threshold)
+            and (
+                not OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN
+                or (trade_return_before_exit is not None and trade_return_before_exit > 0.0)
+            )
+        )
+        if trigger:
+            desired_next_active = False
+            entry_cost = 0.0
+            exit_cost = exit_cost_value
+            rebalance_cost = 0.0
+            total_cost = exit_cost
+            return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_return_net = trade_nav - 1.0
+        else:
+            trade_return_net = None
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        trigger_flags.append(bool(trigger))
+        blocked_flags.append(bool(blocked_until_reset))
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+        overlay_pre_cost_returns.append(float(realized_daily_return))
+
+        if trigger and OVERHEAT_REQUIRE_SIGNAL_RESET:
+            blocked_until_reset = True
+            signal_reset_seen = False
+        elif blocked_until_reset and not base_next_active:
+            blocked_until_reset = False
+            signal_reset_seen = True
+        else:
+            signal_reset_seen = False
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+
+    out["base_holding"] = base_holding
+    out["base_next_holding"] = base_next_holding
+    out["base_signal_on"] = base_next_holding.ne("cash")
+    if "base_gross_return" not in out.columns:
+        out["base_gross_return"] = returns
+    out["overheat_enabled"] = True
+    out["overheat_kind"] = OVERHEAT_KIND
+    out["overheat_window"] = int(overheat_window)
+    out["overheat_threshold"] = float(overheat_threshold)
+    out["overheat_metric_name"] = OVERHEAT_METRIC
+    out["overheat_metric"] = metric
+    out["overheat_require_positive_trade_return"] = OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN
+    out["overheat_require_signal_reset"] = OVERHEAT_REQUIRE_SIGNAL_RESET
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["overheat_triggered"] = pd.Series(trigger_flags, index=out.index, dtype=bool)
+    out["blocked_until_signal_reset"] = pd.Series(blocked_flags, index=out.index, dtype=bool)
+    out["signal_reset_seen"] = pd.Series(signal_reset_seen_flags, index=out.index, dtype=bool)
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    out["overlay_pre_cost_return"] = pd.Series(overlay_pre_cost_returns, index=out.index, dtype=float)
+    out["target_vol_enabled"] = False
+    out["target_vol"] = np.nan
+    out["peak_decay_enabled"] = False
+    out["net_drawdown_stop_enabled"] = False
+    return out
 
 
 def _scale_from_realized_vol(realized_vol: pd.Series, target_vol: float = TARGET_VOL) -> pd.Series:
@@ -11197,7 +11748,7 @@ def apply_target_vol_scaling(
     )
     out["version"] = "2.0"
     out["base_version"] = "embedded_v2_base"
-    out["overlay_type"] = "target_volatility_scaling"
+    out["overlay_type"] = "volatility_overheat_exit_then_target_volatility_scaling"
     return out
 
 
@@ -11324,6 +11875,8 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "idle_cash_yield",
         "return_gross_base",
         "return_gross_target_vol",
+        "overheat_metric",
+        "trade_return_net",
     ]:
         if src_col in latest_row and pd.notna(latest_row[src_col]):
             latest_signal[src_col] = float(latest_row[src_col])
@@ -11331,12 +11884,33 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         latest_row.get("signal_quality_derisk_triggered", False),
         default=False,
     )
+    latest_signal["overheat_enabled"] = _safe_bool(latest_row.get("overheat_enabled", OVERHEAT_ENABLED), default=OVERHEAT_ENABLED)
+    latest_signal["overheat_kind"] = str(latest_row.get("overheat_kind", OVERHEAT_KIND))
+    latest_signal["overheat_window"] = int(_safe_float(latest_row.get("overheat_window", OVERHEAT_WINDOW), OVERHEAT_WINDOW))
+    latest_signal["overheat_threshold"] = float(
+        _safe_float(latest_row.get("overheat_threshold", OVERHEAT_THRESHOLD), OVERHEAT_THRESHOLD)
+    )
+    latest_signal["overheat_metric_name"] = str(latest_row.get("overheat_metric_name", OVERHEAT_METRIC))
+    latest_signal["overheat_triggered"] = _safe_bool(latest_row.get("overheat_triggered", False), default=False)
+    latest_signal["blocked_until_signal_reset"] = _safe_bool(
+        latest_row.get("blocked_until_signal_reset", False),
+        default=False,
+    )
+    latest_signal["signal_reset_seen"] = _safe_bool(latest_row.get("signal_reset_seen", False), default=False)
+    latest_signal["overheat_require_positive_trade_return"] = _safe_bool(
+        latest_row.get("overheat_require_positive_trade_return", OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN),
+        default=OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN,
+    )
+    latest_signal["overheat_require_signal_reset"] = _safe_bool(
+        latest_row.get("overheat_require_signal_reset", OVERHEAT_REQUIRE_SIGNAL_RESET),
+        default=OVERHEAT_REQUIRE_SIGNAL_RESET,
+    )
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
     latest_signal["momentum_gap_exit_buffer"] = V2_0_MOMENTUM_GAP_EXIT_BUFFER
     latest_signal["signal_quality_derisk_enabled"] = False
     latest_signal["version"] = "2.0"
     latest_signal["base_version"] = "embedded_v2_base"
-    latest_signal["overlay_type"] = "target_volatility_scaling"
+    latest_signal["overlay_type"] = "volatility_overheat_exit_then_target_volatility_scaling"
     latest_signal["target_vol"] = TARGET_VOL
     latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
     latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
@@ -11476,6 +12050,28 @@ def _v2_performance_source_label(data_lineage: dict[str, object]) -> str:
     if bool(data_lineage.get("official_wind_series")):
         return "costed_v2_0_official_wind"
     return "public_or_local_proxy_not_official_wind"
+
+
+def proxy_aware_performance_source_label(data_lineage: dict[str, object], source_label: str) -> str:
+    if bool(data_lineage.get("official_wind_series")):
+        return str(source_label)
+    return f"{source_label}_public_or_local_proxy_not_official_wind"
+
+
+def attach_proxy_source_summary_fields(
+    summary: dict[str, object],
+    data_lineage: dict[str, object],
+    *,
+    source_label: str,
+    parameter_retest_status: dict[str, object] | None = None,
+) -> dict[str, object]:
+    summary["microcap_series_source"] = data_lineage.get("source_used")
+    summary["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
+    summary["proxy_warning"] = data_lineage.get("public_proxy_note", "")
+    summary["performance_source_label"] = proxy_aware_performance_source_label(data_lineage, source_label)
+    if parameter_retest_status is not None:
+        summary["parameter_retest_status"] = parameter_retest_status
+    return summary
 
 
 def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
@@ -11629,7 +12225,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         base_gross,
         V2_0_MOMENTUM_GAP_EXIT_BUFFER,
     )
-    embedded_lineage_base = embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(gross, turnover_df)
+    embedded_lineage_base = apply_volatility_overheat_exit(gross, turnover_df)
     out = apply_target_vol_scaling(embedded_lineage_base)
     if COSTED_NAV_CSV.exists():
         previous = _read_costed_nav_csv(COSTED_NAV_CSV)
@@ -11662,6 +12258,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
             raise RuntimeError(f"{exc} v2.0 rewrite diagnostics written to {diagnostics_path}.") from exc
     _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
+    freshness_proof = assert_top100_outputs_fresh(expected_latest_date=out.index.max())
 
     data_lineage = _build_v2_data_lineage()
     signal_row = _build_signal_row(out, reference_summary)
@@ -11689,7 +12286,8 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["version_note"] = (
         "Standalone target-volatility overlay matching repaired v1.6 behavior. Uses v2.0-specific 0.30% momentum-gap exit buffer, "
         "no peak-decay signal-quality derisk, "
-        "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, "
+        "60-day spread-volatility overheat exit at 23% before target-vol scaling, "
+        "75-day realized volatility, 15% annual target volatility, max 1.5x leverage, "
         "10bp leg-turnover scale-change cost, scaled embedded-lineage base trading cost, "
         "and 3% annual financing cost on exposure above 1.0x."
     )
@@ -11698,6 +12296,16 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
     summary["core_params"]["momentum_gap_exit_buffer"] = V2_0_MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
+    summary["core_params"]["overheat_defense"] = {
+        "enabled": OVERHEAT_ENABLED,
+        "kind": OVERHEAT_KIND,
+        "window": OVERHEAT_WINDOW,
+        "threshold": OVERHEAT_THRESHOLD,
+        "metric": OVERHEAT_METRIC,
+        "require_positive_trade_return": OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN,
+        "require_signal_reset": OVERHEAT_REQUIRE_SIGNAL_RESET,
+        "timing": "applied_to_base_state_before_target_vol_scaling",
+    }
     summary["core_params"]["target_volatility_scaling"] = {
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
@@ -11726,6 +12334,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
+    summary["data_freshness_proof"] = freshness_proof
     summary["microcap_series_source"] = data_lineage.get("source_used")
     summary["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     summary["proxy_warning"] = data_lineage.get("public_proxy_note", "")
@@ -11774,7 +12383,11 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     realtime_base = realtime_core.load_realtime_base()
     if hasattr(realtime_base, "realtime_close_df"):
         validate_close_df(realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index(), "v2.0 realtime_close_df")
-    embedded_lineage_realtime = realtime_core.build_realtime_overlay_base(realtime_base)
+    realtime_gross = embedded_context.base_mod.apply_momentum_gap_exit_buffer(
+        realtime_base.base_gross,
+        V2_0_MOMENTUM_GAP_EXIT_BUFFER,
+    )
+    embedded_lineage_realtime = apply_volatility_overheat_exit(realtime_gross, realtime_base.turnover_df)
     meta = realtime_base.meta
     is_snapshot = bool(meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
@@ -11835,7 +12448,8 @@ def _print_signal_query() -> None:
     print("strategy_version: v2.0")
     print("base_version: embedded_v2_base")
     print(
-        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
+        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, "
+        f"overheat vol {OVERHEAT_WINDOW}d >= {OVERHEAT_THRESHOLD:.0%}, target volatility "
         f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
     )
     print(f"current_holding: {row['current_holding']}")
@@ -11859,7 +12473,8 @@ def _print_realtime_signal_query() -> None:
         print("strategy_version: v2.0")
         print("base_version: embedded_v2_base")
         print(
-            f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
+            f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, "
+            f"overheat vol {OVERHEAT_WINDOW}d >= {OVERHEAT_THRESHOLD:.0%}, target volatility "
             f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
         )
         print(f"snapshot_time: {meta.get('snapshot_time')}")
@@ -11958,13 +12573,23 @@ TARGET_VOL = overlay_mod.TARGET_VOL
 TARGET_VOL_WINDOW = overlay_mod.TARGET_VOL_WINDOW
 TARGET_VOL_MAX_LEVERAGE = overlay_mod.TARGET_VOL_MAX_LEVERAGE
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+OVERHEAT_ENABLED = overlay_mod.OVERHEAT_ENABLED
+OVERHEAT_KIND = overlay_mod.OVERHEAT_KIND
+OVERHEAT_WINDOW = overlay_mod.OVERHEAT_WINDOW
+OVERHEAT_THRESHOLD = overlay_mod.OVERHEAT_THRESHOLD
+OVERHEAT_METRIC = overlay_mod.OVERHEAT_METRIC
 DEFAULT_ALLOWED_TAIL_ROWS = overlay_mod.DEFAULT_ALLOWED_TAIL_ROWS
 V2_0_REWRITE_AUDIT_KEY_COLUMNS = overlay_mod.V2_0_REWRITE_AUDIT_KEY_COLUMNS
 validate_close_df = overlay_mod.validate_close_df
 apply_target_vol_scaling = overlay_mod.apply_target_vol_scaling
+apply_volatility_overheat_exit = overlay_mod.apply_volatility_overheat_exit
 assert_realtime_target_vol_lag_fresh = overlay_mod.assert_realtime_target_vol_lag_fresh
+current_base_fingerprint = overlay_mod.current_base_fingerprint
 current_strategy_fingerprint = overlay_mod.current_strategy_fingerprint
 current_data_state_fingerprint = overlay_mod.current_data_state_fingerprint
+validate_top100_freshness_proof = overlay_mod.validate_top100_freshness_proof
+validate_daily_stream_continuity = overlay_mod.validate_daily_stream_continuity
+assert_top100_outputs_fresh = overlay_mod.assert_top100_outputs_fresh
 current_runtime_fingerprint = overlay_mod.current_runtime_fingerprint
 _load_realtime_v2_0_official_index = overlay_mod._load_realtime_v2_0_official_index
 _v2_0_rewrite_allowed_tail_rows = overlay_mod._v2_0_rewrite_allowed_tail_rows
