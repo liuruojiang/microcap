@@ -470,6 +470,10 @@ def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _read_costed_nav_csv(path: Path | None = None, **kwargs: object) -> pd.DataFrame:
+    return pd.read_csv(COSTED_NAV_CSV if path is None else path, encoding="utf-8-sig", **kwargs)
+
+
 def exp_weights(lookback: int = LOOKBACK, halflife: float = HALFLIFE) -> tuple[float, ...]:
     age_from_latest = np.arange(int(lookback) - 1, -1, -1, dtype=float)
     raw = 0.5 ** (age_from_latest / float(halflife))
@@ -750,6 +754,91 @@ def _safe_float(value: object, default: float = 0.0) -> float:
         return float(value)
     except (TypeError, ValueError):
         return float(default)
+
+
+def _holding_is_active(value: object) -> bool:
+    if pd.isna(value):
+        return False
+    text = str(value or "cash")
+    return text not in {"", "cash", "nan", "None", "<NA>"}
+
+
+def _v2_0_signal_compat_net_df(net_df: pd.DataFrame) -> pd.DataFrame:
+    compat = net_df.copy()
+    holding_map = {"long_microcap_top100": "long_microcap_short_zz1000"}
+    for col in ["holding", "next_holding"]:
+        if col in compat.columns:
+            compat[col] = compat[col].replace(holding_map)
+    return compat
+
+
+def _apply_fixed_exposure_signal_fields(
+    row: pd.DataFrame,
+    latest: pd.Series,
+    *,
+    hedge_ratio: float,
+) -> None:
+    row_idx = row.index[0]
+    current_holding = str(latest.get("holding", row.at[row_idx, "current_holding"]))
+    next_holding = str(latest.get("next_holding", current_holding))
+    current_active = _holding_is_active(current_holding)
+    next_active = _holding_is_active(next_holding)
+    current_scale = _safe_float(
+        latest.get("current_execution_scale", latest.get("execution_scale")),
+        1.0 if current_active else 0.0,
+    )
+    next_scale = _safe_float(
+        latest.get("next_session_actionable_scale", latest.get("target_vol_scale_next_session")),
+        1.0 if next_active else 0.0,
+    )
+    if not current_active:
+        current_scale = 0.0
+    if not next_active:
+        next_scale = 0.0
+    exposure_delta = abs(float(next_scale) - float(current_scale))
+    next_session_leg_turnover = exposure_delta * (1.0 + float(hedge_ratio))
+    entry_cost = (
+        float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST) * max(float(next_scale), 0.0)
+        if (not current_active and next_active)
+        else 0.0
+    )
+    exit_cost = (
+        float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST) * max(float(current_scale), 0.0)
+        if (current_active and not next_active)
+        else 0.0
+    )
+    trade_cost = float(entry_cost + exit_cost)
+    holding_trade_state = v2_0.embedded_context.base_mod.compute_trade_state(current_holding, next_holding)
+    row["current_holding"] = current_holding
+    row["next_holding"] = next_holding
+    row["trade_state"] = holding_trade_state
+    row["effective_trade_state"] = holding_trade_state
+    row["holding_trade_state"] = holding_trade_state
+    row["momentum_trade_state"] = holding_trade_state
+    row["scale_trade_state"] = "hold_scale"
+    row["scale_trade_required"] = False
+    row["position_transition"] = bool(current_holding != next_holding)
+    row["raw_scale_delta"] = float(next_scale) - float(current_scale)
+    row["actionable_scale_delta"] = float(next_scale) - float(current_scale)
+    row["scale_delta"] = float(next_scale) - float(current_scale)
+    row["position_scale_delta"] = float(next_scale) - float(current_scale)
+    row["current_execution_scale"] = float(current_scale)
+    row["target_position_scale"] = float(next_scale)
+    row["next_session_target_scale"] = float(next_scale)
+    row["raw_next_target_scale"] = float(next_scale)
+    row["next_session_actionable_scale"] = float(next_scale)
+    row["target_vol_scale_next_session"] = float(next_scale)
+    row["next_session_turnover"] = float(next_session_leg_turnover)
+    row["next_session_leg_turnover"] = float(next_session_leg_turnover)
+    row["next_session_leg_cost_est_raw"] = trade_cost
+    row["next_session_overlay_cost_est"] = 0.0
+    row["next_session_trade_cost_est"] = trade_cost
+    row["next_session_overlay_trade_cost_est"] = 0.0
+    row["next_session_trade_cost_est_type"] = "fixed_exposure_entry_exit"
+    row["signal_label"] = next_holding
+    row["next_session_total_trade_cost_est_note"] = (
+        "fixed-exposure entry/exit cost estimate; target-vol scale-change cost is disabled"
+    )
 
 
 def _realtime_target_vol_trading_lag_from_calendar(
@@ -1474,7 +1563,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_5")
 
 def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]) -> pd.DataFrame:
     _ensure_v2_0_contract_validated()
-    row = v2_0.overlay_mod._build_signal_row(net_df, reference_summary)
+    row = v2_0.overlay_mod._build_signal_row(_v2_0_signal_compat_net_df(net_df), reference_summary)
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
@@ -1533,6 +1622,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["cash_day_yield_annual"] = 0.0
     row["cash_day_yield_enabled"] = CASH_DAY_YIELD_ENABLED
     row["financing_enabled"] = FINANCING_ENABLED
+    _apply_fixed_exposure_signal_fields(row, latest, hedge_ratio=EXECUTION_HEDGE_RATIO)
     return row
 
 
@@ -1605,7 +1695,7 @@ def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
     costed_nav_csv = Path(getattr(v2_0, "COSTED_NAV_CSV", ""))
     if costed_nav_csv.exists():
         try:
-            dates = pd.read_csv(costed_nav_csv, usecols=["date"], parse_dates=["date"])["date"]
+            dates = pd.read_csv(costed_nav_csv, usecols=["date"], parse_dates=["date"], encoding="utf-8-sig")["date"]
             return pd.DatetimeIndex(dates).dropna().sort_values()
         except Exception:
             pass
@@ -1777,7 +1867,7 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     common_index = build_v2_5_common_index(close_df, official_v2_0_out.index)
     out = build_v2_5_result(close_df, turnover_df, common_index)
     if COSTED_NAV_CSV.exists():
-        previous = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"])
+        previous = _read_costed_nav_csv(parse_dates=["date"])
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
         allowed_tail_rows = _v2_5_rewrite_allowed_tail_rows()
         candidate = out.rename_axis("date").reset_index()

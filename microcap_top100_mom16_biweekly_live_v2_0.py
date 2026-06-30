@@ -11014,15 +11014,15 @@ def _csv_date_state(path: Path) -> tuple[str, int | None, str]:
     if not path.exists():
         return "", None, ""
     try:
-        header = pd.read_csv(path, nrows=0)
+        header = pd.read_csv(path, nrows=0, encoding="utf-8-sig")
     except Exception:
         return "", None, ""
     date_column = next((column for column in FRESHNESS_DATE_COLUMNS if column in header.columns), "")
     try:
         if date_column:
-            frame = pd.read_csv(path, usecols=[date_column])
+            frame = pd.read_csv(path, usecols=[date_column], encoding="utf-8-sig")
         else:
-            frame = pd.read_csv(path)
+            frame = pd.read_csv(path, encoding="utf-8-sig")
     except Exception:
         return "", None, date_column
     row_count = int(len(frame))
@@ -11171,14 +11171,14 @@ def _read_artifact_date_index(path: Path, date_column: object = "") -> pd.Dateti
     column = str(date_column or "")
     if not column:
         try:
-            header = pd.read_csv(path, nrows=0)
+            header = pd.read_csv(path, nrows=0, encoding="utf-8-sig")
             column = next((candidate for candidate in FRESHNESS_DATE_COLUMNS if candidate in header.columns), "")
         except Exception:
             return pd.DatetimeIndex([])
     if not column:
         return pd.DatetimeIndex([])
     try:
-        dates = pd.read_csv(path, usecols=[column])[column]
+        dates = pd.read_csv(path, usecols=[column], encoding="utf-8-sig")[column]
     except Exception:
         return pd.DatetimeIndex([])
     return _normalise_date_index(dates)
@@ -12230,7 +12230,7 @@ def attach_proxy_source_summary_fields(
 def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
     if COSTED_NAV_CSV.exists():
         try:
-            dates = pd.read_csv(COSTED_NAV_CSV, usecols=["date"], parse_dates=["date"])["date"]
+            dates = _read_costed_nav_csv(COSTED_NAV_CSV, usecols=["date"], parse_dates=["date"])["date"]
             return pd.DatetimeIndex(dates).dropna().sort_values()
         except Exception:
             pass

@@ -128,6 +128,43 @@ def test_file_state_fingerprint_reads_turnover_dates_and_json_meta(tmp_path: Pat
     assert meta_state["date_column"] == "end_date"
 
 
+def test_costed_nav_date_reads_use_utf8_sig(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    costed_path = tmp_path / "costed_nav.csv"
+    costed_path.write_text("date,return_net\n2026-06-26,0\n2026-06-29,0.01\n", encoding="utf-8-sig")
+    real_read_csv = pd.read_csv
+
+    def fake_read_csv(path, *args, **kwargs):
+        if Path(path) == costed_path:
+            assert kwargs.get("encoding") == "utf-8-sig"
+            return real_read_csv(path, *args, **kwargs)
+        return real_read_csv(path, *args, **kwargs)
+
+    monkeypatch.setattr(v2_0.overlay_mod.pd, "read_csv", fake_read_csv)
+    monkeypatch.setattr(v2_0.overlay_mod, "COSTED_NAV_CSV", costed_path)
+    monkeypatch.setattr(v2_0, "COSTED_NAV_CSV", costed_path)
+    monkeypatch.setitem(v2_0._overlay_ns, "COSTED_NAV_CSV", costed_path)
+    monkeypatch.setattr(v2_0.overlay_mod, "generate_v2_0_outputs", lambda: (_ for _ in ()).throw(AssertionError("no fallback generation")))
+    monkeypatch.setitem(
+        v2_0._overlay_ns,
+        "generate_v2_0_outputs",
+        lambda: (_ for _ in ()).throw(AssertionError("no fallback generation")),
+    )
+
+    state = v2_0.overlay_mod._file_state_fingerprint(costed_path)
+    assert state["latest_date"] == "2026-06-29"
+    assert state["date_column"] == "date"
+    assert v2_0.overlay_mod._read_artifact_date_index(costed_path).tolist() == list(pd.to_datetime(["2026-06-26", "2026-06-29"]))
+
+    assert v2_0.overlay_mod._load_realtime_v2_0_official_index().tolist() == list(pd.to_datetime(["2026-06-26", "2026-06-29"]))
+
+    for module in [v2_3, v2_5]:
+        monkeypatch.setattr(module, "_official_v2_0_cache_key", lambda: "unit")
+        monkeypatch.setattr(module, "_OFFICIAL_V2_0_OUT_CACHE", None)
+        monkeypatch.setattr(module, "_load_official_v2_0_out", lambda: (_ for _ in ()).throw(AssertionError("no fallback generation")))
+
+        assert module._load_realtime_v2_0_official_index().tolist() == list(pd.to_datetime(["2026-06-26", "2026-06-29"]))
+
+
 def test_freshness_proof_blocks_misaligned_daily_stream_and_stale_turnover() -> None:
     files = {
         "base_panel_shadow": {"exists": True, "latest_date": "2026-06-26", "row_count": 10},
@@ -494,6 +531,102 @@ def _patch_perf_paths(monkeypatch: pytest.MonkeyPatch, module, tmp_path: Path, n
             monkeypatch.setattr(module, name, path)
 
 
+def test_target_versions_read_existing_costed_nav_with_utf8_sig(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    class StopAfterPreviousRead(Exception):
+        pass
+
+    idx = pd.to_datetime(["2026-06-26", "2026-06-29"])
+    base_gross = pd.DataFrame(
+        {
+            "microcap_close": [1.0, 1.01],
+            "hedge_close": [1.0, 0.99],
+        },
+        index=idx,
+    )
+    out = pd.DataFrame(
+        {
+            "return_net": [0.0, 0.01],
+            "nav_net": [1.0, 1.01],
+        },
+        index=idx,
+    )
+    previous = out.rename_axis("date").reset_index()
+    real_read_csv = pd.read_csv
+
+    def fake_read_csv(path, *args, **kwargs):
+        if Path(path) in {v2_3.COSTED_NAV_CSV, v2_5.COSTED_NAV_CSV}:
+            assert kwargs.get("encoding") == "utf-8-sig"
+            return previous.copy()
+        return real_read_csv(path, *args, **kwargs)
+
+    def stop_after_audit(**kwargs):
+        assert "date" in kwargs["previous"].columns
+        raise StopAfterPreviousRead
+
+    monkeypatch.setattr(v2_3, "COSTED_NAV_CSV", tmp_path / "v23_costed.csv")
+    monkeypatch.setattr(v2_5, "COSTED_NAV_CSV", tmp_path / "v25_costed.csv")
+    v2_3.COSTED_NAV_CSV.write_text("date,return_net\n2026-06-26,0\n", encoding="utf-8-sig")
+    v2_5.COSTED_NAV_CSV.write_text("date,return_net\n2026-06-26,0\n", encoding="utf-8-sig")
+    monkeypatch.setattr(v2_3.pd, "read_csv", fake_read_csv)
+    monkeypatch.setattr(v2_0.base_mod, "assert_no_historical_rewrite", stop_after_audit)
+
+    for module, build_name, incompatible_name, generate_name in [
+        (v2_3, "build_v2_3_result", "incompatible_v2_3_outputs", "_generate_v2_3_outputs_unlocked"),
+        (v2_5, "build_v2_5_result", "incompatible_v2_5_outputs", "_generate_v2_5_outputs_unlocked"),
+    ]:
+        monkeypatch.setattr(module, "_load_official_v2_0_out", lambda: pd.DataFrame(index=idx))
+        monkeypatch.setattr(
+            v2_0.embedded_context,
+            "_load_embedded_base_context",
+            lambda: ({"latest_signal": {}}, base_gross.copy(), pd.DataFrame()),
+        )
+        monkeypatch.setattr(module, incompatible_name, lambda: [])
+        monkeypatch.setattr(module, build_name, lambda *_args, **_kwargs: out.copy())
+
+        with pytest.raises(StopAfterPreviousRead):
+            getattr(module, generate_name)()
+
+
+def test_v2_3_performance_query_generates_and_builds_under_one_lock(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    state = {"locked": False, "generated": False, "built": False}
+    perf_df = pd.DataFrame(
+        {"return_net": [0.0, 0.01], "nav_net": [1.0, 1.01]},
+        index=pd.to_datetime(["2026-06-26", "2026-06-29"]),
+    )
+
+    class GuardedLock:
+        def __enter__(self):
+            assert not state["locked"]
+            state["locked"] = True
+
+        def __exit__(self, exc_type, exc, tb):
+            state["locked"] = False
+
+    def fake_generate_unlocked():
+        assert state["locked"]
+        state["generated"] = True
+        return {}, pd.DataFrame(), perf_df.copy()
+
+    def fake_build_performance_outputs(**kwargs):
+        assert state["locked"]
+        state["built"] = True
+        assert kwargs["perf_df"].index.name == "date"
+        assert kwargs["perf_df"]["return_net"].tolist() == [0.0, 0.01]
+
+    monkeypatch.setattr(v2_3, "v2_3_output_lock", lambda: GuardedLock())
+    monkeypatch.setattr(v2_3, "generate_v2_3_outputs", lambda: (_ for _ in ()).throw(AssertionError("use unlocked generator")))
+    monkeypatch.setattr(v2_3, "_generate_v2_3_outputs_unlocked", fake_generate_unlocked)
+    monkeypatch.setattr(v2_3.pd, "read_csv", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("do not reread costed NAV")))
+    monkeypatch.setattr(v2_0.embedded_context.base_mod, "build_performance_outputs", fake_build_performance_outputs)
+
+    v2_3._print_performance_query("表现")
+
+    assert state["generated"] is True
+    assert state["built"] is True
+
+
 @pytest.mark.parametrize(
     ("module", "namespace_name"),
     [
@@ -547,6 +680,94 @@ def test_v2_5_signal_row_clears_inherited_v2_0_overlay_fields() -> None:
     assert signal["overheat_window"] == 0
     assert signal["overheat_threshold"] == pytest.approx(0.0)
     assert signal["momentum_gap_exit_buffer"] == pytest.approx(v2_5.EXIT_THRESHOLD)
+
+
+def test_v2_3_signal_row_uses_fixed_exposure_entry_exit_costs() -> None:
+    idx = pd.to_datetime(["2026-06-26", "2026-06-29"])
+    net_df = pd.DataFrame(
+        {
+            "holding": ["cash", "long_microcap_short_zz1000"],
+            "next_holding": ["long_microcap_short_zz1000", "cash"],
+            "current_execution_scale": [0.0, 1.0],
+            "execution_scale": [0.0, 1.0],
+            "next_session_target_scale": [1.0, 0.0],
+            "next_session_actionable_scale": [1.0, 0.0],
+            "target_vol_scale_next_session": [1.0, 0.0],
+            "annualized_log_wls_score": [0.1, -0.2],
+            "log_wls_r2": [0.5, 0.6],
+            "spread_nav": [1.0, 1.01],
+            "overheat_feature_value": [0.1, 0.2],
+            "actual_execution_scale": [0.0, 1.0],
+        },
+        index=idx,
+    )
+
+    signal = v2_3._build_signal_row(net_df, {"latest_signal": {}}).iloc[0]
+
+    assert signal["next_session_leg_turnover"] == pytest.approx(1.0 + v2_3.EXECUTION_HEDGE_RATIO)
+    assert signal["next_session_turnover"] == pytest.approx(1.0 + v2_3.EXECUTION_HEDGE_RATIO)
+    assert signal["next_session_leg_cost_est_raw"] == pytest.approx(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+    assert signal["next_session_overlay_cost_est"] == pytest.approx(0.0)
+    assert signal["next_session_trade_cost_est"] == pytest.approx(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+    assert signal["next_session_trade_cost_est_type"] == "fixed_exposure_entry_exit"
+
+
+def test_v2_5_signal_row_uses_unhedged_entry_exit_costs() -> None:
+    idx = pd.to_datetime(["2026-06-26", "2026-06-29"])
+    net_df = pd.DataFrame(
+        {
+            "holding": ["cash", "long_microcap_top100"],
+            "next_holding": ["long_microcap_top100", "cash"],
+            "current_execution_scale": [0.0, 1.0],
+            "execution_scale": [0.0, 1.0],
+            "next_session_target_scale": [1.0, 0.0],
+            "next_session_actionable_scale": [1.0, 0.0],
+            "target_vol_scale_next_session": [1.0, 0.0],
+            "annualized_log_wls_score": [0.1, -0.2],
+            "log_wls_r2": [0.5, 0.6],
+            "microcap_nav": [1.0, 1.01],
+            "cash_day_yield": [0.0, 0.0],
+        },
+        index=idx,
+    )
+
+    signal = v2_5._build_signal_row(net_df, {"latest_signal": {}}).iloc[0]
+
+    assert signal["current_holding"] == "long_microcap_top100"
+    assert signal["next_holding"] == "cash"
+    assert signal["trade_state"] == "close"
+    assert signal["next_session_leg_turnover"] == pytest.approx(1.0)
+    assert signal["next_session_turnover"] == pytest.approx(1.0)
+    assert signal["next_session_leg_cost_est_raw"] == pytest.approx(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+    assert signal["next_session_overlay_cost_est"] == pytest.approx(0.0)
+    assert signal["next_session_trade_cost_est"] == pytest.approx(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+    assert signal["next_session_trade_cost_est_type"] == "fixed_exposure_entry_exit"
+
+
+def test_v2_5_signal_label_matches_native_next_holding() -> None:
+    idx = pd.to_datetime(["2026-06-26", "2026-06-29"])
+    net_df = pd.DataFrame(
+        {
+            "holding": ["cash", "cash"],
+            "next_holding": ["cash", "long_microcap_top100"],
+            "current_execution_scale": [0.0, 0.0],
+            "execution_scale": [0.0, 0.0],
+            "next_session_target_scale": [0.0, 1.0],
+            "next_session_actionable_scale": [0.0, 1.0],
+            "target_vol_scale_next_session": [0.0, 1.0],
+            "annualized_log_wls_score": [0.1, 0.6],
+            "log_wls_r2": [0.5, 0.6],
+            "microcap_nav": [1.0, 1.01],
+            "cash_day_yield": [0.0, 0.0],
+        },
+        index=idx,
+    )
+
+    signal = v2_5._build_signal_row(net_df, {"latest_signal": {}}).iloc[0]
+
+    assert signal["current_holding"] == "cash"
+    assert signal["next_holding"] == "long_microcap_top100"
+    assert signal["signal_label"] == "long_microcap_top100"
 
 
 def test_no_target_vol_versions_write_zero_target_vol_execution_scale_on_cash_days() -> None:
