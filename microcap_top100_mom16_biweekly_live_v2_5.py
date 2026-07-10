@@ -1707,10 +1707,16 @@ def _build_realtime_v2_5_official_index(
     meta: dict[str, object],
     official_index: pd.DatetimeIndex | pd.Index | None = None,
 ) -> pd.DatetimeIndex:
-    if official_index is None:
-        official_index = _load_realtime_v2_0_official_index()
-    official_index = pd.DatetimeIndex(official_index).dropna().sort_values()
-    return pd.DatetimeIndex(official_index)
+    del official_index
+    anchor_text = str(meta.get("latest_anchor_trade_date") or "").strip()
+    if not anchor_text:
+        raise RuntimeError("v2.5 realtime metadata is missing latest_anchor_trade_date")
+    anchor = pd.Timestamp(anchor_text).normalize()
+    close_index = pd.DatetimeIndex(close_df.index).dropna().sort_values()
+    history_index = close_index[close_index.normalize() <= anchor]
+    if len(history_index) == 0 or pd.Timestamp(history_index[-1]).normalize() != anchor:
+        raise RuntimeError(f"v2.5 validated realtime close history does not reach anchor {anchor.date()}")
+    return pd.DatetimeIndex(history_index)
 
 
 V2_5_REWRITE_AUDIT_KEY_COLUMNS = [
@@ -2019,8 +2025,7 @@ def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     ensure_output_dir()
     realtime_base = v2_0.realtime_core.load_realtime_base()
     close_df = _close_df_from_realtime(realtime_base.realtime_close_df)
-    official_calendar_index = _load_realtime_v2_0_official_index()
-    freshness_calendar = _build_realtime_v2_5_official_index(close_df, realtime_base.meta, official_calendar_index)
+    freshness_calendar = _build_realtime_v2_5_official_index(close_df, realtime_base.meta)
     signal_official_index = freshness_calendar
     if bool(realtime_base.meta.get("snapshot_row_appended", False)) and len(close_df.index):
         signal_official_index = signal_official_index.union(pd.DatetimeIndex([close_df.index[-1]])).sort_values()
@@ -2101,6 +2106,7 @@ def _print_realtime_signal_query() -> None:
         print("overlay: no hedge, no stop-loss/DD/decay/overheat overlay, no target-vol/cash-yield/financing")
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
+        print(f"expected_latest_completed_trade_date: {meta.get('expected_latest_completed_trade_date', '')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
         print(f"current_holding: {row['current_holding']}")
         print(f"next_holding: {row['next_holding']}")
@@ -2111,6 +2117,10 @@ def _print_realtime_signal_query() -> None:
         _print_scale_fields(row, include_frozen=True)
         print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', False)}")
         print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
+        print(f"member_quote_flat_fallback_count: {int(meta.get('member_quote_flat_fallback_count') or 0)}")
+        print(f"from_cache: {bool(meta.get('from_cache', False))}")
+        print(f"cache_age_seconds: {_safe_float(meta.get('cache_age_seconds'), 0.0):.1f}")
+        print(f"fallback_warning: {meta.get('fallback_warning', '')}")
         print(f"annualized_log_wls_score: {float(row.get('annualized_log_wls_score', row.get('momentum_gap', 0.0))):+.4%}")
         print(f"log_wls_r2: {float(row.get('log_wls_r2', 0.0)):.4f}")
         print("momentum_gap_legacy_note: legacy field is the annualized microcap-only log-WLS score, not plain gap")

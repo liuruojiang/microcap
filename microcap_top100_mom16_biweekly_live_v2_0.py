@@ -4263,6 +4263,67 @@ def recent_extension_replacement_start(
     return pd.Timestamp(dates[0]).normalize()
 
 
+def splice_recent_proxy_extension(
+    existing_index_df: pd.DataFrame,
+    recent_index_df: pd.DataFrame,
+    current_index_end: pd.Timestamp,
+) -> pd.DataFrame:
+    """Append recent proxy returns without rewriting the frozen historical path."""
+    current_end = pd.Timestamp(current_index_end).normalize()
+    existing = existing_index_df.copy()
+    recent = recent_index_df.copy()
+    for label, frame in (("existing", existing), ("recent", recent)):
+        missing = {"date", "close", "daily_return"}.difference(frame.columns)
+        if missing:
+            raise KeyError(f"{label} proxy frame missing columns: {sorted(missing)}")
+        frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.normalize()
+        frame["close"] = pd.to_numeric(frame["close"], errors="coerce")
+        frame["daily_return"] = pd.to_numeric(frame["daily_return"], errors="coerce")
+        frame.dropna(subset=["date"], inplace=True)
+        frame.sort_values("date", inplace=True)
+        frame.drop_duplicates(subset="date", keep="last", inplace=True)
+
+    bridge = existing.loc[existing["date"].eq(current_end), "close"]
+    if bridge.empty or pd.isna(bridge.iloc[-1]) or float(bridge.iloc[-1]) <= 0:
+        raise RuntimeError(f"Existing proxy has no valid bridge close on {current_end.date()}.")
+    if not recent["date"].eq(current_end).any():
+        raise RuntimeError(f"Recent proxy does not overlap bridge date {current_end.date()}.")
+
+    appended = recent.loc[recent["date"] > current_end].copy()
+    if appended.empty:
+        return existing.reset_index(drop=True)
+    if appended["daily_return"].isna().any():
+        bad_dates = appended.loc[appended["daily_return"].isna(), "date"].dt.strftime("%Y-%m-%d").tolist()
+        raise RuntimeError(f"Recent proxy extension has missing daily_return: {bad_dates[:10]}")
+    if (appended["daily_return"] <= -1.0).any():
+        bad_dates = appended.loc[appended["daily_return"] <= -1.0, "date"].dt.strftime("%Y-%m-%d").tolist()
+        raise RuntimeError(f"Recent proxy extension has invalid daily_return: {bad_dates[:10]}")
+
+    chained_close: list[float] = []
+    current_level = float(bridge.iloc[-1])
+    for day_return in appended["daily_return"].astype(float):
+        current_level *= 1.0 + float(day_return)
+        chained_close.append(current_level)
+    appended["close"] = chained_close
+
+    combined = pd.concat(
+        [existing.loc[existing["date"] <= current_end], appended],
+        ignore_index=True,
+        sort=False,
+    ).sort_values("date").drop_duplicates(subset="date", keep="last").reset_index(drop=True)
+    appended_mask = combined["date"] > current_end
+    implied = combined["close"].pct_change(fill_method=None)
+    if not np.allclose(
+        implied.loc[appended_mask].to_numpy(dtype=float),
+        combined.loc[appended_mask, "daily_return"].to_numpy(dtype=float),
+        rtol=1e-10,
+        atol=1e-12,
+        equal_nan=False,
+    ):
+        raise RuntimeError("Recent proxy extension close levels do not match appended daily returns.")
+    return combined
+
+
 def extend_index_recent_window(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -4313,29 +4374,21 @@ def extend_index_recent_window(
         symbols=candidate_symbols,
     )
     bridge_date = current_index_end
-    bridge_old = index_df.loc[index_df["date"] == bridge_date, "close"]
-    bridge_new = recent_index_df.loc[recent_index_df["date"] == bridge_date, "close"]
-    if bridge_old.empty or bridge_new.empty:
-        raise RuntimeError(f"Failed to bridge recent proxy extension on {bridge_date.date()}.")
-
     validate_recent_bridge_alignment(index_df, recent_index_df, bridge_date)
-    scale = float(bridge_old.iloc[0]) / float(bridge_new.iloc[0])
-    recent_index_df = recent_index_df.copy()
-    recent_index_df["close"] = recent_index_df["close"].astype(float) * scale
-
-    recent_start = recent_extension_replacement_start(recent_dates, recent_index_df)
-    combined_index = pd.concat(
-        [index_df.loc[index_df["date"] < recent_start], recent_index_df],
-        ignore_index=True,
-    ).sort_values("date").drop_duplicates(subset="date", keep="last")
+    combined_index = splice_recent_proxy_extension(index_df, recent_index_df, bridge_date)
+    appended_dates = combined_index.loc[combined_index["date"] > bridge_date, "date"]
+    if appended_dates.empty:
+        raise RuntimeError(f"Recent proxy extension produced no rows after {bridge_date.date()}.")
+    recent_start = pd.Timestamp(appended_dates.min()).normalize()
 
     if paths["proxy_members"].exists():
         existing_members = pd.read_csv(paths["proxy_members"])
         if "rebalance_date" in existing_members.columns:
             existing_members["rebalance_date"] = pd.to_datetime(existing_members["rebalance_date"], errors="coerce")
-            existing_members = existing_members.loc[existing_members["rebalance_date"] < recent_start]
+            existing_members = existing_members.loc[existing_members["rebalance_date"] <= bridge_date]
         recent_members_out = recent_members_df.copy()
         recent_members_out["rebalance_date"] = pd.to_datetime(recent_members_out["rebalance_date"], errors="coerce")
+        recent_members_out = recent_members_out.loc[recent_members_out["rebalance_date"] > bridge_date]
         combined_members = pd.concat([existing_members, recent_members_out], ignore_index=True)
     else:
         combined_members = recent_members_df
@@ -4344,8 +4397,13 @@ def extend_index_recent_window(
         existing_turnover = pd.read_csv(paths["proxy_turnover"])
         if "rebalance_date" in existing_turnover.columns:
             existing_turnover["rebalance_date"] = pd.to_datetime(existing_turnover["rebalance_date"], errors="coerce")
-            existing_turnover = existing_turnover.loc[existing_turnover["rebalance_date"] < recent_start]
-        combined_turnover = pd.concat([existing_turnover, recent_turnover_df], ignore_index=True)
+            existing_turnover = existing_turnover.loc[existing_turnover["rebalance_date"] <= bridge_date]
+        recent_turnover_out = recent_turnover_df.copy()
+        recent_turnover_out["rebalance_date"] = pd.to_datetime(
+            recent_turnover_out["rebalance_date"], errors="coerce"
+        )
+        recent_turnover_out = recent_turnover_out.loc[recent_turnover_out["rebalance_date"] > bridge_date]
+        combined_turnover = pd.concat([existing_turnover, recent_turnover_out], ignore_index=True)
     else:
         combined_turnover = recent_turnover_df
 
@@ -6808,6 +6866,11 @@ def assert_signal_matches_result(signal_df: pd.DataFrame, result: pd.DataFrame) 
 
 
 def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
+    flat_fallback_count = int(meta.get("member_quote_flat_fallback_count") or 0)
+    if flat_fallback_count:
+        raise RuntimeError(
+            f"Realtime snapshot uses {flat_fallback_count} synthetic last-close fallback quotes; preview only."
+        )
     member_count = int(meta.get("member_count") or 0)
     member_price_count = int(meta.get("member_price_count") or 0)
     if member_count <= 0 or member_price_count != member_count:
@@ -6883,9 +6946,26 @@ def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) ->
         raise RuntimeError("Realtime meta missing quote_trade_date or latest_anchor_trade_date.")
     quote_day = pd.Timestamp(quote_trade_date).normalize()
     anchor_day = pd.Timestamp(anchor_trade_date).normalize()
+    expected_close_text = str(meta.get("expected_latest_completed_trade_date") or "").strip()
+    if not expected_close_text:
+        raise RuntimeError(
+            "Realtime meta missing independently refreshed expected latest completed trade date."
+        )
+    expected_close_day = pd.Timestamp(expected_close_text).normalize()
+    if anchor_day != expected_close_day:
+        raise RuntimeError(
+            "Realtime anchor does not equal independently refreshed latest completed trade date: "
+            f"latest_anchor_trade_date={anchor_day.date()} "
+            f"expected_latest_completed_trade_date={expected_close_day.date()}"
+        )
     calendar = _load_realtime_anchor_calendar_index()
     if len(calendar) == 0:
         raise RuntimeError("Realtime trading calendar is empty; refusing realtime signal.")
+    if expected_close_day not in calendar:
+        raise RuntimeError(
+            "Realtime trading calendar does not reach independently refreshed latest completed trade date: "
+            f"expected_latest_completed_trade_date={expected_close_day.date()}"
+        )
     completed_before_quote = calendar[calendar < quote_day]
     if len(completed_before_quote) == 0:
         raise RuntimeError(
@@ -6911,6 +6991,8 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 
 
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
+    "synthetic last-close fallback quotes",
+    "independently refreshed latest completed trade date",
     "Realtime hedge quote date is earlier than the historical anchor.",
     "latest_anchor_trade_date is not the previous completed trading day",
     "Realtime hedge quote missing trade_date",
@@ -9075,9 +9157,16 @@ def build_realtime_signal_fast(
     signal_df["official_close_confirmed_signal"] = False
     signal_df["quote_source"] = quote_source
     signal_df["hedge_quote_source"] = hedge_source
-    signal_df["member_price_count"] = available_rows
+    genuine_available_rows = max(0, int(available_rows) - int(flat_fallback_count))
+    expected_latest_completed_trade_date = context.get(
+        "expected_latest_completed_trade_date",
+        context.get("target_end_date", ""),
+    )
+    signal_df["member_price_count"] = genuine_available_rows
+    signal_df["computed_member_price_count"] = available_rows
     signal_df["member_count"] = len(member_symbols)
     signal_df["latest_anchor_trade_date"] = latest_trade_date
+    signal_df["expected_latest_completed_trade_date"] = expected_latest_completed_trade_date
     signal_df["member_quote_trade_date_count"] = quote_stats["member_quote_trade_date_count"]
     signal_df["member_quote_trade_date_min"] = quote_stats["member_quote_trade_date_min"]
     signal_df["member_quote_trade_date_max"] = quote_stats["member_quote_trade_date_max"]
@@ -9098,15 +9187,21 @@ def build_realtime_signal_fast(
         "latest_anchor_trade_date": str(latest_trade_date.date()),
         "quote_source": quote_source,
         "hedge_quote_source": hedge_source,
-        "member_price_count": available_rows,
+        "member_price_count": genuine_available_rows,
+        "computed_member_price_count": available_rows,
         "member_count": len(member_symbols),
         "microcap_rt_close": float(microcap_rt_close),
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
+        "expected_latest_completed_trade_date": str(
+            pd.Timestamp(expected_latest_completed_trade_date).date()
+        ),
         **quote_stats,
         "member_quote_flat_fallback_count": flat_fallback_count,
         "hedge_quote_trade_date": hedge_quote_trade_date,
         "snapshot_row_appended": snapshot_row_appended,
+        "from_cache": False,
+        "cache_age_seconds": 0.0,
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
@@ -10434,6 +10529,7 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                 except (FileNotFoundError, ValueError):
                     base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
+        member_context["expected_latest_completed_trade_date"] = pd.Timestamp(target_end_date).normalize()
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
         turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
@@ -10618,13 +10714,25 @@ MEMBER_REBALANCE_META_COLS = {
     "member_rebalance_label",
 }
 REALTIME_META_FORCE_COLS = {
+    "fallback_warning",
     "quote_source",
     "hedge_quote_source",
     "member_price_count",
+    "computed_member_price_count",
     "member_count",
+    "member_quote_flat_fallback_count",
+    "member_quote_trade_date_count",
+    "member_quote_trade_date_min",
+    "member_quote_trade_date_max",
+    "member_quote_bad_symbols",
     "latest_anchor_trade_date",
+    "expected_latest_completed_trade_date",
     "quote_trade_date",
+    "hedge_quote_trade_date",
     "snapshot_time",
+    "snapshot_row_appended",
+    "from_cache",
+    "cache_age_seconds",
     "tail_jitter_risk",
     "tail_jitter_note",
 }
@@ -12699,6 +12807,7 @@ def _print_realtime_signal_query() -> None:
         )
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
+        print(f"expected_latest_completed_trade_date: {meta.get('expected_latest_completed_trade_date', '')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
         print(f"current_holding: {row['current_holding']}")
         print(f"next_holding: {row['next_holding']}")
@@ -12709,6 +12818,10 @@ def _print_realtime_signal_query() -> None:
         _print_scale_fields(row, include_frozen=True)
         print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', False)}")
         print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
+        print(f"member_quote_flat_fallback_count: {int(meta.get('member_quote_flat_fallback_count') or 0)}")
+        print(f"from_cache: {bool(meta.get('from_cache', False))}")
+        print(f"cache_age_seconds: {_safe_float(meta.get('cache_age_seconds'), 0.0):.1f}")
+        print(f"fallback_warning: {meta.get('fallback_warning', '')}")
         print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
         print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
         print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
