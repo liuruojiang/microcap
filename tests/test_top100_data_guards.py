@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 from pathlib import Path
 
@@ -19,10 +20,11 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
 
     monkeypatch.setattr(v2_0.freq_mod, "load_current_universe", lambda: ["999999"])
     monkeypatch.setattr(v2_0.freq_mod, "load_universe", lambda: ["000001", "000002"])
-    monkeypatch.setattr(v2_0.base_mod, "build_biweekly_rebalance_dates", lambda _dates: rebalance_dates)
-    monkeypatch.setattr(v2_0.base_mod, "load_name_map", lambda: {})
-    monkeypatch.setattr(
-        v2_0.base_mod,
+    build_globals = v2_0.base_mod.build_local_proxy_bundle.__globals__
+    monkeypatch.setitem(build_globals, "build_biweekly_rebalance_dates", lambda _dates: rebalance_dates)
+    monkeypatch.setitem(build_globals, "load_name_map", lambda: {})
+    monkeypatch.setitem(
+        build_globals,
         "build_live_target_members_map",
         lambda caps_by_date, rebalance_dates, name_map, top_n: {pd.Timestamp("2026-06-18"): ["000001"]},
     )
@@ -33,8 +35,8 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
             {"rebalance_date": [pd.Timestamp("2026-06-18")], "symbol": ["000001"]}
         ),
     )
-    monkeypatch.setattr(
-        v2_0.base_mod,
+    monkeypatch.setitem(
+        build_globals,
         "trim_proxy_history",
         lambda index_df, members_df, turnover_df: (index_df, members_df, turnover_df, pd.Timestamp("2026-06-17")),
     )
@@ -209,8 +211,8 @@ def test_recent_extension_replacement_start_uses_trimmed_recent_index_start() ->
 
 
 def test_target_versions_register_their_costed_streams_with_shared_freshness_guard() -> None:
-    assert "v2_3_costed_nav" in v2_3._generate_v2_3_outputs_unlocked.__code__.co_consts
-    assert "v2_5_costed_nav" in v2_5._generate_v2_5_outputs_unlocked.__code__.co_consts
+    assert "v2_3_costed_nav" in inspect.getsource(v2_3._generate_v2_3_outputs_unlocked)
+    assert "v2_5_costed_nav" in inspect.getsource(v2_5._generate_v2_5_outputs_unlocked)
 
 
 def test_v2_3_official_params_are_lb25_overheat_without_target_vol() -> None:
@@ -423,6 +425,7 @@ def test_v2_0_volatility_overheat_exit_blocks_until_base_signal_reset(monkeypatc
     first_trigger = trigger_dates[0]
     assert out.at[first_trigger, "holding"] == "long_microcap_short_zz1000"
     assert out.at[first_trigger, "next_holding"] == "cash"
+    assert bool(out.at[first_trigger, "blocked_until_signal_reset"]) is True
     assert bool(out.loc[out.index > first_trigger, "blocked_until_signal_reset"].any())
     assert out.loc[out.index > first_trigger, "holding"].eq("cash").all()
     assert out["overheat_metric"].dropna().max() >= 0.23
@@ -458,6 +461,7 @@ def _actionable_realtime_meta(anchor: str, quote: str) -> dict[str, object]:
         "hedge_quote_trade_date": quote,
         "quote_trade_date": quote,
         "latest_anchor_trade_date": anchor,
+        "expected_latest_completed_trade_date": anchor,
     }
 
 

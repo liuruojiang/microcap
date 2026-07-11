@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 from contextlib import contextmanager
 import hashlib
 import importlib
@@ -13,6 +14,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import warnings
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
@@ -21,7 +23,7 @@ from decimal import ROUND_HALF_UP, Decimal
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Iterable
+from typing import Callable, Iterable
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
@@ -2995,7 +2997,9 @@ def load_symbol_cache(
                     adjusted_price[return_col] = pd.to_numeric(adjusted_price[return_col], errors="coerce")
                     adjusted_price = adjusted_price.dropna(subset=["date", return_col]).sort_values("date")
                 else:
-                    adjusted_price = None
+                    raise ValueError(
+                        f"adjusted price cache for {str(symbol).zfill(6)} has no supported adjusted close column"
+                    )
 
         shares = pd.read_csv(share_path)
         shares["change_date"] = pd.to_datetime(shares["change_date"])
@@ -3044,8 +3048,10 @@ def load_symbol_cache(
             cap_series = cap_series.where(~cap_st, np.nan)
 
         return symbol, ret_series, cap_series, buyable_series, sellable_series
-    except Exception:
-        return None
+    except Exception as exc:
+        raise RuntimeError(
+            f"symbol cache load failed for {str(symbol).zfill(6)}: {type(exc).__name__}: {exc}"
+        ) from exc
 
 
 def load_cache_panels(
@@ -3060,6 +3066,8 @@ def load_cache_panels(
     buyable_df = pd.DataFrame(index=trading_dates)
     sellable_df = pd.DataFrame(index=trading_dates)
     caps_by_date: dict[pd.Timestamp, dict[str, float]] = {pd.Timestamp(dt): {} for dt in cap_dates}
+    legitimately_unavailable: list[str] = []
+    failures: dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = {
             pool.submit(
@@ -3073,8 +3081,14 @@ def load_cache_panels(
             for symbol in symbols
         }
         for fut in as_completed(futures):
-            result = fut.result()
+            submitted_symbol = str(futures[fut]).zfill(6)
+            try:
+                result = fut.result()
+            except Exception as exc:
+                failures[submitted_symbol] = f"{type(exc).__name__}: {exc}"
+                continue
             if result is None:
+                legitimately_unavailable.append(submitted_symbol)
                 continue
             symbol, ret_series, cap_series, buyable_series, sellable_series = result
             returns_df[symbol] = ret_series
@@ -3083,6 +3097,18 @@ def load_cache_panels(
             for dt, value in cap_series.items():
                 if pd.notna(value):
                     caps_by_date[pd.Timestamp(dt)][symbol] = float(value)
+    stats = {
+        "requested_count": int(len(symbols)),
+        "loaded_count": int(len(returns_df.columns)),
+        "legitimately_unavailable_count": int(len(legitimately_unavailable)),
+        "legitimately_unavailable": sorted(legitimately_unavailable),
+        "failure_count": int(len(failures)),
+        "failures": dict(sorted(failures.items())),
+    }
+    returns_df.attrs["symbol_load_stats"] = stats
+    if failures:
+        sample = "; ".join(f"{symbol}: {message}" for symbol, message in sorted(failures.items())[:10])
+        raise RuntimeError(f"symbol cache panel load failed for {len(failures)} symbols: {sample}")
     return returns_df, caps_by_date, buyable_df, sellable_df
 
 
@@ -3095,6 +3121,11 @@ def build_target_members_map(
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
         ranked = sorted(cap_map.items(), key=lambda x: x[1])
+        if len(ranked) < int(top_n):
+            raise RuntimeError(
+                f"rebalance candidate pool below top_n on {pd.Timestamp(dt).date()}: "
+                f"available={len(ranked)} required={int(top_n)}"
+            )
         target_members_map[pd.Timestamp(dt)] = [symbol for symbol, _ in ranked[:top_n]]
     return target_members_map
 
@@ -4499,6 +4530,7 @@ def build_local_proxy_bundle(
         "source_used": "local_cache_proxy",
         "universe_source": universe_source,
         "universe_symbol_count": int(len(symbols)),
+        "symbol_load_stats": returns_df.attrs.get("symbol_load_stats", {}),
         "method_note": (
             "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. "
             "This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names "
@@ -6534,12 +6566,18 @@ def build_live_target_members_map(
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
         ranked = sorted(cap_map.items(), key=lambda x: x[1])
-        tradable_members = [
+        tradable_candidates = [
             symbol
             for symbol, _ in ranked
             if not str(name_map.get(str(symbol).zfill(6), "")).strip()
             or is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
-        ][:top_n]
+        ]
+        if len(tradable_candidates) < int(top_n):
+            raise RuntimeError(
+                f"live rebalance candidate pool below top_n on {pd.Timestamp(dt).date()}: "
+                f"available={len(tradable_candidates)} required={int(top_n)}"
+            )
+        tradable_members = tradable_candidates[:top_n]
         out[pd.Timestamp(dt)] = tradable_members
     return out
 
@@ -7534,6 +7572,15 @@ def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
     return out
 
 
+def clear_rewrite_audit_after_clean_result(audit_path: Path | None) -> None:
+    if audit_path is None:
+        return
+    try:
+        Path(audit_path).unlink(missing_ok=True)
+    except OSError as exc:
+        raise RuntimeError(f"failed to clear stale clean rewrite audit: {audit_path}") from exc
+
+
 def assert_no_historical_rewrite(
     previous: pd.DataFrame,
     candidate: pd.DataFrame,
@@ -7660,6 +7707,7 @@ def assert_no_historical_rewrite(
                 }
             )
     if not changes:
+        clear_rewrite_audit_after_clean_result(audit_path)
         return
     diff_df = pd.DataFrame(changes)
     if audit_path is not None:
@@ -10595,7 +10643,8 @@ OVERLAY_SOURCE = r'''
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
-OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0"
+DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0"
+OUTPUT_PREFIX = DEFAULT_OUTPUT_PREFIX
 TARGET_VOL = 0.15
 TARGET_VOL_WINDOW = 75
 TARGET_VOL_MAX_LEVERAGE = 1.5
@@ -10683,6 +10732,35 @@ PERF_QUERY_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_yearly.
 PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
 PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
+
+
+def configure_output_paths(output_prefix: str | None = None) -> None:
+    global OUTPUT_PREFIX
+    global SUMMARY_JSON, LATEST_SIGNAL_CSV, REALTIME_SIGNAL_CSV, NAV_CSV, COSTED_NAV_CSV
+    global PERF_SUMMARY_CSV, PERF_YEARLY_CSV, PERF_NAV_CSV, PERF_JSON, PERF_PNG
+    global PERF_QUERY_SUMMARY_CSV, PERF_QUERY_YEARLY_CSV, PERF_QUERY_NAV_CSV, PERF_QUERY_JSON, PERF_QUERY_PNG
+
+    OUTPUT_PREFIX = str(output_prefix or DEFAULT_OUTPUT_PREFIX)
+    SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
+    LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
+    REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
+    NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
+    COSTED_NAV_CSV = (
+        _costed_nav_path(TARGET_VOL)
+        if OUTPUT_PREFIX == DEFAULT_OUTPUT_PREFIX
+        else OUTPUT_DIR / f"{OUTPUT_PREFIX}_costed_nav.csv"
+    )
+    PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
+    PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
+    PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
+    PERF_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.json"
+    PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
+    PERF_QUERY_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.csv"
+    PERF_QUERY_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_yearly.csv"
+    PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
+    PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
+    PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
+
 
 EXPECTED_VERSION_ROLE = "standalone_target_vol_overlay"
 EXPECTED_VERSION_NOTE_PREFIX = "Standalone target-volatility overlay matching repaired v1.6 behavior."
@@ -10978,6 +11056,54 @@ def _atomic_write_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None
                 tmp.unlink()
         except OSError:
             pass
+
+
+@contextmanager
+def staged_output_bundle(
+    targets: Iterable[Path],
+    *,
+    summary_path: Path,
+    post_promotion_validator: Callable[[], None] | None = None,
+):
+    ordered_targets = list(dict.fromkeys(Path(path) for path in targets))
+    summary_target = Path(summary_path)
+    if summary_target not in ordered_targets:
+        raise ValueError("summary_path must be included in staged output targets")
+    staged = {target: _atomic_temp_path(target) for target in ordered_targets}
+    backups: dict[Path, Path] = {}
+    promoted: list[Path] = []
+    try:
+        yield staged
+        missing = [str(target) for target, stage in staged.items() if not stage.exists()]
+        if missing:
+            raise RuntimeError(f"staged output missing: {missing}")
+        promotion_order = [target for target in ordered_targets if target != summary_target] + [summary_target]
+        for target in promotion_order:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.exists():
+                backup = Path(str(_atomic_temp_path(target)) + ".rollback")
+                shutil.copy2(target, backup)
+                backups[target] = backup
+        try:
+            for target in promotion_order:
+                _replace_with_retry(staged[target], target)
+                promoted.append(target)
+            if post_promotion_validator is not None:
+                post_promotion_validator()
+        except Exception:
+            for target in reversed(promoted):
+                backup = backups.get(target)
+                if backup is not None and backup.exists():
+                    _replace_with_retry(backup, target)
+                else:
+                    target.unlink(missing_ok=True)
+            raise
+    finally:
+        for path in [*staged.values(), *backups.values()]:
+            try:
+                path.unlink(missing_ok=True)
+            except OSError:
+                pass
 
 
 def _csv_safe_value(value: object) -> object:
@@ -11362,6 +11488,56 @@ def assert_top100_outputs_fresh(
     return proof
 
 
+def assert_top100_candidate_fresh(
+    candidate_index: pd.DatetimeIndex | pd.Index,
+    expected_latest_date: object,
+    label: str,
+) -> dict[str, object]:
+    state = current_data_state_fingerprint()
+    files = dict(state["files"])
+    expected = _coerce_date_text(expected_latest_date)
+    if not expected:
+        raise RuntimeError(f"{label} candidate freshness has no expected latest date")
+
+    base_keys = ["base_panel_shadow", "base_index_csv", "base_costed_nav"]
+    panel_state = files.get("base_panel_shadow", {})
+    panel_dates = _read_artifact_date_index(
+        Path(panel_state.get("path", "")),
+        panel_state.get("date_column", "date"),
+    )
+    expected_ts = pd.Timestamp(expected).normalize()
+    panel_dates = pd.DatetimeIndex(panel_dates[panel_dates <= expected_ts]).sort_values()
+    expected_rebalance = _latest_required_rebalance_date(panel_dates, expected)
+    proof = validate_top100_freshness_proof(
+        files,
+        expected_latest_date=expected,
+        expected_latest_rebalance_date=expected_rebalance,
+        daily_keys=base_keys,
+    )
+
+    candidate_dates = _normalise_date_index(candidate_index)
+    if candidate_dates.empty:
+        raise RuntimeError(f"{label} candidate stream is empty")
+    if pd.Timestamp(candidate_dates[-1]).normalize() != expected_ts:
+        raise RuntimeError(
+            f"{label} candidate latest_date {candidate_dates[-1].date()} != expected {expected}"
+        )
+    window_panel_dates = pd.DatetimeIndex(
+        panel_dates[(panel_dates >= candidate_dates.min()) & (panel_dates <= expected_ts)]
+    ).sort_values()
+    validate_daily_stream_continuity(window_panel_dates, candidate_dates, f"{label} candidate")
+    proof["candidate"] = {
+        "label": str(label),
+        "latest_date": expected,
+        "row_count": int(len(candidate_dates)),
+        "continuity_verified": True,
+    }
+    proof["files"] = {key: files[key] for key in base_keys if key in files}
+    if "base_proxy_turnover" in files:
+        proof["files"]["base_proxy_turnover"] = files["base_proxy_turnover"]
+    return proof
+
+
 def current_data_state_fingerprint() -> dict[str, object]:
     resolved = _resolve_base_paths()
     watched = {
@@ -11650,8 +11826,6 @@ def apply_volatility_overheat_exit(
         executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
         executed_signal_on.append(bool(desired_next_active))
         trigger_flags.append(bool(trigger))
-        blocked_flags.append(bool(blocked_until_reset))
-        signal_reset_seen_flags.append(bool(signal_reset_seen))
         trade_ids.append(trade_id_for_row)
         trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
         entry_exit_costs.append(float(entry_cost + exit_cost))
@@ -11669,6 +11843,8 @@ def apply_volatility_overheat_exit(
             signal_reset_seen = True
         else:
             signal_reset_seen = False
+        blocked_flags.append(bool(blocked_until_reset))
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
         current_active = desired_next_active
         if not current_active:
             current_trade_id = None
@@ -12227,12 +12403,23 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0") -> dict[str, object]:
+def build_performance_payload(
+    ret: pd.Series,
+    source_label: str = "costed_v2_0",
+    output_paths: dict[str, Path] | None = None,
+) -> dict[str, object]:
     ensure_output_dir()
+    write_paths = output_paths or {
+        "summary": PERF_SUMMARY_CSV,
+        "yearly": PERF_YEARLY_CSV,
+        "nav": PERF_NAV_CSV,
+        "json": PERF_JSON,
+        "png": PERF_PNG,
+    }
     window_summaries = summarize_required_windows(ret)
     summary = dict(window_summaries[0])
     yearly_df = summarize_yearly(ret)
-    _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(yearly_df, write_paths["yearly"], index=False, encoding="utf-8-sig")
 
     nav_df = pd.DataFrame(
         {
@@ -12241,8 +12428,8 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
             "nav_net": (1.0 + ret.fillna(0.0)).cumprod().values,
         }
     )
-    _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(pd.DataFrame(window_summaries), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(nav_df, write_paths["nav"], index=False, encoding="utf-8-sig")
+    _atomic_write_csv(pd.DataFrame(window_summaries), write_paths["summary"], index=False, encoding="utf-8-sig")
 
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], linewidth=2.0)
@@ -12250,7 +12437,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
     plt.ylabel("NAV")
     plt.grid(alpha=0.25)
     plt.tight_layout()
-    plt.savefig(PERF_PNG, dpi=160)
+    plt.savefig(write_paths["png"], dpi=160)
     plt.close()
 
     payload = {
@@ -12268,7 +12455,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
             "chart_png": str(PERF_PNG),
         },
     }
-    _atomic_write_text(PERF_JSON, _json_dumps(payload), encoding="utf-8")
+    _atomic_write_text(write_paths["json"], _json_dumps(payload), encoding="utf-8")
     return payload
 
 
@@ -12497,6 +12684,41 @@ def v2_0_rewrite_audit_matches_allowlist(audit_path: Path) -> bool:
     return bool(cells) and cells.issubset(V2_0_AUDITED_REWRITE_ALLOWLIST)
 
 
+def v2_0_rewrite_audit_matches_state_flag_timing_migration(audit_path: Path) -> bool:
+    try:
+        audit = pd.read_csv(audit_path)
+    except Exception:
+        return False
+    required = {"column", "change_type", "previous", "candidate"}
+    if audit.empty or not required.issubset(audit.columns):
+        return False
+    if not audit["column"].astype(str).eq("blocked_until_signal_reset").all():
+        return False
+    if not audit["change_type"].astype(str).eq("value_changed").all():
+        return False
+    allowed_pairs = {("False", "True"), ("True", "False")}
+    pairs = set(zip(audit["previous"].astype(str), audit["candidate"].astype(str)))
+    return bool(pairs) and pairs.issubset(allowed_pairs)
+
+
+def _write_v2_0_state_flag_migration_diagnostics(audit_path: Path) -> Path:
+    audit = pd.read_csv(audit_path)
+    diagnostics = {
+        "diagnosis": "blocked_until_signal_reset_trigger_row_timing_migration",
+        "allowed": True,
+        "changed_rows": int(len(audit)),
+        "changed_columns": sorted(audit["column"].astype(str).unique().tolist()),
+        "audit_csv": str(audit_path),
+        "note": (
+            "Approved metadata-only migration: blocked_until_signal_reset now records post-trigger/post-reset state "
+            "on the same row. Returns, holdings, costs, and signal inputs are not allowlisted."
+        ),
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
+
+
 def _write_v2_0_allowed_rewrite_diagnostics(audit_path: Path, allowed_tail_rows: int) -> Path:
     diagnostics = {
         "diagnosis": "audited_target_vol_scale_cost_transition_fix",
@@ -12555,10 +12777,18 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
             rewrite_audit_status = {
                 "status": "clean",
                 "allowed_tail_rows": int(allowed_tail_rows),
-                "audit_csv": str(audit_path),
+                "audit_csv": None,
             }
         except RuntimeError as exc:
-            if v2_0_rewrite_audit_matches_allowlist(audit_path):
+            if v2_0_rewrite_audit_matches_state_flag_timing_migration(audit_path):
+                diagnostics_path = _write_v2_0_state_flag_migration_diagnostics(audit_path)
+                rewrite_audit_status = {
+                    "status": "audited_state_flag_timing_migration",
+                    "diagnostics_json": str(diagnostics_path),
+                    "audit_csv": str(audit_path),
+                    "changed_column": "blocked_until_signal_reset",
+                }
+            elif v2_0_rewrite_audit_matches_allowlist(audit_path):
                 diagnostics_path = _write_v2_0_allowed_rewrite_diagnostics(audit_path, allowed_tail_rows)
                 rewrite_audit_status = {
                     "status": "audited_allowlist_applied",
@@ -12583,16 +12813,39 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
                         f"{exc} v2.0 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
                     ) from exc
                 raise RuntimeError(f"{exc} v2.0 rewrite diagnostics written to {diagnostics_path}.") from exc
-    _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
-    _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
-    freshness_proof = assert_top100_outputs_fresh(expected_latest_date=out.index.max())
+    freshness_proof = assert_top100_candidate_fresh(
+        out.index,
+        expected_latest_date=out.index.max(),
+        label="v2.0 official costed NAV",
+    )
+    bundle_targets = [
+        COSTED_NAV_CSV,
+        NAV_CSV,
+        LATEST_SIGNAL_CSV,
+        PERF_SUMMARY_CSV,
+        PERF_YEARLY_CSV,
+        PERF_NAV_CSV,
+        PERF_JSON,
+        PERF_PNG,
+        SUMMARY_JSON,
+    ]
+    stage_scope = tempfile.TemporaryDirectory(prefix=f".{OUTPUT_PREFIX}.stage.", dir=OUTPUT_DIR)
+    stage_root = Path(stage_scope.name)
+    staged_files = {target: stage_root / target.name for target in bundle_targets}
+    _atomic_write_csv(out, staged_files[COSTED_NAV_CSV], index_label="date", encoding="utf-8-sig")
+    _atomic_write_csv(
+        out.rename_axis("date").reset_index(),
+        staged_files[NAV_CSV],
+        index=False,
+        encoding="utf-8-sig",
+    )
 
     data_lineage = _build_v2_data_lineage()
     signal_row = _build_signal_row(out, reference_summary)
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
-    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
+    _atomic_write_text(staged_files[LATEST_SIGNAL_CSV], signal_row.to_csv(index=False), encoding="utf-8")
 
     if not bool(data_lineage.get("official_wind_series")):
         warnings.warn(
@@ -12604,9 +12857,16 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     perf_payload = build_performance_payload(
         out["return_net"].fillna(0.0),
         source_label=performance_source_label,
+        output_paths={
+            "summary": staged_files[PERF_SUMMARY_CSV],
+            "yearly": staged_files[PERF_YEARLY_CSV],
+            "nav": staged_files[PERF_NAV_CSV],
+            "json": staged_files[PERF_JSON],
+            "png": staged_files[PERF_PNG],
+        },
     )
 
-    summary = dict(reference_summary)
+    summary = copy.deepcopy(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = "2.0"
     summary["version_role"] = EXPECTED_VERSION_ROLE
@@ -12688,7 +12948,21 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     summary["live_microcap_tail_overlay"] = live_overlay_meta
-    _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
+    summary["synthetic_basket_execution"] = True
+    summary["execution_model"] = {
+        "synthetic_basket_execution": True,
+        "member_level_fill_engine": False,
+        "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation.",
+    }
+    _atomic_write_text(staged_files[SUMMARY_JSON], _json_dumps(summary), encoding="utf-8")
+    with staged_output_bundle(
+        bundle_targets,
+        summary_path=SUMMARY_JSON,
+        post_promotion_validator=lambda: assert_top100_outputs_fresh(expected_latest_date=out.index.max()),
+    ) as promotion_paths:
+        for target, source in staged_files.items():
+            shutil.copy2(source, promotion_paths[target])
+    stage_scope.cleanup()
     regenerated_outputs = {
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -12899,6 +13173,7 @@ overlay_mod, _overlay_ns = _exec_embedded_module("embedded_v2_overlay", OVERLAY_
 _overlay_ns["_V2_RUNTIME_ARGS"] = _V2_RUNTIME_ARGS
 setattr(overlay_mod, "_V2_RUNTIME_ARGS", _V2_RUNTIME_ARGS)
 OUTPUT_PREFIX = overlay_mod.OUTPUT_PREFIX
+DEFAULT_OUTPUT_PREFIX = overlay_mod.DEFAULT_OUTPUT_PREFIX
 SUMMARY_JSON = overlay_mod.SUMMARY_JSON
 LATEST_SIGNAL_CSV = overlay_mod.LATEST_SIGNAL_CSV
 COSTED_NAV_CSV = overlay_mod.COSTED_NAV_CSV
@@ -12923,11 +13198,28 @@ current_data_state_fingerprint = overlay_mod.current_data_state_fingerprint
 validate_top100_freshness_proof = overlay_mod.validate_top100_freshness_proof
 validate_daily_stream_continuity = overlay_mod.validate_daily_stream_continuity
 assert_top100_outputs_fresh = overlay_mod.assert_top100_outputs_fresh
+assert_top100_candidate_fresh = overlay_mod.assert_top100_candidate_fresh
+staged_output_bundle = overlay_mod.staged_output_bundle
 current_runtime_fingerprint = overlay_mod.current_runtime_fingerprint
 _load_realtime_v2_0_official_index = overlay_mod._load_realtime_v2_0_official_index
 _v2_0_rewrite_allowed_tail_rows = overlay_mod._v2_0_rewrite_allowed_tail_rows
 _generate_v2_0_outputs_unlocked = overlay_mod.generate_v2_0_outputs
 _build_realtime_v2_0_outputs_unlocked = overlay_mod.build_realtime_v2_0_outputs
+
+
+def configure_output_paths(output_prefix: str | None = None) -> None:
+    overlay_mod.configure_output_paths(output_prefix=output_prefix)
+    overlay_state = overlay_mod.configure_output_paths.__globals__
+    synced = [
+        "OUTPUT_PREFIX", "SUMMARY_JSON", "LATEST_SIGNAL_CSV", "REALTIME_SIGNAL_CSV", "NAV_CSV", "COSTED_NAV_CSV",
+        "PERF_SUMMARY_CSV", "PERF_YEARLY_CSV", "PERF_NAV_CSV", "PERF_JSON", "PERF_PNG",
+        "PERF_QUERY_SUMMARY_CSV", "PERF_QUERY_YEARLY_CSV", "PERF_QUERY_NAV_CSV", "PERF_QUERY_JSON", "PERF_QUERY_PNG",
+    ]
+    for name in synced:
+        value = overlay_state[name]
+        setattr(overlay_mod, name, value)
+        _overlay_ns[name] = value
+        globals()[name] = value
 
 
 def _pid_is_alive(pid: int) -> bool:
@@ -12997,7 +13289,9 @@ def _v2_file_lock(
             try:
                 pid = _read_lock_pid(lock_path)
                 age = time.time() - lock_path.stat().st_mtime
-                if age > stale_lock_seconds and (pid is None or not _pid_is_alive(pid)):
+                dead_pid = pid is not None and not _pid_is_alive(pid)
+                stale_unowned_lock = pid is None and age > stale_lock_seconds
+                if dead_pid or stale_unowned_lock:
                     lock_path.unlink(missing_ok=True)
                     continue
             except OSError:
@@ -13059,10 +13353,17 @@ def _v2_realtime_output_lock(
 
 
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+    configure_output_paths(getattr(_V2_RUNTIME_ARGS, "output_prefix", None))
+    previous_namespace_args = _overlay_ns.get("_V2_RUNTIME_ARGS")
+    previous_module_args = getattr(overlay_mod, "_V2_RUNTIME_ARGS", None)
     _overlay_ns["_V2_RUNTIME_ARGS"] = _V2_RUNTIME_ARGS
     setattr(overlay_mod, "_V2_RUNTIME_ARGS", _V2_RUNTIME_ARGS)
-    with _v2_output_generation_lock():
-        return _generate_v2_0_outputs_unlocked()
+    try:
+        with _v2_output_generation_lock():
+            return _generate_v2_0_outputs_unlocked()
+    finally:
+        _overlay_ns["_V2_RUNTIME_ARGS"] = previous_namespace_args
+        setattr(overlay_mod, "_V2_RUNTIME_ARGS", previous_module_args)
 
 
 _overlay_ns["generate_v2_0_outputs"] = generate_v2_0_outputs
@@ -13070,10 +13371,17 @@ overlay_mod.generate_v2_0_outputs = generate_v2_0_outputs
 
 
 def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+    configure_output_paths(getattr(_V2_RUNTIME_ARGS, "output_prefix", None))
+    previous_namespace_args = _overlay_ns.get("_V2_RUNTIME_ARGS")
+    previous_module_args = getattr(overlay_mod, "_V2_RUNTIME_ARGS", None)
     _overlay_ns["_V2_RUNTIME_ARGS"] = _V2_RUNTIME_ARGS
     setattr(overlay_mod, "_V2_RUNTIME_ARGS", _V2_RUNTIME_ARGS)
-    with _v2_realtime_output_lock():
-        return _build_realtime_v2_0_outputs_unlocked()
+    try:
+        with _v2_realtime_output_lock():
+            return _build_realtime_v2_0_outputs_unlocked()
+    finally:
+        _overlay_ns["_V2_RUNTIME_ARGS"] = previous_namespace_args
+        setattr(overlay_mod, "_V2_RUNTIME_ARGS", previous_module_args)
 
 
 _overlay_ns["build_realtime_v2_0_outputs"] = build_realtime_v2_0_outputs

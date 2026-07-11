@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import microcap_top100_mom16_biweekly_live_v2_5 as v25  # noqa: E402
+from scripts import microcap_v2_5_scan_common as scan_common  # noqa: E402
 
 
 RUN_FOLDER = ROOT / "quant_param_scan_runs" / "20260523_microcap_v2_5_ma60_bias_overheat"
@@ -155,16 +156,7 @@ def _candidate_grid(
 
 
 def _load_v2_5_shadow() -> tuple[dict[str, Any], pd.DataFrame]:
-    if v25.SUMMARY_JSON.exists() and v25.COSTED_NAV_CSV.exists():
-        try:
-            summary = json.loads(v25.SUMMARY_JSON.read_text(encoding="utf-8"))
-            if v25.summary_matches_current_v2_5_base(summary):
-                shadow = pd.read_csv(v25.COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-                return summary, shadow
-        except Exception:
-            pass
-    summary, _signal_df, shadow = v25.generate_v2_5_outputs()
-    return summary, shadow
+    return scan_common.load_fresh_official_v25()
 
 
 def _apply_bias_overheat_overlay(

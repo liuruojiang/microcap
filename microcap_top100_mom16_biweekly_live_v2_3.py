@@ -1,11 +1,14 @@
 ﻿from __future__ import annotations
 
 import argparse
+import copy
 import importlib
 import json
 import math
 import re
+import shutil
 import sys
+import tempfile
 import threading
 import time
 import warnings
@@ -590,9 +593,17 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
     close_df = close_df.sort_index()
     spread_nav, micro_ret, hedge_ret, _signal_daily_drag = always_on_spread_nav(close_df)
     log_wls = log_wls_score_and_r2(spread_nav)
+    microcap_component = log_wls_score_and_r2((1.0 + micro_ret.fillna(0.0)).cumprod())
+    hedge_component = log_wls_score_and_r2((1.0 + hedge_ret.fillna(0.0)).cumprod())
     common_index = _valid_log_wls_index(close_df) if index is None else pd.DatetimeIndex(index)
     score = pd.to_numeric(log_wls["annualized_log_wls_score"].loc[common_index], errors="coerce")
     r2 = pd.to_numeric(log_wls["log_wls_r2"].loc[common_index], errors="coerce")
+    microcap_component_score = pd.to_numeric(
+        microcap_component["annualized_log_wls_score"].loc[common_index], errors="coerce"
+    )
+    hedge_component_score = pd.to_numeric(
+        hedge_component["annualized_log_wls_score"].loc[common_index], errors="coerce"
+    )
     next_active_values: list[bool] = []
     active_state = False
     for dt in common_index:
@@ -631,8 +642,14 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
             "hedge_close": close_df["hedge"].loc[common_index],
             "microcap_ret": microcap_ret,
             "hedge_ret": hedge_ret_part,
-            "microcap_mom": score,
-            "hedge_mom": 0.0,
+            "microcap_mom": microcap_component_score,
+            "hedge_mom": hedge_component_score,
+            "microcap_log_wls_r2": pd.to_numeric(
+                microcap_component["log_wls_r2"].loc[common_index], errors="coerce"
+            ),
+            "hedge_log_wls_r2": pd.to_numeric(
+                hedge_component["log_wls_r2"].loc[common_index], errors="coerce"
+            ),
             "momentum_gap": score,
             "momentum_gap_deprecated": True,
             "annualized_log_wls_score": score,
@@ -1283,8 +1300,19 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3") -> dict[str, object]:
+def build_performance_payload(
+    ret: pd.Series,
+    source_label: str = "costed_v2_3",
+    output_paths: dict[str, Path] | None = None,
+) -> dict[str, object]:
     ensure_output_dir()
+    write_paths = output_paths or {
+        "summary": PERF_SUMMARY_CSV,
+        "yearly": PERF_YEARLY_CSV,
+        "nav": PERF_NAV_CSV,
+        "json": PERF_JSON,
+        "png": PERF_PNG,
+    }
     window_summaries = summarize_required_windows(ret)
     summary = dict(window_summaries[0])
     yearly_df = summarize_yearly(ret)
@@ -1295,9 +1323,9 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
             "nav_net": (1.0 + ret.fillna(0.0)).cumprod().values,
         }
     )
-    _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(pd.DataFrame(window_summaries), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(yearly_df, write_paths["yearly"], index=False, encoding="utf-8-sig")
+    _atomic_write_csv(nav_df, write_paths["nav"], index=False, encoding="utf-8-sig")
+    _atomic_write_csv(pd.DataFrame(window_summaries), write_paths["summary"], index=False, encoding="utf-8-sig")
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], label="v2.3 nav_net")
     plt.title("Top100 Microcap Mom16 v2.3 Costed NAV")
@@ -1306,7 +1334,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(PERF_PNG, dpi=150)
+    plt.savefig(write_paths["png"], dpi=150)
     plt.close()
     payload = {
         "source_label": source_label,
@@ -1319,7 +1347,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
             "chart": str(PERF_PNG),
         },
     }
-    _atomic_write_text(PERF_JSON, _json_dumps(payload), encoding="utf-8")
+    _atomic_write_text(write_paths["json"], _json_dumps(payload), encoding="utf-8")
     return payload
 
 
@@ -1356,6 +1384,14 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         if col in latest and pd.notna(latest[col]):
             row[col] = float(latest[col])
     row["overheat_kind"] = OVERHEAT_KIND
+    row["overheat_enabled"] = True
+    row["overheat_overlay_enabled"] = True
+    row["overheat_window"] = OVERHEAT_FEATURE_WINDOW
+    row["overheat_threshold"] = OVERHEAT_TRIGGER_THRESHOLD
+    row["overheat_metric_name"] = "spread_nav_realized_vol"
+    row["overheat_triggered"] = bool(latest.get("overheat_exit_triggered", False))
+    row["overheat_require_positive_trade_return"] = False
+    row["overheat_require_signal_reset"] = False
     row["overheat_feature_window"] = OVERHEAT_FEATURE_WINDOW
     row["overheat_trigger_threshold"] = OVERHEAT_TRIGGER_THRESHOLD
     row["overheat_recovery_ratio"] = OVERHEAT_RECOVERY_RATIO
@@ -1366,6 +1402,10 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["overheat_block_entry_triggered"] = bool(latest.get("overheat_block_entry_triggered", False))
     row["target_vol_enabled"] = TARGET_VOL_ENABLED
     row["target_vol"] = 0.0
+    row["target_vol_window"] = 0
+    row["target_vol_signal_timing"] = ""
+    row["target_vol_max_leverage"] = 1.0
+    row["max_leverage"] = 1.0
     row["target_vol_scale_rebalance_threshold"] = 0.0
     row["cash_day_yield"] = 0.0
     row["cash_day_yield_annual"] = 0.0
@@ -1664,12 +1704,20 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
                 ) from exc
             raise RuntimeError(f"{exc} v2.3 rewrite diagnostics written to {diagnostics_path}.") from exc
 
-    _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
-    _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
-    freshness_proof = v2_0.assert_top100_outputs_fresh(
+    freshness_proof = v2_0.assert_top100_candidate_fresh(
+        out.index,
         expected_latest_date=out.index.max(),
-        extra_daily_paths={"v2_3_costed_nav": COSTED_NAV_CSV},
+        label="v2.3 official costed NAV",
     )
+    bundle_targets = [
+        COSTED_NAV_CSV, NAV_CSV, LATEST_SIGNAL_CSV, PERF_SUMMARY_CSV, PERF_YEARLY_CSV,
+        PERF_NAV_CSV, PERF_JSON, PERF_PNG, SUMMARY_JSON,
+    ]
+    stage_scope = tempfile.TemporaryDirectory(prefix=f".{OUTPUT_PREFIX}.stage.", dir=OUTPUT_DIR)
+    stage_root = Path(stage_scope.name)
+    staged_files = {target: stage_root / target.name for target in bundle_targets}
+    _atomic_write_csv(out, staged_files[COSTED_NAV_CSV], index_label="date", encoding="utf-8-sig")
+    _atomic_write_csv(out.rename_axis("date").reset_index(), staged_files[NAV_CSV], index=False, encoding="utf-8-sig")
     data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
     performance_source_label = v2_0.overlay_mod.proxy_aware_performance_source_label(data_lineage, "costed_v2_3")
     signal_row = _build_signal_row(out, reference_summary)
@@ -1677,10 +1725,17 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
-    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
-    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label=performance_source_label)
+    _atomic_write_text(staged_files[LATEST_SIGNAL_CSV], signal_row.to_csv(index=False), encoding="utf-8")
+    perf_payload = build_performance_payload(
+        out["return_net"].fillna(0.0),
+        source_label=performance_source_label,
+        output_paths={
+            "summary": staged_files[PERF_SUMMARY_CSV], "yearly": staged_files[PERF_YEARLY_CSV],
+            "nav": staged_files[PERF_NAV_CSV], "json": staged_files[PERF_JSON], "png": staged_files[PERF_PNG],
+        },
+    )
 
-    summary = dict(reference_summary)
+    summary = copy.deepcopy(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
@@ -1744,7 +1799,24 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     )
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
-    _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
+    summary["synthetic_basket_execution"] = True
+    summary["execution_model"] = {
+        "synthetic_basket_execution": True,
+        "member_level_fill_engine": False,
+        "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation.",
+    }
+    _atomic_write_text(staged_files[SUMMARY_JSON], _json_dumps(summary), encoding="utf-8")
+    with v2_0.staged_output_bundle(
+        bundle_targets,
+        summary_path=SUMMARY_JSON,
+        post_promotion_validator=lambda: v2_0.assert_top100_outputs_fresh(
+            expected_latest_date=out.index.max(),
+            extra_daily_paths={"v2_3_costed_nav": COSTED_NAV_CSV},
+        ),
+    ) as promotion_paths:
+        for target, source in staged_files.items():
+            shutil.copy2(source, promotion_paths[target])
+    stage_scope.cleanup()
     regenerated_outputs = {
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -1963,15 +2035,24 @@ def _handle_query(query: str) -> None:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_v2_3_args(sys.argv[1:] if argv is None else argv)
-    configure_runtime(args)
-    query = " ".join(args.query_tokens).strip()
-    if query:
-        _handle_query(query)
-        return
-    generate_v2_3_outputs()
-    print(str(SUMMARY_JSON))
-    print(str(LATEST_SIGNAL_CSV))
-    print(str(COSTED_NAV_CSV))
+    previous_runtime_args = v2_0._V2_RUNTIME_ARGS
+    previous_output_prefix = OUTPUT_PREFIX
+    previous_costed_nav_csv = COSTED_NAV_CSV
+    previous_v2_0_output_prefix = v2_0.OUTPUT_PREFIX
+    try:
+        configure_runtime(args)
+        query = " ".join(args.query_tokens).strip()
+        if query:
+            _handle_query(query)
+            return
+        generate_v2_3_outputs()
+        print(str(SUMMARY_JSON))
+        print(str(LATEST_SIGNAL_CSV))
+        print(str(COSTED_NAV_CSV))
+    finally:
+        configure_output_paths(previous_output_prefix, previous_costed_nav_csv)
+        v2_0.configure_output_paths(previous_v2_0_output_prefix)
+        v2_0._V2_RUNTIME_ARGS = previous_runtime_args
 
 if __name__ == "__main__":
     main()

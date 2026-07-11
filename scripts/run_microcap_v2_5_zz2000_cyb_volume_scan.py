@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import microcap_top100_mom16_biweekly_live_v2_5 as v25  # noqa: E402
+from scripts import microcap_v2_5_scan_common as scan_common  # noqa: E402
 
 
 RUN_FOLDER = (
@@ -158,14 +159,19 @@ def _load_cyb_amount() -> pd.Series:
 
 
 def _load_v2_5_nav() -> tuple[dict[str, object], pd.DataFrame]:
-    summary, _signal, nav = v25.generate_v2_5_outputs()
+    summary, nav = scan_common.load_fresh_official_v25()
     nav = nav.copy().sort_index()
     if not isinstance(nav.index, pd.DatetimeIndex):
         nav.index = pd.DatetimeIndex(nav.index)
     return summary, nav
 
 
-def _build_execution_signal(amount: pd.DataFrame, ma: int, days: int, nav_index: pd.DatetimeIndex) -> pd.Series:
+def _build_execution_signal(
+    amount: pd.DataFrame,
+    ma: int,
+    days: int,
+    nav_index: pd.DatetimeIndex,
+) -> tuple[pd.Series, pd.Series]:
     amount = amount.sort_index()
     csi_below = amount["csi2000_amount"].lt(amount["csi2000_amount"].rolling(ma, min_periods=ma).mean())
     cyb_below = amount["cyb_amount"].lt(amount["cyb_amount"].rolling(ma, min_periods=ma).mean())
@@ -174,11 +180,17 @@ def _build_execution_signal(amount: pd.DataFrame, ma: int, days: int, nav_index:
     consecutive = condition.groupby(run_id).cumcount() + 1
     trigger = (condition & consecutive.ge(days)).rename("volume_trigger")
     trigger_on_nav = trigger.reindex(nav_index).fillna(False).astype(bool)
-    return trigger_on_nav.shift(1, fill_value=False).rename("volume_execution_day")
+    execution_day = trigger_on_nav.shift(1, fill_value=False).rename("volume_execution_day")
+    return trigger_on_nav, execution_day
 
 
-def _apply_volume_scale(nav: pd.DataFrame, execution_day: pd.Series, scale: float) -> tuple[pd.Series, pd.Series, pd.Series]:
-    base_ret = pd.to_numeric(nav["return_net"], errors="coerce").fillna(0.0)
+def _apply_volume_scale(
+    nav: pd.DataFrame,
+    execution_day: pd.Series,
+    scale: float,
+    *,
+    next_execution_day: pd.Series,
+) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
     execution_day = execution_day.reindex(nav.index).fillna(False).astype(bool)
     active_exposure = (
         pd.to_numeric(nav.get("current_execution_scale", pd.Series(1.0, index=nav.index)), errors="coerce")
@@ -187,9 +199,17 @@ def _apply_volume_scale(nav: pd.DataFrame, execution_day: pd.Series, scale: floa
     )
     scale_series = pd.Series(1.0, index=nav.index, dtype=float)
     scale_series.loc[execution_day & active_exposure] = float(scale)
-    overlay_cost = scale_series.diff().abs().fillna(0.0) * active_exposure.astype(float) * SCALE_CHANGE_COST
-    ret = base_ret * scale_series - overlay_cost
-    return ret.rename("return_net"), scale_series.rename("volume_execution_scale"), overlay_cost.rename("volume_overlay_cost")
+    next_scale_series = pd.Series(1.0, index=nav.index, dtype=float)
+    next_scale_series.loc[next_execution_day.reindex(nav.index).fillna(False).astype(bool)] = float(scale)
+    candidate = scan_common.replay_scale_multiplier(
+        nav,
+        scale_series,
+        next_multiplier=next_scale_series,
+        one_side_scale_cost=SCALE_CHANGE_COST,
+        label="volume scale overlay",
+    )
+    overlay_cost = candidate["overlay_scale_change_cost"].rename("volume_overlay_cost")
+    return candidate, scale_series.rename("volume_execution_scale"), overlay_cost
 
 
 def _score_candidate(row: dict[str, Any]) -> float:
@@ -211,12 +231,20 @@ def _scan(run_folder: Path) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]
     if amount.empty:
         raise RuntimeError("combined CSI2000 + CYB amount frame is empty")
 
-    common_start = max(pd.Timestamp(nav.index.min()), pd.Timestamp(amount.index.min()))
-    common_end = min(pd.Timestamp(nav.index.max()), pd.Timestamp(amount.index.max()))
-    nav = nav.loc[(nav.index >= common_start) & (nav.index <= common_end)].copy()
-    amount = amount.loc[(amount.index >= common_start) & (amount.index <= common_end)].copy()
-    if nav.empty:
-        raise RuntimeError("v2.5 NAV is empty after amount alignment")
+    nav_end = pd.Timestamp(nav.index.max()).normalize()
+    amount_end = pd.Timestamp(amount.index.max()).normalize()
+    if nav_end != amount_end:
+        raise RuntimeError(
+            f"volume feature end date must equal official v2.5 end date: nav={nav_end.date()} amount={amount_end.date()}"
+        )
+    missing_feature_dates = pd.DatetimeIndex(nav.index).difference(pd.DatetimeIndex(amount.index))
+    if len(missing_feature_dates):
+        examples = [str(pd.Timestamp(dt).date()) for dt in missing_feature_dates[:5]]
+        raise RuntimeError(
+            "volume features do not cover the official v2.5 full sample; "
+            f"missing_dates={len(missing_feature_dates)} examples={examples}"
+        )
+    amount = amount.reindex(nav.index)
 
     base_ret = pd.to_numeric(nav["return_net"], errors="coerce").fillna(0.0)
     baseline_by_window: dict[str, dict[str, float | int]] = {}
@@ -273,11 +301,16 @@ def _scan(run_folder: Path) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]
     daily_candidates: list[tuple[float, str, pd.DataFrame]] = []
     for ma in MA_GRID:
         for days in DAYS_GRID:
-            execution_day = _build_execution_signal(amount, ma, days, pd.DatetimeIndex(nav.index))
-            trigger = execution_day.shift(-1, fill_value=False)
+            trigger, execution_day = _build_execution_signal(amount, ma, days, pd.DatetimeIndex(nav.index))
             for scale in SCALE_GRID:
                 label = f"zz2000_cyb_below_ma{ma}_days{days}_scale{str(scale).replace('.', 'p')}"
-                ret, scale_series, overlay_cost = _apply_volume_scale(nav, execution_day, scale)
+                candidate_frame, scale_series, overlay_cost = _apply_volume_scale(
+                    nav,
+                    execution_day,
+                    scale,
+                    next_execution_day=trigger,
+                )
+                ret = candidate_frame["return_net"]
                 wide: dict[str, Any] = {
                     "candidate": label,
                     "version": "v2.5",
@@ -345,8 +378,18 @@ def _scan(run_folder: Path) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]
                         "volume_execution_day": execution_day.values,
                         "volume_execution_scale": scale_series.values,
                         "volume_overlay_cost": overlay_cost.values,
+                        "base_holding": candidate_frame["base_holding_state"].values,
+                        "base_next_holding": candidate_frame["base_next_holding_state"].values,
+                        "base_current_execution_scale": pd.to_numeric(
+                            nav.get("current_execution_scale", pd.Series(1.0, index=nav.index)), errors="coerce"
+                        ).fillna(0.0).values,
                     }
                 )
+                daily["current_execution_scale"] = candidate_frame["current_execution_scale"].values
+                daily["holding"] = candidate_frame["holding"].values
+                daily["next_session_actionable_scale"] = candidate_frame["next_session_actionable_scale"].values
+                daily["next_holding"] = candidate_frame["next_holding"].values
+                scan_common.assert_candidate_state_consistent(daily, label)
                 daily_candidates.append((float(wide["score"]), label, daily))
 
     non_base = [row for row in wide_rows if row["family"] != "baseline"]
