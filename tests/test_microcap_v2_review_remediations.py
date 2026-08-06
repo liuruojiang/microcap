@@ -36,6 +36,53 @@ def test_underfilled_proxy_keeps_total_capital_fully_invested() -> None:
     assert result.iloc[-1]["daily_return"] == pytest.approx(0.10)
 
 
+def test_terminal_close_rebalance_records_turnover_without_future_return_date() -> None:
+    dates = pd.to_datetime(["2026-08-04", "2026-08-05", "2026-08-06"])
+    _, turnover, effective = v2_0.freq_mod.simulate_rebalance_path(
+        trading_dates=dates,
+        returns_df=pd.DataFrame(
+            {"A": [0.0, 0.0, 0.01], "B": [0.0, 0.0, 0.0]},
+            index=dates,
+        ),
+        target_members_map={dates[0]: ["A"], dates[-1]: ["B"]},
+        rebalance_dates=pd.DatetimeIndex([dates[0], dates[-1]]),
+        buyable_df=pd.DataFrame(True, index=dates, columns=["A", "B"]),
+        sellable_df=pd.DataFrame(True, index=dates, columns=["A", "B"]),
+        one_side_cost_rate=0.003,
+        top_n=1,
+        execution_timing=v2_0.freq_mod.EXECUTION_TIMING_CLOSE,
+    )
+
+    assert turnover["rebalance_date"].tolist() == [dates[0], dates[-1]]
+    terminal = turnover.iloc[-1]
+    assert terminal["execution_date"] == dates[-1]
+    assert pd.isna(terminal["return_start_date"])
+    assert terminal["two_side_cost_rate"] == pytest.approx(0.006)
+    assert effective[dates[-1]] == ["B"]
+
+
+def test_close_rebalance_with_following_day_is_not_duplicated() -> None:
+    dates = pd.to_datetime(["2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07"])
+    _, turnover, _ = v2_0.freq_mod.simulate_rebalance_path(
+        trading_dates=dates,
+        returns_df=pd.DataFrame(
+            {"A": [0.0, 0.0, 0.01, 0.0], "B": [0.0, 0.0, 0.0, 0.02]},
+            index=dates,
+        ),
+        target_members_map={dates[0]: ["A"], dates[2]: ["B"]},
+        rebalance_dates=pd.DatetimeIndex([dates[0], dates[2]]),
+        buyable_df=pd.DataFrame(True, index=dates, columns=["A", "B"]),
+        sellable_df=pd.DataFrame(True, index=dates, columns=["A", "B"]),
+        one_side_cost_rate=0.003,
+        top_n=1,
+        execution_timing=v2_0.freq_mod.EXECUTION_TIMING_CLOSE,
+    )
+
+    final_rows = turnover.loc[turnover["rebalance_date"].eq(dates[2])]
+    assert len(final_rows) == 1
+    assert final_rows.iloc[0]["return_start_date"] == dates[3]
+
+
 def test_recent_proxy_extension_preserves_frozen_history_and_chains_new_returns() -> None:
     existing = pd.DataFrame(
         {

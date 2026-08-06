@@ -3282,6 +3282,42 @@ def simulate_rebalance_path(
             }
         )
 
+    if len(trading_dates) and execution_timing == EXECUTION_TIMING_CLOSE:
+        final_dt = pd.Timestamp(trading_dates[-1])
+        if final_dt in rebalance_set and final_dt not in effective_members_map:
+            target_members = target_members_map.get(final_dt, [])
+            trade_result = apply_trade_constraints(
+                current_members=current_members,
+                target_members=target_members,
+                trade_date=final_dt,
+                buyable_df=buyable_df,
+                sellable_df=sellable_df,
+                top_n=top_n,
+            )
+            current_members = trade_result["members_after"]
+            effective_members_map[final_dt] = current_members.copy()
+            buys = len(trade_result["entered"])
+            sells = len(trade_result["exited"])
+            turnover_rows.append(
+                {
+                    "rebalance_date": final_dt,
+                    "execution_timing": execution_timing,
+                    "constraint_trade_date": final_dt,
+                    "execution_date": final_dt,
+                    "effective_date": final_dt,
+                    "return_start_date": pd.NaT,
+                    "exit_count": sells,
+                    "entry_count": buys,
+                    "blocked_entry_count": len(trade_result["blocked_entries"]),
+                    "blocked_exit_count": len(trade_result["blocked_exits"]),
+                    "buy_turnover_frac": buys / top_n,
+                    "sell_turnover_frac": sells / top_n,
+                    "turnover_frac_one_side": (buys + sells) / (2 * top_n),
+                    "two_side_cost_rate": one_side_cost_rate * ((buys + sells) / top_n),
+                    "holding_count_after": len(current_members),
+                }
+            )
+
     return pd.DataFrame(index_rows), pd.DataFrame(turnover_rows), effective_members_map
 
 
