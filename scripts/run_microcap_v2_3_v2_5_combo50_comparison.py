@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import subprocess
@@ -11,6 +12,8 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +35,14 @@ WINDOWS: tuple[tuple[str, int | None], ...] = (
     ("last_5y", 5),
     ("last_3y", 3),
     ("last_1y", 1),
+)
+FORMAL_DAILY_KEYS = (
+    "base_panel_shadow",
+    "base_index_csv",
+    "base_costed_nav",
+    "v2_0_costed_nav",
+    "v2_3_costed_nav",
+    "v2_5_costed_nav",
 )
 
 
@@ -111,7 +122,15 @@ def _formal_artifact_specs() -> dict[str, tuple[Path, tuple[str, ...]]]:
 
 def validate_formal_freshness(
     artifacts: dict[str, tuple[Path, tuple[str, ...]]] | None = None,
+    *,
+    expected_latest_date: object | None = None,
 ) -> dict[str, object]:
+    expected = v2_0.overlay_mod._coerce_date_text(expected_latest_date)
+    if not expected:
+        raise RuntimeError(
+            "formal combo50 requires an independent official latest close date produced by the "
+            "v2.0 refresh/context path"
+        )
     specs = _formal_artifact_specs() if artifacts is None else artifacts
     states: dict[str, dict[str, object]] = {}
     issues: list[str] = []
@@ -129,24 +148,32 @@ def validate_formal_freshness(
         elif not state.get("latest_date"):
             issues.append(f"{name} has no valid latest date: {path}")
 
-    observed_dates = [str(state["latest_date"]) for state in states.values() if state.get("latest_date")]
-    shared_latest_date: str | None = None
-    if observed_dates:
-        shared_latest_date = max(observed_dates)
-        for name, state in states.items():
-            latest_date = state.get("latest_date")
-            if latest_date and str(latest_date) != shared_latest_date:
-                issues.append(
-                    f"{name} latest_date {latest_date} does not match shared latest close-confirmed date "
-                    f"{shared_latest_date}"
-                )
-    else:
-        issues.append("no artifact exposes a latest close-confirmed date")
-
     if issues:
         raise RuntimeError("formal combo50 freshness validation failed: " + "; ".join(issues))
+
+    panel_path, panel_date_columns = specs["base_panel_shadow"]
+    panel_dates = v2_0.overlay_mod._read_artifact_date_index(
+        Path(panel_path),
+        panel_date_columns[0],
+    )
+    expected_rebalance = v2_0.overlay_mod._latest_required_rebalance_date(panel_dates, expected)
+    if not expected_rebalance:
+        raise RuntimeError(
+            "formal combo50 freshness validation cannot derive the expected latest biweekly rebalance "
+            f"from refreshed panel dates through {expected}"
+        )
+    try:
+        official_proof = v2_0.overlay_mod.validate_top100_freshness_proof(
+            states,
+            expected_latest_date=expected,
+            expected_latest_rebalance_date=expected_rebalance,
+            daily_keys=FORMAL_DAILY_KEYS,
+        )
+    except RuntimeError as exc:
+        raise RuntimeError(f"formal combo50 freshness validation failed: {exc}") from exc
     return {
-        "shared_latest_close_date": shared_latest_date,
+        "expected_latest_date": official_proof["expected_latest_date"],
+        "expected_latest_rebalance_date": official_proof["expected_latest_rebalance_date"],
         "artifacts": states,
     }
 
@@ -371,14 +398,14 @@ def _write_record(run_folder: Path, long_df: pd.DataFrame, combo_vs: pd.DataFram
         "",
         "## Reproducibility",
         "",
-        "- Entrypoint: `python scripts/run_microcap_v2_3_v2_5_combo50_comparison.py`",
+        f"- Command: `{meta['command']}`",
         f"- Generated at: {meta['created_at']}",
     ]
     (run_folder / "record.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def main() -> None:
-    freshness_proof = validate_formal_freshness()
+def main(*, expected_latest_date: object | None = None) -> None:
+    freshness_proof = validate_formal_freshness(expected_latest_date=expected_latest_date)
     RUN_FOLDER.mkdir(parents=True, exist_ok=True)
     v23 = _load_costed_nav(V2_3_COSTED_NAV, "v2.3")
     v25 = _load_costed_nav(V2_5_COSTED_NAV, "v2.5")
@@ -402,7 +429,10 @@ def main() -> None:
         "project": "microcap Top100",
         "strategy": "v2.3 v2.5 50/50 combo comparison",
         "entrypoint": "scripts/run_microcap_v2_3_v2_5_combo50_comparison.py",
-        "command": "python scripts/run_microcap_v2_3_v2_5_combo50_comparison.py",
+        "command": (
+            "python scripts/run_microcap_v2_3_v2_5_combo50_comparison.py "
+            f"--official-latest-close-date {freshness_proof['expected_latest_date']}"
+        ),
         "git_branch": _git_output(["branch", "--show-current"]),
         "git_commit": _git_output(["rev-parse", "HEAD"]),
         "git_status": _git_output(["status", "--short"]),
@@ -417,7 +447,8 @@ def main() -> None:
             "common_start": str(pd.Timestamp(daily["date"].iloc[0]).date()),
             "common_end": str(pd.Timestamp(daily["date"].iloc[-1]).date()),
             "common_rows": int(len(daily)),
-            "shared_latest_close_date": freshness_proof["shared_latest_close_date"],
+            "expected_latest_close_date": freshness_proof["expected_latest_date"],
+            "expected_latest_rebalance_date": freshness_proof["expected_latest_rebalance_date"],
             "freshness_proof": freshness_proof["artifacts"],
         },
         "outputs": {
@@ -440,5 +471,16 @@ def main() -> None:
     print(f"rows={len(daily)} start={meta['data_snapshot']['common_start']} end={meta['data_snapshot']['common_end']}")
 
 
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run the formal v2.3/v2.5 combo50 comparison.")
+    parser.add_argument(
+        "--official-latest-close-date",
+        required=True,
+        help="Latest close-confirmed date produced independently by the official v2.0 refresh/context path.",
+    )
+    return parser.parse_args(argv)
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    cli_args = _parse_args()
+    sys.exit(main(expected_latest_date=cli_args.official_latest_close_date))

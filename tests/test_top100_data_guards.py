@@ -27,12 +27,20 @@ COMBO50_FRESHNESS_DATE_COLUMNS = {
 
 def _write_combo50_freshness_artifacts(
     tmp_path: Path,
+    *,
+    daily_latest: str = "2026-07-10",
+    turnover_latest: str = "2026-07-09",
 ) -> dict[str, tuple[Path, tuple[str, ...]]]:
     artifacts: dict[str, tuple[Path, tuple[str, ...]]] = {}
-    dates = ["2026-06-26", "2026-06-29"]
     for name, date_column in COMBO50_FRESHNESS_DATE_COLUMNS.items():
         path = tmp_path / f"{name}.csv"
-        pd.DataFrame({date_column: dates, "value": [1.0, 1.0]}).to_csv(path, index=False)
+        if name == "base_panel_shadow":
+            dates = [str(date.date()) for date in pd.bdate_range("2026-06-25", daily_latest)]
+        elif name == "base_proxy_turnover":
+            dates = ["2026-06-25", turnover_latest]
+        else:
+            dates = ["2026-07-09", daily_latest]
+        pd.DataFrame({date_column: dates, "value": [1.0] * len(dates)}).to_csv(path, index=False)
         artifacts[name] = (path, (date_column,))
     return artifacts
 
@@ -217,14 +225,20 @@ def test_freshness_proof_blocks_misaligned_daily_stream_and_stale_turnover() -> 
         )
 
 
-def test_combo50_freshness_proof_records_all_artifact_dates_and_row_counts(tmp_path: Path) -> None:
-    proof = combo50.validate_formal_freshness(_write_combo50_freshness_artifacts(tmp_path))
+def test_combo50_freshness_accepts_daily_close_after_latest_rebalance(tmp_path: Path) -> None:
+    proof = combo50.validate_formal_freshness(
+        _write_combo50_freshness_artifacts(tmp_path),
+        expected_latest_date="2026-07-10",
+    )
 
-    assert proof["shared_latest_close_date"] == "2026-06-29"
+    assert proof["expected_latest_date"] == "2026-07-10"
+    assert proof["expected_latest_rebalance_date"] == "2026-07-09"
     assert set(proof["artifacts"]) == set(COMBO50_FRESHNESS_DATE_COLUMNS)
     assert all(state["exists"] for state in proof["artifacts"].values())
-    assert all(state["latest_date"] == "2026-06-29" for state in proof["artifacts"].values())
-    assert all(state["row_count"] == 2 for state in proof["artifacts"].values())
+    for name, state in proof["artifacts"].items():
+        expected = "2026-07-09" if name == "base_proxy_turnover" else "2026-07-10"
+        assert state["latest_date"] == expected
+        assert state["row_count"] > 0
 
 
 @pytest.mark.parametrize("artifact_name", COMBO50_FRESHNESS_DATE_COLUMNS)
@@ -236,7 +250,7 @@ def test_combo50_freshness_proof_rejects_each_missing_artifact(
     artifacts[artifact_name][0].unlink()
 
     with pytest.raises(RuntimeError, match=rf"{artifact_name}.*missing"):
-        combo50.validate_formal_freshness(artifacts)
+        combo50.validate_formal_freshness(artifacts, expected_latest_date="2026-07-10")
 
 
 @pytest.mark.parametrize("artifact_name", COMBO50_FRESHNESS_DATE_COLUMNS)
@@ -246,13 +260,30 @@ def test_combo50_freshness_proof_rejects_each_date_misaligned_artifact(
 ) -> None:
     artifacts = _write_combo50_freshness_artifacts(tmp_path)
     path, date_columns = artifacts[artifact_name]
-    pd.DataFrame({date_columns[0]: ["2026-06-25", "2026-06-26"], "value": [1.0, 1.0]}).to_csv(
-        path,
-        index=False,
+    if artifact_name == "base_panel_shadow":
+        stale_dates = [str(date.date()) for date in pd.bdate_range("2026-06-25", "2026-07-09")]
+    elif artifact_name == "base_proxy_turnover":
+        stale_dates = ["2026-06-25", "2026-07-08"]
+    else:
+        stale_dates = ["2026-07-08", "2026-07-09"]
+    pd.DataFrame({date_columns[0]: stale_dates, "value": [1.0] * len(stale_dates)}).to_csv(path, index=False)
+
+    expected = "2026-07-09" if artifact_name == "base_proxy_turnover" else "2026-07-10"
+    with pytest.raises(RuntimeError, match=rf"{artifact_name}.*{stale_dates[-1]}.*{expected}"):
+        combo50.validate_formal_freshness(artifacts, expected_latest_date="2026-07-10")
+
+
+def test_combo50_freshness_rejects_uniformly_stale_files_against_independent_target(
+    tmp_path: Path,
+) -> None:
+    artifacts = _write_combo50_freshness_artifacts(
+        tmp_path,
+        daily_latest="2026-07-09",
+        turnover_latest="2026-07-09",
     )
 
-    with pytest.raises(RuntimeError, match=rf"{artifact_name}.*2026-06-26.*2026-06-29"):
-        combo50.validate_formal_freshness(artifacts)
+    with pytest.raises(RuntimeError, match=r"base_panel_shadow.*2026-07-09.*2026-07-10"):
+        combo50.validate_formal_freshness(artifacts, expected_latest_date="2026-07-10")
 
 
 def test_combo50_validates_freshness_before_creating_formal_outputs(
@@ -264,7 +295,7 @@ def test_combo50_validates_freshness_before_creating_formal_outputs(
     monkeypatch.setattr(
         combo50,
         "validate_formal_freshness",
-        lambda: (_ for _ in ()).throw(RuntimeError("freshness blocked")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("freshness blocked")),
         raising=False,
     )
     monkeypatch.setattr(
@@ -274,6 +305,16 @@ def test_combo50_validates_freshness_before_creating_formal_outputs(
     )
 
     with pytest.raises(RuntimeError, match="freshness blocked"):
+        combo50.main(expected_latest_date="2026-07-10")
+
+    assert not run_folder.exists()
+
+
+def test_combo50_requires_independent_official_latest_close_before_output(tmp_path: Path, monkeypatch) -> None:
+    run_folder = tmp_path / "formal-output"
+    monkeypatch.setattr(combo50, "RUN_FOLDER", run_folder)
+
+    with pytest.raises(RuntimeError, match="independent official latest close"):
         combo50.main()
 
     assert not run_folder.exists()
