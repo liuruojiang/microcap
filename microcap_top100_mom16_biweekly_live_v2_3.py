@@ -1,11 +1,14 @@
 ﻿from __future__ import annotations
 
 import argparse
+import copy
 import importlib
 import json
 import math
 import re
+import shutil
 import sys
+import tempfile
 import threading
 import time
 import warnings
@@ -103,9 +106,10 @@ SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_exp_h3_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv"
 DEFAULT_COSTED_NAV_CSV = COSTED_NAV_CSV
 LEGACY_COSTED_NAV_CSVS = [
+    OUTPUT_DIR / "microcap_top100_mom16_exp_h3_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv",
     OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv",
     OUTPUT_DIR / "microcap_top100_mom16_exp_h4_lb17_signal1p0_exec0p8_gap13_decay35_recovery50_targetvol25_scale030_v2_3_costed_nav.csv"
 ]
@@ -121,21 +125,32 @@ PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 VERSION = "2.3"
-EXPECTED_VERSION_ROLE = "spread_nav_log_wls_gap_target_vol_overlay"
-EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS target-volatility overlay."
-LOOKBACK = 17
-HALFLIFE = 3.0
-MOMENTUM_GAP_EXIT_BUFFER = 0.13
+EXPECTED_VERSION_ROLE = "spread_nav_log_wls_lb25_r2_vol10_overheat"
+EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense."
+LOOKBACK = 25
+HALFLIFE = 2.5
+R2_WINDOW = 25
+R2_ENTRY_GATE = 0.08
+MOMENTUM_GAP_ENTRY_THRESHOLD = 0.0
+MOMENTUM_GAP_EXIT_BUFFER = 0.08
+OVERHEAT_KIND = "vol"
+OVERHEAT_FEATURE_WINDOW = 10
+OVERHEAT_TRIGGER_THRESHOLD = 0.26
+OVERHEAT_RECOVERY_RATIO = 0.75
+OVERHEAT_RECOVERY_THRESHOLD = OVERHEAT_TRIGGER_THRESHOLD * OVERHEAT_RECOVERY_RATIO
+TARGET_VOL_ENABLED = False
+CASH_DAY_YIELD_ENABLED = False
+FINANCING_ENABLED = False
 TARGET_VOL = 0.25
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.30
 FORMAL_START_DATE = pd.Timestamp("2010-05-05")
-CASH_DAY_YIELD = float(v2_0.overlay_mod.IDLE_CASH_YIELD)
+CASH_DAY_YIELD = 0.0
 MISMATCH_DIAGNOSTIC_ROLLING_WINDOW = 60
 MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS = 5
 _OFFICIAL_V2_0_OUT_CACHE: tuple[str, pd.DataFrame] | None = None
 _OFFICIAL_V2_0_OUT_CACHE_LOCK = threading.Lock()
 
-EXPECTED_V2_0_TARGET_VOL_WINDOW = 60
+EXPECTED_V2_0_TARGET_VOL_WINDOW = 75
 EXPECTED_V2_0_MAX_LEVERAGE = 1.5
 EXPECTED_V2_0_BASE_HEDGE_RATIO = 0.8
 EXPECTED_V2_0_TRADING_DAYS = 244
@@ -200,6 +215,7 @@ def validate_v2_0_contract() -> None:
     _require_v2_0_callable(v2_0, "current_base_fingerprint", "current_base_fingerprint")
     _require_v2_0_callable(v2_0, "current_strategy_fingerprint", "current_strategy_fingerprint")
     _require_v2_0_callable(v2_0, "current_data_state_fingerprint", "current_data_state_fingerprint")
+    _require_v2_0_callable(v2_0, "assert_top100_outputs_fresh", "assert_top100_outputs_fresh")
     _require_v2_0_callable(v2_0, "current_runtime_fingerprint", "current_runtime_fingerprint")
     _require_v2_0_callable(v2_0, "generate_v2_0_outputs", "generate_v2_0_outputs")
     _require_v2_0_callable(v2_0, "run_realtime_query_with_fresh_state", "run_realtime_query_with_fresh_state")
@@ -447,6 +463,10 @@ def ensure_output_dir() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _read_costed_nav_csv(path: Path | None = None, **kwargs: object) -> pd.DataFrame:
+    return pd.read_csv(COSTED_NAV_CSV if path is None else path, encoding="utf-8-sig", **kwargs)
+
+
 def exp_weights(lookback: int = LOOKBACK, halflife: float = HALFLIFE) -> tuple[float, ...]:
     age_from_latest = np.arange(int(lookback) - 1, -1, -1, dtype=float)
     raw = 0.5 ** (age_from_latest / float(halflife))
@@ -573,11 +593,34 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
     close_df = close_df.sort_index()
     spread_nav, micro_ret, hedge_ret, _signal_daily_drag = always_on_spread_nav(close_df)
     log_wls = log_wls_score_and_r2(spread_nav)
+    microcap_component = log_wls_score_and_r2((1.0 + micro_ret.fillna(0.0)).cumprod())
+    hedge_component = log_wls_score_and_r2((1.0 + hedge_ret.fillna(0.0)).cumprod())
     common_index = _valid_log_wls_index(close_df) if index is None else pd.DatetimeIndex(index)
     score = pd.to_numeric(log_wls["annualized_log_wls_score"].loc[common_index], errors="coerce")
     r2 = pd.to_numeric(log_wls["log_wls_r2"].loc[common_index], errors="coerce")
-    signal_on = score.gt(0.0)
-    current_active = signal_on.shift(1, fill_value=False)
+    microcap_component_score = pd.to_numeric(
+        microcap_component["annualized_log_wls_score"].loc[common_index], errors="coerce"
+    )
+    hedge_component_score = pd.to_numeric(
+        hedge_component["annualized_log_wls_score"].loc[common_index], errors="coerce"
+    )
+    next_active_values: list[bool] = []
+    active_state = False
+    for dt in common_index:
+        score_value = score.loc[dt]
+        r2_value = r2.loc[dt]
+        score_valid = pd.notna(score_value) and np.isfinite(float(score_value))
+        r2_pass = pd.notna(r2_value) and np.isfinite(float(r2_value)) and float(r2_value) >= R2_ENTRY_GATE
+        if not score_valid:
+            next_active = False
+        elif active_state:
+            next_active = bool(float(score_value) >= -float(MOMENTUM_GAP_EXIT_BUFFER))
+        else:
+            next_active = bool(float(score_value) > MOMENTUM_GAP_ENTRY_THRESHOLD and r2_pass)
+        next_active_values.append(next_active)
+        active_state = bool(next_active)
+    signal_on = pd.Series(next_active_values, index=common_index, dtype=bool)
+    current_active = signal_on.shift(1, fill_value=False).astype(bool)
     microcap_ret = micro_ret.loc[common_index]
     hedge_ret_part = hedge_ret.loc[common_index]
     execution_daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * EXECUTION_HEDGE_RATIO
@@ -599,8 +642,14 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
             "hedge_close": close_df["hedge"].loc[common_index],
             "microcap_ret": microcap_ret,
             "hedge_ret": hedge_ret_part,
-            "microcap_mom": score,
-            "hedge_mom": 0.0,
+            "microcap_mom": microcap_component_score,
+            "hedge_mom": hedge_component_score,
+            "microcap_log_wls_r2": pd.to_numeric(
+                microcap_component["log_wls_r2"].loc[common_index], errors="coerce"
+            ),
+            "hedge_log_wls_r2": pd.to_numeric(
+                hedge_component["log_wls_r2"].loc[common_index], errors="coerce"
+            ),
             "momentum_gap": score,
             "momentum_gap_deprecated": True,
             "annualized_log_wls_score": score,
@@ -608,9 +657,17 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
             "log_wls_r2": r2,
             "spread_nav": spread_nav.loc[common_index],
             "halflife": HALFLIFE,
+            "lookback": LOOKBACK,
             "exp_weight_oldest_to_newest": ",".join(f"{w:.8f}" for w in exp_weights()),
             "signal_score_label": "annualized_log_wls_score",
             "momentum_gap_legacy_note": "legacy field contains annualized spread-NAV log-WLS score, not plain microcap-minus-hedge momentum gap",
+            "r2_window": R2_WINDOW,
+            "r2_entry_gate": R2_ENTRY_GATE,
+            "r2_gate_pass": r2.ge(R2_ENTRY_GATE).fillna(False).astype(bool),
+            "entry_threshold": MOMENTUM_GAP_ENTRY_THRESHOLD,
+            "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
+            "signal_spread_hedge_ratio": SIGNAL_SPREAD_HEDGE_RATIO,
+            "execution_hedge_ratio": EXECUTION_HEDGE_RATIO,
             "futures_drag": futures_drag,
             "active_spread_ret": pd.Series(np.where(current_active, active_spread_ret, 0.0), index=common_index, dtype=float),
             "weight": 1.0,
@@ -623,6 +680,157 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
 def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
     out = v2_0.base_mod.freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
     out["overlay_pre_cost_return"] = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+    return out
+
+
+def _overheat_feature_series(gross: pd.DataFrame) -> pd.Series:
+    kind = str(OVERHEAT_KIND)
+    if kind == "vol":
+        spread_nav = pd.to_numeric(gross["spread_nav"], errors="coerce")
+        ret = spread_nav.pct_change(fill_method=None).fillna(0.0)
+        return ret.rolling(int(OVERHEAT_FEATURE_WINDOW)).std(ddof=1).mul(math.sqrt(TRADING_DAYS))
+    raise ValueError(f"unknown v2.3 overheat kind: {kind}")
+
+
+def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
+    trigger_threshold = float(OVERHEAT_TRIGGER_THRESHOLD)
+    recovery_threshold = float(OVERHEAT_RECOVERY_THRESHOLD)
+    if recovery_threshold >= trigger_threshold:
+        raise ValueError("OVERHEAT_RECOVERY_THRESHOLD must be lower than OVERHEAT_TRIGGER_THRESHOLD")
+
+    out = gross.copy().sort_index()
+    feature = _overheat_feature_series(out).reindex(out.index)
+    base_holding = out["holding"].fillna("cash").astype(str)
+    base_next_holding = out["next_holding"].fillna(base_holding).astype(str)
+    returns = pd.to_numeric(out["return"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    rebalance_base = v2_0.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce").fillna(0.0)
+    entry_cost_value = float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
+    exit_cost_value = float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+
+    current_active = bool(base_holding.iloc[0] != "cash") if len(base_holding) else False
+    risk_off = False
+    nav_net = 1.0
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    risk_off_flags: list[bool] = []
+    exit_flags: list[bool] = []
+    reentry_flags: list[bool] = []
+    block_entry_flags: list[bool] = []
+    execution_scales: list[float] = []
+    next_execution_scales: list[float] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+    overlay_pre_cost_returns: list[float] = []
+
+    for dt in out.index:
+        base_next_active = bool(base_next_holding.loc[dt] != "cash")
+        value = feature.loc[dt]
+        is_hot = pd.notna(value) and float(value) >= trigger_threshold
+        is_cool = pd.notna(value) and float(value) <= recovery_threshold
+        exit_trigger = False
+        reentry_trigger = False
+        block_entry_trigger = False
+
+        if risk_off:
+            if is_cool:
+                desired_next_active = base_next_active
+                risk_off_next = False
+                reentry_trigger = bool(base_next_active)
+            else:
+                desired_next_active = False
+                risk_off_next = True
+        else:
+            desired_next_active = base_next_active
+            risk_off_next = False
+            if desired_next_active and is_hot:
+                if current_active:
+                    exit_trigger = True
+                else:
+                    block_entry_trigger = True
+                desired_next_active = False
+                risk_off_next = True
+
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+        entry_cost = entry_cost_value if (not current_active and desired_next_active) else 0.0
+        exit_cost = exit_cost_value if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        risk_off_flags.append(bool(risk_off))
+        exit_flags.append(bool(exit_trigger))
+        reentry_flags.append(bool(reentry_trigger))
+        block_entry_flags.append(bool(block_entry_trigger))
+        execution_scales.append(1.0 if current_active else 0.0)
+        next_execution_scales.append(1.0 if desired_next_active else 0.0)
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+        overlay_pre_cost_returns.append(float(realized_daily_return))
+
+        current_active = bool(desired_next_active)
+        risk_off = bool(risk_off_next)
+
+    out["base_holding"] = base_holding
+    out["base_next_holding"] = base_next_holding
+    out["base_signal_on"] = base_next_holding.ne("cash")
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["overheat_kind"] = OVERHEAT_KIND
+    out["overheat_feature_window"] = int(OVERHEAT_FEATURE_WINDOW)
+    out["overheat_trigger_threshold"] = trigger_threshold
+    out["overheat_recovery_threshold"] = recovery_threshold
+    out["overheat_recovery_ratio"] = float(OVERHEAT_RECOVERY_RATIO)
+    out["overheat_feature_value"] = feature
+    out["overheat_risk_off"] = pd.Series(risk_off_flags, index=out.index, dtype=bool)
+    out["overheat_exit_triggered"] = pd.Series(exit_flags, index=out.index, dtype=bool)
+    out["overheat_reentry_triggered"] = pd.Series(reentry_flags, index=out.index, dtype=bool)
+    out["overheat_block_entry_triggered"] = pd.Series(block_entry_flags, index=out.index, dtype=bool)
+    out["actual_execution_scale"] = pd.Series(execution_scales, index=out.index, dtype=float)
+    out["current_execution_scale"] = out["actual_execution_scale"]
+    out["execution_scale"] = out["actual_execution_scale"]
+    out["target_vol_execution_scale"] = out["actual_execution_scale"]
+    out["next_session_actionable_scale"] = pd.Series(next_execution_scales, index=out.index, dtype=float)
+    out["next_session_target_scale"] = out["next_session_actionable_scale"]
+    out["target_vol_scale_next_session"] = out["next_session_actionable_scale"]
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["base_trade_cost_scaled"] = out["rebalance_cost"]
+    out["scale_change_cost"] = 0.0
+    out["financing_cost"] = 0.0
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["base_pre_cost_return"] = pd.Series(overlay_pre_cost_returns, index=out.index, dtype=float)
+    out["overlay_pre_cost_return"] = out["base_pre_cost_return"]
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    out["return"] = out["return_net"]
+    out["nav"] = out["nav_net"]
+    out["version"] = VERSION
+    out["base_version"] = "embedded_v2_base"
+    out["overlay_type"] = "spread_nav_log_wls_lb25_vol10_overheat"
+    out["target_vol_enabled"] = TARGET_VOL_ENABLED
+    out["cash_day_yield"] = 0.0
+    out["cash_day_yield_annual"] = 0.0
+    out["cash_day_yield_enabled"] = CASH_DAY_YIELD_ENABLED
+    out["financing_enabled"] = FINANCING_ENABLED
+    out["return_column_semantics"] = (
+        "return equals return_net after v2.3 LB25 R2-gated signal, vol10 overheat defense, "
+        "and base entry/exit/rebalance costs; no target-vol, cash-day yield, or financing overlay"
+    )
     return out
 
 
@@ -661,6 +869,61 @@ def _safe_float(value: object, default: float = 0.0) -> float:
         return float(value)
     except (TypeError, ValueError):
         return float(default)
+
+
+def _holding_is_active(value: object) -> bool:
+    if pd.isna(value):
+        return False
+    text = str(value or "cash")
+    return text not in {"", "cash", "nan", "None", "<NA>"}
+
+
+def _apply_fixed_exposure_next_session_cost_fields(
+    row: pd.DataFrame,
+    latest: pd.Series,
+    *,
+    hedge_ratio: float,
+) -> None:
+    row_idx = row.index[0]
+    current_holding = str(row.at[row_idx, "current_holding"])
+    next_holding = str(row.at[row_idx, "next_holding"])
+    current_active = _holding_is_active(current_holding)
+    next_active = _holding_is_active(next_holding)
+    current_scale = _safe_float(
+        latest.get("current_execution_scale", latest.get("execution_scale")),
+        1.0 if current_active else 0.0,
+    )
+    next_scale = _safe_float(
+        latest.get("next_session_actionable_scale", latest.get("target_vol_scale_next_session")),
+        1.0 if next_active else 0.0,
+    )
+    if not current_active:
+        current_scale = 0.0
+    if not next_active:
+        next_scale = 0.0
+    exposure_delta = abs(float(next_scale) - float(current_scale))
+    next_session_leg_turnover = exposure_delta * (1.0 + float(hedge_ratio))
+    entry_cost = (
+        float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST) * max(float(next_scale), 0.0)
+        if (not current_active and next_active)
+        else 0.0
+    )
+    exit_cost = (
+        float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST) * max(float(current_scale), 0.0)
+        if (current_active and not next_active)
+        else 0.0
+    )
+    trade_cost = float(entry_cost + exit_cost)
+    row["next_session_turnover"] = float(next_session_leg_turnover)
+    row["next_session_leg_turnover"] = float(next_session_leg_turnover)
+    row["next_session_leg_cost_est_raw"] = trade_cost
+    row["next_session_overlay_cost_est"] = 0.0
+    row["next_session_trade_cost_est"] = trade_cost
+    row["next_session_overlay_trade_cost_est"] = 0.0
+    row["next_session_trade_cost_est_type"] = "fixed_exposure_entry_exit"
+    row["next_session_total_trade_cost_est_note"] = (
+        "fixed-exposure entry/exit cost estimate; target-vol scale-change cost is disabled"
+    )
 
 
 def build_signal_execution_mismatch_diagnostics(
@@ -831,9 +1094,7 @@ def build_v2_3_result(
         common_index = pd.DatetimeIndex(common_index)
         common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
     gross = build_spread_log_wls_gross(close_df, common_index)
-    buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
-    costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, turnover_df)
-    out = apply_target_vol(costed, TARGET_VOL)
+    out = apply_overheat_defense(gross, turnover_df)
     if out.empty:
         raise ValueError(
             "v2.3 output is empty: check close_df, official_v2_0_out.index, "
@@ -849,7 +1110,17 @@ def current_base_fingerprint() -> dict[str, object]:
         "base_version": "embedded_v2_base",
         "strategy_version": VERSION,
         "base_fingerprint": base,
-        "signal_model": "spread_nav_log_wls_exp_halflife_3p0_lb17_signal1p0_exec0p8",
+        "signal_model": {
+            "type": "spread_nav_log_wls_exp",
+            "lookback": LOOKBACK,
+            "halflife": HALFLIFE,
+            "r2_window": R2_WINDOW,
+            "r2_entry_gate": R2_ENTRY_GATE,
+            "entry_threshold": MOMENTUM_GAP_ENTRY_THRESHOLD,
+            "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
+            "signal_spread_hedge_ratio": SIGNAL_SPREAD_HEDGE_RATIO,
+            "execution_hedge_ratio": EXECUTION_HEDGE_RATIO,
+        },
         "lookback": LOOKBACK,
         "halflife": HALFLIFE,
         "exp_weight_oldest_to_newest": list(exp_weights()),
@@ -858,22 +1129,26 @@ def current_base_fingerprint() -> dict[str, object]:
         "nav_csv_momentum_gap_column_alias_note": "momentum_gap stores annualized_log_wls_score for v2.0 compatibility, not raw microcap minus hedge gap",
         "schema_version": "log_wls_score_schema_v1",
         "momentum_gap_deprecated": True,
-        "r2_gate": None,
+        "r2_gate": R2_ENTRY_GATE,
+        "r2_window": R2_WINDOW,
+        "momentum_gap_entry_threshold": MOMENTUM_GAP_ENTRY_THRESHOLD,
         "signal_spread_hedge_ratio": SIGNAL_SPREAD_HEDGE_RATIO,
         "execution_hedge_ratio": EXECUTION_HEDGE_RATIO,
         "base_hedge_ratio": BASE_HEDGE_RATIO,
         "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
         "signal_quality_derisk_enabled": False,
-        "target_vol": TARGET_VOL,
-        "target_vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
-        "target_vol_max_leverage": float(v2_0.overlay_mod.TARGET_VOL_MAX_LEVERAGE),
-        "target_vol_scale_change_cost": float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST),
-        "target_vol_financing_rate": float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE),
-        "target_vol_scale_rebalance_threshold": TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
-        "cash_day_yield": CASH_DAY_YIELD,
-        "idle_credit_on_cash_day": True,
+        "overheat_defense": {
+            "enabled": True,
+            "kind": OVERHEAT_KIND,
+            "feature_window": OVERHEAT_FEATURE_WINDOW,
+            "trigger_threshold": OVERHEAT_TRIGGER_THRESHOLD,
+            "recovery_ratio": OVERHEAT_RECOVERY_RATIO,
+            "recovery_threshold": OVERHEAT_RECOVERY_THRESHOLD,
+        },
+        "target_volatility_scaling": {"enabled": TARGET_VOL_ENABLED},
+        "cash_day_yield": {"enabled": CASH_DAY_YIELD_ENABLED},
+        "financing": {"enabled": FINANCING_ENABLED},
         "signal_execution_mismatch_rolling_window": MISMATCH_DIAGNOSTIC_ROLLING_WINDOW,
-        "max_realtime_target_vol_frozen_lag_days": MAX_REALTIME_TARGET_VOL_FROZEN_LAG_DAYS,
     }
 
 
@@ -950,6 +1225,55 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     }
 
 
+REQUIRED_PERFORMANCE_WINDOWS: tuple[tuple[str, int | None], ...] = (
+    ("full", None),
+    ("last_10y", 10),
+    ("last_5y", 5),
+    ("last_3y", 3),
+    ("last_1y", 1),
+)
+
+
+def _unavailable_window_summary(window: str, reason: str) -> dict[str, object]:
+    return {
+        "window": window,
+        "start_date": "",
+        "end_date": "",
+        "days": 0,
+        "final_nav": np.nan,
+        "total_return_pct": np.nan,
+        "annual_pct": np.nan,
+        "max_drawdown_pct": np.nan,
+        "sharpe": np.nan,
+        "vol_pct": np.nan,
+        "unavailable_reason": reason,
+    }
+
+
+def summarize_required_windows(ret: pd.Series) -> list[dict[str, object]]:
+    clean = ret.dropna().astype(float)
+    if clean.empty:
+        raise ValueError("empty return series")
+    end = pd.Timestamp(clean.index[-1])
+    rows: list[dict[str, object]] = []
+    for window, years in REQUIRED_PERFORMANCE_WINDOWS:
+        if years is None:
+            part = clean
+            required_start = pd.Timestamp(clean.index[0])
+        else:
+            required_start = end - pd.DateOffset(years=int(years))
+            part = clean.loc[clean.index >= required_start]
+        if part.empty:
+            rows.append(_unavailable_window_summary(window, "no data in requested window"))
+            continue
+        row = dict(summarize_returns(part))
+        row["window"] = window
+        row["required_start_date"] = str(required_start.date())
+        row["unavailable_reason"] = ""
+        rows.append(row)
+    return rows
+
+
 def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for year, part in ret.groupby(ret.index.year):
@@ -976,9 +1300,21 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3") -> dict[str, object]:
+def build_performance_payload(
+    ret: pd.Series,
+    source_label: str = "costed_v2_3",
+    output_paths: dict[str, Path] | None = None,
+) -> dict[str, object]:
     ensure_output_dir()
-    summary = summarize_returns(ret)
+    write_paths = output_paths or {
+        "summary": PERF_SUMMARY_CSV,
+        "yearly": PERF_YEARLY_CSV,
+        "nav": PERF_NAV_CSV,
+        "json": PERF_JSON,
+        "png": PERF_PNG,
+    }
+    window_summaries = summarize_required_windows(ret)
+    summary = dict(window_summaries[0])
     yearly_df = summarize_yearly(ret)
     nav_df = pd.DataFrame(
         {
@@ -987,9 +1323,9 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
             "nav_net": (1.0 + ret.fillna(0.0)).cumprod().values,
         }
     )
-    _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(pd.DataFrame([summary]), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(yearly_df, write_paths["yearly"], index=False, encoding="utf-8-sig")
+    _atomic_write_csv(nav_df, write_paths["nav"], index=False, encoding="utf-8-sig")
+    _atomic_write_csv(pd.DataFrame(window_summaries), write_paths["summary"], index=False, encoding="utf-8-sig")
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], label="v2.3 nav_net")
     plt.title("Top100 Microcap Mom16 v2.3 Costed NAV")
@@ -998,11 +1334,12 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(PERF_PNG, dpi=150)
+    plt.savefig(write_paths["png"], dpi=150)
     plt.close()
     payload = {
         "source_label": source_label,
         "summary": summary,
+        "windows": window_summaries,
         "outputs": {
             "summary_csv": str(PERF_SUMMARY_CSV),
             "yearly_csv": str(PERF_YEARLY_CSV),
@@ -1010,7 +1347,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_3")
             "chart": str(PERF_PNG),
         },
     }
-    _atomic_write_text(PERF_JSON, _json_dumps(payload), encoding="utf-8")
+    _atomic_write_text(write_paths["json"], _json_dumps(payload), encoding="utf-8")
     return payload
 
 
@@ -1019,12 +1356,15 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
-    row["overlay_type"] = "spread_nav_log_wls_gap_target_vol"
-    row["signal_model"] = "spread_nav_log_wls_exp_halflife_3p0_lb17_signal1p0_exec0p8"
+    row["overlay_type"] = "spread_nav_log_wls_lb25_vol10_overheat"
+    row["signal_model"] = "spread_nav_log_wls_exp_halflife_2p5_lb25_r2gate0p08_signal1p0_exec0p8_vol10_overheat"
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     row["halflife"] = HALFLIFE
     row["lookback"] = LOOKBACK
+    row["r2_window"] = R2_WINDOW
+    row["r2_entry_gate"] = R2_ENTRY_GATE
+    row["momentum_gap_entry_threshold"] = MOMENTUM_GAP_ENTRY_THRESHOLD
     row["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
     row["signal_quality_derisk_enabled"] = False
     row["signal_score_label"] = "annualized_log_wls_score"
@@ -1034,14 +1374,48 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "legacy field contains annualized spread-NAV log-WLS score, not plain microcap-minus-hedge momentum gap"
     )
     latest = net_df.iloc[-1]
-    for col in ["annualized_log_wls_score", "log_wls_r2", "spread_nav"]:
+    for col in [
+        "annualized_log_wls_score",
+        "log_wls_r2",
+        "spread_nav",
+        "overheat_feature_value",
+        "actual_execution_scale",
+    ]:
         if col in latest and pd.notna(latest[col]):
             row[col] = float(latest[col])
-    row["target_vol"] = TARGET_VOL
-    row["target_vol_scale_rebalance_threshold"] = TARGET_VOL_SCALE_REBALANCE_THRESHOLD
-    row["cash_day_yield"] = float(latest.get("cash_day_yield", 0.0)) if "cash_day_yield" in latest else 0.0
-    row["cash_day_yield_annual"] = CASH_DAY_YIELD
-    row["cash_day_yield_enabled"] = True
+    row["overheat_kind"] = OVERHEAT_KIND
+    row["overheat_enabled"] = True
+    row["overheat_overlay_enabled"] = True
+    row["overheat_window"] = OVERHEAT_FEATURE_WINDOW
+    row["overheat_threshold"] = OVERHEAT_TRIGGER_THRESHOLD
+    row["overheat_metric_name"] = "spread_nav_realized_vol"
+    row["overheat_triggered"] = bool(latest.get("overheat_exit_triggered", False))
+    row["overheat_require_positive_trade_return"] = False
+    row["overheat_require_signal_reset"] = False
+    row["overheat_feature_window"] = OVERHEAT_FEATURE_WINDOW
+    row["overheat_trigger_threshold"] = OVERHEAT_TRIGGER_THRESHOLD
+    row["overheat_recovery_ratio"] = OVERHEAT_RECOVERY_RATIO
+    row["overheat_recovery_threshold"] = OVERHEAT_RECOVERY_THRESHOLD
+    row["overheat_risk_off"] = bool(latest.get("overheat_risk_off", False))
+    row["overheat_exit_triggered"] = bool(latest.get("overheat_exit_triggered", False))
+    row["overheat_reentry_triggered"] = bool(latest.get("overheat_reentry_triggered", False))
+    row["overheat_block_entry_triggered"] = bool(latest.get("overheat_block_entry_triggered", False))
+    row["target_vol_enabled"] = TARGET_VOL_ENABLED
+    row["target_vol"] = 0.0
+    row["target_vol_window"] = 0
+    row["target_vol_signal_timing"] = ""
+    row["target_vol_max_leverage"] = 1.0
+    row["max_leverage"] = 1.0
+    row["target_vol_scale_rebalance_threshold"] = 0.0
+    row["cash_day_yield"] = 0.0
+    row["cash_day_yield_annual"] = 0.0
+    row["cash_day_yield_enabled"] = CASH_DAY_YIELD_ENABLED
+    row["financing_enabled"] = FINANCING_ENABLED
+    _apply_fixed_exposure_next_session_cost_fields(row, latest, hedge_ratio=EXECUTION_HEDGE_RATIO)
+    row["return_column_semantics"] = (
+        "return equals return_net after LB25 R2-gated signal, vol10 overheat defense, "
+        "and base entry/exit/rebalance costs; no target-vol, cash-day yield, or financing overlay"
+    )
     return row
 
 
@@ -1078,7 +1452,15 @@ def _load_official_v2_0_out() -> pd.DataFrame:
         _, _, official_v2_0_out = v2_0.generate_v2_0_outputs()
         # Recompute after generation because panel shadow/base files may refresh
         # inside generate_v2_0_outputs(); cache the state subsequent calls will see.
-        _OFFICIAL_V2_0_OUT_CACHE = (_official_v2_0_cache_key(), official_v2_0_out)
+        post_key = _official_v2_0_cache_key()
+        if cache_key != post_key:
+            warnings.warn(
+                "v2.0 base fingerprint changed during generation; "
+                "official v2.0 output cache is keyed to the post-generation state.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+        _OFFICIAL_V2_0_OUT_CACHE = (post_key, official_v2_0_out)
         return official_v2_0_out
 
 
@@ -1096,7 +1478,7 @@ def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
     costed_nav_csv = Path(getattr(v2_0, "COSTED_NAV_CSV", ""))
     if costed_nav_csv.exists():
         try:
-            dates = pd.read_csv(costed_nav_csv, usecols=["date"], parse_dates=["date"])["date"]
+            dates = pd.read_csv(costed_nav_csv, usecols=["date"], parse_dates=["date"], encoding="utf-8-sig")["date"]
             return pd.DatetimeIndex(dates).dropna().sort_values()
         except Exception:
             pass
@@ -1108,31 +1490,54 @@ def _build_realtime_v2_3_official_index(
     meta: dict[str, object],
     official_index: pd.DatetimeIndex | pd.Index | None = None,
 ) -> pd.DatetimeIndex:
-    if official_index is None:
-        official_index = _load_realtime_v2_0_official_index()
-    official_index = pd.DatetimeIndex(official_index).dropna().sort_values()
-    return pd.DatetimeIndex(official_index)
+    del official_index
+    anchor_text = str(meta.get("latest_anchor_trade_date") or "").strip()
+    if not anchor_text:
+        raise RuntimeError("v2.3 realtime metadata is missing latest_anchor_trade_date")
+    anchor = pd.Timestamp(anchor_text).normalize()
+    close_index = pd.DatetimeIndex(close_df.index).dropna().sort_values()
+    history_index = close_index[close_index.normalize() <= anchor]
+    if len(history_index) == 0 or pd.Timestamp(history_index[-1]).normalize() != anchor:
+        raise RuntimeError(f"v2.3 validated realtime close history does not reach anchor {anchor.date()}")
+    return pd.DatetimeIndex(history_index)
 
 
 V2_3_REWRITE_AUDIT_KEY_COLUMNS = [
     "return_net",
     "holding",
     "next_holding",
+    "base_holding",
+    "base_next_holding",
     "base_pre_cost_return",
+    "actual_execution_scale",
     "current_execution_scale",
     "next_session_actionable_scale",
-    "target_vol_realized_vol",
     "base_trade_cost_scaled",
-    "scale_change_cost",
-    "financing_cost",
+    "entry_exit_cost",
+    "rebalance_cost",
+    "total_cost",
     "annualized_log_wls_score",
+    "log_wls_r2",
+    "overheat_feature_value",
+    "overheat_risk_off",
+    "overheat_exit_triggered",
+    "overheat_reentry_triggered",
+    "overheat_block_entry_triggered",
 ]
-V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS = LOOKBACK + 5
+V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS = LOOKBACK + OVERHEAT_FEATURE_WINDOW + 5
 V2_3_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN = {
     "holding": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "next_holding": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "base_holding": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "base_next_holding": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "base_pre_cost_return": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "annualized_log_wls_score": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "log_wls_r2": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "overheat_feature_value": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "overheat_risk_off": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "overheat_exit_triggered": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "overheat_reentry_triggered": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
+    "overheat_block_entry_triggered": V2_3_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
 }
 
 
@@ -1215,8 +1620,9 @@ def _write_v2_3_rewrite_diagnostics(
 ) -> Path:
     raw_input_cols = {
         "base_pre_cost_return",
-        "target_vol_realized_vol",
         "annualized_log_wls_score",
+        "log_wls_r2",
+        "overheat_feature_value",
     }
     changed = _v2_3_changed_columns(
         previous,
@@ -1246,8 +1652,8 @@ def _write_v2_3_rewrite_diagnostics(
         "audit_csv": str(audit_path),
         "note": (
             "raw_input_or_signal_changed means upstream returns/costs/signal inputs changed on frozen dates; "
-            "threshold_path_dependent_state_changed means frozen-date differences are confined to target-vol "
-            "threshold state, cost scaling, or derived returns and should be reviewed as path transmission."
+            "threshold_path_dependent_state_changed means frozen-date differences are confined to overheat "
+            "path-dependent state, cost application, or derived returns and should be reviewed as path transmission."
         ),
     }
     diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
@@ -1256,8 +1662,7 @@ def _write_v2_3_rewrite_diagnostics(
 
 
 def _v2_3_rewrite_allowed_tail_rows() -> int:
-    target_vol_window = int(v2_0.overlay_mod.TARGET_VOL_WINDOW)
-    return max(target_vol_window + LOOKBACK, target_vol_window + 20, LOOKBACK + 20, 40)
+    return max(LOOKBACK + OVERHEAT_FEATURE_WINDOW + 20, 60)
 
 
 def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
@@ -1270,7 +1675,7 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     out = build_v2_3_result(close_df, turnover_df, common_index)
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
     if COSTED_NAV_CSV.exists():
-        previous = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"])
+        previous = _read_costed_nav_csv(parse_dates=["date"])
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
         allowed_tail_rows = _v2_3_rewrite_allowed_tail_rows()
         candidate = out.rename_axis("date").reset_index()
@@ -1299,25 +1704,47 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
                 ) from exc
             raise RuntimeError(f"{exc} v2.3 rewrite diagnostics written to {diagnostics_path}.") from exc
 
-    _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
-    _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
+    freshness_proof = v2_0.assert_top100_candidate_fresh(
+        out.index,
+        expected_latest_date=out.index.max(),
+        label="v2.3 official costed NAV",
+    )
+    bundle_targets = [
+        COSTED_NAV_CSV, NAV_CSV, LATEST_SIGNAL_CSV, PERF_SUMMARY_CSV, PERF_YEARLY_CSV,
+        PERF_NAV_CSV, PERF_JSON, PERF_PNG, SUMMARY_JSON,
+    ]
+    stage_scope = tempfile.TemporaryDirectory(prefix=f".{OUTPUT_PREFIX}.stage.", dir=OUTPUT_DIR)
+    stage_root = Path(stage_scope.name)
+    staged_files = {target: stage_root / target.name for target in bundle_targets}
+    _atomic_write_csv(out, staged_files[COSTED_NAV_CSV], index_label="date", encoding="utf-8-sig")
+    _atomic_write_csv(out.rename_axis("date").reset_index(), staged_files[NAV_CSV], index=False, encoding="utf-8-sig")
+    data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
+    performance_source_label = v2_0.overlay_mod.proxy_aware_performance_source_label(data_lineage, "costed_v2_3")
     signal_row = _build_signal_row(out, reference_summary)
     apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
-    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
-    perf_payload = build_performance_payload(out["return_net"].fillna(0.0), source_label="costed_v2_3")
+    signal_row["microcap_series_source"] = data_lineage.get("source_used")
+    signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
+    signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
+    _atomic_write_text(staged_files[LATEST_SIGNAL_CSV], signal_row.to_csv(index=False), encoding="utf-8")
+    perf_payload = build_performance_payload(
+        out["return_net"].fillna(0.0),
+        source_label=performance_source_label,
+        output_paths={
+            "summary": staged_files[PERF_SUMMARY_CSV], "yearly": staged_files[PERF_YEARLY_CSV],
+            "nav": staged_files[PERF_NAV_CSV], "json": staged_files[PERF_JSON], "png": staged_files[PERF_PNG],
+        },
+    )
 
-    data_lineage = v2_0.overlay_mod._build_v2_data_lineage()
-    summary = dict(reference_summary)
+    summary = copy.deepcopy(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Formal v2.3 spread-NAV log-WLS target-volatility overlay. Uses exp half-life 3.0 weighted log slope on "
-        "17 trading days of always-on 1.0x hedged signal spread NAV, executes with 0.8x CSI1000 hedge, no R2 gate, "
-        "13% score exit buffer, no peak-decay signal-quality derisk, cash-day yield credited at 2% annualized, "
-        "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, 30% scale rebalance threshold, "
-        "10bp leg-turnover scale-change cost, scaled embedded-lineage base "
-        "trading cost, and 3% annual financing cost on exposure above 1.0x."
+        "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense. Uses exp half-life 2.5 weighted log slope on "
+        "25 trading days of always-on 1.0x hedged signal spread NAV, requires R2 >= 0.08 for entry, executes with "
+        "0.8x CSI1000 hedge, exits when score falls below -8%, applies close-executed vol10 overheat defense at "
+        "26% annualized realized volatility with 75% recovery threshold, and has no target-vol, cash-day-yield, "
+        "financing, peak-decay, static NAV defense, or CSI2000 volume filter."
     )
     summary.setdefault("core_params", {})
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
@@ -1332,35 +1759,64 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         "nav_csv_momentum_gap_column_alias_note": (
             "momentum_gap stores annualized_log_wls_score for v2.0 compatibility, not raw microcap minus hedge gap"
         ),
-        "r2_gate": None,
+        "r2_window": R2_WINDOW,
+        "r2_entry_gate": R2_ENTRY_GATE,
         "legacy_momentum_gap_field": "same value as annualized_log_wls_score for v2.0 compatibility",
     }
-    summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
+    summary["core_params"]["momentum_gap_entry_threshold"] = MOMENTUM_GAP_ENTRY_THRESHOLD
     summary["core_params"]["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
-    summary["core_params"]["target_volatility_scaling"] = {
-        "target_vol": TARGET_VOL,
-        "vol_window": int(v2_0.overlay_mod.TARGET_VOL_WINDOW),
-        "max_leverage": float(v2_0.overlay_mod.TARGET_VOL_MAX_LEVERAGE),
-        "min_leverage": float(v2_0.overlay_mod.TARGET_VOL_MIN_LEVERAGE),
-        "scale_change_cost": float(v2_0.overlay_mod.TARGET_VOL_SCALE_CHANGE_COST),
-        "scale_rebalance_threshold": float(TARGET_VOL_SCALE_REBALANCE_THRESHOLD),
-        "financing_rate": float(v2_0.overlay_mod.TARGET_VOL_FINANCING_RATE),
-        "cash_day_yield": CASH_DAY_YIELD,
-        "idle_credit_on_cash_day": True,
-        "idle_cash_return": "credited on full cash days; active partial idle cash remains handled by target-vol overlay",
-        "trading_days": TRADING_DAYS,
-        "timing": "current execution scale uses T-1 realized volatility; next-session target scale uses T close realized volatility",
+    summary["core_params"]["overheat_defense"] = {
+        "enabled": True,
+        "kind": OVERHEAT_KIND,
+        "feature_window": OVERHEAT_FEATURE_WINDOW,
+        "feature_definition": "annualized rolling standard deviation of always-on 1.0x hedged spread NAV returns",
+        "trigger_threshold": OVERHEAT_TRIGGER_THRESHOLD,
+        "recovery_ratio": OVERHEAT_RECOVERY_RATIO,
+        "recovery_threshold": OVERHEAT_RECOVERY_THRESHOLD,
+        "execution": "close-executed risk-off; cash days have zero return before costs",
     }
+    summary["core_params"]["target_volatility_scaling"] = {"enabled": TARGET_VOL_ENABLED}
+    summary["core_params"]["cash_day_yield"] = {"enabled": CASH_DAY_YIELD_ENABLED}
+    summary["core_params"]["financing"] = {"enabled": FINANCING_ENABLED}
+    summary["core_params"]["static_nav_defense"] = {"enabled": False}
+    summary["core_params"]["csi2000_volume_filter"] = {"enabled": False}
     summary["core_params"]["signal_execution_mismatch_diagnostics"] = mismatch_diagnostics
     summary["latest_trade_date"] = str(pd.Timestamp(signal_row.iloc[0]["date"]).date())
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
-    summary["performance_source_label"] = "costed_v2_3"
+    summary["data_freshness_proof"] = freshness_proof
+    v2_0.overlay_mod.attach_proxy_source_summary_fields(
+        summary,
+        data_lineage,
+        source_label="costed_v2_3",
+        parameter_retest_status={
+            "required_before_parameter_scan": True,
+            "reason": "post-P0 proxy lineage changed from current-universe/current-ST to historical security master/historical-ST",
+            "recommended_windows": ["full", "10Y", "5Y", "3Y", "1Y"],
+        },
+    )
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
-    _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
+    summary["synthetic_basket_execution"] = True
+    summary["execution_model"] = {
+        "synthetic_basket_execution": True,
+        "member_level_fill_engine": False,
+        "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation.",
+    }
+    _atomic_write_text(staged_files[SUMMARY_JSON], _json_dumps(summary), encoding="utf-8")
+    with v2_0.staged_output_bundle(
+        bundle_targets,
+        summary_path=SUMMARY_JSON,
+        post_promotion_validator=lambda: v2_0.assert_top100_outputs_fresh(
+            expected_latest_date=out.index.max(),
+            extra_daily_paths={"v2_3_costed_nav": COSTED_NAV_CSV},
+        ),
+    ) as promotion_paths:
+        for target, source in staged_files.items():
+            shutil.copy2(source, promotion_paths[target])
+    stage_scope.cleanup()
     regenerated_outputs = {
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -1393,16 +1849,9 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
         signal_official_index = signal_official_index.union(pd.DatetimeIndex([close_df.index[-1]])).sort_values()
     common_index = build_v2_3_common_index(close_df, signal_official_index)
     gross = build_spread_log_wls_gross(close_df, common_index)
-    buffered = v2_0.base_mod.apply_momentum_gap_exit_buffer(gross, MOMENTUM_GAP_EXIT_BUFFER)
-    costed = v2_0.base_mod.apply_momentum_gap_no_peak_decay_cost_model(buffered, realtime_base.turnover_df)
     is_snapshot = bool(realtime_base.meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
-    out = apply_target_vol(costed, TARGET_VOL, treat_last_row_as_snapshot=is_snapshot)
-    assert_realtime_target_vol_lag_fresh(
-        out,
-        freshness_calendar,
-        required_calendar_end_date=realtime_base.meta.get("latest_anchor_trade_date"),
-    )
+    out = apply_overheat_defense(gross, realtime_base.turnover_df)
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
@@ -1412,7 +1861,7 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     )
     v2_0.overlay_mod._apply_realtime_meta_columns_to_signal_row(signal_row, realtime_base.meta)
     signal_row["quote_coverage"] = f"{realtime_base.meta.get('member_price_count', 0)}/{realtime_base.meta.get('member_count', 0)}"
-    signal_row["target_vol_signal_timing"] = signal_timing
+    signal_row["target_vol_signal_timing"] = ""
     signal_row["signal_timing"] = signal_timing
     signal_row["official_close_confirmed_signal"] = not is_snapshot
     _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
@@ -1426,7 +1875,17 @@ def build_realtime_v2_3_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
 
 
 def _print_scale_fields(row: pd.Series, include_frozen: bool = False) -> None:
-    v2_0.overlay_mod._print_scale_fields(row, include_frozen=include_frozen)
+    print(f"current_execution_scale: {_safe_float(row.get('current_execution_scale', row.get('execution_scale')), 0.0):.2f}")
+    print(f"next_session_target_scale: {_safe_float(row.get('next_session_target_scale'), 0.0):.2f}")
+    print(f"next_session_actionable_scale: {_safe_float(row.get('next_session_actionable_scale'), 0.0):.2f}")
+    print(f"raw_scale_delta: {_safe_float(row.get('raw_scale_delta'), 0.0):+.2f}")
+    print(f"actionable_scale_delta: {_safe_float(row.get('actionable_scale_delta'), 0.0):+.2f}")
+    print(f"scale_delta: {_safe_float(row.get('scale_delta'), 0.0):+.2f}")
+    print(f"next_session_turnover: {_safe_float(row.get('next_session_turnover'), 0.0):.4f}")
+    print(f"next_session_leg_turnover: {_safe_float(row.get('next_session_leg_turnover'), 0.0):.4f}")
+    print(f"next_session_trade_cost_est: {_safe_float(row.get('next_session_trade_cost_est'), 0.0):.4%}")
+    print(f"overheat_feature_value: {_safe_float(row.get('overheat_feature_value'), 0.0):.4%}")
+    print(f"overheat_risk_off: {bool(row.get('overheat_risk_off', False))}")
 
 
 def _print_signal_query() -> None:
@@ -1435,8 +1894,15 @@ def _print_signal_query() -> None:
     print("signal")
     print("strategy_version: v2.3")
     print("base_version: embedded_v2_base")
-    print("signal_model: spread-NAV log-WLS exp half-life 3.0, lookback 17, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
-    print(f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, no peak-decay derisk, target volatility {TARGET_VOL:.0%}, cash-day yield {CASH_DAY_YIELD:.0%}")
+    print(
+        "signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, "
+        "R2 entry gate 0.08, signal spread 1.0x, execution hedge 0.8x"
+    )
+    print(
+        f"overlay: entry score > {MOMENTUM_GAP_ENTRY_THRESHOLD:.2f}, exit buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, "
+        f"vol10 overheat trigger {OVERHEAT_TRIGGER_THRESHOLD:.0%}, recovery {OVERHEAT_RECOVERY_THRESHOLD:.1%}, "
+        "no target-vol/cash-yield/financing"
+    )
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
     print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
@@ -1459,20 +1925,32 @@ def _print_realtime_signal_query() -> None:
         print("realtime_signal")
         print("strategy_version: v2.3")
         print("base_version: embedded_v2_base")
-        print("signal_model: spread-NAV log-WLS exp half-life 3.0, lookback 17, signal spread 1.0x, execution hedge 0.8x, no R2 gate")
-        print(f"overlay: score buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, no peak-decay derisk, target volatility {TARGET_VOL:.0%}, cash-day yield {CASH_DAY_YIELD:.0%}")
+        print(
+            "signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, "
+            "R2 entry gate 0.08, signal spread 1.0x, execution hedge 0.8x"
+        )
+        print(
+            f"overlay: entry score > {MOMENTUM_GAP_ENTRY_THRESHOLD:.2f}, exit buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, "
+            f"vol10 overheat trigger {OVERHEAT_TRIGGER_THRESHOLD:.0%}, recovery {OVERHEAT_RECOVERY_THRESHOLD:.1%}, "
+            "no target-vol/cash-yield/financing"
+        )
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
+        print(f"expected_latest_completed_trade_date: {meta.get('expected_latest_completed_trade_date', '')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
         print(f"current_holding: {row['current_holding']}")
         print(f"next_holding: {row['next_holding']}")
         print(f"trade_state: {row.get('effective_trade_state', row.get('trade_state', 'hold'))}")
         print(f"holding_trade_state: {row.get('holding_trade_state', row.get('momentum_trade_state', 'hold'))}")
         print(f"scale_trade_state: {row.get('scale_trade_state', 'hold_scale')}")
-        print(f"target_vol_signal_timing: {row.get('target_vol_signal_timing', row.get('signal_timing', ''))}")
+        print(f"signal_timing: {row.get('signal_timing', '')}")
         _print_scale_fields(row, include_frozen=True)
         print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', False)}")
         print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
+        print(f"member_quote_flat_fallback_count: {int(meta.get('member_quote_flat_fallback_count') or 0)}")
+        print(f"from_cache: {bool(meta.get('from_cache', False))}")
+        print(f"cache_age_seconds: {_safe_float(meta.get('cache_age_seconds'), 0.0):.1f}")
+        print(f"fallback_warning: {meta.get('fallback_warning', '')}")
         print(f"annualized_log_wls_score: {float(row.get('annualized_log_wls_score', row.get('momentum_gap', 0.0))):+.4%}")
         print(f"log_wls_r2: {float(row.get('log_wls_r2', 0.0)):.4f}")
         print("momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap")
@@ -1491,12 +1969,12 @@ def _print_realtime_signal_query() -> None:
 
 
 def _print_performance_query(query: str) -> None:
-    generate_v2_3_outputs()
-    perf_df = pd.read_csv(COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-    old_title = v2_0.embedded_context.base_mod.STRATEGY_TITLE
-    v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.3"
-    try:
-        with v2_3_output_lock():
+    with v2_3_output_lock():
+        _summary, _signal_row, perf_df = _generate_v2_3_outputs_unlocked()
+        perf_df = perf_df.rename_axis("date").sort_index()
+        old_title = v2_0.embedded_context.base_mod.STRATEGY_TITLE
+        v2_0.embedded_context.base_mod.STRATEGY_TITLE = "Top100 Microcap Mom16 Biweekly v2.3"
+        try:
             v2_0.embedded_context.base_mod.build_performance_outputs(
                 perf_df=perf_df,
                 ret_col="return_net",
@@ -1511,8 +1989,8 @@ def _print_performance_query(query: str) -> None:
                     "performance_json": PERF_QUERY_JSON,
                 },
             )
-    finally:
-        v2_0.embedded_context.base_mod.STRATEGY_TITLE = old_title
+        finally:
+            v2_0.embedded_context.base_mod.STRATEGY_TITLE = old_title
     print(PERF_QUERY_PNG)
     print(PERF_QUERY_SUMMARY_CSV)
     print(PERF_QUERY_YEARLY_CSV)
@@ -1557,15 +2035,24 @@ def _handle_query(query: str) -> None:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_v2_3_args(sys.argv[1:] if argv is None else argv)
-    configure_runtime(args)
-    query = " ".join(args.query_tokens).strip()
-    if query:
-        _handle_query(query)
-        return
-    generate_v2_3_outputs()
-    print(str(SUMMARY_JSON))
-    print(str(LATEST_SIGNAL_CSV))
-    print(str(COSTED_NAV_CSV))
+    previous_runtime_args = v2_0._V2_RUNTIME_ARGS
+    previous_output_prefix = OUTPUT_PREFIX
+    previous_costed_nav_csv = COSTED_NAV_CSV
+    previous_v2_0_output_prefix = v2_0.OUTPUT_PREFIX
+    try:
+        configure_runtime(args)
+        query = " ".join(args.query_tokens).strip()
+        if query:
+            _handle_query(query)
+            return
+        generate_v2_3_outputs()
+        print(str(SUMMARY_JSON))
+        print(str(LATEST_SIGNAL_CSV))
+        print(str(COSTED_NAV_CSV))
+    finally:
+        configure_output_paths(previous_output_prefix, previous_costed_nav_csv)
+        v2_0.configure_output_paths(previous_v2_0_output_prefix)
+        v2_0._V2_RUNTIME_ARGS = previous_runtime_args
 
 if __name__ == "__main__":
     main()

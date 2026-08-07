@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import microcap_top100_mom16_biweekly_live_v2_5 as v25  # noqa: E402
+from scripts import microcap_v2_5_scan_common as scan_common  # noqa: E402
 
 
 RUN_FOLDER = ROOT / "quant_param_scan_runs" / "20260523_microcap_top100_v2_5_staged_entry_half_then_down_close"
@@ -61,15 +62,7 @@ def _git(args: list[str]) -> str:
 
 
 def _load_v2_5_shadow() -> tuple[dict[str, Any], pd.DataFrame]:
-    if v25.SUMMARY_JSON.exists() and v25.COSTED_NAV_CSV.exists():
-        try:
-            summary = json.loads(v25.SUMMARY_JSON.read_text(encoding="utf-8"))
-            if v25.summary_matches_current_v2_5_base(summary):
-                shadow = pd.read_csv(v25.COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-                return summary, shadow
-        except Exception:
-            pass
-    summary, _signal_df, shadow = v25.generate_v2_5_outputs()
+    summary, shadow = scan_common.load_fresh_official_v25()
     return summary, shadow
 
 
@@ -116,6 +109,7 @@ def apply_staged_entry_overlay(
     prev_next_active = False
     prev_actual_current = 0.0
     prev_current_active = False
+    prev_staged_entry_delta = 0.0
     pending_full_target: float | None = None
     eps = 1e-12
 
@@ -168,10 +162,19 @@ def apply_staged_entry_overlay(
         base_cost_scale = actual_current if current_active else actual_next if next_active else 0.0
         base_cost_scaled = float(base_trade_cost.loc[dt]) * max(base_cost_scale, 0.0)
         same_holding_active = current_active and prev_current_active
-        target_vol_scale_cost = abs(actual_current - prev_actual_current) * float(scale_change_cost) if same_holding_active else 0.0
+        current_scale_delta = actual_current - prev_actual_current
+        already_costed_delta = (
+            min(abs(current_scale_delta), abs(prev_staged_entry_delta))
+            if current_scale_delta * prev_staged_entry_delta > 0.0
+            else 0.0
+        )
+        unc_funded_scale_delta = max(abs(current_scale_delta) - already_costed_delta, 0.0)
+        target_vol_scale_cost = unc_funded_scale_delta * float(scale_change_cost) if same_holding_active else 0.0
         staged_entry_cost = 0.0
+        staged_entry_delta = 0.0
         if current_active and next_active and (open_trigger or fill_trigger):
-            staged_entry_cost = max(actual_next - actual_current, 0.0) * float(entry_cost)
+            staged_entry_delta = max(actual_next - actual_current, 0.0)
+            staged_entry_cost = staged_entry_delta * float(entry_cost)
         financing_cost = max(actual_current - 1.0, 0.0) * float(financing_rate) / TRADING_DAYS
         idle_cash_yield = (
             max(1.0 - actual_current, 0.0) * float(idle_cash_yield_annual) / TRADING_DAYS if current_active else 0.0
@@ -203,6 +206,7 @@ def apply_staged_entry_overlay(
         prev_next_active = bool(next_active)
         prev_actual_current = float(actual_current)
         prev_current_active = bool(current_active)
+        prev_staged_entry_delta = float(staged_entry_delta)
 
     ret = pd.Series(return_values, index=out.index, dtype=float)
     out["actual_execution_scale"] = pd.Series(actual_current_values, index=out.index, dtype=float)
@@ -223,6 +227,22 @@ def apply_staged_entry_overlay(
     out["return"] = ret
     out["nav_net"] = (1.0 + ret.fillna(0.0)).cumprod()
     out["nav"] = out["nav_net"]
+    if trigger_scope == "none" and not np.allclose(
+        out["return_net"].to_numpy(dtype=float),
+        pd.to_numeric(shadow["return_net"], errors="coerce").fillna(0.0).to_numpy(dtype=float),
+        atol=1e-12,
+        rtol=0.0,
+    ):
+        raise RuntimeError("staged-entry baseline parity failed for trigger_scope=none")
+    out["base_holding_state"] = holding
+    out["base_next_holding_state"] = next_holding
+    out["base_current_execution_scale"] = base_current_scale
+    out["base_next_session_actionable_scale"] = base_next_scale
+    out["current_execution_scale"] = out["actual_execution_scale"]
+    out["next_session_actionable_scale"] = out["actual_next_session_scale"]
+    out["holding"] = np.where(out["current_execution_scale"].gt(eps), holding, "cash")
+    out["next_holding"] = np.where(out["next_session_actionable_scale"].gt(eps), next_holding, "cash")
+    scan_common.assert_candidate_state_consistent(out, f"staged-entry {trigger_scope}")
     return out
 
 
