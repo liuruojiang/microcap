@@ -478,10 +478,13 @@ def _exercise_versioned_formal_stage_in_long_worktree(
     module,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    *,
+    rollback_after_validation: bool = False,
 ) -> None:
     output_dir = tmp_path.parent / f"stage-v{module.VERSION.replace('.', '')}"
-    while len(str(output_dir)) < 108:
-        output_dir /= "nested-worktree"
+    minimum_path_length = 122 if rollback_after_validation else 108
+    while len(str(output_dir)) < minimum_path_length:
+        output_dir /= "x"
     output_dir.mkdir(parents=True)
 
     artifact_names = (
@@ -500,6 +503,15 @@ def _exercise_versioned_formal_stage_in_long_worktree(
         original = Path(getattr(module, name))
         monkeypatch.setattr(module, name, output_dir / original.name)
 
+    official_paths = {Path(getattr(module, name)) for name in artifact_names}
+    original_payloads: dict[Path, bytes] = {}
+    if rollback_after_validation:
+        for name in artifact_names:
+            path = Path(getattr(module, name))
+            payload = f"old-{name}".encode("utf-8")
+            path.write_bytes(payload)
+            original_payloads[path] = payload
+
     staged_paths: list[Path] = []
     real_atomic_write_csv = module._atomic_write_csv
     real_atomic_write_text = module._atomic_write_text
@@ -514,6 +526,17 @@ def _exercise_versioned_formal_stage_in_long_worktree(
 
     monkeypatch.setattr(module, "_atomic_write_csv", record_atomic_write_csv)
     monkeypatch.setattr(module, "_atomic_write_text", record_atomic_write_text)
+
+    copy_records: list[tuple[Path, Path]] = []
+    shared_bundle_globals = v2_0.staged_output_bundle.__wrapped__.__globals__
+    shared_shutil = shared_bundle_globals["shutil"]
+    real_copy2 = shared_shutil.copy2
+
+    def record_copy2(source, destination, *args, **kwargs):
+        copy_records.append((Path(source), Path(destination)))
+        return real_copy2(source, destination, *args, **kwargs)
+
+    monkeypatch.setattr(shared_shutil, "copy2", record_copy2)
 
     index = pd.DatetimeIndex([pd.Timestamp("2026-08-07")])
     strategy_frame = pd.DataFrame(
@@ -588,14 +611,47 @@ def _exercise_versioned_formal_stage_in_long_worktree(
     monkeypatch.setattr(module, "build_performance_payload", write_performance_bundle)
     monkeypatch.setattr(v2_0.overlay_mod, "attach_proxy_source_summary_fields", lambda *args, **kwargs: None)
     monkeypatch.setattr(module, "current_base_fingerprint", lambda: {})
-    monkeypatch.setattr(v2_0, "assert_top100_outputs_fresh", lambda **kwargs: None)
     monkeypatch.setattr(module, "_stale_outputs_to_remove_after_generate", lambda *args: [])
+    if rollback_after_validation:
+        monkeypatch.setattr(module, "_read_costed_nav_csv", lambda *args, **kwargs: strategy_frame)
+        monkeypatch.setattr(v2_0.base_mod, "assert_no_historical_rewrite", lambda *args, **kwargs: None)
+
+        def reject_promoted_outputs(**kwargs) -> None:
+            assert all(path.read_bytes() != original_payloads[path] for path in official_paths)
+            raise RuntimeError("forced post-promotion validation failure")
+
+        monkeypatch.setattr(v2_0, "assert_top100_outputs_fresh", reject_promoted_outputs)
+    else:
+        monkeypatch.setattr(v2_0, "assert_top100_outputs_fresh", lambda **kwargs: None)
 
     generator = (
         module._generate_v2_3_outputs_unlocked
         if module is v2_3
         else module._generate_v2_5_outputs_unlocked
     )
+    if rollback_after_validation:
+        with pytest.raises(RuntimeError, match="forced post-promotion validation failure"):
+            generator()
+
+        promotion_paths = [destination for source, destination in copy_records if source not in official_paths]
+        rollback_paths = [destination for source, destination in copy_records if source in official_paths]
+        assert len(promotion_paths) == len(artifact_names)
+        assert len(rollback_paths) == len(artifact_names)
+        for internal_paths in (promotion_paths, rollback_paths):
+            internal_names = [path.name for path in internal_paths]
+            assert len(set(internal_names)) == len(artifact_names)
+            assert max(map(len, internal_names)) <= 64
+            assert all(path.parent == output_dir for path in internal_paths)
+            assert all(
+                not any(target.name in internal.name for target in official_paths)
+                for internal in internal_paths
+            )
+        for path, payload in original_payloads.items():
+            assert path.read_bytes() == payload
+        assert {path for path in output_dir.iterdir() if path.is_file()} == official_paths
+        assert not [path for path in output_dir.iterdir() if path.is_dir()]
+        return
+
     summary, signal, result = generator()
 
     assert summary["latest_nav_date"] == "2026-08-07"
@@ -625,6 +681,30 @@ def test_generate_v2_5_outputs_keeps_atomic_stage_writable_in_long_worktree(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     _exercise_versioned_formal_stage_in_long_worktree(v2_5, tmp_path, monkeypatch)
+
+
+def test_generate_v2_3_outputs_rolls_back_existing_bundle_in_long_worktree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _exercise_versioned_formal_stage_in_long_worktree(
+        v2_3,
+        tmp_path,
+        monkeypatch,
+        rollback_after_validation=True,
+    )
+
+
+def test_generate_v2_5_outputs_rolls_back_existing_bundle_in_long_worktree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _exercise_versioned_formal_stage_in_long_worktree(
+        v2_5,
+        tmp_path,
+        monkeypatch,
+        rollback_after_validation=True,
+    )
 
 
 @pytest.mark.parametrize(

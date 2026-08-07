@@ -11163,7 +11163,13 @@ def staged_output_bundle(
     summary_target = Path(summary_path)
     if summary_target not in ordered_targets:
         raise ValueError("summary_path must be included in staged output targets")
-    staged = {target: _atomic_temp_path(target) for target in ordered_targets}
+    target_positions = {target: position for position, target in enumerate(ordered_targets)}
+    staged = {
+        target: _atomic_temp_path(
+            target.parent / f".bundle.{target_positions[target]:02d}.promotion{target.suffix}"
+        )
+        for target in ordered_targets
+    }
     backups: dict[Path, Path] = {}
     promoted: list[Path] = []
     try:
@@ -11175,7 +11181,9 @@ def staged_output_bundle(
         for target in promotion_order:
             target.parent.mkdir(parents=True, exist_ok=True)
             if target.exists():
-                backup = Path(str(_atomic_temp_path(target)) + ".rollback")
+                backup = _atomic_temp_path(
+                    target.parent / f".bundle.{target_positions[target]:02d}.rollback{target.suffix}"
+                )
                 shutil.copy2(target, backup)
                 backups[target] = backup
         try:
