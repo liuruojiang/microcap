@@ -369,8 +369,7 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
         output_dir /= "nested-worktree"
     output_dir.mkdir(parents=True)
 
-    monkeypatch.setitem(overlay_globals, "OUTPUT_DIR", output_dir)
-    for name in (
+    artifact_names = (
         "COSTED_NAV_CSV",
         "NAV_CSV",
         "LATEST_SIGNAL_CSV",
@@ -380,9 +379,26 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
         "PERF_JSON",
         "PERF_PNG",
         "SUMMARY_JSON",
-    ):
+    )
+    monkeypatch.setitem(overlay_globals, "OUTPUT_DIR", output_dir)
+    for name in artifact_names:
         original = Path(overlay_globals[name])
         monkeypatch.setitem(overlay_globals, name, output_dir / original.name)
+
+    staged_paths: list[Path] = []
+    real_atomic_write_csv = overlay_globals["_atomic_write_csv"]
+    real_atomic_write_text = overlay_globals["_atomic_write_text"]
+
+    def record_atomic_write_csv(frame, path, **kwargs):
+        staged_paths.append(Path(path))
+        real_atomic_write_csv(frame, path, **kwargs)
+
+    def record_atomic_write_text(path, text, encoding="utf-8"):
+        staged_paths.append(Path(path))
+        real_atomic_write_text(path, text, encoding=encoding)
+
+    monkeypatch.setitem(overlay_globals, "_atomic_write_csv", record_atomic_write_csv)
+    monkeypatch.setitem(overlay_globals, "_atomic_write_text", record_atomic_write_text)
 
     index = pd.DatetimeIndex([pd.Timestamp("2026-08-07")])
     strategy_frame = pd.DataFrame(
@@ -426,6 +442,9 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
     )
 
     def write_performance_bundle(returns, *, source_label, output_paths):
+        staged_paths.extend(
+            Path(output_paths[name]) for name in ("summary", "yearly", "nav", "json", "png")
+        )
         pd.DataFrame({"value": [1]}).to_csv(output_paths["summary"], index=False)
         pd.DataFrame({"value": [1]}).to_csv(output_paths["yearly"], index=False)
         pd.DataFrame({"value": [1]}).to_csv(output_paths["nav"], index=False)
@@ -443,17 +462,15 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
     assert summary["latest_nav_date"] == "2026-08-07"
     assert signal.at[0, "holding"] == "cash"
     assert result.index.max() == index[-1]
-    for name in (
-        "COSTED_NAV_CSV",
-        "NAV_CSV",
-        "LATEST_SIGNAL_CSV",
-        "PERF_SUMMARY_CSV",
-        "PERF_YEARLY_CSV",
-        "PERF_NAV_CSV",
-        "PERF_JSON",
-        "PERF_PNG",
-        "SUMMARY_JSON",
-    ):
+    expected_suffixes = [Path(overlay_globals[name]).suffix for name in artifact_names]
+    expected_stage_names = [f"{position:02d}{suffix}" for position, suffix in enumerate(expected_suffixes)]
+    actual_stage_names = [path.name for path in staged_paths]
+    assert actual_stage_names == expected_stage_names
+    assert len(set(actual_stage_names)) == len(artifact_names)
+    assert max(map(len, actual_stage_names)) <= len("00.json")
+    assert [path.suffix for path in staged_paths] == expected_suffixes
+    assert len({path.parent for path in staged_paths}) == 1
+    for name in artifact_names:
         assert Path(overlay_globals[name]).exists()
 
 
