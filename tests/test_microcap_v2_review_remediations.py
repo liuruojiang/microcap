@@ -152,6 +152,26 @@ def test_realtime_signal_rows_preserve_fallback_and_snapshot_provenance() -> Non
     assert bool(row.at[0, "snapshot_row_appended"]) is True
 
 
+def test_realtime_query_refresh_uses_base_stale_anchor_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    from scripts import realtime_state_bundle
+
+    calls: dict[str, object] = {}
+
+    def fake_refresh_state(root, max_workers: int, max_anchor_age_days: int) -> dict[str, object]:
+        calls["root"] = root
+        calls["max_workers"] = max_workers
+        calls["max_anchor_age_days"] = max_anchor_age_days
+        return {"ok": True}
+
+    monkeypatch.delenv("TOP100_REALTIME_REQUIRE_STATE", raising=False)
+    monkeypatch.setattr(realtime_state_bundle, "refresh_state", fake_refresh_state)
+
+    result = v2_0.run_realtime_query_with_fresh_state(lambda: "refreshed")
+
+    assert result == "refreshed"
+    assert calls["max_anchor_age_days"] == v2_0.base_mod.DEFAULT_MAX_STALE_ANCHOR_DAYS
+
+
 @pytest.mark.parametrize(
     ("module", "builder_name"),
     [

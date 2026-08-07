@@ -10442,7 +10442,7 @@ def _refresh_realtime_state_for_local_query() -> None:
     report = realtime_state_bundle.refresh_state(
         ROOT,
         max_workers=8,
-        max_anchor_age_days=DEFAULT_MAX_STALE_ANCHOR_DAYS,
+        max_anchor_age_days=base_mod.DEFAULT_MAX_STALE_ANCHOR_DAYS,
     )
     if not report.get("ok"):
         errors = "; ".join(str(item) for item in report.get("errors", []))
