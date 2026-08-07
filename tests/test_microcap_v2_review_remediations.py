@@ -474,6 +474,159 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
         assert Path(overlay_globals[name]).exists()
 
 
+def _exercise_versioned_formal_stage_in_long_worktree(
+    module,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output_dir = tmp_path.parent / f"stage-v{module.VERSION.replace('.', '')}"
+    while len(str(output_dir)) < 108:
+        output_dir /= "nested-worktree"
+    output_dir.mkdir(parents=True)
+
+    artifact_names = (
+        "COSTED_NAV_CSV",
+        "NAV_CSV",
+        "LATEST_SIGNAL_CSV",
+        "PERF_SUMMARY_CSV",
+        "PERF_YEARLY_CSV",
+        "PERF_NAV_CSV",
+        "PERF_JSON",
+        "PERF_PNG",
+        "SUMMARY_JSON",
+    )
+    monkeypatch.setattr(module, "OUTPUT_DIR", output_dir)
+    for name in artifact_names:
+        original = Path(getattr(module, name))
+        monkeypatch.setattr(module, name, output_dir / original.name)
+
+    staged_paths: list[Path] = []
+    real_atomic_write_csv = module._atomic_write_csv
+    real_atomic_write_text = module._atomic_write_text
+
+    def record_atomic_write_csv(frame, path, **kwargs):
+        staged_paths.append(Path(path))
+        real_atomic_write_csv(frame, path, **kwargs)
+
+    def record_atomic_write_text(path, text, encoding="utf-8"):
+        staged_paths.append(Path(path))
+        real_atomic_write_text(path, text, encoding=encoding)
+
+    monkeypatch.setattr(module, "_atomic_write_csv", record_atomic_write_csv)
+    monkeypatch.setattr(module, "_atomic_write_text", record_atomic_write_text)
+
+    index = pd.DatetimeIndex([pd.Timestamp("2026-08-07")])
+    strategy_frame = pd.DataFrame(
+        {
+            "microcap_close": [100.0],
+            "hedge_close": [200.0],
+            "return_net": [0.0],
+        },
+        index=index,
+    )
+    monkeypatch.setattr(module, "_load_official_v2_0_out", lambda: strategy_frame)
+    monkeypatch.setattr(
+        v2_0.embedded_context,
+        "_load_embedded_base_context",
+        lambda: ({}, strategy_frame, pd.DataFrame(index=index)),
+    )
+    incompatible_outputs_name = (
+        "incompatible_v2_3_outputs" if module is v2_3 else "incompatible_v2_5_outputs"
+    )
+    monkeypatch.setattr(module, incompatible_outputs_name, lambda: [])
+    monkeypatch.setattr(module, "_close_df_from_base", lambda frame: frame)
+    monkeypatch.setattr(
+        module,
+        "build_v2_3_common_index" if module is v2_3 else "build_v2_5_common_index",
+        lambda *args: index,
+    )
+    monkeypatch.setattr(
+        module,
+        "build_v2_3_result" if module is v2_3 else "build_v2_5_result",
+        lambda *args: strategy_frame,
+    )
+    monkeypatch.setattr(
+        v2_0,
+        "assert_top100_candidate_fresh",
+        lambda *args, **kwargs: {"latest_date": "2026-08-07", "row_count": 1},
+    )
+    monkeypatch.setattr(
+        v2_0.overlay_mod,
+        "_build_v2_data_lineage",
+        lambda: {"source_used": "test", "official_wind_series": True},
+    )
+    monkeypatch.setattr(
+        v2_0.overlay_mod,
+        "proxy_aware_performance_source_label",
+        lambda data_lineage, label: label,
+    )
+    monkeypatch.setattr(
+        module,
+        "_build_signal_row",
+        lambda frame, summary: pd.DataFrame([{"date": index[-1], "holding": "cash"}]),
+    )
+
+    if module is v2_3:
+        monkeypatch.setattr(module, "build_signal_execution_mismatch_diagnostics", lambda *args: {})
+        monkeypatch.setattr(module, "apply_signal_execution_mismatch_columns", lambda *args: None)
+    else:
+        monkeypatch.setattr(module, "_valid_log_wls_index", lambda frame: index)
+        monkeypatch.setattr(module, "_common_index_gap_summary", lambda *args: {})
+        monkeypatch.setattr(module, "COMPATIBILITY_AUDIT_JSON", output_dir / "compatibility_audit.json")
+
+    def write_performance_bundle(returns, *, source_label, output_paths):
+        staged_paths.extend(
+            Path(output_paths[name]) for name in ("summary", "yearly", "nav", "json", "png")
+        )
+        pd.DataFrame({"value": [1]}).to_csv(output_paths["summary"], index=False)
+        pd.DataFrame({"value": [1]}).to_csv(output_paths["yearly"], index=False)
+        pd.DataFrame({"value": [1]}).to_csv(output_paths["nav"], index=False)
+        output_paths["json"].write_text("{}", encoding="utf-8")
+        output_paths["png"].write_bytes(b"png")
+        return {"summary": {"source_label": source_label}}
+
+    monkeypatch.setattr(module, "build_performance_payload", write_performance_bundle)
+    monkeypatch.setattr(v2_0.overlay_mod, "attach_proxy_source_summary_fields", lambda *args, **kwargs: None)
+    monkeypatch.setattr(module, "current_base_fingerprint", lambda: {})
+    monkeypatch.setattr(v2_0, "assert_top100_outputs_fresh", lambda **kwargs: None)
+    monkeypatch.setattr(module, "_stale_outputs_to_remove_after_generate", lambda *args: [])
+
+    generator = (
+        module._generate_v2_3_outputs_unlocked
+        if module is v2_3
+        else module._generate_v2_5_outputs_unlocked
+    )
+    summary, signal, result = generator()
+
+    assert summary["latest_nav_date"] == "2026-08-07"
+    assert signal.at[0, "holding"] == "cash"
+    assert result.index.max() == index[-1]
+    expected_suffixes = [Path(getattr(module, name)).suffix for name in artifact_names]
+    expected_stage_names = [f"{position:02d}{suffix}" for position, suffix in enumerate(expected_suffixes)]
+    actual_stage_names = [path.name for path in staged_paths]
+    assert actual_stage_names == expected_stage_names
+    assert len(set(actual_stage_names)) == len(artifact_names)
+    assert max(map(len, actual_stage_names)) <= len("00.json")
+    assert [path.suffix for path in staged_paths] == expected_suffixes
+    assert len({path.parent for path in staged_paths}) == 1
+    for name in artifact_names:
+        assert Path(getattr(module, name)).exists()
+
+
+def test_generate_v2_3_outputs_keeps_atomic_stage_writable_in_long_worktree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _exercise_versioned_formal_stage_in_long_worktree(v2_3, tmp_path, monkeypatch)
+
+
+def test_generate_v2_5_outputs_keeps_atomic_stage_writable_in_long_worktree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _exercise_versioned_formal_stage_in_long_worktree(v2_5, tmp_path, monkeypatch)
+
+
 @pytest.mark.parametrize(
     ("module", "prefix_flag", "custom_prefix"),
     [

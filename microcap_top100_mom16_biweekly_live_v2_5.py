@@ -1895,7 +1895,10 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     ]
     stage_scope = tempfile.TemporaryDirectory(prefix=f".{OUTPUT_PREFIX}.stage.", dir=OUTPUT_DIR)
     stage_root = Path(stage_scope.name)
-    staged_files = {target: stage_root / target.name for target in bundle_targets}
+    staged_files = {
+        target: stage_root / f"{position:02d}{target.suffix}"
+        for position, target in enumerate(bundle_targets)
+    }
     _atomic_write_csv(out, staged_files[COSTED_NAV_CSV], index_label="date", encoding="utf-8-sig")
     _atomic_write_csv(out.rename_axis("date").reset_index(), staged_files[NAV_CSV], index=False, encoding="utf-8-sig")
     data_lineage = dict(v2_0.overlay_mod._build_v2_data_lineage())
