@@ -742,6 +742,49 @@ def _safe_float(value: object, default: float = 0.0) -> float:
         return float(default)
 
 
+def _v2_0_signal_compat_net_df(net_df: pd.DataFrame) -> pd.DataFrame:
+    compat = net_df.copy()
+    holding_map = {"long_microcap_top100": "long_microcap_short_zz1000"}
+    for col in ["holding", "next_holding"]:
+        if col in compat.columns:
+            compat[col] = compat[col].replace(holding_map)
+    return compat
+
+
+def _apply_v2_5_signal_fields(row: pd.DataFrame, latest: pd.Series) -> None:
+    row_idx = row.index[0]
+    current_holding = str(latest.get("holding", row.at[row_idx, "current_holding"]))
+    next_holding = str(latest.get("next_holding", current_holding))
+    current_scale = _safe_float(row.at[row_idx, "current_execution_scale"], 0.0)
+    next_scale = _safe_float(row.at[row_idx, "next_session_actionable_scale"], current_scale)
+    turnover = v2_0.overlay_mod.calc_target_vol_turnover(
+        current_holding,
+        current_scale,
+        next_holding,
+        next_scale,
+        hedge_ratio=EXECUTION_HEDGE_RATIO,
+    )
+    cost_rate = (
+        TARGET_VOL_SCALE_CHANGE_ENTRY_COST
+        if next_scale >= current_scale
+        else TARGET_VOL_SCALE_CHANGE_EXIT_COST
+    )
+    raw_cost = turnover * cost_rate
+    overlay_cost = raw_cost if current_holding == next_holding else 0.0
+
+    row["current_holding"] = current_holding
+    row["next_holding"] = next_holding
+    row["signal_label"] = next_holding
+    row["next_session_turnover"] = turnover
+    row["next_session_leg_turnover"] = turnover
+    row["next_session_leg_cost_est_raw"] = raw_cost
+    row["next_session_overlay_cost_est"] = overlay_cost
+    row["next_session_trade_cost_est"] = overlay_cost
+    row["next_session_overlay_trade_cost_est"] = overlay_cost
+    row["fixed_hedge_ratio"] = EXECUTION_HEDGE_RATIO
+    row["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
+
+
 def _realtime_target_vol_trading_lag_from_calendar(
     snapshot_date: object,
     source_date: object,
@@ -1333,7 +1376,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_5")
 
 def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]) -> pd.DataFrame:
     _ensure_v2_0_contract_validated()
-    row = v2_0.overlay_mod._build_signal_row(net_df, reference_summary)
+    row = v2_0.overlay_mod._build_signal_row(_v2_0_signal_compat_net_df(net_df), reference_summary)
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
@@ -1377,6 +1420,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["cash_day_yield"] = float(latest.get("cash_day_yield", 0.0)) if "cash_day_yield" in latest else 0.0
     row["cash_day_yield_annual"] = IDLE_CASH_YIELD
     row["cash_day_yield_enabled"] = True
+    _apply_v2_5_signal_fields(row, latest)
     return row
 
 
