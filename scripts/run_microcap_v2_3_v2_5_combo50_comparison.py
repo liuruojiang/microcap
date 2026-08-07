@@ -9,6 +9,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -16,7 +20,6 @@ import pandas as pd
 import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 
 
-ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = ROOT / "outputs"
 RUN_FOLDER = ROOT / "quant_param_scan_runs" / "20260629_microcap_top100_v2_3_v2_5_combo50_comparison"
 

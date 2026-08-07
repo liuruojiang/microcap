@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import inspect
 import json
+import subprocess
 from pathlib import Path
 
 import pandas as pd
@@ -953,3 +954,17 @@ def test_v2_3_v2_5_combo50_comparison_has_replayable_script() -> None:
     assert "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv" in text
     assert "additional_combo_rebalance_cost" in text
     assert "20260602" not in text
+
+
+def test_combo50_cli_help_is_directly_executable_from_repo_root() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    result = subprocess.run(
+        ["python", "scripts/run_microcap_v2_3_v2_5_combo50_comparison.py", "--help"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "--official-latest-close-date" in result.stdout
