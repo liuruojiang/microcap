@@ -16,6 +16,38 @@ def test_v2_0_formal_production_identity() -> None:
     assert v2_0.TARGET_VOL_MAX_LEVERAGE == pytest.approx(1.5)
 
 
+def test_v2_0_published_filter_metadata_matches_promoted_lineage() -> None:
+    trade_date = pd.Timestamp("2026-06-29")
+    summary = v2_0.base_mod.build_summary(
+        result=pd.DataFrame(
+            {"holding": ["cash"], "next_holding": ["cash"]},
+            index=pd.DatetimeIndex([trade_date]),
+        ),
+        latest_signal=pd.DataFrame(
+            [
+                {
+                    "signal_label": "cash",
+                    "microcap_mom": 0.0,
+                    "hedge_mom": 0.0,
+                    "momentum_gap": 0.0,
+                    "microcap_close": 1.0,
+                    "hedge_close": 1.0,
+                }
+            ]
+        ),
+        latest_rebalance=trade_date,
+        prev_rebalance=None,
+        next_rebalance=None,
+        members_df=pd.DataFrame(),
+        changes_df=pd.DataFrame(),
+        capital=None,
+        anchor_freshness={},
+    )
+
+    assert summary["core_params"]["exclude_current_st"] is False
+    assert summary["core_params"]["exclude_historical_st"] is True
+
+
 def test_v2_3_formal_production_identity() -> None:
     assert v2_3.LOOKBACK == 25
     assert v2_3.HALFLIFE == pytest.approx(2.5)

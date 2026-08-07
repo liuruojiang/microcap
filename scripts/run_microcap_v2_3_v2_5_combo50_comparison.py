@@ -97,6 +97,60 @@ def _artifact_state(path: Path, date_columns: tuple[str, ...] = ("date",)) -> di
     return state
 
 
+def _formal_artifact_specs() -> dict[str, tuple[Path, tuple[str, ...]]]:
+    return {
+        "base_panel_shadow": (BASE_PANEL, ("date",)),
+        "base_index_csv": (PROXY_INDEX, ("date",)),
+        "base_proxy_turnover": (PROXY_TURNOVER, ("rebalance_date", "date")),
+        "base_costed_nav": (BASE_COSTED_NAV, ("date",)),
+        "v2_0_costed_nav": (V2_0_COSTED_NAV, ("date",)),
+        "v2_3_costed_nav": (V2_3_COSTED_NAV, ("date",)),
+        "v2_5_costed_nav": (V2_5_COSTED_NAV, ("date",)),
+    }
+
+
+def validate_formal_freshness(
+    artifacts: dict[str, tuple[Path, tuple[str, ...]]] | None = None,
+) -> dict[str, object]:
+    specs = _formal_artifact_specs() if artifacts is None else artifacts
+    states: dict[str, dict[str, object]] = {}
+    issues: list[str] = []
+    for name, (path, date_columns) in specs.items():
+        state = _artifact_state(Path(path), tuple(date_columns))
+        states[name] = state
+        if not bool(state.get("exists")):
+            issues.append(f"{name} missing: {path}")
+        elif int(state.get("size") or 0) <= 0:
+            issues.append(f"{name} is empty: {path}")
+        elif state.get("read_error"):
+            issues.append(f"{name} unreadable: {state['read_error']}")
+        elif int(state.get("row_count") or 0) <= 0:
+            issues.append(f"{name} has no rows: {path}")
+        elif not state.get("latest_date"):
+            issues.append(f"{name} has no valid latest date: {path}")
+
+    observed_dates = [str(state["latest_date"]) for state in states.values() if state.get("latest_date")]
+    shared_latest_date: str | None = None
+    if observed_dates:
+        shared_latest_date = max(observed_dates)
+        for name, state in states.items():
+            latest_date = state.get("latest_date")
+            if latest_date and str(latest_date) != shared_latest_date:
+                issues.append(
+                    f"{name} latest_date {latest_date} does not match shared latest close-confirmed date "
+                    f"{shared_latest_date}"
+                )
+    else:
+        issues.append("no artifact exposes a latest close-confirmed date")
+
+    if issues:
+        raise RuntimeError("formal combo50 freshness validation failed: " + "; ".join(issues))
+    return {
+        "shared_latest_close_date": shared_latest_date,
+        "artifacts": states,
+    }
+
+
 def _load_costed_nav(path: Path, label: str) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"{label} costed NAV is missing: {path}")
@@ -324,6 +378,7 @@ def _write_record(run_folder: Path, long_df: pd.DataFrame, combo_vs: pd.DataFram
 
 
 def main() -> None:
+    freshness_proof = validate_formal_freshness()
     RUN_FOLDER.mkdir(parents=True, exist_ok=True)
     v23 = _load_costed_nav(V2_3_COSTED_NAV, "v2.3")
     v25 = _load_costed_nav(V2_5_COSTED_NAV, "v2.5")
@@ -362,15 +417,8 @@ def main() -> None:
             "common_start": str(pd.Timestamp(daily["date"].iloc[0]).date()),
             "common_end": str(pd.Timestamp(daily["date"].iloc[-1]).date()),
             "common_rows": int(len(daily)),
-            "freshness_proof": {
-                "base_panel_shadow": _artifact_state(BASE_PANEL),
-                "base_index_csv": _artifact_state(PROXY_INDEX),
-                "base_proxy_turnover": _artifact_state(PROXY_TURNOVER, ("rebalance_date", "date")),
-                "base_costed_nav": _artifact_state(BASE_COSTED_NAV),
-                "v2_0_costed_nav": _artifact_state(V2_0_COSTED_NAV),
-                "v2_3_costed_nav": _artifact_state(V2_3_COSTED_NAV),
-                "v2_5_costed_nav": _artifact_state(V2_5_COSTED_NAV),
-            },
+            "shared_latest_close_date": freshness_proof["shared_latest_close_date"],
+            "freshness_proof": freshness_proof["artifacts"],
         },
         "outputs": {
             "daily_aligned_combo50": str(RUN_FOLDER / "daily_aligned_combo50.csv"),

@@ -1158,7 +1158,12 @@ def apply_no_target_vol(costed_base: pd.DataFrame) -> pd.DataFrame:
     out["cash_day_yield_annual"] = 0.0
     out["cash_day_yield_enabled"] = False
     out["base_trade_cost"] = total_cost
-    out["base_trade_cost_scale"] = active_scale
+    out["base_trade_cost_scale"] = _base_trade_cost_scale(
+        holding,
+        next_holding,
+        active_scale,
+        next_scale,
+    )
     out["base_trade_cost_scaled"] = total_cost
     out["base_pre_cost_return"] = base_pre_cost_return
     out["return_gross_target_vol"] = base_pre_cost_return

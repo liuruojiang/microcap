@@ -43,6 +43,22 @@ def test_target_vol_replay_preserves_exit_cost(transition_frame: pd.DataFrame) -
     assert out.iloc[1]["return_net"] == pytest.approx(-0.003)
 
 
+def test_no_target_vol_close_entry_cost_scale_matches_scaled_cost(
+    transition_frame: pd.DataFrame,
+) -> None:
+    out = v2_5.apply_no_target_vol(transition_frame)
+    entry = out.iloc[0]
+
+    assert entry["holding"] == "cash"
+    assert entry["next_holding"] == "long_microcap_top100"
+    assert entry["base_trade_cost"] == pytest.approx(0.003)
+    assert entry["base_trade_cost_scale"] == pytest.approx(1.0)
+    assert entry["base_trade_cost_scaled"] == pytest.approx(
+        entry["base_trade_cost"] * entry["base_trade_cost_scale"]
+    )
+    assert entry["return_net"] == pytest.approx(transition_frame.iloc[0]["return_net"])
+
+
 def test_staged_none_matches_official_return_net(transition_frame: pd.DataFrame) -> None:
     out = staged.apply_staged_entry_overlay(transition_frame, trigger_scope="none")
 

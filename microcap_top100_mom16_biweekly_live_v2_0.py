@@ -7145,7 +7145,8 @@ def build_summary(
         "version_note": "Baseline live framework with fixed 1.0x hedge ratio.",
         "core_params": {
             "top_n": TOP_N,
-            "exclude_current_st": True,
+            "exclude_current_st": False,
+            "exclude_historical_st": True,
             "rebalance_schedule": "biweekly",
             "rebalance_weekday_anchor": REBALANCE_WEEKDAY,
             "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,

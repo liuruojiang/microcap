@@ -11,6 +11,30 @@ import pytest
 import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 import microcap_top100_mom16_biweekly_live_v2_3 as v2_3
 import microcap_top100_mom16_biweekly_live_v2_5 as v2_5
+from scripts import run_microcap_v2_3_v2_5_combo50_comparison as combo50
+
+
+COMBO50_FRESHNESS_DATE_COLUMNS = {
+    "base_panel_shadow": "date",
+    "base_index_csv": "date",
+    "base_proxy_turnover": "rebalance_date",
+    "base_costed_nav": "date",
+    "v2_0_costed_nav": "date",
+    "v2_3_costed_nav": "date",
+    "v2_5_costed_nav": "date",
+}
+
+
+def _write_combo50_freshness_artifacts(
+    tmp_path: Path,
+) -> dict[str, tuple[Path, tuple[str, ...]]]:
+    artifacts: dict[str, tuple[Path, tuple[str, ...]]] = {}
+    dates = ["2026-06-26", "2026-06-29"]
+    for name, date_column in COMBO50_FRESHNESS_DATE_COLUMNS.items():
+        path = tmp_path / f"{name}.csv"
+        pd.DataFrame({date_column: dates, "value": [1.0, 1.0]}).to_csv(path, index=False)
+        artifacts[name] = (path, (date_column,))
+    return artifacts
 
 
 def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -191,6 +215,68 @@ def test_freshness_proof_blocks_misaligned_daily_stream_and_stale_turnover() -> 
             expected_latest_date="2026-06-26",
             expected_latest_rebalance_date="2026-06-25",
         )
+
+
+def test_combo50_freshness_proof_records_all_artifact_dates_and_row_counts(tmp_path: Path) -> None:
+    proof = combo50.validate_formal_freshness(_write_combo50_freshness_artifacts(tmp_path))
+
+    assert proof["shared_latest_close_date"] == "2026-06-29"
+    assert set(proof["artifacts"]) == set(COMBO50_FRESHNESS_DATE_COLUMNS)
+    assert all(state["exists"] for state in proof["artifacts"].values())
+    assert all(state["latest_date"] == "2026-06-29" for state in proof["artifacts"].values())
+    assert all(state["row_count"] == 2 for state in proof["artifacts"].values())
+
+
+@pytest.mark.parametrize("artifact_name", COMBO50_FRESHNESS_DATE_COLUMNS)
+def test_combo50_freshness_proof_rejects_each_missing_artifact(
+    tmp_path: Path,
+    artifact_name: str,
+) -> None:
+    artifacts = _write_combo50_freshness_artifacts(tmp_path)
+    artifacts[artifact_name][0].unlink()
+
+    with pytest.raises(RuntimeError, match=rf"{artifact_name}.*missing"):
+        combo50.validate_formal_freshness(artifacts)
+
+
+@pytest.mark.parametrize("artifact_name", COMBO50_FRESHNESS_DATE_COLUMNS)
+def test_combo50_freshness_proof_rejects_each_date_misaligned_artifact(
+    tmp_path: Path,
+    artifact_name: str,
+) -> None:
+    artifacts = _write_combo50_freshness_artifacts(tmp_path)
+    path, date_columns = artifacts[artifact_name]
+    pd.DataFrame({date_columns[0]: ["2026-06-25", "2026-06-26"], "value": [1.0, 1.0]}).to_csv(
+        path,
+        index=False,
+    )
+
+    with pytest.raises(RuntimeError, match=rf"{artifact_name}.*2026-06-26.*2026-06-29"):
+        combo50.validate_formal_freshness(artifacts)
+
+
+def test_combo50_validates_freshness_before_creating_formal_outputs(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    run_folder = tmp_path / "formal-output"
+    monkeypatch.setattr(combo50, "RUN_FOLDER", run_folder)
+    monkeypatch.setattr(
+        combo50,
+        "validate_formal_freshness",
+        lambda: (_ for _ in ()).throw(RuntimeError("freshness blocked")),
+        raising=False,
+    )
+    monkeypatch.setattr(
+        combo50,
+        "_load_costed_nav",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("stream loaded before validation")),
+    )
+
+    with pytest.raises(RuntimeError, match="freshness blocked"):
+        combo50.main()
+
+    assert not run_folder.exists()
 
 
 def test_daily_stream_continuity_guard_detects_internal_missing_dates() -> None:
