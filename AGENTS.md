@@ -39,3 +39,10 @@ Use this repo-local file as the source of workspace guidance for the Top100 micr
 - For local images/files in Codex desktop, prefer repo-relative paths or a documented local alias when one is explicitly provided in the current session.
 - Keep remote `origin = git@github.com:liuruojiang/microcap.git` unless the user asks otherwise.
 - Use the configured Git credential or SSH setup for this machine; do not hard-code a user-specific SSH key path in repo instructions.
+
+# Production Email Deployment Gate
+
+- A Microcap production-email change is not deployed merely because a local sample or workflow run succeeded. Before declaring synchronization complete, verify the exact strategy commit checked out by the automation workflow is reachable from the remote repository, read back the final CSV identity and dated member-action fields for v2.0/v2.3/v2.5, and record the remote strategy SHA, remote automation SHA, workflow run, and delivered message.
+- The final CSV is the authority for strategy identity, holdings, and actions. Stdout may supply presentation fields but must never backfill a missing or contradictory final-CSV identity.
+- A member rebalance is actionable only on its dated execution session. Historical and preview changes may be reported as context but must not be rendered as a current trade instruction.
+- After the close, do not relabel a close-confirmed signal as realtime. A realtime publication must retain the previous-completed-session anchor invariant; use an explicitly close-confirmed correction when that invariant cannot hold.

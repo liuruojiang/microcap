@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 from contextlib import contextmanager
 import hashlib
 import importlib
@@ -13,6 +14,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import warnings
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
@@ -21,7 +23,7 @@ from decimal import ROUND_HALF_UP, Decimal
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Iterable
+from typing import Callable, Iterable
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
@@ -30,7 +32,7 @@ REALTIME_DIR = CACHE_DIR / "realtime"
 VERSION = "2.0"
 BASE_API_REVISION = 12
 HISTORICAL_AUDIT_REVISION = 5
-DATA_STATE_FINGERPRINT_REVISION = 2
+DATA_STATE_FINGERPRINT_REVISION = 3
 REALTIME_CALENDAR_GUARD_REVISION = 3
 
 ak = None
@@ -2289,6 +2291,15 @@ def list_backtest_universe_symbols() -> list[str]:
     master = load_security_master()
     if master.empty or "symbol" not in master.columns:
         return sorted(cached_symbols)
+    master = master.copy()
+    master["symbol"] = master["symbol"].dropna().astype(str).str.zfill(6)
+    inferred_exchange = master["symbol"].map(lambda symbol: _infer_exchange_board(str(symbol))[0] or "")
+    if "exchange" in master.columns:
+        exchange = master["exchange"].fillna("").astype(str).str.strip()
+        exchange = exchange.where(exchange.ne(""), inferred_exchange)
+    else:
+        exchange = inferred_exchange
+    master = master.loc[exchange.astype(str).str.upper().ne("BSE")]
     master_symbols = set(master["symbol"].dropna().astype(str).str.zfill(6))
     return sorted(cached_symbols & master_symbols)
 
@@ -2986,7 +2997,9 @@ def load_symbol_cache(
                     adjusted_price[return_col] = pd.to_numeric(adjusted_price[return_col], errors="coerce")
                     adjusted_price = adjusted_price.dropna(subset=["date", return_col]).sort_values("date")
                 else:
-                    adjusted_price = None
+                    raise ValueError(
+                        f"adjusted price cache for {str(symbol).zfill(6)} has no supported adjusted close column"
+                    )
 
         shares = pd.read_csv(share_path)
         shares["change_date"] = pd.to_datetime(shares["change_date"])
@@ -3035,8 +3048,10 @@ def load_symbol_cache(
             cap_series = cap_series.where(~cap_st, np.nan)
 
         return symbol, ret_series, cap_series, buyable_series, sellable_series
-    except Exception:
-        return None
+    except Exception as exc:
+        raise RuntimeError(
+            f"symbol cache load failed for {str(symbol).zfill(6)}: {type(exc).__name__}: {exc}"
+        ) from exc
 
 
 def load_cache_panels(
@@ -3051,6 +3066,8 @@ def load_cache_panels(
     buyable_df = pd.DataFrame(index=trading_dates)
     sellable_df = pd.DataFrame(index=trading_dates)
     caps_by_date: dict[pd.Timestamp, dict[str, float]] = {pd.Timestamp(dt): {} for dt in cap_dates}
+    legitimately_unavailable: list[str] = []
+    failures: dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = {
             pool.submit(
@@ -3064,8 +3081,14 @@ def load_cache_panels(
             for symbol in symbols
         }
         for fut in as_completed(futures):
-            result = fut.result()
+            submitted_symbol = str(futures[fut]).zfill(6)
+            try:
+                result = fut.result()
+            except Exception as exc:
+                failures[submitted_symbol] = f"{type(exc).__name__}: {exc}"
+                continue
             if result is None:
+                legitimately_unavailable.append(submitted_symbol)
                 continue
             symbol, ret_series, cap_series, buyable_series, sellable_series = result
             returns_df[symbol] = ret_series
@@ -3074,6 +3097,18 @@ def load_cache_panels(
             for dt, value in cap_series.items():
                 if pd.notna(value):
                     caps_by_date[pd.Timestamp(dt)][symbol] = float(value)
+    stats = {
+        "requested_count": int(len(symbols)),
+        "loaded_count": int(len(returns_df.columns)),
+        "legitimately_unavailable_count": int(len(legitimately_unavailable)),
+        "legitimately_unavailable": sorted(legitimately_unavailable),
+        "failure_count": int(len(failures)),
+        "failures": dict(sorted(failures.items())),
+    }
+    returns_df.attrs["symbol_load_stats"] = stats
+    if failures:
+        sample = "; ".join(f"{symbol}: {message}" for symbol, message in sorted(failures.items())[:10])
+        raise RuntimeError(f"symbol cache panel load failed for {len(failures)} symbols: {sample}")
     return returns_df, caps_by_date, buyable_df, sellable_df
 
 
@@ -3086,6 +3121,11 @@ def build_target_members_map(
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
         ranked = sorted(cap_map.items(), key=lambda x: x[1])
+        if len(ranked) < int(top_n):
+            raise RuntimeError(
+                f"rebalance candidate pool below top_n on {pd.Timestamp(dt).date()}: "
+                f"available={len(ranked)} required={int(top_n)}"
+            )
         target_members_map[pd.Timestamp(dt)] = [symbol for symbol, _ in ranked[:top_n]]
     return target_members_map
 
@@ -3241,6 +3281,42 @@ def simulate_rebalance_path(
                 "holding_count": len(current_members),
             }
         )
+
+    if len(trading_dates) and execution_timing == EXECUTION_TIMING_CLOSE:
+        final_dt = pd.Timestamp(trading_dates[-1])
+        if final_dt in rebalance_set and final_dt not in effective_members_map:
+            target_members = target_members_map.get(final_dt, [])
+            trade_result = apply_trade_constraints(
+                current_members=current_members,
+                target_members=target_members,
+                trade_date=final_dt,
+                buyable_df=buyable_df,
+                sellable_df=sellable_df,
+                top_n=top_n,
+            )
+            current_members = trade_result["members_after"]
+            effective_members_map[final_dt] = current_members.copy()
+            buys = len(trade_result["entered"])
+            sells = len(trade_result["exited"])
+            turnover_rows.append(
+                {
+                    "rebalance_date": final_dt,
+                    "execution_timing": execution_timing,
+                    "constraint_trade_date": final_dt,
+                    "execution_date": final_dt,
+                    "effective_date": final_dt,
+                    "return_start_date": pd.NaT,
+                    "exit_count": sells,
+                    "entry_count": buys,
+                    "blocked_entry_count": len(trade_result["blocked_entries"]),
+                    "blocked_exit_count": len(trade_result["blocked_exits"]),
+                    "buy_turnover_frac": buys / top_n,
+                    "sell_turnover_frac": sells / top_n,
+                    "turnover_frac_one_side": (buys + sells) / (2 * top_n),
+                    "two_side_cost_rate": one_side_cost_rate * ((buys + sells) / top_n),
+                    "holding_count_after": len(current_members),
+                }
+            )
 
     return pd.DataFrame(index_rows), pd.DataFrame(turnover_rows), effective_members_map
 
@@ -3963,23 +4039,88 @@ def panel_shadow_cache_is_reusable(
     return bool(current_ts - mtime <= pd.Timedelta(seconds=max(0, int(same_day_max_age_seconds))))
 
 
+def _price_cache_latest_date(symbol: str) -> pd.Timestamp | None:
+    price_path = freq_mod.resolve_cache_path(
+        freq_mod.PRICE_DIR,
+        getattr(freq_mod, "SHARED_PRICE_DIR", None),
+        str(symbol).zfill(6),
+    )
+    if price_path is None:
+        return None
+    try:
+        dates = pd.read_csv(price_path, usecols=["date"])["date"]
+    except Exception:
+        return None
+    dates = pd.to_datetime(dates, errors="coerce").dropna()
+    if dates.empty:
+        return None
+    return pd.Timestamp(dates.max()).normalize()
+
+
+def price_cache_refresh_preflight(
+    end_date: pd.Timestamp,
+    symbols: list[str],
+    force_refresh: bool = False,
+) -> dict[str, object]:
+    end_ts = pd.Timestamp(end_date).normalize()
+    clean_symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
+    missing: list[str] = []
+    stale: list[str] = []
+    current_count = 0
+    for symbol in clean_symbols:
+        latest = _price_cache_latest_date(symbol)
+        if latest is None:
+            missing.append(symbol)
+        elif force_refresh or latest < end_ts:
+            stale.append(symbol)
+        else:
+            current_count += 1
+    stale_or_missing = stale + missing
+    return {
+        "end_date": str(end_ts.date()),
+        "symbol_count": int(len(clean_symbols)),
+        "current_count": int(current_count),
+        "stale_count": int(len(stale)),
+        "missing_count": int(len(missing)),
+        "stale_or_missing_count": int(len(stale_or_missing)),
+        "force_refresh": bool(force_refresh),
+        "sample_stale_or_missing_symbols": stale_or_missing[:10],
+    }
+
+
+def _log_price_cache_refresh(message: str) -> None:
+    print(f"[top100-refresh] {message}", file=sys.stderr, flush=True)
+
+
 def refresh_price_cache_tail(
     end_date: pd.Timestamp,
     max_workers: int,
     symbols: list[str] | None = None,
     force_refresh: bool = False,
+    progress_interval: int | None = 250,
 ) -> None:
     ensure_fetch_dirs = getattr(fetch_mod, "ensure_dirs", None)
     if ensure_fetch_dirs is not None:
         ensure_fetch_dirs()
     if symbols is None:
-        symbols = freq_mod.load_current_universe()
+        symbols = freq_mod.load_universe()
+    symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
     if not symbols:
-        raise RuntimeError("No cached-universe symbols available for price-cache refresh.")
+        raise RuntimeError("No backtest-universe symbols available for price-cache refresh.")
 
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
     failures: dict[str, str] = {}
     workers = max(1, min(int(max_workers), 16))
+    preflight = price_cache_refresh_preflight(pd.Timestamp(end_date), symbols, force_refresh=force_refresh)
+    sample = ",".join(preflight.get("sample_stale_or_missing_symbols", []) or [])
+    _log_price_cache_refresh(
+        "price-cache refresh preflight "
+        f"end_date={end_text} symbols={preflight['symbol_count']} "
+        f"stale_or_missing={preflight['stale_or_missing_count']} "
+        f"missing={preflight['missing_count']} stale={preflight['stale_count']} "
+        f"current={preflight['current_count']} force_refresh={preflight['force_refresh']} "
+        f"workers={workers} sample={sample}"
+    )
 
     def refresh_price_history_with_fallback(symbol: str) -> None:
         try:
@@ -3996,6 +4137,9 @@ def refresh_price_cache_tail(
         if fetch_share_change is not None:
             fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
 
+    completed = 0
+    total_symbols = len(symbols)
+    interval = max(0, int(progress_interval or 0))
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in symbols}
         for fut in as_completed(futures):
@@ -4004,6 +4148,11 @@ def refresh_price_cache_tail(
                 fut.result()
             except Exception as exc:
                 failures[symbol] = str(exc)
+            completed += 1
+            if interval and (completed % interval == 0 or completed == total_symbols):
+                _log_price_cache_refresh(
+                    f"price-cache refresh progress {completed}/{total_symbols} failures={len(failures)}"
+                )
     for retry_attempt in range(2):
         if not failures:
             break
@@ -4026,6 +4175,7 @@ def refresh_price_cache_tail(
         raise RuntimeError(
             f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). Sample: {sample}"
         )
+    _log_price_cache_refresh(f"price-cache refresh complete {total_symbols}/{total_symbols} failures={len(failures)}")
 
 
 def _load_cached_market_cap_asof(symbol: str, ref_date: pd.Timestamp) -> tuple[str, float] | None:
@@ -4084,7 +4234,7 @@ def select_recent_candidate_symbols(
         symbols.update(recent_members.astype(str).str.zfill(6).tolist())
 
     reference_date = min(pd.Timestamp(target_end_date), pd.Timestamp(current_index_end) + pd.Timedelta(days=14))
-    universe = freq_mod.load_current_universe()
+    universe = freq_mod.load_universe()
     workers = max(1, min(int(max_workers), 16))
     caps: list[tuple[str, float]] = []
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -4166,6 +4316,81 @@ def validate_recent_bridge_alignment(
             )
 
 
+def recent_extension_replacement_start(
+    recent_dates: pd.DatetimeIndex,
+    recent_index_df: pd.DataFrame,
+) -> pd.Timestamp:
+    if recent_index_df is not None and not recent_index_df.empty and "date" in recent_index_df.columns:
+        dates = pd.to_datetime(recent_index_df["date"], errors="coerce").dropna().sort_values()
+        if not dates.empty:
+            return pd.Timestamp(dates.iloc[0]).normalize()
+    dates = pd.DatetimeIndex(pd.to_datetime(recent_dates, errors="coerce")).dropna().sort_values()
+    if len(dates) == 0:
+        raise ValueError("recent extension window has no valid dates")
+    return pd.Timestamp(dates[0]).normalize()
+
+
+def splice_recent_proxy_extension(
+    existing_index_df: pd.DataFrame,
+    recent_index_df: pd.DataFrame,
+    current_index_end: pd.Timestamp,
+) -> pd.DataFrame:
+    """Append recent proxy returns without rewriting the frozen historical path."""
+    current_end = pd.Timestamp(current_index_end).normalize()
+    existing = existing_index_df.copy()
+    recent = recent_index_df.copy()
+    for label, frame in (("existing", existing), ("recent", recent)):
+        missing = {"date", "close", "daily_return"}.difference(frame.columns)
+        if missing:
+            raise KeyError(f"{label} proxy frame missing columns: {sorted(missing)}")
+        frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.normalize()
+        frame["close"] = pd.to_numeric(frame["close"], errors="coerce")
+        frame["daily_return"] = pd.to_numeric(frame["daily_return"], errors="coerce")
+        frame.dropna(subset=["date"], inplace=True)
+        frame.sort_values("date", inplace=True)
+        frame.drop_duplicates(subset="date", keep="last", inplace=True)
+
+    bridge = existing.loc[existing["date"].eq(current_end), "close"]
+    if bridge.empty or pd.isna(bridge.iloc[-1]) or float(bridge.iloc[-1]) <= 0:
+        raise RuntimeError(f"Existing proxy has no valid bridge close on {current_end.date()}.")
+    if not recent["date"].eq(current_end).any():
+        raise RuntimeError(f"Recent proxy does not overlap bridge date {current_end.date()}.")
+
+    appended = recent.loc[recent["date"] > current_end].copy()
+    if appended.empty:
+        return existing.reset_index(drop=True)
+    if appended["daily_return"].isna().any():
+        bad_dates = appended.loc[appended["daily_return"].isna(), "date"].dt.strftime("%Y-%m-%d").tolist()
+        raise RuntimeError(f"Recent proxy extension has missing daily_return: {bad_dates[:10]}")
+    if (appended["daily_return"] <= -1.0).any():
+        bad_dates = appended.loc[appended["daily_return"] <= -1.0, "date"].dt.strftime("%Y-%m-%d").tolist()
+        raise RuntimeError(f"Recent proxy extension has invalid daily_return: {bad_dates[:10]}")
+
+    chained_close: list[float] = []
+    current_level = float(bridge.iloc[-1])
+    for day_return in appended["daily_return"].astype(float):
+        current_level *= 1.0 + float(day_return)
+        chained_close.append(current_level)
+    appended["close"] = chained_close
+
+    combined = pd.concat(
+        [existing.loc[existing["date"] <= current_end], appended],
+        ignore_index=True,
+        sort=False,
+    ).sort_values("date").drop_duplicates(subset="date", keep="last").reset_index(drop=True)
+    appended_mask = combined["date"] > current_end
+    implied = combined["close"].pct_change(fill_method=None)
+    if not np.allclose(
+        implied.loc[appended_mask].to_numpy(dtype=float),
+        combined.loc[appended_mask, "daily_return"].to_numpy(dtype=float),
+        rtol=1e-10,
+        atol=1e-12,
+        equal_nan=False,
+    ):
+        raise RuntimeError("Recent proxy extension close levels do not match appended daily returns.")
+    return combined
+
+
 def extend_index_recent_window(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -4216,29 +4441,21 @@ def extend_index_recent_window(
         symbols=candidate_symbols,
     )
     bridge_date = current_index_end
-    bridge_old = index_df.loc[index_df["date"] == bridge_date, "close"]
-    bridge_new = recent_index_df.loc[recent_index_df["date"] == bridge_date, "close"]
-    if bridge_old.empty or bridge_new.empty:
-        raise RuntimeError(f"Failed to bridge recent proxy extension on {bridge_date.date()}.")
-
     validate_recent_bridge_alignment(index_df, recent_index_df, bridge_date)
-    scale = float(bridge_old.iloc[0]) / float(bridge_new.iloc[0])
-    recent_index_df = recent_index_df.copy()
-    recent_index_df["close"] = recent_index_df["close"].astype(float) * scale
-
-    recent_start = pd.Timestamp(recent_dates.min())
-    combined_index = pd.concat(
-        [index_df.loc[index_df["date"] < recent_start], recent_index_df],
-        ignore_index=True,
-    ).sort_values("date").drop_duplicates(subset="date", keep="last")
+    combined_index = splice_recent_proxy_extension(index_df, recent_index_df, bridge_date)
+    appended_dates = combined_index.loc[combined_index["date"] > bridge_date, "date"]
+    if appended_dates.empty:
+        raise RuntimeError(f"Recent proxy extension produced no rows after {bridge_date.date()}.")
+    recent_start = pd.Timestamp(appended_dates.min()).normalize()
 
     if paths["proxy_members"].exists():
         existing_members = pd.read_csv(paths["proxy_members"])
         if "rebalance_date" in existing_members.columns:
             existing_members["rebalance_date"] = pd.to_datetime(existing_members["rebalance_date"], errors="coerce")
-            existing_members = existing_members.loc[existing_members["rebalance_date"] < recent_start]
+            existing_members = existing_members.loc[existing_members["rebalance_date"] <= bridge_date]
         recent_members_out = recent_members_df.copy()
         recent_members_out["rebalance_date"] = pd.to_datetime(recent_members_out["rebalance_date"], errors="coerce")
+        recent_members_out = recent_members_out.loc[recent_members_out["rebalance_date"] > bridge_date]
         combined_members = pd.concat([existing_members, recent_members_out], ignore_index=True)
     else:
         combined_members = recent_members_df
@@ -4247,8 +4464,13 @@ def extend_index_recent_window(
         existing_turnover = pd.read_csv(paths["proxy_turnover"])
         if "rebalance_date" in existing_turnover.columns:
             existing_turnover["rebalance_date"] = pd.to_datetime(existing_turnover["rebalance_date"], errors="coerce")
-            existing_turnover = existing_turnover.loc[existing_turnover["rebalance_date"] < recent_start]
-        combined_turnover = pd.concat([existing_turnover, recent_turnover_df], ignore_index=True)
+            existing_turnover = existing_turnover.loc[existing_turnover["rebalance_date"] <= bridge_date]
+        recent_turnover_out = recent_turnover_df.copy()
+        recent_turnover_out["rebalance_date"] = pd.to_datetime(
+            recent_turnover_out["rebalance_date"], errors="coerce"
+        )
+        recent_turnover_out = recent_turnover_out.loc[recent_turnover_out["rebalance_date"] > bridge_date]
+        combined_turnover = pd.concat([existing_turnover, recent_turnover_out], ignore_index=True)
     else:
         combined_turnover = recent_turnover_df
 
@@ -4300,15 +4522,20 @@ def build_local_proxy_bundle(
     symbols: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]:
     rebalance_dates = build_biweekly_rebalance_dates(trading_dates)
+    universe_source = "explicit_symbols"
     if symbols is None:
-        symbols = freq_mod.load_current_universe()
+        symbols = freq_mod.load_universe()
+        universe_source = "backtest_cache_security_master"
+    symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
+    if not symbols:
+        raise RuntimeError("No backtest-universe symbols available for local proxy build.")
     returns_df, caps_by_date, buyable_df, sellable_df = freq_mod.load_cache_panels(
         symbols=symbols,
         trading_dates=trading_dates,
         cap_dates=rebalance_dates,
         max_workers=args.max_workers,
         trade_constraint_mode=TRADE_CONSTRAINT_MODE,
-        exclude_historical_st_from_caps=False,
+        exclude_historical_st_from_caps=True,
     )
     name_map = load_name_map()
     target_members_map = build_live_target_members_map(
@@ -4337,6 +4564,9 @@ def build_local_proxy_bundle(
     meta = {
         "index_code": INDEX_CODE,
         "source_used": "local_cache_proxy",
+        "universe_source": universe_source,
+        "universe_symbol_count": int(len(symbols)),
+        "symbol_load_stats": returns_df.attrs.get("symbol_load_stats", {}),
         "method_note": (
             "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. "
             "This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names "
@@ -4345,7 +4575,8 @@ def build_local_proxy_bundle(
         ),
         "core_params": {
             "top_n": TOP_N,
-            "exclude_current_st": True,
+            "exclude_current_st": False,
+            "exclude_historical_st": True,
             "exclude_bj_exchange": True,
             "exclude_suspended_on_signal_date": True,
             "block_limit_up_entry_at_close": True,
@@ -4387,6 +4618,8 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     return (
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
+        and core_params.get("exclude_current_st") is False
+        and core_params.get("exclude_historical_st") is True
         and rebalance_phase_anchor_date in (None, REBALANCE_ANCHOR_DATE)
         and member_filter_policy_version in (None, MEMBER_FILTER_POLICY_VERSION)
         and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
@@ -6337,8 +6570,26 @@ def find_missing_cost_rebalances(
 
 
 def load_name_map() -> dict[str, str]:
-    frame = pd.read_csv(freq_mod.ACTIVE_UNIVERSE, dtype=str)
-    return dict(zip(frame["code"].str.zfill(6), frame["name"]))
+    names: dict[str, str] = {}
+    try:
+        master = freq_mod.load_security_master()
+    except Exception:
+        master = pd.DataFrame()
+    if not master.empty and {"symbol", "name"}.issubset(master.columns):
+        work = master[["symbol", "name"]].copy()
+        work["symbol"] = work["symbol"].astype(str).str.extract(r"(\d{6})", expand=False).fillna("").str.zfill(6)
+        work["name"] = work["name"].fillna("").astype(str).str.strip()
+        work = work.loc[work["symbol"].str.len().eq(6) & work["name"].ne("")]
+        names.update(dict(zip(work["symbol"], work["name"])))
+    try:
+        frame = pd.read_csv(freq_mod.ACTIVE_UNIVERSE, dtype=str)
+        active_names = dict(zip(frame["code"].str.zfill(6), frame["name"].fillna("").astype(str).str.strip()))
+        for symbol, name in active_names.items():
+            if name and not names.get(symbol):
+                names[symbol] = name
+    except Exception:
+        pass
+    return names
 
 
 def build_live_target_members_map(
@@ -6351,11 +6602,18 @@ def build_live_target_members_map(
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
         ranked = sorted(cap_map.items(), key=lambda x: x[1])
-        tradable_members = [
+        tradable_candidates = [
             symbol
             for symbol, _ in ranked
-            if is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
-        ][:top_n]
+            if not str(name_map.get(str(symbol).zfill(6), "")).strip()
+            or is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
+        ]
+        if len(tradable_candidates) < int(top_n):
+            raise RuntimeError(
+                f"live rebalance candidate pool below top_n on {pd.Timestamp(dt).date()}: "
+                f"available={len(tradable_candidates)} required={int(top_n)}"
+            )
+        tradable_members = tradable_candidates[:top_n]
         out[pd.Timestamp(dt)] = tradable_members
     return out
 
@@ -6660,6 +6918,57 @@ def augment_signal_with_member_rebalance(signal_df: pd.DataFrame, changes_df: pd
     return out
 
 
+def augment_realtime_signal_with_member_rebalance(
+    signal_df: pd.DataFrame,
+    changes_df: pd.DataFrame | None,
+    latest_rebalance: object,
+    latest_anchor_trade_date: object,
+    quote_trade_date: object,
+) -> pd.DataFrame:
+    out = augment_signal_with_member_rebalance(signal_df, changes_df)
+    frame = pd.DataFrame() if changes_df is None else pd.DataFrame(changes_df)
+    official_rebalance = True
+    if "official_rebalance" in frame.columns:
+        official_values = frame["official_rebalance"].dropna()
+        if official_values.empty:
+            official_rebalance = False
+        else:
+            official_rebalance = bool(
+                official_values.map(
+                    lambda value: value
+                    if isinstance(value, (bool, np.bool_))
+                    else str(value).strip().lower() in {"true", "1", "yes", "y", "on"}
+                ).all()
+            )
+
+    def date_text(value: object) -> str:
+        if value is None or str(value).strip() == "":
+            return ""
+        try:
+            return str(pd.Timestamp(value).date())
+        except (TypeError, ValueError):
+            return ""
+
+    signal_date = date_text(latest_rebalance)
+    anchor_date = date_text(latest_anchor_trade_date)
+    quoted_date = date_text(quote_trade_date)
+    is_execution_session = bool(
+        official_rebalance
+        and signal_date
+        and anchor_date
+        and quoted_date
+        and signal_date == anchor_date
+        and pd.Timestamp(quoted_date) > pd.Timestamp(anchor_date)
+    )
+    out["member_rebalance_signal_date"] = signal_date
+    out["member_rebalance_execution_date"] = quoted_date if is_execution_session else ""
+    out["member_rebalance_actionable"] = bool(
+        is_execution_session and bool(out["member_rebalance_required"].iloc[0])
+    )
+    out["member_rebalance_official"] = bool(official_rebalance)
+    return out
+
+
 def assert_signal_matches_result(signal_df: pd.DataFrame, result: pd.DataFrame) -> None:
     if signal_df.empty or result.empty:
         raise RuntimeError("信号结果为空，拒绝输出实盘信号。")
@@ -6682,6 +6991,11 @@ def assert_signal_matches_result(signal_df: pd.DataFrame, result: pd.DataFrame) 
 
 
 def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
+    flat_fallback_count = int(meta.get("member_quote_flat_fallback_count") or 0)
+    if flat_fallback_count:
+        raise RuntimeError(
+            f"Realtime snapshot uses {flat_fallback_count} synthetic last-close fallback quotes; preview only."
+        )
     member_count = int(meta.get("member_count") or 0)
     member_price_count = int(meta.get("member_price_count") or 0)
     if member_count <= 0 or member_price_count != member_count:
@@ -6724,6 +7038,75 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
         )
 
 
+    assert_realtime_anchor_precedes_quote_trade_date(meta)
+
+
+def _read_date_index_csv(path: Path, date_column: str = "date") -> pd.DatetimeIndex:
+    if not Path(path).exists():
+        return pd.DatetimeIndex([])
+    try:
+        dates = pd.read_csv(path, usecols=[date_column], parse_dates=[date_column])[date_column]
+    except Exception:
+        return pd.DatetimeIndex([])
+    return pd.DatetimeIndex(dates).dropna().normalize().unique().sort_values()
+
+
+def _load_realtime_anchor_calendar_index() -> pd.DatetimeIndex:
+    calendars: list[pd.DatetimeIndex] = []
+    try:
+        calendars.append(pd.DatetimeIndex(_load_realtime_v2_0_official_index()).dropna().normalize())
+    except Exception:
+        pass
+    calendars.append(_read_date_index_csv(DEFAULT_INDEX_CSV))
+    calendar = pd.DatetimeIndex([])
+    for item in calendars:
+        calendar = calendar.union(pd.DatetimeIndex(item).dropna().normalize())
+    return calendar.unique().sort_values()
+
+
+def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) -> None:
+    quote_trade_date = str(meta.get("quote_trade_date") or "").strip()
+    anchor_trade_date = str(meta.get("latest_anchor_trade_date") or "").strip()
+    if not quote_trade_date or not anchor_trade_date:
+        raise RuntimeError("Realtime meta missing quote_trade_date or latest_anchor_trade_date.")
+    quote_day = pd.Timestamp(quote_trade_date).normalize()
+    anchor_day = pd.Timestamp(anchor_trade_date).normalize()
+    expected_close_text = str(meta.get("expected_latest_completed_trade_date") or "").strip()
+    if not expected_close_text:
+        raise RuntimeError(
+            "Realtime meta missing independently refreshed expected latest completed trade date."
+        )
+    expected_close_day = pd.Timestamp(expected_close_text).normalize()
+    if anchor_day != expected_close_day:
+        raise RuntimeError(
+            "Realtime anchor does not equal independently refreshed latest completed trade date: "
+            f"latest_anchor_trade_date={anchor_day.date()} "
+            f"expected_latest_completed_trade_date={expected_close_day.date()}"
+        )
+    calendar = _load_realtime_anchor_calendar_index()
+    if len(calendar) == 0:
+        raise RuntimeError("Realtime trading calendar is empty; refusing realtime signal.")
+    if expected_close_day not in calendar:
+        raise RuntimeError(
+            "Realtime trading calendar does not reach independently refreshed latest completed trade date: "
+            f"expected_latest_completed_trade_date={expected_close_day.date()}"
+        )
+    completed_before_quote = calendar[calendar < quote_day]
+    if len(completed_before_quote) == 0:
+        raise RuntimeError(
+            "Realtime trading calendar has no completed trading day before quote_trade_date: "
+            f"quote_trade_date={quote_day.date()}"
+        )
+    expected_anchor = pd.Timestamp(completed_before_quote[-1]).normalize()
+    if anchor_day != expected_anchor:
+        raise RuntimeError(
+            "latest_anchor_trade_date is not the previous completed trading day before quote_trade_date: "
+            f"latest_anchor_trade_date={anchor_day.date()} "
+            f"expected_previous_completed_trading_day={expected_anchor.date()} "
+            f"quote_trade_date={quote_day.date()}"
+        )
+
+
 def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
     try:
         assert_realtime_meta_is_actionable(meta)
@@ -6733,7 +7116,10 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 
 
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
+    "synthetic last-close fallback quotes",
+    "independently refreshed latest completed trade date",
     "Realtime hedge quote date is earlier than the historical anchor.",
+    "latest_anchor_trade_date is not the previous completed trading day",
     "Realtime hedge quote missing trade_date",
     "Realtime hedge quote source is not actionable",
     "Realtime member quotes missing per-symbol trade_date",
@@ -6810,7 +7196,8 @@ def build_summary(
         "version_note": "Baseline live framework with fixed 1.0x hedge ratio.",
         "core_params": {
             "top_n": TOP_N,
-            "exclude_current_st": True,
+            "exclude_current_st": False,
+            "exclude_historical_st": True,
             "rebalance_schedule": "biweekly",
             "rebalance_weekday_anchor": REBALANCE_WEEKDAY,
             "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
@@ -7273,6 +7660,15 @@ def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
     return out
 
 
+def clear_rewrite_audit_after_clean_result(audit_path: Path | None) -> None:
+    if audit_path is None:
+        return
+    try:
+        Path(audit_path).unlink(missing_ok=True)
+    except OSError as exc:
+        raise RuntimeError(f"failed to clear stale clean rewrite audit: {audit_path}") from exc
+
+
 def assert_no_historical_rewrite(
     previous: pd.DataFrame,
     candidate: pd.DataFrame,
@@ -7371,8 +7767,17 @@ def assert_no_historical_rewrite(
         right = cand.loc[frozen_common, col]
         left_num = pd.to_numeric(left, errors="coerce")
         right_num = pd.to_numeric(right, errors="coerce")
-        numeric_like = left_num.notna().any() or right_num.notna().any()
-        if numeric_like:
+        bool_like = (
+            pd.api.types.is_bool_dtype(left)
+            or pd.api.types.is_bool_dtype(right)
+            or pd.api.types.is_bool_dtype(left_num)
+            or pd.api.types.is_bool_dtype(right_num)
+        )
+        numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+        if bool_like:
+            changed = left.astype("boolean").ne(right.astype("boolean"))
+            changed = changed | (left.isna() ^ right.isna())
+        elif numeric_like:
             diff = (left_num - right_num).abs()
             threshold = float(atol) + float(rtol) * right_num.abs()
             changed = diff.gt(threshold)
@@ -7390,6 +7795,7 @@ def assert_no_historical_rewrite(
                 }
             )
     if not changes:
+        clear_rewrite_audit_after_clean_result(audit_path)
         return
     diff_df = pd.DataFrame(changes)
     if audit_path is not None:
@@ -8223,7 +8629,9 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
         prev = pd.to_numeric(data.get("f60"), errors="coerce")
         if pd.notna(latest) and latest > 0:
             eastmoney_price = float(latest) / 100.0
-            trade_date = parse_eastmoney_trade_date(data.get("f86"))
+            trade_date = parse_quote_epoch_trade_date(data.get("f86")) or parse_eastmoney_trade_date(
+                data.get("f86")
+            )
             if trade_date:
                 return eastmoney_price, eastmoney_source, trade_date
         elif pd.notna(prev) and prev > 0:
@@ -8885,9 +9293,16 @@ def build_realtime_signal_fast(
     signal_df["official_close_confirmed_signal"] = False
     signal_df["quote_source"] = quote_source
     signal_df["hedge_quote_source"] = hedge_source
-    signal_df["member_price_count"] = available_rows
+    genuine_available_rows = max(0, int(available_rows) - int(flat_fallback_count))
+    expected_latest_completed_trade_date = context.get(
+        "expected_latest_completed_trade_date",
+        context.get("target_end_date", ""),
+    )
+    signal_df["member_price_count"] = genuine_available_rows
+    signal_df["computed_member_price_count"] = available_rows
     signal_df["member_count"] = len(member_symbols)
     signal_df["latest_anchor_trade_date"] = latest_trade_date
+    signal_df["expected_latest_completed_trade_date"] = expected_latest_completed_trade_date
     signal_df["member_quote_trade_date_count"] = quote_stats["member_quote_trade_date_count"]
     signal_df["member_quote_trade_date_min"] = quote_stats["member_quote_trade_date_min"]
     signal_df["member_quote_trade_date_max"] = quote_stats["member_quote_trade_date_max"]
@@ -8908,15 +9323,21 @@ def build_realtime_signal_fast(
         "latest_anchor_trade_date": str(latest_trade_date.date()),
         "quote_source": quote_source,
         "hedge_quote_source": hedge_source,
-        "member_price_count": available_rows,
+        "member_price_count": genuine_available_rows,
+        "computed_member_price_count": available_rows,
         "member_count": len(member_symbols),
         "microcap_rt_close": float(microcap_rt_close),
         "hedge_rt_close": float(hedge_rt_close),
         "quote_trade_date": quote_trade_date,
+        "expected_latest_completed_trade_date": str(
+            pd.Timestamp(expected_latest_completed_trade_date).date()
+        ),
         **quote_stats,
         "member_quote_flat_fallback_count": flat_fallback_count,
         "hedge_quote_trade_date": hedge_quote_trade_date,
         "snapshot_row_appended": snapshot_row_appended,
+        "from_cache": False,
+        "cache_age_seconds": 0.0,
         "tail_jitter_risk": jitter_level,
         "tail_jitter_note": jitter_note,
     }
@@ -9682,6 +10103,8 @@ base_mod, _base_ns = _exec_embedded_module(
     },
 )
 
+DEFAULT_MAX_STALE_ANCHOR_DAYS = int(base_mod.DEFAULT_MAX_STALE_ANCHOR_DAYS)
+
 BASE_HEDGE_RATIO = 0.8
 V2_BASE_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0_base"
 V2_BASE_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv"
@@ -10106,7 +10529,11 @@ def _refresh_realtime_state_for_local_query() -> None:
             ) from exc
         raise
 
-    report = realtime_state_bundle.refresh_state(ROOT, max_workers=8)
+    report = realtime_state_bundle.refresh_state(
+        ROOT,
+        max_workers=8,
+        max_anchor_age_days=DEFAULT_MAX_STALE_ANCHOR_DAYS,
+    )
     if not report.get("ok"):
         errors = "; ".join(str(item) for item in report.get("errors", []))
         raise RuntimeError(f"Realtime state refresh failed before local signal query: {errors}")
@@ -10240,6 +10667,7 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                 except (FileNotFoundError, ValueError):
                     base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
+        member_context["expected_latest_completed_trade_date"] = pd.Timestamp(target_end_date).normalize()
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
         turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
@@ -10305,9 +10733,10 @@ OVERLAY_SOURCE = r'''
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "outputs"
 
-OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0"
-TARGET_VOL = 0.25
-TARGET_VOL_WINDOW = 60
+DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0"
+OUTPUT_PREFIX = DEFAULT_OUTPUT_PREFIX
+TARGET_VOL = 0.15
+TARGET_VOL_WINDOW = 75
 TARGET_VOL_MAX_LEVERAGE = 1.5
 TARGET_VOL_MIN_LEVERAGE = 0.0
 TARGET_VOL_TRADING_DAYS = 244
@@ -10316,7 +10745,14 @@ TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
 TARGET_VOL_FINANCING_RATE = 0.03
 IDLE_CASH_YIELD = 0.02
 SCALE_TRADE_REQUIRED_EPSILON = 1e-6
-HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP = (0.15,)
+OVERHEAT_ENABLED = True
+OVERHEAT_KIND = "volatility"
+OVERHEAT_WINDOW = 60
+OVERHEAT_THRESHOLD = 0.23
+OVERHEAT_METRIC = "microcap_minus_0p8x_hedge_realized_vol"
+OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN = True
+OVERHEAT_REQUIRE_SIGNAL_RESET = True
+HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP = (0.25,)
 DEFAULT_ALLOWED_TAIL_ROWS = max(
     TARGET_VOL_WINDOW + int(getattr(embedded_context.base_mod, "LOOKBACK", 16)),
     TARGET_VOL_WINDOW + 20,
@@ -10334,6 +10770,12 @@ V2_0_REWRITE_AUDIT_KEY_COLUMNS = [
     "next_session_actionable_scale",
     "base_trade_cost",
     "base_trade_cost_scaled",
+    "base_holding",
+    "base_next_holding",
+    "overheat_metric",
+    "overheat_triggered",
+    "blocked_until_signal_reset",
+    "trade_return_net",
     "scale_change_cost",
     "financing_cost",
 ]
@@ -10343,6 +10785,14 @@ V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN = {
     "next_holding": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "base_pre_cost_return": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
 }
+V2_0_AUDITED_REWRITE_ALLOWLIST: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("2017-07-17", "return_net"),
+        ("2017-07-17", "scale_change_cost"),
+        ("2022-04-28", "return_net"),
+        ("2022-04-28", "scale_change_cost"),
+    }
+)
 
 
 def _costed_nav_path(target_vol: float) -> Path:
@@ -10373,6 +10823,35 @@ PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
 PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
+
+def configure_output_paths(output_prefix: str | None = None) -> None:
+    global OUTPUT_PREFIX
+    global SUMMARY_JSON, LATEST_SIGNAL_CSV, REALTIME_SIGNAL_CSV, NAV_CSV, COSTED_NAV_CSV
+    global PERF_SUMMARY_CSV, PERF_YEARLY_CSV, PERF_NAV_CSV, PERF_JSON, PERF_PNG
+    global PERF_QUERY_SUMMARY_CSV, PERF_QUERY_YEARLY_CSV, PERF_QUERY_NAV_CSV, PERF_QUERY_JSON, PERF_QUERY_PNG
+
+    OUTPUT_PREFIX = str(output_prefix or DEFAULT_OUTPUT_PREFIX)
+    SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
+    LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
+    REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
+    NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
+    COSTED_NAV_CSV = (
+        _costed_nav_path(TARGET_VOL)
+        if OUTPUT_PREFIX == DEFAULT_OUTPUT_PREFIX
+        else OUTPUT_DIR / f"{OUTPUT_PREFIX}_costed_nav.csv"
+    )
+    PERF_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.csv"
+    PERF_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_yearly.csv"
+    PERF_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_nav.csv"
+    PERF_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_summary.json"
+    PERF_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_curve.png"
+    PERF_QUERY_SUMMARY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.csv"
+    PERF_QUERY_YEARLY_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_yearly.csv"
+    PERF_QUERY_NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_nav.csv"
+    PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
+    PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
+
+
 EXPECTED_VERSION_ROLE = "standalone_target_vol_overlay"
 EXPECTED_VERSION_NOTE_PREFIX = "Standalone target-volatility overlay matching repaired v1.6 behavior."
 BASE_HEDGE_RATIO_SOURCE = embedded_context
@@ -10401,15 +10880,31 @@ MEMBER_REBALANCE_META_COLS = {
     "member_enter_count",
     "member_exit_count",
     "member_rebalance_label",
+    "member_rebalance_signal_date",
+    "member_rebalance_execution_date",
+    "member_rebalance_actionable",
+    "member_rebalance_official",
 }
 REALTIME_META_FORCE_COLS = {
+    "fallback_warning",
     "quote_source",
     "hedge_quote_source",
     "member_price_count",
+    "computed_member_price_count",
     "member_count",
+    "member_quote_flat_fallback_count",
+    "member_quote_trade_date_count",
+    "member_quote_trade_date_min",
+    "member_quote_trade_date_max",
+    "member_quote_bad_symbols",
     "latest_anchor_trade_date",
+    "expected_latest_completed_trade_date",
     "quote_trade_date",
+    "hedge_quote_trade_date",
     "snapshot_time",
+    "snapshot_row_appended",
+    "from_cache",
+    "cache_age_seconds",
     "tail_jitter_risk",
     "tail_jitter_note",
 }
@@ -10657,6 +11152,62 @@ def _atomic_write_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None
             pass
 
 
+@contextmanager
+def staged_output_bundle(
+    targets: Iterable[Path],
+    *,
+    summary_path: Path,
+    post_promotion_validator: Callable[[], None] | None = None,
+):
+    ordered_targets = list(dict.fromkeys(Path(path) for path in targets))
+    summary_target = Path(summary_path)
+    if summary_target not in ordered_targets:
+        raise ValueError("summary_path must be included in staged output targets")
+    target_positions = {target: position for position, target in enumerate(ordered_targets)}
+    staged = {
+        target: _atomic_temp_path(
+            target.parent / f".bundle.{target_positions[target]:02d}.promotion{target.suffix}"
+        )
+        for target in ordered_targets
+    }
+    backups: dict[Path, Path] = {}
+    promoted: list[Path] = []
+    try:
+        yield staged
+        missing = [str(target) for target, stage in staged.items() if not stage.exists()]
+        if missing:
+            raise RuntimeError(f"staged output missing: {missing}")
+        promotion_order = [target for target in ordered_targets if target != summary_target] + [summary_target]
+        for target in promotion_order:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.exists():
+                backup = _atomic_temp_path(
+                    target.parent / f".bundle.{target_positions[target]:02d}.rollback{target.suffix}"
+                )
+                shutil.copy2(target, backup)
+                backups[target] = backup
+        try:
+            for target in promotion_order:
+                _replace_with_retry(staged[target], target)
+                promoted.append(target)
+            if post_promotion_validator is not None:
+                post_promotion_validator()
+        except Exception:
+            for target in reversed(promoted):
+                backup = backups.get(target)
+                if backup is not None and backup.exists():
+                    _replace_with_retry(backup, target)
+                else:
+                    target.unlink(missing_ok=True)
+            raise
+    finally:
+        for path in [*staged.values(), *backups.values()]:
+            try:
+                path.unlink(missing_ok=True)
+            except OSError:
+                pass
+
+
 def _csv_safe_value(value: object) -> object:
     if isinstance(value, (dict, list, tuple)):
         return _json_dumps(value)
@@ -10728,8 +11279,18 @@ def current_base_fingerprint() -> dict[str, object]:
     return {
         "base_version": "embedded_v2_base",
         "embedded_lineage_base_fingerprint": base,
-        "overlay_type": "target_volatility_scaling",
+        "overlay_type": "volatility_overheat_exit_then_target_volatility_scaling",
         "base_hedge_ratio": BASE_HEDGE_RATIO,
+        "overheat_defense": {
+            "enabled": OVERHEAT_ENABLED,
+            "kind": OVERHEAT_KIND,
+            "window": OVERHEAT_WINDOW,
+            "threshold": OVERHEAT_THRESHOLD,
+            "metric": OVERHEAT_METRIC,
+            "require_positive_trade_return": OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN,
+            "require_signal_reset": OVERHEAT_REQUIRE_SIGNAL_RESET,
+            "timing": "applied_to_base_state_before_target_vol_scaling",
+        },
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
@@ -10758,17 +11319,80 @@ def current_strategy_fingerprint() -> dict[str, object]:
     return current_base_fingerprint()
 
 
-def _csv_date_state(path: Path) -> tuple[str, int | None]:
-    if not path.exists():
-        return "", None
+FRESHNESS_DATE_COLUMNS = ("date", "trade_date", "rebalance_date", "effective_date")
+FRESHNESS_JSON_DATE_FIELDS = ("latest_nav_date", "latest_trade_date", "end_date", "target_end_date", "latest_date")
+FRESHNESS_JSON_COUNT_FIELDS = ("row_count", "rows", "rebalance_dates_count", "trading_days")
+TOP100_DAILY_FRESHNESS_KEYS = ("base_panel_shadow", "base_index_csv", "base_costed_nav", "v2_0_costed_nav")
+
+
+def _coerce_date_text(value: object) -> str:
+    if value is None:
+        return ""
     try:
-        dates = pd.read_csv(path, usecols=["date"], parse_dates=["date"])["date"]
+        ts = pd.Timestamp(value)
     except Exception:
-        return "", None
+        return ""
+    if pd.isna(ts):
+        return ""
+    return str(ts.date())
+
+
+def _coerce_row_count(value: object) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _csv_date_state(path: Path) -> tuple[str, int | None, str]:
+    if not path.exists():
+        return "", None, ""
+    try:
+        header = pd.read_csv(path, nrows=0, encoding="utf-8-sig")
+    except Exception:
+        return "", None, ""
+    date_column = next((column for column in FRESHNESS_DATE_COLUMNS if column in header.columns), "")
+    try:
+        if date_column:
+            frame = pd.read_csv(path, usecols=[date_column], encoding="utf-8-sig")
+        else:
+            frame = pd.read_csv(path, encoding="utf-8-sig")
+    except Exception:
+        return "", None, date_column
+    row_count = int(len(frame))
+    if not date_column:
+        return "", row_count, ""
+    dates = pd.to_datetime(frame[date_column], errors="coerce").dropna()
     dates = pd.to_datetime(dates, errors="coerce").dropna()
     if dates.empty:
-        return "", 0
-    return str(pd.Timestamp(dates.max()).date()), int(len(dates))
+        return "", row_count, date_column
+    return str(pd.Timestamp(dates.max()).date()), row_count, date_column
+
+
+def _json_date_state(path: Path) -> tuple[str, int | None, str]:
+    if not path.exists():
+        return "", None, ""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return "", None, ""
+    if not isinstance(payload, dict):
+        return "", None, ""
+    latest_date = ""
+    date_field = ""
+    for field in FRESHNESS_JSON_DATE_FIELDS:
+        latest_date = _coerce_date_text(payload.get(field))
+        if latest_date:
+            date_field = field
+            break
+    row_count = None
+    for field in FRESHNESS_JSON_COUNT_FIELDS:
+        row_count = _coerce_row_count(payload.get(field))
+        if row_count is not None:
+            break
+    return latest_date, row_count, date_field
 
 
 def _file_state_fingerprint(path: Path) -> dict[str, object]:
@@ -10777,19 +11401,243 @@ def _file_state_fingerprint(path: Path) -> dict[str, object]:
         "exists": path.exists(),
     }
     if not path.exists():
-        state.update({"size": None, "mtime_ns": None, "latest_date": "", "row_count": None})
+        state.update({"size": None, "mtime_ns": None, "latest_date": "", "row_count": None, "date_column": ""})
         return state
     stat = path.stat()
-    latest_date, row_count = _csv_date_state(path)
+    if path.suffix.lower() == ".json":
+        latest_date, row_count, date_column = _json_date_state(path)
+    else:
+        latest_date, row_count, date_column = _csv_date_state(path)
     state.update(
         {
             "size": int(stat.st_size),
             "mtime_ns": int(stat.st_mtime_ns),
             "latest_date": latest_date,
             "row_count": row_count,
+            "date_column": date_column,
         }
     )
     return state
+
+
+def validate_top100_freshness_proof(
+    files: dict[str, dict[str, object]],
+    expected_latest_date: object,
+    expected_latest_rebalance_date: object | None = None,
+    daily_keys: list[str] | tuple[str, ...] | None = None,
+) -> dict[str, object]:
+    expected = _coerce_date_text(expected_latest_date)
+    if not expected:
+        raise RuntimeError(f"Top100 freshness proof missing expected latest date: {expected_latest_date!r}")
+
+    keys = list(daily_keys or TOP100_DAILY_FRESHNESS_KEYS)
+    issues: list[str] = []
+    for key in keys:
+        state = files.get(key)
+        if not isinstance(state, dict):
+            issues.append(f"{key} missing from freshness proof")
+            continue
+        if not bool(state.get("exists")):
+            issues.append(f"{key} does not exist: {state.get('path', '')}")
+            continue
+        latest = _coerce_date_text(state.get("latest_date"))
+        if not latest:
+            issues.append(f"{key} has no readable latest_date")
+        elif latest != expected:
+            issues.append(f"{key} latest_date {latest} != expected {expected}")
+        row_count = _coerce_row_count(state.get("row_count"))
+        if row_count is None or row_count <= 0:
+            issues.append(f"{key} has invalid row_count {state.get('row_count')!r}")
+
+    expected_rebalance = _coerce_date_text(expected_latest_rebalance_date)
+    if expected_rebalance:
+        turnover = files.get("base_proxy_turnover")
+        if not isinstance(turnover, dict):
+            issues.append("base_proxy_turnover missing from freshness proof")
+        elif not bool(turnover.get("exists")):
+            issues.append(f"base_proxy_turnover does not exist: {turnover.get('path', '')}")
+        else:
+            turnover_latest = _coerce_date_text(turnover.get("latest_date"))
+            if not turnover_latest:
+                issues.append("base_proxy_turnover has no readable latest_date")
+            elif pd.Timestamp(turnover_latest) < pd.Timestamp(expected_rebalance):
+                issues.append(
+                    f"base_proxy_turnover latest_date {turnover_latest} < expected latest rebalance_date {expected_rebalance}"
+                )
+
+    if issues:
+        raise RuntimeError("Top100 freshness proof failed: " + "; ".join(issues))
+    return {
+        "expected_latest_date": expected,
+        "expected_latest_rebalance_date": expected_rebalance,
+        "daily_keys": keys,
+    }
+
+
+def _normalise_date_index(values: object) -> pd.DatetimeIndex:
+    if values is None:
+        return pd.DatetimeIndex([])
+    dates = pd.to_datetime(values, errors="coerce")
+    dates = pd.DatetimeIndex(dates).dropna().normalize().drop_duplicates().sort_values()
+    return pd.DatetimeIndex(dates)
+
+
+def validate_daily_stream_continuity(
+    panel_dates: pd.DatetimeIndex,
+    stream_dates: pd.DatetimeIndex,
+    label: str,
+) -> None:
+    panel_index = _normalise_date_index(panel_dates)
+    stream_index = _normalise_date_index(stream_dates)
+    if panel_index.empty:
+        raise RuntimeError(f"{label} continuity guard has no panel trading dates.")
+    if stream_index.empty:
+        raise RuntimeError(f"{label} continuity guard has no stream dates.")
+    missing_dates = pd.DatetimeIndex(panel_index.difference(stream_index)).sort_values()
+    if len(missing_dates):
+        sample = ", ".join(str(pd.Timestamp(dt).date()) for dt in missing_dates[:10])
+        raise RuntimeError(
+            f"{label} missing {len(missing_dates)} trading dates versus refreshed panel: {sample}"
+        )
+
+
+def _read_artifact_date_index(path: Path, date_column: object = "") -> pd.DatetimeIndex:
+    if not path.exists():
+        return pd.DatetimeIndex([])
+    column = str(date_column or "")
+    if not column:
+        try:
+            header = pd.read_csv(path, nrows=0, encoding="utf-8-sig")
+            column = next((candidate for candidate in FRESHNESS_DATE_COLUMNS if candidate in header.columns), "")
+        except Exception:
+            return pd.DatetimeIndex([])
+    if not column:
+        return pd.DatetimeIndex([])
+    try:
+        dates = pd.read_csv(path, usecols=[column], encoding="utf-8-sig")[column]
+    except Exception:
+        return pd.DatetimeIndex([])
+    return _normalise_date_index(dates)
+
+
+def _latest_required_rebalance_date(panel_dates: pd.DatetimeIndex, expected_latest_date: object) -> str:
+    expected_ts = pd.Timestamp(expected_latest_date).normalize()
+    usable_panel_dates = pd.DatetimeIndex(panel_dates[panel_dates <= expected_ts]).sort_values()
+    if usable_panel_dates.empty:
+        return ""
+    try:
+        rebalance_dates = base_mod.build_biweekly_rebalance_dates(usable_panel_dates)
+    except Exception:
+        return ""
+    rebalance_dates = pd.DatetimeIndex(rebalance_dates[rebalance_dates <= expected_ts]).sort_values()
+    if rebalance_dates.empty:
+        return ""
+    return str(pd.Timestamp(rebalance_dates[-1]).date())
+
+
+def assert_top100_outputs_fresh(
+    expected_latest_date: object | None = None,
+    extra_daily_paths: dict[str, Path] | None = None,
+    daily_keys: list[str] | tuple[str, ...] | None = None,
+    require_continuity: bool = True,
+) -> dict[str, object]:
+    state = current_data_state_fingerprint()
+    files = dict(state["files"])
+    extra_daily_paths = extra_daily_paths or {}
+    for key, path in extra_daily_paths.items():
+        files[key] = _file_state_fingerprint(Path(path))
+
+    expected = _coerce_date_text(expected_latest_date)
+    if not expected:
+        expected = _coerce_date_text(files.get("base_panel_shadow", {}).get("latest_date")) or _coerce_date_text(
+            files.get("base_panel", {}).get("latest_date")
+        )
+    if not expected:
+        raise RuntimeError("Top100 freshness proof cannot determine the expected latest trading date.")
+
+    panel_key = "base_panel_shadow" if bool(files.get("base_panel_shadow", {}).get("exists")) else "base_panel"
+    panel_state = files.get(panel_key, {})
+    panel_dates = _read_artifact_date_index(Path(panel_state.get("path", "")), panel_state.get("date_column", "date"))
+    expected_ts = pd.Timestamp(expected).normalize()
+    panel_dates = pd.DatetimeIndex(panel_dates[panel_dates <= expected_ts]).sort_values()
+    expected_rebalance = _latest_required_rebalance_date(panel_dates, expected)
+    proof_daily_keys = list(daily_keys or TOP100_DAILY_FRESHNESS_KEYS)
+    proof_daily_keys.extend(extra_daily_paths.keys())
+
+    proof = validate_top100_freshness_proof(
+        files,
+        expected_latest_date=expected,
+        expected_latest_rebalance_date=expected_rebalance,
+        daily_keys=proof_daily_keys,
+    )
+
+    if require_continuity:
+        for key in proof_daily_keys:
+            artifact = files.get(key, {})
+            path = Path(artifact.get("path", ""))
+            stream_dates = _read_artifact_date_index(path, artifact.get("date_column", ""))
+            stream_dates = pd.DatetimeIndex(stream_dates[stream_dates <= expected_ts]).sort_values()
+            if stream_dates.empty:
+                continue
+            window_panel_dates = pd.DatetimeIndex(
+                panel_dates[(panel_dates >= stream_dates.min()) & (panel_dates <= expected_ts)]
+            ).sort_values()
+            validate_daily_stream_continuity(window_panel_dates, stream_dates, key)
+
+    proof["files"] = {key: files[key] for key in proof_daily_keys if key in files}
+    if "base_proxy_turnover" in files:
+        proof["files"]["base_proxy_turnover"] = files["base_proxy_turnover"]
+    return proof
+
+
+def assert_top100_candidate_fresh(
+    candidate_index: pd.DatetimeIndex | pd.Index,
+    expected_latest_date: object,
+    label: str,
+) -> dict[str, object]:
+    state = current_data_state_fingerprint()
+    files = dict(state["files"])
+    expected = _coerce_date_text(expected_latest_date)
+    if not expected:
+        raise RuntimeError(f"{label} candidate freshness has no expected latest date")
+
+    base_keys = ["base_panel_shadow", "base_index_csv", "base_costed_nav"]
+    panel_state = files.get("base_panel_shadow", {})
+    panel_dates = _read_artifact_date_index(
+        Path(panel_state.get("path", "")),
+        panel_state.get("date_column", "date"),
+    )
+    expected_ts = pd.Timestamp(expected).normalize()
+    panel_dates = pd.DatetimeIndex(panel_dates[panel_dates <= expected_ts]).sort_values()
+    expected_rebalance = _latest_required_rebalance_date(panel_dates, expected)
+    proof = validate_top100_freshness_proof(
+        files,
+        expected_latest_date=expected,
+        expected_latest_rebalance_date=expected_rebalance,
+        daily_keys=base_keys,
+    )
+
+    candidate_dates = _normalise_date_index(candidate_index)
+    if candidate_dates.empty:
+        raise RuntimeError(f"{label} candidate stream is empty")
+    if pd.Timestamp(candidate_dates[-1]).normalize() != expected_ts:
+        raise RuntimeError(
+            f"{label} candidate latest_date {candidate_dates[-1].date()} != expected {expected}"
+        )
+    window_panel_dates = pd.DatetimeIndex(
+        panel_dates[(panel_dates >= candidate_dates.min()) & (panel_dates <= expected_ts)]
+    ).sort_values()
+    validate_daily_stream_continuity(window_panel_dates, candidate_dates, f"{label} candidate")
+    proof["candidate"] = {
+        "label": str(label),
+        "latest_date": expected,
+        "row_count": int(len(candidate_dates)),
+        "continuity_verified": True,
+    }
+    proof["files"] = {key: files[key] for key in base_keys if key in files}
+    if "base_proxy_turnover" in files:
+        proof["files"]["base_proxy_turnover"] = files["base_proxy_turnover"]
+    return proof
 
 
 def current_data_state_fingerprint() -> dict[str, object]:
@@ -10938,15 +11786,204 @@ def _target_vol_turnover_series(holding: pd.Series, execution_scale: pd.Series) 
     return pd.Series(values, index=holding.index, dtype=float)
 
 
-def calc_scale_change_cost(holding: pd.Series, target_vol_turnover: pd.Series) -> pd.Series:
+def calc_scale_change_cost(
+    holding: pd.Series,
+    target_vol_turnover: pd.Series,
+    next_holding: pd.Series | None = None,
+) -> pd.Series:
     """Charge only same-holding scale changes; transition days are zeroed inside calc_target_vol_costed_turnover."""
-    return calc_target_vol_costed_turnover(holding, target_vol_turnover) * TARGET_VOL_SCALE_CHANGE_COST
+    return calc_target_vol_costed_turnover(
+        holding,
+        target_vol_turnover,
+        next_holding=next_holding,
+    ) * TARGET_VOL_SCALE_CHANGE_COST
 
 
-def calc_target_vol_costed_turnover(holding: pd.Series, target_vol_turnover: pd.Series) -> pd.Series:
+def calc_target_vol_costed_turnover(
+    holding: pd.Series,
+    target_vol_turnover: pd.Series,
+    next_holding: pd.Series | None = None,
+) -> pd.Series:
     holding = _normalize_holding_series(holding, holding.index)
     same_holding = holding.eq(holding.shift(1))
+    if next_holding is not None:
+        next_holding = _normalize_holding_series(
+            next_holding,
+            holding.index,
+            fill_from=holding,
+        )
+        same_holding = same_holding & holding.eq(next_holding)
     return pd.to_numeric(target_vol_turnover, errors="coerce").fillna(0.0).where(same_holding, 0.0)
+
+
+def _volatility_overheat_metric(gross: pd.DataFrame, window: int = OVERHEAT_WINDOW) -> pd.Series:
+    missing = {"microcap_ret", "hedge_ret"}.difference(gross.columns)
+    if missing:
+        raise ValueError(f"missing columns for v2.0 overheat metric: {sorted(missing)}")
+    micro = pd.to_numeric(gross["microcap_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    hedge = pd.to_numeric(gross["hedge_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    spread = micro - float(BASE_HEDGE_RATIO) * hedge
+    return spread.rolling(int(window), min_periods=int(window)).std(ddof=1) * np.sqrt(TARGET_VOL_TRADING_DAYS)
+
+
+def apply_volatility_overheat_exit(
+    gross_result: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    *,
+    overheat_window: int = OVERHEAT_WINDOW,
+    overheat_threshold: float = OVERHEAT_THRESHOLD,
+) -> pd.DataFrame:
+    """Apply the promoted v2.0 volatility-overheat exit before target-vol scaling."""
+    required = {"return", "holding", "next_holding", "microcap_ret", "hedge_ret"}
+    missing = required.difference(gross_result.columns)
+    if missing:
+        raise ValueError(f"missing columns for v2.0 overheat exit: {sorted(missing)}")
+
+    out = gross_result.copy().sort_index()
+    if out.empty:
+        return embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(out, turnover_df)
+
+    metric = _volatility_overheat_metric(out, window=int(overheat_window))
+    base_holding = _normalize_holding_series(out["holding"], out.index)
+    base_next_holding = _normalize_holding_series(out["next_holding"], out.index, fill_from=base_holding)
+    returns = pd.to_numeric(out["return"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    rebalance_base = embedded_context.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce").fillna(0.0)
+
+    executed_holding: list[str] = []
+    executed_next_holding: list[str] = []
+    executed_signal_on: list[bool] = []
+    trigger_flags: list[bool] = []
+    blocked_flags: list[bool] = []
+    signal_reset_seen_flags: list[bool] = []
+    trade_ids: list[int | None] = []
+    trade_return_nets: list[float | None] = []
+    entry_exit_costs: list[float] = []
+    rebalance_costs: list[float] = []
+    total_costs: list[float] = []
+    return_nets: list[float] = []
+    nav_nets: list[float] = []
+    overlay_pre_cost_returns: list[float] = []
+
+    current_active = bool(base_holding.iloc[0] != "cash")
+    current_trade_id: int | None = 1 if current_active else None
+    next_trade_id = 1 if current_active else 0
+    blocked_until_reset = False
+    signal_reset_seen = False
+    nav_net = 1.0
+    trade_nav = 1.0
+
+    entry_cost_value = float(embedded_context.base_mod.freq_mod.cost_mod.ENTRY_COST)
+    exit_cost_value = float(embedded_context.base_mod.freq_mod.cost_mod.EXIT_COST)
+
+    for dt in out.index:
+        base_next_active = bool(base_next_holding.loc[dt] != "cash")
+        desired_next_active = current_active if blocked_until_reset else base_next_active
+        if not current_active and desired_next_active:
+            next_trade_id += 1
+            current_trade_id = next_trade_id
+            trade_nav = 1.0
+
+        trade_participates = bool(current_active or desired_next_active)
+        trade_id_for_row = current_trade_id if trade_participates else None
+        gross_daily_return = float(returns.loc[dt])
+        realized_daily_return = gross_daily_return if current_active else 0.0
+        entry_cost = entry_cost_value if (not current_active and desired_next_active) else 0.0
+        exit_cost = exit_cost_value if (current_active and not desired_next_active) else 0.0
+        rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
+        total_cost = entry_cost + exit_cost + rebalance_cost
+        return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        trade_return_before_exit: float | None = None
+        if current_active and desired_next_active:
+            trade_return_before_exit = trade_nav * (1.0 + return_net) - 1.0
+
+        metric_value = metric.loc[dt]
+        trigger = bool(
+            current_active
+            and desired_next_active
+            and pd.notna(metric_value)
+            and float(metric_value) >= float(overheat_threshold)
+            and (
+                not OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN
+                or (trade_return_before_exit is not None and trade_return_before_exit > 0.0)
+            )
+        )
+        if trigger:
+            desired_next_active = False
+            entry_cost = 0.0
+            exit_cost = exit_cost_value
+            rebalance_cost = 0.0
+            total_cost = exit_cost
+            return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+
+        if trade_participates:
+            trade_nav *= 1.0 + return_net
+            trade_return_net = trade_nav - 1.0
+        else:
+            trade_return_net = None
+        nav_net *= 1.0 + return_net
+
+        executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
+        executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
+        executed_signal_on.append(bool(desired_next_active))
+        trigger_flags.append(bool(trigger))
+        trade_ids.append(trade_id_for_row)
+        trade_return_nets.append(None if trade_return_net is None else float(trade_return_net))
+        entry_exit_costs.append(float(entry_cost + exit_cost))
+        rebalance_costs.append(float(rebalance_cost))
+        total_costs.append(float(total_cost))
+        return_nets.append(float(return_net))
+        nav_nets.append(float(nav_net))
+        overlay_pre_cost_returns.append(float(realized_daily_return))
+
+        if trigger and OVERHEAT_REQUIRE_SIGNAL_RESET:
+            blocked_until_reset = True
+            signal_reset_seen = False
+        elif blocked_until_reset and not base_next_active:
+            blocked_until_reset = False
+            signal_reset_seen = True
+        else:
+            signal_reset_seen = False
+        blocked_flags.append(bool(blocked_until_reset))
+        signal_reset_seen_flags.append(bool(signal_reset_seen))
+        current_active = desired_next_active
+        if not current_active:
+            current_trade_id = None
+            trade_nav = 1.0
+
+    out["base_holding"] = base_holding
+    out["base_next_holding"] = base_next_holding
+    out["base_signal_on"] = base_next_holding.ne("cash")
+    if "base_gross_return" not in out.columns:
+        out["base_gross_return"] = returns
+    out["overheat_enabled"] = True
+    out["overheat_kind"] = OVERHEAT_KIND
+    out["overheat_window"] = int(overheat_window)
+    out["overheat_threshold"] = float(overheat_threshold)
+    out["overheat_metric_name"] = OVERHEAT_METRIC
+    out["overheat_metric"] = metric
+    out["overheat_require_positive_trade_return"] = OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN
+    out["overheat_require_signal_reset"] = OVERHEAT_REQUIRE_SIGNAL_RESET
+    out["holding"] = executed_holding
+    out["next_holding"] = executed_next_holding
+    out["signal_on"] = executed_signal_on
+    out["overheat_triggered"] = pd.Series(trigger_flags, index=out.index, dtype=bool)
+    out["blocked_until_signal_reset"] = pd.Series(blocked_flags, index=out.index, dtype=bool)
+    out["signal_reset_seen"] = pd.Series(signal_reset_seen_flags, index=out.index, dtype=bool)
+    out["trade_id"] = pd.Series(trade_ids, index=out.index, dtype="Int64")
+    out["trade_return_net"] = pd.Series(trade_return_nets, index=out.index, dtype=float)
+    out["entry_exit_cost"] = pd.Series(entry_exit_costs, index=out.index, dtype=float)
+    out["rebalance_cost"] = pd.Series(rebalance_costs, index=out.index, dtype=float)
+    out["total_cost"] = pd.Series(total_costs, index=out.index, dtype=float)
+    out["return_net"] = pd.Series(return_nets, index=out.index, dtype=float)
+    out["nav_net"] = pd.Series(nav_nets, index=out.index, dtype=float)
+    out["overlay_pre_cost_return"] = pd.Series(overlay_pre_cost_returns, index=out.index, dtype=float)
+    out["target_vol_enabled"] = False
+    out["target_vol"] = np.nan
+    out["peak_decay_enabled"] = False
+    out["net_drawdown_stop_enabled"] = False
+    return out
 
 
 def _scale_from_realized_vol(realized_vol: pd.Series, target_vol: float = TARGET_VOL) -> pd.Series:
@@ -11124,7 +12161,7 @@ def apply_target_vol_scaling(
         threshold=scale_rebalance_threshold_value,
     )
     target_vol_turnover = _target_vol_turnover_series(holding, execution_scale)
-    scale_change_cost = calc_scale_change_cost(holding, target_vol_turnover)
+    scale_change_cost = calc_scale_change_cost(holding, target_vol_turnover, next_holding=next_holding)
     financing_cost = execution_scale.sub(1.0).clip(lower=0.0) * TARGET_VOL_FINANCING_RATE / TARGET_VOL_TRADING_DAYS
     idle_cash_yield = (
         active.astype(float)
@@ -11171,7 +12208,11 @@ def apply_target_vol_scaling(
     out["target_vol_scale_next_session"] = next_session_actionable_scale
     out["execution_scale"] = execution_scale
     out["target_vol_turnover"] = target_vol_turnover
-    out["target_vol_costed_turnover"] = calc_target_vol_costed_turnover(holding, target_vol_turnover)
+    out["target_vol_costed_turnover"] = calc_target_vol_costed_turnover(
+        holding,
+        target_vol_turnover,
+        next_holding=next_holding,
+    )
     out["scale_change_cost"] = scale_change_cost
     out["target_vol_trade_cost"] = scale_change_cost
     out["financing_cost"] = financing_cost
@@ -11195,7 +12236,7 @@ def apply_target_vol_scaling(
     )
     out["version"] = "2.0"
     out["base_version"] = "embedded_v2_base"
-    out["overlay_type"] = "target_volatility_scaling"
+    out["overlay_type"] = "volatility_overheat_exit_then_target_volatility_scaling"
     return out
 
 
@@ -11322,6 +12363,8 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "idle_cash_yield",
         "return_gross_base",
         "return_gross_target_vol",
+        "overheat_metric",
+        "trade_return_net",
     ]:
         if src_col in latest_row and pd.notna(latest_row[src_col]):
             latest_signal[src_col] = float(latest_row[src_col])
@@ -11329,12 +12372,33 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         latest_row.get("signal_quality_derisk_triggered", False),
         default=False,
     )
+    latest_signal["overheat_enabled"] = _safe_bool(latest_row.get("overheat_enabled", OVERHEAT_ENABLED), default=OVERHEAT_ENABLED)
+    latest_signal["overheat_kind"] = str(latest_row.get("overheat_kind", OVERHEAT_KIND))
+    latest_signal["overheat_window"] = int(_safe_float(latest_row.get("overheat_window", OVERHEAT_WINDOW), OVERHEAT_WINDOW))
+    latest_signal["overheat_threshold"] = float(
+        _safe_float(latest_row.get("overheat_threshold", OVERHEAT_THRESHOLD), OVERHEAT_THRESHOLD)
+    )
+    latest_signal["overheat_metric_name"] = str(latest_row.get("overheat_metric_name", OVERHEAT_METRIC))
+    latest_signal["overheat_triggered"] = _safe_bool(latest_row.get("overheat_triggered", False), default=False)
+    latest_signal["blocked_until_signal_reset"] = _safe_bool(
+        latest_row.get("blocked_until_signal_reset", False),
+        default=False,
+    )
+    latest_signal["signal_reset_seen"] = _safe_bool(latest_row.get("signal_reset_seen", False), default=False)
+    latest_signal["overheat_require_positive_trade_return"] = _safe_bool(
+        latest_row.get("overheat_require_positive_trade_return", OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN),
+        default=OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN,
+    )
+    latest_signal["overheat_require_signal_reset"] = _safe_bool(
+        latest_row.get("overheat_require_signal_reset", OVERHEAT_REQUIRE_SIGNAL_RESET),
+        default=OVERHEAT_REQUIRE_SIGNAL_RESET,
+    )
     latest_signal["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
     latest_signal["momentum_gap_exit_buffer"] = V2_0_MOMENTUM_GAP_EXIT_BUFFER
     latest_signal["signal_quality_derisk_enabled"] = False
     latest_signal["version"] = "2.0"
     latest_signal["base_version"] = "embedded_v2_base"
-    latest_signal["overlay_type"] = "target_volatility_scaling"
+    latest_signal["overlay_type"] = "volatility_overheat_exit_then_target_volatility_scaling"
     latest_signal["target_vol"] = TARGET_VOL
     latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
     latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
@@ -11365,6 +12429,55 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     }
 
 
+REQUIRED_PERFORMANCE_WINDOWS: tuple[tuple[str, int | None], ...] = (
+    ("full", None),
+    ("last_10y", 10),
+    ("last_5y", 5),
+    ("last_3y", 3),
+    ("last_1y", 1),
+)
+
+
+def _unavailable_window_summary(window: str, reason: str) -> dict[str, object]:
+    return {
+        "window": window,
+        "start_date": "",
+        "end_date": "",
+        "days": 0,
+        "final_nav": np.nan,
+        "total_return_pct": np.nan,
+        "annual_pct": np.nan,
+        "max_drawdown_pct": np.nan,
+        "sharpe": np.nan,
+        "vol_pct": np.nan,
+        "unavailable_reason": reason,
+    }
+
+
+def summarize_required_windows(ret: pd.Series) -> list[dict[str, object]]:
+    clean = ret.dropna().astype(float)
+    if clean.empty:
+        raise ValueError("empty return series")
+    end = pd.Timestamp(clean.index[-1])
+    rows: list[dict[str, object]] = []
+    for window, years in REQUIRED_PERFORMANCE_WINDOWS:
+        if years is None:
+            part = clean
+            required_start = pd.Timestamp(clean.index[0])
+        else:
+            required_start = end - pd.DateOffset(years=int(years))
+            part = clean.loc[clean.index >= required_start]
+        if part.empty:
+            rows.append(_unavailable_window_summary(window, "no data in requested window"))
+            continue
+        row = dict(summarize_returns(part))
+        row["window"] = window
+        row["required_start_date"] = str(required_start.date())
+        row["unavailable_reason"] = ""
+        rows.append(row)
+    return rows
+
+
 def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     rows = []
     for year, part in ret.groupby(ret.index.year):
@@ -11392,11 +12505,23 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0") -> dict[str, object]:
+def build_performance_payload(
+    ret: pd.Series,
+    source_label: str = "costed_v2_0",
+    output_paths: dict[str, Path] | None = None,
+) -> dict[str, object]:
     ensure_output_dir()
-    summary = summarize_returns(ret)
+    write_paths = output_paths or {
+        "summary": PERF_SUMMARY_CSV,
+        "yearly": PERF_YEARLY_CSV,
+        "nav": PERF_NAV_CSV,
+        "json": PERF_JSON,
+        "png": PERF_PNG,
+    }
+    window_summaries = summarize_required_windows(ret)
+    summary = dict(window_summaries[0])
     yearly_df = summarize_yearly(ret)
-    _atomic_write_csv(yearly_df, PERF_YEARLY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(yearly_df, write_paths["yearly"], index=False, encoding="utf-8-sig")
 
     nav_df = pd.DataFrame(
         {
@@ -11405,8 +12530,8 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
             "nav_net": (1.0 + ret.fillna(0.0)).cumprod().values,
         }
     )
-    _atomic_write_csv(nav_df, PERF_NAV_CSV, index=False, encoding="utf-8-sig")
-    _atomic_write_csv(pd.DataFrame([summary]), PERF_SUMMARY_CSV, index=False, encoding="utf-8-sig")
+    _atomic_write_csv(nav_df, write_paths["nav"], index=False, encoding="utf-8-sig")
+    _atomic_write_csv(pd.DataFrame(window_summaries), write_paths["summary"], index=False, encoding="utf-8-sig")
 
     plt.figure(figsize=(12, 6))
     plt.plot(nav_df["date"], nav_df["nav_net"], linewidth=2.0)
@@ -11414,7 +12539,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
     plt.ylabel("NAV")
     plt.grid(alpha=0.25)
     plt.tight_layout()
-    plt.savefig(PERF_PNG, dpi=160)
+    plt.savefig(write_paths["png"], dpi=160)
     plt.close()
 
     payload = {
@@ -11423,6 +12548,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
         "start_date": summary["start_date"],
         "end_date": summary["end_date"],
         "summary": summary,
+        "windows": window_summaries,
         "yearly": yearly_df.to_dict(orient="records"),
         "files": {
             "summary_csv": str(PERF_SUMMARY_CSV),
@@ -11431,7 +12557,7 @@ def build_performance_payload(ret: pd.Series, source_label: str = "costed_v2_0")
             "chart_png": str(PERF_PNG),
         },
     }
-    _atomic_write_text(PERF_JSON, _json_dumps(payload), encoding="utf-8")
+    _atomic_write_text(write_paths["json"], _json_dumps(payload), encoding="utf-8")
     return payload
 
 
@@ -11476,10 +12602,32 @@ def _v2_performance_source_label(data_lineage: dict[str, object]) -> str:
     return "public_or_local_proxy_not_official_wind"
 
 
+def proxy_aware_performance_source_label(data_lineage: dict[str, object], source_label: str) -> str:
+    if bool(data_lineage.get("official_wind_series")):
+        return str(source_label)
+    return f"{source_label}_public_or_local_proxy_not_official_wind"
+
+
+def attach_proxy_source_summary_fields(
+    summary: dict[str, object],
+    data_lineage: dict[str, object],
+    *,
+    source_label: str,
+    parameter_retest_status: dict[str, object] | None = None,
+) -> dict[str, object]:
+    summary["microcap_series_source"] = data_lineage.get("source_used")
+    summary["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
+    summary["proxy_warning"] = data_lineage.get("public_proxy_note", "")
+    summary["performance_source_label"] = proxy_aware_performance_source_label(data_lineage, source_label)
+    if parameter_retest_status is not None:
+        summary["parameter_retest_status"] = parameter_retest_status
+    return summary
+
+
 def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
     if COSTED_NAV_CSV.exists():
         try:
-            dates = pd.read_csv(COSTED_NAV_CSV, usecols=["date"], parse_dates=["date"])["date"]
+            dates = _read_costed_nav_csv(COSTED_NAV_CSV, usecols=["date"], parse_dates=["date"])["date"]
             return pd.DatetimeIndex(dates).dropna().sort_values()
         except Exception:
             pass
@@ -11517,8 +12665,17 @@ def _v2_0_changed_columns(
         right = cand.loc[frozen_common, col]
         left_num = pd.to_numeric(left, errors="coerce")
         right_num = pd.to_numeric(right, errors="coerce")
-        numeric_like = left_num.notna().any() or right_num.notna().any()
-        if numeric_like:
+        bool_like = (
+            pd.api.types.is_bool_dtype(left)
+            or pd.api.types.is_bool_dtype(right)
+            or pd.api.types.is_bool_dtype(left_num)
+            or pd.api.types.is_bool_dtype(right_num)
+        )
+        numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+        if bool_like:
+            mask = left.astype("boolean").ne(right.astype("boolean"))
+            mask = mask | (left.isna() ^ right.isna())
+        elif numeric_like:
             diff = (left_num - right_num).abs()
             threshold = float(atol) + float(rtol) * right_num.abs()
             mask = diff.gt(threshold) | (left_num.isna() ^ right_num.isna())
@@ -11610,6 +12767,80 @@ def _write_v2_0_rewrite_diagnostics(
     return diagnostics_path
 
 
+def v2_0_rewrite_audit_matches_allowlist(audit_path: Path) -> bool:
+    try:
+        audit = pd.read_csv(audit_path)
+    except Exception:
+        return False
+    if audit.empty or {"date", "column", "change_type"}.difference(audit.columns):
+        return False
+    cells: set[tuple[str, str]] = set()
+    for row in audit.itertuples(index=False):
+        if str(getattr(row, "change_type", "")) != "value_changed":
+            return False
+        try:
+            date_text = str(pd.Timestamp(getattr(row, "date")).date())
+        except Exception:
+            return False
+        cells.add((date_text, str(getattr(row, "column", ""))))
+    return bool(cells) and cells.issubset(V2_0_AUDITED_REWRITE_ALLOWLIST)
+
+
+def v2_0_rewrite_audit_matches_state_flag_timing_migration(audit_path: Path) -> bool:
+    try:
+        audit = pd.read_csv(audit_path)
+    except Exception:
+        return False
+    required = {"column", "change_type", "previous", "candidate"}
+    if audit.empty or not required.issubset(audit.columns):
+        return False
+    if not audit["column"].astype(str).eq("blocked_until_signal_reset").all():
+        return False
+    if not audit["change_type"].astype(str).eq("value_changed").all():
+        return False
+    allowed_pairs = {("False", "True"), ("True", "False")}
+    pairs = set(zip(audit["previous"].astype(str), audit["candidate"].astype(str)))
+    return bool(pairs) and pairs.issubset(allowed_pairs)
+
+
+def _write_v2_0_state_flag_migration_diagnostics(audit_path: Path) -> Path:
+    audit = pd.read_csv(audit_path)
+    diagnostics = {
+        "diagnosis": "blocked_until_signal_reset_trigger_row_timing_migration",
+        "allowed": True,
+        "changed_rows": int(len(audit)),
+        "changed_columns": sorted(audit["column"].astype(str).unique().tolist()),
+        "audit_csv": str(audit_path),
+        "note": (
+            "Approved metadata-only migration: blocked_until_signal_reset now records post-trigger/post-reset state "
+            "on the same row. Returns, holdings, costs, and signal inputs are not allowlisted."
+        ),
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
+
+
+def _write_v2_0_allowed_rewrite_diagnostics(audit_path: Path, allowed_tail_rows: int) -> Path:
+    diagnostics = {
+        "diagnosis": "audited_target_vol_scale_cost_transition_fix",
+        "allowed": True,
+        "allowed_tail_rows": int(allowed_tail_rows),
+        "allowlist": [
+            {"date": date_text, "column": column}
+            for date_text, column in sorted(V2_0_AUDITED_REWRITE_ALLOWLIST)
+        ],
+        "audit_csv": str(audit_path),
+        "note": (
+            "This audited allowance restates exactly two historical target-vol transition days where "
+            "scale-change cost had been charged on next-session exits. All other frozen-date changes remain blocked."
+        ),
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
+
+
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     reference_summary, base_gross_cached, turnover_df = embedded_context._load_embedded_base_context()
@@ -11627,8 +12858,9 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         base_gross,
         V2_0_MOMENTUM_GAP_EXIT_BUFFER,
     )
-    embedded_lineage_base = embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(gross, turnover_df)
+    embedded_lineage_base = apply_volatility_overheat_exit(gross, turnover_df)
     out = apply_target_vol_scaling(embedded_lineage_base)
+    rewrite_audit_status: dict[str, object] = {"status": "not_checked", "reason": "no_previous_costed_nav"}
     if COSTED_NAV_CSV.exists():
         previous = _read_costed_nav_csv(COSTED_NAV_CSV)
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
@@ -11644,29 +12876,82 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
                 audit_path=audit_path,
                 column_allowed_tail_rows=V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
             )
+            rewrite_audit_status = {
+                "status": "clean",
+                "allowed_tail_rows": int(allowed_tail_rows),
+                "audit_csv": None,
+            }
         except RuntimeError as exc:
-            try:
-                diagnostics_path = _write_v2_0_rewrite_diagnostics(
-                    previous=previous,
-                    candidate=candidate,
-                    allowed_tail_rows=allowed_tail_rows,
-                    audit_path=audit_path,
-                    column_allowed_tail_rows=V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
-                )
-            except Exception as diag_exc:
-                raise RuntimeError(
-                    f"{exc} v2.0 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
-                ) from exc
-            raise RuntimeError(f"{exc} v2.0 rewrite diagnostics written to {diagnostics_path}.") from exc
-    _atomic_write_csv(out, COSTED_NAV_CSV, index_label="date", encoding="utf-8-sig")
-    _atomic_write_csv(out.rename_axis("date").reset_index(), NAV_CSV, index=False, encoding="utf-8-sig")
+            if v2_0_rewrite_audit_matches_state_flag_timing_migration(audit_path):
+                diagnostics_path = _write_v2_0_state_flag_migration_diagnostics(audit_path)
+                rewrite_audit_status = {
+                    "status": "audited_state_flag_timing_migration",
+                    "diagnostics_json": str(diagnostics_path),
+                    "audit_csv": str(audit_path),
+                    "changed_column": "blocked_until_signal_reset",
+                }
+            elif v2_0_rewrite_audit_matches_allowlist(audit_path):
+                diagnostics_path = _write_v2_0_allowed_rewrite_diagnostics(audit_path, allowed_tail_rows)
+                rewrite_audit_status = {
+                    "status": "audited_allowlist_applied",
+                    "diagnostics_json": str(diagnostics_path),
+                    "audit_csv": str(audit_path),
+                    "allowlist": [
+                        {"date": date_text, "column": column}
+                        for date_text, column in sorted(V2_0_AUDITED_REWRITE_ALLOWLIST)
+                    ],
+                }
+            else:
+                try:
+                    diagnostics_path = _write_v2_0_rewrite_diagnostics(
+                        previous=previous,
+                        candidate=candidate,
+                        allowed_tail_rows=allowed_tail_rows,
+                        audit_path=audit_path,
+                        column_allowed_tail_rows=V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
+                    )
+                except Exception as diag_exc:
+                    raise RuntimeError(
+                        f"{exc} v2.0 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
+                    ) from exc
+                raise RuntimeError(f"{exc} v2.0 rewrite diagnostics written to {diagnostics_path}.") from exc
+    freshness_proof = assert_top100_candidate_fresh(
+        out.index,
+        expected_latest_date=out.index.max(),
+        label="v2.0 official costed NAV",
+    )
+    bundle_targets = [
+        COSTED_NAV_CSV,
+        NAV_CSV,
+        LATEST_SIGNAL_CSV,
+        PERF_SUMMARY_CSV,
+        PERF_YEARLY_CSV,
+        PERF_NAV_CSV,
+        PERF_JSON,
+        PERF_PNG,
+        SUMMARY_JSON,
+    ]
+    stage_scope = tempfile.TemporaryDirectory(prefix=f".{OUTPUT_PREFIX}.stage.", dir=OUTPUT_DIR)
+    stage_root = Path(stage_scope.name)
+    # Keep nested atomic temp names below the Windows path limit in long worktrees.
+    staged_files = {
+        target: stage_root / f"{position:02d}{target.suffix}"
+        for position, target in enumerate(bundle_targets)
+    }
+    _atomic_write_csv(out, staged_files[COSTED_NAV_CSV], index_label="date", encoding="utf-8-sig")
+    _atomic_write_csv(
+        out.rename_axis("date").reset_index(),
+        staged_files[NAV_CSV],
+        index=False,
+        encoding="utf-8-sig",
+    )
 
     data_lineage = _build_v2_data_lineage()
     signal_row = _build_signal_row(out, reference_summary)
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
-    _atomic_write_text(LATEST_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
+    _atomic_write_text(staged_files[LATEST_SIGNAL_CSV], signal_row.to_csv(index=False), encoding="utf-8")
 
     if not bool(data_lineage.get("official_wind_series")):
         warnings.warn(
@@ -11678,16 +12963,24 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     perf_payload = build_performance_payload(
         out["return_net"].fillna(0.0),
         source_label=performance_source_label,
+        output_paths={
+            "summary": staged_files[PERF_SUMMARY_CSV],
+            "yearly": staged_files[PERF_YEARLY_CSV],
+            "nav": staged_files[PERF_NAV_CSV],
+            "json": staged_files[PERF_JSON],
+            "png": staged_files[PERF_PNG],
+        },
     )
 
-    summary = dict(reference_summary)
+    summary = copy.deepcopy(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = "2.0"
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
         "Standalone target-volatility overlay matching repaired v1.6 behavior. Uses v2.0-specific 0.30% momentum-gap exit buffer, "
         "no peak-decay signal-quality derisk, "
-        "60-day realized volatility, 25% annual target volatility, max 1.5x leverage, "
+        "60-day spread-volatility overheat exit at 23% before target-vol scaling, "
+        "75-day realized volatility, 15% annual target volatility, max 1.5x leverage, "
         "10bp leg-turnover scale-change cost, scaled embedded-lineage base trading cost, "
         "and 3% annual financing cost on exposure above 1.0x."
     )
@@ -11696,6 +12989,16 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
     summary["core_params"]["momentum_gap_exit_buffer"] = V2_0_MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
+    summary["core_params"]["overheat_defense"] = {
+        "enabled": OVERHEAT_ENABLED,
+        "kind": OVERHEAT_KIND,
+        "window": OVERHEAT_WINDOW,
+        "threshold": OVERHEAT_THRESHOLD,
+        "metric": OVERHEAT_METRIC,
+        "require_positive_trade_return": OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN,
+        "require_signal_reset": OVERHEAT_REQUIRE_SIGNAL_RESET,
+        "timing": "applied_to_base_state_before_target_vol_scaling",
+    }
     summary["core_params"]["target_volatility_scaling"] = {
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
@@ -11724,6 +13027,8 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["latest_nav_date"] = str(pd.Timestamp(out.index.max()).date())
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
+    summary["data_freshness_proof"] = freshness_proof
+    summary["historical_rewrite_audit"] = rewrite_audit_status
     summary["microcap_series_source"] = data_lineage.get("source_used")
     summary["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     summary["proxy_warning"] = data_lineage.get("public_proxy_note", "")
@@ -11749,7 +13054,21 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["performance_snapshot"] = perf_payload["summary"]
     summary["base_fingerprint"] = current_base_fingerprint()
     summary["live_microcap_tail_overlay"] = live_overlay_meta
-    _atomic_write_text(SUMMARY_JSON, _json_dumps(summary), encoding="utf-8")
+    summary["synthetic_basket_execution"] = True
+    summary["execution_model"] = {
+        "synthetic_basket_execution": True,
+        "member_level_fill_engine": False,
+        "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation.",
+    }
+    _atomic_write_text(staged_files[SUMMARY_JSON], _json_dumps(summary), encoding="utf-8")
+    with staged_output_bundle(
+        bundle_targets,
+        summary_path=SUMMARY_JSON,
+        post_promotion_validator=lambda: assert_top100_outputs_fresh(expected_latest_date=out.index.max()),
+    ) as promotion_paths:
+        for target, source in staged_files.items():
+            shutil.copy2(source, promotion_paths[target])
+    stage_scope.cleanup()
     regenerated_outputs = {
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -11772,7 +13091,11 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     realtime_base = realtime_core.load_realtime_base()
     if hasattr(realtime_base, "realtime_close_df"):
         validate_close_df(realtime_base.realtime_close_df[["microcap", "hedge"]].sort_index(), "v2.0 realtime_close_df")
-    embedded_lineage_realtime = realtime_core.build_realtime_overlay_base(realtime_base)
+    realtime_gross = embedded_context.base_mod.apply_momentum_gap_exit_buffer(
+        realtime_base.base_gross,
+        V2_0_MOMENTUM_GAP_EXIT_BUFFER,
+    )
+    embedded_lineage_realtime = apply_volatility_overheat_exit(realtime_gross, realtime_base.turnover_df)
     meta = realtime_base.meta
     is_snapshot = bool(meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
@@ -11789,9 +13112,12 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         required_calendar_end_date=meta.get("latest_anchor_trade_date"),
     )
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
-    signal_row = realtime_core.base_mod.augment_signal_with_member_rebalance(
+    signal_row = realtime_core.base_mod.augment_realtime_signal_with_member_rebalance(
         signal_row,
         realtime_base.context.get("changes_df"),
+        latest_rebalance=realtime_base.context.get("latest_rebalance"),
+        latest_anchor_trade_date=meta.get("latest_anchor_trade_date"),
+        quote_trade_date=meta.get("quote_trade_date"),
     )
     _apply_realtime_meta_columns_to_signal_row(signal_row, meta)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"
@@ -11833,7 +13159,8 @@ def _print_signal_query() -> None:
     print("strategy_version: v2.0")
     print("base_version: embedded_v2_base")
     print(
-        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
+        f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, "
+        f"overheat vol {OVERHEAT_WINDOW}d >= {OVERHEAT_THRESHOLD:.0%}, target volatility "
         f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
     )
     print(f"current_holding: {row['current_holding']}")
@@ -11857,11 +13184,13 @@ def _print_realtime_signal_query() -> None:
         print("strategy_version: v2.0")
         print("base_version: embedded_v2_base")
         print(
-            f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, target volatility "
+            f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, "
+            f"overheat vol {OVERHEAT_WINDOW}d >= {OVERHEAT_THRESHOLD:.0%}, target volatility "
             f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
         )
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
+        print(f"expected_latest_completed_trade_date: {meta.get('expected_latest_completed_trade_date', '')}")
         print(f"quote_trade_date: {meta.get('quote_trade_date', '')}")
         print(f"current_holding: {row['current_holding']}")
         print(f"next_holding: {row['next_holding']}")
@@ -11872,6 +13201,10 @@ def _print_realtime_signal_query() -> None:
         _print_scale_fields(row, include_frozen=True)
         print(f"official_close_confirmed_signal: {row.get('official_close_confirmed_signal', False)}")
         print(f"snapshot_row_appended: {bool(meta.get('snapshot_row_appended', False))}")
+        print(f"member_quote_flat_fallback_count: {int(meta.get('member_quote_flat_fallback_count') or 0)}")
+        print(f"from_cache: {bool(meta.get('from_cache', False))}")
+        print(f"cache_age_seconds: {_safe_float(meta.get('cache_age_seconds'), 0.0):.1f}")
+        print(f"fallback_warning: {meta.get('fallback_warning', '')}")
         print(f"microcap_mom: {float(row.get('microcap_mom', 0.0)):+.4%}")
         print(f"hedge_mom: {float(row.get('hedge_mom', 0.0)):+.4%}")
         print(f"momentum_gap: {float(row.get('momentum_gap', 0.0)):+.4%}")
@@ -11949,6 +13282,7 @@ overlay_mod, _overlay_ns = _exec_embedded_module("embedded_v2_overlay", OVERLAY_
 _overlay_ns["_V2_RUNTIME_ARGS"] = _V2_RUNTIME_ARGS
 setattr(overlay_mod, "_V2_RUNTIME_ARGS", _V2_RUNTIME_ARGS)
 OUTPUT_PREFIX = overlay_mod.OUTPUT_PREFIX
+DEFAULT_OUTPUT_PREFIX = overlay_mod.DEFAULT_OUTPUT_PREFIX
 SUMMARY_JSON = overlay_mod.SUMMARY_JSON
 LATEST_SIGNAL_CSV = overlay_mod.LATEST_SIGNAL_CSV
 COSTED_NAV_CSV = overlay_mod.COSTED_NAV_CSV
@@ -11956,18 +13290,45 @@ TARGET_VOL = overlay_mod.TARGET_VOL
 TARGET_VOL_WINDOW = overlay_mod.TARGET_VOL_WINDOW
 TARGET_VOL_MAX_LEVERAGE = overlay_mod.TARGET_VOL_MAX_LEVERAGE
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD
+OVERHEAT_ENABLED = overlay_mod.OVERHEAT_ENABLED
+OVERHEAT_KIND = overlay_mod.OVERHEAT_KIND
+OVERHEAT_WINDOW = overlay_mod.OVERHEAT_WINDOW
+OVERHEAT_THRESHOLD = overlay_mod.OVERHEAT_THRESHOLD
+OVERHEAT_METRIC = overlay_mod.OVERHEAT_METRIC
 DEFAULT_ALLOWED_TAIL_ROWS = overlay_mod.DEFAULT_ALLOWED_TAIL_ROWS
 V2_0_REWRITE_AUDIT_KEY_COLUMNS = overlay_mod.V2_0_REWRITE_AUDIT_KEY_COLUMNS
 validate_close_df = overlay_mod.validate_close_df
 apply_target_vol_scaling = overlay_mod.apply_target_vol_scaling
+apply_volatility_overheat_exit = overlay_mod.apply_volatility_overheat_exit
 assert_realtime_target_vol_lag_fresh = overlay_mod.assert_realtime_target_vol_lag_fresh
+current_base_fingerprint = overlay_mod.current_base_fingerprint
 current_strategy_fingerprint = overlay_mod.current_strategy_fingerprint
 current_data_state_fingerprint = overlay_mod.current_data_state_fingerprint
+validate_top100_freshness_proof = overlay_mod.validate_top100_freshness_proof
+validate_daily_stream_continuity = overlay_mod.validate_daily_stream_continuity
+assert_top100_outputs_fresh = overlay_mod.assert_top100_outputs_fresh
+assert_top100_candidate_fresh = overlay_mod.assert_top100_candidate_fresh
+staged_output_bundle = overlay_mod.staged_output_bundle
 current_runtime_fingerprint = overlay_mod.current_runtime_fingerprint
 _load_realtime_v2_0_official_index = overlay_mod._load_realtime_v2_0_official_index
 _v2_0_rewrite_allowed_tail_rows = overlay_mod._v2_0_rewrite_allowed_tail_rows
 _generate_v2_0_outputs_unlocked = overlay_mod.generate_v2_0_outputs
 _build_realtime_v2_0_outputs_unlocked = overlay_mod.build_realtime_v2_0_outputs
+
+
+def configure_output_paths(output_prefix: str | None = None) -> None:
+    overlay_mod.configure_output_paths(output_prefix=output_prefix)
+    overlay_state = overlay_mod.configure_output_paths.__globals__
+    synced = [
+        "OUTPUT_PREFIX", "SUMMARY_JSON", "LATEST_SIGNAL_CSV", "REALTIME_SIGNAL_CSV", "NAV_CSV", "COSTED_NAV_CSV",
+        "PERF_SUMMARY_CSV", "PERF_YEARLY_CSV", "PERF_NAV_CSV", "PERF_JSON", "PERF_PNG",
+        "PERF_QUERY_SUMMARY_CSV", "PERF_QUERY_YEARLY_CSV", "PERF_QUERY_NAV_CSV", "PERF_QUERY_JSON", "PERF_QUERY_PNG",
+    ]
+    for name in synced:
+        value = overlay_state[name]
+        setattr(overlay_mod, name, value)
+        _overlay_ns[name] = value
+        globals()[name] = value
 
 
 def _pid_is_alive(pid: int) -> bool:
@@ -12037,7 +13398,9 @@ def _v2_file_lock(
             try:
                 pid = _read_lock_pid(lock_path)
                 age = time.time() - lock_path.stat().st_mtime
-                if age > stale_lock_seconds and (pid is None or not _pid_is_alive(pid)):
+                dead_pid = pid is not None and not _pid_is_alive(pid)
+                stale_unowned_lock = pid is None and age > stale_lock_seconds
+                if dead_pid or stale_unowned_lock:
                     lock_path.unlink(missing_ok=True)
                     continue
             except OSError:
@@ -12099,10 +13462,17 @@ def _v2_realtime_output_lock(
 
 
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
+    configure_output_paths(getattr(_V2_RUNTIME_ARGS, "output_prefix", None))
+    previous_namespace_args = _overlay_ns.get("_V2_RUNTIME_ARGS")
+    previous_module_args = getattr(overlay_mod, "_V2_RUNTIME_ARGS", None)
     _overlay_ns["_V2_RUNTIME_ARGS"] = _V2_RUNTIME_ARGS
     setattr(overlay_mod, "_V2_RUNTIME_ARGS", _V2_RUNTIME_ARGS)
-    with _v2_output_generation_lock():
-        return _generate_v2_0_outputs_unlocked()
+    try:
+        with _v2_output_generation_lock():
+            return _generate_v2_0_outputs_unlocked()
+    finally:
+        _overlay_ns["_V2_RUNTIME_ARGS"] = previous_namespace_args
+        setattr(overlay_mod, "_V2_RUNTIME_ARGS", previous_module_args)
 
 
 _overlay_ns["generate_v2_0_outputs"] = generate_v2_0_outputs
@@ -12110,10 +13480,17 @@ overlay_mod.generate_v2_0_outputs = generate_v2_0_outputs
 
 
 def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+    configure_output_paths(getattr(_V2_RUNTIME_ARGS, "output_prefix", None))
+    previous_namespace_args = _overlay_ns.get("_V2_RUNTIME_ARGS")
+    previous_module_args = getattr(overlay_mod, "_V2_RUNTIME_ARGS", None)
     _overlay_ns["_V2_RUNTIME_ARGS"] = _V2_RUNTIME_ARGS
     setattr(overlay_mod, "_V2_RUNTIME_ARGS", _V2_RUNTIME_ARGS)
-    with _v2_realtime_output_lock():
-        return _build_realtime_v2_0_outputs_unlocked()
+    try:
+        with _v2_realtime_output_lock():
+            return _build_realtime_v2_0_outputs_unlocked()
+    finally:
+        _overlay_ns["_V2_RUNTIME_ARGS"] = previous_namespace_args
+        setattr(overlay_mod, "_V2_RUNTIME_ARGS", previous_module_args)
 
 
 _overlay_ns["build_realtime_v2_0_outputs"] = build_realtime_v2_0_outputs

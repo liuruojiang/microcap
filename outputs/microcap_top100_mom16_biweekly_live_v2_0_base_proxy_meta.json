@@ -1,10 +1,21 @@
 {
   "index_code": "TOP100_BIWEEKLY_THURSDAY_PROXY",
   "source_used": "local_cache_proxy_recent_extension",
+  "universe_source": "explicit_symbols",
+  "universe_symbol_count": 156,
+  "symbol_load_stats": {
+    "requested_count": 156,
+    "loaded_count": 156,
+    "legitimately_unavailable_count": 0,
+    "legitimately_unavailable": [],
+    "failure_count": 0,
+    "failures": {}
+  },
   "method_note": "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names from signal-date ranking, and applies conservative close execution: if the signal-date close is locked at the price limit, buys or sells are blocked at the close.",
   "core_params": {
     "top_n": 100,
-    "exclude_current_st": true,
+    "exclude_current_st": false,
+    "exclude_historical_st": true,
     "exclude_bj_exchange": true,
     "exclude_suspended_on_signal_date": true,
     "block_limit_up_entry_at_close": true,
@@ -23,10 +34,10 @@
     "security_meta_version": 2,
     "security_master_enabled": true
   },
-  "start_date": "2010-01-08",
-  "end_date": "2026-06-17",
-  "rebalance_dates_count": 424,
-  "effective_start_date": "2010-01-08",
-  "recent_extension_start": "2026-04-20",
-  "recent_candidate_symbols": 553
+  "start_date": "2010-01-15",
+  "end_date": "2026-08-07",
+  "rebalance_dates_count": 427,
+  "effective_start_date": "2010-01-15",
+  "recent_extension_start": "2026-07-13",
+  "recent_candidate_symbols": 156
 }

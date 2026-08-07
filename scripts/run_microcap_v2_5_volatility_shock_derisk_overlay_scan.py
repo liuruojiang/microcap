@@ -19,10 +19,11 @@ for path in (ROOT, SCRIPTS):
 
 import microcap_top100_mom16_biweekly_live_v2_5 as v25  # noqa: E402
 import run_microcap_v2_5_target_vol_window_threshold_scan as tv_scan  # noqa: E402
+import microcap_v2_5_scan_common as scan_common  # noqa: E402
 
 
 RUN_FOLDER = ROOT / "quant_param_scan_runs" / "20260601_microcap_top100_v2_5_target_vol_overlay_volatility_shock_asymmetric_derisk_overlay"
-SOURCE_NAV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v2_5_scan_preflight_20260601_costed_nav.csv"
+SOURCE_NAV = v25.COSTED_NAV_CSV
 TARGET_VOL = 0.30
 TRADING_DAYS = int(v25.TRADING_DAYS)
 WINDOWS = {
@@ -158,9 +159,7 @@ def _git(args: list[str]) -> str:
 
 
 def _read_source() -> pd.DataFrame:
-    if not SOURCE_NAV.exists():
-        raise FileNotFoundError(f"missing refreshed v2.5 source NAV: {SOURCE_NAV}")
-    df = pd.read_csv(SOURCE_NAV, parse_dates=["date"]).sort_values("date").set_index("date")
+    _summary, df = scan_common.load_fresh_official_v25()
     required = {
         "holding",
         "next_holding",

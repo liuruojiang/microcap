@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import microcap_top100_mom16_biweekly_live_v2_5 as v25  # noqa: E402
+from scripts import microcap_v2_5_scan_common as scan_common  # noqa: E402
 
 
 RUN_FOLDER = (
@@ -27,7 +28,8 @@ RUN_FOLDER = (
 )
 PANEL_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
 MEMBERS_CSV = ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv"
-PRICE_DIR = ROOT / ".microcap_index_cache" / "prices_raw"
+ADJ_PRICE_DIR = Path(v25.v2_0.freq_mod.ADJ_PRICE_DIR)
+SHARED_ADJ_PRICE_DIR = getattr(v25.v2_0.freq_mod, "SHARED_ADJ_PRICE_DIR", None)
 TRADING_DAYS = int(v25.TRADING_DAYS)
 ONE_SIDE_TRADE_COST = float(v25.v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
 
@@ -119,15 +121,7 @@ def _window_index(index: pd.DatetimeIndex, offset: pd.DateOffset | None) -> pd.D
 
 
 def _load_v2_5_shadow() -> tuple[dict[str, Any], pd.DataFrame]:
-    if v25.SUMMARY_JSON.exists() and v25.COSTED_NAV_CSV.exists():
-        try:
-            summary = json.loads(v25.SUMMARY_JSON.read_text(encoding="utf-8"))
-            if v25.summary_matches_current_v2_5_base(summary):
-                shadow = pd.read_csv(v25.COSTED_NAV_CSV, parse_dates=["date"]).sort_values("date").set_index("date")
-                return summary, shadow
-        except Exception:
-            pass
-    summary, _signal_df, shadow = v25.generate_v2_5_outputs()
+    summary, shadow = scan_common.load_fresh_official_v25()
     return summary, shadow
 
 
@@ -146,18 +140,20 @@ def _symbol_to_file_stem(symbol: object) -> str:
 
 
 def _load_price_series(symbol: object) -> pd.Series | None:
-    path = PRICE_DIR / f"{_symbol_to_file_stem(symbol)}.csv"
-    if not path.exists():
+    clean_symbol = _symbol_to_file_stem(symbol)
+    path = v25.v2_0.freq_mod.resolve_cache_path(ADJ_PRICE_DIR, SHARED_ADJ_PRICE_DIR, clean_symbol)
+    if path is None:
         return None
     df = pd.read_csv(path, parse_dates=["date"])
-    if "date" not in df.columns or "close_raw" not in df.columns:
-        return None
+    return_col = next((col for col in ("close_qfq", "close_adj") if col in df.columns), None)
+    if "date" not in df.columns or return_col is None:
+        raise RuntimeError(f"adjusted breadth cache schema invalid for {clean_symbol}: {path}")
     out = (
-        df.loc[:, ["date", "close_raw"]]
-        .dropna(subset=["date", "close_raw"])
+        df.loc[:, ["date", return_col]]
+        .dropna(subset=["date", return_col])
         .drop_duplicates("date", keep="last")
         .sort_values("date")
-        .set_index("date")["close_raw"]
+        .set_index("date")[return_col]
     )
     return pd.to_numeric(out, errors="coerce").dropna()
 
@@ -196,13 +192,32 @@ def _build_breadth_frame(nav_index: pd.DatetimeIndex) -> tuple[pd.DataFrame, dic
             close_parts.append(series.rename(symbol))
         if not close_parts:
             continue
-        close_all = pd.concat(close_parts, axis=1).reindex(nav_index)
-        close = close_all.loc[seg_index]
-        ret = close_all.pct_change(fill_method=None).loc[seg_index]
+        close_history = pd.concat(close_parts, axis=1).sort_index()
+        return_history = close_history.pct_change(fill_method=None)
+        moving_average_history = close_history.rolling(WIDTH_MA, min_periods=WIDTH_MA).mean()
+        close = close_history.reindex(seg_index)
+        ret = return_history.reindex(seg_index)
         valid = ret.notna().sum(axis=1)
+        required_coverage = max(95, math.ceil(0.95 * len(members_by_rebalance[rebalance_date])))
+        bad_coverage = valid.loc[valid < required_coverage]
+        if len(bad_coverage):
+            examples = ", ".join(
+                f"{pd.Timestamp(dt).date()}={int(count)}" for dt, count in bad_coverage.iloc[:10].items()
+            )
+            raise RuntimeError(
+                f"Top100 adjusted breadth return coverage below {required_coverage}: {examples}"
+            )
         up_ratio = ret.gt(0.0).sum(axis=1).div(valid.replace(0, np.nan))
         width_valid = close.notna().sum(axis=1)
-        above_ma = close.gt(close_all.rolling(WIDTH_MA, min_periods=WIDTH_MA).mean().loc[seg_index])
+        bad_width_coverage = width_valid.loc[width_valid < required_coverage]
+        if len(bad_width_coverage):
+            examples = ", ".join(
+                f"{pd.Timestamp(dt).date()}={int(count)}" for dt, count in bad_width_coverage.iloc[:10].items()
+            )
+            raise RuntimeError(
+                f"Top100 adjusted breadth price coverage below {required_coverage}: {examples}"
+            )
+        above_ma = close.gt(moving_average_history.reindex(seg_index))
         width_ratio = above_ma.sum(axis=1).div(width_valid.replace(0, np.nan))
         ew_return = ret.mean(axis=1, skipna=True)
         rows.append(
@@ -225,6 +240,9 @@ def _build_breadth_frame(nav_index: pd.DatetimeIndex) -> tuple[pd.DataFrame, dic
         "member_rebalance_rows": len(rebalances),
         "price_symbols_used": len(used_symbols),
         "price_symbols_missing": len(missing_symbols),
+        "price_adjustment_mode": "qfq_or_adjusted_close_required",
+        "minimum_valid_members": 95,
+        "minimum_member_coverage": 0.95,
         "missing_symbol_examples": sorted(missing_symbols)[:20],
         "breadth_start": str(out.dropna(how="all").index.min().date()),
         "breadth_end": str(out.dropna(how="all").index.max().date()),
@@ -242,22 +260,25 @@ def _apply_scaled_condition(
     filter_group: str,
 ) -> pd.DataFrame:
     out = shadow.copy().sort_index()
-    base_ret = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
     base_scale = pd.to_numeric(out.get("current_execution_scale", pd.Series(1.0, index=out.index)), errors="coerce").fillna(0.0)
     active = base_scale.gt(1e-12)
     condition_t1 = condition.reindex(out.index).fillna(False).astype(bool).shift(1, fill_value=False)
     scale_series = pd.Series(1.0, index=out.index, dtype=float)
     scale_series.loc[condition_t1 & active] = float(scale)
-    overlay_cost = scale_series.diff().abs().fillna(0.0) * active.astype(float) * ONE_SIDE_TRADE_COST
-    ret = base_ret * scale_series - overlay_cost
-    out["return_net"] = ret
-    out["nav_net"] = (1.0 + ret).cumprod()
-    out["nav"] = out["nav_net"]
+    next_scale_series = pd.Series(1.0, index=out.index, dtype=float)
+    next_scale_series.loc[condition.reindex(out.index).fillna(False).astype(bool)] = float(scale)
+    out = scan_common.replay_scale_multiplier(
+        out,
+        scale_series,
+        next_multiplier=next_scale_series,
+        one_side_scale_cost=ONE_SIDE_TRADE_COST,
+        label=candidate,
+    )
     out["candidate"] = candidate
     out["filter_group"] = filter_group
     out["filter_condition_t1"] = condition_t1
     out["filter_execution_scale"] = scale_series
-    out["filter_overlay_cost"] = overlay_cost
+    out["filter_overlay_cost"] = out["overlay_scale_change_cost"]
     return out
 
 
@@ -272,6 +293,7 @@ def _apply_cooldown(shadow: pd.DataFrame, cooldown_days: int) -> pd.DataFrame:
     blocked_flags: list[bool] = []
     scale_values: list[float] = []
     prev_scale = 0.0
+    prev_deviation = 0.0
     overlay_costs: list[float] = []
     returns: list[float] = []
     exit_flags: list[bool] = []
@@ -279,7 +301,9 @@ def _apply_cooldown(shadow: pd.DataFrame, cooldown_days: int) -> pd.DataFrame:
     for dt in out.index:
         blocked = remaining > 0 and bool(base_active.loc[dt])
         target_scale = 0.0 if blocked else float(base_scale.loc[dt])
-        overlay_cost = abs(target_scale - prev_scale) * ONE_SIDE_TRADE_COST if abs(target_scale - prev_scale) > 1e-12 else 0.0
+        deviation = target_scale - float(base_scale.loc[dt])
+        overlay_turnover = abs(deviation - prev_deviation)
+        overlay_cost = overlay_turnover * ONE_SIDE_TRADE_COST if overlay_turnover > 1e-12 else 0.0
         day_ret = 0.0 if blocked else float(base_ret.loc[dt])
         ret = (1.0 + day_ret) * (1.0 - min(max(overlay_cost, 0.0), 0.99)) - 1.0
         exit_signal = holding.loc[dt] != "cash" and next_holding.loc[dt] == "cash"
@@ -293,6 +317,7 @@ def _apply_cooldown(shadow: pd.DataFrame, cooldown_days: int) -> pd.DataFrame:
         returns.append(ret)
         exit_flags.append(bool(exit_signal))
         prev_scale = target_scale
+        prev_deviation = deviation
 
     ret_series = pd.Series(returns, index=out.index, dtype=float)
     out["return_net"] = ret_series
@@ -305,6 +330,15 @@ def _apply_cooldown(shadow: pd.DataFrame, cooldown_days: int) -> pd.DataFrame:
     out["filter_execution_scale"] = pd.Series(scale_values, index=out.index, dtype=float)
     out["filter_overlay_cost"] = pd.Series(overlay_costs, index=out.index, dtype=float)
     out["cooldown_exit_signal"] = pd.Series(exit_flags, index=out.index, dtype=bool)
+    out["base_holding_state"] = holding
+    out["base_next_holding_state"] = next_holding
+    out["base_current_execution_scale"] = base_scale
+    out["current_execution_scale"] = out["filter_execution_scale"]
+    out["holding"] = np.where(out["current_execution_scale"].gt(1e-12), holding, "cash")
+    next_scale = out["current_execution_scale"].shift(-1).fillna(0.0)
+    out["next_session_actionable_scale"] = next_scale
+    out["next_holding"] = np.where(next_scale.gt(1e-12), next_holding, "cash")
+    scan_common.assert_candidate_state_consistent(out, f"cooldown {cooldown_days}d")
     return out
 
 
@@ -553,7 +587,7 @@ def _write_record(run_folder: Path, wide: pd.DataFrame, context: dict[str, Any],
         f"- Reference v2.5 latest NAV date: {context['reference_summary'].get('latest_nav_date')}",
         f"- Index panel: `{PANEL_CSV}`; columns used {context['panel_columns_used']}.",
         f"- Top100 members: `{MEMBERS_CSV}`.",
-        f"- Member close cache: `{PRICE_DIR}`; symbols used {context['breadth_meta']['price_symbols_used']}, missing {context['breadth_meta']['price_symbols_missing']}.",
+        f"- Member adjusted close cache: `{ADJ_PRICE_DIR}`; symbols used {context['breadth_meta']['price_symbols_used']}, missing {context['breadth_meta']['price_symbols_missing']}.",
         f"- Amount diffusion: {context['breadth_meta']['amount_diffusion_status']}.",
         "",
         "## Cost and Execution Assumptions",
@@ -660,7 +694,7 @@ def run(run_folder: Path) -> None:
             "rows": context["rows"],
             "index_panel": PANEL_CSV,
             "members_csv": MEMBERS_CSV,
-            "price_dir": PRICE_DIR,
+            "adjusted_price_dir": ADJ_PRICE_DIR,
             "breadth": context["breadth_meta"],
         },
         "cost_model": {
