@@ -1855,9 +1855,12 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
-    signal_row = v2_0.realtime_core.base_mod.augment_signal_with_member_rebalance(
+    signal_row = v2_0.realtime_core.base_mod.augment_realtime_signal_with_member_rebalance(
         signal_row,
         realtime_base.context.get("changes_df"),
+        latest_rebalance=realtime_base.context.get("latest_rebalance"),
+        latest_anchor_trade_date=realtime_base.meta.get("latest_anchor_trade_date"),
+        quote_trade_date=realtime_base.meta.get("quote_trade_date"),
     )
     v2_0.overlay_mod._apply_realtime_meta_columns_to_signal_row(signal_row, realtime_base.meta)
     signal_row["quote_coverage"] = f"{realtime_base.meta.get('member_price_count', 0)}/{realtime_base.meta.get('member_count', 0)}"

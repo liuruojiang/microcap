@@ -6918,6 +6918,57 @@ def augment_signal_with_member_rebalance(signal_df: pd.DataFrame, changes_df: pd
     return out
 
 
+def augment_realtime_signal_with_member_rebalance(
+    signal_df: pd.DataFrame,
+    changes_df: pd.DataFrame | None,
+    latest_rebalance: object,
+    latest_anchor_trade_date: object,
+    quote_trade_date: object,
+) -> pd.DataFrame:
+    out = augment_signal_with_member_rebalance(signal_df, changes_df)
+    frame = pd.DataFrame() if changes_df is None else pd.DataFrame(changes_df)
+    official_rebalance = True
+    if "official_rebalance" in frame.columns:
+        official_values = frame["official_rebalance"].dropna()
+        if official_values.empty:
+            official_rebalance = False
+        else:
+            official_rebalance = bool(
+                official_values.map(
+                    lambda value: value
+                    if isinstance(value, (bool, np.bool_))
+                    else str(value).strip().lower() in {"true", "1", "yes", "y", "on"}
+                ).all()
+            )
+
+    def date_text(value: object) -> str:
+        if value is None or str(value).strip() == "":
+            return ""
+        try:
+            return str(pd.Timestamp(value).date())
+        except (TypeError, ValueError):
+            return ""
+
+    signal_date = date_text(latest_rebalance)
+    anchor_date = date_text(latest_anchor_trade_date)
+    quoted_date = date_text(quote_trade_date)
+    is_execution_session = bool(
+        official_rebalance
+        and signal_date
+        and anchor_date
+        and quoted_date
+        and signal_date == anchor_date
+        and pd.Timestamp(quoted_date) > pd.Timestamp(anchor_date)
+    )
+    out["member_rebalance_signal_date"] = signal_date
+    out["member_rebalance_execution_date"] = quoted_date if is_execution_session else ""
+    out["member_rebalance_actionable"] = bool(
+        is_execution_session and bool(out["member_rebalance_required"].iloc[0])
+    )
+    out["member_rebalance_official"] = bool(official_rebalance)
+    return out
+
+
 def assert_signal_matches_result(signal_df: pd.DataFrame, result: pd.DataFrame) -> None:
     if signal_df.empty or result.empty:
         raise RuntimeError("信号结果为空，拒绝输出实盘信号。")
@@ -10052,6 +10103,8 @@ base_mod, _base_ns = _exec_embedded_module(
     },
 )
 
+DEFAULT_MAX_STALE_ANCHOR_DAYS = int(base_mod.DEFAULT_MAX_STALE_ANCHOR_DAYS)
+
 BASE_HEDGE_RATIO = 0.8
 V2_BASE_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0_base"
 V2_BASE_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv"
@@ -10827,6 +10880,10 @@ MEMBER_REBALANCE_META_COLS = {
     "member_enter_count",
     "member_exit_count",
     "member_rebalance_label",
+    "member_rebalance_signal_date",
+    "member_rebalance_execution_date",
+    "member_rebalance_actionable",
+    "member_rebalance_official",
 }
 REALTIME_META_FORCE_COLS = {
     "fallback_warning",
@@ -13043,9 +13100,12 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         required_calendar_end_date=meta.get("latest_anchor_trade_date"),
     )
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
-    signal_row = realtime_core.base_mod.augment_signal_with_member_rebalance(
+    signal_row = realtime_core.base_mod.augment_realtime_signal_with_member_rebalance(
         signal_row,
         realtime_base.context.get("changes_df"),
+        latest_rebalance=realtime_base.context.get("latest_rebalance"),
+        latest_anchor_trade_date=meta.get("latest_anchor_trade_date"),
+        quote_trade_date=meta.get("quote_trade_date"),
     )
     _apply_realtime_meta_columns_to_signal_row(signal_row, meta)
     signal_row["quote_coverage"] = f"{meta.get('member_price_count', 0)}/{meta.get('member_count', 0)}"

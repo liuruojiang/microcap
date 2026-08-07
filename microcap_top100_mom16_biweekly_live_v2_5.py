@@ -2051,9 +2051,12 @@ def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
     out = apply_no_target_vol(costed)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
-    signal_row = v2_0.realtime_core.base_mod.augment_signal_with_member_rebalance(
+    signal_row = v2_0.realtime_core.base_mod.augment_realtime_signal_with_member_rebalance(
         signal_row,
         realtime_base.context.get("changes_df"),
+        latest_rebalance=realtime_base.context.get("latest_rebalance"),
+        latest_anchor_trade_date=realtime_base.meta.get("latest_anchor_trade_date"),
+        quote_trade_date=realtime_base.meta.get("quote_trade_date"),
     )
     v2_0.overlay_mod._apply_realtime_meta_columns_to_signal_row(signal_row, realtime_base.meta)
     signal_row["quote_coverage"] = f"{realtime_base.meta.get('member_price_count', 0)}/{realtime_base.meta.get('member_count', 0)}"
