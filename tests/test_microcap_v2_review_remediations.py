@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
@@ -355,6 +357,104 @@ def test_staged_output_bundle_rolls_back_when_post_promotion_validation_fails(tm
 
     assert nav.read_text(encoding="utf-8") == "old-nav"
     assert summary.read_text(encoding="utf-8") == "old-summary"
+
+
+def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    overlay_globals = v2_0._generate_v2_0_outputs_unlocked.__globals__
+    output_dir = tmp_path
+    while len(str(output_dir)) < 125:
+        output_dir /= "nested-worktree"
+    output_dir.mkdir(parents=True)
+
+    monkeypatch.setitem(overlay_globals, "OUTPUT_DIR", output_dir)
+    for name in (
+        "COSTED_NAV_CSV",
+        "NAV_CSV",
+        "LATEST_SIGNAL_CSV",
+        "PERF_SUMMARY_CSV",
+        "PERF_YEARLY_CSV",
+        "PERF_NAV_CSV",
+        "PERF_JSON",
+        "PERF_PNG",
+        "SUMMARY_JSON",
+    ):
+        original = Path(overlay_globals[name])
+        monkeypatch.setitem(overlay_globals, name, output_dir / original.name)
+
+    index = pd.DatetimeIndex([pd.Timestamp("2026-08-07")])
+    strategy_frame = pd.DataFrame(
+        {
+            "microcap_close": [100.0],
+            "hedge_close": [200.0],
+            "return_net": [0.0],
+        },
+        index=index,
+    )
+    embedded_context = overlay_globals["embedded_context"]
+    monkeypatch.setattr(
+        embedded_context,
+        "_load_embedded_base_context",
+        lambda: ({}, strategy_frame, pd.DataFrame(index=index)),
+    )
+    monkeypatch.setattr(embedded_context.base_mod, "run_signal", lambda close_df: strategy_frame)
+    monkeypatch.setattr(
+        embedded_context.base_mod,
+        "apply_momentum_gap_exit_buffer",
+        lambda frame, buffer: frame,
+    )
+    monkeypatch.setitem(overlay_globals, "apply_volatility_overheat_exit", lambda frame, turnover: frame)
+    monkeypatch.setitem(overlay_globals, "apply_target_vol_scaling", lambda frame: frame)
+    monkeypatch.setitem(overlay_globals, "validate_close_df", lambda frame, label: None)
+    monkeypatch.setitem(overlay_globals, "incompatible_v2_0_outputs", lambda: [])
+    monkeypatch.setitem(
+        overlay_globals,
+        "assert_top100_candidate_fresh",
+        lambda *args, **kwargs: {"latest_date": "2026-08-07", "row_count": 1},
+    )
+    monkeypatch.setitem(
+        overlay_globals,
+        "_build_v2_data_lineage",
+        lambda: {"source_used": "test", "official_wind_series": True},
+    )
+    monkeypatch.setitem(
+        overlay_globals,
+        "_build_signal_row",
+        lambda frame, summary: pd.DataFrame([{"date": index[-1], "holding": "cash"}]),
+    )
+
+    def write_performance_bundle(returns, *, source_label, output_paths):
+        pd.DataFrame({"value": [1]}).to_csv(output_paths["summary"], index=False)
+        pd.DataFrame({"value": [1]}).to_csv(output_paths["yearly"], index=False)
+        pd.DataFrame({"value": [1]}).to_csv(output_paths["nav"], index=False)
+        output_paths["json"].write_text("{}", encoding="utf-8")
+        output_paths["png"].write_bytes(b"png")
+        return {"summary": {"source_label": source_label}}
+
+    monkeypatch.setitem(overlay_globals, "build_performance_payload", write_performance_bundle)
+    monkeypatch.setitem(overlay_globals, "current_base_fingerprint", lambda: {})
+    monkeypatch.setitem(overlay_globals, "assert_top100_outputs_fresh", lambda **kwargs: None)
+    monkeypatch.setitem(overlay_globals, "_stale_outputs_to_remove_after_generate", lambda *args: [])
+
+    summary, signal, result = v2_0._generate_v2_0_outputs_unlocked()
+
+    assert summary["latest_nav_date"] == "2026-08-07"
+    assert signal.at[0, "holding"] == "cash"
+    assert result.index.max() == index[-1]
+    for name in (
+        "COSTED_NAV_CSV",
+        "NAV_CSV",
+        "LATEST_SIGNAL_CSV",
+        "PERF_SUMMARY_CSV",
+        "PERF_YEARLY_CSV",
+        "PERF_NAV_CSV",
+        "PERF_JSON",
+        "PERF_PNG",
+        "SUMMARY_JSON",
+    ):
+        assert Path(overlay_globals[name]).exists()
 
 
 @pytest.mark.parametrize(
