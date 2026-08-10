@@ -38,6 +38,11 @@ STATIC_EFFECTIVE_MEMBER_GLOBS = (
     ".microcap_index_cache/realtime/*static_effective_members.csv",
     ".microcap_index_cache/*_static_effective_members.csv",
 )
+V2_STATIC_CONTEXT_PREFIX = (
+    ".microcap_index_cache/realtime/"
+    "microcap_top100_mom16_biweekly_live_v2_0_base_static"
+)
+TOP_N = 100
 
 
 def _repo_path(path: str) -> PurePosixPath:
@@ -148,6 +153,32 @@ def _current_member_symbols(root: Path) -> list[str]:
     if not symbols:
         symbols.update(_latest_proxy_member_symbols(root))
     return sorted(symbols)
+
+
+def _has_current_v2_static_member_context(root: Path) -> bool:
+    proxy_members = root / REQUIRED_FILES[4]
+    latest_proxy_rebalance = _csv_last_date(proxy_members, ("rebalance_date",))
+    prefix = root / V2_STATIC_CONTEXT_PREFIX
+    meta_path = Path(f"{prefix}_meta.json")
+    target_path = Path(f"{prefix}_target_members.csv")
+    effective_path = Path(f"{prefix}_effective_members.csv")
+    changes_path = Path(f"{prefix}_rebalance_changes.csv")
+    if latest_proxy_rebalance is None or not all(
+        path.is_file() and path.stat().st_size > 0
+        for path in (meta_path, target_path, effective_path, changes_path)
+    ):
+        return False
+    try:
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    if _parse_date(str(meta.get("latest_rebalance") or "")) != latest_proxy_rebalance:
+        return False
+    for path in (target_path, effective_path):
+        symbols = _csv_symbols(path)
+        if len(symbols) != TOP_N or len(set(symbols)) != TOP_N:
+            return False
+    return True
 
 
 def _iter_current_member_cache_files(root: Path) -> list[str]:
@@ -266,6 +297,11 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
                 "sha256": _sha256(path),
                 "last_date": last_date.isoformat(),
             }
+        )
+    if not _has_current_v2_static_member_context(root):
+        errors.append(
+            "current v2.0 static member context is missing, incomplete, or older than "
+            "the latest proxy-members rebalance"
         )
 
     return {
