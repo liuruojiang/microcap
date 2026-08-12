@@ -35,9 +35,14 @@
     "security_master_enabled": true
   },
   "start_date": "2010-01-15",
-  "end_date": "2026-08-07",
+  "end_date": "2026-08-12",
   "rebalance_dates_count": 427,
   "effective_start_date": "2010-01-15",
   "recent_extension_start": "2026-07-13",
-  "recent_candidate_symbols": 156
+  "recent_candidate_symbols": 156,
+  "tail_extension_method": "no_new_rebalance_saved_target_replay",
+  "tail_extension_start": "2026-08-07",
+  "tail_extension_end": "2026-08-12",
+  "tail_extension_rows": 3,
+  "tail_extension_effective_member_count": 100
 }

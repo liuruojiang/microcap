@@ -5,8 +5,9 @@ import csv
 import hashlib
 import json
 import sys
+import tempfile
 import zipfile
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 
@@ -43,6 +44,9 @@ V2_STATIC_CONTEXT_PREFIX = (
     "microcap_top100_mom16_biweekly_live_v2_0_base_static"
 )
 TOP_N = 100
+REFRESH_PROOF_REL = ".microcap_index_cache/realtime/top100_realtime_refresh_proof.json"
+REFRESH_PROOF_VERSION = 1
+REFRESH_PROOF_SOURCE = "independent_close_history_refresh"
 
 
 def _repo_path(path: str) -> PurePosixPath:
@@ -97,6 +101,54 @@ def _parse_date(value: str) -> date | None:
         return None
 
 
+def _build_refresh_proof(target_end_date: date) -> dict[str, object]:
+    return {
+        "version": REFRESH_PROOF_VERSION,
+        "source": REFRESH_PROOF_SOURCE,
+        "target_end_date": target_end_date.isoformat(),
+        "verified_on": _cn_today().isoformat(),
+        "verified_at_utc": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def _write_refresh_proof(root: Path, target_end_date: date) -> dict[str, object]:
+    proof = _build_refresh_proof(target_end_date)
+    path = root.resolve() / REFRESH_PROOF_REL
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            json.dump(proof, handle, ensure_ascii=False, indent=2)
+            temp_path = Path(handle.name)
+        temp_path.replace(path)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+    return proof
+
+
+def _load_refresh_proof(root: Path) -> dict[str, object] | None:
+    path = root.resolve() / REFRESH_PROOF_REL
+    if not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _cn_today() -> date:
+    return (datetime.now(timezone.utc) + timedelta(hours=8)).date()
+
+
 def _csv_last_date(path: Path, candidates: Iterable[str]) -> date | None:
     if not path.is_file():
         return None
@@ -124,6 +176,25 @@ def _csv_symbols(path: Path) -> list[str]:
         return symbols
 
 
+def _csv_has_valid_named_symbols(path: Path, expected_count: int = TOP_N) -> bool:
+    if not path.is_file():
+        return False
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = set(reader.fieldnames or [])
+        if not {"symbol", "name"}.issubset(fields):
+            return False
+        rows = list(reader)
+    symbols = [str(row.get("symbol") or "").strip().zfill(6) for row in rows]
+    names = [str(row.get("name") or "").strip() for row in rows]
+    return bool(
+        len(rows) == int(expected_count)
+        and len(set(symbols)) == int(expected_count)
+        and all(symbols)
+        and all(names)
+    )
+
+
 def _latest_proxy_member_symbols(root: Path) -> list[str]:
     path = root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv"
     if not path.is_file():
@@ -133,6 +204,8 @@ def _latest_proxy_member_symbols(root: Path) -> list[str]:
         if "symbol" not in (reader.fieldnames or []) or "rebalance_date" not in (reader.fieldnames or []):
             return []
         rows = list(reader)
+    if "name" not in (reader.fieldnames or []):
+        return []
     dated_rows = [(row, _parse_date(str(row.get("rebalance_date") or ""))) for row in rows]
     dates = [value for _row, value in dated_rows if value is not None]
     if not dates:
@@ -141,7 +214,9 @@ def _latest_proxy_member_symbols(root: Path) -> list[str]:
     return [
         str(row.get("symbol") or "").strip().zfill(6)
         for row, value in dated_rows
-        if value == latest and str(row.get("symbol") or "").strip()
+        if value == latest
+        and str(row.get("symbol") or "").strip()
+        and str(row.get("name") or "").strip()
     ]
 
 
@@ -175,8 +250,7 @@ def _has_current_v2_static_member_context(root: Path) -> bool:
     if _parse_date(str(meta.get("latest_rebalance") or "")) != latest_proxy_rebalance:
         return False
     for path in (target_path, effective_path):
-        symbols = _csv_symbols(path)
-        if len(symbols) != TOP_N or len(set(symbols)) != TOP_N:
+        if not _csv_has_valid_named_symbols(path):
             return False
     return True
 
@@ -191,7 +265,13 @@ def _iter_current_member_cache_files(root: Path) -> list[str]:
     return sorted(set(files))
 
 
-def validate_state(root: Path, max_anchor_age_days: int | None = None, today: date | None = None) -> dict[str, object]:
+def validate_state(
+    root: Path,
+    max_anchor_age_days: int | None = None,
+    today: date | None = None,
+    *,
+    require_current_refresh_proof: bool = True,
+) -> dict[str, object]:
     root = root.resolve()
     errors: list[str] = []
     warnings: list[str] = []
@@ -252,8 +332,8 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
         if value is None:
             errors.append(f"cannot read last date for {name}")
 
+    today_value = today or _cn_today()
     if max_anchor_age_days is not None and not errors:
-        today_value = today or date.today()
         for name in ("proxy_index", "costed_nav", "panel_shadow"):
             value = anchor_dates.get(name)
             if value is None:
@@ -266,6 +346,33 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
                 )
             elif age_days < 0:
                 warnings.append(f"{name} has a future date: last_date={value.isoformat()}")
+
+    refresh_proof = _load_refresh_proof(root)
+    if require_current_refresh_proof and refresh_proof is None:
+        errors.append(f"missing or invalid independent realtime refresh proof: {REFRESH_PROOF_REL}")
+    elif require_current_refresh_proof and refresh_proof is not None:
+        expected_fields = {
+            "version": REFRESH_PROOF_VERSION,
+            "source": REFRESH_PROOF_SOURCE,
+            "verified_on": today_value.isoformat(),
+        }
+        for field, expected in expected_fields.items():
+            if refresh_proof.get(field) != expected:
+                errors.append(
+                    "independent realtime refresh proof is stale or inconsistent: "
+                    f"field={field} actual={refresh_proof.get(field)!r} expected={expected!r}"
+                )
+        proof_target = _parse_date(str(refresh_proof.get("target_end_date") or ""))
+        if proof_target is None:
+            errors.append("independent realtime refresh proof has no valid target_end_date")
+        else:
+            for name in ("proxy_index", "costed_nav", "panel_shadow"):
+                if anchor_dates.get(name) != proof_target:
+                    errors.append(
+                        "state anchor does not match independent realtime refresh proof: "
+                        f"name={name} last_date={anchor_dates.get(name)} "
+                        f"target_end_date={proof_target.isoformat()}"
+                    )
 
     current_symbols = _current_member_symbols(root)
     price_cache_files: list[dict[str, object]] = []
@@ -312,6 +419,7 @@ def validate_state(root: Path, max_anchor_age_days: int | None = None, today: da
         "anchor_dates": {key: value.isoformat() if value else None for key, value in anchor_dates.items()},
         "current_member_symbols": current_symbols,
         "price_cache_files": price_cache_files,
+        "refresh_proof": refresh_proof,
     }
 
 
@@ -391,6 +499,7 @@ def refresh_state(
             target_end_ts,
             base_context,
         )
+        _write_refresh_proof(root, target_end_date)
         report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
         context_anchor_date = base_context["close_df"].index[-1].date()
         report["context_anchor_date"] = context_anchor_date.isoformat()
@@ -411,10 +520,21 @@ def refresh_state(
             )
         return report
     except Exception as exc:
+        if target_end_date is None:
+            report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+            report.setdefault("errors", []).append(
+                "state refresh failed before an independent latest-completed-session target "
+                "could be established"
+            )
+            report["ok"] = False
+            raise RuntimeError(
+                "state refresh failed closed because no independent refresh target is available: "
+                + "; ".join(str(error) for error in report.get("errors", []))
+            ) from exc
+        _write_refresh_proof(root, target_end_date)
         report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
-        if target_end_date is not None:
-            report["target_end_date"] = target_end_date.isoformat()
-            enforce_anchor_target(report, target_end_date)
+        report["target_end_date"] = target_end_date.isoformat()
+        enforce_anchor_target(report, target_end_date)
         report["refresh_source"] = "existing_validated_state"
         report["refresh_warning"] = f"state refresh failed; reused existing validated state: {exc}"
         if not report["ok"]:
@@ -437,7 +557,11 @@ def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> 
             if isinstance(validation, dict):
                 bundle_validation = validation
 
-        current_report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        current_report = validate_state(
+            root,
+            max_anchor_age_days=max_anchor_age_days,
+            require_current_refresh_proof=False,
+        )
         if current_report.get("ok") and bundle_validation and bundle_validation.get("ok"):
             current_anchors = current_report.get("anchor_dates", {})
             bundle_anchors = bundle_validation.get("anchor_dates", {})
@@ -472,7 +596,13 @@ def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> 
             target.parent.mkdir(parents=True, exist_ok=True)
             with archive.open(member, "r") as source, target.open("wb") as dest:
                 dest.write(source.read())
-    report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    # A restored bundle may be a prior-session bootstrap seed. The realtime
+    # refresh step must establish a current proof before any signal is emitted.
+    report = validate_state(
+        root,
+        max_anchor_age_days=max_anchor_age_days,
+        require_current_refresh_proof=False,
+    )
     report["restore_source"] = "bundle"
     return report
 

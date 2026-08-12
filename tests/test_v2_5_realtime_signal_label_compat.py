@@ -68,4 +68,37 @@ def test_v2_5_scale_rebalance_uses_native_cost_rate() -> None:
         0.4 * v2_5.TARGET_VOL_SCALE_CHANGE_ENTRY_COST
     )
     assert signal["fixed_hedge_ratio"] == pytest.approx(0.0)
-    assert signal["max_leverage"] == pytest.approx(v2_5.TARGET_VOL_MAX_LEVERAGE)
+    assert signal["target_vol_enabled"] == False  # noqa: E712
+    assert signal["target_vol_max_leverage"] == pytest.approx(1.0)
+    assert signal["max_leverage"] == pytest.approx(1.0)
+
+
+def test_v2_5_signal_clears_disabled_v2_0_numeric_fields() -> None:
+    legacy_values = {
+        "gap_peak": 777.0,
+        "gap_decay_ratio": 666.0,
+        "overheat_metric": 999.0,
+        "trade_return_net": 888.0,
+        "latest_realized_vol": 555.0,
+        "return_gross_base": 444.0,
+    }
+
+    signal = v2_5._build_signal_row(
+        _net_df("long_microcap_top100", "long_microcap_top100", 1.0, 1.0),
+        {"latest_signal": legacy_values},
+    ).iloc[0]
+
+    assert signal["overheat_enabled"] == False  # noqa: E712
+    assert signal["overheat_kind"] == "disabled"
+    for field in legacy_values:
+        assert pd.isna(signal[field]), field
+
+
+def test_v2_5_transition_cost_note_matches_reported_fixed_exposure_estimate() -> None:
+    signal = v2_5._build_signal_row(
+        _net_df("cash", "long_microcap_top100", 0.0, 1.0),
+        {"latest_signal": {}},
+    ).iloc[0]
+
+    assert signal["next_session_trade_cost_est_type"] == "fixed_exposure_entry_exit"
+    assert "not directly estimable" not in signal["next_session_total_trade_cost_est_note"]

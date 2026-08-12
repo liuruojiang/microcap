@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import pandas as pd
 import pytest
@@ -8,6 +10,13 @@ import pytest
 import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 import microcap_top100_mom16_biweekly_live_v2_3 as v2_3
 import microcap_top100_mom16_biweekly_live_v2_5 as v2_5
+
+
+def _current_realtime_refresh_proof_fields() -> dict[str, str]:
+    return {
+        "expected_latest_completed_trade_date_source": v2_0.base_mod.REALTIME_REFRESH_PROOF_SOURCE,
+        "expected_latest_completed_trade_date_verified_on": str(v2_0.base_mod._cn_local_day().date()),
+    }
 
 
 def test_v2_0_formal_production_identity() -> None:
@@ -234,8 +243,100 @@ def test_anchor_guard_rejects_calendar_that_does_not_reach_expected_close(
                 "latest_anchor_trade_date": "2026-07-02",
                 "quote_trade_date": "2026-07-06",
                 "expected_latest_completed_trade_date": "2026-07-03",
+                **_current_realtime_refresh_proof_fields(),
             }
         )
+
+
+def test_anchor_guard_rejects_calendar_self_validation_without_refresh_proof(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setitem(
+        v2_0.base_mod.assert_realtime_anchor_precedes_quote_trade_date.__globals__,
+        "_load_realtime_anchor_calendar_index",
+        lambda: pd.to_datetime(["2026-08-10"]),
+    )
+
+    with pytest.raises(RuntimeError, match="independent refresh proof"):
+        v2_0.base_mod.assert_realtime_anchor_precedes_quote_trade_date(
+            {
+                "latest_anchor_trade_date": "2026-08-10",
+                "quote_trade_date": "2026-08-12",
+                "expected_latest_completed_trade_date": "2026-08-10",
+            }
+        )
+
+
+def test_refresh_state_fails_closed_when_independent_target_is_unavailable(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from scripts import realtime_state_bundle
+    import run_top100_v1_6_v1_8_realtime_signals as realtime_runner
+
+    monkeypatch.setattr(realtime_runner, "ensure_static_realtime_inputs", lambda **_kwargs: None)
+    monkeypatch.setattr(v2_0, "_sync_embedded_base_config", lambda: None)
+    monkeypatch.setattr(v2_0, "_build_base_args", lambda max_workers: SimpleNamespace())
+    monkeypatch.setattr(v2_0.base_mod, "build_output_paths", lambda _prefix: {})
+    monkeypatch.setattr(
+        v2_0.base_mod,
+        "build_refreshed_panel_shadow",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("independent refresh failed")),
+    )
+    monkeypatch.setattr(
+        realtime_state_bundle,
+        "validate_state",
+        lambda *_args, **_kwargs: {"ok": True, "errors": [], "warnings": []},
+    )
+
+    with pytest.raises(RuntimeError, match="no independent refresh target"):
+        realtime_state_bundle.refresh_state(tmp_path, max_workers=1)
+
+
+def test_validate_state_accepts_only_current_matching_refresh_proof(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from scripts import realtime_state_bundle
+
+    target = pd.Timestamp("2026-08-12").date()
+    proof = {
+        "version": realtime_state_bundle.REFRESH_PROOF_VERSION,
+        "source": realtime_state_bundle.REFRESH_PROOF_SOURCE,
+        "target_end_date": target.isoformat(),
+        "verified_on": target.isoformat(),
+    }
+    monkeypatch.setattr(realtime_state_bundle, "REQUIRED_FILES", ())
+    monkeypatch.setattr(realtime_state_bundle, "_csv_last_date", lambda *_args, **_kwargs: target)
+    monkeypatch.setattr(realtime_state_bundle, "_current_member_symbols", lambda _root: ["000001"])
+    monkeypatch.setattr(realtime_state_bundle, "_has_current_v2_static_member_context", lambda _root: True)
+    monkeypatch.setattr(realtime_state_bundle, "_load_refresh_proof", lambda _root: dict(proof))
+
+    current = realtime_state_bundle.validate_state(tmp_path, today=target)
+    assert current["ok"] is True
+
+    proof["verified_on"] = "2026-08-11"
+    stale = realtime_state_bundle.validate_state(tmp_path, today=target)
+    assert stale["ok"] is False
+    assert any("refresh proof is stale" in error for error in stale["errors"])
+
+    monkeypatch.setattr(realtime_state_bundle, "_load_refresh_proof", lambda _root: None)
+    offline_restore_seed = realtime_state_bundle.validate_state(
+        tmp_path,
+        today=target,
+        require_current_refresh_proof=False,
+    )
+    assert offline_restore_seed["ok"] is True
+
+
+def test_refresh_proof_is_packaged_with_realtime_state(tmp_path: Path) -> None:
+    from scripts import realtime_state_bundle
+
+    proof_path = tmp_path / realtime_state_bundle.REFRESH_PROOF_REL
+    proof_path.parent.mkdir(parents=True, exist_ok=True)
+    proof_path.write_text("{}", encoding="utf-8")
+
+    assert realtime_state_bundle.REFRESH_PROOF_REL in realtime_state_bundle._iter_bundle_files(tmp_path)
 
 
 def test_realtime_signal_rows_preserve_fallback_and_snapshot_provenance() -> None:
@@ -384,7 +485,7 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     overlay_globals = v2_0._generate_v2_0_outputs_unlocked.__globals__
-    output_dir = tmp_path
+    output_dir = tmp_path / "long-worktree"
     while len(str(output_dir)) < 125:
         output_dir /= "nested-worktree"
     output_dir.mkdir(parents=True)
@@ -927,3 +1028,276 @@ def test_v2_3_signal_schema_overwrites_inherited_v2_0_overlay_fields() -> None:
     assert bool(row["target_vol_enabled"]) is False
     assert int(row["target_vol_window"]) == 0
     assert float(row["target_vol_max_leverage"]) == pytest.approx(1.0)
+
+
+def test_stale_turnover_cannot_hide_scheduled_cost_rebalance(tmp_path: Path) -> None:
+    turnover = tmp_path / "turnover.csv"
+    pd.DataFrame({"rebalance_date": ["2026-07-23"]}).to_csv(turnover, index=False)
+    trading_dates = pd.bdate_range("2026-07-20", "2026-08-12")
+
+    missing = v2_0.base_mod.find_missing_cost_rebalances(
+        gross_index=trading_dates,
+        current_costed_end=pd.Timestamp("2026-07-31"),
+        target_end_date=pd.Timestamp("2026-08-12"),
+        proxy_turnover_path=turnover,
+        trading_dates=trading_dates,
+    )
+
+    assert list(missing) == [pd.Timestamp("2026-08-06")]
+
+
+def test_costed_tail_extension_rejects_anchor_state_mismatch(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    anchor = pd.Timestamp("2026-08-10")
+    next_day = pd.Timestamp("2026-08-11")
+    fingerprint = {
+        "return": 0.01,
+        "microcap_close": 101.0,
+        "hedge_close": 202.0,
+        "microcap_mom": 0.03,
+        "hedge_mom": 0.01,
+        "momentum_gap": 0.02,
+        "signal_on": True,
+    }
+    costed = pd.DataFrame(
+        [
+            {
+                "date": anchor,
+                "holding": "long_microcap_short_zz1000",
+                "next_holding": "long_microcap_short_zz1000",
+                "nav_net": 1.2,
+                **fingerprint,
+            }
+        ]
+    )
+    gross = pd.DataFrame(
+        [
+            {
+                "holding": "cash",
+                "next_holding": "cash",
+                **fingerprint,
+            },
+            {
+                "holding": "cash",
+                "next_holding": "cash",
+                **{**fingerprint, "return": 0.0},
+            },
+        ],
+        index=pd.DatetimeIndex([anchor, next_day]),
+    )
+    costed_path = tmp_path / "costed.csv"
+    index_path = tmp_path / "index.csv"
+    costed.to_csv(costed_path, index=False)
+    index_path.write_text("date\n", encoding="utf-8")
+    before = costed_path.read_bytes()
+    extend = v2_0.base_mod.try_extend_costed_nav_without_turnover
+    monkeypatch.setitem(extend.__globals__, "load_close_df", lambda *_args, **_kwargs: pd.DataFrame())
+    monkeypatch.setitem(extend.__globals__, "run_signal", lambda _close: gross)
+
+    extended = extend(
+        SimpleNamespace(index_csv=index_path, costed_nav_csv=costed_path),
+        panel_path=tmp_path / "panel.csv",
+        target_end_date=next_day,
+    )
+
+    assert extended is False
+    assert costed_path.read_bytes() == before
+
+
+def test_staged_output_bundle_continues_rollback_and_retains_failed_backup(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nav = tmp_path / "nav.csv"
+    signal = tmp_path / "signal.csv"
+    summary = tmp_path / "summary.json"
+    for path in (nav, signal, summary):
+        path.write_text(f"old-{path.stem}", encoding="utf-8")
+    real_replace = v2_0.overlay_mod._replace_with_retry
+
+    def fail_one_rollback(source: Path, target: Path, *args, **kwargs) -> None:
+        if target == summary and ".rollback" in source.name:
+            raise OSError("injected rollback failure")
+        real_replace(source, target, *args, **kwargs)
+
+    monkeypatch.setitem(
+        v2_0.staged_output_bundle.__wrapped__.__globals__,
+        "_replace_with_retry",
+        fail_one_rollback,
+    )
+
+    with pytest.raises(RuntimeError, match="rollback was incomplete"):
+        with v2_0.staged_output_bundle(
+            [nav, signal, summary],
+            summary_path=summary,
+            post_promotion_validator=lambda: (_ for _ in ()).throw(RuntimeError("readback failed")),
+        ) as staged:
+            for path in (nav, signal, summary):
+                staged[path].write_text(f"new-{path.stem}", encoding="utf-8")
+
+    assert nav.read_text(encoding="utf-8") == "old-nav"
+    assert signal.read_text(encoding="utf-8") == "old-signal"
+    assert summary.read_text(encoding="utf-8") == "new-summary"
+    retained = list(tmp_path.glob(".bundle.*.rollback*"))
+    assert len(retained) == 1
+    assert retained[0].read_text(encoding="utf-8") == "old-summary"
+
+
+@pytest.mark.parametrize(
+    ("column", "bad_value"),
+    [
+        ("microcap_ret", float("nan")),
+        ("hedge_ret", float("inf")),
+        ("return", float("-inf")),
+    ],
+)
+def test_v2_0_overheat_rejects_nonfinite_inputs(
+    column: str,
+    bad_value: float,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    dates = pd.bdate_range("2026-01-05", periods=70)
+    gross = pd.DataFrame(
+        {
+            "return": [0.001] * len(dates),
+            "microcap_ret": [0.02 if i % 2 == 0 else -0.02 for i in range(len(dates))],
+            "hedge_ret": [0.0] * len(dates),
+            "holding": ["long_microcap_short_zz1000"] * len(dates),
+            "next_holding": ["long_microcap_short_zz1000"] * len(dates),
+        },
+        index=dates,
+    )
+    gross.loc[dates[20], column] = bad_value
+    monkeypatch.setattr(
+        v2_0.embedded_context.base_mod.freq_mod.cost_mod,
+        "map_rebalance_apply_costs",
+        lambda index, _turnover_df: pd.Series(0.0, index=index),
+    )
+
+    with pytest.raises(ValueError, match=f"{column}.*non-finite"):
+        v2_0.overlay_mod.apply_volatility_overheat_exit(gross, pd.DataFrame())
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"target_vol": float("nan")},
+        {"target_vol": float("inf")},
+        {"target_vol": -0.01},
+        {"scale_rebalance_threshold": float("nan")},
+        {"scale_rebalance_threshold": -0.01},
+    ],
+)
+def test_v2_0_target_vol_parameters_must_be_finite_and_nonnegative(kwargs: dict[str, float]) -> None:
+    base = pd.DataFrame(
+        {
+            "return_net": [0.0],
+            "holding": ["cash"],
+            "next_holding": ["cash"],
+        },
+        index=pd.to_datetime(["2026-08-10"]),
+    )
+
+    with pytest.raises(ValueError, match="finite and non-negative"):
+        v2_0.overlay_mod.apply_target_vol_scaling(base, **kwargs)
+
+
+def test_v2_0_target_vol_enabled_matches_applied_scaling() -> None:
+    dates = pd.bdate_range("2026-08-07", periods=3)
+    base = pd.DataFrame(
+        {
+            "return_net": [0.0, 0.01, -0.005],
+            "holding": ["cash", "long_microcap_short_zz1000", "long_microcap_short_zz1000"],
+            "next_holding": [
+                "long_microcap_short_zz1000",
+                "long_microcap_short_zz1000",
+                "long_microcap_short_zz1000",
+            ],
+            "total_cost": [0.003, 0.0, 0.0],
+            "overlay_pre_cost_return": [0.0, 0.01, -0.005],
+        },
+        index=dates,
+    )
+
+    scaled = v2_0.overlay_mod.apply_target_vol_scaling(base)
+    signal = v2_0.overlay_mod._build_signal_row(scaled, {})
+
+    assert scaled["target_vol_enabled"].eq(True).all()
+    assert bool(signal.iloc[0]["target_vol_enabled"]) is True
+
+
+def test_cache_write_lock_honors_timeout_when_windows_unlink_is_denied(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_lock = tmp_path / "cache.lock"
+    real_lock.write_text("held", encoding="ascii")
+
+    class UnlinkDeniedPath:
+        parent = real_lock.parent
+
+        def __str__(self) -> str:
+            return str(real_lock)
+
+        def stat(self):
+            return real_lock.stat()
+
+        def unlink(self) -> None:
+            raise PermissionError("simulated WinError 32")
+
+    lock_fn = v2_0.base_mod._cache_write_lock
+    monkeypatch.setitem(lock_fn.__wrapped__.__globals__, "REALTIME_CACHE_STALE_LOCK_SECONDS", 0.0)
+    monkeypatch.setitem(lock_fn.__wrapped__.__globals__, "REALTIME_CACHE_LOCK_TIMEOUT_SECONDS", 0.02)
+    started = time.monotonic()
+
+    with pytest.raises(TimeoutError, match="Timed out waiting"):
+        with lock_fn(UnlinkDeniedPath()):
+            pytest.fail("contender must not acquire the live lock")
+
+    assert time.monotonic() - started < 0.5
+
+
+def test_empty_name_reject_policy_excludes_unnamed_low_cap_candidate() -> None:
+    rebalance = pd.Timestamp("2026-08-06")
+    members = v2_0.base_mod.build_live_target_members_map(
+        caps_by_date={rebalance: {"000001": 1.0, "000002": 2.0}},
+        rebalance_dates=pd.DatetimeIndex([rebalance]),
+        name_map={"000001": "", "000002": "valid-name"},
+        top_n=1,
+    )
+
+    assert members[rebalance] == ["000002"]
+
+
+def test_empty_name_reject_policy_invalidates_static_member_context(tmp_path: Path) -> None:
+    from scripts import realtime_state_bundle
+
+    members = pd.DataFrame(
+        {
+            "symbol": [f"{value:06d}" for value in range(1, 101)],
+            "name": [""] + [f"member-{value}" for value in range(2, 101)],
+        }
+    )
+    path = tmp_path / "members.csv"
+    members.to_csv(path, index=False)
+
+    assert realtime_state_bundle._csv_has_valid_named_symbols(path) is False
+
+
+def test_empty_name_reject_policy_requires_matching_proxy_metadata() -> None:
+    core_params = {
+        "research_stack_version": v2_0.base_mod.RESEARCH_STACK_VERSION,
+        "execution_timing": v2_0.base_mod.EXECUTION_TIMING,
+        "trade_constraint_mode": v2_0.base_mod.TRADE_CONSTRAINT_MODE,
+        "exclude_current_st": False,
+        "exclude_historical_st": True,
+        "rebalance_phase_anchor_date": v2_0.base_mod.REBALANCE_ANCHOR_DATE,
+        "realtime_quote_policy_version": v2_0.base_mod.REALTIME_QUOTE_POLICY_VERSION,
+        "proxy_rebalance_policy_version": v2_0.base_mod.PROXY_REBALANCE_POLICY_VERSION,
+    }
+
+    assert v2_0.base_mod.proxy_meta_matches_execution_model({"core_params": core_params}) is False
+    core_params["member_filter_policy_version"] = v2_0.base_mod.MEMBER_FILTER_POLICY_VERSION
+    assert v2_0.base_mod.proxy_meta_matches_execution_model({"core_params": core_params}) is True

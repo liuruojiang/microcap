@@ -99,7 +99,12 @@ def _metrics(ret: pd.Series) -> dict[str, float | int]:
             "final_nav": np.nan,
         }
     nav = (1.0 + r).cumprod()
-    ann_return = float(nav.iloc[-1] ** (TRADING_DAYS / rows) - 1.0) if nav.iloc[-1] > 0 else np.nan
+    years = (pd.Timestamp(r.index[-1]) - pd.Timestamp(r.index[0])).days / 365.25
+    ann_return = (
+        float(nav.iloc[-1] ** (1.0 / years) - 1.0)
+        if nav.iloc[-1] > 0 and years > 0
+        else 0.0 if years == 0 else np.nan
+    )
     ann_vol = float(r.std(ddof=1) * math.sqrt(TRADING_DAYS)) if rows > 1 else 0.0
     sharpe = ann_return / ann_vol if ann_vol > 0 and math.isfinite(ann_vol) else np.nan
     dd = nav.div(nav.cummax()).sub(1.0)
@@ -208,16 +213,18 @@ def _build_breadth_frame(nav_index: pd.DatetimeIndex) -> tuple[pd.DataFrame, dic
                 f"Top100 adjusted breadth return coverage below {required_coverage}: {examples}"
             )
         up_ratio = ret.gt(0.0).sum(axis=1).div(valid.replace(0, np.nan))
-        width_valid = close.notna().sum(axis=1)
+        moving_average = moving_average_history.reindex(seg_index)
+        ma_valid = close.notna() & moving_average.notna()
+        width_valid = ma_valid.sum(axis=1)
         bad_width_coverage = width_valid.loc[width_valid < required_coverage]
         if len(bad_width_coverage):
             examples = ", ".join(
                 f"{pd.Timestamp(dt).date()}={int(count)}" for dt, count in bad_width_coverage.iloc[:10].items()
             )
             raise RuntimeError(
-                f"Top100 adjusted breadth price coverage below {required_coverage}: {examples}"
+                f"Top100 adjusted breadth MA{WIDTH_MA} coverage below {required_coverage}: {examples}"
             )
-        above_ma = close.gt(moving_average_history.reindex(seg_index))
+        above_ma = close.gt(moving_average) & ma_valid
         width_ratio = above_ma.sum(axis=1).div(width_valid.replace(0, np.nan))
         ew_return = ret.mean(axis=1, skipna=True)
         rows.append(
@@ -227,6 +234,7 @@ def _build_breadth_frame(nav_index: pd.DatetimeIndex) -> tuple[pd.DataFrame, dic
                     "top100_ma20_width": width_ratio,
                     "top100_equal_weight_return": ew_return,
                     "top100_valid_members": valid,
+                    "top100_ma20_valid_members": width_valid,
                 },
                 index=seg_index,
             )
@@ -236,6 +244,14 @@ def _build_breadth_frame(nav_index: pd.DatetimeIndex) -> tuple[pd.DataFrame, dic
         raise RuntimeError("failed to build Top100 breadth frame from local member and price caches")
     out = pd.concat(rows).sort_index()
     out = out[~out.index.duplicated(keep="last")].reindex(nav_index)
+    required_factor_cols = ["top100_up_ratio", "top100_ma20_width", "top100_equal_weight_return"]
+    missing_factor_rows = out[required_factor_cols].isna().any(axis=1)
+    if bool(missing_factor_rows.any()):
+        examples = ", ".join(str(pd.Timestamp(dt).date()) for dt in out.index[missing_factor_rows][:10])
+        raise RuntimeError(
+            "Top100 breadth full-sample coverage is incomplete: "
+            f"missing_count={int(missing_factor_rows.sum())}, examples={examples}"
+        )
     meta = {
         "member_rebalance_rows": len(rebalances),
         "price_symbols_used": len(used_symbols),
@@ -283,62 +299,56 @@ def _apply_scaled_condition(
 
 
 def _apply_cooldown(shadow: pd.DataFrame, cooldown_days: int) -> pd.DataFrame:
-    out = shadow.copy().sort_index()
-    base_ret = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
-    base_scale = pd.to_numeric(out.get("current_execution_scale", pd.Series(1.0, index=out.index)), errors="coerce").fillna(0.0)
-    holding = out["holding"].fillna("cash").astype(str)
-    next_holding = out["next_holding"].fillna(holding).astype(str)
+    base = shadow.copy().sort_index()
+    base_scale = pd.to_numeric(
+        base.get("current_execution_scale", pd.Series(1.0, index=base.index)),
+        errors="coerce",
+    ).fillna(0.0)
+    holding = base["holding"].fillna("cash").astype(str)
+    next_holding = base["next_holding"].fillna(holding).astype(str)
     base_active = base_scale.gt(1e-12)
     remaining = 0
     blocked_flags: list[bool] = []
-    scale_values: list[float] = []
-    prev_scale = 0.0
-    prev_deviation = 0.0
-    overlay_costs: list[float] = []
-    returns: list[float] = []
+    cooldown_active_flags: list[bool] = []
+    current_multipliers: list[float] = []
+    next_multipliers: list[float] = []
     exit_flags: list[bool] = []
 
-    for dt in out.index:
-        blocked = remaining > 0 and bool(base_active.loc[dt])
-        target_scale = 0.0 if blocked else float(base_scale.loc[dt])
-        deviation = target_scale - float(base_scale.loc[dt])
-        overlay_turnover = abs(deviation - prev_deviation)
-        overlay_cost = overlay_turnover * ONE_SIDE_TRADE_COST if overlay_turnover > 1e-12 else 0.0
-        day_ret = 0.0 if blocked else float(base_ret.loc[dt])
-        ret = (1.0 + day_ret) * (1.0 - min(max(overlay_cost, 0.0), 0.99)) - 1.0
-        exit_signal = holding.loc[dt] != "cash" and next_holding.loc[dt] == "cash"
+    for dt in base.index:
+        cooldown_active = remaining > 0
+        current_multiplier = 0.0 if cooldown_active else 1.0
+        actual_current_scale = float(base_scale.loc[dt]) * current_multiplier
+        blocked = cooldown_active and bool(base_active.loc[dt])
+        exit_signal = actual_current_scale > 1e-12 and next_holding.loc[dt] == "cash"
         if exit_signal:
             remaining = int(cooldown_days)
         elif remaining > 0:
             remaining -= 1
+        next_multiplier = 0.0 if remaining > 0 else 1.0
         blocked_flags.append(blocked)
-        scale_values.append(target_scale)
-        overlay_costs.append(overlay_cost)
-        returns.append(ret)
+        cooldown_active_flags.append(cooldown_active)
+        current_multipliers.append(current_multiplier)
+        next_multipliers.append(next_multiplier)
         exit_flags.append(bool(exit_signal))
-        prev_scale = target_scale
-        prev_deviation = deviation
 
-    ret_series = pd.Series(returns, index=out.index, dtype=float)
-    out["return_net"] = ret_series
-    out["nav_net"] = (1.0 + ret_series).cumprod()
-    out["nav"] = out["nav_net"]
+    current_multiplier_series = pd.Series(current_multipliers, index=base.index, dtype=float)
+    next_multiplier_series = pd.Series(next_multipliers, index=base.index, dtype=float)
+    out = scan_common.replay_scale_multiplier(
+        base,
+        current_multiplier_series,
+        next_multiplier=next_multiplier_series,
+        one_side_scale_cost=ONE_SIDE_TRADE_COST,
+        label=f"cooldown {cooldown_days}d",
+    )
     out["candidate"] = f"cooldown_{cooldown_days}d_after_exit"
     out["filter_group"] = "cooldown"
     out["cooldown_days"] = int(cooldown_days)
     out["cooldown_blocked"] = pd.Series(blocked_flags, index=out.index, dtype=bool)
-    out["filter_execution_scale"] = pd.Series(scale_values, index=out.index, dtype=float)
-    out["filter_overlay_cost"] = pd.Series(overlay_costs, index=out.index, dtype=float)
+    out["cooldown_active"] = pd.Series(cooldown_active_flags, index=out.index, dtype=bool)
+    out["filter_execution_scale"] = out["current_execution_scale"]
+    out["filter_overlay_cost"] = out["overlay_scale_change_cost"]
     out["cooldown_exit_signal"] = pd.Series(exit_flags, index=out.index, dtype=bool)
-    out["base_holding_state"] = holding
-    out["base_next_holding_state"] = next_holding
-    out["base_current_execution_scale"] = base_scale
-    out["current_execution_scale"] = out["filter_execution_scale"]
-    out["holding"] = np.where(out["current_execution_scale"].gt(1e-12), holding, "cash")
-    next_scale = out["current_execution_scale"].shift(-1).fillna(0.0)
-    out["next_session_actionable_scale"] = next_scale
-    out["next_holding"] = np.where(next_scale.gt(1e-12), next_holding, "cash")
-    scan_common.assert_candidate_state_consistent(out, f"cooldown {cooldown_days}d")
+    out["return"] = out["return_net"]
     return out
 
 
@@ -592,7 +602,7 @@ def _write_record(run_folder: Path, wide: pd.DataFrame, context: dict[str, Any],
         "",
         "## Cost and Execution Assumptions",
         "",
-        "- Retained: v2.5 base costed return stream, target-vol scaling, financing, and embedded turnover costs.",
+        "- Retained: formal v2.5 base costed return stream and embedded turnover costs; target-vol, cash-day yield, and financing remain disabled.",
         f"- Added: overlay exposure-change cost `{ONE_SIDE_TRADE_COST}` times active one-side scale delta.",
         "- Timing: T close filter condition affects T+1 return. This is a defensive overlay simulation, not a production signal change.",
         "",
@@ -683,8 +693,11 @@ def run(run_folder: Path) -> None:
         "windows": list(WINDOWS),
         "baseline": {
             "strategy_version": "v2.5",
-            "target_vol": v25.TARGET_VOL,
-            "max_leverage": v25.TARGET_VOL_MAX_LEVERAGE,
+            "target_vol_enabled": v25.TARGET_VOL_ENABLED,
+            "target_vol": 0.0,
+            "max_leverage": 1.0,
+            "cash_day_yield_enabled": v25.CASH_DAY_YIELD_ENABLED,
+            "financing_enabled": v25.FINANCING_ENABLED,
             "entry_threshold": v25.ENTRY_THRESHOLD,
             "exit_threshold": v25.EXIT_THRESHOLD,
         },
