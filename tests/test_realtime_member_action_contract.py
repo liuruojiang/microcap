@@ -48,6 +48,42 @@ def _base_signal_row() -> pd.DataFrame:
     )
 
 
+@pytest.mark.parametrize(
+    ("signal_date", "expected_actionable"),
+    [
+        ("2026-08-06", True),
+        ("2026-08-12", False),
+    ],
+)
+def test_close_confirmed_rows_publish_dated_member_contract(
+    signal_date: str,
+    expected_actionable: bool,
+) -> None:
+    signal = pd.DataFrame(
+        [
+            {
+                "date": signal_date,
+                "member_rebalance_required": True,
+                "current_holding": "cash",
+                "next_holding": "cash",
+            }
+        ]
+    )
+    turnover = pd.DataFrame({"rebalance_date": ["2026-07-23", "2026-08-06"]})
+    calendar = pd.bdate_range("2026-08-03", "2026-08-12")
+
+    row = v2_0.augment_close_confirmed_signal_with_member_contract(
+        signal,
+        turnover,
+        calendar,
+    ).iloc[0]
+
+    assert row["member_rebalance_signal_date"] == "2026-08-06"
+    assert row["member_rebalance_execution_date"] == "2026-08-07"
+    assert bool(row["member_rebalance_actionable"]) is expected_actionable
+    assert bool(row["member_rebalance_official"]) is True
+
+
 def _fake_realtime_base(
     *,
     latest_anchor_trade_date: str,

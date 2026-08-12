@@ -10611,6 +10611,52 @@ def _safe_bool(value: object, default: bool = False) -> bool:
     return bool(value)
 
 
+def augment_close_confirmed_signal_with_member_contract(
+    signal_df: pd.DataFrame,
+    turnover_df: pd.DataFrame,
+    official_index: pd.Index,
+) -> pd.DataFrame:
+    """Attach dated, non-ambiguous member-action fields to a formal signal CSV."""
+    if signal_df.empty:
+        raise ValueError("close-confirmed signal is empty")
+
+    out = signal_df.copy()
+    signal_date = pd.to_datetime(out.iloc[0].get("date"), errors="coerce")
+    if pd.isna(signal_date):
+        raise ValueError("close-confirmed signal is missing a valid date")
+    signal_date = pd.Timestamp(signal_date).normalize()
+
+    turnover = pd.DataFrame(turnover_df).copy()
+    if "rebalance_date" not in turnover.columns:
+        raise KeyError("close-confirmed member contract requires turnover.rebalance_date")
+    rebalance_dates = pd.DatetimeIndex(
+        pd.to_datetime(turnover["rebalance_date"], errors="coerce").dropna()
+    ).normalize()
+    rebalance_dates = rebalance_dates[rebalance_dates <= signal_date].sort_values().unique()
+
+    latest_rebalance = pd.NaT if len(rebalance_dates) == 0 else pd.Timestamp(rebalance_dates[-1])
+    calendar = pd.DatetimeIndex(pd.to_datetime(official_index, errors="coerce")).dropna().normalize()
+    calendar = calendar.sort_values().unique()
+    execution_date = pd.NaT
+    if pd.notna(latest_rebalance):
+        later_sessions = calendar[calendar > latest_rebalance]
+        if len(later_sessions):
+            execution_date = pd.Timestamp(later_sessions[0])
+
+    required = _safe_bool(out.iloc[0].get("member_rebalance_required"), False)
+    official = bool(pd.notna(latest_rebalance))
+    actionable = bool(required and official and latest_rebalance == signal_date and pd.notna(execution_date))
+    out["member_rebalance_signal_date"] = (
+        "" if pd.isna(latest_rebalance) else str(pd.Timestamp(latest_rebalance).date())
+    )
+    out["member_rebalance_execution_date"] = (
+        "" if pd.isna(execution_date) else str(pd.Timestamp(execution_date).date())
+    )
+    out["member_rebalance_actionable"] = actionable
+    out["member_rebalance_official"] = official
+    return out
+
+
 def _load_embedded_base_context() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     with _v2_base_build_lock():
         _ensure_base_outputs_unlocked()
@@ -13162,6 +13208,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
     data_lineage = _build_v2_data_lineage()
     signal_row = _build_signal_row(out, reference_summary)
+    signal_row = augment_close_confirmed_signal_with_member_contract(signal_row, turnover_df, out.index)
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
