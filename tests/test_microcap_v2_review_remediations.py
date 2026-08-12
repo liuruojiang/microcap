@@ -534,7 +534,11 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
     monkeypatch.setattr(
         embedded_context,
         "_load_embedded_base_context",
-        lambda: ({}, strategy_frame, pd.DataFrame(index=index)),
+        lambda: (
+            {},
+            strategy_frame,
+            pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-08-06")]}),
+        ),
     )
     monkeypatch.setattr(embedded_context.base_mod, "run_signal", lambda close_df: strategy_frame)
     monkeypatch.setattr(
@@ -672,7 +676,11 @@ def _exercise_versioned_formal_stage_in_long_worktree(
     monkeypatch.setattr(
         v2_0.embedded_context,
         "_load_embedded_base_context",
-        lambda: ({}, strategy_frame, pd.DataFrame(index=index)),
+        lambda: (
+            {},
+            strategy_frame,
+            pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-08-06")]}),
+        ),
     )
     incompatible_outputs_name = (
         "incompatible_v2_3_outputs" if module is v2_3 else "incompatible_v2_5_outputs"

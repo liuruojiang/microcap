@@ -1922,6 +1922,11 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     data_lineage = dict(v2_0.overlay_mod._build_v2_data_lineage())
     performance_source_label = v2_0.overlay_mod.proxy_aware_performance_source_label(data_lineage, "costed_v2_5")
     signal_row = _build_signal_row(out, reference_summary)
+    signal_row = v2_0.overlay_mod.augment_close_confirmed_signal_with_member_contract(
+        signal_row,
+        turnover_df,
+        out.index,
+    )
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")
