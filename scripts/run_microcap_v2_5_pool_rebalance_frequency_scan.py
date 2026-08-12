@@ -114,7 +114,12 @@ def _metrics(ret: pd.Series) -> dict[str, float | int]:
             "final_nav": np.nan,
         }
     nav = (1.0 + r).cumprod()
-    ann_return = float(nav.iloc[-1] ** (TRADING_DAYS / rows) - 1.0) if nav.iloc[-1] > 0 else np.nan
+    years = (pd.Timestamp(r.index[-1]) - pd.Timestamp(r.index[0])).days / 365.25
+    ann_return = (
+        float(nav.iloc[-1] ** (1.0 / years) - 1.0)
+        if nav.iloc[-1] > 0 and years > 0
+        else 0.0 if years == 0 else np.nan
+    )
     ann_vol = float(r.std(ddof=1) * math.sqrt(TRADING_DAYS)) if rows > 1 else 0.0
     sharpe = ann_return / ann_vol if ann_vol > 0 and math.isfinite(ann_vol) else np.nan
     dd = nav.div(nav.cummax()).sub(1.0)
@@ -201,17 +206,50 @@ def _prepare_cache_inputs(
         for frequency in sorted({str(item["rebalance_frequency"]) for item in VARIANTS if item["source"] == "local_cache_rebuild"})
     }
     all_cap_dates = pd.DatetimeIndex(sorted(set().union(*[set(dates) for dates in schedules.values()])))
-    symbols = v25.v2_0.freq_mod.load_current_universe()
+    symbols = v25.v2_0.freq_mod.load_universe()
     returns_df, caps_by_date, buyable_df, sellable_df = v25.v2_0.freq_mod.load_cache_panels(
         symbols=symbols,
         trading_dates=trading_dates,
         cap_dates=all_cap_dates,
         max_workers=max_workers,
         trade_constraint_mode=v25.v2_0.base_mod.TRADE_CONSTRAINT_MODE,
-        exclude_historical_st_from_caps=False,
+        exclude_historical_st_from_caps=True,
     )
     name_map = v25.v2_0.base_mod.load_name_map()
     return trading_dates, schedules, returns_df, caps_by_date, buyable_df, sellable_df, name_map, symbols
+
+
+def _assert_candidate_calendar_complete(
+    candidate_index: pd.DatetimeIndex | pd.Index,
+    official_index: pd.DatetimeIndex | pd.Index,
+    label: str,
+) -> None:
+    candidate = pd.DatetimeIndex(candidate_index).dropna().normalize().drop_duplicates().sort_values()
+    official = pd.DatetimeIndex(official_index).dropna().normalize().drop_duplicates().sort_values()
+    if len(candidate) == 0:
+        raise RuntimeError(f"{label} candidate close history is empty")
+    if len(official) == 0:
+        raise RuntimeError(f"{label} official calendar is empty")
+    if candidate.max() != official.max():
+        raise RuntimeError(
+            f"{label} candidate close history end date must equal official end date: "
+            f"candidate_end={candidate.max().date()}, official_end={official.max().date()}"
+        )
+    overlap = official[(official >= candidate.min()) & (official <= candidate.max())]
+    missing = overlap.difference(candidate)
+    if len(missing):
+        examples = ", ".join(str(pd.Timestamp(dt).date()) for dt in missing[:10])
+        raise RuntimeError(
+            f"{label} candidate close history is missing official sessions: "
+            f"missing_count={len(missing)}, examples={examples}"
+        )
+    unexpected = candidate[(candidate >= official.min()) & (candidate <= official.max())].difference(official)
+    if len(unexpected):
+        examples = ", ".join(str(pd.Timestamp(dt).date()) for dt in unexpected[:10])
+        raise RuntimeError(
+            f"{label} candidate close history contains non-official sessions: "
+            f"unexpected_count={len(unexpected)}, examples={examples}"
+        )
 
 
 def _build_variant_output(
@@ -256,6 +294,7 @@ def _build_variant_output(
     microcap = index_df.set_index("date")["close"].astype(float).rename("microcap")
     hedge = base_gross_cached["hedge_close"].astype(float).rename("hedge")
     close_df = pd.concat([microcap, hedge], axis=1).dropna().sort_index()
+    _assert_candidate_calendar_complete(close_df.index, official_index, candidate)
     common_index = v25.build_v2_5_common_index(close_df, official_index)
     out = v25.build_v2_5_result(close_df, turnover_df, common_index)
     out["candidate"] = candidate
@@ -388,13 +427,13 @@ def _write_record(run_folder: Path, wide: pd.DataFrame, context: dict[str, Any],
         f"- Metrics start: {context['metrics_start']}",
         f"- Metrics end: {context['metrics_end']}",
         f"- Trading dates: {context['trading_start']} to {context['trading_end']}",
-        f"- Current-universe symbols loaded: {context['symbols_loaded']}",
+        f"- Historical security-master universe symbols loaded: {context['symbols_loaded']}",
         f"- Official v2.5 latest NAV date: {context['official_latest_nav_date']}",
-        "- Annualization: 244 trading days.",
+        "- Return annualization: elapsed calendar years, matching formal v2.5; annualized volatility uses 244 trading days.",
         "",
         "## Cost and Execution Assumptions",
         "",
-        "- Retained: v2.5 base trading cost, target-vol scale-change cost, scaled embedded base costs, idle-cash treatment, and financing above 1.0x.",
+        "- Retained: formal v2.5 base trading and embedded rebalance costs; target-vol, cash-day yield, and financing remain disabled.",
         "- Basket rebalance cost: `0.003 * ((buys + sells) / top_n)` using the existing close-execution turnover table.",
         "- Execution timing: close execution with the existing buyable/sellable and limit-lock constraints.",
         "- Hedge leg: removed, matching formal v2.5.",
@@ -584,14 +623,19 @@ def run(run_folder: Path, max_workers: int) -> None:
             "rebalance_frequency": "biweekly",
             "entry_threshold": v25.ENTRY_THRESHOLD,
             "exit_threshold": v25.EXIT_THRESHOLD,
-            "target_vol": v25.TARGET_VOL,
-            "max_leverage": v25.TARGET_VOL_MAX_LEVERAGE,
-            "scale_rebalance_threshold": v25.TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+            "target_vol_enabled": v25.TARGET_VOL_ENABLED,
+            "target_vol": 0.0,
+            "max_leverage": 1.0,
+            "scale_rebalance_threshold": 0.0,
+            "cash_day_yield_enabled": v25.CASH_DAY_YIELD_ENABLED,
+            "financing_enabled": v25.FINANCING_ENABLED,
         },
         "candidate_grid": wide_df["candidate"].tolist(),
         "data_snapshot": {
             **context,
             "schedule_counts": {key: int(len(value)) for key, value in schedules.items()},
+            "universe_source": "backtest_cache_security_master",
+            "exclude_historical_st_from_caps": True,
         },
         "variant_meta": variant_meta,
         "cost_model": {
@@ -600,9 +644,11 @@ def run(run_folder: Path, max_workers: int) -> None:
             "rebalance_cost_formula": "one_side_cost * ((buys + sells) / top_n)",
             "execution_timing": v25.v2_0.base_mod.EXECUTION_TIMING,
             "trade_constraint_mode": v25.v2_0.base_mod.TRADE_CONSTRAINT_MODE,
-            "target_vol": v25.TARGET_VOL,
-            "scale_change_cost": v25.TARGET_VOL_SCALE_CHANGE_COST,
-            "financing_rate": v25.TARGET_VOL_FINANCING_RATE,
+            "target_vol_enabled": v25.TARGET_VOL_ENABLED,
+            "target_vol": 0.0,
+            "scale_change_cost": 0.0,
+            "financing_enabled": v25.FINANCING_ENABLED,
+            "financing_rate": 0.0,
             "hedge_removed": True,
         },
         "verification": {

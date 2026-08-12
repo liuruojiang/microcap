@@ -279,6 +279,15 @@ EXECUTION_HEDGE_RATIO = 0.0
 BASE_HEDGE_RATIO = 0.0
 TRADING_DAYS = 244
 
+DISABLED_LEGACY_SIGNAL_NUMERIC_FIELDS: tuple[str, ...] = (
+    "gap_peak",
+    "gap_decay_ratio",
+    "overheat_metric",
+    "trade_return_net",
+    "latest_realized_vol",
+    "return_gross_base",
+)
+
 
 def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -803,8 +812,15 @@ def _apply_v2_5_signal_fields(row: pd.DataFrame, latest: pd.Series) -> None:
     row["next_session_trade_cost_est_type"] = (
         "overlay_only" if same_holding else "fixed_exposure_entry_exit"
     )
+    row["next_session_total_trade_cost_est_note"] = (
+        "estimated from v2.5 unhedged exposure turnover and the configured one-side "
+        "entry/exit cost"
+    )
     row["fixed_hedge_ratio"] = EXECUTION_HEDGE_RATIO
-    row["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
+    row["max_leverage"] = _safe_float(
+        row.at[row_idx, "target_vol_max_leverage"],
+        TARGET_VOL_MAX_LEVERAGE if TARGET_VOL_ENABLED else 1.0,
+    )
 
 
 def _realtime_target_vol_trading_lag_from_calendar(
@@ -1575,6 +1591,8 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["signal_score_label"] = "microcap_only_annualized_log_wls_score"
     row["schema_version"] = "log_wls_score_schema_v1"
     row["momentum_gap_deprecated"] = True
+    for col in DISABLED_LEGACY_SIGNAL_NUMERIC_FIELDS:
+        row[col] = np.nan
     row["return_column_semantics"] = (
         "return equals return_net after selected v2.5 microcap-only log-WLS threshold and base costs; "
         "use base_pre_cost_return for pre-cost return"

@@ -25,13 +25,13 @@
     "security_meta_version": 2,
     "security_master_enabled": true
   },
-  "latest_trade_date": "2026-08-07",
+  "latest_trade_date": "2026-08-12",
   "latest_rebalance_date": "2026-08-06",
   "previous_rebalance_date": "2026-07-23",
   "next_rebalance_date": null,
   "history_anchor": {
-    "latest_trade_date": "2026-08-07",
-    "current_date": "2026-08-07",
+    "latest_trade_date": "2026-08-12",
+    "current_date": "2026-08-12",
     "stale_calendar_days": 0,
     "stale_trading_days": 0,
     "staleness_value": 0,
@@ -48,19 +48,19 @@
     "momentum_trade_state": "hold",
     "member_rebalance_state": "rebalance",
     "member_rebalance_required": true,
-    "member_enter_count": 8,
-    "member_exit_count": 8,
-    "member_rebalance_label": "名单调仓（调入 8，调出 8）",
-    "microcap_mom": 0.05094715462985011,
-    "hedge_mom": 0.006258974008885643,
-    "momentum_gap": 0.04468818062096447,
-    "microcap_close": 211500.771601417,
-    "hedge_close": 7679.529
+    "member_enter_count": 12,
+    "member_exit_count": 12,
+    "member_rebalance_label": "名单调仓（调入 12，调出 12）",
+    "microcap_mom": 0.2101994079277152,
+    "hedge_mom": 0.0735349964592995,
+    "momentum_gap": 0.13666441146841568,
+    "microcap_close": 219916.02532408008,
+    "hedge_close": 7793.717
   },
   "target_members": {
     "count": 100,
-    "enter_count": 8,
-    "exit_count": 8,
+    "enter_count": 12,
+    "exit_count": 12,
     "equal_weight": 0.01
   },
   "capital_plan": {

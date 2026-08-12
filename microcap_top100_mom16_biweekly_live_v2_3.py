@@ -473,7 +473,7 @@ def exp_weights(lookback: int = LOOKBACK, halflife: float = HALFLIFE) -> tuple[f
     return tuple((raw / raw.sum()).tolist())
 
 
-def validate_close_df(close_df: pd.DataFrame) -> None:
+def validate_close_df(close_df: pd.DataFrame) -> pd.DataFrame:
     required = {"microcap", "hedge"}
     missing = required - set(close_df.columns)
     if missing:
@@ -489,11 +489,14 @@ def validate_close_df(close_df: pd.DataFrame) -> None:
         raise ValueError("close_df contains inf prices")
     if (prices <= 0).any().any():
         raise ValueError("close_df contains non-positive prices")
+    normalized = close_df.copy()
+    normalized["microcap"] = prices["microcap"].astype(float)
+    normalized["hedge"] = prices["hedge"].astype(float)
+    return normalized
 
 
 def always_on_spread_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series, float]:
-    validate_close_df(close_df)
-    close_df = close_df.sort_index()
+    close_df = validate_close_df(close_df).sort_index()
     micro_ret = close_df["microcap"].pct_change(fill_method=None)
     hedge_ret = close_df["hedge"].pct_change(fill_method=None)
     daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * SIGNAL_SPREAD_HEDGE_RATIO
@@ -507,10 +510,14 @@ def log_wls_score_and_r2(
     spread_nav: pd.Series,
     lookback: int = LOOKBACK,
     halflife: float = HALFLIFE,
+    r2_window: int | None = None,
 ) -> pd.DataFrame:
     lookback = int(lookback)
     if lookback <= 0:
         raise ValueError("lookback must be positive")
+    r2_window = lookback if r2_window is None else int(r2_window)
+    if r2_window <= 0:
+        raise ValueError("r2_window must be positive")
     weights = np.asarray(exp_weights(lookback, halflife), dtype=float)
     y = np.log(pd.to_numeric(spread_nav, errors="coerce").replace(0.0, np.nan))
     x = np.arange(lookback, dtype=float)
@@ -521,31 +528,38 @@ def log_wls_score_and_r2(
     values = y.to_numpy(dtype=float)
     score = np.full(len(y), np.nan, dtype=float)
     r2 = np.full(len(y), np.nan, dtype=float)
-    if len(values) < lookback or denom <= 0:
-        return pd.DataFrame({"annualized_log_wls_score": score, "log_wls_r2": r2}, index=y.index)
-
-    windows = np.lib.stride_tricks.sliding_window_view(values, lookback)
-    valid = np.isfinite(windows).all(axis=1)
-    if valid.any():
-        valid_windows = windows[valid]
-        y_bar = valid_windows @ weights / w_sum
-        y_centered = valid_windows - y_bar[:, None]
-        slope = y_centered @ (weights * x_centered) / denom
-        fitted = y_bar[:, None] + slope[:, None] * x_centered[None, :]
-        ss_tot = (weights * y_centered**2).sum(axis=1)
-        ss_res = (weights * (valid_windows - fitted) ** 2).sum(axis=1)
-        r2_values = np.zeros_like(ss_tot, dtype=float)
-        nonzero_tot = ss_tot > 0
-        r2_values[nonzero_tot] = np.clip(1.0 - ss_res[nonzero_tot] / ss_tot[nonzero_tot], 0.0, 1.0)
-        target_positions = np.flatnonzero(valid) + lookback - 1
-        score[target_positions] = slope * TRADING_DAYS
-        r2[target_positions] = r2_values
-    return pd.DataFrame({"annualized_log_wls_score": score, "log_wls_r2": r2}, index=y.index)
+    if len(values) >= lookback and denom > 0:
+        windows = np.lib.stride_tricks.sliding_window_view(values, lookback)
+        valid = np.isfinite(windows).all(axis=1)
+        if valid.any():
+            valid_windows = windows[valid]
+            y_bar = valid_windows @ weights / w_sum
+            y_centered = valid_windows - y_bar[:, None]
+            slope = y_centered @ (weights * x_centered) / denom
+            fitted = y_bar[:, None] + slope[:, None] * x_centered[None, :]
+            ss_tot = (weights * y_centered**2).sum(axis=1)
+            ss_res = (weights * (valid_windows - fitted) ** 2).sum(axis=1)
+            r2_values = np.zeros_like(ss_tot, dtype=float)
+            nonzero_tot = ss_tot > 0
+            r2_values[nonzero_tot] = np.clip(1.0 - ss_res[nonzero_tot] / ss_tot[nonzero_tot], 0.0, 1.0)
+            target_positions = np.flatnonzero(valid) + lookback - 1
+            score[target_positions] = slope * TRADING_DAYS
+            r2[target_positions] = r2_values
+    result = pd.DataFrame({"annualized_log_wls_score": score, "log_wls_r2": r2}, index=y.index)
+    if r2_window != lookback:
+        independent_r2 = log_wls_score_and_r2(
+            spread_nav,
+            lookback=r2_window,
+            halflife=halflife,
+            r2_window=r2_window,
+        )["log_wls_r2"]
+        result["log_wls_r2"] = independent_r2
+    return result
 
 
 def _valid_log_wls_index(close_df: pd.DataFrame) -> pd.DatetimeIndex:
     spread_nav, _micro_ret, _hedge_ret, _daily_drag = always_on_spread_nav(close_df)
-    log_wls = log_wls_score_and_r2(spread_nav)
+    log_wls = log_wls_score_and_r2(spread_nav, r2_window=R2_WINDOW)
     valid = log_wls["annualized_log_wls_score"].notna() & log_wls["log_wls_r2"].notna()
     return pd.DatetimeIndex(log_wls.index[valid])
 
@@ -589,12 +603,17 @@ def _assert_official_index_covers_valid_signal_index(
 
 
 def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
-    validate_close_df(close_df)
-    close_df = close_df.sort_index()
+    close_df = validate_close_df(close_df).sort_index()
     spread_nav, micro_ret, hedge_ret, _signal_daily_drag = always_on_spread_nav(close_df)
-    log_wls = log_wls_score_and_r2(spread_nav)
-    microcap_component = log_wls_score_and_r2((1.0 + micro_ret.fillna(0.0)).cumprod())
-    hedge_component = log_wls_score_and_r2((1.0 + hedge_ret.fillna(0.0)).cumprod())
+    log_wls = log_wls_score_and_r2(spread_nav, r2_window=R2_WINDOW)
+    microcap_component = log_wls_score_and_r2(
+        (1.0 + micro_ret.fillna(0.0)).cumprod(),
+        r2_window=R2_WINDOW,
+    )
+    hedge_component = log_wls_score_and_r2(
+        (1.0 + hedge_ret.fillna(0.0)).cumprod(),
+        r2_window=R2_WINDOW,
+    )
     common_index = _valid_log_wls_index(close_df) if index is None else pd.DatetimeIndex(index)
     score = pd.to_numeric(log_wls["annualized_log_wls_score"].loc[common_index], errors="coerce")
     r2 = pd.to_numeric(log_wls["log_wls_r2"].loc[common_index], errors="coerce")
@@ -702,7 +721,7 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
     feature = _overheat_feature_series(out).reindex(out.index)
     base_holding = out["holding"].fillna("cash").astype(str)
     base_next_holding = out["next_holding"].fillna(base_holding).astype(str)
-    returns = pd.to_numeric(out["return"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    returns = pd.to_numeric(out["return"], errors="coerce")
     rebalance_base = v2_0.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
     rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce").fillna(0.0)
     entry_cost_value = float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
@@ -756,7 +775,14 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
                 desired_next_active = False
                 risk_off_next = True
 
-        gross_daily_return = float(returns.loc[dt])
+        raw_daily_return = returns.loc[dt]
+        return_is_finite = pd.notna(raw_daily_return) and np.isfinite(float(raw_daily_return))
+        if current_active and not return_is_finite:
+            raise ValueError(
+                "v2.3 active return is non-finite: "
+                f"date={pd.Timestamp(dt).isoformat()}, value={out.at[dt, 'return']!r}"
+            )
+        gross_daily_return = float(raw_daily_return) if return_is_finite else 0.0
         realized_daily_return = gross_daily_return if current_active else 0.0
         entry_cost = entry_cost_value if (not current_active and desired_next_active) else 0.0
         exit_cost = exit_cost_value if (current_active and not desired_next_active) else 0.0

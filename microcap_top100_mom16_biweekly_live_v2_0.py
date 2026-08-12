@@ -33,7 +33,7 @@ VERSION = "2.0"
 BASE_API_REVISION = 12
 HISTORICAL_AUDIT_REVISION = 5
 DATA_STATE_FINGERPRINT_REVISION = 3
-REALTIME_CALENDAR_GUARD_REVISION = 3
+REALTIME_CALENDAR_GUARD_REVISION = 4
 
 ak = None
 matplotlib = None
@@ -3530,6 +3530,9 @@ REALTIME_LAST_CLOSE_FLAT_FALLBACK_MIN_QUOTED_FRACTION = 0.95
 REALTIME_CACHE_LOCK_TIMEOUT_SECONDS = 30
 REALTIME_CACHE_STALE_LOCK_SECONDS = 300
 TOP100_REALTIME_REQUIRE_STATE_ENV = "TOP100_REALTIME_REQUIRE_STATE"
+REALTIME_REFRESH_PROOF_PATH = REALTIME_DIR / "top100_realtime_refresh_proof.json"
+REALTIME_REFRESH_PROOF_VERSION = 1
+REALTIME_REFRESH_PROOF_SOURCE = "independent_close_history_refresh"
 ALLOWED_ACTIONABLE_HEDGE_QUOTE_SOURCES = {
     "eastmoney_stock_get",
     "tencent_batch_free",
@@ -3783,7 +3786,7 @@ def _atomic_to_csv(frame: pd.DataFrame, path: Path, **kwargs: object) -> None:
 @contextmanager
 def _cache_write_lock(lock_path: Path):
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    start = time.time()
+    start = time.monotonic()
     fd: int | None = None
     while True:
         try:
@@ -3800,14 +3803,21 @@ def _cache_write_lock(lock_path: Path):
                 raise
             break
         except FileExistsError:
+            removed_stale_lock = False
             try:
                 age = time.time() - lock_path.stat().st_mtime
                 if age > REALTIME_CACHE_STALE_LOCK_SECONDS:
                     lock_path.unlink()
-                    continue
-            except OSError:
+                    removed_stale_lock = True
+            except FileNotFoundError:
                 continue
-            if time.time() - start > REALTIME_CACHE_LOCK_TIMEOUT_SECONDS:
+            except OSError:
+                # On Windows an open lock file cannot be unlinked. Do not
+                # bypass timeout accounting or the backoff in that case.
+                pass
+            if removed_stale_lock:
+                continue
+            if time.monotonic() - start > REALTIME_CACHE_LOCK_TIMEOUT_SECONDS:
                 raise TimeoutError(f"Timed out waiting for realtime cache lock: {lock_path}")
             time.sleep(0.1)
     try:
@@ -4621,7 +4631,7 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
         and core_params.get("exclude_current_st") is False
         and core_params.get("exclude_historical_st") is True
         and rebalance_phase_anchor_date in (None, REBALANCE_ANCHOR_DATE)
-        and member_filter_policy_version in (None, MEMBER_FILTER_POLICY_VERSION)
+        and member_filter_policy_version == MEMBER_FILTER_POLICY_VERSION
         and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
         and proxy_rebalance_policy_version in (None, PROXY_REBALANCE_POLICY_VERSION)
     )
@@ -6487,6 +6497,8 @@ def try_extend_costed_nav_without_turnover(
     gross = run_signal(close_df).sort_index()
     if gross.empty or current_costed_end not in gross.index:
         return False
+    if not costed_tail_anchor_matches_gross(costed, gross, current_costed_end):
+        return False
 
     target_end = pd.Timestamp(target_end_date).normalize()
     missing = gross.loc[(gross.index > current_costed_end) & (gross.index <= target_end)].copy()
@@ -6554,6 +6566,51 @@ def load_proxy_turnover_rebalance_dates(proxy_turnover_path: Path | None) -> pd.
     return pd.DatetimeIndex(dates)
 
 
+TAIL_EXTENSION_ANCHOR_STATE_COLUMNS = ("holding", "next_holding", "signal_on")
+TAIL_EXTENSION_ANCHOR_NUMERIC_COLUMNS = (
+    "return",
+    "microcap_close",
+    "hedge_close",
+    "microcap_mom",
+    "hedge_mom",
+    "momentum_gap",
+)
+
+
+def costed_tail_anchor_matches_gross(
+    costed: pd.DataFrame,
+    gross: pd.DataFrame,
+    anchor_date: pd.Timestamp,
+) -> bool:
+    """Require the frozen costed lineage to match the fresh gross splice anchor."""
+    anchor = pd.Timestamp(anchor_date).normalize()
+    if "date" not in costed.columns or anchor not in gross.index:
+        return False
+    costed_dates = pd.to_datetime(costed["date"], errors="coerce").dt.normalize()
+    old_rows = costed.loc[costed_dates.eq(anchor)]
+    if old_rows.empty:
+        return False
+    old = old_rows.iloc[-1]
+    fresh = gross.loc[anchor]
+    if isinstance(fresh, pd.DataFrame):
+        fresh = fresh.iloc[-1]
+
+    required = set(TAIL_EXTENSION_ANCHOR_STATE_COLUMNS) | set(TAIL_EXTENSION_ANCHOR_NUMERIC_COLUMNS)
+    if required.difference(old.index) or required.difference(fresh.index):
+        return False
+    for column in TAIL_EXTENSION_ANCHOR_STATE_COLUMNS:
+        if str(old[column]).strip().lower() != str(fresh[column]).strip().lower():
+            return False
+    for column in TAIL_EXTENSION_ANCHOR_NUMERIC_COLUMNS:
+        old_value = pd.to_numeric(old[column], errors="coerce")
+        fresh_value = pd.to_numeric(fresh[column], errors="coerce")
+        if not np.isfinite(old_value) or not np.isfinite(fresh_value):
+            return False
+        if not np.isclose(float(old_value), float(fresh_value), rtol=1e-7, atol=1e-10):
+            return False
+    return True
+
+
 def find_missing_cost_rebalances(
     gross_index: pd.DatetimeIndex,
     current_costed_end: pd.Timestamp,
@@ -6565,7 +6622,10 @@ def find_missing_cost_rebalances(
     target_end = pd.Timestamp(target_end_date).normalize()
     turnover_rebalances = load_proxy_turnover_rebalance_dates(proxy_turnover_path)
     fallback_dates = trading_dates if trading_dates is not None and len(trading_dates) else gross_index
-    rebalance_dates = turnover_rebalances if len(turnover_rebalances) else build_biweekly_rebalance_dates(fallback_dates)
+    scheduled_rebalances = build_biweekly_rebalance_dates(fallback_dates)
+    # Turnover is an execution record, not an authoritative schedule. A stale
+    # non-empty file must not hide a planned rebalance in the extension tail.
+    rebalance_dates = scheduled_rebalances.union(turnover_rebalances).unique().sort_values()
     return rebalance_dates[(rebalance_dates > current_end) & (rebalance_dates <= target_end)]
 
 
@@ -6605,8 +6665,7 @@ def build_live_target_members_map(
         tradable_candidates = [
             symbol
             for symbol, _ in ranked
-            if not str(name_map.get(str(symbol).zfill(6), "")).strip()
-            or is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
+            if is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
         ]
         if len(tradable_candidates) < int(top_n):
             raise RuntimeError(
@@ -6677,6 +6736,10 @@ def load_member_snapshot_from_proxy_members(
     members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="coerce")
     members["symbol"] = members["symbol"].astype(str).str.zfill(6)
     members = members.dropna(subset=["rebalance_date", "symbol"]).sort_values(["rebalance_date", "symbol"])
+    if "name" not in members.columns:
+        return {}
+    members["name"] = members["name"].fillna("").astype(str).str.strip()
+    members = members.loc[members["name"].map(is_tradable_name)]
     if members.empty:
         return {}
 
@@ -6687,8 +6750,6 @@ def load_member_snapshot_from_proxy_members(
             continue
         if "rank" not in frame.columns:
             frame["rank"] = np.arange(1, len(frame) + 1)
-        if "name" not in frame.columns:
-            frame["name"] = ""
         if "market_cap" not in frame.columns:
             frame["market_cap"] = np.nan
         if "target_weight" not in frame.columns:
@@ -7099,6 +7160,34 @@ def _read_date_index_csv(path: Path, date_column: str = "date") -> pd.DatetimeIn
     return pd.DatetimeIndex(dates).dropna().normalize().unique().sort_values()
 
 
+def build_realtime_refresh_proof_fields(target_end_date: object) -> dict[str, object]:
+    return {
+        "version": REALTIME_REFRESH_PROOF_VERSION,
+        "source": REALTIME_REFRESH_PROOF_SOURCE,
+        "target_end_date": str(pd.Timestamp(target_end_date).date()),
+        "verified_on": str(_cn_local_day().date()),
+    }
+
+
+def load_realtime_refresh_proof(expected_target_end_date: object) -> dict[str, object]:
+    if not REALTIME_REFRESH_PROOF_PATH.is_file():
+        raise RuntimeError(
+            f"Realtime state is missing independent refresh proof: {REALTIME_REFRESH_PROOF_PATH}"
+        )
+    try:
+        proof = json.loads(REALTIME_REFRESH_PROOF_PATH.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError(f"Realtime refresh proof is unreadable: {exc}") from exc
+    expected = build_realtime_refresh_proof_fields(expected_target_end_date)
+    for field in ("version", "source", "target_end_date", "verified_on"):
+        if proof.get(field) != expected[field]:
+            raise RuntimeError(
+                "Realtime state independent refresh proof is stale or inconsistent: "
+                f"field={field} actual={proof.get(field)!r} expected={expected[field]!r}"
+            )
+    return proof
+
+
 def _load_realtime_anchor_calendar_index() -> pd.DatetimeIndex:
     calendars: list[pd.DatetimeIndex] = []
     try:
@@ -7125,6 +7214,13 @@ def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) ->
             "Realtime meta missing independently refreshed expected latest completed trade date."
         )
     expected_close_day = pd.Timestamp(expected_close_text).normalize()
+    proof_source = str(meta.get("expected_latest_completed_trade_date_source") or "").strip()
+    proof_verified_on = str(meta.get("expected_latest_completed_trade_date_verified_on") or "").strip()
+    if proof_source != REALTIME_REFRESH_PROOF_SOURCE or proof_verified_on != str(_cn_local_day().date()):
+        raise RuntimeError(
+            "Realtime meta lacks a current independent refresh proof for the latest completed trade date: "
+            f"source={proof_source!r} verified_on={proof_verified_on!r}"
+        )
     if anchor_day != expected_close_day:
         raise RuntimeError(
             "Realtime anchor does not equal independently refreshed latest completed trade date: "
@@ -7165,6 +7261,7 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
     "synthetic last-close fallback quotes",
+    "independent refresh proof",
     "independently refreshed latest completed trade date",
     "Realtime hedge quote date is earlier than the historical anchor.",
     "latest_anchor_trade_date is not the previous completed trading day",
@@ -9355,11 +9452,19 @@ def build_realtime_signal_fast(
         "expected_latest_completed_trade_date",
         context.get("target_end_date", ""),
     )
+    expected_latest_completed_trade_date_source = str(
+        context.get("expected_latest_completed_trade_date_source") or ""
+    )
+    expected_latest_completed_trade_date_verified_on = str(
+        context.get("expected_latest_completed_trade_date_verified_on") or ""
+    )
     signal_df["member_price_count"] = genuine_available_rows
     signal_df["computed_member_price_count"] = available_rows
     signal_df["member_count"] = len(member_symbols)
     signal_df["latest_anchor_trade_date"] = latest_trade_date
     signal_df["expected_latest_completed_trade_date"] = expected_latest_completed_trade_date
+    signal_df["expected_latest_completed_trade_date_source"] = expected_latest_completed_trade_date_source
+    signal_df["expected_latest_completed_trade_date_verified_on"] = expected_latest_completed_trade_date_verified_on
     signal_df["member_quote_trade_date_count"] = quote_stats["member_quote_trade_date_count"]
     signal_df["member_quote_trade_date_min"] = quote_stats["member_quote_trade_date_min"]
     signal_df["member_quote_trade_date_max"] = quote_stats["member_quote_trade_date_max"]
@@ -9389,6 +9494,8 @@ def build_realtime_signal_fast(
         "expected_latest_completed_trade_date": str(
             pd.Timestamp(expected_latest_completed_trade_date).date()
         ),
+        "expected_latest_completed_trade_date_source": expected_latest_completed_trade_date_source,
+        "expected_latest_completed_trade_date_verified_on": expected_latest_completed_trade_date_verified_on,
         **quote_stats,
         "member_quote_flat_fallback_count": flat_fallback_count,
         "hedge_quote_trade_date": hedge_quote_trade_date,
@@ -10621,19 +10728,19 @@ def _cached_realtime_context_from_existing_state(
         try:
             panel_path, panel_target_end = base_mod.build_refreshed_panel_shadow(args, base_paths)
         except RuntimeError as refresh_exc:
-            if exc is None:
-                raise
-            panel_path = base_paths["panel_shadow"]
-            panel_target_end = base_mod.read_csv_last_date(panel_path)
-            if panel_target_end is None:
-                raise RuntimeError("Realtime anchor refresh failed and panel shadow has no usable date.") from refresh_exc
+            raise RuntimeError(
+                "Realtime anchor refresh failed before an independent latest-completed-session target "
+                "could be established; refusing cached-state self-validation."
+            ) from refresh_exc
         else:
             panel_target_end = pd.Timestamp(panel_target_end)
+            refresh_proof = base_mod.build_realtime_refresh_proof_fields(panel_target_end)
     else:
         panel_path = base_paths["panel_shadow"]
         panel_target_end = base_mod.read_csv_last_date(panel_path)
         if panel_target_end is None:
             raise RuntimeError("No panel shadow cache has a usable date for realtime state-only mode.") from exc
+        refresh_proof = base_mod.load_realtime_refresh_proof(panel_target_end)
     if not panel_path.exists():
         message = "No panel shadow cache is available for realtime state-only mode."
         if exc is not None:
@@ -10678,6 +10785,7 @@ def _cached_realtime_context_from_existing_state(
             f"close_df_last_date={actual_anchor.date()} target_end_date={target_end_date.date()}"
         )
         raise RuntimeError(message) from exc
+    base_context["realtime_refresh_proof"] = refresh_proof
     return panel_path, target_end_date, base_context
 
 
@@ -10724,7 +10832,12 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                 except (FileNotFoundError, ValueError):
                     base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
+        refresh_proof = base_context.get("realtime_refresh_proof")
+        if not isinstance(refresh_proof, dict):
+            refresh_proof = base_mod.build_realtime_refresh_proof_fields(target_end_date)
         member_context["expected_latest_completed_trade_date"] = pd.Timestamp(target_end_date).normalize()
+        member_context["expected_latest_completed_trade_date_source"] = refresh_proof.get("source", "")
+        member_context["expected_latest_completed_trade_date_verified_on"] = refresh_proof.get("verified_on", "")
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
         turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
@@ -10956,6 +11069,8 @@ REALTIME_META_FORCE_COLS = {
     "member_quote_bad_symbols",
     "latest_anchor_trade_date",
     "expected_latest_completed_trade_date",
+    "expected_latest_completed_trade_date_source",
+    "expected_latest_completed_trade_date_verified_on",
     "quote_trade_date",
     "hedge_quote_trade_date",
     "snapshot_time",
@@ -11229,6 +11344,7 @@ def staged_output_bundle(
     }
     backups: dict[Path, Path] = {}
     promoted: list[Path] = []
+    retained_backups: set[Path] = set()
     try:
         yield staged
         missing = [str(target) for target, stage in staged.items() if not stage.exists()]
@@ -11249,16 +11365,29 @@ def staged_output_bundle(
                 promoted.append(target)
             if post_promotion_validator is not None:
                 post_promotion_validator()
-        except Exception:
+        except Exception as promotion_error:
+            rollback_errors: list[str] = []
             for target in reversed(promoted):
                 backup = backups.get(target)
-                if backup is not None and backup.exists():
-                    _replace_with_retry(backup, target)
-                else:
-                    target.unlink(missing_ok=True)
+                try:
+                    if backup is not None and backup.exists():
+                        _replace_with_retry(backup, target)
+                    else:
+                        target.unlink(missing_ok=True)
+                except Exception as rollback_error:
+                    if backup is not None and backup.exists():
+                        retained_backups.add(backup)
+                    rollback_errors.append(f"{target}: {rollback_error}")
+            if rollback_errors:
+                retained = [str(path) for path in sorted(retained_backups, key=str)]
+                raise RuntimeError(
+                    "staged output promotion failed and rollback was incomplete; "
+                    f"rollback_errors={rollback_errors}; retained_backups={retained}"
+                ) from promotion_error
             raise
     finally:
-        for path in [*staged.values(), *backups.values()]:
+        cleanup_paths = [*staged.values(), *(path for path in backups.values() if path not in retained_backups)]
+        for path in cleanup_paths:
             try:
                 path.unlink(missing_ok=True)
             except OSError:
@@ -11348,6 +11477,7 @@ def current_base_fingerprint() -> dict[str, object]:
             "require_signal_reset": OVERHEAT_REQUIRE_SIGNAL_RESET,
             "timing": "applied_to_base_state_before_target_vol_scaling",
         },
+        "target_vol_enabled": True,
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
@@ -11877,8 +12007,17 @@ def _volatility_overheat_metric(gross: pd.DataFrame, window: int = OVERHEAT_WIND
     missing = {"microcap_ret", "hedge_ret"}.difference(gross.columns)
     if missing:
         raise ValueError(f"missing columns for v2.0 overheat metric: {sorted(missing)}")
-    micro = pd.to_numeric(gross["microcap_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
-    hedge = pd.to_numeric(gross["hedge_ret"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    if int(window) < 2:
+        raise ValueError(f"v2.0 overheat window must be at least 2: {window}")
+    micro = pd.to_numeric(gross["microcap_ret"], errors="coerce")
+    hedge = pd.to_numeric(gross["hedge_ret"], errors="coerce")
+    for column, series in (("microcap_ret", micro), ("hedge_ret", hedge)):
+        finite = np.isfinite(series.to_numpy(dtype=float, na_value=np.nan))
+        if not bool(finite.all()):
+            bad_dates = pd.DatetimeIndex(gross.index[~finite]).strftime("%Y-%m-%d").tolist()
+            raise ValueError(
+                f"v2.0 overheat input {column} contains non-finite values: {bad_dates[:10]}"
+            )
     spread = micro - float(BASE_HEDGE_RATIO) * hedge
     return spread.rolling(int(window), min_periods=int(window)).std(ddof=1) * np.sqrt(TARGET_VOL_TRADING_DAYS)
 
@@ -11900,10 +12039,19 @@ def apply_volatility_overheat_exit(
     if out.empty:
         return embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(out, turnover_df)
 
+    base_returns = pd.to_numeric(out["return"], errors="coerce")
+    finite_returns = np.isfinite(base_returns.to_numpy(dtype=float, na_value=np.nan))
+    if not bool(finite_returns.all()):
+        bad_dates = pd.DatetimeIndex(out.index[~finite_returns]).strftime("%Y-%m-%d").tolist()
+        raise ValueError(f"v2.0 overheat input return contains non-finite values: {bad_dates[:10]}")
+    threshold_value = float(overheat_threshold)
+    if not np.isfinite(threshold_value) or threshold_value < 0.0:
+        raise ValueError(f"v2.0 overheat threshold must be finite and non-negative: {overheat_threshold}")
+
     metric = _volatility_overheat_metric(out, window=int(overheat_window))
     base_holding = _normalize_holding_series(out["holding"], out.index)
     base_next_holding = _normalize_holding_series(out["next_holding"], out.index, fill_from=base_holding)
-    returns = pd.to_numeric(out["return"], errors="coerce").replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    returns = base_returns
     rebalance_base = embedded_context.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
     rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce").fillna(0.0)
 
@@ -11960,7 +12108,7 @@ def apply_volatility_overheat_exit(
             current_active
             and desired_next_active
             and pd.notna(metric_value)
-            and float(metric_value) >= float(overheat_threshold)
+            and float(metric_value) >= threshold_value
             and (
                 not OVERHEAT_REQUIRE_POSITIVE_TRADE_RETURN
                 or (trade_return_before_exit is not None and trade_return_before_exit > 0.0)
@@ -12168,6 +12316,13 @@ def apply_target_vol_scaling(
         if scale_rebalance_threshold is None
         else scale_rebalance_threshold
     )
+    if not np.isfinite(target_vol_value) or target_vol_value < 0.0:
+        raise ValueError(f"target_vol must be finite and non-negative: {target_vol_value}")
+    if not np.isfinite(scale_rebalance_threshold_value) or scale_rebalance_threshold_value < 0.0:
+        raise ValueError(
+            "scale_rebalance_threshold must be finite and non-negative: "
+            f"{scale_rebalance_threshold_value}"
+        )
     out = base_result.copy().sort_index()
     base_return_net = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
     target_vol_return, target_vol_return_source = _select_target_vol_return_source(out, base_return_net)
@@ -12245,6 +12400,7 @@ def apply_target_vol_scaling(
         - 1.0
     )
 
+    out["target_vol_enabled"] = True
     out["target_vol"] = target_vol_value
     out["target_vol_window"] = TARGET_VOL_WINDOW
     out["target_vol_return"] = target_vol_return.fillna(0.0)
@@ -12456,6 +12612,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["version"] = "2.0"
     latest_signal["base_version"] = "embedded_v2_base"
     latest_signal["overlay_type"] = "volatility_overheat_exit_then_target_volatility_scaling"
+    latest_signal["target_vol_enabled"] = True
     latest_signal["target_vol"] = TARGET_VOL
     latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
     latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
@@ -13057,6 +13214,7 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "timing": "applied_to_base_state_before_target_vol_scaling",
     }
     summary["core_params"]["target_volatility_scaling"] = {
+        "enabled": True,
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,

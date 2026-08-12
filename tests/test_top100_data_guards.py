@@ -590,6 +590,8 @@ def _actionable_realtime_meta(anchor: str, quote: str) -> dict[str, object]:
         "quote_trade_date": quote,
         "latest_anchor_trade_date": anchor,
         "expected_latest_completed_trade_date": anchor,
+        "expected_latest_completed_trade_date_source": v2_0.base_mod.REALTIME_REFRESH_PROOF_SOURCE,
+        "expected_latest_completed_trade_date_verified_on": str(v2_0.base_mod._cn_local_day().date()),
     }
 
 

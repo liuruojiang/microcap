@@ -169,13 +169,13 @@ def _apply_bias_overheat_overlay(
     trigger_mode: str = "level",
     pullback_threshold: float = 0.0,
 ) -> pd.DataFrame:
-    out = shadow.copy().sort_index()
-    bias = pd.to_numeric(bias.reindex(out.index), errors="coerce")
-    shadow_scale = pd.to_numeric(out["current_execution_scale"], errors="coerce").fillna(0.0)
-    shadow_ret = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
-    base_next_active = out["next_holding"].astype(str).ne("cash")
+    base = shadow.copy().sort_index()
+    bias = pd.to_numeric(bias.reindex(base.index), errors="coerce")
+    shadow_scale = pd.to_numeric(base["current_execution_scale"], errors="coerce").fillna(0.0)
+    base_next_active = base["next_holding"].astype(str).ne("cash")
 
     if hot_threshold is None:
+        out = base
         out["bias_overheat_hot_threshold"] = np.nan
         out["bias_overheat_cool_threshold"] = np.nan
         out["bias_overheat_risk_off"] = False
@@ -201,23 +201,14 @@ def _apply_bias_overheat_overlay(
 
     risk_off = False
     bias_peak = np.nan
-    prev_actual_scale = 0.0
-    prev_risk_off = False
-    actual_returns: list[float] = []
-    actual_scales: list[float] = []
-    overlay_costs: list[float] = []
+    current_multipliers: list[float] = []
+    next_multipliers: list[float] = []
     exit_flags: list[bool] = []
     reentry_flags: list[bool] = []
     risk_off_flags: list[bool] = []
 
-    for dt in out.index:
+    for dt in base.index:
         current_risk_off = risk_off
-        target_scale = 0.0 if current_risk_off else float(shadow_scale.loc[dt])
-        overlay_turnover = abs(target_scale - prev_actual_scale) if current_risk_off != prev_risk_off else 0.0
-        overlay_cost = overlay_turnover * float(one_side_trade_cost)
-        day_ret = 0.0 if current_risk_off else float(shadow_ret.loc[dt])
-        actual_ret = (1.0 + day_ret) * (1.0 - min(max(overlay_cost, 0.0), 0.99)) - 1.0
-
         current_bias = bias.loc[dt]
         next_active = bool(base_next_active.loc[dt])
         exit_trigger = False
@@ -242,30 +233,30 @@ def _apply_bias_overheat_overlay(
                 risk_off = True
                 exit_trigger = True
 
-        actual_returns.append(actual_ret)
-        actual_scales.append(target_scale)
-        overlay_costs.append(overlay_cost)
+        current_multipliers.append(0.0 if current_risk_off else 1.0)
+        next_multipliers.append(0.0 if risk_off else 1.0)
         exit_flags.append(exit_trigger)
         reentry_flags.append(reentry_trigger)
         risk_off_flags.append(current_risk_off)
-        prev_actual_scale = target_scale
-        prev_risk_off = current_risk_off
 
-    ret = pd.Series(actual_returns, index=out.index, dtype=float)
+    out = scan_common.replay_scale_multiplier(
+        base,
+        pd.Series(current_multipliers, index=base.index, dtype=float),
+        next_multiplier=pd.Series(next_multipliers, index=base.index, dtype=float),
+        one_side_scale_cost=float(one_side_trade_cost),
+        label="bias overheat overlay",
+    )
     out["bias_overheat_hot_threshold"] = hot_thr
     out["bias_overheat_cool_threshold"] = cool_thr
     out["bias_overheat_risk_off"] = pd.Series(risk_off_flags, index=out.index, dtype=bool)
     out["bias_overheat_exit_triggered"] = pd.Series(exit_flags, index=out.index, dtype=bool)
     out["bias_overheat_reentry_triggered"] = pd.Series(reentry_flags, index=out.index, dtype=bool)
-    out["actual_execution_scale"] = pd.Series(actual_scales, index=out.index, dtype=float)
-    out["overlay_trade_cost"] = pd.Series(overlay_costs, index=out.index, dtype=float)
+    out["actual_execution_scale"] = out["current_execution_scale"]
+    out["overlay_trade_cost"] = out["overlay_scale_change_cost"]
     out["ma_bias"] = bias
     out["bias_overheat_trigger_mode"] = mode
     out["bias_overheat_pullback_threshold"] = pullback
-    out["return_net"] = ret
-    out["nav_net"] = (1.0 + ret.fillna(0.0)).cumprod()
     out["return"] = out["return_net"]
-    out["nav"] = out["nav_net"]
     return out
 
 
@@ -283,7 +274,12 @@ def _metrics(ret: pd.Series) -> dict[str, float | int]:
         }
     nav = (1.0 + r).cumprod()
     final_nav = float(nav.iloc[-1])
-    ann_return = final_nav ** (TRADING_DAYS / rows) - 1.0 if final_nav > 0 else np.nan
+    years = (pd.Timestamp(r.index[-1]) - pd.Timestamp(r.index[0])).days / 365.25
+    ann_return = (
+        final_nav ** (1.0 / years) - 1.0
+        if final_nav > 0 and years > 0
+        else 0.0 if years == 0 else np.nan
+    )
     ann_vol = float(r.std(ddof=1) * math.sqrt(TRADING_DAYS)) if rows > 1 else 0.0
     sharpe = ann_return / ann_vol if ann_vol and math.isfinite(ann_vol) else np.nan
     dd = nav.div(nav.cummax()).sub(1.0)
@@ -396,9 +392,10 @@ def _scan(
                 "bias_cool_threshold": np.nan if cool is None else float(cool),
                 "bias_overheat_trigger_mode": mode,
                 "bias_overheat_pullback_threshold": np.nan if hot is None else float(pullback),
-                "target_vol": v25.TARGET_VOL,
-                "max_leverage": v25.TARGET_VOL_MAX_LEVERAGE,
-                "scale_rebalance_threshold": v25.TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+                "target_vol_enabled": v25.TARGET_VOL_ENABLED,
+                "target_vol": 0.0,
+                "max_leverage": 1.0,
+                "scale_rebalance_threshold": 0.0,
                 "holding_days_full": counts["holding_days"],
                 "cash_days_full": counts["cash_days"],
                 "entry_days_full": counts["entry_days"],
@@ -554,11 +551,11 @@ def _write_record(run_folder: Path, wide: pd.DataFrame, context: dict[str, Any],
         f"- Metrics end: {context['metrics_end']}",
         f"- Rows: {context['rows']}",
         f"- Reference v2.5 latest NAV date: {context['reference_summary'].get('latest_nav_date')}",
-        "- Trading calendar: strategy local trading-date index; annualization uses 244 trading days.",
+        "- Trading calendar: strategy local trading-date index; return annualization uses elapsed calendar years and annualized volatility uses 244 trading days.",
         "",
         "## Cost and Execution Assumptions",
         "",
-        "- Retained: v2.5 base trading cost, target-vol scale-change cost, financing, and close-to-close execution timing.",
+        "- Retained: formal v2.5 base trading costs and close-confirmed execution timing; target-vol, cash-day yield, and financing remain disabled.",
         "- Added: overlay microcap one-side trading cost on bias-overheat risk-off/risk-on scale changes.",
         "- No hedge leg, futures drag, stop-loss, drawdown stop, momentum-decay layer, or main-score overheat layer.",
         "",
@@ -656,9 +653,12 @@ def run(
             "strategy_version": "v2.5",
             "entry_threshold": v25.ENTRY_THRESHOLD,
             "exit_threshold": v25.EXIT_THRESHOLD,
-            "target_vol": v25.TARGET_VOL,
-            "max_leverage": v25.TARGET_VOL_MAX_LEVERAGE,
-            "scale_rebalance_threshold": v25.TARGET_VOL_SCALE_REBALANCE_THRESHOLD,
+            "target_vol_enabled": v25.TARGET_VOL_ENABLED,
+            "target_vol": 0.0,
+            "max_leverage": 1.0,
+            "scale_rebalance_threshold": 0.0,
+            "cash_day_yield_enabled": v25.CASH_DAY_YIELD_ENABLED,
+            "financing_enabled": v25.FINANCING_ENABLED,
         },
         "candidate_grid": wide["candidate"].tolist(),
         "data_snapshot": {
@@ -672,7 +672,8 @@ def run(
             "overlay_trade_cost": ONE_SIDE_TRADE_COST,
             "overlay_trade_cost_model": "one_side_microcap_turnover_only_when_bias_overheat_overlay_changes_risk_state",
             "execution_timing": "close_confirmed_t_signal_next_session_execution",
-            "target_vol_return_source": "microcap_pct_change_unhedged",
+            "target_vol_enabled": v25.TARGET_VOL_ENABLED,
+            "target_vol_return_source": "disabled_no_target_vol",
             "hedge_removed": True,
         },
         "verification": {
