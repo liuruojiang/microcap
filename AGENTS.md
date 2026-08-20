@@ -10,7 +10,16 @@ Use this repo-local file as the source of workspace guidance for the Top100 micr
 - When only a short tail is stale and no new rebalance date exists between the current costed NAV end and the target trading date, prefer an auditable no-new-rebalance tail extension over a broad `--force-refresh`; still verify the extended proxy index, base costed NAV, and downstream version streams by reading the written artifacts.
 - The default practical/live performance caliber is `v2.0 + costed`; do not silently mix `gross` and `costed`.
 - Prefer fast command-aware query routing in `microcap_top100_mom16_biweekly_live.py`; use the old full `build_base_context()` path only if requested or unavoidable.
-- Treat `outputs/` as disposable export space. Keep current core artifacts for `v1.0`, `v1.1`, `v1.2`, `v1.6`, and `v2.0`.
+- Treat `outputs/` as disposable export space. Keep current core artifacts for `v1.0`, `v1.1`, `v1.2`, `v1.6`, `v2.0`, `v2.3`, and `v2.5`.
+
+# Member And Lineage Guardrails
+
+- A published current Top100 list must contain exactly 100 unique ranked symbols and must have zero intersections with current `ST`, `*ST`, or `PT` names/codes. Treat this as a hard publish gate, not a warning.
+- Historical backtests must use point-in-time ST entry/exit intervals under the current notice policy; never project the current ST snapshot backward through history.
+- Build the historical member universe from the full historical security master, not the current listed universe or a narrow recent candidate set.
+- Proxy compatibility must include the security-metadata content fingerprint. A metadata-content change requires rebuilding the proxy and every downstream formal stream.
+- Historical rewrites remain fail-closed. A necessary lineage correction requires an approved exact-hash migration report, followed by a second run without the migration option that must finish with a clean rewrite audit.
+- After a v2.0 lineage correction, rerun and read back v2.3/v2.5 before reporting them; do not reuse their earlier official outputs.
 
 # Signal Query Defaults
 

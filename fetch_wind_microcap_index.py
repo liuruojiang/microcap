@@ -181,9 +181,37 @@ def fetch_current_st_codes(force_refresh: bool = False) -> set[str]:
         return set(frame["code"].dropna())
 
     ak = get_akshare()
-    st = ak.stock_zh_a_st_em()
-    frame = st[[COL_CODE, COL_NAME]].copy()
-    frame.columns = ["code", "name"]
+    try:
+        st = ak.stock_zh_a_st_em()
+        frame = st[[COL_CODE, COL_NAME]].copy()
+        frame.columns = ["code", "name"]
+    except Exception:
+        universe = fetch_active_universe(force_refresh=False)
+        codes = sorted(universe["code"].dropna().astype(str).str.zfill(6).unique())
+        rows: list[dict[str, str]] = []
+        for offset in range(0, len(codes), 500):
+            batch = codes[offset : offset + 500]
+            quote_keys = ",".join(("sh" if code.startswith("6") else "sz") + code for code in batch)
+            response = requests.get(
+                f"https://qt.gtimg.cn/q={quote_keys}",
+                timeout=30,
+                headers={"Referer": "https://finance.qq.com/", "User-Agent": "Mozilla/5.0"},
+            )
+            response.raise_for_status()
+            for line in response.content.decode("gbk", errors="replace").splitlines():
+                if '="' not in line:
+                    continue
+                fields = line.split('="', 1)[1].rsplit('";', 1)[0].split("~")
+                if len(fields) <= 2:
+                    continue
+                code = str(fields[2]).zfill(6)
+                name = str(fields[1]).strip()
+                normalized = name.upper().replace(" ", "")
+                if normalized.startswith(("*ST", "ST", "PT")):
+                    rows.append({"code": code, "name": name})
+        frame = pd.DataFrame(rows).drop_duplicates(subset="code")
+        if frame.empty:
+            raise RuntimeError("Tencent current-name fallback returned no ST/*ST/PT stocks")
     frame.to_csv(CURRENT_ST_CACHE, index=False, encoding="utf-8")
     return set(frame["code"].dropna())
 
@@ -279,9 +307,11 @@ def _fetch_price_history_eastmoney(symbol: str, start_ts: pd.Timestamp, end_ts: 
 
 
 def _fetch_price_history_sina(symbol: str, start_ts: pd.Timestamp, end_ts: pd.Timestamp) -> pd.DataFrame:
+    calendar_days = max(0, int((pd.Timestamp(end_ts).normalize() - pd.Timestamp(start_ts).normalize()).days))
+    datalen = max(30, min(6000, calendar_days + 20))
     url = (
         "https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData"
-        f"?symbol={_sina_symbol(symbol)}&scale=240&ma=no&datalen=6000"
+        f"?symbol={_sina_symbol(symbol)}&scale=240&ma=no&datalen={datalen}"
     )
     resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
     resp.raise_for_status()

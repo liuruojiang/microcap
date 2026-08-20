@@ -1279,6 +1279,150 @@ def test_empty_name_reject_policy_excludes_unnamed_low_cap_candidate() -> None:
     assert members[rebalance] == ["000002"]
 
 
+@pytest.mark.parametrize("name", ["ST龙韵", "*ST东珠", "PT水仙", " ST 麦趣 "])
+def test_live_member_name_policy_rejects_all_st_prefixes(name: str) -> None:
+    assert v2_0.base_mod.is_live_tradable_name(name) is False
+
+
+def test_live_member_ranking_backfills_after_st_exclusion() -> None:
+    rebalance = pd.Timestamp("2026-08-20")
+    members = v2_0.base_mod.build_live_target_members_map(
+        caps_by_date={rebalance: {"000001": 1.0, "000002": 2.0, "000003": 3.0}},
+        rebalance_dates=pd.DatetimeIndex([rebalance]),
+        name_map={"000001": "*ST示例", "000002": "正常股票A", "000003": "正常股票B"},
+        top_n=2,
+        exclude_current_st_names=True,
+    )
+
+    assert members[rebalance] == ["000002", "000003"]
+
+
+def test_live_member_output_guard_blocks_st_rows() -> None:
+    members = pd.DataFrame({"symbol": ["603359"], "name": ["*ST东珠"]})
+
+    with pytest.raises(RuntimeError, match="forbidden ST"):
+        v2_0.base_mod.assert_no_st_members(members, "test members")
+
+
+def test_current_universe_uses_security_master_name_when_st_code_cache_misses(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    active = tmp_path / "active_universe.csv"
+    current_st = tmp_path / "current_st.csv"
+    pd.DataFrame(
+        {
+            "symbol": ["sh603359", "sz000001"],
+            "name": ["东珠生态", "平安银行"],
+            "code": ["603359", "000001"],
+        }
+    ).to_csv(active, index=False)
+    pd.DataFrame({"code": [], "name": []}).to_csv(current_st, index=False)
+    master = pd.DataFrame(
+        {
+            "symbol": ["603359", "000001"],
+            "name": ["*ST东珠", "平安银行"],
+        }
+    )
+
+    function_globals = v2_0.freq_mod.load_current_universe.__globals__
+    monkeypatch.setitem(function_globals, "ACTIVE_UNIVERSE", active)
+    monkeypatch.setitem(function_globals, "CURRENT_ST", current_st)
+    monkeypatch.setitem(function_globals, "load_security_master", lambda: master)
+    monkeypatch.setitem(function_globals, "resolve_cache_path", lambda *_args, **_kwargs: tmp_path / "exists")
+
+    assert v2_0.freq_mod.load_current_universe() == ["000001"]
+
+
+def test_live_member_cache_version_requires_st_name_guard() -> None:
+    assert v2_0.base_mod.LIVE_MEMBER_FILTER_POLICY_VERSION == "exclude-current-st-name-v1"
+    assert "live-st-name-guard" in v2_0.base_mod.STATIC_CONTEXT_CACHE_VERSION
+
+
+def test_realtime_member_fetch_falls_back_to_backup_market_data_host(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    function = v2_0.base_mod.fetch_realtime_smallcap_members_fast
+    function_globals = function.__globals__
+    requests_module = function_globals["requests"]
+    calls: list[str] = []
+
+    class FakeResponse:
+        def __init__(self, payload: dict[str, object] | None = None, fail: bool = False) -> None:
+            self.payload = payload or {}
+            self.fail = fail
+
+        def raise_for_status(self) -> None:
+            if self.fail:
+                raise requests_module.HTTPError("temporary primary-host failure")
+
+        def json(self) -> dict[str, object]:
+            return self.payload
+
+    def fake_get(url: str, **_kwargs: object) -> FakeResponse:
+        calls.append(url)
+        if "pn=1" in url and "https://push2.eastmoney.com" in url:
+            return FakeResponse(fail=True)
+        if "pn=1" in url and "https://82.push2.eastmoney.com" in url:
+            return FakeResponse(
+                {
+                    "data": {
+                        "diff": [
+                            {
+                                "f12": "000001",
+                                "f14": "平安银行",
+                                "f2": 10.0,
+                                "f20": 100.0,
+                            }
+                        ]
+                    }
+                }
+            )
+        return FakeResponse({"data": {"diff": []}})
+
+    monkeypatch.setitem(function_globals, "load_realtime_eligible_codes", lambda: {"000001"})
+    monkeypatch.setattr(requests_module, "get", fake_get)
+
+    members, source = function(None, None, target_size=1)
+
+    assert source == "eastmoney_clist_f20_sorted"
+    assert members["symbol"].tolist() == ["000001"]
+    assert any("82.push2.eastmoney.com" in url for url in calls)
+
+
+def test_tencent_realtime_member_fallback_parses_and_strips_current_name(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    function = v2_0.base_mod.fetch_tencent_realtime_smallcap_members
+    requests_module = function.__globals__["requests"]
+    fields = [""] * 46
+    fields[1] = " 平安银行 "
+    fields[2] = "000001"
+    fields[3] = "10.00"
+    fields[4] = "9.90"
+    fields[5] = "9.95"
+    fields[33] = "10.10"
+    fields[34] = "9.80"
+    fields[37] = "12345"
+    fields[45] = "20.50"
+    response_text = 'v_sz000001="' + "~".join(fields) + '";\n'
+
+    class FakeResponse:
+        content = response_text.encode("gbk")
+
+        @staticmethod
+        def raise_for_status() -> None:
+            return None
+
+    monkeypatch.setattr(requests_module, "get", lambda *_args, **_kwargs: FakeResponse())
+
+    members, source = function({"000001"}, None, None, target_size=1)
+
+    assert source == "tencent_qt_total_market_cap"
+    assert members.loc[0, "name"] == "平安银行"
+    assert members.loc[0, "market_cap"] == pytest.approx(2_050_000_000.0)
+
+
 def test_empty_name_reject_policy_invalidates_static_member_context(tmp_path: Path) -> None:
     from scripts import realtime_state_bundle
 
@@ -1304,8 +1448,53 @@ def test_empty_name_reject_policy_requires_matching_proxy_metadata() -> None:
         "rebalance_phase_anchor_date": v2_0.base_mod.REBALANCE_ANCHOR_DATE,
         "realtime_quote_policy_version": v2_0.base_mod.REALTIME_QUOTE_POLICY_VERSION,
         "proxy_rebalance_policy_version": v2_0.base_mod.PROXY_REBALANCE_POLICY_VERSION,
+        "st_notice_policy_version": v2_0.freq_mod.ST_NOTICE_POLICY_VERSION,
     }
 
     assert v2_0.base_mod.proxy_meta_matches_execution_model({"core_params": core_params}) is False
     core_params["member_filter_policy_version"] = v2_0.base_mod.MEMBER_FILTER_POLICY_VERSION
+    assert v2_0.base_mod.proxy_meta_matches_execution_model({"core_params": core_params}) is False
+    core_params["security_meta_cache_fingerprint"] = v2_0.base_mod.security_meta_cache_fingerprint()
     assert v2_0.base_mod.proxy_meta_matches_execution_model({"core_params": core_params}) is True
+
+
+def test_existing_base_bundle_is_rebuilt_when_proxy_metadata_is_incompatible(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = {
+        "proxy_meta": tmp_path / "proxy_meta.json",
+        "proxy_members": tmp_path / "proxy_members.csv",
+        "proxy_turnover": tmp_path / "proxy_turnover.csv",
+    }
+    index_csv = tmp_path / "index.csv"
+    costed_nav_csv = tmp_path / "costed_nav.csv"
+    for path in [*paths.values(), index_csv, costed_nav_csv]:
+        path.write_text("placeholder", encoding="utf-8")
+    args = SimpleNamespace(index_csv=index_csv, costed_nav_csv=costed_nav_csv)
+    resolved = SimpleNamespace(
+        output_paths=paths,
+        index_csv=index_csv,
+        costed_nav_csv=costed_nav_csv,
+    )
+    calls: list[tuple[Path, pd.Timestamp]] = []
+
+    monkeypatch.setattr(v2_0, "_sync_embedded_base_config", lambda: None)
+    monkeypatch.setattr(v2_0, "_build_base_args", lambda: args)
+    monkeypatch.setattr(v2_0, "_resolve_base_paths", lambda _args: resolved)
+    monkeypatch.setattr(v2_0, "_proxy_meta_matches_execution_model", lambda _path: False)
+    monkeypatch.setattr(v2_0, "_base_costed_nav_matches_current_hedge_ratio", lambda *_args, **_kwargs: True)
+    monkeypatch.setattr(
+        v2_0.base_mod,
+        "build_refreshed_panel_shadow",
+        lambda _args, _paths: (tmp_path / "panel.csv", pd.Timestamp("2026-08-20")),
+    )
+    monkeypatch.setattr(
+        v2_0.base_mod,
+        "ensure_strategy_files",
+        lambda _args, _paths, panel_path, target_end_date: calls.append((panel_path, target_end_date)),
+    )
+
+    v2_0._ensure_base_outputs_unlocked()
+
+    assert calls == [(tmp_path / "panel.csv", pd.Timestamp("2026-08-20"))]

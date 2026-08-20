@@ -26,6 +26,113 @@ COMBO50_FRESHNESS_DATE_COLUMNS = {
 }
 
 
+@pytest.mark.parametrize(
+    "title",
+    [
+        "关于公司股票被实施其他风险警示暨公司股票停复牌的提示性公告",
+        "关于公司股票交易将被实施退市风险警示暨停牌的提示性公告",
+        "关于公司股票交易将被实施其他风险警示暨股票停复牌、可能被实施退市风险警示的提示性公告",
+    ],
+)
+def test_definitive_st_implementation_notice_is_entry_even_when_advisory(title: str) -> None:
+    notices = pd.DataFrame({"notice_date": ["2026-04-30"], "title": [title]})
+
+    intervals = v2_0.freq_mod.build_st_intervals_from_notices(
+        pd.Timestamp("2025-01-01"),
+        pd.Timestamp("2026-08-19"),
+        notices,
+    )
+
+    assert intervals == [{"start": "2026-04-30", "end": None, "source": "cninfo_notice"}]
+
+
+@pytest.mark.parametrize(
+    "title",
+    [
+        "关于公司股票可能被实施退市风险警示的提示性公告",
+        "存在被实施退市风险警示及暂停上市风险的提示性公告",
+    ],
+)
+def test_possible_st_warning_notice_is_not_entry(title: str) -> None:
+    notices = pd.DataFrame({"notice_date": ["2026-04-30"], "title": [title]})
+
+    intervals = v2_0.freq_mod.build_st_intervals_from_notices(
+        pd.Timestamp("2025-01-01"),
+        pd.Timestamp("2026-08-19"),
+        notices,
+    )
+
+    assert intervals == []
+
+
+def test_st_exit_notice_closes_historical_interval_before_later_reentry() -> None:
+    notices = pd.DataFrame(
+        {
+            "notice_date": ["2014-12-13", "2016-05-20", "2026-04-29"],
+            "title": [
+                "关于公司股票被实施其他风险警示的公告",
+                "关于撤销公司股票交易其他风险警示暨摘帽的公告",
+                "关于公司股票交易被实施其他风险警示暨停复牌的公告",
+            ],
+        }
+    )
+
+    intervals = v2_0.freq_mod.build_st_intervals_from_notices(
+        pd.Timestamp("2010-01-04"),
+        pd.Timestamp("2026-08-19"),
+        notices,
+    )
+
+    assert intervals == [
+        {"start": "2014-12-13", "end": "2016-05-20", "source": "cninfo_notice"},
+        {"start": "2026-04-29", "end": None, "source": "cninfo_notice"},
+    ]
+
+
+def test_current_st_snapshot_only_blocks_from_latest_observed_trade_date() -> None:
+    intervals = v2_0.freq_mod.build_st_interval_from_current_name_snapshot(
+        pd.Timestamp("2010-01-04"),
+        pd.Timestamp("2026-08-19"),
+        "*ST示例",
+    )
+
+    assert intervals == [{"start": "2026-08-19", "end": None, "source": "current_name_snapshot"}]
+
+
+@pytest.mark.parametrize(
+    ("start_date", "expected_datalen"),
+    [("2026-08-09", 30), ("2010-01-01", 6000)],
+)
+def test_sina_price_history_request_size_tracks_missing_window(
+    monkeypatch: pytest.MonkeyPatch,
+    start_date: str,
+    expected_datalen: int,
+) -> None:
+    captured: dict[str, str] = {}
+
+    class FakeResponse:
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> list[dict[str, str]]:
+            return [{"day": "2026-08-19", "close": "12.34"}]
+
+    def fake_get(url: str, **_kwargs: object) -> FakeResponse:
+        captured["url"] = url
+        return FakeResponse()
+
+    monkeypatch.setattr(v2_0.fetch_mod.requests, "get", fake_get)
+
+    frame = v2_0.fetch_mod._fetch_price_history_sina(
+        "000729",
+        pd.Timestamp(start_date),
+        pd.Timestamp("2026-08-19"),
+    )
+
+    assert f"datalen={expected_datalen}" in captured["url"]
+    assert frame.iloc[-1]["close_raw"] == pytest.approx(12.34)
+
+
 def _write_combo50_freshness_artifacts(
     tmp_path: Path,
     *,
@@ -47,8 +154,10 @@ def _write_combo50_freshness_artifacts(
 
 
 def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monkeypatch: pytest.MonkeyPatch) -> None:
-    captured: dict[str, list[str]] = {}
-    trading_dates = pd.DatetimeIndex(pd.to_datetime(["2026-06-17", "2026-06-18", "2026-06-19"]))
+    captured: dict[str, object] = {}
+    trading_dates = pd.DatetimeIndex(
+        pd.to_datetime(["1990-12-19", "2026-06-17", "2026-06-18", "2026-06-19"])
+    )
     rebalance_dates = pd.DatetimeIndex([pd.Timestamp("2026-06-18")])
 
     monkeypatch.setattr(v2_0.freq_mod, "load_current_universe", lambda: ["999999"])
@@ -84,19 +193,19 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
         exclude_historical_st_from_caps: bool,
     ):
         captured["symbols"] = list(symbols)
+        captured["trading_dates"] = pd.DatetimeIndex(trading_dates)
         returns = pd.DataFrame(index=trading_dates)
         caps = {pd.Timestamp("2026-06-18"): {"000001": 1.0}}
         flags = pd.DataFrame(index=trading_dates)
         return returns, caps, flags, flags.copy()
 
     monkeypatch.setattr(v2_0.freq_mod, "load_cache_panels", fake_load_cache_panels)
-    monkeypatch.setattr(
-        v2_0.freq_mod,
-        "simulate_rebalance_path",
-        lambda **_kwargs: (
+    def fake_simulate_rebalance_path(**kwargs: object):
+        dates = pd.DatetimeIndex(kwargs["trading_dates"])
+        return (
             pd.DataFrame(
                 {
-                    "date": trading_dates,
+                    "date": dates,
                     "close": [1.0, 1.01, 1.02],
                     "daily_return": [0.0, 0.01, 0.0099],
                     "holding_count": [100, 100, 100],
@@ -104,8 +213,9 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
             ),
             pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-06-18")], "turnover": [0.0]}),
             None,
-        ),
-    )
+        )
+
+    monkeypatch.setattr(v2_0.freq_mod, "simulate_rebalance_path", fake_simulate_rebalance_path)
 
     _index, _members, _turnover, meta = v2_0.base_mod.build_local_proxy_bundle(
         argparse.Namespace(max_workers=1),
@@ -113,6 +223,7 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
     )
 
     assert captured["symbols"] == ["000001", "000002"]
+    assert pd.Timestamp(captured["trading_dates"].min()) >= pd.Timestamp(v2_0.freq_mod.START_DATE)
     assert meta["universe_source"] == "backtest_cache_security_master"
     assert meta["universe_symbol_count"] == 2
 
@@ -129,6 +240,20 @@ def test_refresh_price_cache_tail_uses_backtest_universe_when_symbols_are_omitte
         lambda symbol, start_date, end_date, force_refresh: refreshed.append(symbol),
     )
     monkeypatch.setattr(v2_0.fetch_mod, "fetch_share_change", lambda *_args, **_kwargs: None)
+    monkeypatch.setitem(
+        v2_0.base_mod.refresh_price_cache_tail.__globals__,
+        "price_cache_refresh_preflight",
+        lambda end_date, symbols, force_refresh=False: {
+            "symbol_count": len(symbols),
+            "stale_or_missing_count": len(symbols),
+            "missing_count": 0,
+            "stale_count": len(symbols),
+            "current_count": 0,
+            "force_refresh": force_refresh,
+            "stale_or_missing_symbols": list(symbols),
+            "sample_stale_or_missing_symbols": list(symbols)[:10],
+        },
+    )
 
     v2_0.base_mod.refresh_price_cache_tail(
         pd.Timestamp("2026-06-26"),
@@ -457,6 +582,7 @@ def test_price_cache_refresh_preflight_counts_missing_stale_and_current(tmp_path
     assert preflight["stale_count"] == 1
     assert preflight["missing_count"] == 1
     assert preflight["stale_or_missing_count"] == 2
+    assert preflight["stale_or_missing_symbols"] == ["000002", "000003"]
     assert preflight["sample_stale_or_missing_symbols"] == ["000002", "000003"]
 
 
@@ -476,12 +602,13 @@ def test_refresh_price_cache_tail_emits_preflight_and_progress(capsys: pytest.Ca
         "price_cache_refresh_preflight",
         lambda end_date, symbols, force_refresh=False: {
             "symbol_count": len(symbols),
-            "stale_or_missing_count": 3,
+            "stale_or_missing_count": 2,
             "missing_count": 1,
-            "stale_count": 2,
-            "current_count": 0,
+            "stale_count": 1,
+            "current_count": 1,
             "force_refresh": False,
-            "sample_stale_or_missing_symbols": ["000001", "000002", "000003"],
+            "stale_or_missing_symbols": ["000001", "000002"],
+            "sample_stale_or_missing_symbols": ["000001", "000002"],
         },
     )
 
@@ -494,12 +621,12 @@ def test_refresh_price_cache_tail_emits_preflight_and_progress(capsys: pytest.Ca
     )
 
     captured = capsys.readouterr()
-    assert refreshed == ["000001", "000002", "000003"]
+    assert refreshed == ["000001", "000002"]
     assert "price-cache refresh preflight" in captured.err
     assert "symbols=3" in captured.err
-    assert "stale_or_missing=3" in captured.err
-    assert "price-cache refresh progress 2/3" in captured.err
-    assert "price-cache refresh complete 3/3" in captured.err
+    assert "stale_or_missing=2" in captured.err
+    assert "price-cache refresh progress 2/2" in captured.err
+    assert "price-cache refresh complete 2/2" in captured.err
 
 
 def test_v2_0_promoted_defaults_match_selected_low_drawdown_line() -> None:
@@ -648,6 +775,120 @@ def test_v2_0_rewrite_allowlist_only_accepts_audited_scale_cost_cells(tmp_path: 
     ).to_csv(audit_path, index=False)
 
     assert not v2_0.overlay_mod.v2_0_rewrite_audit_matches_allowlist(audit_path)
+
+
+def test_v2_0_lineage_migration_requires_exact_current_hashes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    official_path = tmp_path / "official.csv"
+    proxy_meta_path = tmp_path / "proxy_meta.json"
+    audit_path = tmp_path / "rewrite_audit.csv"
+    report_path = tmp_path / "migration_report.json"
+    official_path.write_text("date,return_net\n2026-08-19,0\n", encoding="utf-8")
+    proxy_meta_path.write_text('{"policy":"v3"}\n', encoding="utf-8")
+    audit_path.write_text("date,column,change_type\n2026-08-19,return_net,value_changed\n", encoding="utf-8")
+    previous = pd.DataFrame({"date": pd.to_datetime(["2026-08-19"]), "return_net": [0.0]})
+    candidate = pd.DataFrame(
+        {"date": pd.to_datetime(["2026-08-19", "2026-08-20"]), "return_net": [0.0, 0.01]}
+    )
+    report = {
+        "schema_version": 1,
+        "approved": True,
+        "previous_costed_nav_sha256": v2_0.overlay_mod._sha256_path(official_path),
+        "candidate_frame_sha256": v2_0.overlay_mod._candidate_frame_sha256(candidate),
+        "base_proxy_meta_sha256": v2_0.overlay_mod._sha256_path(proxy_meta_path),
+        "rewrite_audit_sha256": v2_0.overlay_mod._sha256_path(audit_path),
+        "previous_row_count": 1,
+        "candidate_row_count": 2,
+        "previous_latest_date": "2026-08-19",
+        "candidate_latest_date": "2026-08-20",
+        "new_member_st_violations": 0,
+        "new_member_bad_policy_count": 0,
+        "proxy_meta_matches_current_cache": True,
+    }
+    report_path.write_text(json.dumps(report), encoding="utf-8")
+    monkeypatch.setitem(v2_0._overlay_ns, "COSTED_NAV_CSV", official_path)
+    monkeypatch.setitem(
+        v2_0._overlay_ns,
+        "_resolve_base_paths",
+        lambda: argparse.Namespace(output_paths={"proxy_meta": proxy_meta_path}),
+    )
+
+    assert v2_0.overlay_mod.v2_0_rewrite_audit_matches_approved_lineage_migration(
+        report_path,
+        previous,
+        candidate,
+        audit_path,
+    )
+
+    audit_path.write_text("tampered\n", encoding="utf-8")
+    assert not v2_0.overlay_mod.v2_0_rewrite_audit_matches_approved_lineage_migration(
+        report_path,
+        previous,
+        candidate,
+        audit_path,
+    )
+
+
+@pytest.mark.parametrize(
+    ("module", "version", "verifier_name"),
+    [
+        (v2_3, "2.3", "v2_3_rewrite_audit_matches_approved_lineage_migration"),
+        (v2_5, "2.5", "v2_5_rewrite_audit_matches_approved_lineage_migration"),
+    ],
+)
+def test_downstream_lineage_migrations_require_exact_current_hashes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    module,
+    version: str,
+    verifier_name: str,
+) -> None:
+    official_path = tmp_path / f"v{version}_official.csv"
+    v2_0_path = tmp_path / "v2_0_official.csv"
+    proxy_meta_path = tmp_path / "proxy_meta.json"
+    audit_path = tmp_path / f"v{version}_rewrite_audit.csv"
+    report_path = tmp_path / f"v{version}_migration_report.json"
+    official_path.write_text("date,return_net\n2026-08-19,0\n", encoding="utf-8")
+    v2_0_path.write_text("date,return_net\n2026-08-20,0\n", encoding="utf-8")
+    proxy_meta_path.write_text('{"policy":"v3"}\n', encoding="utf-8")
+    audit_path.write_text("date,column,change_type\n2026-08-19,return_net,value_changed\n", encoding="utf-8")
+    previous = pd.DataFrame({"date": pd.to_datetime(["2026-08-19"]), "return_net": [0.0]})
+    candidate = pd.DataFrame(
+        {"date": pd.to_datetime(["2026-08-19", "2026-08-20"]), "return_net": [0.0, 0.01]}
+    )
+    report = {
+        "schema_version": 1,
+        "version": version,
+        "approved": True,
+        "previous_costed_nav_sha256": v2_0.overlay_mod._sha256_path(official_path),
+        "candidate_frame_sha256": v2_0.overlay_mod._candidate_frame_sha256(candidate),
+        "v2_0_costed_nav_sha256": v2_0.overlay_mod._sha256_path(v2_0_path),
+        "base_proxy_meta_sha256": v2_0.overlay_mod._sha256_path(proxy_meta_path),
+        "rewrite_audit_sha256": v2_0.overlay_mod._sha256_path(audit_path),
+        "previous_row_count": 1,
+        "candidate_row_count": 2,
+        "previous_latest_date": "2026-08-19",
+        "candidate_latest_date": "2026-08-20",
+        "new_member_st_violations": 0,
+        "new_member_bad_policy_count": 0,
+        "proxy_meta_matches_current_cache": True,
+    }
+    report_path.write_text(json.dumps(report), encoding="utf-8")
+    monkeypatch.setattr(module, "COSTED_NAV_CSV", official_path)
+    monkeypatch.setattr(v2_0, "COSTED_NAV_CSV", v2_0_path)
+    monkeypatch.setattr(
+        v2_0,
+        "_resolve_base_paths",
+        lambda: argparse.Namespace(output_paths={"proxy_meta": proxy_meta_path}),
+    )
+    verifier = getattr(module, verifier_name)
+
+    assert verifier(report_path, previous, candidate, audit_path)
+
+    audit_path.write_text("tampered\n", encoding="utf-8")
+    assert not verifier(report_path, previous, candidate, audit_path)
 
 
 def _patch_perf_paths(monkeypatch: pytest.MonkeyPatch, module, tmp_path: Path, ns: dict[str, object] | None = None) -> None:
