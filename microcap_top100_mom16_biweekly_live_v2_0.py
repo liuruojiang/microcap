@@ -4877,11 +4877,11 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
 
 
 def _file_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    # Git may materialize tracked CSV/JSON seeds with CRLF on Windows and LF on
+    # Linux. Canonicalize only that transport-level newline difference; every
+    # other byte remains part of the exact content authority.
+    payload = path.read_bytes().replace(bytes((13, 10)), bytes((10,)))
+    return hashlib.sha256(payload).hexdigest()
 
 
 def _load_frozen_tail_authority() -> dict[str, object] | None:

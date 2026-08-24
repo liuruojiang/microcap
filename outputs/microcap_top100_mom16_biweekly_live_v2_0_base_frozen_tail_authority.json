@@ -12,11 +12,11 @@
     "costed_nav": 4022
   },
   "seed_file_sha256": {
-    "proxy_index": "3c5bc0794d2b4543b25a7cbdf025e9a425dd1c990e2333e974cc0558c4606310",
-    "costed_nav": "a3861e48e690374f1fa639d78e9f13ae9d200e31897d12c2daab70ad5ecaa522",
-    "proxy_meta": "398528787bd953312fa6d9fa32f01d958e27cb27a7533345e78f925b6775b891",
-    "proxy_members": "80cf51a12a15550419ad9974d1edbfa388cd24e1e62850b792bd6a91cd196b3c",
-    "proxy_turnover": "833458a8e34950dd7369be72297d13f12a22e66e458963c2afc8cfaa8aab23c6",
+    "proxy_index": "5b3eb5c81d32a75450ee0216a12057aa66542bf4315edf7d0cf25cd5b4e84023",
+    "costed_nav": "24944346b0eeb876502e302f24f03087d3211b434e3306de4e3ed0d9dfe0ac88",
+    "proxy_meta": "92fb4ab04487a2bc6700a8074ea38d1117d77ac96916f05ad6a0338e30936b41",
+    "proxy_members": "0eb6f3a076f1f72d6e20fce7b365fd902d465dd8d6350113b8b7b71a8e034cef",
+    "proxy_turnover": "e6c556e82235c902e6d46baa92e1090ab1a166475125849ff7bb47e4484e9685",
     "proxy_effective_members": "5a7d0dc1144d1358554d2b765d7013df669ac19e813455308cc62e94dd6a635f"
   }
 }
