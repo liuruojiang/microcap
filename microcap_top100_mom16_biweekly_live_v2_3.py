@@ -312,6 +312,7 @@ def parse_v2_3_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Override the v2.3 output prefix for summary, signal, performance, and NAV files.",
     )
     parser.add_argument("--base-output-prefix", default=None)
+    parser.add_argument("--audited-history-migration-report", type=Path, default=None)
     return parser.parse_args(argv)
 
 
@@ -344,7 +345,12 @@ def configure_output_paths(output_prefix: str | None = None, costed_nav_csv: Pat
     PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 
+_ACTIVE_RUNTIME_ARGS: argparse.Namespace | None = None
+
+
 def configure_runtime(args: argparse.Namespace) -> None:
+    global _ACTIVE_RUNTIME_ARGS
+    _ACTIVE_RUNTIME_ARGS = args
     _ensure_v2_0_contract_validated()
     configure_output_paths(
         output_prefix=getattr(args, "v23_output_prefix", None),
@@ -1591,8 +1597,8 @@ def _v2_3_changed_columns(
         frozen_common = col_frozen_prev.intersection(cand.index).sort_values()
         left = prev.loc[frozen_common, col]
         right = cand.loc[frozen_common, col]
-        left_num = pd.to_numeric(left, errors="coerce")
-        right_num = pd.to_numeric(right, errors="coerce")
+        left_num = pd.to_numeric(left, errors="coerce").astype(float)
+        right_num = pd.to_numeric(right, errors="coerce").astype(float)
         numeric_like = left_num.notna().any() or right_num.notna().any()
         if numeric_like:
             diff = (left_num - right_num).abs()
@@ -1691,6 +1697,62 @@ def _v2_3_rewrite_allowed_tail_rows() -> int:
     return max(LOOKBACK + OVERHEAT_FEATURE_WINDOW + 20, 60)
 
 
+def v2_3_rewrite_audit_matches_approved_lineage_migration(
+    report_path: Path | None,
+    previous: pd.DataFrame,
+    candidate: pd.DataFrame,
+    audit_path: Path,
+) -> bool:
+    if report_path is None or not Path(report_path).exists() or not audit_path.exists():
+        return False
+    try:
+        report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+        resolved = v2_0._resolve_base_paths()
+        proxy_meta_path = resolved.output_paths["proxy_meta"]
+        prev = v2_0.base_mod._normalise_dated_frame(previous, "approved v2.3 migration previous")
+        cand = v2_0.base_mod._normalise_dated_frame(candidate, "approved v2.3 migration candidate")
+        expected = {
+            "schema_version": 1,
+            "version": VERSION,
+            "approved": True,
+            "previous_costed_nav_sha256": v2_0.overlay_mod._sha256_path(COSTED_NAV_CSV),
+            "candidate_frame_sha256": v2_0.overlay_mod._candidate_frame_sha256(candidate),
+            "v2_0_costed_nav_sha256": v2_0.overlay_mod._sha256_path(v2_0.COSTED_NAV_CSV),
+            "base_proxy_meta_sha256": v2_0.overlay_mod._sha256_path(proxy_meta_path),
+            "rewrite_audit_sha256": v2_0.overlay_mod._sha256_path(audit_path),
+            "previous_row_count": int(len(prev)),
+            "candidate_row_count": int(len(cand)),
+            "previous_latest_date": str(pd.Timestamp(prev.index.max()).date()),
+            "candidate_latest_date": str(pd.Timestamp(cand.index.max()).date()),
+            "new_member_st_violations": 0,
+            "new_member_bad_policy_count": 0,
+            "proxy_meta_matches_current_cache": True,
+        }
+    except Exception:
+        return False
+    return all(report.get(key) == value for key, value in expected.items())
+
+
+def _write_v2_3_lineage_migration_diagnostics(report_path: Path, audit_path: Path) -> Path:
+    report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+    diagnostics = {
+        "diagnosis": "audited_st_metadata_and_historical_universe_lineage_migration",
+        "version": VERSION,
+        "allowed": True,
+        "migration_report": str(Path(report_path)),
+        "audit_csv": str(audit_path),
+        "previous_costed_nav_sha256": report["previous_costed_nav_sha256"],
+        "candidate_frame_sha256": report["candidate_frame_sha256"],
+        "v2_0_costed_nav_sha256": report["v2_0_costed_nav_sha256"],
+        "base_proxy_meta_sha256": report["base_proxy_meta_sha256"],
+        "rewrite_audit_sha256": report["rewrite_audit_sha256"],
+        "note": "One-time exact-hash v2.3 migration after the audited v2.0 ST and historical-universe repair.",
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
+
+
 def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     official_v2_0_out = _load_official_v2_0_out()
@@ -1700,6 +1762,7 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     common_index = build_v2_3_common_index(close_df, official_v2_0_out.index)
     out = build_v2_3_result(close_df, turnover_df, common_index)
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
+    rewrite_audit_status: dict[str, object] = {"status": "not_checked", "reason": "no_previous_costed_nav"}
     if COSTED_NAV_CSV.exists():
         previous = _read_costed_nav_csv(parse_dates=["date"])
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
@@ -1715,20 +1778,36 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
                 audit_path=audit_path,
                 column_allowed_tail_rows=V2_3_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
             )
+            rewrite_audit_status = {"status": "clean", "audit_csv": None}
         except RuntimeError as exc:
-            try:
-                diagnostics_path = _write_v2_3_rewrite_diagnostics(
-                    previous=previous,
-                    candidate=candidate,
-                    allowed_tail_rows=allowed_tail_rows,
-                    audit_path=audit_path,
-                    column_allowed_tail_rows=V2_3_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
-                )
-            except Exception as diag_exc:
-                raise RuntimeError(
-                    f"{exc} v2.3 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
-                ) from exc
-            raise RuntimeError(f"{exc} v2.3 rewrite diagnostics written to {diagnostics_path}.") from exc
+            report_path = getattr(_ACTIVE_RUNTIME_ARGS, "audited_history_migration_report", None)
+            if v2_3_rewrite_audit_matches_approved_lineage_migration(
+                report_path,
+                previous,
+                candidate,
+                audit_path,
+            ):
+                diagnostics_path = _write_v2_3_lineage_migration_diagnostics(Path(report_path), audit_path)
+                rewrite_audit_status = {
+                    "status": "audited_exact_hash_lineage_migration",
+                    "diagnostics_json": str(diagnostics_path),
+                    "audit_csv": str(audit_path),
+                    "migration_report": str(report_path),
+                }
+            else:
+                try:
+                    diagnostics_path = _write_v2_3_rewrite_diagnostics(
+                        previous=previous,
+                        candidate=candidate,
+                        allowed_tail_rows=allowed_tail_rows,
+                        audit_path=audit_path,
+                        column_allowed_tail_rows=V2_3_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
+                    )
+                except Exception as diag_exc:
+                    raise RuntimeError(
+                        f"{exc} v2.3 rewrite diagnostics failed: {type(diag_exc).__name__}: {diag_exc}"
+                    ) from exc
+                raise RuntimeError(f"{exc} v2.3 rewrite diagnostics written to {diagnostics_path}.") from exc
 
     freshness_proof = v2_0.assert_top100_candidate_fresh(
         out.index,
@@ -1821,6 +1900,7 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["latest_signal"] = signal_row.iloc[0].drop(labels=["date"], errors="ignore").to_dict()
     summary["data_lineage"] = data_lineage
     summary["data_freshness_proof"] = freshness_proof
+    summary["historical_rewrite_audit"] = rewrite_audit_status
     v2_0.overlay_mod.attach_proxy_source_summary_fields(
         summary,
         data_lineage,
@@ -2071,7 +2151,9 @@ def _handle_query(query: str) -> None:
 
 
 def main(argv: list[str] | None = None) -> None:
+    global _ACTIVE_RUNTIME_ARGS
     args = parse_v2_3_args(sys.argv[1:] if argv is None else argv)
+    previous_active_runtime_args = _ACTIVE_RUNTIME_ARGS
     previous_runtime_args = v2_0._V2_RUNTIME_ARGS
     previous_output_prefix = OUTPUT_PREFIX
     previous_costed_nav_csv = COSTED_NAV_CSV
@@ -2087,6 +2169,7 @@ def main(argv: list[str] | None = None) -> None:
         print(str(LATEST_SIGNAL_CSV))
         print(str(COSTED_NAV_CSV))
     finally:
+        _ACTIVE_RUNTIME_ARGS = previous_active_runtime_args
         configure_output_paths(previous_output_prefix, previous_costed_nav_csv)
         v2_0.configure_output_paths(previous_v2_0_output_prefix)
         v2_0._V2_RUNTIME_ARGS = previous_runtime_args

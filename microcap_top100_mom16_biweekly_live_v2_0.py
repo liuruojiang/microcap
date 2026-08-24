@@ -83,6 +83,7 @@ def parse_v2_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--bootstrap-deps", action="store_true")
     parser.add_argument("--wheelhouse", type=Path, default=None)
     parser.add_argument("--output-prefix", default=None)
+    parser.add_argument("--audited-history-migration-report", type=Path, default=None)
     return parser.parse_args(argv)
 
 
@@ -1310,9 +1311,37 @@ def fetch_current_st_codes(force_refresh: bool = False) -> set[str]:
         return set(frame["code"].dropna())
 
     ak = get_akshare()
-    st = ak.stock_zh_a_st_em()
-    frame = st[[COL_CODE, COL_NAME]].copy()
-    frame.columns = ["code", "name"]
+    try:
+        st = ak.stock_zh_a_st_em()
+        frame = st[[COL_CODE, COL_NAME]].copy()
+        frame.columns = ["code", "name"]
+    except Exception:
+        universe = fetch_active_universe(force_refresh=False)
+        codes = sorted(universe["code"].dropna().astype(str).str.zfill(6).unique())
+        rows: list[dict[str, str]] = []
+        for offset in range(0, len(codes), 500):
+            batch = codes[offset : offset + 500]
+            quote_keys = ",".join(("sh" if code.startswith("6") else "sz") + code for code in batch)
+            response = requests.get(
+                f"https://qt.gtimg.cn/q={quote_keys}",
+                timeout=30,
+                headers={"Referer": "https://finance.qq.com/", "User-Agent": "Mozilla/5.0"},
+            )
+            response.raise_for_status()
+            for line in response.content.decode("gbk", errors="replace").splitlines():
+                if '="' not in line:
+                    continue
+                fields = line.split('="', 1)[1].rsplit('";', 1)[0].split("~")
+                if len(fields) <= 2:
+                    continue
+                code = str(fields[2]).zfill(6)
+                name = str(fields[1]).strip()
+                normalized = name.upper().replace(" ", "")
+                if normalized.startswith(("*ST", "ST", "PT")):
+                    rows.append({"code": code, "name": name})
+        frame = pd.DataFrame(rows).drop_duplicates(subset="code")
+        if frame.empty:
+            raise RuntimeError("Tencent current-name fallback returned no ST/*ST/PT stocks")
     frame.to_csv(CURRENT_ST_CACHE, index=False, encoding="utf-8")
     return set(frame["code"].dropna())
 
@@ -1409,9 +1438,11 @@ def _fetch_price_history_eastmoney(symbol: str, start_ts: pd.Timestamp, end_ts: 
 
 
 def _fetch_price_history_sina(symbol: str, start_ts: pd.Timestamp, end_ts: pd.Timestamp) -> pd.DataFrame:
+    calendar_days = max(0, int((pd.Timestamp(end_ts).normalize() - pd.Timestamp(start_ts).normalize()).days))
+    datalen = max(30, min(6000, calendar_days + 20))
     url = (
         "https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData"
-        f"?symbol={_sina_symbol(symbol)}&scale=240&ma=no&datalen=6000"
+        f"?symbol={_sina_symbol(symbol)}&scale=240&ma=no&datalen={datalen}"
     )
     resp = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
     resp.raise_for_status()
@@ -1943,6 +1974,8 @@ FREQ_SOURCE = r'''
 from __future__ import annotations
 
 import json
+import re
+import time
 import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from decimal import ROUND_HALF_UP, Decimal
@@ -1978,6 +2011,7 @@ END_DATE = pd.Timestamp.today().strftime("%Y-%m-%d")
 LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
+ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
 LIMIT_PRICE_REL_EPS = 1e-4
 SCHEDULES = {
@@ -2012,6 +2046,8 @@ SHARED_SECURITY_MASTER_CACHE = SHARED_CACHE_DIR / "security_master.csv" if SHARE
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _SECURITY_MASTER_MEMO: pd.DataFrame | None = None
+_CURRENT_ST_NAME_MEMO: dict[str, str] | None = None
+_CURRENT_ST_MTIME_NS: int | None = None
 
 
 def _first_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str:
@@ -2312,10 +2348,46 @@ def load_trading_dates() -> pd.DatetimeIndex:
     return pd.DatetimeIndex(dates)
 
 
+def load_current_st_name_map() -> dict[str, str]:
+    global _CURRENT_ST_NAME_MEMO, _CURRENT_ST_MTIME_NS
+    try:
+        mtime_ns = CURRENT_ST.stat().st_mtime_ns
+    except OSError:
+        _CURRENT_ST_NAME_MEMO = {}
+        _CURRENT_ST_MTIME_NS = None
+        return {}
+    if _CURRENT_ST_NAME_MEMO is not None and _CURRENT_ST_MTIME_NS == mtime_ns:
+        return _CURRENT_ST_NAME_MEMO
+    try:
+        frame = pd.read_csv(CURRENT_ST, dtype=str)
+        frame["code"] = frame["code"].astype(str).str.zfill(6)
+        if "name" not in frame.columns:
+            frame["name"] = ""
+        frame["name"] = frame["name"].fillna("").astype(str).str.strip()
+        _CURRENT_ST_NAME_MEMO = dict(zip(frame["code"], frame["name"]))
+    except Exception:
+        _CURRENT_ST_NAME_MEMO = {}
+    _CURRENT_ST_MTIME_NS = mtime_ns
+    return _CURRENT_ST_NAME_MEMO
+
+
 def load_current_universe() -> list[str]:
     universe = pd.read_csv(ACTIVE_UNIVERSE, dtype=str)
-    st_codes = set(pd.read_csv(CURRENT_ST, dtype=str)["code"].dropna())
+    universe["code"] = universe["code"].astype(str).str.zfill(6)
+    st_codes = set(load_current_st_name_map())
     universe = universe[~universe["code"].isin(st_codes)].copy()
+    master = load_security_master()
+    if not master.empty and {"symbol", "name"}.issubset(master.columns):
+        current_names = dict(
+            zip(
+                master["symbol"].astype(str).str.zfill(6),
+                master["name"].fillna("").astype(str),
+            )
+        )
+        universe["current_name"] = universe["code"].map(current_names).fillna(universe.get("name", ""))
+        universe = universe[~universe["current_name"].map(is_st_name)].copy()
+    if "name" in universe.columns:
+        universe = universe[~universe["name"].map(is_st_name)].copy()
     codes = []
     for code in universe["code"].tolist():
         if resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, code) and resolve_cache_path(SHARE_DIR, SHARED_SHARE_DIR, code):
@@ -2470,16 +2542,40 @@ def build_st_intervals_from_notices(
 
     def infer_action(title: str) -> str | None:
         text = str(title or "").upper().replace(" ", "")
-        if not text or "申请" in text or "提示性" in text:
+        if not text or "申请" in text:
             return None
-        if "撤销" in text and any(token in text for token in ["退市风险警示", "其他特别处理", "其他风险警示", "特别处理"]):
-            return "exit"
-        if (
-            any(token in text for token in ["实施", "实行"])
-            and any(token in text for token in ["退市风险警示", "其他风险警示", "特别处理"])
-            and "可能" not in text
-            and "撤销" not in text
+        if "摘帽" in text or (
+            "撤销" in text
+            and any(token in text for token in ["退市风险警示", "其他特别处理", "其他风险警示", "特别处理"])
         ):
+            return "exit"
+        definitive_text = text
+        for possible_phrase in [
+            "可能被实施退市风险警示",
+            "可能被实施其他风险警示",
+            "可能实施退市风险警示",
+            "可能实施其他风险警示",
+            "存在被实施退市风险警示",
+            "存在被实施其他风险警示",
+            "存在实施退市风险警示",
+            "存在实施其他风险警示",
+        ]:
+            definitive_text = definitive_text.replace(possible_phrase, "")
+        definitive_entry_tokens = [
+            "被实施退市风险警示",
+            "将被实施退市风险警示",
+            "实施退市风险警示",
+            "实行退市风险警示",
+            "被实施其他风险警示",
+            "将被实施其他风险警示",
+            "实施其他风险警示",
+            "实行其他风险警示",
+            "被实施特别处理",
+            "将被实施特别处理",
+            "实施特别处理",
+            "实行特别处理",
+        ]
+        if any(token in definitive_text for token in definitive_entry_tokens):
             return "entry"
         return None
 
@@ -2574,10 +2670,27 @@ def fetch_sz_name_change_history(force_refresh: bool = False) -> pd.DataFrame:
         "TABKEY": "tab2",
         "random": "0.6935816432433362",
     }
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        response = requests.get(url, params=params, timeout=30, verify=False)
-    response.raise_for_status()
+    last_error: Exception | None = None
+    response = None
+    for attempt in range(3):
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                response = requests.get(
+                    url,
+                    params=params,
+                    timeout=30,
+                    verify=False,
+                    headers={"Referer": "https://www.szse.cn/", "User-Agent": "Mozilla/5.0"},
+                )
+            response.raise_for_status()
+            break
+        except requests.RequestException as exc:
+            last_error = exc
+            response = None
+            time.sleep(0.5 * (attempt + 1))
+    if response is None:
+        raise RuntimeError(f"SZSE name-change refresh failed: {last_error}") from last_error
     frame = pd.read_excel(BytesIO(response.content), engine="openpyxl")
     frame = frame.rename(
         columns={
@@ -2617,49 +2730,73 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
     if not org_id:
         return pd.DataFrame(columns=["notice_date", "title"])
 
-    payload = {
-        "pageNum": "1",
-        "pageSize": "30",
-        "column": "szse",
-        "tabName": "fulltext",
-        "plate": "",
-        "stock": f"{str(symbol).zfill(6)},{org_id}",
-        "searchkey": "",
-        "secid": "",
-        "category": "category_tbclts_szsh",
-        "trade": "",
-        "seDate": f"{start_date[:4]}-{start_date[4:6]}-{start_date[6:]}~{end_date[:4]}-{end_date[4:6]}-{end_date[6:]}",
-        "sortName": "",
-        "sortType": "",
-        "isHLtitle": "true",
-    }
-    response = requests.post("http://www.cninfo.com.cn/new/hisAnnouncement/query", data=payload, timeout=30)
-    response.raise_for_status()
-    data = response.json()
-    total = int(data.get("totalAnnouncement") or 0)
-    if total <= 0:
-        return pd.DataFrame(columns=["notice_date", "title"])
-
     rows: list[dict[str, object]] = []
-    total_pages = max(1, (total + 29) // 30)
-    for page in range(1, total_pages + 1):
-        payload["pageNum"] = str(page)
-        page_resp = requests.post("http://www.cninfo.com.cn/new/hisAnnouncement/query", data=payload, timeout=30)
-        page_resp.raise_for_status()
-        page_data = page_resp.json()
-        for item in page_data.get("announcements") or []:
-            rows.append(
-                {
-                    "notice_date": pd.to_datetime(item.get("announcementTime"), unit="ms", utc=True, errors="coerce")
-                    .tz_convert("Asia/Shanghai")
-                    .tz_localize(None),
-                    "title": item.get("announcementTitle") or "",
-                }
-            )
+    query_specs = [
+        {"category": "category_tbclts_szsh", "searchkey": ""},
+        {"category": "", "searchkey": "风险警示"},
+        {"category": "", "searchkey": "特别处理"},
+        {"category": "", "searchkey": "撤销风险警示"},
+        {"category": "", "searchkey": "撤销特别处理"},
+        {"category": "", "searchkey": "摘帽"},
+    ]
+
+    def post_page(payload: dict[str, str]) -> dict[str, object]:
+        last_error: Exception | None = None
+        for attempt in range(3):
+            try:
+                response = requests.post(
+                    "http://www.cninfo.com.cn/new/hisAnnouncement/query",
+                    data=payload,
+                    timeout=30,
+                )
+                response.raise_for_status()
+                return response.json()
+            except (requests.RequestException, ValueError) as exc:
+                last_error = exc
+                time.sleep(0.5 * (attempt + 1))
+        raise RuntimeError(f"CNInfo announcement query failed for {symbol}: {last_error}") from last_error
+
+    for spec in query_specs:
+        payload = {
+            "pageNum": "1",
+            "pageSize": "30",
+            "column": "szse",
+            "tabName": "fulltext",
+            "plate": "",
+            "stock": f"{str(symbol).zfill(6)},{org_id}",
+            "searchkey": spec["searchkey"],
+            "secid": "",
+            "category": spec["category"],
+            "trade": "",
+            "seDate": f"{start_date[:4]}-{start_date[4:6]}-{start_date[6:]}~{end_date[:4]}-{end_date[4:6]}-{end_date[6:]}",
+            "sortName": "",
+            "sortType": "",
+            "isHLtitle": "true",
+        }
+        first_page = post_page(payload)
+        total = int(first_page.get("totalAnnouncement") or 0)
+        total_pages = max(1, (total + 29) // 30) if total > 0 else 0
+        for page in range(1, total_pages + 1):
+            page_data = first_page if page == 1 else post_page({**payload, "pageNum": str(page)})
+            for item in page_data.get("announcements") or []:
+                title = re.sub(r"<[^>]+>", "", str(item.get("announcementTitle") or ""))
+                rows.append(
+                    {
+                        "notice_date": pd.to_datetime(item.get("announcementTime"), unit="ms", utc=True, errors="coerce")
+                        .tz_convert("Asia/Shanghai")
+                        .tz_localize(None),
+                        "title": title,
+                    }
+                )
     frame = pd.DataFrame(rows)
     if frame.empty:
         return pd.DataFrame(columns=["notice_date", "title"])
-    frame = frame.dropna(subset=["notice_date"]).sort_values("notice_date").reset_index(drop=True)
+    frame = (
+        frame.dropna(subset=["notice_date"])
+        .drop_duplicates(subset=["notice_date", "title"])
+        .sort_values("notice_date")
+        .reset_index(drop=True)
+    )
     return frame
 
 
@@ -2672,6 +2809,18 @@ def resolve_security_meta_path(symbol: str) -> Path | None:
         if shared_path.exists():
             return shared_path
     return None
+
+
+def latest_symbol_price_date(symbol: str) -> pd.Timestamp | None:
+    path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, str(symbol).zfill(6))
+    if path is None:
+        return None
+    try:
+        dates = pd.read_csv(path, usecols=["date"])["date"]
+        latest = pd.to_datetime(dates, errors="coerce").max()
+        return None if pd.isna(latest) else pd.Timestamp(latest).normalize()
+    except Exception:
+        return None
 
 
 def build_security_meta(symbol: str) -> dict[str, object] | None:
@@ -2695,14 +2844,19 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     name_intervals: list[dict[str, str | None]] = []
     notice_intervals: list[dict[str, str | None]] = []
     current_name_intervals: list[dict[str, str | None]] = []
+    name_history_status = "not_applicable"
+    notice_query_status = "not_started"
+    notice_count = 0
 
     if str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
         try:
             changes = fetch_sz_name_change_history()
             symbol_changes = changes.loc[changes["symbol"] == str(symbol).zfill(6), ["change_date", "old_name", "new_name"]]
             name_intervals = build_st_intervals_from_name_changes(first_trade, last_trade, symbol_changes)
-        except Exception:
+            name_history_status = "ok"
+        except Exception as exc:
             name_intervals = []
+            name_history_status = f"error:{type(exc).__name__}:{exc}"
 
     try:
         notices = fetch_cninfo_st_notices(
@@ -2710,21 +2864,31 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
             start_date=first_trade.strftime("%Y%m%d"),
             end_date=last_trade.strftime("%Y%m%d"),
         )
+        notice_count = int(len(notices))
         notice_intervals = build_st_intervals_from_notices(first_trade, last_trade, notices)
-    except Exception:
+        notice_query_status = "ok"
+    except Exception as exc:
         notice_intervals = []
+        notice_query_status = f"error:{type(exc).__name__}:{exc}"
 
-    if master_row is not None:
+    current_st_name = load_current_st_name_map().get(str(symbol).zfill(6), "")
+    current_name = current_st_name
+    if not current_name and master_row is not None and not pd.isna(master_row.get("name")):
+        current_name = str(master_row.get("name"))
+    if current_name:
         current_name_intervals = build_st_interval_from_current_name_snapshot(
             first_trade,
             last_trade,
-            None if pd.isna(master_row.get("name")) else str(master_row.get("name")),
+            current_name,
         )
 
     st_intervals = merge_st_intervals([*name_intervals, *notice_intervals, *current_name_intervals])
+    evidence_intervals = [*name_intervals, *notice_intervals]
+    current_st_history_resolved = (not current_st_name) or any(item.get("end") is None for item in evidence_intervals)
 
     meta = {
         "meta_version": SECURITY_META_VERSION,
+        "st_notice_policy_version": ST_NOTICE_POLICY_VERSION,
         "symbol": str(symbol).zfill(6),
         "first_trade_date": str(first_trade.date()),
         "last_trade_date": str(last_trade.date()),
@@ -2740,6 +2904,11 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         ),
         "exchange": None if master_row is None else master_row.get("exchange"),
         "board": None if master_row is None else master_row.get("board"),
+        "current_st_snapshot_name": current_st_name or None,
+        "name_history_status": name_history_status,
+        "notice_query_status": notice_query_status,
+        "notice_count": notice_count,
+        "current_st_history_resolved": bool(current_st_history_resolved),
         "st_intervals": st_intervals,
     }
     SECURITY_META_DIR.mkdir(parents=True, exist_ok=True)
@@ -2751,12 +2920,22 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
 
 
 def load_security_meta(symbol: str) -> dict[str, object] | None:
+    code = str(symbol).zfill(6)
+    current_st_name = load_current_st_name_map().get(code, "")
     meta_path = resolve_security_meta_path(symbol)
     if meta_path is not None:
         try:
             payload = json.loads(meta_path.read_text(encoding="utf-8"))
             if payload.get("meta_version") == SECURITY_META_VERSION:
-                return payload
+                if not current_st_name:
+                    return payload
+                meta_last = pd.to_datetime(payload.get("last_trade_date"), errors="coerce")
+                price_last = latest_symbol_price_date(code)
+                policy_matches = payload.get("st_notice_policy_version") == ST_NOTICE_POLICY_VERSION
+                name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
+                date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
+                if policy_matches and name_matches and date_matches:
+                    return payload
         except Exception:
             pass
     try:
@@ -3519,8 +3698,9 @@ COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS = {
     RESEARCH_STACK_VERSION,
     "2026-04-11-p0-p1-history-meta-master-stv2",
 }
-STATIC_CONTEXT_CACHE_VERSION = "2026-05-12-live-current-st-members-v2"
+STATIC_CONTEXT_CACHE_VERSION = "2026-08-20-live-st-name-guard-v3"
 MEMBER_FILTER_POLICY_VERSION = "empty-name-reject-v1"
+LIVE_MEMBER_FILTER_POLICY_VERSION = "exclude-current-st-name-v1"
 REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
 PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
@@ -3667,6 +3847,21 @@ def is_tradable_name(name: str) -> bool:
     if not text:
         return False
     return NON_TRADABLE_NAME_PATTERN.search(text) is None
+
+
+def is_live_tradable_name(name: str) -> bool:
+    """Current/live member rule; deliberately separate from historical ST masks."""
+    text = str(name or "").strip().upper().replace(" ", "")
+    return is_tradable_name(name) and not text.startswith(("*ST", "ST", "PT"))
+
+
+def assert_no_st_members(members: pd.DataFrame, label: str) -> None:
+    if members.empty or "name" not in members.columns:
+        return
+    bad = members.loc[~members["name"].map(is_live_tradable_name), [column for column in ("symbol", "name") if column in members.columns]]
+    if not bad.empty:
+        sample = bad.head(10).astype(str).to_dict("records")
+        raise RuntimeError(f"{label} contains forbidden ST/delisting/empty-name members: {sample}")
 
 
 def build_output_paths(output_prefix: str) -> dict[str, Path]:
@@ -4094,6 +4289,7 @@ def price_cache_refresh_preflight(
         "missing_count": int(len(missing)),
         "stale_or_missing_count": int(len(stale_or_missing)),
         "force_refresh": bool(force_refresh),
+        "stale_or_missing_symbols": stale_or_missing,
         "sample_stale_or_missing_symbols": stale_or_missing[:10],
     }
 
@@ -4131,6 +4327,10 @@ def refresh_price_cache_tail(
         f"current={preflight['current_count']} force_refresh={preflight['force_refresh']} "
         f"workers={workers} sample={sample}"
     )
+    refresh_symbols = list(preflight.get("stale_or_missing_symbols", []) or [])
+    if not refresh_symbols:
+        _log_price_cache_refresh("price-cache refresh complete 0/0 failures=0")
+        return
 
     def refresh_price_history_with_fallback(symbol: str) -> None:
         try:
@@ -4148,10 +4348,10 @@ def refresh_price_cache_tail(
             fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
 
     completed = 0
-    total_symbols = len(symbols)
+    total_symbols = len(refresh_symbols)
     interval = max(0, int(progress_interval or 0))
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in symbols}
+        futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in refresh_symbols}
         for fut in as_completed(futures):
             symbol = futures[fut]
             try:
@@ -4180,10 +4380,10 @@ def refresh_price_cache_tail(
         )
         audit_path = OUTPUT_DIR / f"price_cache_refresh_failures_{end_text}.csv"
         _atomic_to_csv(audit, audit_path, index=False, encoding="utf-8")
-    if len(failures) > max(20, len(symbols) // 100):
+    if len(failures) > max(20, len(refresh_symbols) // 100):
         sample = ", ".join(list(failures)[:10])
         raise RuntimeError(
-            f"Too many price-cache refresh failures ({len(failures)}/{len(symbols)}). Sample: {sample}"
+            f"Too many price-cache refresh failures ({len(failures)}/{len(refresh_symbols)}). Sample: {sample}"
         )
     _log_price_cache_refresh(f"price-cache refresh complete {total_symbols}/{total_symbols} failures={len(failures)}")
 
@@ -4531,6 +4731,11 @@ def build_local_proxy_bundle(
     trading_dates: pd.DatetimeIndex,
     symbols: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]:
+    model_start = pd.Timestamp(freq_mod.START_DATE).normalize()
+    trading_dates = pd.DatetimeIndex(trading_dates).normalize().unique().sort_values()
+    trading_dates = trading_dates[trading_dates >= model_start]
+    if trading_dates.empty:
+        raise RuntimeError(f"No trading dates available on or after model start {model_start.date()}.")
     rebalance_dates = build_biweekly_rebalance_dates(trading_dates)
     universe_source = "explicit_symbols"
     if symbols is None:
@@ -4603,6 +4808,8 @@ def build_local_proxy_bundle(
             "realtime_quote_policy_version": REALTIME_QUOTE_POLICY_VERSION,
             "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
             "security_meta_version": getattr(freq_mod, "SECURITY_META_VERSION", None),
+            "st_notice_policy_version": getattr(freq_mod, "ST_NOTICE_POLICY_VERSION", None),
+            "security_meta_cache_fingerprint": security_meta_cache_fingerprint(),
             "security_master_enabled": True,
         },
         "start_date": str(pd.Timestamp(index_df["date"].min()).date()),
@@ -4612,6 +4819,25 @@ def build_local_proxy_bundle(
     if effective_start is not None:
         meta["effective_start_date"] = str(effective_start.date())
     return index_df, members_df, turnover_df, meta
+
+
+def security_meta_cache_fingerprint() -> dict[str, object]:
+    digest = hashlib.sha256()
+    present = 0
+    missing = 0
+    for symbol in sorted(freq_mod.list_backtest_universe_symbols()):
+        code = str(symbol).zfill(6)
+        path = freq_mod.resolve_security_meta_path(code)
+        digest.update(code.encode("ascii"))
+        digest.update(b"\0")
+        if path is None:
+            missing += 1
+            digest.update(b"missing")
+        else:
+            present += 1
+            digest.update(Path(path).read_bytes())
+        digest.update(b"\0")
+    return {"present_count": present, "missing_count": missing, "sha256": digest.hexdigest()}
 
 
 def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
@@ -4625,6 +4851,8 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     member_filter_policy_version = core_params.get("member_filter_policy_version")
     realtime_quote_policy_version = core_params.get("realtime_quote_policy_version")
     proxy_rebalance_policy_version = core_params.get("proxy_rebalance_policy_version")
+    st_notice_policy_version = core_params.get("st_notice_policy_version")
+    security_meta_fingerprint = core_params.get("security_meta_cache_fingerprint")
     return (
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
@@ -4634,6 +4862,8 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
         and member_filter_policy_version == MEMBER_FILTER_POLICY_VERSION
         and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
         and proxy_rebalance_policy_version in (None, PROXY_REBALANCE_POLICY_VERSION)
+        and st_notice_policy_version == getattr(freq_mod, "ST_NOTICE_POLICY_VERSION", None)
+        and security_meta_fingerprint == security_meta_cache_fingerprint()
     )
 
 
@@ -6657,15 +6887,17 @@ def build_live_target_members_map(
     rebalance_dates: pd.DatetimeIndex,
     name_map: dict[str, str],
     top_n: int = TOP_N,
+    exclude_current_st_names: bool = False,
 ) -> dict[pd.Timestamp, list[str]]:
     out: dict[pd.Timestamp, list[str]] = {}
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
         ranked = sorted(cap_map.items(), key=lambda x: x[1])
+        name_filter = is_live_tradable_name if exclude_current_st_names else is_tradable_name
         tradable_candidates = [
             symbol
             for symbol, _ in ranked
-            if is_tradable_name(name_map.get(str(symbol).zfill(6), ""))
+            if name_filter(name_map.get(str(symbol).zfill(6), ""))
         ]
         if len(tradable_candidates) < int(top_n):
             raise RuntimeError(
@@ -6698,6 +6930,7 @@ def load_member_snapshot(
         rebalance_dates=snapshot_index,
         name_map=name_map,
         top_n=TOP_N,
+        exclude_current_st_names=True,
     )
 
     snapshots: dict[pd.Timestamp, pd.DataFrame] = {}
@@ -6715,7 +6948,9 @@ def load_member_snapshot(
                     "target_weight": 1.0 / TOP_N,
                 }
             )
-        snapshots[pd.Timestamp(dt)] = pd.DataFrame(rows)
+        snapshot = pd.DataFrame(rows)
+        assert_no_st_members(snapshot, f"live member snapshot {pd.Timestamp(dt).date()}")
+        snapshots[pd.Timestamp(dt)] = snapshot
     return snapshots
 
 
@@ -6739,7 +6974,7 @@ def load_member_snapshot_from_proxy_members(
     if "name" not in members.columns:
         return {}
     members["name"] = members["name"].fillna("").astype(str).str.strip()
-    members = members.loc[members["name"].map(is_tradable_name)]
+    members = members.loc[members["name"].map(is_live_tradable_name)]
     if members.empty:
         return {}
 
@@ -6925,6 +7160,7 @@ def load_cached_static_context(
         expected = {
             "cache_version": STATIC_CONTEXT_CACHE_VERSION,
             "member_filter_policy_version": MEMBER_FILTER_POLICY_VERSION,
+            "live_member_filter_policy_version": LIVE_MEMBER_FILTER_POLICY_VERSION,
             "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
             "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
             "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
@@ -6937,6 +7173,8 @@ def load_cached_static_context(
         target_members = pd.read_csv(target_path, dtype={"symbol": str})
         effective_members = pd.read_csv(effective_path, dtype={"symbol": str})
         changes_df = pd.read_csv(changes_path, dtype={"symbol": str})
+        assert_no_st_members(target_members, "cached static target members")
+        assert_no_st_members(effective_members, "cached static effective members")
         target_members = add_capital_columns(target_members, capital)
         return target_members, effective_members, changes_df
     except Exception:
@@ -6957,6 +7195,7 @@ def save_static_context_cache(
     meta = {
         "cache_version": STATIC_CONTEXT_CACHE_VERSION,
         "member_filter_policy_version": MEMBER_FILTER_POLICY_VERSION,
+        "live_member_filter_policy_version": LIVE_MEMBER_FILTER_POLICY_VERSION,
         "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
         "rebalance_phase_anchor_date": REBALANCE_ANCHOR_DATE,
         "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
@@ -6964,6 +7203,8 @@ def save_static_context_cache(
         "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
         "rebalance_effective_date": None if rebalance_effective_date is None else str(pd.Timestamp(rebalance_effective_date).date()),
     }
+    assert_no_st_members(target_members, "static target members before cache write")
+    assert_no_st_members(effective_members, "static effective members before cache write")
     with _cache_write_lock(REALTIME_DIR / f"{paths['cache_static_meta'].stem}.lock"):
         _atomic_to_csv(target_members, paths["cache_static_target"], index=False, encoding="utf-8")
         _atomic_to_csv(effective_members, paths["cache_static_effective"], index=False, encoding="utf-8")
@@ -7360,6 +7601,7 @@ def build_summary(
             "realtime_quote_policy_version": REALTIME_QUOTE_POLICY_VERSION,
             "proxy_rebalance_policy_version": PROXY_REBALANCE_POLICY_VERSION,
             "security_meta_version": getattr(freq_mod, "SECURITY_META_VERSION", None),
+            "st_notice_policy_version": getattr(freq_mod, "ST_NOTICE_POLICY_VERSION", None),
             "security_master_enabled": True,
         },
         "latest_trade_date": str(result.index[-1].date()),
@@ -7522,6 +7764,7 @@ def save_base_outputs(context: dict[str, object]) -> None:
     _atomic_to_csv(result, paths["nav"], index_label="date", encoding="utf-8")
     _atomic_to_csv(latest_signal, paths["signal"], index=False, encoding="utf-8")
     if include_members:
+        assert_no_st_members(target_members, "base target members before output write")
         _atomic_to_csv(target_members, paths["members"], index=False, encoding="utf-8")
         _atomic_to_csv(changes_df, paths["changes"], index=False, encoding="utf-8")
         _atomic_write_json(paths["summary"], summary, encoding="utf-8")
@@ -8136,15 +8379,22 @@ def build_realtime_context_from_cached_proxy(
     panel_path: Path,
     target_end_date: pd.Timestamp,
     reason: str,
+    *,
+    degraded: bool = True,
 ) -> dict[str, object] | None:
     cache_end = reusable_cached_proxy_end_for_realtime(args, paths, target_end_date)
     if cache_end is None:
         return None
     close_df = load_close_df(panel_path, args.index_csv, max_date=cache_end)
     context = build_base_signal_context(args, paths, panel_path, cache_end, close_df)
-    context["fallback_warning"] = (
-        f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    note = f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    context["realtime_base_source"] = (
+        "cached_proxy_fallback" if degraded else "validated_refreshed_state"
     )
+    context["realtime_base_note"] = note
+    context["allow_quote_pre_close_after_anchor"] = True
+    if degraded:
+        context["fallback_warning"] = note
     return context
 
 
@@ -8454,7 +8704,7 @@ def load_or_refresh_latest_shares(cache_seconds: int = 86400) -> pd.DataFrame:
     universe = pd.read_csv(freq_mod.ACTIVE_UNIVERSE, dtype=str)
     st_codes = set(pd.read_csv(freq_mod.CURRENT_ST, dtype=str)["code"].dropna().astype(str))
     universe = universe[~universe["code"].isin(st_codes)].copy()
-    universe = universe[universe["name"].map(is_tradable_name)].copy()
+    universe = universe[universe["name"].map(is_live_tradable_name)].copy()
 
     rows: list[dict[str, object]] = []
     for row in universe.itertuples(index=False):
@@ -9217,15 +9467,16 @@ def build_realtime_target_members(context: dict[str, object], cache_seconds: int
     shares_df = load_or_refresh_latest_shares()
     quotes_df, quote_source = build_realtime_quote_map(cache_seconds)
     merged = shares_df.merge(quotes_df[["code", "名称", "rt_price", "昨收", "今开", "最高", "最低", "成交额"]], on="code", how="inner")
-    merged = merged[merged["name"].map(is_tradable_name)].copy()
+    merged["name"] = merged["名称"].fillna(merged["name"])
+    merged = merged[merged["name"].map(is_live_tradable_name)].copy()
     merged["market_cap"] = merged["rt_price"] * merged["total_shares"]
     merged = merged.dropna(subset=["market_cap"]).sort_values("market_cap").head(TOP_N).copy()
     merged["rank"] = np.arange(1, len(merged) + 1)
     merged["target_weight"] = 1.0 / TOP_N
     merged["symbol"] = merged["code"]
-    merged["name"] = merged["名称"].fillna(merged["name"])
     cols = ["rank", "symbol", "name", "rt_price", "market_cap", "target_weight", "change_date", "今开", "最高", "最低", "成交额"]
     out = merged[cols].reset_index(drop=True)
+    assert_no_st_members(out, "realtime target members")
     if capital is not None and not out.empty:
         out["target_notional"] = capital * out["target_weight"]
     return out, quote_source
@@ -9307,6 +9558,7 @@ def build_realtime_signal(context: dict[str, object], cache_seconds: int) -> tup
         latest_rt_signal["fallback_warning"] = fallback_warning
 
     meta = {
+        "live_member_filter_policy_version": LIVE_MEMBER_FILTER_POLICY_VERSION,
         "snapshot_time": str(snapshot_ts),
         "latest_anchor_trade_date": str(latest_trade_date.date()),
         "quote_source": quote_source,
@@ -9347,7 +9599,9 @@ def build_realtime_signal_fast(
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
     last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
-    allow_quote_pre_close_after_anchor = bool(context.get("fallback_warning"))
+    allow_quote_pre_close_after_anchor = bool(
+        context.get("allow_quote_pre_close_after_anchor", context.get("fallback_warning"))
+    )
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []
@@ -9477,8 +9731,14 @@ def build_realtime_signal_fast(
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
     fallback_warning = str(context.get("fallback_warning") or "")
+    realtime_base_source = str(context.get("realtime_base_source") or "")
+    realtime_base_note = str(context.get("realtime_base_note") or "")
     if fallback_warning:
         signal_df["fallback_warning"] = fallback_warning
+    if realtime_base_source:
+        signal_df["realtime_base_source"] = realtime_base_source
+    if realtime_base_note:
+        signal_df["realtime_base_note"] = realtime_base_note
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -9507,6 +9767,10 @@ def build_realtime_signal_fast(
     }
     if fallback_warning:
         meta["fallback_warning"] = fallback_warning
+    if realtime_base_source:
+        meta["realtime_base_source"] = realtime_base_source
+    if realtime_base_note:
+        meta["realtime_base_note"] = realtime_base_note
     return signal_df, meta, rt_close_df, rt_result
 
 
@@ -9550,8 +9814,89 @@ def load_realtime_eligible_codes() -> set[str]:
     st_codes = set(pd.read_csv(freq_mod.CURRENT_ST, dtype=str)["code"].dropna().astype(str).str.zfill(6))
     universe["code"] = universe["code"].astype(str).str.zfill(6)
     universe = universe[~universe["code"].isin(st_codes)].copy()
-    universe = universe[universe["name"].map(is_tradable_name)].copy()
+    universe = universe[universe["name"].map(is_live_tradable_name)].copy()
     return set(universe["code"].tolist())
+
+
+def fetch_tencent_realtime_smallcap_members(
+    eligible_codes: set[str],
+    effective_date: pd.Timestamp | None,
+    capital: float | None,
+    target_size: int,
+) -> tuple[pd.DataFrame, str]:
+    rows: list[dict[str, object]] = []
+    codes = sorted(str(code).zfill(6) for code in eligible_codes if not str(code).startswith(("8", "4")))
+    for offset in range(0, len(codes), 500):
+        batch = codes[offset : offset + 500]
+        quote_keys = ",".join(("sh" if code.startswith("6") else "sz") + code for code in batch)
+        response = requests.get(
+            f"https://qt.gtimg.cn/q={quote_keys}",
+            timeout=30,
+            headers={"Referer": "https://finance.qq.com/", "User-Agent": "Mozilla/5.0"},
+        )
+        response.raise_for_status()
+        text = response.content.decode("gbk", errors="replace")
+        for line in text.splitlines():
+            if '="' not in line:
+                continue
+            payload = line.split('="', 1)[1].rsplit('";', 1)[0]
+            fields = payload.split("~")
+            if len(fields) <= 45:
+                continue
+            code = str(fields[2]).zfill(6)
+            name = str(fields[1]).strip()
+            latest = pd.to_numeric(fields[3], errors="coerce")
+            market_cap_yi = pd.to_numeric(fields[45], errors="coerce")
+            if (
+                code not in eligible_codes
+                or (not is_live_tradable_name(name))
+                or pd.isna(latest)
+                or float(latest) <= 0
+                or pd.isna(market_cap_yi)
+                or float(market_cap_yi) <= 0
+            ):
+                continue
+            rows.append(
+                {
+                    "symbol": code,
+                    "name": name,
+                    "rt_price": float(latest),
+                    "market_cap": float(market_cap_yi) * 100_000_000.0,
+                    "target_weight": 1.0 / TOP_N,
+                    "open_price": pd.to_numeric(fields[5], errors="coerce"),
+                    "high_price": pd.to_numeric(fields[33], errors="coerce"),
+                    "low_price": pd.to_numeric(fields[34], errors="coerce"),
+                    "prev_close": pd.to_numeric(fields[4], errors="coerce"),
+                    "amount": pd.to_numeric(fields[37], errors="coerce"),
+                    "signal_date": _cn_local_day().date(),
+                    "effective_date": None if effective_date is None else pd.Timestamp(effective_date).date(),
+                }
+            )
+    frame = pd.DataFrame(rows).drop_duplicates(subset="symbol")
+    frame = frame.sort_values("market_cap").head(target_size).copy()
+    if len(frame) < target_size:
+        raise RuntimeError(f"腾讯实时行情备用路径仅得到 {len(frame)}/{target_size} 只股票。")
+    assert_no_st_members(frame, "Tencent realtime small-cap members")
+    frame["rank"] = np.arange(1, len(frame) + 1)
+    frame = frame[
+        [
+            "rank",
+            "symbol",
+            "name",
+            "rt_price",
+            "market_cap",
+            "target_weight",
+            "open_price",
+            "high_price",
+            "low_price",
+            "prev_close",
+            "amount",
+            "signal_date",
+            "effective_date",
+        ]
+    ].reset_index(drop=True)
+    frame = add_capital_columns(frame, capital)
+    return frame, "tencent_qt_total_market_cap"
 
 
 def fetch_realtime_smallcap_members_fast(
@@ -9564,19 +9909,32 @@ def fetch_realtime_smallcap_members_fast(
     required_valid = max(int(target_size) * 2, 240)
     page = 1
     while len(rows) < required_valid and page <= 12:
-        url = (
-            "https://push2.eastmoney.com/api/qt/clist/get"
+        query = (
             f"?pn={page}&pz=100&po=0&np=1&fltt=2&invt=2&fid=f20"
             "&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23"
             "&fields=f12,f14,f2,f3,f17,f15,f16,f18,f20,f6"
         )
-        response = requests.get(
-            url,
-            timeout=10,
-            headers={"Referer": "https://quote.eastmoney.com/", "User-Agent": "Mozilla/5.0"},
-        )
-        response.raise_for_status()
-        data = response.json().get("data") or {}
+        data: dict[str, object] | None = None
+        last_error: Exception | None = None
+        for host in ("push2.eastmoney.com", "82.push2.eastmoney.com", "28.push2.eastmoney.com"):
+            try:
+                response = requests.get(
+                    f"https://{host}/api/qt/clist/get{query}",
+                    timeout=10,
+                    headers={"Referer": "https://quote.eastmoney.com/", "User-Agent": "Mozilla/5.0"},
+                )
+                response.raise_for_status()
+                data = response.json().get("data") or {}
+                break
+            except (requests.RequestException, ValueError) as exc:
+                last_error = exc
+        if data is None:
+            return fetch_tencent_realtime_smallcap_members(
+                eligible_codes=eligible_codes,
+                effective_date=effective_date,
+                capital=capital,
+                target_size=target_size,
+            )
         diff = data.get("diff") or []
         if not diff:
             break
@@ -9589,7 +9947,7 @@ def fetch_realtime_smallcap_members_fast(
                 not code
                 or code not in eligible_codes
                 or code.startswith(("8", "4"))
-                or (not is_tradable_name(name))
+                or (not is_live_tradable_name(name))
                 or pd.isna(latest)
                 or float(latest) <= 0
                 or pd.isna(market_cap)
@@ -9620,6 +9978,7 @@ def fetch_realtime_smallcap_members_fast(
     frame = frame.sort_values("market_cap").head(target_size).copy()
     if len(frame) < target_size:
         raise RuntimeError(f"实时进出名单快速路径仅得到 {len(frame)}/{target_size} 只股票。")
+    assert_no_st_members(frame, "realtime small-cap members")
     frame["rank"] = np.arange(1, len(frame) + 1)
     frame = frame[
         [
@@ -9687,6 +10046,7 @@ def compute_realtime_state_fast(
     signal_df, signal_meta, _, _ = build_realtime_signal_fast(context)
     signal_df["member_list_quote_source"] = quote_source
     meta = {
+        "live_member_filter_policy_version": LIVE_MEMBER_FILTER_POLICY_VERSION,
         "snapshot_time": signal_meta["snapshot_time"],
         "latest_anchor_trade_date": signal_meta["latest_anchor_trade_date"],
         "latest_rebalance": str(latest_rebalance.date()),
@@ -9753,6 +10113,7 @@ def load_cached_realtime_state(
     try:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         expected = {
+            "live_member_filter_policy_version": LIVE_MEMBER_FILTER_POLICY_VERSION,
             "latest_anchor_trade_date": str(pd.Timestamp(latest_anchor_trade_date).date()),
             "latest_rebalance": str(pd.Timestamp(latest_rebalance).date()),
             "effective_rebalance": None if effective_rebalance is None else str(pd.Timestamp(effective_rebalance).date()),
@@ -9764,6 +10125,7 @@ def load_cached_realtime_state(
         signal_df = pd.read_csv(signal_path)
         members_df = pd.read_csv(members_path, dtype={"symbol": str})
         changes_df = pd.read_csv(changes_path, dtype={"symbol": str})
+        assert_no_st_members(members_df, "cached realtime members")
         signal_df = augment_signal_with_member_rebalance(signal_df, changes_df)
         members_df, changes_df = mark_realtime_preview_outputs(members_df, changes_df)
         members_df = add_capital_columns(members_df, capital)
@@ -9787,6 +10149,8 @@ def save_realtime_state_cache(
     changes_df: pd.DataFrame,
 ) -> None:
     assert_realtime_meta_is_actionable(meta)
+    meta["live_member_filter_policy_version"] = LIVE_MEMBER_FILTER_POLICY_VERSION
+    assert_no_st_members(members_df, "realtime members before cache write")
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
     with _cache_write_lock(REALTIME_DIR / f"{paths['cache_realtime_meta'].stem}.lock"):
         _atomic_to_csv(signal_df, paths["cache_realtime_signal"], index=False, encoding="utf-8")
@@ -9840,13 +10204,14 @@ def compute_realtime_state(
     quotes_small = quotes_df[["code", "名称", "rt_price", "昨收", "今开", "最高", "最低", "成交额"]].copy()
 
     realtime_members = shares_df.merge(quotes_small, on="code", how="inner")
-    realtime_members = realtime_members[realtime_members["name"].map(is_tradable_name)].copy()
+    realtime_members["name"] = realtime_members["名称"].fillna(realtime_members["name"])
+    realtime_members = realtime_members[realtime_members["name"].map(is_live_tradable_name)].copy()
     realtime_members["market_cap"] = realtime_members["rt_price"] * realtime_members["total_shares"]
     realtime_members = realtime_members.dropna(subset=["market_cap"]).sort_values("market_cap").head(TOP_N).copy()
+    assert_no_st_members(realtime_members, "realtime members")
     realtime_members["rank"] = np.arange(1, len(realtime_members) + 1)
     realtime_members["target_weight"] = 1.0 / TOP_N
     realtime_members["symbol"] = realtime_members["code"]
-    realtime_members["name"] = realtime_members["名称"].fillna(realtime_members["name"])
     realtime_members["signal_date"] = latest_rebalance.date()
     realtime_members["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
     members_out = realtime_members[
@@ -10495,7 +10860,8 @@ def _ensure_base_outputs_unlocked() -> None:
         )
         if not path.exists()
     ]
-    if not missing:
+    proxy_compatible = _proxy_meta_matches_execution_model(base_paths["proxy_meta"])
+    if not missing and proxy_compatible:
         return
     resolved_panel_path, target_end_date = base_mod.build_refreshed_panel_shadow(args, base_paths)
     base_mod.ensure_strategy_files(args, base_paths, resolved_panel_path, target_end_date)
@@ -10769,6 +11135,7 @@ def _cached_realtime_context_from_existing_state(
     reason: str,
     exc: RuntimeError | None = None,
     refresh_panel: bool = True,
+    degraded: bool = True,
 ) -> tuple[Path, pd.Timestamp, dict[str, object]]:
     if refresh_panel:
         try:
@@ -10818,6 +11185,7 @@ def _cached_realtime_context_from_existing_state(
         panel_path,
         target_end_date,
         reason,
+        degraded=degraded,
     )
     if base_context is None:
         message = "Validated realtime state is not reusable for production."
@@ -10859,6 +11227,7 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                 base_paths,
                 "production state-only mode avoids implicit cache rebuilds",
                 refresh_panel=False,
+                degraded=False,
             )
         else:
             fallback_context = None
@@ -11103,6 +11472,8 @@ MEMBER_REBALANCE_META_COLS = {
 }
 REALTIME_META_FORCE_COLS = {
     "fallback_warning",
+    "realtime_base_source",
+    "realtime_base_note",
     "quote_source",
     "hedge_quote_source",
     "member_price_count",
@@ -13101,6 +13472,88 @@ def _write_v2_0_allowed_rewrite_diagnostics(audit_path: Path, allowed_tail_rows:
     return diagnostics_path
 
 
+def _sha256_path(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _candidate_frame_sha256(candidate: pd.DataFrame) -> str:
+    frame = candidate.copy()
+    if "date" not in frame.columns and isinstance(frame.index, pd.DatetimeIndex):
+        frame = frame.rename_axis("date").reset_index()
+    if "date" in frame.columns:
+        frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    payload = frame.to_csv(
+        index=False,
+        lineterminator="\n",
+        date_format="%Y-%m-%d",
+        float_format="%.17g",
+        na_rep="",
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def v2_0_rewrite_audit_matches_approved_lineage_migration(
+    report_path: Path | None,
+    previous: pd.DataFrame,
+    candidate: pd.DataFrame,
+    audit_path: Path,
+) -> bool:
+    if report_path is None or not Path(report_path).exists() or not audit_path.exists():
+        return False
+    try:
+        report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+        # ``embedded_context`` is the frozen adapter namespace and intentionally
+        # does not expose the outer path resolver.  The resolver itself is copied
+        # into this embedded module's globals, so call it directly here.
+        resolved = _resolve_base_paths()
+        proxy_meta_path = resolved.output_paths["proxy_meta"]
+        prev = embedded_context.base_mod._normalise_dated_frame(previous, "approved migration previous")
+        cand = embedded_context.base_mod._normalise_dated_frame(candidate, "approved migration candidate")
+        expected = {
+            "schema_version": 1,
+            "approved": True,
+            "previous_costed_nav_sha256": _sha256_path(COSTED_NAV_CSV),
+            "candidate_frame_sha256": _candidate_frame_sha256(candidate),
+            "base_proxy_meta_sha256": _sha256_path(proxy_meta_path),
+            "rewrite_audit_sha256": _sha256_path(audit_path),
+            "previous_row_count": int(len(prev)),
+            "candidate_row_count": int(len(cand)),
+            "previous_latest_date": str(pd.Timestamp(prev.index.max()).date()),
+            "candidate_latest_date": str(pd.Timestamp(cand.index.max()).date()),
+            "new_member_st_violations": 0,
+            "new_member_bad_policy_count": 0,
+            "proxy_meta_matches_current_cache": True,
+        }
+    except Exception:
+        return False
+    return all(report.get(key) == value for key, value in expected.items())
+
+
+def _write_v2_0_lineage_migration_diagnostics(report_path: Path, audit_path: Path) -> Path:
+    report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+    diagnostics = {
+        "diagnosis": "audited_st_metadata_and_historical_universe_lineage_migration",
+        "allowed": True,
+        "migration_report": str(Path(report_path)),
+        "audit_csv": str(audit_path),
+        "previous_costed_nav_sha256": report["previous_costed_nav_sha256"],
+        "candidate_frame_sha256": report["candidate_frame_sha256"],
+        "base_proxy_meta_sha256": report["base_proxy_meta_sha256"],
+        "rewrite_audit_sha256": report["rewrite_audit_sha256"],
+        "note": (
+            "One-time exact-hash migration after full member ST-interval audit, historical-universe rebuild, "
+            "zero post-rebuild ST membership violations, and proxy metadata fingerprint convergence."
+        ),
+    }
+    diagnostics_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_diagnostics.json"
+    _atomic_write_text(diagnostics_path, _json_dumps(diagnostics), encoding="utf-8")
+    return diagnostics_path
+
+
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     reference_summary, base_gross_cached, turnover_df = embedded_context._load_embedded_base_context()
@@ -13160,6 +13613,20 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
                         {"date": date_text, "column": column}
                         for date_text, column in sorted(V2_0_AUDITED_REWRITE_ALLOWLIST)
                     ],
+                }
+            elif v2_0_rewrite_audit_matches_approved_lineage_migration(
+                getattr(_V2_RUNTIME_ARGS, "audited_history_migration_report", None),
+                previous,
+                candidate,
+                audit_path,
+            ):
+                report_path = Path(getattr(_V2_RUNTIME_ARGS, "audited_history_migration_report"))
+                diagnostics_path = _write_v2_0_lineage_migration_diagnostics(report_path, audit_path)
+                rewrite_audit_status = {
+                    "status": "audited_exact_hash_lineage_migration",
+                    "diagnostics_json": str(diagnostics_path),
+                    "audit_csv": str(audit_path),
+                    "migration_report": str(report_path),
                 }
             else:
                 try:

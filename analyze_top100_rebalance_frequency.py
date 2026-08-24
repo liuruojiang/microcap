@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import re
+import time
 import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from decimal import ROUND_HALF_UP, Decimal
@@ -39,6 +41,7 @@ END_DATE = pd.Timestamp.today().strftime("%Y-%m-%d")
 LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
+ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
 LIMIT_PRICE_REL_EPS = 1e-6
 SCHEDULES = {
@@ -73,6 +76,8 @@ SHARED_SECURITY_MASTER_CACHE = SHARED_CACHE_DIR / "security_master.csv" if SHARE
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _SECURITY_MASTER_MEMO: pd.DataFrame | None = None
+_CURRENT_ST_NAME_MEMO: dict[str, str] | None = None
+_CURRENT_ST_MTIME_NS: int | None = None
 
 
 def _first_existing_column(frame: pd.DataFrame, candidates: list[str]) -> str:
@@ -364,10 +369,50 @@ def load_trading_dates() -> pd.DatetimeIndex:
     return pd.DatetimeIndex(dates)
 
 
+def load_current_st_name_map() -> dict[str, str]:
+    global _CURRENT_ST_NAME_MEMO, _CURRENT_ST_MTIME_NS
+    try:
+        mtime_ns = CURRENT_ST.stat().st_mtime_ns
+    except OSError:
+        _CURRENT_ST_NAME_MEMO = {}
+        _CURRENT_ST_MTIME_NS = None
+        return {}
+    if _CURRENT_ST_NAME_MEMO is not None and _CURRENT_ST_MTIME_NS == mtime_ns:
+        return _CURRENT_ST_NAME_MEMO
+    try:
+        frame = pd.read_csv(CURRENT_ST, dtype=str)
+        frame["code"] = frame["code"].astype(str).str.zfill(6)
+        if "name" not in frame.columns:
+            frame["name"] = ""
+        frame["name"] = frame["name"].fillna("").astype(str).str.strip()
+        _CURRENT_ST_NAME_MEMO = dict(zip(frame["code"], frame["name"]))
+    except Exception:
+        _CURRENT_ST_NAME_MEMO = {}
+    _CURRENT_ST_MTIME_NS = mtime_ns
+    return _CURRENT_ST_NAME_MEMO
+
+
 def load_current_universe() -> list[str]:
     universe = pd.read_csv(ACTIVE_UNIVERSE, dtype=str)
-    st_codes = set(pd.read_csv(CURRENT_ST, dtype=str)["code"].dropna())
+    universe["code"] = universe["code"].astype(str).str.zfill(6)
+    st_codes = set(load_current_st_name_map())
     universe = universe[~universe["code"].isin(st_codes)].copy()
+
+    # CURRENT_ST is a point-in-time cache and can lag newly designated ST names.
+    # Cross-check the current security-master and active-universe names so a stale
+    # code list cannot leak current ST/*ST/PT stocks into live member selection.
+    master = load_security_master()
+    if not master.empty and {"symbol", "name"}.issubset(master.columns):
+        current_names = dict(
+            zip(
+                master["symbol"].astype(str).str.zfill(6),
+                master["name"].fillna("").astype(str),
+            )
+        )
+        universe["current_name"] = universe["code"].map(current_names).fillna(universe.get("name", ""))
+        universe = universe[~universe["current_name"].map(is_st_name)].copy()
+    if "name" in universe.columns:
+        universe = universe[~universe["name"].map(is_st_name)].copy()
     codes = []
     for code in universe["code"].tolist():
         if resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, code) and resolve_cache_path(SHARE_DIR, SHARED_SHARE_DIR, code):
@@ -522,16 +567,40 @@ def build_st_intervals_from_notices(
 
     def infer_action(title: str) -> str | None:
         text = str(title or "").upper().replace(" ", "")
-        if not text or "申请" in text or "提示性" in text:
+        if not text or "申请" in text:
             return None
-        if "撤销" in text and any(token in text for token in ["退市风险警示", "其他特别处理", "其他风险警示", "特别处理"]):
-            return "exit"
-        if (
-            any(token in text for token in ["实施", "实行"])
-            and any(token in text for token in ["退市风险警示", "其他风险警示", "特别处理"])
-            and "可能" not in text
-            and "撤销" not in text
+        if "摘帽" in text or (
+            "撤销" in text
+            and any(token in text for token in ["退市风险警示", "其他特别处理", "其他风险警示", "特别处理"])
         ):
+            return "exit"
+        definitive_text = text
+        for possible_phrase in [
+            "可能被实施退市风险警示",
+            "可能被实施其他风险警示",
+            "可能实施退市风险警示",
+            "可能实施其他风险警示",
+            "存在被实施退市风险警示",
+            "存在被实施其他风险警示",
+            "存在实施退市风险警示",
+            "存在实施其他风险警示",
+        ]:
+            definitive_text = definitive_text.replace(possible_phrase, "")
+        definitive_entry_tokens = [
+            "被实施退市风险警示",
+            "将被实施退市风险警示",
+            "实施退市风险警示",
+            "实行退市风险警示",
+            "被实施其他风险警示",
+            "将被实施其他风险警示",
+            "实施其他风险警示",
+            "实行其他风险警示",
+            "被实施特别处理",
+            "将被实施特别处理",
+            "实施特别处理",
+            "实行特别处理",
+        ]
+        if any(token in definitive_text for token in definitive_entry_tokens):
             return "entry"
         return None
 
@@ -626,10 +695,27 @@ def fetch_sz_name_change_history(force_refresh: bool = False) -> pd.DataFrame:
         "TABKEY": "tab2",
         "random": "0.6935816432433362",
     }
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        response = requests.get(url, params=params, timeout=30, verify=False)
-    response.raise_for_status()
+    last_error: Exception | None = None
+    response = None
+    for attempt in range(3):
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                response = requests.get(
+                    url,
+                    params=params,
+                    timeout=30,
+                    verify=False,
+                    headers={"Referer": "https://www.szse.cn/", "User-Agent": "Mozilla/5.0"},
+                )
+            response.raise_for_status()
+            break
+        except requests.RequestException as exc:
+            last_error = exc
+            response = None
+            time.sleep(0.5 * (attempt + 1))
+    if response is None:
+        raise RuntimeError(f"SZSE name-change refresh failed: {last_error}") from last_error
     frame = pd.read_excel(BytesIO(response.content))
     frame = frame.rename(
         columns={
@@ -669,49 +755,73 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
     if not org_id:
         return pd.DataFrame(columns=["notice_date", "title"])
 
-    payload = {
-        "pageNum": "1",
-        "pageSize": "30",
-        "column": "szse",
-        "tabName": "fulltext",
-        "plate": "",
-        "stock": f"{str(symbol).zfill(6)},{org_id}",
-        "searchkey": "",
-        "secid": "",
-        "category": "category_tbclts_szsh",
-        "trade": "",
-        "seDate": f"{start_date[:4]}-{start_date[4:6]}-{start_date[6:]}~{end_date[:4]}-{end_date[4:6]}-{end_date[6:]}",
-        "sortName": "",
-        "sortType": "",
-        "isHLtitle": "true",
-    }
-    response = requests.post("http://www.cninfo.com.cn/new/hisAnnouncement/query", data=payload, timeout=30)
-    response.raise_for_status()
-    data = response.json()
-    total = int(data.get("totalAnnouncement") or 0)
-    if total <= 0:
-        return pd.DataFrame(columns=["notice_date", "title"])
-
     rows: list[dict[str, object]] = []
-    total_pages = max(1, (total + 29) // 30)
-    for page in range(1, total_pages + 1):
-        payload["pageNum"] = str(page)
-        page_resp = requests.post("http://www.cninfo.com.cn/new/hisAnnouncement/query", data=payload, timeout=30)
-        page_resp.raise_for_status()
-        page_data = page_resp.json()
-        for item in page_data.get("announcements") or []:
-            rows.append(
-                {
-                    "notice_date": pd.to_datetime(item.get("announcementTime"), unit="ms", utc=True, errors="coerce")
-                    .tz_convert("Asia/Shanghai")
-                    .tz_localize(None),
-                    "title": item.get("announcementTitle") or "",
-                }
-            )
+    query_specs = [
+        {"category": "category_tbclts_szsh", "searchkey": ""},
+        {"category": "", "searchkey": "风险警示"},
+        {"category": "", "searchkey": "特别处理"},
+        {"category": "", "searchkey": "撤销风险警示"},
+        {"category": "", "searchkey": "撤销特别处理"},
+        {"category": "", "searchkey": "摘帽"},
+    ]
+
+    def post_page(payload: dict[str, str]) -> dict[str, object]:
+        last_error: Exception | None = None
+        for attempt in range(3):
+            try:
+                response = requests.post(
+                    "http://www.cninfo.com.cn/new/hisAnnouncement/query",
+                    data=payload,
+                    timeout=30,
+                )
+                response.raise_for_status()
+                return response.json()
+            except (requests.RequestException, ValueError) as exc:
+                last_error = exc
+                time.sleep(0.5 * (attempt + 1))
+        raise RuntimeError(f"CNInfo announcement query failed for {symbol}: {last_error}") from last_error
+
+    for spec in query_specs:
+        payload = {
+            "pageNum": "1",
+            "pageSize": "30",
+            "column": "szse",
+            "tabName": "fulltext",
+            "plate": "",
+            "stock": f"{str(symbol).zfill(6)},{org_id}",
+            "searchkey": spec["searchkey"],
+            "secid": "",
+            "category": spec["category"],
+            "trade": "",
+            "seDate": f"{start_date[:4]}-{start_date[4:6]}-{start_date[6:]}~{end_date[:4]}-{end_date[4:6]}-{end_date[6:]}",
+            "sortName": "",
+            "sortType": "",
+            "isHLtitle": "true",
+        }
+        first_page = post_page(payload)
+        total = int(first_page.get("totalAnnouncement") or 0)
+        total_pages = max(1, (total + 29) // 30) if total > 0 else 0
+        for page in range(1, total_pages + 1):
+            page_data = first_page if page == 1 else post_page({**payload, "pageNum": str(page)})
+            for item in page_data.get("announcements") or []:
+                title = re.sub(r"<[^>]+>", "", str(item.get("announcementTitle") or ""))
+                rows.append(
+                    {
+                        "notice_date": pd.to_datetime(item.get("announcementTime"), unit="ms", utc=True, errors="coerce")
+                        .tz_convert("Asia/Shanghai")
+                        .tz_localize(None),
+                        "title": title,
+                    }
+                )
     frame = pd.DataFrame(rows)
     if frame.empty:
         return pd.DataFrame(columns=["notice_date", "title"])
-    frame = frame.dropna(subset=["notice_date"]).sort_values("notice_date").reset_index(drop=True)
+    frame = (
+        frame.dropna(subset=["notice_date"])
+        .drop_duplicates(subset=["notice_date", "title"])
+        .sort_values("notice_date")
+        .reset_index(drop=True)
+    )
     return frame
 
 
@@ -724,6 +834,18 @@ def resolve_security_meta_path(symbol: str) -> Path | None:
         if shared_path.exists():
             return shared_path
     return None
+
+
+def latest_symbol_price_date(symbol: str) -> pd.Timestamp | None:
+    path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, str(symbol).zfill(6))
+    if path is None:
+        return None
+    try:
+        dates = pd.read_csv(path, usecols=["date"])["date"]
+        latest = pd.to_datetime(dates, errors="coerce").max()
+        return None if pd.isna(latest) else pd.Timestamp(latest).normalize()
+    except Exception:
+        return None
 
 
 def build_security_meta(symbol: str) -> dict[str, object] | None:
@@ -747,14 +869,19 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     name_intervals: list[dict[str, str | None]] = []
     notice_intervals: list[dict[str, str | None]] = []
     current_name_intervals: list[dict[str, str | None]] = []
+    name_history_status = "not_applicable"
+    notice_query_status = "not_started"
+    notice_count = 0
 
     if str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
         try:
             changes = fetch_sz_name_change_history()
             symbol_changes = changes.loc[changes["symbol"] == str(symbol).zfill(6), ["change_date", "old_name", "new_name"]]
             name_intervals = build_st_intervals_from_name_changes(first_trade, last_trade, symbol_changes)
-        except Exception:
+            name_history_status = "ok"
+        except Exception as exc:
             name_intervals = []
+            name_history_status = f"error:{type(exc).__name__}:{exc}"
 
     try:
         notices = fetch_cninfo_st_notices(
@@ -762,21 +889,31 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
             start_date=first_trade.strftime("%Y%m%d"),
             end_date=last_trade.strftime("%Y%m%d"),
         )
+        notice_count = int(len(notices))
         notice_intervals = build_st_intervals_from_notices(first_trade, last_trade, notices)
-    except Exception:
+        notice_query_status = "ok"
+    except Exception as exc:
         notice_intervals = []
+        notice_query_status = f"error:{type(exc).__name__}:{exc}"
 
-    if master_row is not None:
+    current_st_name = load_current_st_name_map().get(str(symbol).zfill(6), "")
+    current_name = current_st_name
+    if not current_name and master_row is not None and not pd.isna(master_row.get("name")):
+        current_name = str(master_row.get("name"))
+    if current_name:
         current_name_intervals = build_st_interval_from_current_name_snapshot(
             first_trade,
             last_trade,
-            None if pd.isna(master_row.get("name")) else str(master_row.get("name")),
+            current_name,
         )
 
     st_intervals = merge_st_intervals([*name_intervals, *notice_intervals, *current_name_intervals])
+    evidence_intervals = [*name_intervals, *notice_intervals]
+    current_st_history_resolved = (not current_st_name) or any(item.get("end") is None for item in evidence_intervals)
 
     meta = {
         "meta_version": SECURITY_META_VERSION,
+        "st_notice_policy_version": ST_NOTICE_POLICY_VERSION,
         "symbol": str(symbol).zfill(6),
         "first_trade_date": str(first_trade.date()),
         "last_trade_date": str(last_trade.date()),
@@ -792,6 +929,11 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         ),
         "exchange": None if master_row is None else master_row.get("exchange"),
         "board": None if master_row is None else master_row.get("board"),
+        "current_st_snapshot_name": current_st_name or None,
+        "name_history_status": name_history_status,
+        "notice_query_status": notice_query_status,
+        "notice_count": notice_count,
+        "current_st_history_resolved": bool(current_st_history_resolved),
         "st_intervals": st_intervals,
     }
     SECURITY_META_DIR.mkdir(parents=True, exist_ok=True)
@@ -803,12 +945,22 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
 
 
 def load_security_meta(symbol: str) -> dict[str, object] | None:
+    code = str(symbol).zfill(6)
+    current_st_name = load_current_st_name_map().get(code, "")
     meta_path = resolve_security_meta_path(symbol)
     if meta_path is not None:
         try:
             payload = json.loads(meta_path.read_text(encoding="utf-8"))
             if payload.get("meta_version") == SECURITY_META_VERSION:
-                return payload
+                if not current_st_name:
+                    return payload
+                meta_last = pd.to_datetime(payload.get("last_trade_date"), errors="coerce")
+                price_last = latest_symbol_price_date(code)
+                policy_matches = payload.get("st_notice_policy_version") == ST_NOTICE_POLICY_VERSION
+                name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
+                date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
+                if policy_matches and name_matches and date_matches:
+                    return payload
         except Exception:
             pass
     try:

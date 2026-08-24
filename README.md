@@ -1,0 +1,62 @@
+# Microcap Top100 Strategy
+
+本仓库维护 A 股微盘 Top100 策略、对冲/风控叠加层、数据刷新和正式信号/业绩产物。
+
+## 当前正式口径
+
+- 默认主线：`microcap_top100_mom16_biweekly_live_v2_0.py`
+- 默认表现口径：`v2.0 + costed`
+- 正式下游版本：`v2.3`、`v2.5`
+- 数据源：公开/本地重建 Top100 代理，不是官方 Wind `868008.WI`
+- 历史股票池：完整历史证券主表；历史 ST 使用时点化进入/撤销区间
+
+任何信号、名单、回测或图表都必须先刷新并读回新鲜度。正式日频流的最新日期必须一致；调仓表的最新日期是最近调仓事件日期。
+
+## 常用命令
+
+生成三个正式版本：
+
+```powershell
+python microcap_top100_mom16_biweekly_live_v2_0.py
+python microcap_top100_mom16_biweekly_live_v2_3.py
+python microcap_top100_mom16_biweekly_live_v2_5.py
+```
+
+查询 v2.0 收盘确认信号或表现：
+
+```powershell
+python microcap_top100_mom16_biweekly_live_v2_0.py 信号
+python microcap_top100_mom16_biweekly_live_v2_0.py 表现 近1年
+```
+
+刷新历史成员涉及的 ST 元数据：
+
+```powershell
+python scripts\refresh_recent_st_metadata.py --since 2010-01-01 --max-workers 16
+```
+
+## 发布门槛
+
+- 当前名单必须恰好 100 只，代码唯一、排名 1—100。
+- 当前 ST、*ST、PT 名称/代码交集必须为 0。
+- 历史成员的时点化 ST 违规必须为 0。
+- 代理元数据内容指纹必须与当前证券元数据缓存一致。
+- 历史改写默认拒绝；受审计迁移后必须在无迁移参数下再次运行并得到 `clean`。
+- v2.0 数据血缘变化后必须重新生成 v2.3/v2.5，不能沿用旧输出。
+
+## 测试
+
+```powershell
+python -B -m pytest tests\test_top100_data_guards.py tests\test_microcap_v2_review_remediations.py -q -p no:cacheprovider
+python -B -m py_compile microcap_top100_mom16_biweekly_live_v2_0.py microcap_top100_mom16_biweekly_live_v2_3.py microcap_top100_mom16_biweekly_live_v2_5.py
+```
+
+## 文档
+
+- 工作区硬规则：`AGENTS.md`
+- 查询规则：`QUERY_RULES.md`
+- 新策略测试标准：`docs/new_strategy_test_standard_process.md`
+- 当前数据血缘：`docs/microcap_top100_post_p0_lineage_20260629.md`
+- 2026-08-20 ST/历史股票池事故复盘：`docs/microcap_live_member_st_filter_incident_20260820.md`
+
+`outputs/`、本地行情缓存和 `.codex_backups/` 主要是可重建或本机审计产物；不要把旧导出文件当作新鲜数据证明。

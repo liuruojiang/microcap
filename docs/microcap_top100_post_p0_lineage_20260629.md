@@ -10,8 +10,10 @@ Post-P0 lineage:
 - universe size: 4975 historical symbols
 - current-ST filter: disabled for historical backtests
 - historical-ST filter: enabled
+- historical-ST notice policy: point-in-time entry/exit intervals, `cninfo-category-plus-entry-exit-keyword-v3`
 - BSE filter: enabled
 - proxy construction: local raw close, share-change, membership, and tradeability checks
+- compatibility gate: full security-metadata content fingerprint, not policy version alone
 
 This replaced the previous current-universe/current-ST path and the narrow recent-extension path. Older parameter research must not be mixed with this lineage without rerunning the candidate on the current data.
 
@@ -33,6 +35,14 @@ Before any v2.3/v2.5 parameter result is promoted:
 - Label any result using public/local proxy as not official Wind `868008.WI`.
 
 Cost/capacity/market-impact extensions are intentionally out of scope for this cleanup round.
+
+## 2026-08-20 Lineage Hardening
+
+- Rebuilt the Top100 proxy from the 4,975-symbol historical security master after refreshing the historical-member/current-ST union.
+- Current-list publication now separately rejects current ST/*ST/PT names and codes; that current snapshot is never backfilled into historical dates.
+- Final rebuilt members contain 43,000 rows across 430 rebalance dates with zero point-in-time ST violations and zero stale-policy metadata records.
+- v2.0, v2.3, and v2.5 historical corrections were promoted only through exact-hash migration reports, then rerun without migration options; all three rewrite audits returned clean.
+- Formal daily streams were read back through the same close-confirmed date, 2026-08-20. Results remain public/local proxy results, not official Wind `868008.WI`.
 
 ## v2.0 Default Replacement
 
