@@ -1,0 +1,22 @@
+{
+  "version": "2026-08-24-exact-hash-bootstrap-v1",
+  "seed_end_date": "2026-08-20",
+  "purpose": "Exact-hash authority for a short no-new-rebalance production tail extension on an ephemeral runner without the ignored full historical cache. This does not authorize a historical proxy rebuild.",
+  "security_meta_cache_fingerprint": {
+    "present_count": 4975,
+    "missing_count": 0,
+    "sha256": "f5b3b2e47994f81c5904d565c34a2ad51ec807aaa53ea00f669e7d9fe05fd867"
+  },
+  "seed_file_rows": {
+    "proxy_index": 4039,
+    "costed_nav": 4022
+  },
+  "seed_file_sha256": {
+    "proxy_index": "3c5bc0794d2b4543b25a7cbdf025e9a425dd1c990e2333e974cc0558c4606310",
+    "costed_nav": "a3861e48e690374f1fa639d78e9f13ae9d200e31897d12c2daab70ad5ecaa522",
+    "proxy_meta": "398528787bd953312fa6d9fa32f01d958e27cb27a7533345e78f925b6775b891",
+    "proxy_members": "80cf51a12a15550419ad9974d1edbfa388cd24e1e62850b792bd6a91cd196b3c",
+    "proxy_turnover": "833458a8e34950dd7369be72297d13f12a22e66e458963c2afc8cfaa8aab23c6",
+    "proxy_effective_members": "5a7d0dc1144d1358554d2b765d7013df669ac19e813455308cc62e94dd6a635f"
+  }
+}

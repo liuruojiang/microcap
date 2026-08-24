@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import time
+import json
+import hashlib
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -1540,3 +1542,237 @@ def test_existing_base_bundle_is_rebuilt_when_proxy_metadata_is_incompatible(
     v2_0._ensure_base_outputs_unlocked()
 
     assert calls == [(tmp_path / "panel.csv", pd.Timestamp("2026-08-20"))]
+
+
+def _valid_proxy_core_params() -> dict[str, object]:
+    return {
+        "research_stack_version": v2_0.base_mod.RESEARCH_STACK_VERSION,
+        "execution_timing": v2_0.base_mod.EXECUTION_TIMING,
+        "trade_constraint_mode": v2_0.base_mod.TRADE_CONSTRAINT_MODE,
+        "exclude_current_st": False,
+        "exclude_historical_st": True,
+        "rebalance_phase_anchor_date": v2_0.base_mod.REBALANCE_ANCHOR_DATE,
+        "member_filter_policy_version": v2_0.base_mod.MEMBER_FILTER_POLICY_VERSION,
+        "realtime_quote_policy_version": v2_0.base_mod.REALTIME_QUOTE_POLICY_VERSION,
+        "proxy_rebalance_policy_version": v2_0.base_mod.PROXY_REBALANCE_POLICY_VERSION,
+        "st_notice_policy_version": v2_0.freq_mod.ST_NOTICE_POLICY_VERSION,
+        "security_meta_cache_fingerprint": {
+            "present_count": 4975,
+            "missing_count": 0,
+            "sha256": "audited-fingerprint",
+        },
+    }
+
+
+def test_frozen_tail_authority_requires_exact_seed_hashes_and_current_st_gate(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = {
+        "proxy_meta": tmp_path / "proxy_meta.json",
+        "proxy_members": tmp_path / "proxy_members.csv",
+        "proxy_turnover": tmp_path / "proxy_turnover.csv",
+        "proxy_effective_members": tmp_path / "proxy_effective_members.csv",
+    }
+    args = SimpleNamespace(
+        index_csv=tmp_path / "proxy_index.csv",
+        costed_nav_csv=tmp_path / "costed_nav.csv",
+    )
+    meta = {"core_params": _valid_proxy_core_params(), "end_date": "2026-08-20"}
+    paths["proxy_meta"].write_text(json.dumps(meta), encoding="utf-8")
+    for path in (args.index_csv, args.costed_nav_csv, paths["proxy_members"], paths["proxy_turnover"]):
+        path.write_text("seed\n", encoding="utf-8")
+    pd.DataFrame(
+        {
+            "as_of_date": ["2026-08-20"] * v2_0.base_mod.TOP_N,
+            "rank": range(1, v2_0.base_mod.TOP_N + 1),
+            "symbol": [f"{value:06d}" for value in range(1, v2_0.base_mod.TOP_N + 1)],
+        }
+    ).to_csv(paths["proxy_effective_members"], index=False)
+    required = {
+        "proxy_index": args.index_csv,
+        "costed_nav": args.costed_nav_csv,
+        "proxy_meta": paths["proxy_meta"],
+        "proxy_members": paths["proxy_members"],
+        "proxy_turnover": paths["proxy_turnover"],
+        "proxy_effective_members": paths["proxy_effective_members"],
+    }
+    authority = {
+        "version": v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION,
+        "seed_end_date": "2026-08-20",
+        "security_meta_cache_fingerprint": meta["core_params"]["security_meta_cache_fingerprint"],
+        "seed_file_sha256": {
+            label: hashlib.sha256(path.read_bytes()).hexdigest() for label, path in required.items()
+        },
+    }
+    authority_path = tmp_path / "authority.json"
+    authority_path.write_text(json.dumps(authority), encoding="utf-8")
+    current_st_path = tmp_path / "current_st.csv"
+    current_st_path.write_text("code,name\n999999,*ST test\n", encoding="utf-8")
+
+    authority_globals = v2_0.base_mod.frozen_tail_authority_matches_seed.__globals__
+    monkeypatch.setitem(authority_globals, "FROZEN_TAIL_AUTHORITY_PATH", authority_path)
+    monkeypatch.setattr(v2_0.freq_mod, "list_backtest_universe_symbols", lambda: [])
+    monkeypatch.setattr(v2_0.freq_mod, "CURRENT_ST", current_st_path)
+    monkeypatch.setattr(v2_0.freq_mod, "load_current_st_name_map", lambda: {"999999": "*ST test"})
+
+    assert v2_0.base_mod.frozen_tail_authority_matches_seed(
+        args,
+        paths,
+        meta,
+        pd.Timestamp("2026-08-20"),
+        pd.Timestamp("2026-08-20"),
+    )
+
+    args.index_csv.write_text("tampered\n", encoding="utf-8")
+    assert not v2_0.base_mod.frozen_tail_authority_matches_seed(
+        args,
+        paths,
+        meta,
+        pd.Timestamp("2026-08-20"),
+        pd.Timestamp("2026-08-20"),
+    )
+
+
+def test_ensure_strategy_files_routes_exact_frozen_seed_only_to_short_tail(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_csv = tmp_path / "index.csv"
+    costed_nav_csv = tmp_path / "costed.csv"
+    proxy_meta = tmp_path / "meta.json"
+    proxy_turnover = tmp_path / "turnover.csv"
+    for path in (index_csv, costed_nav_csv, proxy_meta, proxy_turnover):
+        path.write_text("seed", encoding="utf-8")
+    proxy_meta.write_text("{}", encoding="utf-8")
+    paths = {
+        "proxy_meta": proxy_meta,
+        "proxy_turnover": proxy_turnover,
+        "proxy_members": tmp_path / "members.csv",
+        "proxy_effective_members": tmp_path / "effective.csv",
+    }
+    args = SimpleNamespace(
+        index_csv=index_csv,
+        costed_nav_csv=costed_nav_csv,
+        rebuild_index_if_missing=True,
+    )
+    calls: list[str] = []
+
+    ensure_globals = v2_0.base_mod.ensure_strategy_files.__globals__
+    monkeypatch.setitem(
+        ensure_globals,
+        "read_csv_last_date",
+        lambda path: pd.Timestamp("2026-08-20") if path in (index_csv, costed_nav_csv) else None,
+    )
+    monkeypatch.setitem(ensure_globals, "proxy_meta_matches_execution_model", lambda _meta: False)
+    monkeypatch.setitem(ensure_globals, "frozen_tail_authority_matches_seed", lambda *_args: True)
+    monkeypatch.setitem(
+        ensure_globals,
+        "try_extend_proxy_index_without_rebalance",
+        lambda *_args: calls.append("proxy_tail") or True,
+    )
+    monkeypatch.setitem(
+        ensure_globals,
+        "try_extend_costed_nav_without_turnover",
+        lambda *_args: calls.append("costed_tail") or True,
+    )
+    monkeypatch.setitem(
+        ensure_globals,
+        "refresh_price_cache_tail",
+        lambda *_args, **_kwargs: pytest.fail("full historical refresh must remain blocked"),
+    )
+
+    v2_0.base_mod.ensure_strategy_files(
+        args,
+        paths,
+        tmp_path / "panel.csv",
+        pd.Timestamp("2026-08-21"),
+    )
+
+    assert calls == ["proxy_tail", "costed_tail"]
+
+
+def test_frozen_tail_extension_is_reusable_only_with_validated_written_rows(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = {
+        "proxy_meta": tmp_path / "meta.json",
+        "proxy_members": tmp_path / "members.csv",
+        "proxy_turnover": tmp_path / "turnover.csv",
+        "proxy_effective_members": tmp_path / "effective.csv",
+    }
+    args = SimpleNamespace(index_csv=tmp_path / "index.csv", costed_nav_csv=tmp_path / "costed.csv")
+    paths["proxy_members"].write_text("members\n", encoding="utf-8")
+    paths["proxy_turnover"].write_text("turnover\n", encoding="utf-8")
+    pd.DataFrame(
+        {
+            "as_of_date": ["2026-08-20"] * v2_0.base_mod.TOP_N,
+            "rank": range(1, v2_0.base_mod.TOP_N + 1),
+            "symbol": [f"{value:06d}" for value in range(1, v2_0.base_mod.TOP_N + 1)],
+        }
+    ).to_csv(paths["proxy_effective_members"], index=False)
+    pd.DataFrame(
+        {
+            "date": ["2026-08-20", "2026-08-21"],
+            "close": [100.0, 101.0],
+            "daily_return": [0.0, 0.01],
+        }
+    ).to_csv(args.index_csv, index=False)
+    pd.DataFrame(
+        {
+            "date": ["2026-08-20", "2026-08-21"],
+            "nav_net": [2.0, 2.01],
+            "return_net": [0.0, 0.005],
+        }
+    ).to_csv(args.costed_nav_csv, index=False)
+    authority = {
+        "version": v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION,
+        "seed_end_date": "2026-08-20",
+        "seed_file_rows": {"proxy_index": 1, "costed_nav": 1},
+        "seed_file_sha256": {
+            label: hashlib.sha256(path.read_bytes()).hexdigest()
+            for label, path in {
+                "proxy_members": paths["proxy_members"],
+                "proxy_turnover": paths["proxy_turnover"],
+                "proxy_effective_members": paths["proxy_effective_members"],
+            }.items()
+        },
+    }
+    authority_path = tmp_path / "authority.json"
+    authority_path.write_text(json.dumps(authority), encoding="utf-8")
+    meta = {
+        "core_params": _valid_proxy_core_params(),
+        "tail_extension_method": "no_new_rebalance_saved_target_replay",
+        "tail_extension_start": "2026-08-20",
+        "tail_extension_end": "2026-08-21",
+        "tail_extension_rows": 1,
+        "tail_extension_effective_member_count": 100,
+        "tail_extension_return_source_counts": {"raw": 100, "adjusted": 0},
+        "tail_extension_authority_sha256": hashlib.sha256(authority_path.read_bytes()).hexdigest(),
+    }
+    current_st_path = tmp_path / "current_st.csv"
+    current_st_path.write_text("code,name\n999999,*ST test\n", encoding="utf-8")
+    extension_globals = v2_0.base_mod.frozen_tail_extension_matches_authority.__globals__
+    monkeypatch.setitem(extension_globals, "FROZEN_TAIL_AUTHORITY_PATH", authority_path)
+    monkeypatch.setattr(v2_0.freq_mod, "CURRENT_ST", current_st_path)
+    monkeypatch.setattr(v2_0.freq_mod, "load_current_st_name_map", lambda: {"999999": "*ST test"})
+
+    assert v2_0.base_mod.frozen_tail_extension_matches_authority(
+        args,
+        paths,
+        meta,
+        pd.Timestamp("2026-08-21"),
+        pd.Timestamp("2026-08-21"),
+    )
+
+    tampered = pd.read_csv(args.costed_nav_csv)
+    tampered.loc[1, "nav_net"] = -1.0
+    tampered.to_csv(args.costed_nav_csv, index=False)
+    assert not v2_0.base_mod.frozen_tail_extension_matches_authority(
+        args,
+        paths,
+        meta,
+        pd.Timestamp("2026-08-21"),
+        pd.Timestamp("2026-08-21"),
+    )
