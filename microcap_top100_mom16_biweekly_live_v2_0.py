@@ -4905,40 +4905,44 @@ def frozen_tail_authority_matches_seed(
     only on clean runners where the ignored 4,975-symbol metadata cache is
     absent, and never authorizes a historical proxy rebuild.
     """
+    def reject(reason: str) -> bool:
+        _log_price_cache_refresh(f"frozen tail seed rejected reason={reason}")
+        return False
+
     authority = _load_frozen_tail_authority()
     if authority is None or authority.get("version") != FROZEN_TAIL_AUTHORITY_VERSION:
-        return False
+        return reject("authority_missing_or_version_mismatch")
     authority_fingerprint = authority.get("security_meta_cache_fingerprint")
     if not isinstance(authority_fingerprint, dict):
-        return False
+        return reject("authority_security_fingerprint_missing")
     authority_universe_count = int(authority_fingerprint.get("present_count") or 0) + int(
         authority_fingerprint.get("missing_count") or 0
     )
     if authority_universe_count <= 0:
-        return False
+        return reject("authority_universe_count_invalid")
     # Ephemeral production setup may create a small current-symbol cache before
     # this check. That remains a narrow cache and cannot rebuild history. Once
     # the full audited universe is present, normal fingerprint validation must
     # succeed instead of falling back to this seed authority.
     if len(freq_mod.list_backtest_universe_symbols()) >= authority_universe_count:
-        return False
+        return reject("runner_cache_is_full_sized")
     if not _proxy_meta_core_matches_execution_model(meta):
-        return False
+        return reject("proxy_core_execution_model_mismatch")
     if current_index_end is None or current_costed_end is None:
-        return False
+        return reject("seed_end_date_missing")
     seed_end = pd.to_datetime(authority.get("seed_end_date"), errors="coerce")
     if pd.isna(seed_end):
-        return False
+        return reject("authority_seed_end_invalid")
     seed_end = pd.Timestamp(seed_end).normalize()
     if pd.Timestamp(current_index_end).normalize() != seed_end:
-        return False
+        return reject("proxy_index_end_mismatch")
     if pd.Timestamp(current_costed_end).normalize() != seed_end:
-        return False
+        return reject("costed_nav_end_mismatch")
     core_params = meta.get("core_params")
     if not isinstance(core_params, dict):
-        return False
+        return reject("proxy_core_params_missing")
     if core_params.get("security_meta_cache_fingerprint") != authority.get("security_meta_cache_fingerprint"):
-        return False
+        return reject("authority_security_fingerprint_mismatch")
 
     effective_path = paths.get("proxy_effective_members")
     required_files = {
@@ -4951,22 +4955,24 @@ def frozen_tail_authority_matches_seed(
     }
     expected_hashes = authority.get("seed_file_sha256")
     if not isinstance(expected_hashes, dict) or set(expected_hashes) != set(required_files):
-        return False
+        return reject("authority_seed_hash_set_mismatch")
     for label, path in required_files.items():
         if not isinstance(path, Path) or not path.is_file():
-            return False
+            return reject(f"seed_file_missing:{label}")
         if _file_sha256(path) != expected_hashes.get(label):
-            return False
+            return reject(f"seed_file_hash_mismatch:{label}")
 
     effective_members = _read_proxy_effective_members(effective_path, seed_end)
     if len(effective_members) != TOP_N or len(set(effective_members)) != TOP_N:
-        return False
+        return reject("effective_member_count_or_uniqueness_mismatch")
     current_st_path = getattr(freq_mod, "CURRENT_ST", None)
     if not isinstance(current_st_path, Path) or not current_st_path.is_file():
-        return False
+        return reject("current_st_snapshot_missing")
     current_st = set(freq_mod.load_current_st_name_map())
-    if not current_st or current_st.intersection(effective_members):
-        return False
+    if not current_st:
+        return reject("current_st_snapshot_empty")
+    if current_st.intersection(effective_members):
+        return reject("effective_members_intersect_current_st")
     return True
 
 
