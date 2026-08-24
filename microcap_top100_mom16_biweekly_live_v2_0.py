@@ -3699,6 +3699,10 @@ COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS = {
     "2026-04-11-p0-p1-history-meta-master-stv2",
 }
 STATIC_CONTEXT_CACHE_VERSION = "2026-08-20-live-st-name-guard-v3"
+FROZEN_TAIL_AUTHORITY_VERSION = "2026-08-24-exact-hash-bootstrap-v1"
+FROZEN_TAIL_AUTHORITY_PATH = (
+    OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json"
+)
 MEMBER_FILTER_POLICY_VERSION = "empty-name-reject-v1"
 LIVE_MEMBER_FILTER_POLICY_VERSION = "exclude-current-st-name-v1"
 REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
@@ -4363,14 +4367,14 @@ def refresh_price_cache_tail(
                 _log_price_cache_refresh(
                     f"price-cache refresh progress {completed}/{total_symbols} failures={len(failures)}"
                 )
-    for retry_attempt in range(2):
+    for retry_attempt in range(3):
         if not failures:
             break
         retry_symbols = list(failures)
         failures = {}
         for symbol in retry_symbols:
             try:
-                time.sleep(0.25 * (retry_attempt + 1))
+                time.sleep(1.0 * (retry_attempt + 1))
                 refresh_symbol(symbol)
             except Exception as exc:
                 failures[symbol] = str(exc)
@@ -4840,7 +4844,7 @@ def security_meta_cache_fingerprint() -> dict[str, object]:
     return {"present_count": present, "missing_count": missing, "sha256": digest.hexdigest()}
 
 
-def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
+def _proxy_meta_core_matches_execution_model(meta: dict[str, object]) -> bool:
     core_params = meta.get("core_params") if isinstance(meta, dict) else None
     if not isinstance(core_params, dict):
         return False
@@ -4852,7 +4856,6 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     realtime_quote_policy_version = core_params.get("realtime_quote_policy_version")
     proxy_rebalance_policy_version = core_params.get("proxy_rebalance_policy_version")
     st_notice_policy_version = core_params.get("st_notice_policy_version")
-    security_meta_fingerprint = core_params.get("security_meta_cache_fingerprint")
     return (
         core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
@@ -4863,8 +4866,209 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
         and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
         and proxy_rebalance_policy_version in (None, PROXY_REBALANCE_POLICY_VERSION)
         and st_notice_policy_version == getattr(freq_mod, "ST_NOTICE_POLICY_VERSION", None)
-        and security_meta_fingerprint == security_meta_cache_fingerprint()
     )
+
+
+def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
+    if not _proxy_meta_core_matches_execution_model(meta):
+        return False
+    core_params = meta["core_params"]
+    return core_params.get("security_meta_cache_fingerprint") == security_meta_cache_fingerprint()
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _load_frozen_tail_authority() -> dict[str, object] | None:
+    try:
+        payload = json.loads(FROZEN_TAIL_AUTHORITY_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def frozen_tail_authority_matches_seed(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    meta: dict[str, object],
+    current_index_end: pd.Timestamp | None,
+    current_costed_end: pd.Timestamp | None,
+) -> bool:
+    """Authorize only an exact tracked seed for a no-rebalance tail extension.
+
+    This is deliberately narrower than normal proxy compatibility. It is used
+    only on clean runners where the ignored 4,975-symbol metadata cache is
+    absent, and never authorizes a historical proxy rebuild.
+    """
+    if freq_mod.list_backtest_universe_symbols():
+        return False
+    authority = _load_frozen_tail_authority()
+    if authority is None or authority.get("version") != FROZEN_TAIL_AUTHORITY_VERSION:
+        return False
+    if not _proxy_meta_core_matches_execution_model(meta):
+        return False
+    if current_index_end is None or current_costed_end is None:
+        return False
+    seed_end = pd.to_datetime(authority.get("seed_end_date"), errors="coerce")
+    if pd.isna(seed_end):
+        return False
+    seed_end = pd.Timestamp(seed_end).normalize()
+    if pd.Timestamp(current_index_end).normalize() != seed_end:
+        return False
+    if pd.Timestamp(current_costed_end).normalize() != seed_end:
+        return False
+    core_params = meta.get("core_params")
+    if not isinstance(core_params, dict):
+        return False
+    if core_params.get("security_meta_cache_fingerprint") != authority.get("security_meta_cache_fingerprint"):
+        return False
+
+    effective_path = paths.get("proxy_effective_members")
+    required_files = {
+        "proxy_index": args.index_csv,
+        "costed_nav": args.costed_nav_csv,
+        "proxy_meta": paths.get("proxy_meta"),
+        "proxy_members": paths.get("proxy_members"),
+        "proxy_turnover": paths.get("proxy_turnover"),
+        "proxy_effective_members": effective_path,
+    }
+    expected_hashes = authority.get("seed_file_sha256")
+    if not isinstance(expected_hashes, dict) or set(expected_hashes) != set(required_files):
+        return False
+    for label, path in required_files.items():
+        if not isinstance(path, Path) or not path.is_file():
+            return False
+        if _file_sha256(path) != expected_hashes.get(label):
+            return False
+
+    effective_members = _read_proxy_effective_members(effective_path, seed_end)
+    if len(effective_members) != TOP_N or len(set(effective_members)) != TOP_N:
+        return False
+    current_st_path = getattr(freq_mod, "CURRENT_ST", None)
+    if not isinstance(current_st_path, Path) or not current_st_path.is_file():
+        return False
+    current_st = set(freq_mod.load_current_st_name_map())
+    if not current_st or current_st.intersection(effective_members):
+        return False
+    return True
+
+
+def frozen_tail_extension_matches_authority(
+    args: argparse.Namespace,
+    paths: dict[str, Path],
+    meta: dict[str, object],
+    current_index_end: pd.Timestamp | None,
+    current_costed_end: pd.Timestamp | None,
+) -> bool:
+    """Validate the already-written tail on a second check in the same runner."""
+    authority = _load_frozen_tail_authority()
+    if authority is None or authority.get("version") != FROZEN_TAIL_AUTHORITY_VERSION:
+        return False
+    if not _proxy_meta_core_matches_execution_model(meta):
+        return False
+    if current_index_end is None or current_costed_end is None:
+        return False
+    authority_sha = hashlib.sha256(FROZEN_TAIL_AUTHORITY_PATH.read_bytes()).hexdigest()
+    if meta.get("tail_extension_authority_sha256") != authority_sha:
+        return False
+    if meta.get("tail_extension_method") != "no_new_rebalance_saved_target_replay":
+        return False
+
+    seed_end = pd.to_datetime(authority.get("seed_end_date"), errors="coerce")
+    extension_start = pd.to_datetime(meta.get("tail_extension_start"), errors="coerce")
+    extension_end = pd.to_datetime(meta.get("tail_extension_end"), errors="coerce")
+    if pd.isna(seed_end) or pd.isna(extension_start) or pd.isna(extension_end):
+        return False
+    seed_end = pd.Timestamp(seed_end).normalize()
+    extension_start = pd.Timestamp(extension_start).normalize()
+    extension_end = pd.Timestamp(extension_end).normalize()
+    if extension_start != seed_end or extension_end <= seed_end:
+        return False
+    if (extension_end - seed_end).days > 10:
+        return False
+    if pd.Timestamp(current_index_end).normalize() != extension_end:
+        return False
+    if pd.Timestamp(current_costed_end).normalize() != extension_end:
+        return False
+    extension_rows = int(meta.get("tail_extension_rows") or 0)
+    if extension_rows <= 0:
+        return False
+    if int(meta.get("tail_extension_effective_member_count") or 0) != TOP_N:
+        return False
+    source_counts = meta.get("tail_extension_return_source_counts")
+    if not isinstance(source_counts, dict) or sum(int(value or 0) for value in source_counts.values()) != TOP_N:
+        return False
+
+    expected_hashes = authority.get("seed_file_sha256")
+    if not isinstance(expected_hashes, dict):
+        return False
+    unchanged_paths = {
+        "proxy_members": paths.get("proxy_members"),
+        "proxy_turnover": paths.get("proxy_turnover"),
+        "proxy_effective_members": paths.get("proxy_effective_members"),
+    }
+    for label, path in unchanged_paths.items():
+        if not isinstance(path, Path) or not path.is_file():
+            return False
+        if _file_sha256(path) != expected_hashes.get(label):
+            return False
+
+    effective_members = _read_proxy_effective_members(paths.get("proxy_effective_members"), seed_end)
+    current_st_path = getattr(freq_mod, "CURRENT_ST", None)
+    current_st = set(freq_mod.load_current_st_name_map())
+    if (
+        len(effective_members) != TOP_N
+        or len(set(effective_members)) != TOP_N
+        or not isinstance(current_st_path, Path)
+        or not current_st_path.is_file()
+        or not current_st
+        or current_st.intersection(effective_members)
+    ):
+        return False
+
+    seed_rows = authority.get("seed_file_rows")
+    if not isinstance(seed_rows, dict):
+        return False
+    try:
+        proxy = pd.read_csv(args.index_csv)
+        costed = pd.read_csv(args.costed_nav_csv)
+    except Exception:
+        return False
+    if "date" not in proxy.columns or "date" not in costed.columns:
+        return False
+    proxy_dates = pd.to_datetime(proxy["date"], errors="coerce")
+    costed_dates = pd.to_datetime(costed["date"], errors="coerce")
+    if proxy_dates.isna().any() or costed_dates.isna().any():
+        return False
+    if proxy_dates.duplicated().any() or costed_dates.duplicated().any():
+        return False
+    if len(proxy) != int(seed_rows.get("proxy_index") or 0) + extension_rows:
+        return False
+    if len(costed) != int(seed_rows.get("costed_nav") or 0) + extension_rows:
+        return False
+    if int((proxy_dates.dt.normalize() > seed_end).sum()) != extension_rows:
+        return False
+    if int((costed_dates.dt.normalize() > seed_end).sum()) != extension_rows:
+        return False
+    proxy_tail = proxy.loc[proxy_dates.dt.normalize() > seed_end]
+    costed_tail = costed.loc[costed_dates.dt.normalize() > seed_end]
+    for frame, columns in (
+        (proxy_tail, ("close", "daily_return")),
+        (costed_tail, ("nav_net", "return_net")),
+    ):
+        if any(column not in frame.columns for column in columns):
+            return False
+        values = frame[list(columns)].apply(pd.to_numeric, errors="coerce")
+        if values.isna().any().any() or not np.isfinite(values.to_numpy(dtype=float)).all():
+            return False
+        if (values[columns[0]] <= 0).any():
+            return False
+    return True
 
 
 def proxy_tail_is_suspiciously_flat(index_csv: Path, target_end_date: pd.Timestamp, min_days: int = 5) -> bool:
@@ -5116,33 +5320,71 @@ def try_extend_proxy_index_without_rebalance(
         _write_proxy_effective_members(effective_path, current_end, effective_members)
     if not effective_members:
         return False
+    if len(effective_members) != TOP_N or len(set(effective_members)) != TOP_N:
+        return False
+    current_st = set(freq_mod.load_current_st_name_map())
+    if not current_st or current_st.intersection(effective_members):
+        return False
 
     tail_dates = pd.DatetimeIndex([pd.Timestamp(current_end), *list(missing_dates)])
     returns_df = pd.DataFrame(index=tail_dates)
     workers = max(1, min(int(args.max_workers), 16))
 
-    def load_tail_return(symbol: str) -> tuple[str, pd.Series] | None:
-        result = freq_mod.load_symbol_cache(
-            symbol,
-            tail_dates,
-            pd.DatetimeIndex([]),
-            TRADE_CONSTRAINT_MODE,
-            False,
-        )
-        if result is None:
-            return None
-        loaded_symbol, ret, _cap, _buyable, _sellable = result
-        return loaded_symbol, ret.reindex(tail_dates)
+    refresh_price_cache_tail(
+        target_end,
+        min(int(args.max_workers), 4),
+        symbols=effective_members,
+        force_refresh=args.force_refresh,
+        progress_interval=25,
+    )
 
+    def load_tail_return(symbol: str) -> tuple[str, pd.Series, str] | None:
+        raw_path = freq_mod.resolve_cache_path(
+            freq_mod.PRICE_DIR,
+            getattr(freq_mod, "SHARED_PRICE_DIR", None),
+            symbol,
+        )
+        adjusted_path = freq_mod.resolve_cache_path(
+            freq_mod.ADJ_PRICE_DIR,
+            getattr(freq_mod, "SHARED_ADJ_PRICE_DIR", None),
+            symbol,
+        )
+        source_path = adjusted_path or raw_path
+        if source_path is None:
+            return None
+        frame = pd.read_csv(source_path)
+        close_column = next(
+            (column for column in ("close_qfq", "close_adj", "close_raw", "close") if column in frame.columns),
+            None,
+        )
+        if "date" not in frame.columns or close_column is None:
+            return None
+        frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
+        frame[close_column] = pd.to_numeric(frame[close_column], errors="coerce")
+        close = (
+            frame.dropna(subset=["date", close_column])
+            .sort_values("date")
+            .drop_duplicates(subset="date", keep="last")
+            .set_index("date")[close_column]
+            .reindex(tail_dates)
+            .ffill()
+        )
+        if close.isna().any() or (close <= 0).any():
+            return None
+        source = "adjusted" if adjusted_path is not None else "raw"
+        return symbol, close.pct_change(fill_method=None).fillna(0.0), source
+
+    return_sources: dict[str, int] = {"adjusted": 0, "raw": 0}
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = {pool.submit(load_tail_return, symbol): symbol for symbol in effective_members}
         for fut in as_completed(futures):
             result = fut.result()
             if result is None:
                 continue
-            symbol, ret = result
+            symbol, ret, source = result
             returns_df[symbol] = pd.to_numeric(ret, errors="coerce")
-    if returns_df.empty:
+            return_sources[source] += 1
+    if set(returns_df.columns) != set(effective_members):
         return False
 
     current_level = float(proxy.loc[proxy["date"].dt.normalize().eq(current_end), "close"].iloc[-1])
@@ -5180,6 +5422,9 @@ def try_extend_proxy_index_without_rebalance(
     meta["tail_extension_end"] = str(target_end.date())
     meta["tail_extension_rows"] = len(new_rows)
     meta["tail_extension_effective_member_count"] = len(effective_members)
+    meta["tail_extension_return_source_counts"] = return_sources
+    authority_payload = FROZEN_TAIL_AUTHORITY_PATH.read_bytes()
+    meta["tail_extension_authority_sha256"] = hashlib.sha256(authority_payload).hexdigest()
     _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
     return True
 
@@ -5193,14 +5438,35 @@ def ensure_strategy_files(
     current_index_end = read_csv_last_date(args.index_csv)
     current_costed_end = read_csv_last_date(args.costed_nav_csv)
     meta_matches_execution_model = False
+    frozen_tail_seed_matches = False
+    frozen_tail_extension_matches = False
     if paths["proxy_meta"].exists():
         try:
-            meta_matches_execution_model = proxy_meta_matches_execution_model(
-                json.loads(paths["proxy_meta"].read_text(encoding="utf-8"))
+            proxy_meta = json.loads(paths["proxy_meta"].read_text(encoding="utf-8"))
+            meta_matches_execution_model = proxy_meta_matches_execution_model(proxy_meta)
+            frozen_tail_seed_matches = frozen_tail_authority_matches_seed(
+                args,
+                paths,
+                proxy_meta,
+                current_index_end,
+                current_costed_end,
+            )
+            frozen_tail_extension_matches = frozen_tail_extension_matches_authority(
+                args,
+                paths,
+                proxy_meta,
+                current_index_end,
+                current_costed_end,
             )
         except Exception:
             meta_matches_execution_model = False
-    can_reuse_index = args.index_csv.exists() and current_index_end is not None and meta_matches_execution_model
+            frozen_tail_seed_matches = False
+            frozen_tail_extension_matches = False
+    can_reuse_index = (
+        args.index_csv.exists()
+        and current_index_end is not None
+        and (meta_matches_execution_model or frozen_tail_extension_matches)
+    )
     has_proxy_turnover = paths["proxy_turnover"].exists()
     can_reuse_proxy = can_reuse_index and has_proxy_turnover
     frozen_proxy_tail = (
@@ -5252,6 +5518,24 @@ def ensure_strategy_files(
         and pd.Timestamp(current_costed_end).normalize() < pd.Timestamp(target_end_date).normalize()
         and try_extend_costed_nav_without_turnover(args, panel_path, target_end_date, paths["proxy_turnover"])
     ):
+        return
+
+    if frozen_tail_seed_matches and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize():
+        if not try_extend_proxy_index_without_rebalance(args, paths, panel_path, target_end_date):
+            raise RuntimeError(
+                "Exact frozen proxy seed could not be extended through the no-new-rebalance tail; "
+                "a narrow runner cache is not authorized for a historical rebuild."
+            )
+        if not try_extend_costed_nav_without_turnover(
+            args,
+            panel_path,
+            target_end_date,
+            paths["proxy_turnover"],
+        ):
+            raise RuntimeError(
+                "Exact frozen proxy seed tail was extended, but the costed NAV splice failed its anchor or "
+                "no-rebalance checks."
+            )
         return
 
     if (
