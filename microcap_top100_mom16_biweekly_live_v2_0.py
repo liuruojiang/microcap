@@ -4905,10 +4905,22 @@ def frozen_tail_authority_matches_seed(
     only on clean runners where the ignored 4,975-symbol metadata cache is
     absent, and never authorizes a historical proxy rebuild.
     """
-    if freq_mod.list_backtest_universe_symbols():
-        return False
     authority = _load_frozen_tail_authority()
     if authority is None or authority.get("version") != FROZEN_TAIL_AUTHORITY_VERSION:
+        return False
+    authority_fingerprint = authority.get("security_meta_cache_fingerprint")
+    if not isinstance(authority_fingerprint, dict):
+        return False
+    authority_universe_count = int(authority_fingerprint.get("present_count") or 0) + int(
+        authority_fingerprint.get("missing_count") or 0
+    )
+    if authority_universe_count <= 0:
+        return False
+    # Ephemeral production setup may create a small current-symbol cache before
+    # this check. That remains a narrow cache and cannot rebuild history. Once
+    # the full audited universe is present, normal fingerprint validation must
+    # succeed instead of falling back to this seed authority.
+    if len(freq_mod.list_backtest_universe_symbols()) >= authority_universe_count:
         return False
     if not _proxy_meta_core_matches_execution_model(meta):
         return False

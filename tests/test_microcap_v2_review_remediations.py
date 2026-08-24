@@ -1624,6 +1624,33 @@ def test_frozen_tail_authority_requires_exact_seed_hashes_and_current_st_gate(
         pd.Timestamp("2026-08-20"),
     )
 
+    monkeypatch.setattr(
+        v2_0.freq_mod,
+        "list_backtest_universe_symbols",
+        lambda: [f"{value:06d}" for value in range(100)],
+    )
+    assert v2_0.base_mod.frozen_tail_authority_matches_seed(
+        args,
+        paths,
+        meta,
+        pd.Timestamp("2026-08-20"),
+        pd.Timestamp("2026-08-20"),
+    )
+
+    monkeypatch.setattr(
+        v2_0.freq_mod,
+        "list_backtest_universe_symbols",
+        lambda: [f"{value:06d}" for value in range(4975)],
+    )
+    assert not v2_0.base_mod.frozen_tail_authority_matches_seed(
+        args,
+        paths,
+        meta,
+        pd.Timestamp("2026-08-20"),
+        pd.Timestamp("2026-08-20"),
+    )
+    monkeypatch.setattr(v2_0.freq_mod, "list_backtest_universe_symbols", lambda: [])
+
     args.index_csv.write_text("tampered\n", encoding="utf-8")
     assert not v2_0.base_mod.frozen_tail_authority_matches_seed(
         args,
