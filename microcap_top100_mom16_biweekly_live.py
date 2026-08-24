@@ -3930,15 +3930,22 @@ def build_realtime_context_from_cached_proxy(
     panel_path: Path,
     target_end_date: pd.Timestamp,
     reason: str,
+    *,
+    degraded: bool = True,
 ) -> dict[str, object] | None:
     cache_end = reusable_cached_proxy_end_for_realtime(args, paths, target_end_date)
     if cache_end is None:
         return None
     close_df = load_close_df(panel_path, args.index_csv, max_date=cache_end)
     context = build_base_signal_context(args, paths, panel_path, cache_end, close_df)
-    context["fallback_warning"] = (
-        f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    note = f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    context["realtime_base_source"] = (
+        "cached_proxy_fallback" if degraded else "validated_refreshed_state"
     )
+    context["realtime_base_note"] = note
+    context["allow_quote_pre_close_after_anchor"] = True
+    if degraded:
+        context["fallback_warning"] = note
     return context
 
 
@@ -5414,7 +5421,9 @@ def build_realtime_signal_fast(context: dict[str, object]) -> tuple[pd.DataFrame
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
     last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
-    allow_quote_pre_close_after_anchor = bool(context.get("fallback_warning"))
+    allow_quote_pre_close_after_anchor = bool(
+        context.get("allow_quote_pre_close_after_anchor", context.get("fallback_warning"))
+    )
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []

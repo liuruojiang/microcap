@@ -8379,15 +8379,22 @@ def build_realtime_context_from_cached_proxy(
     panel_path: Path,
     target_end_date: pd.Timestamp,
     reason: str,
+    *,
+    degraded: bool = True,
 ) -> dict[str, object] | None:
     cache_end = reusable_cached_proxy_end_for_realtime(args, paths, target_end_date)
     if cache_end is None:
         return None
     close_df = load_close_df(panel_path, args.index_csv, max_date=cache_end)
     context = build_base_signal_context(args, paths, panel_path, cache_end, close_df)
-    context["fallback_warning"] = (
-        f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    note = f"realtime base used cached proxy through {cache_end.date()} because {reason}"
+    context["realtime_base_source"] = (
+        "cached_proxy_fallback" if degraded else "validated_refreshed_state"
     )
+    context["realtime_base_note"] = note
+    context["allow_quote_pre_close_after_anchor"] = True
+    if degraded:
+        context["fallback_warning"] = note
     return context
 
 
@@ -9592,7 +9599,9 @@ def build_realtime_signal_fast(
     latest_trade_date = pd.Timestamp(close_df.index[-1])
     member_symbols = effective_members["symbol"].astype(str).str.zfill(6).tolist()
     last_close_map = ensure_realtime_last_close_map(member_symbols, as_of_date=latest_trade_date)
-    allow_quote_pre_close_after_anchor = bool(context.get("fallback_warning"))
+    allow_quote_pre_close_after_anchor = bool(
+        context.get("allow_quote_pre_close_after_anchor", context.get("fallback_warning"))
+    )
 
     member_returns: list[float] = []
     missing_symbols: list[dict[str, object]] = []
@@ -9722,8 +9731,14 @@ def build_realtime_signal_fast(
     signal_df["tail_jitter_risk"] = jitter_level
     signal_df["tail_jitter_note"] = jitter_note
     fallback_warning = str(context.get("fallback_warning") or "")
+    realtime_base_source = str(context.get("realtime_base_source") or "")
+    realtime_base_note = str(context.get("realtime_base_note") or "")
     if fallback_warning:
         signal_df["fallback_warning"] = fallback_warning
+    if realtime_base_source:
+        signal_df["realtime_base_source"] = realtime_base_source
+    if realtime_base_note:
+        signal_df["realtime_base_note"] = realtime_base_note
 
     meta = {
         "snapshot_time": str(snapshot_ts),
@@ -9752,6 +9767,10 @@ def build_realtime_signal_fast(
     }
     if fallback_warning:
         meta["fallback_warning"] = fallback_warning
+    if realtime_base_source:
+        meta["realtime_base_source"] = realtime_base_source
+    if realtime_base_note:
+        meta["realtime_base_note"] = realtime_base_note
     return signal_df, meta, rt_close_df, rt_result
 
 
@@ -11116,6 +11135,7 @@ def _cached_realtime_context_from_existing_state(
     reason: str,
     exc: RuntimeError | None = None,
     refresh_panel: bool = True,
+    degraded: bool = True,
 ) -> tuple[Path, pd.Timestamp, dict[str, object]]:
     if refresh_panel:
         try:
@@ -11165,6 +11185,7 @@ def _cached_realtime_context_from_existing_state(
         panel_path,
         target_end_date,
         reason,
+        degraded=degraded,
     )
     if base_context is None:
         message = "Validated realtime state is not reusable for production."
@@ -11206,6 +11227,7 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                 base_paths,
                 "production state-only mode avoids implicit cache rebuilds",
                 refresh_panel=False,
+                degraded=False,
             )
         else:
             fallback_context = None
@@ -11450,6 +11472,8 @@ MEMBER_REBALANCE_META_COLS = {
 }
 REALTIME_META_FORCE_COLS = {
     "fallback_warning",
+    "realtime_base_source",
+    "realtime_base_note",
     "quote_source",
     "hedge_quote_source",
     "member_price_count",

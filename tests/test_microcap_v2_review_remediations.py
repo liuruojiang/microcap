@@ -357,6 +357,48 @@ def test_realtime_signal_rows_preserve_fallback_and_snapshot_provenance() -> Non
     assert bool(row.at[0, "snapshot_row_appended"]) is True
 
 
+@pytest.mark.parametrize(
+    ("degraded", "expected_source", "expects_warning"),
+    [
+        (False, "validated_refreshed_state", False),
+        (True, "cached_proxy_fallback", True),
+    ],
+)
+def test_cached_proxy_context_distinguishes_validated_state_from_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+    degraded: bool,
+    expected_source: str,
+    expects_warning: bool,
+) -> None:
+    cache_end = pd.Timestamp("2026-08-21")
+    close_df = pd.DataFrame(
+        {"microcap": [1.0], "hedge": [1.0]},
+        index=pd.DatetimeIndex([cache_end]),
+    )
+    builder_globals = v2_0.base_mod.build_realtime_context_from_cached_proxy.__globals__
+    monkeypatch.setitem(
+        builder_globals,
+        "reusable_cached_proxy_end_for_realtime",
+        lambda *_args, **_kwargs: cache_end,
+    )
+    monkeypatch.setitem(builder_globals, "load_close_df", lambda *_args, **_kwargs: close_df)
+    monkeypatch.setitem(builder_globals, "build_base_signal_context", lambda *_args, **_kwargs: {})
+
+    context = v2_0.base_mod.build_realtime_context_from_cached_proxy(
+        SimpleNamespace(index_csv=Path("proxy.csv")),
+        {},
+        Path("panel.csv"),
+        cache_end,
+        "production state-only mode avoids implicit cache rebuilds",
+        degraded=degraded,
+    )
+
+    assert context is not None
+    assert context["realtime_base_source"] == expected_source
+    assert context["allow_quote_pre_close_after_anchor"] is True
+    assert ("fallback_warning" in context) is expects_warning
+
+
 def test_realtime_query_refresh_uses_base_stale_anchor_default(monkeypatch: pytest.MonkeyPatch) -> None:
     from scripts import realtime_state_bundle
 
