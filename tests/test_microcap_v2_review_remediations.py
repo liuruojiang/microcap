@@ -1564,6 +1564,15 @@ def _valid_proxy_core_params() -> dict[str, object]:
     }
 
 
+def test_frozen_seed_hash_is_stable_across_git_newline_materialization(tmp_path: Path) -> None:
+    lf_path = tmp_path / "seed_lf.csv"
+    crlf_path = tmp_path / "seed_crlf.csv"
+    lf_path.write_bytes(b"date,value\n2026-08-20,1\n")
+    crlf_path.write_bytes(b"date,value\r\n2026-08-20,1\r\n")
+
+    assert v2_0.base_mod._file_sha256(lf_path) == v2_0.base_mod._file_sha256(crlf_path)
+
+
 def test_frozen_tail_authority_requires_exact_seed_hashes_and_current_st_gate(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1602,7 +1611,7 @@ def test_frozen_tail_authority_requires_exact_seed_hashes_and_current_st_gate(
         "seed_end_date": "2026-08-20",
         "security_meta_cache_fingerprint": meta["core_params"]["security_meta_cache_fingerprint"],
         "seed_file_sha256": {
-            label: hashlib.sha256(path.read_bytes()).hexdigest() for label, path in required.items()
+            label: v2_0.base_mod._file_sha256(path) for label, path in required.items()
         },
     }
     authority_path = tmp_path / "authority.json"
@@ -1758,7 +1767,7 @@ def test_frozen_tail_extension_is_reusable_only_with_validated_written_rows(
         "seed_end_date": "2026-08-20",
         "seed_file_rows": {"proxy_index": 1, "costed_nav": 1},
         "seed_file_sha256": {
-            label: hashlib.sha256(path.read_bytes()).hexdigest()
+            label: v2_0.base_mod._file_sha256(path)
             for label, path in {
                 "proxy_members": paths["proxy_members"],
                 "proxy_turnover": paths["proxy_turnover"],
