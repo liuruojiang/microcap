@@ -1812,3 +1812,35 @@ def test_frozen_tail_extension_is_reusable_only_with_validated_written_rows(
         pd.Timestamp("2026-08-21"),
         pd.Timestamp("2026-08-21"),
     )
+
+
+def test_realtime_cached_proxy_accepts_validated_frozen_tail_extension(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_csv = tmp_path / "index.csv"
+    costed_nav_csv = tmp_path / "costed.csv"
+    proxy_meta = tmp_path / "meta.json"
+    proxy_turnover = tmp_path / "turnover.csv"
+    for path in (index_csv, costed_nav_csv, proxy_turnover):
+        path.write_text("seed", encoding="utf-8")
+    proxy_meta.write_text("{}", encoding="utf-8")
+    args = SimpleNamespace(
+        index_csv=index_csv,
+        costed_nav_csv=costed_nav_csv,
+        max_stale_anchor_days=5,
+        allow_stale_realtime=False,
+    )
+    paths = {"proxy_meta": proxy_meta, "proxy_turnover": proxy_turnover}
+    function = v2_0.base_mod.reusable_cached_proxy_end_for_realtime
+    function_globals = function.__globals__
+    monkeypatch.setitem(function_globals, "read_csv_last_date", lambda _path: pd.Timestamp("2026-08-24"))
+    monkeypatch.setitem(function_globals, "proxy_meta_matches_execution_model", lambda _meta: False)
+    monkeypatch.setitem(function_globals, "frozen_tail_extension_matches_authority", lambda *_args: True)
+    monkeypatch.setitem(
+        function_globals,
+        "assess_history_anchor_freshness",
+        lambda *_args, **_kwargs: {"is_stale": False},
+    )
+
+    assert function(args, paths, pd.Timestamp("2026-08-24")) == pd.Timestamp("2026-08-24")
