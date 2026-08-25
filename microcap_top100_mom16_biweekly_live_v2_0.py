@@ -3699,7 +3699,7 @@ COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS = {
     "2026-04-11-p0-p1-history-meta-master-stv2",
 }
 STATIC_CONTEXT_CACHE_VERSION = "2026-08-20-live-st-name-guard-v3"
-FROZEN_TAIL_AUTHORITY_VERSION = "2026-08-24-exact-hash-bootstrap-v1"
+FROZEN_TAIL_AUTHORITY_VERSION = "2026-08-25-post-rebalance-bootstrap-v2"
 FROZEN_TAIL_AUTHORITY_PATH = (
     OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json"
 )
@@ -7108,6 +7108,19 @@ TAIL_EXTENSION_ANCHOR_NUMERIC_COLUMNS = (
     "momentum_gap",
 )
 
+# The public hedge-index refresh can materialize the same close at vendor
+# display precision (for example 7589.779 versus 7589.78).  Keep the splice
+# fail-closed for state and material price changes, while allowing only the
+# downstream numerical drift implied by that sub-tick display rounding.
+TAIL_EXTENSION_ANCHOR_NUMERIC_TOLERANCES = {
+    "return": (0.0, 1e-6),
+    "microcap_close": (1e-10, 1e-6),
+    "hedge_close": (0.0, 0.0050001),
+    "microcap_mom": (0.0, 1e-6),
+    "hedge_mom": (0.0, 1e-6),
+    "momentum_gap": (0.0, 1e-6),
+}
+
 
 def costed_tail_anchor_matches_gross(
     costed: pd.DataFrame,
@@ -7138,7 +7151,8 @@ def costed_tail_anchor_matches_gross(
         fresh_value = pd.to_numeric(fresh[column], errors="coerce")
         if not np.isfinite(old_value) or not np.isfinite(fresh_value):
             return False
-        if not np.isclose(float(old_value), float(fresh_value), rtol=1e-7, atol=1e-10):
+        rtol, atol = TAIL_EXTENSION_ANCHOR_NUMERIC_TOLERANCES[column]
+        if not np.isclose(float(old_value), float(fresh_value), rtol=rtol, atol=atol):
             return False
     return True
 
