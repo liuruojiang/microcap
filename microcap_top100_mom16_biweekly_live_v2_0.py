@@ -8670,12 +8670,22 @@ def reusable_cached_proxy_end_for_realtime(
     if paths["proxy_meta"].exists():
         try:
             proxy_meta = json.loads(paths["proxy_meta"].read_text(encoding="utf-8"))
-            meta_matches = proxy_meta_matches_execution_model(proxy_meta) or frozen_tail_extension_matches_authority(
-                args,
-                paths,
-                proxy_meta,
-                current_index_end,
-                current_costed_end,
+            meta_matches = (
+                proxy_meta_matches_execution_model(proxy_meta)
+                or frozen_tail_authority_matches_seed(
+                    args,
+                    paths,
+                    proxy_meta,
+                    current_index_end,
+                    current_costed_end,
+                )
+                or frozen_tail_extension_matches_authority(
+                    args,
+                    paths,
+                    proxy_meta,
+                    current_index_end,
+                    current_costed_end,
+                )
             )
         except Exception:
             meta_matches = False
