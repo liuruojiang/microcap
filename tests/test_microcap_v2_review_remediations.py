@@ -1158,6 +1158,36 @@ def test_costed_tail_extension_rejects_anchor_state_mismatch(
     assert costed_path.read_bytes() == before
 
 
+def test_costed_tail_anchor_accepts_only_vendor_display_rounding() -> None:
+    anchor = pd.Timestamp("2026-08-20")
+    old = {
+        "date": anchor,
+        "holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "signal_on": True,
+        "return": 0.017625595564493,
+        "microcap_close": 221928.30319205672,
+        "hedge_close": 7589.779,
+        "microcap_mom": 0.1568004756205352,
+        "hedge_mom": 0.0697082500726549,
+        "momentum_gap": 0.0870922255478803,
+    }
+    refreshed = {
+        **{key: value for key, value in old.items() if key != "date"},
+        "return": 0.017625704017669958,
+        "hedge_close": 7589.78,
+        "hedge_mom": 0.06970778795211974,
+        "momentum_gap": 0.08709268766841549,
+    }
+    costed = pd.DataFrame([old])
+    gross = pd.DataFrame([refreshed], index=pd.DatetimeIndex([anchor]))
+
+    assert v2_0.base_mod.costed_tail_anchor_matches_gross(costed, gross, anchor)
+
+    gross.loc[anchor, "hedge_close"] = 7589.79
+    assert not v2_0.base_mod.costed_tail_anchor_matches_gross(costed, gross, anchor)
+
+
 def test_staged_output_bundle_continues_rollback_and_retains_failed_backup(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1571,6 +1601,38 @@ def test_frozen_seed_hash_is_stable_across_git_newline_materialization(tmp_path:
     crlf_path.write_bytes(b"date,value\r\n2026-08-20,1\r\n")
 
     assert v2_0.base_mod._file_sha256(lf_path) == v2_0.base_mod._file_sha256(crlf_path)
+
+
+def test_tracked_frozen_tail_authority_matches_post_rebalance_seed() -> None:
+    authority_path = v2_0.base_mod.FROZEN_TAIL_AUTHORITY_PATH
+    authority = json.loads(authority_path.read_text(encoding="utf-8"))
+    output_dir = authority_path.parent
+    files = {
+        "proxy_index": output_dir / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+        "costed_nav": (
+            output_dir
+            / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv"
+        ),
+        "proxy_meta": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+        "proxy_members": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+        "proxy_turnover": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+        "proxy_effective_members": (
+            output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv"
+        ),
+    }
+
+    assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
+    assert authority["seed_end_date"] == "2026-08-24"
+    assert authority["seed_file_sha256"] == {
+        label: v2_0.base_mod._file_sha256(path) for label, path in files.items()
+    }
+    assert len(pd.read_csv(files["proxy_index"])) == authority["seed_file_rows"]["proxy_index"]
+    assert len(pd.read_csv(files["costed_nav"])) == authority["seed_file_rows"]["costed_nav"]
+
+    effective = pd.read_csv(files["proxy_effective_members"], dtype={"symbol": str})
+    assert set(effective["as_of_date"].astype(str)) == {authority["seed_end_date"]}
+    assert len(effective) == v2_0.base_mod.TOP_N
+    assert effective["symbol"].nunique() == v2_0.base_mod.TOP_N
 
 
 def test_frozen_tail_authority_requires_exact_seed_hashes_and_current_st_gate(
