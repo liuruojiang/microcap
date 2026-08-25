@@ -1790,6 +1790,57 @@ def test_ensure_strategy_files_routes_exact_frozen_seed_only_to_short_tail(
     assert calls == ["proxy_tail", "costed_tail"]
 
 
+def test_ensure_strategy_files_reuses_exact_frozen_seed_at_target(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_csv = tmp_path / "index.csv"
+    costed_nav_csv = tmp_path / "costed.csv"
+    proxy_meta = tmp_path / "meta.json"
+    proxy_turnover = tmp_path / "turnover.csv"
+    for path in (index_csv, costed_nav_csv, proxy_turnover):
+        path.write_text("seed", encoding="utf-8")
+    proxy_meta.write_text("{}", encoding="utf-8")
+    paths = {
+        "proxy_meta": proxy_meta,
+        "proxy_turnover": proxy_turnover,
+        "proxy_members": tmp_path / "members.csv",
+        "proxy_effective_members": tmp_path / "effective.csv",
+    }
+    args = SimpleNamespace(
+        index_csv=index_csv,
+        costed_nav_csv=costed_nav_csv,
+        rebuild_index_if_missing=True,
+    )
+    calls: list[str] = []
+    ensure_globals = v2_0.base_mod.ensure_strategy_files.__globals__
+    monkeypatch.setitem(ensure_globals, "read_csv_last_date", lambda _path: pd.Timestamp("2026-08-24"))
+    monkeypatch.setitem(ensure_globals, "proxy_meta_matches_execution_model", lambda _meta: False)
+    monkeypatch.setitem(ensure_globals, "frozen_tail_authority_matches_seed", lambda *_args: True)
+    monkeypatch.setitem(ensure_globals, "frozen_tail_extension_matches_authority", lambda *_args: False)
+    monkeypatch.setitem(ensure_globals, "proxy_tail_is_suspiciously_flat", lambda *_args: False)
+    monkeypatch.setitem(ensure_globals, "proxy_latest_row_is_flat_placeholder", lambda *_args: False)
+    monkeypatch.setitem(
+        ensure_globals,
+        "normalize_existing_proxy_outputs",
+        lambda *_args: calls.append("normalize"),
+    )
+    monkeypatch.setitem(
+        ensure_globals,
+        "refresh_price_cache_tail",
+        lambda *_args, **_kwargs: pytest.fail("exact fresh seed must not trigger a historical rebuild"),
+    )
+
+    v2_0.base_mod.ensure_strategy_files(
+        args,
+        paths,
+        tmp_path / "panel.csv",
+        pd.Timestamp("2026-08-24"),
+    )
+
+    assert calls == ["normalize"]
+
+
 def test_frozen_tail_extension_is_reusable_only_with_validated_written_rows(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

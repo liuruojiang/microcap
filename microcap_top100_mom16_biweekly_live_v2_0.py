@@ -5483,7 +5483,7 @@ def ensure_strategy_files(
     can_reuse_index = (
         args.index_csv.exists()
         and current_index_end is not None
-        and (meta_matches_execution_model or frozen_tail_extension_matches)
+        and (meta_matches_execution_model or frozen_tail_seed_matches or frozen_tail_extension_matches)
     )
     has_proxy_turnover = paths["proxy_turnover"].exists()
     can_reuse_proxy = can_reuse_index and has_proxy_turnover
