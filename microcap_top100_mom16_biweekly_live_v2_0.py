@@ -5297,7 +5297,17 @@ def try_extend_proxy_index_without_rebalance(
 
     current_end = pd.Timestamp(proxy["date"].max()).normalize()
     target_end = pd.Timestamp(target_end_date).normalize()
-    if current_end >= target_end:
+    replaced_flat_placeholder = bool(
+        current_end == target_end
+        and proxy_latest_row_is_flat_placeholder(args.index_csv, target_end)
+    )
+    if replaced_flat_placeholder:
+        earlier_dates = proxy.loc[proxy["date"].dt.normalize() < target_end, "date"]
+        if earlier_dates.empty:
+            return False
+        current_end = pd.Timestamp(earlier_dates.max()).normalize()
+        proxy = proxy.loc[proxy["date"].dt.normalize() <= current_end].copy()
+    elif current_end >= target_end:
         return False
     if (target_end - current_end).days > int(max_tail_calendar_days):
         return False
@@ -5440,6 +5450,7 @@ def try_extend_proxy_index_without_rebalance(
     meta["tail_extension_end"] = str(target_end.date())
     meta["tail_extension_rows"] = len(new_rows)
     meta["tail_extension_effective_member_count"] = len(effective_members)
+    meta["tail_extension_replaced_flat_placeholder"] = replaced_flat_placeholder
     meta["tail_extension_return_source_counts"] = return_sources
     authority_payload = FROZEN_TAIL_AUTHORITY_PATH.read_bytes()
     meta["tail_extension_authority_sha256"] = hashlib.sha256(authority_payload).hexdigest()
@@ -5573,6 +5584,17 @@ def ensure_strategy_files(
             return
 
     if can_reuse_index and frozen_proxy_tail:
+        if (
+            try_extend_proxy_index_without_rebalance(args, paths, panel_path, target_end_date)
+            and try_extend_costed_nav_without_turnover(
+                args,
+                panel_path,
+                target_end_date,
+                paths["proxy_turnover"],
+            )
+        ):
+            assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
+            return
         extend_index_recent_window(args, paths, panel_path, target_end_date)
         if paths["proxy_turnover"].exists():
             rebuild_costed_nav_from_proxy_turnover(args, paths, panel_path, target_end_date=target_end_date)
@@ -13599,6 +13621,24 @@ def _load_realtime_v2_0_official_index() -> pd.DatetimeIndex:
     return pd.DatetimeIndex(official_out.index).dropna().sort_values()
 
 
+def _build_realtime_v2_0_official_index(
+    close_df: pd.DataFrame,
+    meta: dict[str, object],
+) -> pd.DatetimeIndex:
+    """Derive the realtime calendar from independently validated close history."""
+    anchor_text = str(meta.get("latest_anchor_trade_date") or "").strip()
+    if not anchor_text:
+        raise RuntimeError("v2.0 realtime metadata is missing latest_anchor_trade_date")
+    anchor = pd.Timestamp(anchor_text).normalize()
+    close_index = pd.DatetimeIndex(close_df.index).dropna().sort_values()
+    history_index = close_index[close_index.normalize() <= anchor]
+    if len(history_index) == 0 or pd.Timestamp(history_index[-1]).normalize() != anchor:
+        raise RuntimeError(
+            f"v2.0 validated realtime close history does not reach anchor {anchor.date()}"
+        )
+    return pd.DatetimeIndex(history_index)
+
+
 def _v2_0_rewrite_allowed_tail_rows() -> int:
     return int(DEFAULT_ALLOWED_TAIL_ROWS)
 
@@ -14162,7 +14202,10 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     is_snapshot = bool(meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
     out = apply_target_vol_scaling(embedded_lineage_realtime, treat_last_row_as_snapshot=is_snapshot)
-    freshness_calendar = _load_realtime_v2_0_official_index()
+    freshness_calendar = _build_realtime_v2_0_official_index(
+        realtime_base.realtime_close_df,
+        meta,
+    )
     signal_official_index = freshness_calendar
     if is_snapshot and hasattr(realtime_base, "realtime_close_df") and len(realtime_base.realtime_close_df.index):
         signal_official_index = signal_official_index.union(

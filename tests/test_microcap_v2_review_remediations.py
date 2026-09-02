@@ -424,6 +424,7 @@ def test_realtime_query_refresh_uses_base_stale_anchor_default(monkeypatch: pyte
 @pytest.mark.parametrize(
     ("module", "builder_name"),
     [
+        (v2_0.overlay_mod, "_build_realtime_v2_0_official_index"),
         (v2_3, "_build_realtime_v2_3_official_index"),
         (v2_5, "_build_realtime_v2_5_official_index"),
     ],
@@ -452,6 +453,34 @@ def test_realtime_version_calendar_comes_from_validated_close_history(
     )
 
     assert list(calendar) == list(close_df.index[:2])
+
+
+@pytest.mark.parametrize(
+    ("module", "builder_name", "version"),
+    [
+        (v2_0.overlay_mod, "_build_realtime_v2_0_official_index", "v2.0"),
+        (v2_3, "_build_realtime_v2_3_official_index", "v2.3"),
+        (v2_5, "_build_realtime_v2_5_official_index", "v2.5"),
+    ],
+)
+def test_realtime_version_calendar_rejects_close_history_short_of_anchor(
+    module: object,
+    builder_name: str,
+    version: str,
+) -> None:
+    close_df = pd.DataFrame(
+        {"microcap": [100.0, 101.0], "hedge": [200.0, 201.0]},
+        index=pd.to_datetime(["2026-07-01", "2026-07-02"]),
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match=rf"{version} validated realtime close history does not reach anchor",
+    ):
+        getattr(module, builder_name)(
+            close_df,
+            {"latest_anchor_trade_date": "2026-07-03"},
+        )
 
 
 def test_staged_output_bundle_leaves_official_files_unchanged_on_failure(tmp_path) -> None:
@@ -1156,6 +1185,95 @@ def test_costed_tail_extension_rejects_anchor_state_mismatch(
 
     assert extended is False
     assert costed_path.read_bytes() == before
+
+
+def test_no_rebalance_tail_extension_replaces_flat_target_placeholder(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bridge = pd.Timestamp("2026-09-01")
+    target = pd.Timestamp("2026-09-02")
+    index_path = tmp_path / "proxy.csv"
+    panel_path = tmp_path / "panel.csv"
+    members_path = tmp_path / "members.csv"
+    meta_path = tmp_path / "meta.json"
+    effective_path = tmp_path / "effective.csv"
+    pd.DataFrame(
+        {
+            "date": [bridge, target],
+            "close": [100.0, 100.0],
+            "daily_return": [0.01, 0.0],
+            "holding_count": [2, 2],
+            "holding_effective": [True, True],
+        }
+    ).to_csv(index_path, index=False)
+    pd.DataFrame({"date": [bridge, target]}).to_csv(panel_path, index=False)
+    members_path.write_text(
+        "rebalance_date,rank,symbol\n2026-08-20,1,000001\n",
+        encoding="utf-8",
+    )
+    meta_path.write_text("{}", encoding="utf-8")
+    cache_paths: dict[str, Path] = {}
+    for symbol, target_close in (("000001", 101.0), ("000002", 103.0)):
+        path = tmp_path / f"{symbol}.csv"
+        pd.DataFrame(
+            {"date": [bridge, target], "close_qfq": [100.0, target_close]}
+        ).to_csv(path, index=False)
+        cache_paths[symbol] = path
+
+    extend = v2_0.base_mod.try_extend_proxy_index_without_rebalance
+    monkeypatch.setitem(extend.__globals__, "TOP_N", 2)
+    monkeypatch.setitem(
+        extend.__globals__,
+        "build_biweekly_rebalance_dates",
+        lambda _dates: pd.DatetimeIndex([]),
+    )
+    monkeypatch.setitem(
+        extend.__globals__,
+        "_proxy_target_members_map_from_saved_members",
+        lambda _path: {pd.Timestamp("2026-08-20"): ["000001", "000002"]},
+    )
+    monkeypatch.setitem(
+        extend.__globals__,
+        "_read_proxy_effective_members",
+        lambda _path, _date: ["000001", "000002"],
+    )
+    monkeypatch.setitem(
+        extend.__globals__,
+        "refresh_price_cache_tail",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        v2_0.base_mod.freq_mod,
+        "load_current_st_name_map",
+        lambda: {"999999": "ST样例"},
+    )
+    monkeypatch.setattr(
+        v2_0.base_mod.freq_mod,
+        "resolve_cache_path",
+        lambda _primary, _shared, symbol: cache_paths[symbol],
+    )
+
+    extended = extend(
+        SimpleNamespace(index_csv=index_path, max_workers=2, force_refresh=False),
+        {
+            "proxy_members": members_path,
+            "proxy_meta": meta_path,
+            "proxy_effective_members": effective_path,
+        },
+        panel_path,
+        target,
+    )
+
+    repaired = pd.read_csv(index_path, parse_dates=["date"])
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    latest = repaired.loc[repaired["date"].eq(target)].iloc[-1]
+    assert extended is True
+    assert float(latest["daily_return"]) == pytest.approx(0.02)
+    assert float(latest["close"]) == pytest.approx(102.0)
+    assert meta["tail_extension_start"] == "2026-09-01"
+    assert meta["tail_extension_end"] == "2026-09-02"
+    assert meta["tail_extension_replaced_flat_placeholder"] is True
 
 
 def test_costed_tail_anchor_accepts_only_vendor_display_rounding() -> None:
