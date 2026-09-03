@@ -29,6 +29,19 @@ def test_standalone_realtime_refresh_route_exports_default_anchor_age(
     assert calls == [(v2_0.ROOT, 8, v2_0.DEFAULT_MAX_STALE_ANCHOR_DAYS)]
 
 
+def test_state_only_realtime_route_never_starts_implicit_refresh(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("TOP100_REALTIME_REQUIRE_STATE", "1")
+    monkeypatch.setattr(
+        v2_0,
+        "_refresh_realtime_state_for_local_query",
+        lambda: (_ for _ in ()).throw(AssertionError("implicit refresh must not run")),
+    )
+
+    assert v2_0.run_realtime_query_with_fresh_state(lambda: "emitted") == "emitted"
+
+
 def _official_changes(official_rebalance: bool) -> pd.DataFrame:
     changes = pd.DataFrame({"action": ["enter"] * 7 + ["exit"] * 7})
     if not official_rebalance:

@@ -221,6 +221,13 @@ def _latest_proxy_member_symbols(root: Path) -> list[str]:
 
 
 def _current_member_symbols(root: Path) -> list[str]:
+    # A valid v2.0 static context is the sole authority for the current live
+    # member set. Older version-family snapshots are retained for audit only;
+    # unioning them can silently reintroduce obsolete or ST securities.
+    if _has_current_v2_static_member_context(root):
+        _target_path, effective_path = _current_v2_static_member_paths(root)
+        return sorted(set(_csv_symbols(effective_path)))
+
     symbols: set[str] = set()
     for pattern in STATIC_EFFECTIVE_MEMBER_GLOBS:
         for path in root.glob(pattern):
@@ -230,13 +237,17 @@ def _current_member_symbols(root: Path) -> list[str]:
     return sorted(symbols)
 
 
+def _current_v2_static_member_paths(root: Path) -> tuple[Path, Path]:
+    prefix = root / V2_STATIC_CONTEXT_PREFIX
+    return Path(f"{prefix}_target_members.csv"), Path(f"{prefix}_effective_members.csv")
+
+
 def _has_current_v2_static_member_context(root: Path) -> bool:
     proxy_members = root / REQUIRED_FILES[4]
     latest_proxy_rebalance = _csv_last_date(proxy_members, ("rebalance_date",))
     prefix = root / V2_STATIC_CONTEXT_PREFIX
     meta_path = Path(f"{prefix}_meta.json")
-    target_path = Path(f"{prefix}_target_members.csv")
-    effective_path = Path(f"{prefix}_effective_members.csv")
+    target_path, effective_path = _current_v2_static_member_paths(root)
     changes_path = Path(f"{prefix}_rebalance_changes.csv")
     if latest_proxy_rebalance is None or not all(
         path.is_file() and path.stat().st_size > 0
@@ -253,6 +264,42 @@ def _has_current_v2_static_member_context(root: Path) -> bool:
         if not _csv_has_valid_named_symbols(path):
             return False
     return True
+
+
+def _current_st_symbols(root: Path) -> set[str]:
+    path = root / ".microcap_index_cache/current_st.csv"
+    if not path.is_file():
+        return set()
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        code_field = "code" if "code" in (reader.fieldnames or []) else "symbol"
+        if code_field not in (reader.fieldnames or []):
+            return set()
+        return {
+            str(row.get(code_field) or "").strip().zfill(6)
+            for row in reader
+            if str(row.get(code_field) or "").strip()
+        }
+
+
+def _current_v2_effective_member_st_names(root: Path) -> list[str]:
+    if not _has_current_v2_static_member_context(root):
+        return []
+    _target_path, effective_path = _current_v2_static_member_paths(root)
+    if not effective_path.is_file():
+        return []
+    with effective_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if "name" not in (reader.fieldnames or []):
+            return []
+        return sorted(
+            {
+                name
+                for row in reader
+                if (name := str(row.get("name") or "").strip())
+                and name.upper().startswith(("ST", "*ST", "PT"))
+            }
+        )
 
 
 def _iter_current_member_cache_files(root: Path) -> list[str]:
@@ -379,6 +426,23 @@ def validate_state(
     price_anchor = anchor_dates.get("proxy_index")
     if not current_symbols:
         errors.append("cannot identify current effective member symbols for realtime price-cache validation")
+    elif len(current_symbols) != TOP_N:
+        errors.append(
+            "current effective member symbols are not exactly the required unique count: "
+            f"actual={len(current_symbols)} required={TOP_N}"
+        )
+    current_st_overlap = sorted(set(current_symbols) & _current_st_symbols(root))
+    if current_st_overlap:
+        errors.append(
+            "current v2.0 effective members intersect current ST universe: "
+            + ",".join(current_st_overlap)
+        )
+    current_st_names = _current_v2_effective_member_st_names(root)
+    if current_st_names:
+        errors.append(
+            "current v2.0 effective members contain ST/PT names: "
+            + ",".join(current_st_names)
+        )
     for symbol in current_symbols:
         rel = f"{PRICE_CACHE_DIR}/{symbol}.csv"
         path = root / rel
@@ -462,6 +526,56 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dic
             archive.write(root / rel, rel)
         archive.writestr(MANIFEST_NAME, json.dumps(manifest, ensure_ascii=False, indent=2))
     return {**report, "bundle": str(bundle), "bundle_files": file_names}
+
+
+def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
+    names = archive.namelist()
+    if MANIFEST_NAME not in names:
+        raise ValueError(f"state bundle is missing integrity manifest: {MANIFEST_NAME}")
+    if len(names) != len(set(names)):
+        raise ValueError("state bundle contains duplicate archive members")
+    try:
+        manifest = json.loads(archive.read(MANIFEST_NAME).decode("utf-8"))
+    except Exception as exc:
+        raise ValueError(f"state bundle has invalid integrity manifest: {exc}") from exc
+    entries = manifest.get("files")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("state bundle integrity manifest has no file entries")
+
+    declared: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError("state bundle integrity manifest contains an invalid file entry")
+        rel = _repo_path(str(entry.get("path") or "")).as_posix()
+        if not rel or rel == "." or rel == MANIFEST_NAME:
+            raise ValueError(f"state bundle integrity manifest contains an invalid path: {rel!r}")
+        if rel in declared:
+            raise ValueError(f"state bundle integrity manifest contains a duplicate path: {rel}")
+        declared.add(rel)
+        if rel not in names:
+            raise ValueError(f"state bundle is missing declared file: {rel}")
+        info = archive.getinfo(rel)
+        expected_bytes = entry.get("bytes")
+        expected_sha = str(entry.get("sha256") or "").lower()
+        if not isinstance(expected_bytes, int) or expected_bytes < 0:
+            raise ValueError(f"state bundle has invalid byte count for: {rel}")
+        if info.file_size != expected_bytes:
+            raise ValueError(
+                f"state bundle byte count mismatch for {rel}: "
+                f"actual={info.file_size} expected={expected_bytes}"
+            )
+        digest = hashlib.sha256()
+        with archive.open(info, "r") as source:
+            for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                digest.update(chunk)
+        if len(expected_sha) != 64 or digest.hexdigest() != expected_sha:
+            raise ValueError(f"state bundle sha256 mismatch for: {rel}")
+
+    payload_names = {name for name in names if name != MANIFEST_NAME and not name.endswith("/")}
+    undeclared = sorted(payload_names - declared)
+    if undeclared:
+        raise ValueError("state bundle contains undeclared files: " + ",".join(undeclared))
+    return manifest
 
 
 def refresh_state(
@@ -550,12 +664,11 @@ def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> 
         return {"ok": False, "errors": [f"missing bundle: {bundle}"], "warnings": []}
     root = root.resolve()
     with zipfile.ZipFile(bundle, "r") as archive:
+        manifest = _verify_bundle_manifest(archive)
         bundle_validation: dict[str, object] | None = None
-        if MANIFEST_NAME in archive.namelist():
-            manifest = json.loads(archive.read(MANIFEST_NAME).decode("utf-8"))
-            validation = manifest.get("validation")
-            if isinstance(validation, dict):
-                bundle_validation = validation
+        validation = manifest.get("validation")
+        if isinstance(validation, dict):
+            bundle_validation = validation
 
         current_report = validate_state(
             root,

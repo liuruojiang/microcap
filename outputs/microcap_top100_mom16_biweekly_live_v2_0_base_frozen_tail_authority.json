@@ -1,22 +1,22 @@
 {
-  "version": "2026-08-25-post-rebalance-bootstrap-v2",
-  "seed_end_date": "2026-08-24",
-  "purpose": "Exact-hash post-rebalance authority through 2026-08-24 for a short no-new-rebalance production tail extension on an ephemeral runner without the ignored full historical cache. The 2026-08-20 close rebalance and its cost are already included. This does not authorize a historical proxy rebuild.",
+  "version": "2026-09-03-post-rebalance-bootstrap-v3",
+  "seed_end_date": "2026-09-03",
+  "purpose": "Exact-hash post-rebalance authority through 2026-09-03 for a short no-new-rebalance production tail extension. The 2026-09-03 close rebalance, execution constraints, and costs are included. Historical or future scheduled-rebalance rebuilds still require the validated full candidate cache.",
   "security_meta_cache_fingerprint": {
     "present_count": 4975,
     "missing_count": 0,
-    "sha256": "f5b3b2e47994f81c5904d565c34a2ad51ec807aaa53ea00f669e7d9fe05fd867"
+    "sha256": "1f09de33716deb9742593765a1121f223ed0cee86b29c4e343ce9b63f6e4f94e"
   },
   "seed_file_rows": {
-    "proxy_index": 4041,
-    "costed_nav": 4024
+    "proxy_index": 4049,
+    "costed_nav": 4032
   },
   "seed_file_sha256": {
-    "proxy_index": "614627532d16b116c3fd63aad41303fd25827f8e1cc68c1ccbdef1bfbe5a1302",
-    "costed_nav": "9a7bcd3ecb490bb2c808dc1e0809e0a8a1966212ac9600f7badea1ad9da159d3",
-    "proxy_meta": "866690cf8447910fb79f5fdfada05a95781aa430d8b047f4c61bdbecf712961b",
-    "proxy_members": "0eb6f3a076f1f72d6e20fce7b365fd902d465dd8d6350113b8b7b71a8e034cef",
-    "proxy_turnover": "e6c556e82235c902e6d46baa92e1090ab1a166475125849ff7bb47e4484e9685",
-    "proxy_effective_members": "ecec6660a8cb704b12056bca02f987db6af1ff4edcfdef9d74ab5d030386a4b5"
+    "proxy_index": "25311cba62cf0a74041a4b83dbf4f395565bb092880e15a767023107a2ee9ad3",
+    "costed_nav": "66c5c63d08090bda5e25d6dda6846955e533fa4399d50805d53138e4638270ab",
+    "proxy_meta": "5216305f5dc18b249822457fc72345e6d1a9c957840719f1171810d9f16d9a73",
+    "proxy_members": "ac6396a16cdd5b493b5a6bede3e7ead2820913e5f92983da166467144392e07e",
+    "proxy_turnover": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
+    "proxy_effective_members": "9558082806163587d9813100bd19cafe92337a2c086e3fc8ac6aa8a71e5825ee"
   }
 }
