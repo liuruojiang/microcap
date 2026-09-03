@@ -310,7 +310,11 @@ def test_validate_state_accepts_only_current_matching_refresh_proof(
     }
     monkeypatch.setattr(realtime_state_bundle, "REQUIRED_FILES", ())
     monkeypatch.setattr(realtime_state_bundle, "_csv_last_date", lambda *_args, **_kwargs: target)
-    monkeypatch.setattr(realtime_state_bundle, "_current_member_symbols", lambda _root: ["000001"])
+    monkeypatch.setattr(
+        realtime_state_bundle,
+        "_current_member_symbols",
+        lambda _root: [f"{value:06d}" for value in range(1, 101)],
+    )
     monkeypatch.setattr(realtime_state_bundle, "_has_current_v2_static_member_context", lambda _root: True)
     monkeypatch.setattr(realtime_state_bundle, "_load_refresh_proof", lambda _root: dict(proof))
 
@@ -1740,7 +1744,7 @@ def test_tracked_frozen_tail_authority_matches_post_rebalance_seed() -> None:
     }
 
     assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
-    assert authority["seed_end_date"] == "2026-08-24"
+    assert authority["seed_end_date"] == "2026-09-03"
     assert authority["seed_file_sha256"] == {
         label: v2_0.base_mod._file_sha256(path) for label, path in files.items()
     }
