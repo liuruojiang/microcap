@@ -2,6 +2,7 @@
 
 import argparse
 import copy
+import hashlib
 import importlib
 import json
 import math
@@ -106,7 +107,8 @@ SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv"
+PREVIOUS_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv"
 DEFAULT_COSTED_NAV_CSV = COSTED_NAV_CSV
 LEGACY_COSTED_NAV_CSVS = [
     OUTPUT_DIR / "microcap_top100_mom16_exp_h3_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv",
@@ -125,19 +127,20 @@ PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 VERSION = "2.3"
-EXPECTED_VERSION_ROLE = "spread_nav_log_wls_lb25_r2_vol10_overheat"
+STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"
+EXPECTED_VERSION_ROLE = "spread_nav_log_wls_lb25_r2off_vol10_overheat"
 EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense."
 LOOKBACK = 25
 HALFLIFE = 2.5
 R2_WINDOW = 25
-R2_ENTRY_GATE = 0.08
+R2_ENTRY_GATE = 0.0  # OFF; R2_WINDOW is retained for diagnostic compatibility only.
 MOMENTUM_GAP_ENTRY_THRESHOLD = 0.0
 MOMENTUM_GAP_EXIT_BUFFER = 0.08
 OVERHEAT_KIND = "vol"
 OVERHEAT_FEATURE_WINDOW = 10
 OVERHEAT_TRIGGER_THRESHOLD = 0.26
-OVERHEAT_RECOVERY_RATIO = 0.75
-OVERHEAT_RECOVERY_THRESHOLD = OVERHEAT_TRIGGER_THRESHOLD * OVERHEAT_RECOVERY_RATIO
+OVERHEAT_RECOVERY_THRESHOLD = 0.20
+OVERHEAT_RECOVERY_RATIO = OVERHEAT_RECOVERY_THRESHOLD / OVERHEAT_TRIGGER_THRESHOLD
 TARGET_VOL_ENABLED = False
 CASH_DAY_YIELD_ENABLED = False
 FINANCING_ENABLED = False
@@ -313,6 +316,7 @@ def parse_v2_3_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--base-output-prefix", default=None)
     parser.add_argument("--audited-history-migration-report", type=Path, default=None)
+    parser.add_argument("--audited-strategy-migration-report", type=Path, default=None)
     return parser.parse_args(argv)
 
 
@@ -853,14 +857,16 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
     out["nav"] = out["nav_net"]
     out["version"] = VERSION
     out["base_version"] = "embedded_v2_base"
-    out["overlay_type"] = "spread_nav_log_wls_lb25_vol10_overheat"
+    out["overlay_type"] = STRATEGY_REVISION
+    out["strategy_revision"] = STRATEGY_REVISION
+    out["r2_gate_enabled"] = R2_ENTRY_GATE > 0
     out["target_vol_enabled"] = TARGET_VOL_ENABLED
     out["cash_day_yield"] = 0.0
     out["cash_day_yield_annual"] = 0.0
     out["cash_day_yield_enabled"] = CASH_DAY_YIELD_ENABLED
     out["financing_enabled"] = FINANCING_ENABLED
     out["return_column_semantics"] = (
-        "return equals return_net after v2.3 LB25 R2-gated signal, vol10 overheat defense, "
+        "return equals return_net after v2.3 LB25 R2-OFF signal, vol10 overheat defense, "
         "and base entry/exit/rebalance costs; no target-vol, cash-day yield, or financing overlay"
     )
     return out
@@ -1388,8 +1394,10 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
-    row["overlay_type"] = "spread_nav_log_wls_lb25_vol10_overheat"
-    row["signal_model"] = "spread_nav_log_wls_exp_halflife_2p5_lb25_r2gate0p08_signal1p0_exec0p8_vol10_overheat"
+    row["overlay_type"] = STRATEGY_REVISION
+    row["strategy_revision"] = STRATEGY_REVISION
+    row["r2_gate_enabled"] = R2_ENTRY_GATE > 0
+    row["signal_model"] = "spread_nav_log_wls_exp_halflife_2p5_lb25_r2off_signal1p0_exec0p8_vol10_overheat26_recovery20"
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     row["halflife"] = HALFLIFE
@@ -1445,7 +1453,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["financing_enabled"] = FINANCING_ENABLED
     _apply_fixed_exposure_next_session_cost_fields(row, latest, hedge_ratio=EXECUTION_HEDGE_RATIO)
     row["return_column_semantics"] = (
-        "return equals return_net after LB25 R2-gated signal, vol10 overheat defense, "
+        "return equals return_net after LB25 R2-OFF signal, vol10 overheat defense, "
         "and base entry/exit/rebalance costs; no target-vol, cash-day yield, or financing overlay"
     )
     return row
@@ -1753,6 +1761,33 @@ def _write_v2_3_lineage_migration_diagnostics(report_path: Path, audit_path: Pat
     return diagnostics_path
 
 
+def strategy_promotion_evidence(previous_path: Path, candidate: pd.DataFrame, audit_path: Path) -> dict[str, object]:
+    """Exact parameter migration, separate from historical security-lineage repair."""
+    evidence = dict(v2_0.overlay_mod.strategy_promotion_evidence(previous_path, candidate, audit_path))
+    evidence.update(
+        authorization="user_replace_existing_v2_3",
+        strategy_revision=STRATEGY_REVISION,
+        source_sha256_lf=hashlib.sha256(Path(__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+        v2_0_source_sha256_lf=hashlib.sha256(Path(v2_0.__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+        v2_0_costed_nav_sha256=v2_0.overlay_mod._sha256_path(v2_0.COSTED_NAV_CSV),
+    )
+    return evidence
+
+
+def strategy_promotion_matches(report_path: Path | None, previous_path: Path,
+                               candidate: pd.DataFrame, audit_path: Path) -> bool:
+    if report_path is None:
+        return False
+    try:
+        report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+        return report.get("approved") is True and all(
+            report.get(key) == value
+            for key, value in strategy_promotion_evidence(previous_path, candidate, audit_path).items()
+        )
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        return False
+
+
 def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     official_v2_0_out = _load_official_v2_0_out()
@@ -1763,8 +1798,11 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     out = build_v2_3_result(close_df, turnover_df, common_index)
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
     rewrite_audit_status: dict[str, object] = {"status": "not_checked", "reason": "no_previous_costed_nav"}
-    if COSTED_NAV_CSV.exists():
-        previous = _read_costed_nav_csv(parse_dates=["date"])
+    previous_path = COSTED_NAV_CSV
+    if not previous_path.exists() and previous_path.name == DEFAULT_COSTED_NAV_CSV.name:
+        previous_path = COSTED_NAV_CSV.parent / PREVIOUS_COSTED_NAV_CSV.name
+    if previous_path.exists():
+        previous = _read_costed_nav_csv(previous_path, parse_dates=["date"])
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
         allowed_tail_rows = _v2_3_rewrite_allowed_tail_rows()
         candidate = out.rename_axis("date").reset_index()
@@ -1781,7 +1819,17 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
             rewrite_audit_status = {"status": "clean", "audit_csv": None}
         except RuntimeError as exc:
             report_path = getattr(_ACTIVE_RUNTIME_ARGS, "audited_history_migration_report", None)
-            if v2_3_rewrite_audit_matches_approved_lineage_migration(
+            if strategy_promotion_matches(
+                getattr(_ACTIVE_RUNTIME_ARGS, "audited_strategy_migration_report", None),
+                previous_path, candidate, audit_path,
+            ):
+                rewrite_audit_status = {
+                    "status": "audited_exact_hash_strategy_promotion",
+                    "strategy_revision": STRATEGY_REVISION,
+                    "migration_report": str(_ACTIVE_RUNTIME_ARGS.audited_strategy_migration_report),
+                    "audit_csv": str(audit_path),
+                }
+            elif v2_3_rewrite_audit_matches_approved_lineage_migration(
                 report_path,
                 previous,
                 candidate,
@@ -1851,12 +1899,13 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary = copy.deepcopy(reference_summary)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
+    summary["strategy_revision"] = STRATEGY_REVISION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
         "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense. Uses exp half-life 2.5 weighted log slope on "
-        "25 trading days of always-on 1.0x hedged signal spread NAV, requires R2 >= 0.08 for entry, executes with "
+        "25 trading days of always-on 1.0x hedged signal spread NAV, R2 entry filter OFF, executes with "
         "0.8x CSI1000 hedge, exits when score falls below -8%, applies close-executed vol10 overheat defense at "
-        "26% annualized realized volatility with 75% recovery threshold, and has no target-vol, cash-day-yield, "
+        "26% annualized realized volatility with 20% recovery threshold, and has no target-vol, cash-day-yield, "
         "financing, peak-decay, static NAV defense, or CSI2000 volume filter."
     )
     summary.setdefault("core_params", {})
@@ -2013,7 +2062,7 @@ def _print_signal_query() -> None:
     print("base_version: embedded_v2_base")
     print(
         "signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, "
-        "R2 entry gate 0.08, signal spread 1.0x, execution hedge 0.8x"
+        "R2 entry filter OFF, signal spread 1.0x, execution hedge 0.8x"
     )
     print(
         f"overlay: entry score > {MOMENTUM_GAP_ENTRY_THRESHOLD:.2f}, exit buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, "
@@ -2044,7 +2093,7 @@ def _print_realtime_signal_query() -> None:
         print("base_version: embedded_v2_base")
         print(
             "signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, "
-            "R2 entry gate 0.08, signal spread 1.0x, execution hedge 0.8x"
+            "R2 entry filter OFF, signal spread 1.0x, execution hedge 0.8x"
         )
         print(
             f"overlay: entry score > {MOMENTUM_GAP_ENTRY_THRESHOLD:.2f}, exit buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, "
