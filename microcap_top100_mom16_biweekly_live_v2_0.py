@@ -10942,6 +10942,8 @@ def execute_query(args: argparse.Namespace, query: str) -> None:
             base_context = ensure_realtime_query_base_context(args, paths, panel_path, target_end_date)
         except (FileNotFoundError, ValueError):
             base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
+        base_context["anchor_freshness"] = assess_realtime_anchor_freshness(
+            pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = ensure_static_members_fresh(args, paths, panel_path, target_end_date, base_context)
         handle_query(member_context, args, query_text)
         return
@@ -11443,6 +11445,8 @@ def _load_realtime_embedded_base_context() -> tuple[dict[str, object], pd.DataFr
             base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
         except (FileNotFoundError, ValueError):
             base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+        base_context["anchor_freshness"] = base_mod.assess_realtime_anchor_freshness(
+            pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
@@ -11632,6 +11636,8 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                     base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
                 except (FileNotFoundError, ValueError):
                     base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+        base_context["anchor_freshness"] = base_mod.assess_realtime_anchor_freshness(
+            pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
         refresh_proof = base_context.get("realtime_refresh_proof")
         if not isinstance(refresh_proof, dict):

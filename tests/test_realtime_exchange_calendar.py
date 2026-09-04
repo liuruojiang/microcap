@@ -106,3 +106,51 @@ def test_cached_context_receives_realtime_freshness_not_historical_age(oracle, m
                 pd.Timestamp("2026-09-30"), "diagnostic fixture", degraded=False)
     assert not result["anchor_freshness"]["is_stale"]
     assert result["realtime_base_source"] == "validated_refreshed_state"
+
+
+@pytest.mark.parametrize("entrypoint", ["generic", "legacy", "production"])
+def test_all_realtime_fallback_entrypoints_replace_historical_age(oracle, monkeypatch, tmp_path, entrypoint):
+    from contextlib import nullcontext
+    turnover = tmp_path / "turnover.csv"
+    turnover.write_text("rebalance_date\n2026-09-24\n", encoding="utf-8")
+    paths = {"proxy_turnover": turnover}
+    args = SimpleNamespace(output_prefix="fixture", max_stale_anchor_days=5)
+    close = pd.DataFrame(index=pd.DatetimeIndex(["2026-09-30"]))
+    context = {"close_df": close, "anchor_freshness": {"is_stale": True, "stale_calendar_days": 8}}
+    target = pd.Timestamp("2026-09-30")
+    def missing(*a, **kw):
+        raise ValueError("injected recoverable context miss")
+    def fallback(*a, **kw):
+        return {**context}
+    def members(*a):
+        return a[-1]
+    if entrypoint == "generic":
+        namespace = v2.base_mod.execute_query.__globals__
+        monkeypatch.setitem(namespace, "normalize_query_text", lambda value: value)
+        monkeypatch.setitem(namespace, "classify_query_kind", lambda value: "realtime_signal")
+        monkeypatch.setitem(namespace, "build_output_paths", lambda value: paths)
+        monkeypatch.setitem(namespace, "refresh_history_anchor", lambda *a: (tmp_path / "panel.csv", target))
+        monkeypatch.setitem(namespace, "ensure_realtime_query_base_context", missing)
+        monkeypatch.setitem(namespace, "ensure_base_signal_fresh", fallback)
+        monkeypatch.setitem(namespace, "ensure_static_members_fresh", members)
+        observed = []
+        monkeypatch.setitem(namespace, "handle_query", lambda result, *a: observed.append(result))
+        v2.base_mod.execute_query(args, "realtime")
+        result = observed[0]
+    else:
+        fn = v2._load_realtime_embedded_base_context if entrypoint == "legacy" else v2.load_realtime_context
+        namespace = fn.__globals__
+        monkeypatch.setitem(namespace, "_v2_base_build_lock", nullcontext)
+        monkeypatch.setitem(namespace, "_ensure_base_outputs_unlocked", lambda: None)
+        monkeypatch.setitem(namespace, "_build_base_args", lambda: args)
+        monkeypatch.setitem(namespace, "_resolve_base_paths", lambda args: SimpleNamespace(output_paths=paths))
+        monkeypatch.setitem(namespace, "_load_reference_summary_unlocked", lambda *a: {})
+        monkeypatch.setitem(namespace, "realtime_state_required", lambda: False)
+        monkeypatch.setattr(v2.base_mod, "refresh_history_anchor", lambda *a: (tmp_path / "panel.csv", target))
+        monkeypatch.setattr(v2.base_mod, "ensure_realtime_query_base_context", missing)
+        monkeypatch.setattr(v2.base_mod, "ensure_base_signal_fresh", fallback)
+        monkeypatch.setattr(v2.base_mod, "ensure_static_members_fresh", members)
+        result, _, _ = fn()
+    assert result["anchor_freshness"]["freshness_source"] == "official_exchange_calendar"
+    assert not result["anchor_freshness"]["is_stale"]
+    assert result["anchor_freshness"]["stale_calendar_days"] == 8
