@@ -20,6 +20,19 @@ MANIFEST = "outputs/top100_delivery_manifest.json"
 LOCK = "outputs/top100_delivery.lock"
 BASE_PANEL = "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
 AUTHORITY = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json"
+V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
+
+
+def plain_v20_identity(row: dict) -> bool:
+    """A version number alone cannot distinguish the retired v2.0 overlay."""
+    try:
+        return (row.get("strategy_revision") == V20_STRATEGY_REVISION
+                and str(row.get("target_vol_enabled")) == "False"
+                and str(row.get("overheat_enabled")) == "False"
+                and float(row.get("current_execution_scale", -1)) in (0., 1.)
+                and float(row.get("next_session_actionable_scale", -1)) in (0., 1.))
+    except (TypeError, ValueError):
+        return False
 
 
 def sha(path: Path) -> str:
@@ -64,6 +77,13 @@ def inspect_outputs(root: Path, expected: str) -> dict:
             summary = json.loads(summary_path.read_text(encoding="utf-8"))
             if str(summary.get("version", "")).removeprefix("v") != f"2.{v}":
                 errors.append(f"v2.{v} summary identity mismatch")
+            if v == "0":
+                params = summary.get("core_params", {})
+                if (summary.get("strategy_revision") != V20_STRATEGY_REVISION or
+                        params.get("momentum_gap_exit_buffer") != 0 or
+                        params.get("target_volatility_scaling", {}).get("enabled") is not False or
+                        params.get("overheat_defense", {}).get("enabled") is not False):
+                    errors.append("v2.0 summary plain revision mismatch")
             if summary.get("historical_rewrite_audit", {}).get("status") != "clean":
                 errors.append(f"v2.{v} has no clean second-run rewrite audit")
             if summary.get("latest_nav_date") != expected or summary.get("latest_trade_date") != expected:
@@ -78,6 +98,9 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                 streams[name] = info
                 if info["latest_date"] != expected:
                     errors.append(f"final date mismatch: {name}={info['latest_date']} expected={expected}")
+                if v == "0" and not name.endswith("performance_nav.csv"):
+                    if not all(plain_v20_identity(row) for row in rows):
+                        errors.append(f"v2.0 plain revision/state mismatch: {name}")
                 if name.endswith("latest_signal.csv"):
                     if len(rows) != 1 or rows[0].get("version") != f"2.{v}":
                         errors.append(f"v2.{v} final CSV identity mismatch")
@@ -126,6 +149,8 @@ def independent_target(root: Path) -> str:
     """Date-only independent gate; actual market streams remain separately verified."""
     from scripts.exchange_calendar import latest_completed_session
     return latest_completed_session().isoformat()
+
+
 
 
 def verify_release(root: Path) -> str:

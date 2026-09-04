@@ -170,7 +170,8 @@ def test_actionable_close_contract_requires_future_execution(workspace, executio
 def test_real_core_next_session_member_contract_is_accepted(workspace):
     import pandas as pd
     import microcap_top100_mom16_biweekly_live_v2_0 as v2
-    signal = pd.DataFrame([{"date": "2026-09-03", "version": "2.0", "member_rebalance_required": True}])
+    signal = pd.read_csv(workspace / "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv")
+    signal["member_rebalance_required"] = True
     row = v2.augment_close_confirmed_signal_with_member_contract(
         signal, pd.DataFrame({"rebalance_date": ["2026-09-03"]}),
         pd.DatetimeIndex(["2026-09-03", "2026-09-04"]))

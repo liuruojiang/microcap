@@ -636,15 +636,17 @@ def test_v2_0_promoted_defaults_match_selected_low_drawdown_line() -> None:
     assert v2_0.TARGET_VOL_WINDOW == 75
     assert v2_0.TARGET_VOL_MAX_LEVERAGE == pytest.approx(1.5)
     assert v2_0.TARGET_VOL_SCALE_REBALANCE_THRESHOLD == pytest.approx(0.10)
-    assert v2_0.COSTED_NAV_CSV.name == "microcap_top100_mom16_targetvol15_max1p5_v2_0_costed_nav.csv"
+    assert v2_0.COSTED_NAV_CSV.name == "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv"
     assert v2_0.overlay_mod.LEGACY_COSTED_NAV_CSV.name == "microcap_top100_mom16_targetvol25_max1p5_v2_0_costed_nav.csv"
 
     fingerprint = v2_0.current_base_fingerprint()
-    assert fingerprint["overlay_type"] == "volatility_overheat_exit_then_target_volatility_scaling"
+    assert fingerprint["overlay_type"] == "plain_mom16_fixed1_20260904"
+    assert fingerprint["target_vol_enabled"] is False
+    assert fingerprint["momentum_gap_exit_buffer"] == 0.0
     assert fingerprint["target_vol"] == pytest.approx(0.15)
     assert fingerprint["vol_window"] == 75
     assert fingerprint["overheat_defense"] == {
-        "enabled": True,
+        "enabled": False,
         "kind": "volatility",
         "window": 60,
         "threshold": pytest.approx(0.23),
