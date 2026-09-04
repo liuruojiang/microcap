@@ -15,13 +15,14 @@ def write(root, name, content):
 
 @pytest.fixture
 def workspace(tmp_path):
-    daily = "date,return_net\n2026-09-02,0.01\n2026-09-03,0.02\n"
+    daily = "date,return_net,nav_net\n2026-09-02,0.01,1.01\n2026-09-03,0.02,1.0302\n"
     for name in (*delivery.BASE_FILES.values(), delivery.BASE_PANEL):
         write(tmp_path, f"outputs/{name}", daily)
     write(tmp_path, f"outputs/{delivery.BASE_FILES['proxy_turnover']}",
           "rebalance_date\n2026-09-03\n")
     write(tmp_path, delivery.AUTHORITY, "{}")
     for version, costed in delivery.COSTED.items():
+        active_holding = "long_microcap_top100" if version == "5" else "long_microcap_short_zz1000"
         prefix = f"microcap_top100_mom16_biweekly_live_v2_{version}"
         write(tmp_path, f"{prefix}.py", "# source\n")
         summary = {"version": f"2.{version}", "historical_rewrite_audit": {"status": "clean"},
@@ -40,16 +41,27 @@ def workspace(tmp_path):
         identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,current_execution_scale,next_session_actionable_scale"
         identity = f",{delivery.V20_STRATEGY_REVISION},False,False,1.0,1.0"
         if version == "3":
-            identity_header = ",strategy_revision,target_vol_enabled,r2_gate_enabled,r2_entry_gate,overheat_trigger_threshold,overheat_recovery_threshold"
-            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,0.0,0.26,0.20"
+            identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,r2_entry_gate,overheat_trigger_threshold,overheat_recovery_threshold"
+                               ",signal_spread_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
+            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,0.0,0.26,0.20,1.0,0.0,0.08,False,False"
         for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv"):
             content = daily
             if version in ("0", "3") and not name.endswith("performance_nav.csv"):
-                content = f"date,return_net{identity_header}\n2026-09-02,0.01{identity}\n2026-09-03,0.02{identity}\n"
+                content = f"date,return_net,nav_net{identity_header}\n2026-09-02,0.01,1.01{identity}\n2026-09-03,0.02,1.0302{identity}\n"
+            if not name.endswith("performance_nav.csv"):
+                lines = content.splitlines()
+                lines[0] += ",holding,next_holding"
+                lines[1:] = [line + f",{active_holding},{active_holding}" for line in lines[1:]]
+                if "current_execution_scale" not in lines[0]:
+                    lines[0] += ",current_execution_scale,next_session_actionable_scale"
+                    lines[1:] = [line + ",1.0,1.0" for line in lines[1:]]
+                content = "\n".join(lines) + "\n"
             write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
-              f"date,version,member_rebalance_actionable{identity_header if version in ('0', '3') else ''}\n"
-              f"2026-09-03,2.{version},False{identity if version in ('0', '3') else ''}\n")
+              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official{identity_header if version in ('0', '3') else ''},current_holding,next_holding"
+              f"{',current_execution_scale,next_session_actionable_scale' if version != '0' else ''}\n"
+              f"2026-09-03,2.{version},False,False,False{identity if version in ('0', '3') else ''},{active_holding},{active_holding}"
+              f"{',1.0,1.0' if version != '0' else ''}\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
     return tmp_path

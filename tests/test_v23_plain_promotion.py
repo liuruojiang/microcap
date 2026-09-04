@@ -20,7 +20,9 @@ def test_selected_parameters_and_identity():
 def test_old_or_contradictory_final_identity_rejected(field, bad):
     row = dict(strategy_revision=v.STRATEGY_REVISION, target_vol_enabled='False',
                r2_gate_enabled='False', r2_entry_gate='0', overheat_trigger_threshold='.26',
-               overheat_recovery_threshold='.20')
+               overheat_recovery_threshold='.20', signal_spread_hedge_ratio='1',
+               momentum_gap_entry_threshold='0', momentum_gap_exit_buffer='.08',
+               cash_day_yield_enabled='False', financing_enabled='False')
     assert delivery.plain_v23_identity(row)
     row[field] = bad
     assert not delivery.plain_v23_identity(row)

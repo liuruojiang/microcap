@@ -5,6 +5,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 import os
 import subprocess
 import sys
@@ -29,7 +30,15 @@ def plain_v23_identity(row: dict) -> bool:
         return (row.get("strategy_revision") == V23_STRATEGY_REVISION
                 and str(row.get("target_vol_enabled")) == "False"
                 and str(row.get("r2_gate_enabled")) == "False"
+                and str(row.get("cash_day_yield_enabled")) == "False"
+                and str(row.get("financing_enabled")) == "False"
                 and float(row.get("r2_entry_gate", -1)) == 0.
+                and float(row.get("signal_spread_hedge_ratio", -1)) == 1.
+                and abs(float(row.get("momentum_gap_exit_buffer", -1)) - .08) < 1e-12
+                # NAV and final signal use these two established entry aliases.
+                and any(key in row for key in ("entry_threshold", "momentum_gap_entry_threshold"))
+                and all(float(row[key]) == 0. for key in ("entry_threshold", "momentum_gap_entry_threshold")
+                        if key in row)
                 and abs(float(row.get("overheat_trigger_threshold", -1)) - .26) < 1e-12
                 and abs(float(row.get("overheat_recovery_threshold", -1)) - .20) < 1e-12)
     except (TypeError, ValueError):
@@ -70,6 +79,45 @@ def input_hashes(root: Path) -> dict:
     return {name: sha(root / name) for name in names}
 
 
+def validate_final_nav(rows: list[dict], name: str) -> None:
+    """Validate realized economics only; warm-up diagnostic NaNs are allowed."""
+    cumulative = 1.0
+    for row in rows:
+        try:
+            ret, nav = float(row["return_net"]), float(row["nav_net"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(f"Missing/invalid final return_net or nav_net: {name} {row.get('date')}") from exc
+        if not math.isfinite(ret) or not math.isfinite(nav) or ret <= -1 or nav <= 0:
+            raise ValueError(f"Nonfinite/invalid final return_net or nav_net: {name} {row.get('date')}")
+        cumulative *= 1.0 + ret
+        if not math.isfinite(cumulative) or not math.isclose(nav, cumulative, rel_tol=1e-9, abs_tol=1e-10):
+            raise ValueError(f"Final NAV cumulative return mismatch: {name} {row.get('date')}")
+
+
+def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+    """Latest signal is a projection of the same-version final costed NAV."""
+    active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                       "5": "long_microcap_top100"}
+    if version not in active_holdings:
+        raise ValueError(f"Unsupported final signal version: {version}")
+    allowed_holdings = {"cash", active_holdings[version]}
+    for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+        holding = signal.get(signal_key)
+        if holding not in allowed_holdings or holding != nav.get(nav_key):
+            raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+    for key, holding_key in (("current_execution_scale", "current_holding"),
+                             ("next_session_actionable_scale", "next_holding")):
+        try:
+            scale, nav_scale = float(signal[key]), float(nav[key])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+        if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+            raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+
+
 def inspect_outputs(root: Path, expected: str) -> dict:
     """Read written files, not stdout or a successful base-only report."""
     errors, streams, artifacts = [], {}, {}
@@ -85,6 +133,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
         if turnover["latest_date"] > expected:
             errors.append("turnover has a future rebalance")
         for v, costed in COSTED.items():
+            final_rows = {}
             prefix = f"microcap_top100_mom16_biweekly_live_v2_{v}"
             summary_path = root / "outputs" / f"{prefix}_summary.json"
             summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -116,6 +165,9 @@ def inspect_outputs(root: Path, expected: str) -> dict:
             for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv", f"{prefix}_latest_signal.csv"):
                 info, rows = csv_info(root / "outputs" / name)
                 streams[name] = info
+                final_rows[name] = rows
+                if not name.endswith("latest_signal.csv"):
+                    validate_final_nav(rows, name)
                 if info["latest_date"] != expected:
                     errors.append(f"final date mismatch: {name}={info['latest_date']} expected={expected}")
                 if v == "0" and not name.endswith("performance_nav.csv"):
@@ -128,8 +180,9 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                     if len(rows) != 1 or rows[0].get("version") != f"2.{v}":
                         errors.append(f"v2.{v} final CSV identity mismatch")
                     # Member instructions must carry explicit dated action fields.
-                    if rows[0].get("member_rebalance_actionable") not in ("True", "False"):
-                        errors.append(f"v2.{v} missing explicit member action flag")
+                    if any(rows[0].get(key) not in ("True", "False") for key in (
+                            "member_rebalance_actionable", "member_rebalance_required", "member_rebalance_official")):
+                        errors.append(f"v2.{v} missing explicit member action flags")
                     if rows[0].get("member_rebalance_actionable") == "True":
                         # Close-confirmed contract: today's rebalance may plan NEXT session,
                         # unlike an intraday CSV whose executable date must be today.
@@ -141,6 +194,14 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                             errors.append(f"v2.{v} actionable members violate the close-confirmed dated contract")
             if sha(root / "outputs" / costed) != sha(root / "outputs" / f"{prefix}_nav.csv"):
                 errors.append(f"v2.{v} costed NAV and display NAV differ")
+            costed_rows = final_rows[costed]
+            performance_rows = final_rows[f"{prefix}_performance_nav.csv"]
+            if (len(costed_rows) != len(performance_rows) or any(
+                    left["date"] != right["date"] or
+                    not math.isclose(float(left["return_net"]), float(right["return_net"]), rel_tol=0., abs_tol=1e-12)
+                    for left, right in zip(costed_rows, performance_rows))):
+                errors.append(f"v2.{v} costed NAV and performance stream differ")
+            validate_final_signal(final_rows[f"{prefix}_latest_signal.csv"][0], costed_rows[-1], v)
             for suffix in ("summary.json", "performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
                 name = f"outputs/{prefix}_{suffix}"
                 artifacts[name] = sha(root / name)

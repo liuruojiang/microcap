@@ -4,6 +4,7 @@
 
 ## 当前正式口径
 
+- 2.0 / 2.3 对抗审计修复记录：`docs/v20_v23_adversarial_audit_20260904.md`。交易参数不变；回撤纳入初始本金，R² OFF 真正旁路，最终 CSV / NAV 和日报时序采用失败关闭校验。
 - 默认主线：`microcap_top100_mom16_biweekly_live_v2_0.py`
 - 默认表现口径：`v2.0 + costed`
 - v2.0当前规则：16天相对动量、退出缓冲0、过热OFF、目标波动率OFF；持仓时固定1倍微盘多头及0.8倍股指对冲。修订标识`plain_mom16_fixed1_20260904`，正式成本净值为`microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv`。旧targetvol15文件只作历史回滚依据，不能作为当前日报或信号来源。v2.3/v2.5策略规则不变。
