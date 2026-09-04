@@ -13476,7 +13476,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["version"] = "2.0"
     latest_signal["base_version"] = "embedded_v2_base"
     latest_signal["overlay_type"] = str(latest_row.get("overlay_type", STRATEGY_REVISION))
-    latest_signal["strategy_revision"] = STRATEGY_REVISION
+    latest_signal["strategy_revision"] = str(latest_row.get("strategy_revision", latest_row.get("overlay_type", STRATEGY_REVISION)))
     latest_signal["lookback"] = int(embedded_context.base_mod.LOOKBACK)
     latest_signal["target_vol_enabled"] = _safe_bool(latest_row.get("target_vol_enabled", TARGET_VOL_ENABLED))
     latest_signal["target_vol"] = TARGET_VOL if latest_signal["target_vol_enabled"] else 0.0
