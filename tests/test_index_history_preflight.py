@@ -153,13 +153,14 @@ def test_backup_new_session_kept_but_existing_prices_unchanged():
     assert value.close.tolist() == [101.005]*3 + [101.]
 
 
-def test_official_shadow_path_preserves_history_when_fallback_used(tmp_path, monkeypatch):
+@pytest.mark.parametrize("provider", ["eastmoney", "sina_legacy", "sina_static", "tencent"])
+def test_official_shadow_path_preserves_history_when_fallback_used(tmp_path, monkeypatch, provider):
     import microcap_top100_mom16_biweekly_live_v2_0 as v20
     base = v20.base_mod
     original = good()[["date", "close"]].rename(columns={"close": base.HEDGE_COLUMN})
     source = good()
     source.close += .005
-    source.attrs["independent_history_source"] = "tencent"
+    source.attrs["independent_history_source"] = provider
     original.to_csv(tmp_path / "panel.csv", index=False)
     original.to_csv(tmp_path / "shadow.csv", index=False)
     globals_ = base.build_refreshed_panel_shadow.__globals__
