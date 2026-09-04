@@ -111,8 +111,10 @@ def _build_refresh_proof(target_end_date: date) -> dict[str, object]:
     }
 
 
-def _write_refresh_proof(root: Path, target_end_date: date) -> dict[str, object]:
+def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, object] | None = None) -> dict[str, object]:
     proof = _build_refresh_proof(target_end_date)
+    if evidence is not None:
+        proof["preflight_evidence"] = evidence
     path = root.resolve() / REFRESH_PROOF_REL
     path.parent.mkdir(parents=True, exist_ok=True)
     temp_path: Path | None = None
@@ -477,6 +479,8 @@ def validate_state(
 
     return {
         "ok": not errors,
+        "scope": "base_state_only",
+        "final_outputs_validated": False,
         "errors": errors,
         "warnings": warnings,
         "files": files,
@@ -501,13 +505,75 @@ def enforce_anchor_target(report: dict[str, object], target_end_date: date) -> d
     return report
 
 
-def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dict[str, object]:
+def preflight_state(root: Path, max_anchor_age_days: int | None = None) -> dict[str, object]:
+    """Independently recheck existing state without refreshing/rebuilding its NAV."""
+    root = root.resolve()
+    before = validate_state(root, max_anchor_age_days=max_anchor_age_days,
+                            require_current_refresh_proof=False)
+    if not before["ok"]:
+        return before
+    sys.path.insert(0, str(root))
+    import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
+    v2_0._sync_embedded_base_config()
+    base = v2_0.base_mod
+    anchor = _parse_date(str(before["anchor_dates"]["proxy_index"]))
+    history = base.fetch_eastmoney_index_history(
+        "1.000852", base.pd.Timestamp(anchor) - base.pd.Timedelta(days=20)
+    )
+    target = base.latest_closed_history_date(history).date()
+    evidence = verify_live_member_names(base, before["current_member_symbols"])
+    evidence["independent_completed_day"] = target.isoformat()
+    evidence["independent_history_rows"] = len(history)
+    return certify_existing_state(root, before, target, max_anchor_age_days, evidence)
+
+
+def verify_live_member_names(base, symbols: list[str]) -> dict[str, object]:
+    quotes = base.fetch_member_realtime_quotes(symbols)
+    today = _cn_today().isoformat()
+    valid = quotes.loc[quotes["trade_date"].astype(str).eq(today)].copy()
+    if len(valid) != TOP_N or set(valid["code"]) != set(symbols):
+        raise RuntimeError(f"current member-name audit requires {TOP_N}/{TOP_N} same-day quotes")
+    base.assert_no_st_members(valid, "independent preflight current member names")
+    return {"member_name_quote_day": today, "member_name_count": len(valid),
+            "member_name_source": quotes.attrs.get("quote_source", "unknown"),
+            "current_st_name_intersection": 0}
+
+
+def certify_existing_state(root: Path, before: dict[str, object], target: date,
+                           max_anchor_age_days: int | None = None,
+                           evidence: dict[str, object] | None = None) -> dict[str, object]:
+    """Commit proof only after independent history and unchanged state agree."""
+    after = validate_state(root, max_anchor_age_days=max_anchor_age_days,
+                           require_current_refresh_proof=False)
+    for name in ("proxy_index", "costed_nav", "panel_shadow"):
+        if after.get("anchor_dates", {}).get(name) != target.isoformat():
+            after.setdefault("errors", []).append(
+                f"preflight anchor mismatch: {name}={after.get('anchor_dates', {}).get(name)} "
+                f"independent_completed_day={target.isoformat()}; explicit state repair required"
+            )
+    if before.get("files") != after.get("files") or before.get("price_cache_files") != after.get("price_cache_files"):
+        after.setdefault("errors", []).append("state changed during independent preflight")
+    if after.get("errors"):
+        after["ok"] = False
+        return after
+    if evidence is None:
+        _write_refresh_proof(root, target)
+    else:
+        _write_refresh_proof(root, target, evidence)
+    report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    report["preflight_source"] = "official_index_history_loader; no panel/NAV rebuild"
+    return report
+
+
+def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
+               extra_files: Iterable[str] = ()) -> dict[str, object]:
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
     if not report["ok"]:
         return report
     root = root.resolve()
     bundle.parent.mkdir(parents=True, exist_ok=True)
-    file_names = _iter_bundle_files(root)
+    file_names = sorted(set(_iter_bundle_files(root)) |
+                        {_repo_path(name).as_posix() for name in extra_files})
     manifest = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "required_files": list(REQUIRED_FILES),
@@ -735,6 +801,9 @@ def main(argv: list[str] | None = None) -> int:
     validate_parser = subparsers.add_parser("validate")
     add_common(validate_parser)
 
+    preflight_parser = subparsers.add_parser("preflight")
+    add_common(preflight_parser)
+
     pack_parser = subparsers.add_parser("pack")
     add_common(pack_parser)
     pack_parser.add_argument("--bundle", type=Path, required=True)
@@ -752,6 +821,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "validate":
         report = validate_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
+    elif args.command == "preflight":
+        report = preflight_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "pack":
         report = pack_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "refresh":

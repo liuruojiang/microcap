@@ -14,13 +14,18 @@
 
 ## 常用命令
 
-生成三个正式版本：
+同步主目录并生成、验收三个正式版本（默认入口）：
 
 ```powershell
-python microcap_top100_mom16_biweekly_live_v2_0.py
-python microcap_top100_mom16_biweekly_live_v2_3.py
-python microcap_top100_mom16_biweekly_live_v2_5.py
+python -X utf8 scripts/top100_delivery.py refresh-all
+python -X utf8 scripts/top100_delivery.py check
 ```
+
+只有两条命令均退出 0 才能称为整套同步完成。检查覆盖远端正式核心代码/冻结基准、独立最新收盘日、底层数据、v2.0/v2.3/v2.5 成本净值、显示净值、最终信号、clean 历史审计及内容哈希。调仓表核对最近调仓日，而非强行要求每天有调仓。
+
+`scripts/realtime_state_bundle.py validate` 只检查底层状态包，输出 `scope=base_state_only`，不代表三个版本已同步。单版本入口仍用于查询/诊断；不能将一次单版本成功当作全组交付。查询改写了产物或输入变化后，旧的整组验收清单会失效。
+
+`outputs/top100_delivery_manifest.json` 是本地整组验收记录。刷新中断、数据源失败或并发更新均失败关闭；不要手动将状态改成 complete。Git 不携带全部最终产物，独立工作树/云端成功后仍须在日常主目录运行上述命令。
 
 查询 v2.0 收盘确认信号或表现：
 
