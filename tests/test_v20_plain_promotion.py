@@ -39,6 +39,14 @@ def test_path_reconfiguration_cannot_restore_old_targetvol_filename():
     assert v.overlay_mod.COSTED_NAV_CSV.name == "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv"
 
 
+@pytest.mark.parametrize("identity", ["spread_nav_log_wls_lb25_vol10_overheat", "microcap_only_log_wls_threshold_no_target_vol"])
+def test_shared_signal_builder_does_not_mislabel_sibling_revision(identity):
+    net = pd.DataFrame({"holding": ["cash"], "next_holding": ["cash"], "return_net": [0.],
+                        "overlay_type": [identity]}, index=pd.DatetimeIndex(["2026-09-04"]))
+    signal = v.overlay_mod._build_signal_row(net, {})
+    assert signal.iloc[0].strategy_revision == identity
+
+
 @pytest.mark.parametrize("mutate", ["approved", "source_sha256_lf", "candidate_frame_sha256", "previous_costed_nav_sha256", "unchanged_base_inputs", "authorization"])
 def test_strategy_migration_rejects_any_changed_binding(tmp_path, monkeypatch, mutate):
     expected = {"authorization": "user_replace_existing_v2_0", "source_sha256_lf": "a", "candidate_frame_sha256": "b",
