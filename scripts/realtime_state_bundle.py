@@ -382,21 +382,36 @@ def validate_state(
             errors.append(f"cannot read last date for {name}")
 
     today_value = today or _cn_today()
-    if max_anchor_age_days is not None and not errors:
+    refresh_proof = _load_refresh_proof(root)
+    evidence = (refresh_proof or {}).get("preflight_evidence", {})
+    target_text = (refresh_proof or {}).get("target_end_date")
+    independently_current = (
+        require_current_refresh_proof and isinstance(evidence, dict) and
+        (refresh_proof or {}).get("version") == REFRESH_PROOF_VERSION and
+        (refresh_proof or {}).get("source") == REFRESH_PROOF_SOURCE and
+        (refresh_proof or {}).get("verified_on") == today_value.isoformat() and
+        evidence.get("expected_calendar_day") == target_text and
+        evidence.get("independent_completed_day") == target_text and
+        evidence.get("member_name_quote_day") == today_value.isoformat() and
+        evidence.get("member_name_count") == TOP_N and
+        evidence.get("current_st_name_intersection") == 0 and
+        all(value == _parse_date(str(target_text or "")) for name, value in anchor_dates.items()
+            if name != "proxy_turnover")
+    )
+    if not errors:
         for name in ("proxy_index", "costed_nav", "panel_shadow"):
             value = anchor_dates.get(name)
             if value is None:
                 continue
             age_days = (today_value - value).days
-            if age_days > max_anchor_age_days:
+            if max_anchor_age_days is not None and age_days > max_anchor_age_days and not independently_current:
                 errors.append(
                     f"{name} is stale: last_date={value.isoformat()} age_days={age_days} "
                     f"max_anchor_age_days={max_anchor_age_days}"
                 )
             elif age_days < 0:
-                warnings.append(f"{name} has a future date: last_date={value.isoformat()}")
+                errors.append(f"{name} has a future date: last_date={value.isoformat()}")
 
-    refresh_proof = _load_refresh_proof(root)
     if require_current_refresh_proof and refresh_proof is None:
         errors.append(f"missing or invalid independent realtime refresh proof: {REFRESH_PROOF_REL}")
     elif require_current_refresh_proof and refresh_proof is not None:
@@ -505,10 +520,11 @@ def enforce_anchor_target(report: dict[str, object], target_end_date: date) -> d
     return report
 
 
-def preflight_state(root: Path, max_anchor_age_days: int | None = None) -> dict[str, object]:
+def preflight_state(root: Path, max_anchor_age_days: int | None = None,
+                    expected_date: date | None = None) -> dict[str, object]:
     """Independently recheck existing state without refreshing/rebuilding its NAV."""
     root = root.resolve()
-    before = validate_state(root, max_anchor_age_days=max_anchor_age_days,
+    before = validate_state(root, max_anchor_age_days=None if expected_date else max_anchor_age_days,
                             require_current_refresh_proof=False)
     if not before["ok"]:
         return before
@@ -521,9 +537,13 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None) -> dict[
         "1.000852", base.pd.Timestamp(anchor) - base.pd.Timedelta(days=20)
     )
     target = base.latest_closed_history_date(history).date()
+    if expected_date is not None and target != expected_date:
+        raise RuntimeError(f"Independent history {target} differs from expected calendar day {expected_date}")
     evidence = verify_live_member_names(base, before["current_member_symbols"])
     evidence["independent_completed_day"] = target.isoformat()
     evidence["independent_history_rows"] = len(history)
+    if expected_date is not None:
+        evidence["expected_calendar_day"] = expected_date.isoformat()
     return certify_existing_state(root, before, target, max_anchor_age_days, evidence)
 
 
@@ -543,7 +563,8 @@ def certify_existing_state(root: Path, before: dict[str, object], target: date,
                            max_anchor_age_days: int | None = None,
                            evidence: dict[str, object] | None = None) -> dict[str, object]:
     """Commit proof only after independent history and unchanged state agree."""
-    after = validate_state(root, max_anchor_age_days=max_anchor_age_days,
+    calendar_match = evidence is not None and evidence.get("expected_calendar_day") == target.isoformat()
+    after = validate_state(root, max_anchor_age_days=None if calendar_match else max_anchor_age_days,
                            require_current_refresh_proof=False)
     for name in ("proxy_index", "costed_nav", "panel_shadow"):
         if after.get("anchor_dates", {}).get(name) != target.isoformat():
@@ -609,6 +630,7 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
         raise ValueError("state bundle integrity manifest has no file entries")
 
     declared: set[str] = set()
+    portable_paths: set[str] = set()
     for entry in entries:
         if not isinstance(entry, dict):
             raise ValueError("state bundle integrity manifest contains an invalid file entry")
@@ -617,6 +639,12 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
             raise ValueError(f"state bundle integrity manifest contains an invalid path: {rel!r}")
         if rel in declared:
             raise ValueError(f"state bundle integrity manifest contains a duplicate path: {rel}")
+        portable = "/".join(part.rstrip(". ").casefold() for part in PurePosixPath(rel).parts)
+        if portable in portable_paths:
+            raise ValueError(f"state bundle contains a Windows path alias collision: {rel}")
+        if any(":" in part or part.endswith((".", " ")) for part in PurePosixPath(rel).parts):
+            raise ValueError(f"state bundle contains a nonportable path alias: {rel}")
+        portable_paths.add(portable)
         declared.add(rel)
         if rel not in names:
             raise ValueError(f"state bundle is missing declared file: {rel}")
@@ -803,6 +831,8 @@ def main(argv: list[str] | None = None) -> int:
 
     preflight_parser = subparsers.add_parser("preflight")
     add_common(preflight_parser)
+    preflight_parser.add_argument("--expected-date", type=date.fromisoformat,
+                                  help="latest completed date from the formal exchange calendar")
 
     pack_parser = subparsers.add_parser("pack")
     add_common(pack_parser)
@@ -822,7 +852,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "validate":
         report = validate_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "preflight":
-        report = preflight_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
+        report = preflight_state(args.root, max_anchor_age_days=args.max_anchor_age_days,
+                                 expected_date=args.expected_date)
     elif args.command == "pack":
         report = pack_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "refresh":

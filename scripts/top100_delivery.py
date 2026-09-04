@@ -84,6 +84,15 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                     # Member instructions must carry explicit dated action fields.
                     if rows[0].get("member_rebalance_actionable") not in ("True", "False"):
                         errors.append(f"v2.{v} missing explicit member action flag")
+                    if rows[0].get("member_rebalance_actionable") == "True":
+                        # Close-confirmed contract: today's rebalance may plan NEXT session,
+                        # unlike an intraday CSV whose executable date must be today.
+                        execution = state._parse_date(rows[0].get("member_rebalance_execution_date", ""))
+                        if (rows[0].get("member_rebalance_signal_date") != expected or
+                                rows[0].get("member_rebalance_required") != "True" or
+                                rows[0].get("member_rebalance_official") != "True" or
+                                execution is None or execution <= state._parse_date(expected)):
+                            errors.append(f"v2.{v} actionable members violate the close-confirmed dated contract")
             if sha(root / "outputs" / costed) != sha(root / "outputs" / f"{prefix}_nav.csv"):
                 errors.append(f"v2.{v} costed NAV and display NAV differ")
             for suffix in ("summary.json", "performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
@@ -125,6 +134,12 @@ def independent_target(root: Path) -> str:
 def verify_release(root: Path) -> str:
     """Compare core code and authority to live remote main, not a stale tracking ref."""
     remote = subprocess.check_output(["git", "ls-remote", "origin", "refs/heads/main"], cwd=root, text=True).split()[0]
+    try:
+        subprocess.check_output(["git", "cat-file", "-e", f"{remote}^{{commit}}"],
+                                cwd=root, stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError:
+        # Fetch only the immutable object: never merge, checkout or alter dirty files.
+        subprocess.run(["git", "fetch", "--no-tags", "origin", remote], cwd=root, check=True)
     for name in [AUTHORITY] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]:
         payload = subprocess.check_output(["git", "show", f"{remote}:{name}"], cwd=root)
         if hashlib.sha256(payload.replace(b"\r\n", b"\n")).hexdigest() != sha(root / name):
@@ -176,7 +191,7 @@ def refresh_all(root: Path) -> dict:
         with os.fdopen(handle, "w") as stream:
             stream.write(str(os.getpid()))
         return _refresh_all_unlocked(root)
-    except Exception as exc:
+    except BaseException as exc:
         write_manifest(root, {"status": "blocked", "errors": [str(exc)],
                               "verified_at": datetime.now(timezone.utc).isoformat()})
         raise

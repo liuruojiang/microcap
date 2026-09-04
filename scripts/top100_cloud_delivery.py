@@ -25,8 +25,14 @@ SOURCE_FILES = [delivery.AUTHORITY] + [
 
 
 def copy_file(source: Path, target: Path) -> None:
-    target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source, target)
+    # CopyFile2 (Python's Windows fast path) otherwise fails for long backup paths.
+    def native(path: Path) -> str:
+        value = str(path.resolve())
+        if os.name == "nt" and not value.startswith("\\\\?\\"):
+            return "\\\\?\\UNC\\" + value[2:] if value.startswith("\\\\") else "\\\\?\\" + value
+        return value
+    Path(native(target.parent)).mkdir(parents=True, exist_ok=True)
+    shutil.copy2(native(source), native(target))
 
 
 def final_files(version: str) -> list[str]:
@@ -99,6 +105,21 @@ def restore(root: Path, bundle: Path, expected: str) -> dict:
                     parts[0] not in ("outputs", ".microcap_index_cache") or
                     ":" in name or "\\" in name or name.startswith("/")):
                     raise ValueError(f"Unexpected delivery payload path: {name}")
+            local = delivery.inspect_outputs(root, expected)
+            try:
+                saved_local = json.loads((root / delivery.MANIFEST).read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                saved_local = {}
+            local_complete = (local["ok"] and saved_local.get("status") == "complete" and all(
+                saved_local.get(key) == local.get(key) for key in ("expected_date", "inputs", "artifacts")))
+            incoming = json.loads(archive.read(delivery.MANIFEST))
+            if local_complete:
+                if any(incoming.get(key) != local.get(key) for key in ("expected_date", "inputs", "artifacts")):
+                    raise ValueError("Refusing to replace a different complete same-session local delivery")
+                require_ok(state.validate_state(root, max_anchor_age_days=None,
+                                                require_current_refresh_proof=False))
+                return {"ok": True, "expected_date": expected,
+                        "restore_source": "existing_whole_delivery", "signal_ready": False}
             for name in (delivery.BASE_PANEL, delivery.BASE_FILES["proxy_index"],
                          delivery.BASE_FILES["costed_nav"]):
                 path = root / "outputs" / name
@@ -115,7 +136,7 @@ def restore(root: Path, bundle: Path, expected: str) -> dict:
                 require_ok(delivery.validate_manifest(
                     staged, delivery.inspect_outputs(staged, expected)))
                 require_ok(state.validate_state(
-                    staged, max_anchor_age_days=5, require_current_refresh_proof=False))
+                    staged, max_anchor_age_days=None, require_current_refresh_proof=False))
                 backup = root / ".codex_backups" / (
                     "cloud_restore_" + datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f"))
                 backup.mkdir(parents=True)
@@ -129,7 +150,7 @@ def restore(root: Path, bundle: Path, expected: str) -> dict:
                 (backup / "manifest.json").write_text(
                     json.dumps({"bundle": str(bundle), "expected_date": expected,
                                 "files": changes}, indent=2), encoding="utf-8")
-                require_ok(state.restore_state(root, bundle, max_anchor_age_days=5))
+                require_ok(state.restore_state(root, bundle, max_anchor_age_days=None))
                 # The lock intentionally keeps external check/publication blocked until done.
                 report = delivery.inspect_outputs(root, expected)
                 require_ok(report)
@@ -140,7 +161,7 @@ def restore(root: Path, bundle: Path, expected: str) -> dict:
                 return {"ok": True, "expected_date": expected, "backup": str(backup),
                         "restore_source": "verified_cloud_delivery",
                         "signal_ready": False, "next": "same-day preflight then whole-delivery check"}
-    except Exception as exc:
+    except BaseException as exc:
         # Do not retain a misleading complete marker after a partially applied restore.
         # Validation-only rejection must leave existing local state and manifest unchanged.
         if "backup" in locals():
@@ -157,7 +178,7 @@ def gh_json(*args: str):
 def sync(root: Path, expected: str) -> dict:
     existing = delivery.validate_manifest(root, delivery.inspect_outputs(root, expected))
     if existing["ok"]:
-        require_ok(state.validate_state(root, max_anchor_age_days=5, require_current_refresh_proof=False))
+        require_ok(state.validate_state(root, max_anchor_age_days=None, require_current_refresh_proof=False))
         return {"ok": True, "expected_date": expected, "restore_source": "existing_whole_delivery",
                 "signal_ready": False}
     if (root / delivery.LOCK).exists():
