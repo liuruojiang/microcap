@@ -672,6 +672,17 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
     return manifest
 
 
+def validate_refreshed_state(root: Path, target: date, max_age: int | None) -> dict[str, object]:
+    """A holiday gap needs independent session and current member proof, not rebuilding."""
+    if max_age is not None and (_cn_today() - target).days > max_age:
+        from scripts.exchange_calendar import latest_completed_session
+        expected = latest_completed_session()
+        if target != expected:
+            raise RuntimeError(f"Refreshed anchor {target} misses completed exchange session {expected}")
+        return preflight_state(root, max_age, expected_date=expected)
+    return validate_state(root, max_anchor_age_days=max_age)
+
+
 def refresh_state(
     root: Path,
     max_workers: int = 8,
@@ -708,7 +719,7 @@ def refresh_state(
             base_context,
         )
         _write_refresh_proof(root, target_end_date)
-        report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        report = validate_refreshed_state(root, target_end_date, max_anchor_age_days)
         context_anchor_date = base_context["close_df"].index[-1].date()
         report["context_anchor_date"] = context_anchor_date.isoformat()
         report["target_end_date"] = target_end_date.isoformat()
@@ -740,7 +751,7 @@ def refresh_state(
                 + "; ".join(str(error) for error in report.get("errors", []))
             ) from exc
         _write_refresh_proof(root, target_end_date)
-        report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+        report = validate_refreshed_state(root, target_end_date, max_anchor_age_days)
         report["target_end_date"] = target_end_date.isoformat()
         enforce_anchor_target(report, target_end_date)
         report["refresh_source"] = "existing_validated_state"

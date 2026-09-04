@@ -717,14 +717,23 @@ def _actionable_realtime_meta(anchor: str, quote: str) -> dict[str, object]:
         "hedge_quote_source": "eastmoney_stock_get",
         "hedge_quote_trade_date": quote,
         "quote_trade_date": quote,
+        "snapshot_time": f"{quote} 14:30:00",
         "latest_anchor_trade_date": anchor,
         "expected_latest_completed_trade_date": anchor,
         "expected_latest_completed_trade_date_source": v2_0.base_mod.REALTIME_REFRESH_PROOF_SOURCE,
-        "expected_latest_completed_trade_date_verified_on": str(v2_0.base_mod._cn_local_day().date()),
+        "expected_latest_completed_trade_date_verified_on": quote,
     }
 
 
 def test_realtime_meta_requires_anchor_to_be_previous_completed_trade_day(monkeypatch: pytest.MonkeyPatch) -> None:
+    from scripts import exchange_calendar
+    clock = pd.Timestamp("2026-06-29 14:30", tz="Asia/Shanghai")
+    namespace = v2_0.base_mod.assert_realtime_anchor_precedes_quote_trade_date.__globals__
+    original_clock = namespace["_cn_timestamp"]
+    monkeypatch.setitem(namespace, "_cn_timestamp", lambda now=None: clock if now is None else original_clock(now))
+    monkeypatch.setitem(namespace, "_cn_local_day", lambda now=None: pd.Timestamp("2026-06-29"))
+    monkeypatch.setattr(exchange_calendar, "is_trading_day", lambda day: day == clock.date())
+    monkeypatch.setattr(exchange_calendar, "latest_completed_session", lambda now: pd.Timestamp("2026-06-26").date())
     monkeypatch.setitem(
         v2_0._base_ns,
         "_load_realtime_v2_0_official_index",

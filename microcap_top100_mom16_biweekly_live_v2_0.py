@@ -33,7 +33,7 @@ VERSION = "2.0"
 BASE_API_REVISION = 12
 HISTORICAL_AUDIT_REVISION = 5
 DATA_STATE_FINGERPRINT_REVISION = 3
-REALTIME_CALENDAR_GUARD_REVISION = 4
+REALTIME_CALENDAR_GUARD_REVISION = 5
 
 ak = None
 matplotlib = None
@@ -4064,7 +4064,37 @@ def assess_history_anchor_freshness(
     }
 
 
+def assess_realtime_anchor_freshness(
+    latest_trade_date: pd.Timestamp,
+    max_stale_days: int,
+    now: pd.Timestamp | None = None,
+    trading_dates: pd.DatetimeIndex | None = None,
+) -> dict[str, object]:
+    """Realtime alone requires the exact completed exchange session, not calendar age."""
+    from scripts.exchange_calendar import latest_completed_session
+
+    clock = _cn_timestamp(now)
+    expected = latest_completed_session(clock)
+    anchor = pd.Timestamp(latest_trade_date).date()
+    report = assess_history_anchor_freshness(latest_trade_date, max_stale_days, clock, trading_dates)
+    matches = anchor == expected
+    report.update(
+        expected_latest_completed_trade_date=expected.isoformat(),
+        freshness_source="official_exchange_calendar",
+        staleness_unit="completed_session_mismatch", staleness_value=0 if matches else 1,
+        stale_trading_days=0 if matches else None,
+        is_stale=not matches, status="fresh" if matches else "stale",
+    )
+    return report
+
+
 def format_anchor_stale_message(anchor_freshness: dict[str, object]) -> str:
+    if anchor_freshness.get("freshness_source") == "official_exchange_calendar":
+        return (
+            "Realtime anchor does not match the official latest completed exchange session: "
+            f"anchor={anchor_freshness.get('latest_trade_date')} "
+            f"expected={anchor_freshness.get('expected_latest_completed_trade_date')}"
+        )
     latest_trade_date = anchor_freshness["latest_trade_date"]
     current_date = anchor_freshness["current_date"]
     stale_days = int(anchor_freshness["stale_calendar_days"])
@@ -7781,6 +7811,8 @@ def _load_realtime_anchor_calendar_index() -> pd.DatetimeIndex:
 
 
 def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) -> None:
+    from scripts.exchange_calendar import is_trading_day, latest_completed_session
+
     quote_trade_date = str(meta.get("quote_trade_date") or "").strip()
     anchor_trade_date = str(meta.get("latest_anchor_trade_date") or "").strip()
     if not quote_trade_date or not anchor_trade_date:
@@ -7806,28 +7838,23 @@ def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) ->
             f"latest_anchor_trade_date={anchor_day.date()} "
             f"expected_latest_completed_trade_date={expected_close_day.date()}"
         )
-    calendar = _load_realtime_anchor_calendar_index()
-    if len(calendar) == 0:
-        raise RuntimeError("Realtime trading calendar is empty; refusing realtime signal.")
-    if expected_close_day not in calendar:
+    snapshot_text = str(meta.get("snapshot_time") or "").strip()
+    if not snapshot_text:
+        raise RuntimeError("Realtime meta missing snapshot_time for independent calendar validation.")
+    snapshot = _cn_timestamp(pd.Timestamp(snapshot_text))
+    if snapshot.date() != quote_day.date() or quote_day.date() != _cn_local_day().date():
+        raise RuntimeError("Realtime snapshot and quote date must both be today's Beijing session.")
+    if snapshot > _cn_timestamp() + pd.Timedelta(minutes=1):
+        raise RuntimeError("Realtime snapshot_time is in the future.")
+    if not is_trading_day(quote_day.date()):
+        raise RuntimeError("Realtime quote date is not an official exchange trading session.")
+    official_previous = latest_completed_session(snapshot)
+    if anchor_day.date() != official_previous or anchor_day >= quote_day:
         raise RuntimeError(
-            "Realtime trading calendar does not reach independently refreshed latest completed trade date: "
-            f"expected_latest_completed_trade_date={expected_close_day.date()}"
+            "latest_anchor_trade_date does not equal the official previous completed trading day before snapshot: "
+            f"anchor={anchor_day.date()} expected={official_previous} quote={quote_day.date()}"
         )
-    completed_before_quote = calendar[calendar < quote_day]
-    if len(completed_before_quote) == 0:
-        raise RuntimeError(
-            "Realtime trading calendar has no completed trading day before quote_trade_date: "
-            f"quote_trade_date={quote_day.date()}"
-        )
-    expected_anchor = pd.Timestamp(completed_before_quote[-1]).normalize()
-    if anchor_day != expected_anchor:
-        raise RuntimeError(
-            "latest_anchor_trade_date is not the previous completed trading day before quote_trade_date: "
-            f"latest_anchor_trade_date={anchor_day.date()} "
-            f"expected_previous_completed_trading_day={expected_anchor.date()} "
-            f"quote_trade_date={quote_day.date()}"
-        )
+    # Local NAV/proxy dates are data, never an independent exchange calendar.
 
 
 def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
@@ -8715,7 +8742,7 @@ def reusable_cached_proxy_end_for_realtime(
             return None
     cache_end = min(pd.Timestamp(current_index_end).normalize(), pd.Timestamp(current_costed_end).normalize())
     cache_end = min(cache_end, pd.Timestamp(target_end_date).normalize())
-    freshness = assess_history_anchor_freshness(cache_end, args.max_stale_anchor_days)
+    freshness = assess_realtime_anchor_freshness(cache_end, args.max_stale_anchor_days)
     if bool(freshness.get("is_stale")) and not bool(args.allow_stale_realtime):
         return None
     return cache_end
@@ -8742,6 +8769,7 @@ def build_realtime_context_from_cached_proxy(
         return None
     close_df = load_close_df(panel_path, args.index_csv, max_date=cache_end)
     context = build_base_signal_context(args, paths, panel_path, cache_end, close_df)
+    context["anchor_freshness"] = assess_realtime_anchor_freshness(cache_end, args.max_stale_anchor_days)
     note = f"realtime base used cached proxy through {cache_end.date()} because {reason}"
     context["realtime_base_source"] = (
         "cached_proxy_fallback" if degraded else "validated_refreshed_state"
@@ -8833,7 +8861,10 @@ def ensure_realtime_query_base_context(
     if not args.index_csv.exists():
         raise FileNotFoundError(f"Missing proxy index required for realtime query: {args.index_csv}")
     close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
-    return build_base_signal_context(args, paths, panel_path, target_end_date, close_df)
+    context = build_base_signal_context(args, paths, panel_path, target_end_date, close_df)
+    context["anchor_freshness"] = assess_realtime_anchor_freshness(
+        pd.Timestamp(context["result"].index[-1]), args.max_stale_anchor_days)
+    return context
 
 
 def ensure_static_members_fresh(
@@ -10911,6 +10942,8 @@ def execute_query(args: argparse.Namespace, query: str) -> None:
             base_context = ensure_realtime_query_base_context(args, paths, panel_path, target_end_date)
         except (FileNotFoundError, ValueError):
             base_context = ensure_base_signal_fresh(args, paths, panel_path, target_end_date)
+        base_context["anchor_freshness"] = assess_realtime_anchor_freshness(
+            pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = ensure_static_members_fresh(args, paths, panel_path, target_end_date, base_context)
         handle_query(member_context, args, query_text)
         return
@@ -11412,6 +11445,8 @@ def _load_realtime_embedded_base_context() -> tuple[dict[str, object], pd.DataFr
             base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
         except (FileNotFoundError, ValueError):
             base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+        base_context["anchor_freshness"] = base_mod.assess_realtime_anchor_freshness(
+            pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
@@ -11601,6 +11636,8 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
                     base_context = base_mod.ensure_realtime_query_base_context(args, base_paths, panel_path, target_end_date)
                 except (FileNotFoundError, ValueError):
                     base_context = base_mod.ensure_base_signal_fresh(args, base_paths, panel_path, target_end_date)
+        base_context["anchor_freshness"] = base_mod.assess_realtime_anchor_freshness(
+            pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
         refresh_proof = base_context.get("realtime_refresh_proof")
         if not isinstance(refresh_proof, dict):

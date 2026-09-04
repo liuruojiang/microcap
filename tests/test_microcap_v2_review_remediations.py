@@ -389,9 +389,10 @@ def test_cached_proxy_context_distinguishes_validated_state_from_fallback(
     )
     monkeypatch.setitem(builder_globals, "load_close_df", lambda *_args, **_kwargs: close_df)
     monkeypatch.setitem(builder_globals, "build_base_signal_context", lambda *_args, **_kwargs: {})
+    monkeypatch.setitem(builder_globals, "assess_realtime_anchor_freshness", lambda *_args, **_kwargs: {"is_stale": False})
 
     context = v2_0.base_mod.build_realtime_context_from_cached_proxy(
-        SimpleNamespace(index_csv=Path("proxy.csv")),
+        SimpleNamespace(index_csv=Path("proxy.csv"), max_stale_anchor_days=5),
         {},
         Path("panel.csv"),
         cache_end,
@@ -2080,7 +2081,7 @@ def test_realtime_cached_proxy_accepts_validated_frozen_tail_extension(
     monkeypatch.setitem(function_globals, "frozen_tail_extension_matches_authority", lambda *_args: True)
     monkeypatch.setitem(
         function_globals,
-        "assess_history_anchor_freshness",
+        "assess_realtime_anchor_freshness",
         lambda *_args, **_kwargs: {"is_stale": False},
     )
 
@@ -2113,7 +2114,7 @@ def test_realtime_cached_proxy_accepts_exact_frozen_seed_at_target(
     monkeypatch.setitem(function_globals, "frozen_tail_extension_matches_authority", lambda *_args: False)
     monkeypatch.setitem(
         function_globals,
-        "assess_history_anchor_freshness",
+        "assess_realtime_anchor_freshness",
         lambda *_args, **_kwargs: {"is_stale": False},
     )
 
