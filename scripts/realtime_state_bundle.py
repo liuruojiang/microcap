@@ -533,15 +533,15 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None,
     v2_0._sync_embedded_base_config()
     base = v2_0.base_mod
     anchor = _parse_date(str(before["anchor_dates"]["proxy_index"]))
-    history = base.fetch_eastmoney_index_history(
-        "1.000852", base.pd.Timestamp(anchor) - base.pd.Timedelta(days=20)
-    )
+    from scripts.index_history_preflight import fetch_preflight_history
+    history = fetch_preflight_history(anchor - timedelta(days=20), expected_date)
     target = base.latest_closed_history_date(history).date()
     if expected_date is not None and target != expected_date:
         raise RuntimeError(f"Independent history {target} differs from expected calendar day {expected_date}")
     evidence = verify_live_member_names(base, before["current_member_symbols"])
     evidence["independent_completed_day"] = target.isoformat()
     evidence["independent_history_rows"] = len(history)
+    evidence.update(history.attrs)
     if expected_date is not None:
         evidence["expected_calendar_day"] = expected_date.isoformat()
     return certify_existing_state(root, before, target, max_anchor_age_days, evidence)
@@ -582,7 +582,7 @@ def certify_existing_state(root: Path, before: dict[str, object], target: date,
     else:
         _write_refresh_proof(root, target, evidence)
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
-    report["preflight_source"] = "official_index_history_loader; no panel/NAV rebuild"
+    report["preflight_source"] = "validated_independent_index_history; no panel/NAV rebuild"
     return report
 
 
