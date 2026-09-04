@@ -4238,7 +4238,7 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
     latest_panel_date = pd.Timestamp(panel["date"].max())
     history_start = latest_panel_date - pd.Timedelta(days=HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS)
     hedge_hist = fetch_eastmoney_index_history("1.000852", history_start)
-    if hedge_hist.attrs.get("independent_history_source") in {"sina_static", "tencent"}:
+    if hedge_hist.attrs.get("independent_history_source"):
         from scripts.index_history_preflight import preserve_existing_closes
         canonical = pd.read_csv(paths["panel_shadow"]) if paths["panel_shadow"].is_file() else panel
         hedge_hist = preserve_existing_closes(hedge_hist, canonical, HEDGE_COLUMN)
