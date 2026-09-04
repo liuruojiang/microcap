@@ -68,10 +68,10 @@ def test_v2_0_published_filter_metadata_matches_promoted_lineage() -> None:
 def test_v2_3_formal_production_identity() -> None:
     assert v2_3.LOOKBACK == 25
     assert v2_3.HALFLIFE == pytest.approx(2.5)
-    assert v2_3.R2_ENTRY_GATE == pytest.approx(0.08)
+    assert v2_3.R2_ENTRY_GATE == pytest.approx(0.0)
     assert v2_3.OVERHEAT_FEATURE_WINDOW == 10
     assert v2_3.OVERHEAT_TRIGGER_THRESHOLD == pytest.approx(0.26)
-    assert v2_3.OVERHEAT_RECOVERY_THRESHOLD == pytest.approx(0.195)
+    assert v2_3.OVERHEAT_RECOVERY_THRESHOLD == pytest.approx(0.20)
     assert v2_3.TARGET_VOL_ENABLED is False
 
 

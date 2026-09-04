@@ -21,6 +21,19 @@ LOCK = "outputs/top100_delivery.lock"
 BASE_PANEL = "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
 AUTHORITY = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json"
 V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
+V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"
+
+
+def plain_v23_identity(row: dict) -> bool:
+    try:
+        return (row.get("strategy_revision") == V23_STRATEGY_REVISION
+                and str(row.get("target_vol_enabled")) == "False"
+                and str(row.get("r2_gate_enabled")) == "False"
+                and float(row.get("r2_entry_gate", -1)) == 0.
+                and abs(float(row.get("overheat_trigger_threshold", -1)) - .26) < 1e-12
+                and abs(float(row.get("overheat_recovery_threshold", -1)) - .20) < 1e-12)
+    except (TypeError, ValueError):
+        return False
 
 
 def plain_v20_identity(row: dict) -> bool:
@@ -84,6 +97,13 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                         params.get("target_volatility_scaling", {}).get("enabled") is not False or
                         params.get("overheat_defense", {}).get("enabled") is not False):
                     errors.append("v2.0 summary plain revision mismatch")
+            if v == "3":
+                params = summary.get("core_params", {})
+                if (summary.get("strategy_revision") != V23_STRATEGY_REVISION or
+                        params.get("signal_model", {}).get("r2_entry_gate") != 0 or
+                        params.get("overheat_defense", {}).get("trigger_threshold") != .26 or
+                        params.get("overheat_defense", {}).get("recovery_threshold") != .20):
+                    errors.append("v2.3 summary plain revision mismatch")
             if summary.get("historical_rewrite_audit", {}).get("status") != "clean":
                 errors.append(f"v2.{v} has no clean second-run rewrite audit")
             if summary.get("latest_nav_date") != expected or summary.get("latest_trade_date") != expected:
@@ -101,6 +121,9 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                 if v == "0" and not name.endswith("performance_nav.csv"):
                     if not all(plain_v20_identity(row) for row in rows):
                         errors.append(f"v2.0 plain revision/state mismatch: {name}")
+                if v == "3" and not name.endswith("performance_nav.csv"):
+                    if not all(plain_v23_identity(row) for row in rows):
+                        errors.append(f"v2.3 plain revision/state mismatch: {name}")
                 if name.endswith("latest_signal.csv"):
                     if len(rows) != 1 or rows[0].get("version") != f"2.{v}":
                         errors.append(f"v2.{v} final CSV identity mismatch")

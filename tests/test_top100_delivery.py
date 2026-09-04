@@ -32,17 +32,24 @@ def workspace(tmp_path):
             summary.update(strategy_revision=delivery.V20_STRATEGY_REVISION, core_params={
                 "momentum_gap_exit_buffer": 0., "target_volatility_scaling": {"enabled": False},
                 "overheat_defense": {"enabled": False}})
+        if version == "3":
+            summary.update(strategy_revision=delivery.V23_STRATEGY_REVISION, core_params={
+                "signal_model": {"r2_entry_gate": 0.},
+                "overheat_defense": {"trigger_threshold": .26, "recovery_threshold": .20}})
         write(tmp_path, f"outputs/{prefix}_summary.json", json.dumps(summary))
         identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,current_execution_scale,next_session_actionable_scale"
         identity = f",{delivery.V20_STRATEGY_REVISION},False,False,1.0,1.0"
+        if version == "3":
+            identity_header = ",strategy_revision,target_vol_enabled,r2_gate_enabled,r2_entry_gate,overheat_trigger_threshold,overheat_recovery_threshold"
+            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,0.0,0.26,0.20"
         for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv"):
             content = daily
-            if version == "0" and not name.endswith("performance_nav.csv"):
+            if version in ("0", "3") and not name.endswith("performance_nav.csv"):
                 content = f"date,return_net{identity_header}\n2026-09-02,0.01{identity}\n2026-09-03,0.02{identity}\n"
             write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
-              f"date,version,member_rebalance_actionable{identity_header if version == '0' else ''}\n"
-              f"2026-09-03,2.{version},False{identity if version == '0' else ''}\n")
+              f"date,version,member_rebalance_actionable{identity_header if version in ('0', '3') else ''}\n"
+              f"2026-09-03,2.{version},False{identity if version in ('0', '3') else ''}\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
     return tmp_path

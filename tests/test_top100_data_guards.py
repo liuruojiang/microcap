@@ -474,13 +474,13 @@ def test_v2_3_official_params_are_lb25_overheat_without_target_vol() -> None:
     assert v2_3.LOOKBACK == 25
     assert v2_3.HALFLIFE == 2.5
     assert v2_3.R2_WINDOW == 25
-    assert v2_3.R2_ENTRY_GATE == 0.08
+    assert v2_3.R2_ENTRY_GATE == 0.0
     assert v2_3.MOMENTUM_GAP_EXIT_BUFFER == 0.08
     assert v2_3.OVERHEAT_KIND == "vol"
     assert v2_3.OVERHEAT_FEATURE_WINDOW == 10
     assert v2_3.OVERHEAT_TRIGGER_THRESHOLD == 0.26
-    assert v2_3.OVERHEAT_RECOVERY_RATIO == 0.75
-    assert v2_3.OVERHEAT_RECOVERY_THRESHOLD == pytest.approx(0.195)
+    assert v2_3.OVERHEAT_RECOVERY_RATIO == pytest.approx(.20 / .26)
+    assert v2_3.OVERHEAT_RECOVERY_THRESHOLD == pytest.approx(0.20)
     assert v2_3.TARGET_VOL_ENABLED is False
     assert v2_3.CASH_DAY_YIELD_ENABLED is False
     assert v2_3.FINANCING_ENABLED is False
@@ -489,15 +489,15 @@ def test_v2_3_official_params_are_lb25_overheat_without_target_vol() -> None:
 
     assert fingerprint["signal_model"]["lookback"] == 25
     assert fingerprint["signal_model"]["halflife"] == 2.5
-    assert fingerprint["signal_model"]["r2_entry_gate"] == 0.08
+    assert fingerprint["signal_model"]["r2_entry_gate"] == 0.0
     assert fingerprint["signal_model"]["momentum_gap_exit_buffer"] == 0.08
     assert fingerprint["overheat_defense"] == {
         "enabled": True,
         "kind": "vol",
         "feature_window": 10,
         "trigger_threshold": 0.26,
-        "recovery_ratio": 0.75,
-        "recovery_threshold": pytest.approx(0.195),
+        "recovery_ratio": pytest.approx(.20 / .26),
+        "recovery_threshold": pytest.approx(0.20),
     }
     assert fingerprint["target_volatility_scaling"] == {"enabled": False}
     assert fingerprint["cash_day_yield"] == {"enabled": False}
@@ -1206,7 +1206,7 @@ def test_v2_3_v2_5_combo50_comparison_has_replayable_script() -> None:
 
     assert script.exists()
     text = script.read_text(encoding="utf-8")
-    assert "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv" in text
+    assert "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv" in text
     assert "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv" in text
     assert "additional_combo_rebalance_cost" in text
     assert "20260602" not in text
