@@ -49,7 +49,7 @@ def main():
         result["daily_parity"][f"v2.{suffix}"] = dict(rows=len(current), max_absolute_deltas=deltas, state_equal=True)
         if suffix == "5":
             continue
-        module = v20 if suffix == "0" else v23
+        module = v20.overlay_mod if suffix == "0" else v23
         result["windows"][f"v2.{suffix}"] = module.summarize_required_windows(current.return_net)
         yearly_path = ROOT / f"outputs/microcap_top100_mom16_biweekly_live_v2_{suffix}_performance_yearly.csv"
         yearly = pd.read_csv(yearly_path).set_index("year")
