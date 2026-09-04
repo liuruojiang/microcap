@@ -1634,7 +1634,12 @@ def test_empty_name_reject_policy_invalidates_static_member_context(tmp_path: Pa
     assert realtime_state_bundle._csv_has_valid_named_symbols(path) is False
 
 
-def test_empty_name_reject_policy_requires_matching_proxy_metadata() -> None:
+def test_empty_name_reject_policy_requires_matching_proxy_metadata(monkeypatch) -> None:
+    # This tests policy matching, not the network-backed universe discovery.
+    monkeypatch.setattr(v2_0.base_mod, "security_meta_cache_fingerprint", lambda: {
+        "present_count": 1, "missing_count": 0, "sha256": "isolated-policy-fixture"})
+    monkeypatch.setitem(v2_0.base_mod.proxy_meta_matches_execution_model.__globals__,
+                        "security_meta_cache_fingerprint", v2_0.base_mod.security_meta_cache_fingerprint)
     core_params = {
         "research_stack_version": v2_0.base_mod.RESEARCH_STACK_VERSION,
         "execution_timing": v2_0.base_mod.EXECUTION_TIMING,
@@ -2071,6 +2076,7 @@ def test_realtime_cached_proxy_accepts_validated_frozen_tail_extension(
     function_globals = function.__globals__
     monkeypatch.setitem(function_globals, "read_csv_last_date", lambda _path: pd.Timestamp("2026-08-24"))
     monkeypatch.setitem(function_globals, "proxy_meta_matches_execution_model", lambda _meta: False)
+    monkeypatch.setitem(function_globals, "frozen_tail_authority_matches_seed", lambda *_args: False)
     monkeypatch.setitem(function_globals, "frozen_tail_extension_matches_authority", lambda *_args: True)
     monkeypatch.setitem(
         function_globals,
