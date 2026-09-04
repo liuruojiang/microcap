@@ -520,7 +520,8 @@ def calc_metrics(ret: pd.Series) -> Metrics:
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else np.nan
     vol = ret.std(ddof=1) * np.sqrt(CN_TRADING_DAYS)
     sharpe = annual / vol if pd.notna(vol) and vol > 0 else np.nan
-    max_dd = ((nav - nav.cummax()) / nav.cummax()).min()
+    high_water = nav.cummax().clip(lower=1.0)
+    max_dd = nav.div(high_water).sub(1.0).min()
     calmar = annual / abs(max_dd) if pd.notna(max_dd) and max_dd != 0 else np.nan
     total_return = nav.iloc[-1] - 1.0
     monthly = ret.groupby(ret.index.to_period("M")).apply(lambda x: (1.0 + x).prod() - 1.0)
@@ -960,14 +961,20 @@ def apply_cost_model(result: pd.DataFrame, turnover: pd.DataFrame) -> pd.DataFra
 
 def calc_drawdown_info(ret: pd.Series) -> dict[str, object]:
     nav = (1.0 + ret).cumprod()
-    dd = nav.div(nav.cummax()).sub(1.0)
+    dd = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
     trough_date = dd.idxmin()
-    peak_date = nav.loc[:trough_date].idxmax()
+    pre_trough = nav.loc[:trough_date]
+    initial_capital_peak = bool(pre_trough.max() < 1.0)
+    peak_date = None if initial_capital_peak else pre_trough.idxmax()
+    peak_nav = 1.0 if initial_capital_peak else float(nav.loc[peak_date])
     post = nav.loc[trough_date:]
-    recovery = post[post >= nav.loc[peak_date]]
+    recovery = post[post >= peak_nav]
     recovery_date = recovery.index[0] if len(recovery) else pd.NaT
     return {
-        "peak_date": str(peak_date.date()),
+        # Initial capital precedes the first return; do not invent a session date.
+        "peak_date": None if peak_date is None else str(peak_date.date()),
+        "peak_basis": "initial_capital" if initial_capital_peak else "observed_nav",
+        "peak_nav": peak_nav,
         "trough_date": str(trough_date.date()),
         "recovery_date": None if pd.isna(recovery_date) else str(recovery_date.date()),
     }
@@ -8400,7 +8407,7 @@ def load_performance_source(
 
 def calc_max_drawdown_from_returns(returns: pd.Series) -> float:
     nav = (1.0 + returns.fillna(0.0)).cumprod()
-    drawdown = nav / nav.cummax() - 1.0
+    drawdown = nav / nav.cummax().clip(lower=1.0) - 1.0
     return float(drawdown.min())
 
 
@@ -13496,7 +13503,7 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
     vol = ret.std(ddof=1) * (TARGET_VOL_TRADING_DAYS**0.5)
     sharpe = annual / vol if vol > 0 else 0.0
-    dd = nav / nav.cummax() - 1.0
+    dd = nav / nav.cummax().clip(lower=1.0) - 1.0
     return {
         "start_date": str(pd.Timestamp(ret.index[0]).date()),
         "end_date": str(pd.Timestamp(ret.index[-1]).date()),
@@ -13548,6 +13555,15 @@ def summarize_required_windows(ret: pd.Series) -> list[dict[str, object]]:
         else:
             required_start = end - pd.DateOffset(years=int(years))
             part = clean.loc[clean.index >= required_start]
+            if pd.Timestamp(clean.index[0]) > required_start:
+                row = _unavailable_window_summary(
+                    window,
+                    "insufficient history: available start "
+                    f"{pd.Timestamp(clean.index[0]).date()} is after required start {required_start.date()}",
+                )
+                row["required_start_date"] = str(required_start.date())
+                rows.append(row)
+                continue
         if part.empty:
             rows.append(_unavailable_window_summary(window, "no data in requested window"))
             continue
@@ -13570,7 +13586,7 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
         vol = part.std(ddof=1) * (TARGET_VOL_TRADING_DAYS**0.5)
         sharpe = annual / vol if vol > 0 else 0.0
-        dd = nav / nav.cummax() - 1.0
+        dd = nav / nav.cummax().clip(lower=1.0) - 1.0
         rows.append(
             {
                 "year": str(year),

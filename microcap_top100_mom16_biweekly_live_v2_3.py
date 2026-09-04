@@ -570,7 +570,9 @@ def log_wls_score_and_r2(
 def _valid_log_wls_index(close_df: pd.DataFrame) -> pd.DatetimeIndex:
     spread_nav, _micro_ret, _hedge_ret, _daily_drag = always_on_spread_nav(close_df)
     log_wls = log_wls_score_and_r2(spread_nav, r2_window=R2_WINDOW)
-    valid = log_wls["annualized_log_wls_score"].notna() & log_wls["log_wls_r2"].notna()
+    valid = np.isfinite(log_wls["annualized_log_wls_score"])
+    if R2_ENTRY_GATE > 0:
+        valid &= np.isfinite(log_wls["log_wls_r2"])
     return pd.DatetimeIndex(log_wls.index[valid])
 
 
@@ -639,7 +641,9 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
         score_value = score.loc[dt]
         r2_value = r2.loc[dt]
         score_valid = pd.notna(score_value) and np.isfinite(float(score_value))
-        r2_pass = pd.notna(r2_value) and np.isfinite(float(r2_value)) and float(r2_value) >= R2_ENTRY_GATE
+        r2_pass = R2_ENTRY_GATE <= 0 or (
+            pd.notna(r2_value) and np.isfinite(float(r2_value)) and float(r2_value) >= R2_ENTRY_GATE
+        )
         if not score_valid:
             next_active = False
         elif active_state:
@@ -692,7 +696,11 @@ def build_spread_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex |
             "momentum_gap_legacy_note": "legacy field contains annualized spread-NAV log-WLS score, not plain microcap-minus-hedge momentum gap",
             "r2_window": R2_WINDOW,
             "r2_entry_gate": R2_ENTRY_GATE,
-            "r2_gate_pass": r2.ge(R2_ENTRY_GATE).fillna(False).astype(bool),
+            "r2_gate_pass": (
+                pd.Series(True, index=common_index, dtype=bool)
+                if R2_ENTRY_GATE <= 0
+                else (np.isfinite(r2) & r2.ge(R2_ENTRY_GATE)).fillna(False).astype(bool)
+            ),
             "entry_threshold": MOMENTUM_GAP_ENTRY_THRESHOLD,
             "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
             "signal_spread_hedge_ratio": SIGNAL_SPREAD_HEDGE_RATIO,
@@ -1249,7 +1257,8 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
     vol = ret.std(ddof=1) * (TRADING_DAYS**0.5)
     sharpe = annual / vol if vol > 0 else 0.0
-    drawdown = nav.div(nav.cummax()).sub(1.0)
+    # Initial capital is a high-water mark even when the first return is a loss.
+    drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
     return {
         "start_date": str(pd.Timestamp(ret.index[0]).date()),
         "end_date": str(pd.Timestamp(ret.index[-1]).date()),
@@ -1301,6 +1310,15 @@ def summarize_required_windows(ret: pd.Series) -> list[dict[str, object]]:
         else:
             required_start = end - pd.DateOffset(years=int(years))
             part = clean.loc[clean.index >= required_start]
+            if pd.Timestamp(clean.index[0]) > required_start:
+                row = _unavailable_window_summary(
+                    window,
+                    f"insufficient history: actual_start={pd.Timestamp(clean.index[0]).date()}, "
+                    f"required_start={required_start.date()}",
+                )
+                row["required_start_date"] = str(required_start.date())
+                rows.append(row)
+                continue
         if part.empty:
             rows.append(_unavailable_window_summary(window, "no data in requested window"))
             continue
@@ -1322,7 +1340,7 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
         years = (part.index[-1] - part.index[0]).days / 365.25
         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
         vol = part.std(ddof=1) * (TRADING_DAYS**0.5)
-        drawdown = nav.div(nav.cummax()).sub(1.0)
+        drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
         rows.append(
             {
                 "year": str(year),
