@@ -51,6 +51,11 @@ Use this repo-local file as the source of workspace guidance for the Top100 micr
 
 # Production Email Deployment Gate
 
+- Whole-workspace synchronization is NOT complete when only Git, a cloud run, or `realtime_state_bundle.py validate` passes. That validator covers base state only.
+- After synchronizing code/authority or refreshing a historical base, use `python -X utf8 scripts/top100_delivery.py refresh-all`, then `python -X utf8 scripts/top100_delivery.py check`. Both must pass before claiming local synchronization complete or resuming parameter scans. The second command independently checks the latest completed session and live remote core/authority, and reads back all three final streams against the delivery manifest.
+- Preserve dirty local changes with a verified backup and reviewed merge. Deployment in a separate worktree does not discharge synchronization of this primary workspace. Final NAVs are ignored by Git and must be regenerated/verified separately. Never reset or copy a single NAV to bypass lineage checks.
+- A failed/interrupted group refresh leaves an incomplete delivery manifest. Never describe a partial version refresh, stale manifest, or `scope=base_state_only` result as whole-delivery success. Restoring an already approved seed requires exact base/source hashes and a backup; any new lineage needs new approval.
+
 - A Microcap production-email change is not deployed merely because a local sample or workflow run succeeded. Before declaring synchronization complete, verify the exact strategy commit checked out by the automation workflow is reachable from the remote repository, read back the final CSV identity and dated member-action fields for v2.0/v2.3/v2.5, and record the remote strategy SHA, remote automation SHA, workflow run, and delivered message.
 - The final CSV is the authority for strategy identity, holdings, and actions. Stdout may supply presentation fields but must never backfill a missing or contradictory final-CSV identity.
 - A member rebalance is actionable only on its dated execution session. Historical and preview changes may be reported as context but must not be rendered as a current trade instruction.

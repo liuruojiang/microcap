@@ -122,13 +122,15 @@ def _write_current_v2_static_context(root: Path, effective_members: pd.DataFrame
     )
     prefix.parent.mkdir(parents=True, exist_ok=True)
     Path(f"{prefix}_static_meta.json").write_text(
-        json.dumps({"latest_rebalance": "2026-08-06"}), encoding="utf-8"
+        json.dumps({"latest_rebalance": "2026-08-06"}),
+        encoding="utf-8",
     )
     target_members = _proxy_member_rows("2026-08-06")
     target_members.to_csv(Path(f"{prefix}_static_target_members.csv"), index=False)
     effective_members.to_csv(Path(f"{prefix}_static_effective_members.csv"), index=False)
     pd.DataFrame(columns=["symbol", "action"]).to_csv(
-        Path(f"{prefix}_static_rebalance_changes.csv"), index=False
+        Path(f"{prefix}_static_rebalance_changes.csv"),
+        index=False,
     )
 
 
