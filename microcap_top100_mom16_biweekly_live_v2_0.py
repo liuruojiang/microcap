@@ -4132,6 +4132,10 @@ def fetch_eastmoney_index_history(
     start_date: pd.Timestamp,
     end_date: pd.Timestamp | None = None,
 ) -> pd.DataFrame:
+    if secid == "1.000852":
+        from scripts.index_history_preflight import fetch_delivery_history
+        expected = None if end_date is None else pd.Timestamp(end_date).date()
+        return fetch_delivery_history(pd.Timestamp(start_date).date(), expected)
     end_ts = _cn_local_day() if end_date is None else pd.Timestamp(end_date)
     url = (
         "https://push2his.eastmoney.com/api/qt/stock/kline/get"
@@ -4234,6 +4238,12 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
     latest_panel_date = pd.Timestamp(panel["date"].max())
     history_start = latest_panel_date - pd.Timedelta(days=HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS)
     hedge_hist = fetch_eastmoney_index_history("1.000852", history_start)
+    if hedge_hist.attrs.get("independent_history_source") in {"sina_static", "tencent"}:
+        from scripts.index_history_preflight import preserve_existing_closes
+        canonical = pd.read_csv(paths["panel_shadow"]) if paths["panel_shadow"].is_file() else panel
+        hedge_hist = preserve_existing_closes(hedge_hist, canonical, HEDGE_COLUMN)
+    if hedge_hist.attrs.get("independent_history_source"):
+        print("[index-history] " + json.dumps(hedge_hist.attrs, ensure_ascii=False), file=sys.stderr, flush=True)
     latest_hedge_date = latest_closed_history_date(hedge_hist)
     hedge_hist = hedge_hist.loc[pd.to_datetime(hedge_hist["date"], errors="coerce") <= latest_hedge_date].copy()
 
