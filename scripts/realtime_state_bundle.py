@@ -565,13 +565,15 @@ def certify_existing_state(root: Path, before: dict[str, object], target: date,
     return report
 
 
-def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dict[str, object]:
+def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
+               extra_files: Iterable[str] = ()) -> dict[str, object]:
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
     if not report["ok"]:
         return report
     root = root.resolve()
     bundle.parent.mkdir(parents=True, exist_ok=True)
-    file_names = _iter_bundle_files(root)
+    file_names = sorted(set(_iter_bundle_files(root)) |
+                        {_repo_path(name).as_posix() for name in extra_files})
     manifest = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "required_files": list(REQUIRED_FILES),
