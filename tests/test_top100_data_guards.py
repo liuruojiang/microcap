@@ -216,6 +216,8 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
         )
 
     monkeypatch.setattr(v2_0.freq_mod, "simulate_rebalance_path", fake_simulate_rebalance_path)
+    monkeypatch.setitem(build_globals, "security_meta_cache_fingerprint", lambda: {
+        "present_count": 2, "missing_count": 0, "sha256": "isolated-universe-routing-fixture"})
 
     _index, _members, _turnover, meta = v2_0.base_mod.build_local_proxy_bundle(
         argparse.Namespace(max_workers=1),
