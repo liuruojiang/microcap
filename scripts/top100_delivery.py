@@ -123,12 +123,9 @@ def validate_manifest(root: Path, report: dict) -> dict:
 
 
 def independent_target(root: Path) -> str:
-    sys.path.insert(0, str(root))
-    import microcap_top100_mom16_biweekly_live_v2_0 as v2
-    v2._sync_embedded_base_config()
-    base = v2.base_mod
-    history = base.fetch_eastmoney_index_history("1.000852", base._cn_local_day() - base.pd.Timedelta(days=25))
-    return str(base.latest_closed_history_date(history).date())
+    """Date-only independent gate; actual market streams remain separately verified."""
+    from scripts.exchange_calendar import latest_completed_session
+    return latest_completed_session().isoformat()
 
 
 def verify_release(root: Path) -> str:

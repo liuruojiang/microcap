@@ -137,3 +137,51 @@ def test_parallel_group_refresh_cannot_overwrite_success(workspace):
         delivery.refresh_all(workspace)
     assert (workspace / delivery.LOCK).read_text() == "other-process"
     assert not delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, "2026-09-03"))["ok"]
+
+
+@pytest.mark.parametrize("clock,expected", [
+    ("2026-09-04T14:30:00+08:00", "2026-09-03"),
+    ("2026-09-04T15:29:59+08:00", "2026-09-03"),
+    ("2026-09-04T15:30:00+08:00", "2026-09-04"),
+    ("2026-10-08T14:30:00+08:00", "2026-09-30"),
+    ("2026-10-08T15:30:00+08:00", "2026-10-08"),
+])
+def test_independent_target_uses_exchange_sessions_not_market_prices(tmp_path, monkeypatch, clock, expected):
+    from datetime import date, datetime
+    from scripts import exchange_calendar
+    import microcap_top100_mom16_biweekly_live_v2_0 as v2
+    current = datetime.fromisoformat(clock)
+    class FrozenClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return current.astimezone(tz) if tz is not None else current.replace(tzinfo=None)
+    monkeypatch.setattr(exchange_calendar, "datetime", FrozenClock)
+    # The provider itself remains real; only its network-backed calendar data is isolated.
+    monkeypatch.setattr(exchange_calendar, "sessions_for_day", lambda day: tuple(map(date.fromisoformat,
+        ["2026-09-03", "2026-09-04", "2026-09-07", "2026-09-30", "2026-10-08", "2026-10-09"])))
+    monkeypatch.setattr(v2.base_mod, "fetch_eastmoney_index_history",
+        lambda *a, **kw: pytest.fail("date-only check must not fetch a price history"))
+    assert delivery.independent_target(tmp_path) == expected
+
+
+def test_independent_target_calendar_unknown_fails_closed(tmp_path, monkeypatch):
+    from scripts import exchange_calendar
+    import microcap_top100_mom16_biweekly_live_v2_0 as v2
+    def unknown(day):
+        raise RuntimeError("Independent exchange calendar unavailable: year not covered")
+    monkeypatch.setattr(exchange_calendar, "sessions_for_day", unknown)
+    monkeypatch.setattr(v2.base_mod, "fetch_eastmoney_index_history",
+        lambda *a, **kw: pytest.fail("unavailable calendar must not fall back to NAV/price history"))
+    with pytest.raises(RuntimeError, match="calendar unavailable"):
+        delivery.independent_target(tmp_path)
+
+
+def test_calendar_target_does_not_authorize_stale_real_streams(workspace, monkeypatch):
+    from datetime import date
+    from scripts import exchange_calendar
+    monkeypatch.setattr(exchange_calendar, "latest_completed_session", lambda: date(2026, 9, 4))
+    certify(workspace)  # All real fixture streams end on September 3.
+    expected = delivery.independent_target(workspace)
+    report = delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, expected))
+    assert not report["ok"]
+    assert any("date mismatch" in error for error in report["errors"])
