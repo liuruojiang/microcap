@@ -25,7 +25,7 @@ RUN_FOLDER = ROOT / "quant_param_scan_runs" / "20260629_microcap_top100_v2_3_v2_
 
 V2_3_COSTED_NAV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv"
 V2_5_COSTED_NAV = OUTPUT_DIR / "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv"
-V2_0_COSTED_NAV = OUTPUT_DIR / "microcap_top100_mom16_targetvol15_max1p5_v2_0_costed_nav.csv"
+V2_0_COSTED_NAV = OUTPUT_DIR / "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv"
 BASE_PANEL = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
 PROXY_INDEX = OUTPUT_DIR / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv"
 PROXY_TURNOVER = OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv"

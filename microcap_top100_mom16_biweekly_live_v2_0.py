@@ -69,7 +69,7 @@ DEFAULT_V2_STALE_LOCK_SECONDS = _env_float("MICROCAP_V2_STALE_LOCK_SECONDS", 600
 
 def parse_v2_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Top100 Mom16 Biweekly v2.0 standalone target-vol overlay"
+        description="Top100 Mom16 Biweekly v2.0 plain fixed-one execution"
     )
     parser.add_argument("query_tokens", nargs="*", help="信号 / 实时信号 / 表现 <区间>")
     parser.add_argument("--panel-path", type=Path, default=None)
@@ -84,6 +84,7 @@ def parse_v2_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--wheelhouse", type=Path, default=None)
     parser.add_argument("--output-prefix", default=None)
     parser.add_argument("--audited-history-migration-report", type=Path, default=None)
+    parser.add_argument("--audited-strategy-migration-report", type=Path, default=None)
     return parser.parse_args(argv)
 
 
@@ -11027,7 +11028,7 @@ V2_BASE_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0_base"
 V2_BASE_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv"
 V2_BASE_SUMMARY_JSON = OUTPUT_DIR / f"{V2_BASE_OUTPUT_PREFIX}_summary.json"
 V2_BASE_COST_MODEL = "standalone_v2_embedded_mainline_base"
-V2_0_MOMENTUM_GAP_EXIT_BUFFER = 0.0030
+V2_0_MOMENTUM_GAP_EXIT_BUFFER = 0.0
 DECAY_RATIO_THRESHOLD = 0.25
 DERISK_SCALE = 0.0
 RECOVERY_RATIO_THRESHOLD = 0.35
@@ -11712,6 +11713,8 @@ OUTPUT_DIR = ROOT / "outputs"
 
 DEFAULT_OUTPUT_PREFIX = "microcap_top100_mom16_biweekly_live_v2_0"
 OUTPUT_PREFIX = DEFAULT_OUTPUT_PREFIX
+STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
+TARGET_VOL_ENABLED = False
 TARGET_VOL = 0.15
 TARGET_VOL_WINDOW = 75
 TARGET_VOL_MAX_LEVERAGE = 1.5
@@ -11722,7 +11725,7 @@ TARGET_VOL_SCALE_REBALANCE_THRESHOLD = 0.10
 TARGET_VOL_FINANCING_RATE = 0.03
 IDLE_CASH_YIELD = 0.02
 SCALE_TRADE_REQUIRED_EPSILON = 1e-6
-OVERHEAT_ENABLED = True
+OVERHEAT_ENABLED = False
 OVERHEAT_KIND = "volatility"
 OVERHEAT_WINDOW = 60
 OVERHEAT_THRESHOLD = 0.23
@@ -11780,7 +11783,8 @@ SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = _costed_nav_path(TARGET_VOL)
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv"
+PREVIOUS_V2_0_COSTED_NAV_CSV = _costed_nav_path(0.15)
 LEGACY_COSTED_NAV_CSVS = [_costed_nav_path(value) for value in HISTORICAL_TARGET_VOL_VALUES_TO_CLEANUP]
 
 
@@ -11813,7 +11817,7 @@ def configure_output_paths(output_prefix: str | None = None) -> None:
     REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
     NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
     COSTED_NAV_CSV = (
-        _costed_nav_path(TARGET_VOL)
+        OUTPUT_DIR / "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv"
         if OUTPUT_PREFIX == DEFAULT_OUTPUT_PREFIX
         else OUTPUT_DIR / f"{OUTPUT_PREFIX}_costed_nav.csv"
     )
@@ -11829,8 +11833,8 @@ def configure_output_paths(output_prefix: str | None = None) -> None:
     PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 
-EXPECTED_VERSION_ROLE = "standalone_target_vol_overlay"
-EXPECTED_VERSION_NOTE_PREFIX = "Standalone target-volatility overlay matching repaired v1.6 behavior."
+EXPECTED_VERSION_ROLE = "plain_relative_momentum_fixed_one"
+EXPECTED_VERSION_NOTE_PREFIX = "Plain 16-day relative momentum with fixed 1.0 execution."
 BASE_HEDGE_RATIO_SOURCE = embedded_context
 V2_0_MOMENTUM_GAP_EXIT_BUFFER_SOURCE = embedded_context
 DECAY_RATIO_THRESHOLD_SOURCE = embedded_context
@@ -12274,7 +12278,8 @@ def current_base_fingerprint() -> dict[str, object]:
     return {
         "base_version": "embedded_v2_base",
         "embedded_lineage_base_fingerprint": base,
-        "overlay_type": "volatility_overheat_exit_then_target_volatility_scaling",
+        "overlay_type": STRATEGY_REVISION,
+        "strategy_revision": STRATEGY_REVISION,
         "base_hedge_ratio": BASE_HEDGE_RATIO,
         "overheat_defense": {
             "enabled": OVERHEAT_ENABLED,
@@ -12286,7 +12291,7 @@ def current_base_fingerprint() -> dict[str, object]:
             "require_signal_reset": OVERHEAT_REQUIRE_SIGNAL_RESET,
             "timing": "applied_to_base_state_before_target_vol_scaling",
         },
-        "target_vol_enabled": True,
+        "target_vol_enabled": TARGET_VOL_ENABLED,
         "target_vol": TARGET_VOL,
         "vol_window": TARGET_VOL_WINDOW,
         "max_leverage": TARGET_VOL_MAX_LEVERAGE,
@@ -13262,6 +13267,56 @@ def apply_target_vol_scaling(
     return out
 
 
+def apply_v2_0_execution(gross: pd.DataFrame, turnover_df: pd.DataFrame, *, snapshot: bool = False) -> pd.DataFrame:
+    """Official v2.0 dispatch; legacy overlay functions remain sibling/research APIs."""
+    if OVERHEAT_ENABLED:
+        base = apply_volatility_overheat_exit(gross, turnover_df)
+    else:
+        base = embedded_context.base_mod.apply_momentum_gap_no_peak_decay_cost_model(gross, turnover_df)
+    if TARGET_VOL_ENABLED:
+        return apply_target_vol_scaling(base, treat_last_row_as_snapshot=snapshot)
+    out = base.copy()
+    active = out["holding"].ne("cash").astype(float)
+    next_active = out["next_holding"].ne("cash").astype(float)
+    for name in ("current_execution_scale", "execution_scale", "target_vol_execution_scale_raw"):
+        out[name] = active
+    for name in ("next_session_target_scale", "raw_next_target_scale", "next_session_actionable_scale", "target_vol_scale_next_session"):
+        out[name] = next_active
+    for name in ("target_vol_turnover", "target_vol_costed_turnover", "scale_change_cost", "target_vol_trade_cost", "financing_cost", "idle_cash_yield", "target_vol_frozen_lag_days", "target_vol_frozen_lag_calendar_days", "target_vol_frozen_lag_trading_days"):
+        out[name] = 0.0
+    for name in ("target_vol_enabled", "overheat_enabled", "overheat_triggered", "blocked_until_signal_reset", "signal_reset_seen", "target_vol_realtime_snapshot_vol_frozen", "peak_decay_enabled", "net_drawdown_stop_enabled", "overheat_require_positive_trade_return", "overheat_require_signal_reset"):
+        out[name] = False
+    for name in ("target_vol_realized_vol", "latest_realized_vol", "overheat_metric"):
+        out[name] = np.nan
+    out["target_vol_scale_raw"] = 1.0
+    out["target_vol_frozen_source_date"] = ""
+    out["target_vol"] = 0.0
+    out["target_vol_window"] = 0
+    out["overheat_window"] = 0
+    out["overheat_threshold"] = 0.0
+    out["overheat_kind"] = "disabled"
+    out["overheat_metric_name"] = "disabled"
+    out["base_trade_cost"] = out["total_cost"]
+    out["base_trade_cost_scaled"] = out["total_cost"]
+    out["base_trade_cost_scale"] = np.maximum(active, next_active)
+    out["base_pre_cost_return"] = out["overlay_pre_cost_return"]
+    out["base_pre_cost_return_source"] = "overlay_pre_cost_return"
+    out["return_gross_base"] = out["base_pre_cost_return"]
+    out["return_gross_target_vol"] = out["base_pre_cost_return"]
+    out["target_vol_return"] = 0.0
+    out["target_vol_return_source"] = "disabled_fixed_one"
+    out["embedded_lineage_return_net"] = out["return_net"]
+    out["embedded_lineage_nav_net"] = out["nav_net"]
+    out["return"] = out["return_net"]
+    out["nav"] = out["nav_net"]
+    out["return_column_semantics"] = "return equals costed return_net; fixed1, no target-vol scaling"
+    out["version"] = "2.0"
+    out["base_version"] = "embedded_v2_base"
+    out["overlay_type"] = STRATEGY_REVISION
+    out["strategy_revision"] = STRATEGY_REVISION
+    return out
+
+
 def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]) -> pd.DataFrame:
     latest_row = net_df.iloc[-1]
     latest_signal = dict(reference_summary.get("latest_signal", {}))
@@ -13420,11 +13475,14 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     latest_signal["signal_quality_derisk_enabled"] = False
     latest_signal["version"] = "2.0"
     latest_signal["base_version"] = "embedded_v2_base"
-    latest_signal["overlay_type"] = "volatility_overheat_exit_then_target_volatility_scaling"
-    latest_signal["target_vol_enabled"] = True
-    latest_signal["target_vol"] = TARGET_VOL
-    latest_signal["target_vol_window"] = TARGET_VOL_WINDOW
-    latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE
+    latest_signal["overlay_type"] = str(latest_row.get("overlay_type", STRATEGY_REVISION))
+    latest_signal["strategy_revision"] = STRATEGY_REVISION
+    latest_signal["lookback"] = int(embedded_context.base_mod.LOOKBACK)
+    latest_signal["target_vol_enabled"] = _safe_bool(latest_row.get("target_vol_enabled", TARGET_VOL_ENABLED))
+    latest_signal["target_vol"] = TARGET_VOL if latest_signal["target_vol_enabled"] else 0.0
+    latest_signal["target_vol_window"] = TARGET_VOL_WINDOW if latest_signal["target_vol_enabled"] else 0
+    latest_signal["max_leverage"] = TARGET_VOL_MAX_LEVERAGE if latest_signal["target_vol_enabled"] else 1.0
+    latest_signal["return_column_semantics"] = str(latest_row.get("return_column_semantics", "return equals return_net"))
     latest_signal["signal_label"] = next_holding
     return pd.DataFrame([{**latest_signal, "date": pd.Timestamp(net_df.index.max())}])
 
@@ -13964,6 +14022,40 @@ def _write_v2_0_lineage_migration_diagnostics(report_path: Path, audit_path: Pat
     return diagnostics_path
 
 
+def strategy_promotion_evidence(previous_path: Path, candidate: pd.DataFrame, audit_path: Path) -> dict[str, object]:
+    """Bind an approved parameter change to exact data; never waive lineage checks."""
+    resolved = _resolve_base_paths()
+    paths = {key: resolved.output_paths[key] for key in ("proxy_meta", "proxy_members", "proxy_turnover")}
+    paths["proxy_index"] = resolved.index_csv
+    paths["base_costed_nav"] = resolved.costed_nav_csv
+    paths["panel_shadow"] = resolved.output_paths["panel_shadow"]
+    return {
+        "schema_version": 1,
+        "authorization": "user_replace_existing_v2_0",
+        "strategy_revision": STRATEGY_REVISION,
+        "previous_costed_nav_sha256": _sha256_path(previous_path),
+        "candidate_frame_sha256": _candidate_frame_sha256(candidate),
+        "rewrite_audit_sha256": _sha256_path(audit_path),
+        "source_sha256_lf": hashlib.sha256(Path(__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+        "unchanged_base_inputs": {key: _sha256_path(path) for key, path in paths.items()},
+        "candidate_row_count": int(len(candidate)),
+    }
+
+
+def v2_0_rewrite_audit_matches_strategy_promotion(report_path: Path | None, previous_path: Path,
+                                                 candidate: pd.DataFrame, audit_path: Path) -> bool:
+    if report_path is None:
+        return False
+    try:
+        report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+        expected = strategy_promotion_evidence(previous_path, candidate, audit_path)
+        if report.get("approved") is not True:
+            return False
+        return all(report.get(key) == value for key, value in expected.items())
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        return False
+
+
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     reference_summary, base_gross_cached, turnover_df = embedded_context._load_embedded_base_context()
@@ -13981,11 +14073,13 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         base_gross,
         V2_0_MOMENTUM_GAP_EXIT_BUFFER,
     )
-    embedded_lineage_base = apply_volatility_overheat_exit(gross, turnover_df)
-    out = apply_target_vol_scaling(embedded_lineage_base)
+    out = apply_v2_0_execution(gross, turnover_df)
     rewrite_audit_status: dict[str, object] = {"status": "not_checked", "reason": "no_previous_costed_nav"}
-    if COSTED_NAV_CSV.exists():
-        previous = _read_costed_nav_csv(COSTED_NAV_CSV)
+    previous_path = COSTED_NAV_CSV
+    if not previous_path.exists() and previous_path.name == "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv":
+        previous_path = COSTED_NAV_CSV.parent / PREVIOUS_V2_0_COSTED_NAV_CSV.name
+    if previous_path.exists():
+        previous = _read_costed_nav_csv(previous_path)
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
         candidate = out.rename_axis("date").reset_index()
         allowed_tail_rows = _v2_0_rewrite_allowed_tail_rows()
@@ -14005,7 +14099,16 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
                 "audit_csv": None,
             }
         except RuntimeError as exc:
-            if v2_0_rewrite_audit_matches_state_flag_timing_migration(audit_path):
+            if v2_0_rewrite_audit_matches_strategy_promotion(
+                getattr(_V2_RUNTIME_ARGS, "audited_strategy_migration_report", None), previous_path, candidate, audit_path
+            ):
+                rewrite_audit_status = {
+                    "status": "audited_exact_hash_strategy_promotion",
+                    "strategy_revision": STRATEGY_REVISION,
+                    "migration_report": str(getattr(_V2_RUNTIME_ARGS, "audited_strategy_migration_report")),
+                    "audit_csv": str(audit_path),
+                }
+            elif v2_0_rewrite_audit_matches_state_flag_timing_migration(audit_path):
                 diagnostics_path = _write_v2_0_state_flag_migration_diagnostics(audit_path)
                 rewrite_audit_status = {
                     "status": "audited_state_flag_timing_migration",
@@ -14114,14 +14217,8 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = "2.0"
     summary["version_role"] = EXPECTED_VERSION_ROLE
-    summary["version_note"] = (
-        "Standalone target-volatility overlay matching repaired v1.6 behavior. Uses v2.0-specific 0.30% momentum-gap exit buffer, "
-        "no peak-decay signal-quality derisk, "
-        "60-day spread-volatility overheat exit at 23% before target-vol scaling, "
-        "75-day realized volatility, 15% annual target volatility, max 1.5x leverage, "
-        "10bp leg-turnover scale-change cost, scaled embedded-lineage base trading cost, "
-        "and 3% annual financing cost on exposure above 1.0x."
-    )
+    summary["version_note"] = EXPECTED_VERSION_NOTE_PREFIX + " Zero exit buffer, overheat OFF, target-vol OFF; 0.8 hedge and original base costs retained."
+    summary["strategy_revision"] = STRATEGY_REVISION
     summary.setdefault("core_params", {})
     summary["core_params"]["fixed_hedge_ratio"] = BASE_HEDGE_RATIO
     summary["core_params"]["momentum_gap_entry_threshold"] = 0.0
@@ -14138,10 +14235,10 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         "timing": "applied_to_base_state_before_target_vol_scaling",
     }
     summary["core_params"]["target_volatility_scaling"] = {
-        "enabled": True,
-        "target_vol": TARGET_VOL,
-        "vol_window": TARGET_VOL_WINDOW,
-        "max_leverage": TARGET_VOL_MAX_LEVERAGE,
+        "enabled": TARGET_VOL_ENABLED,
+        "target_vol": TARGET_VOL if TARGET_VOL_ENABLED else 0.0,
+        "vol_window": TARGET_VOL_WINDOW if TARGET_VOL_ENABLED else 0,
+        "max_leverage": TARGET_VOL_MAX_LEVERAGE if TARGET_VOL_ENABLED else 1.0,
         "min_leverage": TARGET_VOL_MIN_LEVERAGE,
         "scale_change_cost": TARGET_VOL_SCALE_CHANGE_COST,
         "scale_change_cost_model": "microcap_long_plus_hedge_leg_net_turnover",
@@ -14234,11 +14331,10 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
         realtime_base.base_gross,
         V2_0_MOMENTUM_GAP_EXIT_BUFFER,
     )
-    embedded_lineage_realtime = apply_volatility_overheat_exit(realtime_gross, realtime_base.turnover_df)
     meta = realtime_base.meta
     is_snapshot = bool(meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
-    out = apply_target_vol_scaling(embedded_lineage_realtime, treat_last_row_as_snapshot=is_snapshot)
+    out = apply_v2_0_execution(realtime_gross, realtime_base.turnover_df, snapshot=is_snapshot)
     freshness_calendar = _build_realtime_v2_0_official_index(
         realtime_base.realtime_close_df,
         meta,
@@ -14302,8 +14398,7 @@ def _print_signal_query() -> None:
     print("base_version: embedded_v2_base")
     print(
         f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, "
-        f"overheat vol {OVERHEAT_WINDOW}d >= {OVERHEAT_THRESHOLD:.0%}, target volatility "
-        f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+        f"overheat OFF, target volatility OFF, fixed1; revision={STRATEGY_REVISION}"
     )
     print(f"current_holding: {row['current_holding']}")
     print(f"next_holding: {row['next_holding']}")
@@ -14327,8 +14422,7 @@ def _print_realtime_signal_query() -> None:
         print("base_version: embedded_v2_base")
         print(
             f"overlay: score buffer {V2_0_MOMENTUM_GAP_EXIT_BUFFER:.4f}, no peak-decay derisk, "
-            f"overheat vol {OVERHEAT_WINDOW}d >= {OVERHEAT_THRESHOLD:.0%}, target volatility "
-            f"(target={TARGET_VOL:.0%}, window={TARGET_VOL_WINDOW}, max={TARGET_VOL_MAX_LEVERAGE:.1f}x)"
+            f"overheat OFF, target volatility OFF, fixed1; revision={STRATEGY_REVISION}"
         )
         print(f"snapshot_time: {meta.get('snapshot_time')}")
         print(f"latest_anchor_trade_date: {meta.get('latest_anchor_trade_date')}")
@@ -14429,6 +14523,8 @@ SUMMARY_JSON = overlay_mod.SUMMARY_JSON
 LATEST_SIGNAL_CSV = overlay_mod.LATEST_SIGNAL_CSV
 COSTED_NAV_CSV = overlay_mod.COSTED_NAV_CSV
 TARGET_VOL = overlay_mod.TARGET_VOL
+TARGET_VOL_ENABLED = overlay_mod.TARGET_VOL_ENABLED
+STRATEGY_REVISION = overlay_mod.STRATEGY_REVISION
 TARGET_VOL_WINDOW = overlay_mod.TARGET_VOL_WINDOW
 TARGET_VOL_MAX_LEVERAGE = overlay_mod.TARGET_VOL_MAX_LEVERAGE
 TARGET_VOL_SCALE_REBALANCE_THRESHOLD = overlay_mod.TARGET_VOL_SCALE_REBALANCE_THRESHOLD

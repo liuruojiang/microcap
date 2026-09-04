@@ -6,6 +6,7 @@
 
 - 默认主线：`microcap_top100_mom16_biweekly_live_v2_0.py`
 - 默认表现口径：`v2.0 + costed`
+- v2.0当前规则：16天相对动量、退出缓冲0、过热OFF、目标波动率OFF；持仓时固定1倍微盘多头及0.8倍股指对冲。修订标识`plain_mom16_fixed1_20260904`，正式成本净值为`microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv`。旧targetvol15文件只作历史回滚依据，不能作为当前日报或信号来源。v2.3/v2.5策略规则不变。
 - 正式下游版本：`v2.3`、`v2.5`
 - 数据源：公开/本地重建 Top100 代理，不是官方 Wind `868008.WI`
 - 历史股票池：完整历史证券主表；历史 ST 使用时点化进入/撤销区间
@@ -26,6 +27,7 @@ python -X utf8 scripts/top100_delivery.py check
 `scripts/realtime_state_bundle.py validate` 只检查底层状态包，输出 `scope=base_state_only`，不代表三个版本已同步。单版本入口仍用于查询/诊断；不能将一次单版本成功当作全组交付。查询改写了产物或输入变化后，旧的整组验收清单会失效。
 
 `outputs/top100_delivery_manifest.json` 是本地整组验收记录。刷新中断、数据源失败或并发更新均失败关闭；不要手动将状态改成 complete。Git 不携带全部最终产物，独立工作树/云端成功后仍须在日常主目录运行上述命令。
+
 
 查询 v2.0 收盘确认信号或表现：
 

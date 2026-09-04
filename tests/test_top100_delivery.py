@@ -28,11 +28,21 @@ def workspace(tmp_path):
                    "latest_nav_date": "2026-09-03", "latest_trade_date": "2026-09-03",
                    "data_freshness_proof": {"expected_latest_date": "2026-09-03",
                                             "expected_latest_rebalance_date": "2026-09-03"}}
+        if version == "0":
+            summary.update(strategy_revision=delivery.V20_STRATEGY_REVISION, core_params={
+                "momentum_gap_exit_buffer": 0., "target_volatility_scaling": {"enabled": False},
+                "overheat_defense": {"enabled": False}})
         write(tmp_path, f"outputs/{prefix}_summary.json", json.dumps(summary))
+        identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,current_execution_scale,next_session_actionable_scale"
+        identity = f",{delivery.V20_STRATEGY_REVISION},False,False,1.0,1.0"
         for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv"):
-            write(tmp_path, f"outputs/{name}", daily)
+            content = daily
+            if version == "0" and not name.endswith("performance_nav.csv"):
+                content = f"date,return_net{identity_header}\n2026-09-02,0.01{identity}\n2026-09-03,0.02{identity}\n"
+            write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
-              f"date,version,member_rebalance_actionable\n2026-09-03,2.{version},False\n")
+              f"date,version,member_rebalance_actionable{identity_header if version == '0' else ''}\n"
+              f"2026-09-03,2.{version},False{identity if version == '0' else ''}\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
     return tmp_path
@@ -49,6 +59,15 @@ def test_whole_delivery_requires_completed_manifest(workspace):
     assert not delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, "2026-09-03"))["ok"]
     certify(workspace)
     assert delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, "2026-09-03"))["ok"]
+
+
+def test_old_v20_cannot_be_recertified_under_same_version_number(workspace):
+    certify(workspace)
+    path = workspace / "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv"
+    path.write_text(path.read_text().replace(delivery.V20_STRATEGY_REVISION, "old_target_vol"))
+    report = delivery.inspect_outputs(workspace, "2026-09-03")
+    assert not report["ok"]
+    assert any("plain revision" in error for error in report["errors"])
 
 
 @pytest.mark.parametrize("version", list(delivery.COSTED))

@@ -143,6 +143,7 @@ def _patch_native_realtime_builder(
 
     if version == "v2.0":
         overlay_globals = v2_0._build_realtime_v2_0_outputs_unlocked.__globals__
+        monkeypatch.setitem(overlay_globals, "apply_v2_0_execution", lambda *args, **kwargs: passthrough)
         monkeypatch.setitem(overlay_globals, "validate_close_df", lambda *args, **kwargs: None)
         monkeypatch.setattr(
             v2_0.embedded_context.base_mod,

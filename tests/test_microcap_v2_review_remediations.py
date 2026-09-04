@@ -3,6 +3,7 @@ from __future__ import annotations
 import time
 import json
 import hashlib
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -22,6 +23,9 @@ def _current_realtime_refresh_proof_fields() -> dict[str, str]:
 
 
 def test_v2_0_formal_production_identity() -> None:
+    assert v2_0.OVERHEAT_ENABLED is False
+    assert v2_0.TARGET_VOL_ENABLED is False
+    assert v2_0.V2_0_MOMENTUM_GAP_EXIT_BUFFER == 0.0
     assert v2_0.OVERHEAT_WINDOW == 60
     assert v2_0.OVERHEAT_THRESHOLD == pytest.approx(0.23)
     assert v2_0.TARGET_VOL == pytest.approx(0.15)
@@ -626,6 +630,7 @@ def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
     )
     monkeypatch.setitem(overlay_globals, "apply_volatility_overheat_exit", lambda frame, turnover: frame)
     monkeypatch.setitem(overlay_globals, "apply_target_vol_scaling", lambda frame: frame)
+    monkeypatch.setitem(overlay_globals, "apply_v2_0_execution", lambda frame, turnover: frame)
     monkeypatch.setitem(overlay_globals, "validate_close_df", lambda frame, label: None)
     monkeypatch.setitem(overlay_globals, "incompatible_v2_0_outputs", lambda: [])
     monkeypatch.setitem(
@@ -1731,9 +1736,18 @@ def test_frozen_seed_hash_is_stable_across_git_newline_materialization(tmp_path:
     assert v2_0.base_mod._file_sha256(lf_path) == v2_0.base_mod._file_sha256(crlf_path)
 
 
-def test_tracked_frozen_tail_authority_matches_post_rebalance_seed() -> None:
+def test_tracked_frozen_tail_authority_matches_post_rebalance_seed(tmp_path: Path) -> None:
     authority_path = v2_0.base_mod.FROZEN_TAIL_AUTHORITY_PATH
-    authority = json.loads(authority_path.read_text(encoding="utf-8"))
+    repo = Path(__file__).resolve().parents[1]
+
+    def tracked_bytes(path: Path) -> bytes:
+        return subprocess.check_output(
+            ["git", "show", f"HEAD:{path.relative_to(repo).as_posix()}"], cwd=repo
+        )
+
+    # Validate the committed seed, not runtime files legitimately extended later.
+    # Live files remain covered by the separate rewrite and whole-delivery gates.
+    authority = json.loads(tracked_bytes(authority_path))
     output_dir = authority_path.parent
     files = {
         "proxy_index": output_dir / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
@@ -1749,6 +1763,10 @@ def test_tracked_frozen_tail_authority_matches_post_rebalance_seed() -> None:
         ),
     }
 
+    for label, path in files.items():
+        snapshot_path = tmp_path / path.name
+        snapshot_path.write_bytes(tracked_bytes(path))
+        files[label] = snapshot_path
     assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
     assert authority["seed_end_date"] == "2026-09-03"
     assert authority["seed_file_sha256"] == {
