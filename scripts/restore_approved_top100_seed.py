@@ -19,7 +19,7 @@ BASE_FILES = {
 COSTED = {
     "0": "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
     "3": "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
-    "5": "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv",
+    "5": "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
 }
 
 

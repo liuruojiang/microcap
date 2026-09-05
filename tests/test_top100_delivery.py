@@ -37,6 +37,11 @@ def workspace(tmp_path):
             summary.update(strategy_revision=delivery.V23_STRATEGY_REVISION, core_params={
                 "signal_model": {"r2_entry_gate": 0.},
                 "overheat_defense": {"trigger_threshold": .26, "recovery_threshold": .20}})
+        if version == "5":
+            summary.update(strategy_revision=delivery.V25_STRATEGY_REVISION, core_params={
+                "signal_model": {"lookback": 20, "halflife": 3.0},
+                "entry_threshold": 0.0, "exit_threshold": 0.0,
+                "target_volatility_scaling": {"enabled": False}})
         write(tmp_path, f"outputs/{prefix}_summary.json", json.dumps(summary))
         identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,current_execution_scale,next_session_actionable_scale"
         identity = f",{delivery.V20_STRATEGY_REVISION},False,False,1.0,1.0"
@@ -44,9 +49,13 @@ def workspace(tmp_path):
             identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,r2_entry_gate,overheat_trigger_threshold,overheat_recovery_threshold"
                                ",signal_spread_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
             identity = f",{delivery.V23_STRATEGY_REVISION},False,False,0.0,0.26,0.20,1.0,0.0,0.08,False,False"
+        if version == "5":
+            identity_header = (",strategy_revision,target_vol_enabled,cash_day_yield_enabled,financing_enabled,lookback,halflife"
+                               ",entry_threshold,exit_threshold,signal_spread_hedge_ratio,execution_hedge_ratio")
+            identity = f",{delivery.V25_STRATEGY_REVISION},False,False,False,20,3.0,0.0,0.0,0.0,0.0"
         for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv"):
             content = daily
-            if version in ("0", "3") and not name.endswith("performance_nav.csv"):
+            if version in ("0", "3", "5") and not name.endswith("performance_nav.csv"):
                 content = f"date,return_net,nav_net{identity_header}\n2026-09-02,0.01,1.01{identity}\n2026-09-03,0.02,1.0302{identity}\n"
             if not name.endswith("performance_nav.csv"):
                 lines = content.splitlines()
@@ -58,9 +67,9 @@ def workspace(tmp_path):
                 content = "\n".join(lines) + "\n"
             write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
-              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official{identity_header if version in ('0', '3') else ''},current_holding,next_holding"
+              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official{identity_header if version in ('0', '3', '5') else ''},current_holding,next_holding"
               f"{',current_execution_scale,next_session_actionable_scale' if version != '0' else ''}\n"
-              f"2026-09-03,2.{version},False,False,False{identity if version in ('0', '3') else ''},{active_holding},{active_holding}"
+              f"2026-09-03,2.{version},False,False,False{identity if version in ('0', '3', '5') else ''},{active_holding},{active_holding}"
               f"{',1.0,1.0' if version != '0' else ''}\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
@@ -87,6 +96,15 @@ def test_old_v20_cannot_be_recertified_under_same_version_number(workspace):
     report = delivery.inspect_outputs(workspace, "2026-09-03")
     assert not report["ok"]
     assert any("plain revision" in error for error in report["errors"])
+
+
+def test_old_v25_cannot_be_recertified_under_same_version_number(workspace):
+    certify(workspace)
+    path = workspace / "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv"
+    path.write_text(path.read_text().replace(delivery.V25_STRATEGY_REVISION, "lb17_entry46_exit25"))
+    report = delivery.inspect_outputs(workspace, "2026-09-03")
+    assert not report["ok"]
+    assert any("v2.5 plain revision" in error for error in report["errors"])
 
 
 @pytest.mark.parametrize("version", list(delivery.COSTED))
