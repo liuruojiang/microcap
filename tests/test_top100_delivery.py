@@ -1,5 +1,6 @@
 import json
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -268,3 +269,32 @@ def test_calendar_target_does_not_authorize_stale_real_streams(workspace, monkey
     report = delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, expected))
     assert not report["ok"]
     assert any("date mismatch" in error for error in report["errors"])
+
+
+def today_proof(root):
+    write(root, "microcap_top100_mom16_biweekly_live_v2_0.py", 'CN_CLOSE_CONFIRM_TIME = "15:30"\n')
+    report = certify(root)
+    delivery.write_manifest(root, {**report, "status": "complete", "verified_at": "2026-09-03T15:35:00+08:00"})
+    write(root, delivery.state.REFRESH_PROOF_REL, json.dumps({
+        "version": delivery.state.REFRESH_PROOF_VERSION, "source": delivery.state.REFRESH_PROOF_SOURCE,
+        "target_end_date": "2026-09-03", "verified_on": "2026-09-03",
+        "verified_at_utc": "2026-09-03T07:34:00+00:00"}))
+
+
+@pytest.mark.parametrize("timestamp,allowed", [
+    ("2026-09-03T15:36:00+08:00", True),
+    ("2026-09-03T15:29:00+08:00", False),
+    ("2026-09-03T15:34:30+08:00", False),
+    ("2026-09-03T15:51:00+08:00", False),
+    ("2026-09-04T15:36:00+08:00", False),
+])
+def test_only_recent_independent_today_close_can_be_reused(workspace, timestamp, allowed):
+    today_proof(workspace)
+    assert (delivery.reusable_confirmed_today(workspace, datetime.fromisoformat(timestamp)) is not None) == allowed
+
+
+def test_same_day_proof_cannot_hide_changed_input(workspace):
+    today_proof(workspace)
+    path = workspace / "outputs" / delivery.BASE_PANEL
+    path.write_text(path.read_text() + "\n")
+    assert delivery.reusable_confirmed_today(workspace, datetime.fromisoformat("2026-09-03T15:36:00+08:00")) is None
