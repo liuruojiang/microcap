@@ -2,6 +2,7 @@
 
 import argparse
 import copy
+import hashlib
 import importlib
 import json
 import math
@@ -230,7 +231,8 @@ COMPATIBILITY_AUDIT_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_compatibility_audit.js
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv"
+PREVIOUS_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv"
 DEFAULT_COSTED_NAV_CSV = COSTED_NAV_CSV
 LEGACY_COSTED_NAV_CSVS: list[Path] = [
     OUTPUT_DIR / "microcap_top100_mom16_microcap_only_exp_h3_lb17_entry40_exit40_targetvol30_max1p3_scale030_v2_5_costed_nav.csv",
@@ -250,12 +252,13 @@ PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 VERSION = "2.5"
+STRATEGY_REVISION = "plain_lb20_hl3_entry0_exit0_20260905"
 EXPECTED_VERSION_ROLE = "microcap_only_log_wls_threshold_no_target_vol"
-EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.5 microcap-only log-WLS threshold without target-vol overlay."
-LOOKBACK = 17
+EXPECTED_VERSION_NOTE_PREFIX = "Formal simplified v2.5 microcap-only log-WLS without threshold or target-vol overlays."
+LOOKBACK = 20
 HALFLIFE = 3.0
-ENTRY_THRESHOLD = 0.46
-EXIT_THRESHOLD = 0.25
+ENTRY_THRESHOLD = 0.0
+EXIT_THRESHOLD = 0.0
 TARGET_VOL_ENABLED = False
 CASH_DAY_YIELD_ENABLED = False
 FINANCING_ENABLED = False
@@ -321,6 +324,7 @@ def parse_v2_5_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--base-output-prefix", default=None)
     parser.add_argument("--audited-history-migration-report", type=Path, default=None)
+    parser.add_argument("--audited-strategy-migration-report", type=Path, default=None)
     return parser.parse_args(argv)
 
 
@@ -1201,7 +1205,11 @@ def apply_no_target_vol(costed_base: pd.DataFrame) -> pd.DataFrame:
     )
     out["version"] = VERSION
     out["base_version"] = "embedded_v2_base"
-    out["overlay_type"] = "microcap_only_log_wls_threshold_no_target_vol"
+    out["overlay_type"] = STRATEGY_REVISION
+    out["strategy_revision"] = STRATEGY_REVISION
+    out["lookback"] = LOOKBACK
+    out["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
+    out["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     out["scale_rebalance_threshold"] = 0.0
     out["target_vol_max_leverage"] = 1.0
     out["hedge_removed"] = True
@@ -1245,6 +1253,7 @@ def current_base_fingerprint() -> dict[str, object]:
     return {
         "base_version": "embedded_v2_base",
         "strategy_version": VERSION,
+        "strategy_revision": STRATEGY_REVISION,
         "base_fingerprint": base,
         "runtime_overrides": {
             "panel_path": runtime_value("panel_path"),
@@ -1254,7 +1263,7 @@ def current_base_fingerprint() -> dict[str, object]:
             "v25_costed_nav_csv": str(COSTED_NAV_CSV),
             "v25_output_prefix": OUTPUT_PREFIX,
         },
-        "signal_model": "microcap_only_log_wls_exp_halflife_3p0_lb17_entry46_exit25_no_targetvol",
+        "signal_model": "microcap_only_log_wls_exp_halflife_3p0_lb20_entry0_exit0_no_targetvol",
         "lookback": LOOKBACK,
         "halflife": HALFLIFE,
         "exp_weight_oldest_to_newest": list(exp_weights()),
@@ -1571,8 +1580,9 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["version"] = VERSION
     row["strategy_version"] = f"v{VERSION}"
     row["base_version"] = "embedded_v2_base"
-    row["overlay_type"] = "microcap_only_log_wls_threshold_no_target_vol"
-    row["signal_model"] = "microcap_only_log_wls_exp_halflife_3p0_lb17_entry46_exit25_no_targetvol"
+    row["overlay_type"] = STRATEGY_REVISION
+    row["strategy_revision"] = STRATEGY_REVISION
+    row["signal_model"] = "microcap_only_log_wls_exp_halflife_3p0_lb20_entry0_exit0_no_targetvol"
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     row["fixed_hedge_ratio"] = EXECUTION_HEDGE_RATIO
@@ -1926,6 +1936,37 @@ def _write_v2_5_lineage_migration_diagnostics(report_path: Path, audit_path: Pat
     return diagnostics_path
 
 
+def strategy_promotion_evidence(previous_path: Path, candidate: pd.DataFrame, audit_path: Path) -> dict[str, object]:
+    """Bind the approved v2.5 parameter change to exact source, data, and output bytes."""
+    evidence = dict(v2_0.overlay_mod.strategy_promotion_evidence(previous_path, candidate, audit_path))
+    evidence.update(
+        authorization="user_replace_existing_v2_5",
+        strategy_revision=STRATEGY_REVISION,
+        source_sha256_lf=hashlib.sha256(Path(__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+        v2_0_source_sha256_lf=hashlib.sha256(Path(v2_0.__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+        v2_0_costed_nav_sha256=v2_0.overlay_mod._sha256_path(v2_0.COSTED_NAV_CSV),
+    )
+    return evidence
+
+
+def strategy_promotion_matches(
+    report_path: Path | None,
+    previous_path: Path,
+    candidate: pd.DataFrame,
+    audit_path: Path,
+) -> bool:
+    if report_path is None:
+        return False
+    try:
+        report = json.loads(Path(report_path).read_text(encoding="utf-8"))
+        return report.get("approved") is True and all(
+            report.get(key) == value
+            for key, value in strategy_promotion_evidence(previous_path, candidate, audit_path).items()
+        )
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        return False
+
+
 def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     ensure_output_dir()
     official_v2_0_out = _load_official_v2_0_out()
@@ -1935,8 +1976,11 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     common_index = build_v2_5_common_index(close_df, official_v2_0_out.index)
     out = build_v2_5_result(close_df, turnover_df, common_index)
     rewrite_audit_status: dict[str, object] = {"status": "not_checked", "reason": "no_previous_costed_nav"}
-    if COSTED_NAV_CSV.exists():
-        previous = _read_costed_nav_csv(parse_dates=["date"])
+    previous_path = COSTED_NAV_CSV
+    if not previous_path.exists() and previous_path.name == DEFAULT_COSTED_NAV_CSV.name:
+        previous_path = COSTED_NAV_CSV.parent / PREVIOUS_COSTED_NAV_CSV.name
+    if previous_path.exists():
+        previous = _read_costed_nav_csv(previous_path, parse_dates=["date"])
         audit_path = OUTPUT_DIR / f"{OUTPUT_PREFIX}_historical_rewrite_audit.csv"
         allowed_tail_rows = _v2_5_rewrite_allowed_tail_rows()
         candidate = out.rename_axis("date").reset_index()
@@ -1953,7 +1997,19 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
             rewrite_audit_status = {"status": "clean", "audit_csv": None}
         except RuntimeError as exc:
             report_path = getattr(_ACTIVE_RUNTIME_ARGS, "audited_history_migration_report", None)
-            if v2_5_rewrite_audit_matches_approved_lineage_migration(
+            if strategy_promotion_matches(
+                getattr(_ACTIVE_RUNTIME_ARGS, "audited_strategy_migration_report", None),
+                previous_path,
+                candidate,
+                audit_path,
+            ):
+                rewrite_audit_status = {
+                    "status": "audited_exact_hash_strategy_promotion",
+                    "strategy_revision": STRATEGY_REVISION,
+                    "migration_report": str(_ACTIVE_RUNTIME_ARGS.audited_strategy_migration_report),
+                    "audit_csv": str(audit_path),
+                }
+            elif v2_5_rewrite_audit_matches_approved_lineage_migration(
                 report_path,
                 previous,
                 candidate,
@@ -2030,10 +2086,11 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary.pop("summary_version_key", None)
     summary["strategy"] = OUTPUT_PREFIX
     summary["version"] = VERSION
+    summary["strategy_revision"] = STRATEGY_REVISION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Formal v2.5 microcap-only log-WLS threshold without target-vol overlay. Uses exp half-life 3.0 weighted log slope on "
-        "17 trading days of unhedged microcap Top100 NAV, enters when score is above 46% and exits when score is at or below 25%, "
+        "Formal simplified v2.5 microcap-only log-WLS without threshold or target-vol overlays. Uses exp half-life 3.0 weighted log slope on "
+        "20 trading days of unhedged microcap Top100 NAV, enters when score is above 0 and exits when score is at or below 0, "
         "removes the hedge leg, applies no R2 gate, no single-trade stop-loss, no equity drawdown stop, "
         "no momentum-decay exit, no overheat exit, no cash-day yield, no financing, and no target-volatility scaling."
     )
@@ -2067,8 +2124,9 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["core_params"]["financing"] = {"enabled": FINANCING_ENABLED}
     summary["core_params"]["parameter_replacement"] = {
         "replaced_original_v2_5": True,
-        "selected_from_run": "quant_param_scan_runs/20260629_microcap_top100_v2_5_microcap_only_log_wls_layer5_entry_threshold",
-        "comparison_run": "quant_param_scan_runs/20260629_microcap_top100_v2_5_original_vs_selected_params_comparison",
+        "strategy_revision": STRATEGY_REVISION,
+        "selected_from_run": "quant_param_scan_runs/20260904_v25_halflife_seven_lines_old_snapshot/daily_outputs/lb20_h3.csv.gz",
+        "comparison_run": "quant_param_scan_runs/20260905_microcap_top100_v2_5_simplified_momentum_microcap_only_log_wls_ensemble_lookback_20_plus_distant_50_50",
         "selected_params": {
             "lookback": LOOKBACK,
             "halflife": HALFLIFE,
@@ -2195,10 +2253,11 @@ def _print_signal_query() -> None:
     row = signal_df.iloc[0]
     print("signal")
     print("strategy_version: v2.5")
+    print(f"strategy_revision: {STRATEGY_REVISION}")
     print("base_version: embedded_v2_base")
     print(
-        "signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, "
-        "entry threshold 46%, exit threshold 25%, no R2 gate"
+        "signal_model: microcap-only log-WLS exp half-life 3.0, lookback 20, "
+        "entry threshold 0, exit threshold 0, no R2 gate"
     )
     print("overlay: no hedge, no stop-loss/DD/decay/overheat overlay, no target-vol/cash-yield/financing")
     print(f"current_holding: {row['current_holding']}")
@@ -2222,10 +2281,11 @@ def _print_realtime_signal_query() -> None:
         row = signal_df.iloc[0]
         print("realtime_signal")
         print("strategy_version: v2.5")
+        print(f"strategy_revision: {STRATEGY_REVISION}")
         print("base_version: embedded_v2_base")
         print(
-            "signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, "
-            "entry threshold 46%, exit threshold 25%, no R2 gate"
+            "signal_model: microcap-only log-WLS exp half-life 3.0, lookback 20, "
+            "entry threshold 0, exit threshold 0, no R2 gate"
         )
         print("overlay: no hedge, no stop-loss/DD/decay/overheat overlay, no target-vol/cash-yield/financing")
         print(f"snapshot_time: {meta.get('snapshot_time')}")

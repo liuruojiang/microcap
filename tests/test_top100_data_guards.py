@@ -696,15 +696,20 @@ def test_target_versions_accept_promoted_v2_0_contract() -> None:
 
 
 def test_v2_5_official_params_are_selected_no_target_vol() -> None:
-    assert v2_5.LOOKBACK == 17
+    assert v2_5.LOOKBACK == 20
     assert v2_5.HALFLIFE == pytest.approx(3.0)
-    assert v2_5.ENTRY_THRESHOLD == pytest.approx(0.46)
-    assert v2_5.EXIT_THRESHOLD == pytest.approx(0.25)
+    assert v2_5.ENTRY_THRESHOLD == pytest.approx(0.0)
+    assert v2_5.EXIT_THRESHOLD == pytest.approx(0.0)
     assert v2_5.TARGET_VOL_ENABLED is False
     assert v2_5.CASH_DAY_YIELD_ENABLED is False
     assert v2_5.FINANCING_ENABLED is False
     fingerprint = v2_5.current_base_fingerprint()
-    assert fingerprint["signal_model"] == "microcap_only_log_wls_exp_halflife_3p0_lb17_entry46_exit25_no_targetvol"
+    assert fingerprint["signal_model"] == "microcap_only_log_wls_exp_halflife_3p0_lb20_entry0_exit0_no_targetvol"
+    assert fingerprint["strategy_revision"] == "plain_lb20_hl3_entry0_exit0_20260905"
+    assert fingerprint["lookback"] == 20
+    assert fingerprint["halflife"] == 3.0
+    assert fingerprint["entry_threshold"] == 0.0
+    assert fingerprint["exit_threshold"] == 0.0
     assert fingerprint["target_volatility_scaling"] == {"enabled": False}
 
 
@@ -1207,7 +1212,7 @@ def test_v2_3_v2_5_combo50_comparison_has_replayable_script() -> None:
     assert script.exists()
     text = script.read_text(encoding="utf-8")
     assert "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv" in text
-    assert "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv" in text
+    assert "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv" in text
     assert "additional_combo_rebalance_cost" in text
     assert "20260602" not in text
 
