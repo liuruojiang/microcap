@@ -39,4 +39,23 @@
 
 从项目根目录直接收集历史研究测试会遇到既有 `run_scan` 同名导入冲突；正式 `tests/` 与隔离发布回归另行记录，保留旧研究文件。
 
-最终正式刷新、测试数量、策略 / 自动化提交、工作流及邮箱读回证据在完成后写入本记录。
+## 最终验收（2026-09-04）
+
+策略修复 PR #47、验收脚本修正 PR #48 已合并；正式策略 SHA `dc0752e67611b765aeada8e3c628c669517de574`。自动化 PR #59 已合并，SHA `3267a5902779556751ff2c56fa1f728553baef7b`；三个版本工作区均固定到同一策略提交。隔离发布只带本轮改动，既有本地未发布优化、v2.5 研究与工作区修改保留。
+
+- 正式 `tests/`：472 passed；隔离策略发布目录：465 passed、1 项依赖本地真实产物的测试 skipped。自动化全套：253 passed、90 subtests passed。两个 zip 重名 warning 是防篡改反例的预期输入。
+- 最终正式 `refresh-all` 完成于 15:33:41 UTC，独立 `check` 通过；所有流日期/行数如上，三版历史改写审计 clean。
+- 与修改前冻结备份逐日比较：三版 `return_net`、`nav_net`、`total_cost`、当前/下一尺度最大差异均 0，持仓逐行相同。年度 CSV 的上述回撤修正均已实际读回。完整五窗口 CAGR / 最大回撤保存在 `research_reports/20260904_v20_v23_adversarial/local_acceptance.json`。
+
+| 日报链路 | 已完成验收 | 尚不能声称的内容 |
+|---|---|---|
+| 本地 Codex 14:30 | ACTIVE 和14:30未变；原 prompt 全文及 IC/IM / 模型 / 工作区保留，只追加微盘新专项和 CSV 口径；250项专项17.78秒通过，硬超时60秒；实际sync、validate、whole check通过 | 联网preflight两次超时，不能把离线通过当作完整盘中成功；也没有在收盘后追补实时信号 |
+| GitHub 18:00 | 调度仍为北京时间18:00、收盘确认；同一正式工作流带correction及external_schedule门禁实跑成功，归档/最终CSV/邮件均读回通过 | 手工验收不是未来某次18:00定时启动已发生；外部调度延迟与行情可用性不能保证 |
+
+实际工作流：[33890314762](https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/33890314762)，completed / success；三版生成、整体归档、Gmail和完成marker均成功。邮件北京时间23:39:42到达INBOX，消息ID `1a06d136363d180f`。全文中的策略SHA、工作流、R² OFF及26%/20%已读回核对。实际云端与本地的日收益、NAV、成本、持仓、对冲价格差异均为0；归档字节仍可能因运行环境诊断字段不同而不同，未声称全文件字节一致。三版最终成员actionable均False，9月3日/4日历史名单日期未误发当前指令。
+
+本地联网阻塞已保留两次实际失败证据：23:36预检41.948秒、重试43.272秒，均为 `1.000852` 免费指数历史源超时 / 空数据，QVeris回退关闭。历史抓取函数修改前后内容哈希完全相同（`ebea9bd76b9dea975aa54a8f082986dbd62d12f64146b2f699d702aecab2cdef`），本轮没有改该数据源逻辑。两次失败均未改基础输入或三版NAV字节；没有绕过预检、拿旧CSV发布、关闭保护或改用付费源。下一交易日仍须按原14:35/14:40/14:45有限重试流程取得合格源；若源仍不可用则独立BLOCKED。因此本次结论是“策略/云端修复已验收，本地完整实时链路仍有外部数据源阻塞”，不是“两条链路无条件保证成功”。
+
+本地自动化修改前备份：`D:/Codex/home/automations/ic-im/.codex_backups/20260904_233012/automation.toml`。原配置SHA `3dd9aa342805e7439f3b056b31be2b5c39bba9b363e77030ca3f19db9a91ffe9`，更新后 `847b4c98785db362682afea83d5bc7bf3366cad49d03b4560de087bb7e512db3`；已通过正式更新工具修改并读回比对，未手改调度文件或automation memory。
+
+证据目录：`research_reports/20260904_v20_v23_adversarial/` 中的 `local_acceptance.json`、`local_routes_attempt1.json`、`local_routes_acceptance.json`、`local_automation_update.json`、`cloud_acceptance.json`、`cloud_bundle/`、`cloud_digest/`、`email_receipt.json`。本地原始专项记录另见 `docs/local_1430_adversarial_acceptance_20260904.md`。最终部署证据保存在本地，不通过追加文档提交改变已验收的策略固定SHA。
