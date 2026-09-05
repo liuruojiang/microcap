@@ -1,0 +1,18 @@
+{
+  "strategy": "v2.3",
+  "scope": "selected_research_baseline_not_production",
+  "selected_by": "user",
+  "selected_date": "2026-09-04",
+  "OVERHEAT_TRIGGER_THRESHOLD": 0.26,
+  "OVERHEAT_RECOVERY_THRESHOLD": 0.2,
+  "OVERHEAT_FEATURE_WINDOW": 10,
+  "SIGNAL_SPREAD_HEDGE_RATIO": 1,
+  "EXECUTION_HEDGE_RATIO": 0.8,
+  "production_thresholds": {
+    "trigger": 0.26,
+    "recovery": 0.195
+  },
+  "next_parameter": "EXECUTION_HEDGE_RATIO",
+  "evidence": "quant_param_scan_runs/20260904_v23_overheat_recovery_width",
+  "note": "Carry selection across all ongoing research lines. Production deployment is a separate explicit workflow."
+}

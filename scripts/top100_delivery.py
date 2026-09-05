@@ -7,9 +7,10 @@ import hashlib
 import json
 import math
 import os
+import re
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 if __package__ in (None, ""):
@@ -100,7 +101,7 @@ def input_hashes(root: Path) -> dict:
 
 
 def canonical_member_rebalance(root: Path, expected: str) -> dict[str, object]:
-    """Derive formal list changes from delivered point-in-time member lineage."""
+    """Derive formal list changes from the delivered point-in-time member lineage."""
     path = root / "outputs" / BASE_FILES["proxy_members"]
     with path.open(encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
@@ -321,6 +322,38 @@ def independent_target(root: Path) -> str:
     return latest_completed_session().isoformat()
 
 
+def reusable_confirmed_today(root: Path, now: datetime | None = None) -> str | None:
+    """Reuse at most 15 minutes of exact, independently proven TODAY's close.
+
+    Yesterday's anchor, pre-close/future proofs and changed bytes never qualify.
+    This is only a date-proof reuse; the complete artifact check still runs.
+    """
+    current = (now or datetime.now(timezone.utc)).astimezone(timezone(timedelta(hours=8)))
+    try:
+        manifest = json.loads((root / MANIFEST).read_text(encoding="utf-8"))
+        proof = json.loads((root / state.REFRESH_PROOF_REL).read_text(encoding="utf-8"))
+        code = (root / "microcap_top100_mom16_biweekly_live_v2_0.py").read_text(encoding="utf-8")
+        match = re.search(r'^CN_CLOSE_CONFIRM_TIME = "(\d{2}):(\d{2})"', code, re.MULTILINE)
+        if match is None:
+            return None
+        close_time = current.replace(hour=int(match[1]), minute=int(match[2]), second=0, microsecond=0)
+        today = current.date().isoformat()
+        if current < close_time or manifest.get("expected_date") != today:
+            return None
+        if proof.get("version") != state.REFRESH_PROOF_VERSION or proof.get("source") != state.REFRESH_PROOF_SOURCE:
+            return None
+        if proof.get("target_end_date") != today or proof.get("verified_on") != today:
+            return None
+        for stamp in (manifest.get("verified_at"), proof.get("verified_at_utc")):
+            verified = datetime.fromisoformat(stamp)
+            if verified.tzinfo is None or not close_time <= verified <= current:
+                return None
+            if current - verified > timedelta(minutes=15):
+                return None
+        report = validate_manifest(root, inspect_outputs(root, today))
+        return today if report["ok"] else None
+    except (OSError, ValueError, TypeError, KeyError):
+        return None
 
 
 def verify_release(root: Path) -> str:
@@ -401,7 +434,10 @@ def main(argv: list[str] | None = None) -> int:
             report = refresh_all(root)
         else:
             release = verify_release(root)
-            report = validate_manifest(root, inspect_outputs(root, independent_target(root)))
+            cached_target = reusable_confirmed_today(root)
+            target = cached_target or independent_target(root)
+            report = validate_manifest(root, inspect_outputs(root, target))
+            report["date_proof_source"] = "unchanged_independent_today_close_proof_max_15min" if cached_target else "live_official_history_loader"
             report["release_sha"] = release
             report["errors"].extend(state.validate_state(root, max_anchor_age_days=5).get("errors", []))
             report["ok"] = not report["errors"]
