@@ -18,6 +18,16 @@ def workspace(tmp_path):
     daily = "date,return_net,nav_net\n2026-09-02,0.01,1.01\n2026-09-03,0.02,1.0302\n"
     for name in (*delivery.BASE_FILES.values(), delivery.BASE_PANEL):
         write(tmp_path, f"outputs/{name}", daily)
+    member_lines = ["rebalance_date,rank,symbol,name,market_cap"]
+    for day in ("2026-08-20", "2026-09-03"):
+        member_lines.extend(
+            f"{day},{rank},{rank:06d},member-{rank},{float(rank)}" for rank in range(1, 101)
+        )
+    write(
+        tmp_path,
+        f"outputs/{delivery.BASE_FILES['proxy_members']}",
+        "\n".join(member_lines) + "\n",
+    )
     write(tmp_path, f"outputs/{delivery.BASE_FILES['proxy_turnover']}",
           "rebalance_date\n2026-09-03\n")
     write(tmp_path, delivery.AUTHORITY, "{}")
@@ -67,9 +77,9 @@ def workspace(tmp_path):
                 content = "\n".join(lines) + "\n"
             write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
-              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official{identity_header if version in ('0', '3', '5') else ''},current_holding,next_holding"
+              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official,member_rebalance_signal_date,member_enter_count,member_exit_count,member_rebalance_label{identity_header if version in ('0', '3', '5') else ''},current_holding,next_holding"
               f"{',current_execution_scale,next_session_actionable_scale' if version != '0' else ''}\n"
-              f"2026-09-03,2.{version},False,False,False{identity if version in ('0', '3', '5') else ''},{active_holding},{active_holding}"
+              f"2026-09-03,2.{version},False,False,False,2026-09-03,0,0,名单不变{identity if version in ('0', '3', '5') else ''},{active_holding},{active_holding}"
               f"{',1.0,1.0' if version != '0' else ''}\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
@@ -105,6 +115,23 @@ def test_old_v25_cannot_be_recertified_under_same_version_number(workspace):
     report = delivery.inspect_outputs(workspace, "2026-09-03")
     assert not report["ok"]
     assert any("v2.5 plain revision" in error for error in report["errors"])
+
+
+def test_stale_member_count_cannot_pass_whole_delivery(workspace):
+    certify(workspace)
+    path = workspace / "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv"
+    path.write_text(path.read_text().replace(",0,0,名单不变,", ",19,19,名单调仓（调入 19，调出 19）,"))
+    report = delivery.inspect_outputs(workspace, "2026-09-03")
+    assert not report["ok"]
+    assert any("formal proxy-member lineage" in error for error in report["errors"])
+
+
+def test_invalid_proxy_member_symbol_fails_closed(workspace):
+    path = workspace / "outputs" / delivery.BASE_FILES["proxy_members"]
+    path.write_text(path.read_text().replace(",000001,", ",not-a-code,", 1))
+    report = delivery.inspect_outputs(workspace, "2026-09-03")
+    assert not report["ok"]
+    assert any("invalid rebalance date or symbol" in error for error in report["errors"])
 
 
 @pytest.mark.parametrize("version", list(delivery.COSTED))

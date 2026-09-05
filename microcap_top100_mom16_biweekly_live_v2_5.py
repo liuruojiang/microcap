@@ -1370,8 +1370,45 @@ def stale_v2_5_legacy_retest_outputs() -> list[Path]:
     return sorted(paths)
 
 
+def realtime_signal_matches_current_v2_5(path: Path | None = None) -> bool:
+    """Reject a same-name realtime artifact left by an older v2.5 revision."""
+    signal_path = REALTIME_SIGNAL_CSV if path is None else Path(path)
+    if not signal_path.exists():
+        return False
+    try:
+        row = pd.read_csv(signal_path, nrows=1, encoding="utf-8").iloc[0]
+        false_fields = ("target_vol_enabled", "cash_day_yield_enabled", "financing_enabled")
+        false_values_match = all(
+            str(row.get(field, "")).strip().lower() in {"false", "0", "0.0"}
+            for field in false_fields
+        )
+        numeric_values_match = all(
+            math.isclose(float(row.get(field)), expected, rel_tol=0.0, abs_tol=1e-12)
+            for field, expected in {
+                "lookback": float(LOOKBACK),
+                "halflife": float(HALFLIFE),
+                "entry_threshold": float(ENTRY_THRESHOLD),
+                "exit_threshold": float(EXIT_THRESHOLD),
+                "signal_spread_hedge_ratio": float(SIGNAL_SPREAD_HEDGE_RATIO),
+                "execution_hedge_ratio": float(EXECUTION_HEDGE_RATIO),
+            }.items()
+        )
+        return bool(
+            str(row.get("strategy_revision", "")) == STRATEGY_REVISION
+            and false_values_match
+            and numeric_values_match
+        )
+    except (OSError, ValueError, TypeError, KeyError, IndexError, pd.errors.EmptyDataError):
+        return False
+
+
 def incompatible_v2_5_outputs() -> list[Path]:
     legacy_retest_outputs = stale_v2_5_legacy_retest_outputs()
+    stale_realtime_output = (
+        [REALTIME_SIGNAL_CSV]
+        if REALTIME_SIGNAL_CSV.exists() and not realtime_signal_matches_current_v2_5()
+        else []
+    )
     outputs = [
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -1401,17 +1438,27 @@ def incompatible_v2_5_outputs() -> list[Path]:
         read_error = repr(exc)
     if summary_matches_current_v2_5_base(summary):
         COMPATIBILITY_AUDIT_JSON.unlink(missing_ok=True)
-        return legacy_retest_outputs
+        return [*legacy_retest_outputs, *stale_realtime_output]
     write_v2_5_compatibility_audit(summary, read_error=read_error)
     return outputs
 
 
 def _stale_outputs_to_remove_after_generate(stale_outputs: list[Path], regenerated_outputs: set[Path]) -> list[Path]:
     protected = set(regenerated_outputs)
-    # Close-confirmed generation does not own the realtime signal artifact; the
-    # realtime route refreshes it atomically when queried.
-    protected.add(REALTIME_SIGNAL_CSV)
+    # Preserve a concurrently written current artifact, not a retired one.
+    if realtime_signal_matches_current_v2_5():
+        protected.add(REALTIME_SIGNAL_CSV)
     return [path for path in stale_outputs if path not in protected]
+
+
+def _remove_stale_outputs_after_generate(stale_outputs: list[Path], regenerated_outputs: set[Path]) -> None:
+    for path in _stale_outputs_to_remove_after_generate(stale_outputs, regenerated_outputs):
+        if path != REALTIME_SIGNAL_CSV:
+            path.unlink(missing_ok=True)
+            continue
+        with v2_5_realtime_output_lock():
+            if not realtime_signal_matches_current_v2_5():
+                path.unlink(missing_ok=True)
 
 
 def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
@@ -2061,6 +2108,7 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         signal_row,
         turnover_df,
         out.index,
+        proxy_members_path=v2_0._resolve_base_paths().output_paths["proxy_members"],
     )
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
@@ -2183,8 +2231,7 @@ def _generate_v2_5_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         PERF_JSON,
         PERF_PNG,
     }
-    for path in _stale_outputs_to_remove_after_generate(stale_outputs, regenerated_outputs):
-        path.unlink(missing_ok=True)
+    _remove_stale_outputs_after_generate(stale_outputs, regenerated_outputs)
     return summary, signal_row, out
 
 

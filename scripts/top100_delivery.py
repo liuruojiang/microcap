@@ -99,6 +99,44 @@ def input_hashes(root: Path) -> dict:
     return {name: sha(root / name) for name in names}
 
 
+def canonical_member_rebalance(root: Path, expected: str) -> dict[str, object]:
+    """Derive formal list changes from delivered point-in-time member lineage."""
+    path = root / "outputs" / BASE_FILES["proxy_members"]
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    if not rows or any(key not in rows[0] for key in ("rebalance_date", "symbol")):
+        raise ValueError("proxy members are missing rebalance_date/symbol")
+    target = state._parse_date(expected)
+    if target is None:
+        raise ValueError("invalid expected date for proxy-member lineage")
+    by_date: dict[object, list[str]] = {}
+    for row in rows:
+        day = state._parse_date(row.get("rebalance_date", ""))
+        symbol = str(row.get("symbol", "")).strip().zfill(6)
+        if day is None or len(symbol) != 6 or not symbol.isdigit() or symbol == "000000":
+            raise ValueError("proxy members contain an invalid rebalance date or symbol")
+        if day <= target:
+            by_date.setdefault(day, []).append(symbol)
+    dates = sorted(by_date)
+    if len(dates) < 2:
+        raise ValueError("proxy members do not contain the latest two formal rebalances")
+    previous, current = dates[-2:]
+    previous_symbols, current_symbols = set(by_date[previous]), set(by_date[current])
+    if (len(by_date[previous]) != 100 or len(previous_symbols) != 100 or
+            len(by_date[current]) != 100 or len(current_symbols) != 100):
+        raise ValueError("latest proxy member snapshots are not exactly 100 unique symbols")
+    enter_count = len(current_symbols - previous_symbols)
+    exit_count = len(previous_symbols - current_symbols)
+    required = bool(enter_count or exit_count)
+    return {
+        "signal_date": current.isoformat(),
+        "required": required,
+        "enter_count": enter_count,
+        "exit_count": exit_count,
+        "label": f"名单调仓（调入 {enter_count}，调出 {exit_count}）" if required else "名单不变",
+    }
+
+
 def validate_final_nav(rows: list[dict], name: str) -> None:
     """Validate realized economics only; warm-up diagnostic NaNs are allowed."""
     cumulative = 1.0
@@ -152,6 +190,9 @@ def inspect_outputs(root: Path, expected: str) -> dict:
         streams[BASE_FILES["proxy_turnover"]] = turnover
         if turnover["latest_date"] > expected:
             errors.append("turnover has a future rebalance")
+        member_rebalance = canonical_member_rebalance(root, expected)
+        if member_rebalance["signal_date"] != turnover["latest_date"]:
+            errors.append("proxy members and turnover latest rebalance differ")
         for v, costed in COSTED.items():
             final_rows = {}
             prefix = f"microcap_top100_mom16_biweekly_live_v2_{v}"
@@ -216,6 +257,18 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                     if any(rows[0].get(key) not in ("True", "False") for key in (
                             "member_rebalance_actionable", "member_rebalance_required", "member_rebalance_official")):
                         errors.append(f"v2.{v} missing explicit member action flags")
+                    try:
+                        member_fields_match = (
+                            rows[0].get("member_rebalance_signal_date") == member_rebalance["signal_date"]
+                            and rows[0].get("member_rebalance_required") == str(member_rebalance["required"])
+                            and int(rows[0].get("member_enter_count", -1)) == member_rebalance["enter_count"]
+                            and int(rows[0].get("member_exit_count", -1)) == member_rebalance["exit_count"]
+                            and rows[0].get("member_rebalance_label") == member_rebalance["label"]
+                        )
+                    except (TypeError, ValueError):
+                        member_fields_match = False
+                    if not member_fields_match:
+                        errors.append(f"v2.{v} final member counts differ from formal proxy-member lineage")
                     if rows[0].get("member_rebalance_actionable") == "True":
                         # Close-confirmed contract: today's rebalance may plan NEXT session,
                         # unlike an intraday CSV whose executable date must be today.
