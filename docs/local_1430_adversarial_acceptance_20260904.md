@@ -72,3 +72,9 @@ C:/Python314/python.exe -X utf8 -m pytest -q tests/test_realtime_preflight.py te
 5. 本地 Codex 研究输出不等于 GitHub Gmail 交付成功；现有禁止本地 SMTP 补发条款继续保留。
 
 新增建议只涉及微盘验收与身份，不改变 IC/IM、14:30 时间、重试安排或故障隔离。
+
+## 主智能体后续实际入口与配置验收
+
+上述建议已通过正式automation更新工具追加到原prompt，并读回确认原全文前缀、调度14:30、ACTIVE、模型、工作区及IC/IM配置均未变化。更新证据及备份见 `research_reports/20260904_v20_v23_adversarial/local_automation_update.json`。
+
+随后在收盘后测试实际state-only路径：sync复用整组状态成功，validate及whole check也通过；但联网preflight连续两次在免费指数历史源 `1.000852` / Sina 上超时（41.948秒、43.272秒）。实际预检未通过，故没有继续运行三个实时入口或发布盘中结果。两次失败均确认基础输入和三版NAV字节未变。此为当前外部源阻塞，相关历史抓取函数本轮未修改；不能以250项离线测试通过替代完整14:30实时成功。失败日志、原样重试结果及最终双日报验收结论见总审计记录。
