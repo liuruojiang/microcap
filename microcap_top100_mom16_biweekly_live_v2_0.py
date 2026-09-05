@@ -11387,6 +11387,8 @@ def augment_close_confirmed_signal_with_member_contract(
     signal_df: pd.DataFrame,
     turnover_df: pd.DataFrame,
     official_index: pd.Index,
+    *,
+    proxy_members_path: Path | None = None,
 ) -> pd.DataFrame:
     """Attach dated, non-ambiguous member-action fields to a formal signal CSV."""
     if signal_df.empty:
@@ -11407,6 +11409,54 @@ def augment_close_confirmed_signal_with_member_contract(
     rebalance_dates = rebalance_dates[rebalance_dates <= signal_date].sort_values().unique()
 
     latest_rebalance = pd.NaT if len(rebalance_dates) == 0 else pd.Timestamp(rebalance_dates[-1])
+
+    # Close-confirmed member instructions belong to the formal point-in-time
+    # lineage, never to a reusable static/live cache from another runner.
+    if proxy_members_path is not None:
+        members = pd.read_csv(Path(proxy_members_path), dtype={"symbol": str})
+        required_columns = {"rebalance_date", "symbol"}
+        if not required_columns.issubset(members.columns):
+            missing = sorted(required_columns.difference(members.columns))
+            raise KeyError(f"close-confirmed proxy members missing columns: {missing}")
+        members = members.copy()
+        members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="coerce")
+        members["symbol"] = members["symbol"].astype("string").str.strip().str.zfill(6)
+        members = members.dropna(subset=["rebalance_date", "symbol"])
+        if (not members["symbol"].str.fullmatch(r"\d{6}").all()
+                or members["symbol"].eq("000000").any()):
+            raise RuntimeError("close-confirmed proxy-member lineage contains an invalid symbol")
+        member_dates = pd.DatetimeIndex(members["rebalance_date"].dt.normalize().unique()).sort_values()
+        member_dates = member_dates[member_dates <= signal_date]
+        if len(member_dates) < 2 or pd.isna(latest_rebalance) or member_dates[-1] != latest_rebalance:
+            raise RuntimeError(
+                "close-confirmed proxy-member lineage does not contain the latest two formal rebalances"
+            )
+
+        def member_symbols(day: pd.Timestamp) -> set[str]:
+            values = members.loc[
+                members["rebalance_date"].dt.normalize().eq(day), "symbol"
+            ]
+            symbols = set(values)
+            expected_count = int(embedded_context.base_mod.TOP_N)
+            if len(values) != expected_count or len(symbols) != expected_count:
+                raise RuntimeError(
+                    "close-confirmed proxy-member snapshot is not exactly "
+                    f"{expected_count} unique symbols: {day.date()}"
+                )
+            return symbols
+
+        previous_symbols = member_symbols(pd.Timestamp(member_dates[-2]))
+        current_symbols = member_symbols(pd.Timestamp(member_dates[-1]))
+        enter_count = len(current_symbols - previous_symbols)
+        exit_count = len(previous_symbols - current_symbols)
+        member_changes = bool(enter_count or exit_count)
+        out["member_rebalance_state"] = "rebalance" if member_changes else "none"
+        out["member_rebalance_required"] = member_changes
+        out["member_enter_count"] = enter_count
+        out["member_exit_count"] = exit_count
+        out["member_rebalance_label"] = (
+            f"名单调仓（调入 {enter_count}，调出 {exit_count}）" if member_changes else "名单不变"
+        )
     calendar = pd.DatetimeIndex(pd.to_datetime(official_index, errors="coerce")).dropna().normalize()
     calendar = calendar.sort_values().unique()
     execution_date = pd.NaT
@@ -14214,7 +14264,12 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
 
     data_lineage = _build_v2_data_lineage()
     signal_row = _build_signal_row(out, reference_summary)
-    signal_row = augment_close_confirmed_signal_with_member_contract(signal_row, turnover_df, out.index)
+    signal_row = augment_close_confirmed_signal_with_member_contract(
+        signal_row,
+        turnover_df,
+        out.index,
+        proxy_members_path=_resolve_base_paths().output_paths["proxy_members"],
+    )
     signal_row["microcap_series_source"] = data_lineage.get("source_used")
     signal_row["official_wind_series"] = bool(data_lineage.get("official_wind_series"))
     signal_row["proxy_warning"] = data_lineage.get("public_proxy_note", "")

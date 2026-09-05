@@ -1899,6 +1899,7 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         signal_row,
         turnover_df,
         out.index,
+        proxy_members_path=v2_0._resolve_base_paths().output_paths["proxy_members"],
     )
     apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
     signal_row["microcap_series_source"] = data_lineage.get("source_used")

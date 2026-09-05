@@ -223,3 +223,44 @@ def test_native_realtime_rows_publish_dated_official_member_actions(
     assert row["member_rebalance_execution_date"] == expected_execution_date
     assert bool(row["member_rebalance_actionable"]) is expected_actionable
     assert bool(row["member_rebalance_official"]) is official_rebalance
+
+
+def test_close_confirmed_member_counts_ignore_stale_static_cache_metadata(tmp_path) -> None:
+    previous = [f"{value:06d}" for value in range(1, 101)]
+    current = previous[:87] + [f"{value:06d}" for value in range(201, 214)]
+    rows = []
+    for day, symbols in (("2026-08-20", previous), ("2026-09-03", current)):
+        rows.extend(
+            {
+                "rebalance_date": day,
+                "rank": rank,
+                "symbol": symbol,
+                "name": f"member-{symbol}",
+                "market_cap": float(rank),
+            }
+            for rank, symbol in enumerate(symbols, start=1)
+        )
+    proxy_members = tmp_path / "proxy_members.csv"
+    pd.DataFrame(rows).to_csv(proxy_members, index=False)
+    signal = pd.DataFrame([{
+        "date": "2026-09-04",
+        "trade_state": "hold",
+        "member_rebalance_required": True,
+        "member_enter_count": 19,
+        "member_exit_count": 19,
+        "member_rebalance_label": "stale cache",
+    }])
+    turnover = pd.DataFrame({"rebalance_date": ["2026-09-03"]})
+
+    result = v2_0.overlay_mod.augment_close_confirmed_signal_with_member_contract(
+        signal,
+        turnover,
+        pd.DatetimeIndex(["2026-09-03", "2026-09-04"]),
+        proxy_members_path=proxy_members,
+    ).iloc[0]
+
+    assert result["member_enter_count"] == 13
+    assert result["member_exit_count"] == 13
+    assert result["member_rebalance_label"] == "名单调仓（调入 13，调出 13）"
+    assert result["member_rebalance_signal_date"] == "2026-09-03"
+    assert bool(result["member_rebalance_actionable"]) is False
