@@ -5657,6 +5657,28 @@ def ensure_strategy_files(
         assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
         return
 
+    if not bool(getattr(args, "allow_full_rebuild", False)):
+        missing = []
+        if not args.index_csv.exists():
+            missing.append("proxy_index")
+        if not args.costed_nav_csv.exists():
+            missing.append("costed_nav")
+        if not paths["proxy_turnover"].exists():
+            missing.append("proxy_turnover")
+        reason = ",".join(missing) or "proxy_state_not_reusable"
+        _log_price_cache_refresh(
+            "full-rebuild blocked mode=incremental_only "
+            f"reason={reason} target_end_date={pd.Timestamp(target_end_date).date().isoformat()}"
+        )
+        raise RuntimeError(
+            "FULL_REBUILD_BLOCKED: normal daily refresh requires a validated proxy state; "
+            f"reason={reason}. Restore the verified state bundle or invoke the explicit cold-start recovery path."
+        )
+
+    _log_price_cache_refresh(
+        "full-rebuild authorized mode=explicit_recovery "
+        f"target_end_date={pd.Timestamp(target_end_date).date().isoformat()}"
+    )
     refresh_price_cache_tail(
         target_end_date,
         args.max_workers,

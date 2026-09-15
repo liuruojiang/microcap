@@ -1995,6 +1995,40 @@ def test_ensure_strategy_files_reuses_exact_frozen_seed_at_target(
     assert calls == ["normalize"]
 
 
+def test_ensure_strategy_files_blocks_implicit_full_rebuild_for_daily_refresh(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = {
+        "proxy_meta": tmp_path / "meta.json",
+        "proxy_turnover": tmp_path / "turnover.csv",
+        "proxy_members": tmp_path / "members.csv",
+        "proxy_effective_members": tmp_path / "effective.csv",
+    }
+    args = SimpleNamespace(
+        index_csv=tmp_path / "index.csv",
+        costed_nav_csv=tmp_path / "costed.csv",
+        rebuild_index_if_missing=True,
+        force_refresh=False,
+        allow_full_rebuild=False,
+        max_workers=1,
+    )
+    ensure_globals = v2_0.base_mod.ensure_strategy_files.__globals__
+    monkeypatch.setitem(
+        ensure_globals,
+        "refresh_price_cache_tail",
+        lambda *_args, **_kwargs: pytest.fail("normal daily path must not start a full rebuild"),
+    )
+
+    with pytest.raises(RuntimeError, match="FULL_REBUILD_BLOCKED.*validated proxy state"):
+        v2_0.base_mod.ensure_strategy_files(
+            args,
+            paths,
+            tmp_path / "panel.csv",
+            pd.Timestamp("2026-08-24"),
+        )
+
+
 def test_frozen_tail_extension_is_reusable_only_with_validated_written_rows(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
