@@ -721,6 +721,10 @@ def validate_refreshed_state(root: Path, target: date, max_age: int | None) -> d
     return validate_state(root, max_anchor_age_days=max_age)
 
 
+def _log_refresh_phase(phase: str) -> None:
+    print(f"[realtime-state] phase={phase}", file=sys.stderr, flush=True)
+
+
 def refresh_state(
     root: Path,
     max_workers: int = 8,
@@ -731,24 +735,30 @@ def refresh_state(
     from run_top100_v1_6_v1_8_realtime_signals import ensure_static_realtime_inputs
     import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 
+    _log_refresh_phase("refresh_static_inputs")
     ensure_static_realtime_inputs(force_refresh=force_refresh_static_inputs)
 
+    _log_refresh_phase("prepare_runtime")
     v2_0._sync_embedded_base_config()
     args = v2_0._build_base_args(max_workers=max_workers)
     base_paths = v2_0.base_mod.build_output_paths(v2_0.base_mod.DEFAULT_OUTPUT_PREFIX)
     target_end_date: date | None = None
     try:
+        _log_refresh_phase("refresh_market_panel")
         panel_path, target_end_ts = v2_0.base_mod.build_refreshed_panel_shadow(args, base_paths)
         target_end_date = _parse_date(str(target_end_ts))
         if target_end_date is None:
             raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
+        _log_refresh_phase("rebuild_or_extend_proxy_state")
         v2_0.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_ts)
+        _log_refresh_phase("build_realtime_context")
         base_context = v2_0.base_mod.ensure_realtime_query_base_context(
             args,
             base_paths,
             panel_path,
             target_end_ts,
         )
+        _log_refresh_phase("validate_static_members")
         v2_0.base_mod.ensure_static_members_fresh(
             args,
             base_paths,
@@ -756,6 +766,7 @@ def refresh_state(
             target_end_ts,
             base_context,
         )
+        _log_refresh_phase("validate_refreshed_state")
         _write_refresh_proof(root, target_end_date)
         report = validate_refreshed_state(root, target_end_date, max_anchor_age_days)
         context_anchor_date = base_context["close_df"].index[-1].date()
@@ -775,6 +786,7 @@ def refresh_state(
                 "state refresh completed but produced stale anchors: "
                 + "; ".join(str(error) for error in report.get("errors", []))
             )
+        _log_refresh_phase("completed")
         return report
     except Exception as exc:
         if target_end_date is None:

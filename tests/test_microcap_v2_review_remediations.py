@@ -299,6 +299,14 @@ def test_refresh_state_fails_closed_when_independent_target_is_unavailable(
         realtime_state_bundle.refresh_state(tmp_path, max_workers=1)
 
 
+def test_refresh_phase_log_is_machine_readable(capsys: pytest.CaptureFixture[str]) -> None:
+    from scripts import realtime_state_bundle
+
+    realtime_state_bundle._log_refresh_phase("rebuild_or_extend_proxy_state")
+
+    assert capsys.readouterr().err == "[realtime-state] phase=rebuild_or_extend_proxy_state\n"
+
+
 def test_validate_state_accepts_only_current_matching_refresh_proof(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
