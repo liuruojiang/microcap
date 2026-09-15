@@ -4355,7 +4355,7 @@ def refresh_price_cache_tail(
     max_workers: int,
     symbols: list[str] | None = None,
     force_refresh: bool = False,
-    progress_interval: int | None = 250,
+    progress_interval: int | None = 25,
 ) -> None:
     ensure_fetch_dirs = getattr(fetch_mod, "ensure_dirs", None)
     if ensure_fetch_dirs is not None:
@@ -4412,8 +4412,10 @@ def refresh_price_cache_tail(
                 failures[symbol] = str(exc)
             completed += 1
             if interval and (completed % interval == 0 or completed == total_symbols):
+                progress_percent = completed / total_symbols * 100.0
                 _log_price_cache_refresh(
-                    f"price-cache refresh progress {completed}/{total_symbols} failures={len(failures)}"
+                    "price-cache refresh progress "
+                    f"{completed}/{total_symbols} ({progress_percent:.1f}%) failures={len(failures)}"
                 )
     for retry_attempt in range(3):
         if not failures:
