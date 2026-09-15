@@ -39,6 +39,24 @@ def test_bundle_roundtrip_preserves_all_final_streams(workspace, monkeypatch):
             assert (target / name).read_bytes() == (workspace / name).read_bytes()
 
 
+def test_same_session_metadata_damage_is_repaired_from_identical_bundle(workspace, monkeypatch):
+    name = ".microcap_index_cache/security_meta/000001.json"
+    path = workspace / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b'{"st_intervals": []}')
+    bundle, target = prepare(workspace, monkeypatch)
+    cloud.restore(target, bundle, "2026-09-03")
+    (target / name).write_bytes(b"damaged")
+    def validate(root, *a, **kw):
+        ok = (root / name).read_bytes() == path.read_bytes()
+        return {"ok": ok, "errors": [] if ok else ["metadata mismatch"]}
+    monkeypatch.setattr(state, "validate_state", validate)
+    result = cloud.restore(target, bundle, "2026-09-03")
+    assert result["ok"]
+    assert (target / name).read_bytes() == path.read_bytes()
+    assert (Path(result["backup"]) / name).read_bytes() == b"damaged"
+
+
 @pytest.mark.parametrize("failure", ["date", "code", "newer", "lock"])
 def test_restore_rejects_before_replacing_local_files(workspace, monkeypatch, failure):
     bundle, target = prepare(workspace, monkeypatch)

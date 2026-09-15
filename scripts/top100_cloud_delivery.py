@@ -116,10 +116,14 @@ def restore(root: Path, bundle: Path, expected: str) -> dict:
             if local_complete:
                 if any(incoming.get(key) != local.get(key) for key in ("expected_date", "inputs", "artifacts")):
                     raise ValueError("Refusing to replace a different complete same-session local delivery")
-                require_ok(state.validate_state(root, max_anchor_age_days=None,
-                                                require_current_refresh_proof=False))
-                return {"ok": True, "expected_date": expected,
-                        "restore_source": "existing_whole_delivery", "signal_ready": False}
+                current_state = state.validate_state(root, max_anchor_age_days=None,
+                                                     require_current_refresh_proof=False)
+                if current_state.get("ok"):
+                    return {"ok": True, "expected_date": expected,
+                            "restore_source": "existing_whole_delivery", "signal_ready": False}
+                # Identical approved final streams can still have missing or
+                # mismatched metadata/cache legs. Verify staging and repair those
+                # legs through the normal backed-up restoration below.
             for name in (delivery.BASE_PANEL, delivery.BASE_FILES["proxy_index"],
                          delivery.BASE_FILES["costed_nav"]):
                 path = root / "outputs" / name
@@ -178,9 +182,10 @@ def gh_json(*args: str):
 def sync(root: Path, expected: str) -> dict:
     existing = delivery.validate_manifest(root, delivery.inspect_outputs(root, expected))
     if existing["ok"]:
-        require_ok(state.validate_state(root, max_anchor_age_days=None, require_current_refresh_proof=False))
-        return {"ok": True, "expected_date": expected, "restore_source": "existing_whole_delivery",
-                "signal_ready": False}
+        current_state = state.validate_state(root, max_anchor_age_days=None, require_current_refresh_proof=False)
+        if current_state.get("ok"):
+            return {"ok": True, "expected_date": expected, "restore_source": "existing_whole_delivery",
+                    "signal_ready": False}
     if (root / delivery.LOCK).exists():
         raise RuntimeError("Another whole-delivery operation is active")
     runs = gh_json("run", "list", "--repo", REPOSITORY, "--workflow",
