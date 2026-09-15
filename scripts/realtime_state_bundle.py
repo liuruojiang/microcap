@@ -729,6 +729,7 @@ def refresh_state(
     root: Path,
     max_workers: int = 8,
     force_refresh_static_inputs: bool = False,
+    allow_full_rebuild: bool = False,
     max_anchor_age_days: int | None = None,
 ) -> dict[str, object]:
     sys.path.insert(0, str(root.resolve()))
@@ -741,6 +742,10 @@ def refresh_state(
     _log_refresh_phase("prepare_runtime")
     v2_0._sync_embedded_base_config()
     args = v2_0._build_base_args(max_workers=max_workers)
+    # The formal daily route is incremental-only.  A historical rebuild is a
+    # separately authorized recovery operation, never an implicit response to
+    # a missing runner output or a stale cache restore.
+    args.allow_full_rebuild = bool(allow_full_rebuild)
     base_paths = v2_0.base_mod.build_output_paths(v2_0.base_mod.DEFAULT_OUTPUT_PREFIX)
     target_end_date: date | None = None
     try:
@@ -903,6 +908,11 @@ def main(argv: list[str] | None = None) -> int:
     refresh_parser.add_argument("--root", type=Path, default=Path("."), help="repository root")
     refresh_parser.add_argument("--max-workers", type=int, default=8)
     refresh_parser.add_argument("--force-refresh-static-inputs", action="store_true")
+    refresh_parser.add_argument(
+        "--allow-full-rebuild",
+        action="store_true",
+        help="explicitly authorize a cold-start or integrity-recovery historical rebuild",
+    )
     refresh_parser.add_argument("--max-anchor-age-days", type=int, default=None)
 
     restore_parser = subparsers.add_parser("restore")
@@ -922,6 +932,7 @@ def main(argv: list[str] | None = None) -> int:
             args.root,
             max_workers=args.max_workers,
             force_refresh_static_inputs=args.force_refresh_static_inputs,
+            allow_full_rebuild=args.allow_full_rebuild,
             max_anchor_age_days=args.max_anchor_age_days,
         )
     else:
