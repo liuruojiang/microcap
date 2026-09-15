@@ -627,7 +627,7 @@ def test_refresh_price_cache_tail_emits_preflight_and_progress(capsys: pytest.Ca
     assert "price-cache refresh preflight" in captured.err
     assert "symbols=3" in captured.err
     assert "stale_or_missing=2" in captured.err
-    assert "price-cache refresh progress 2/2" in captured.err
+    assert "price-cache refresh progress 2/2 (100.0%)" in captured.err
     assert "price-cache refresh complete 2/2" in captured.err
 
 
