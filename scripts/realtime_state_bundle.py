@@ -27,6 +27,7 @@ REQUIRED_FILES = (
 )
 
 OPTIONAL_GLOBS = (
+    ".microcap_index_cache/security_meta/*.json",
     ".microcap_index_cache/realtime/*.json",
     ".microcap_index_cache/realtime/*.csv",
     ".microcap_index_cache/*_static_*.json",
@@ -325,6 +326,11 @@ def validate_state(
     errors: list[str] = []
     warnings: list[str] = []
     files: list[dict[str, object]] = []
+    try:
+        metadata_files = validate_security_metadata(root)
+        files.extend(metadata_files)
+    except (OSError, ValueError, KeyError) as exc:
+        errors.append(f"security metadata lineage: {exc}")
 
     for rel in REQUIRED_FILES:
         path = root / rel
@@ -584,6 +590,38 @@ def certify_existing_state(root: Path, before: dict[str, object], target: date,
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
     report["preflight_source"] = "validated_independent_index_history; no panel/NAV rebuild"
     return report
+
+
+def validate_security_metadata(root: Path) -> list[dict[str, object]]:
+    """Check the exact metadata bytes consumed by the persisted proxy.
+
+    Include them in transport so a valid cloud proxy cannot silently inherit
+    different local ST intervals. Legacy fixtures without core params retain
+    their existing structural validation; formal proxy metadata has this field.
+    """
+    meta_path = root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json"
+    if not meta_path.is_file():
+        return []  # Required-files validation reports this separately.
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    expected = meta.get("core_params", {}).get("security_meta_cache_fingerprint")
+    if expected is None:
+        if "core_params" in meta:
+            raise ValueError("proxy lacks security_meta_cache_fingerprint")
+        return []
+    digest = hashlib.sha256()
+    records = []
+    paths = sorted((root / ".microcap_index_cache/security_meta").glob("*.json"))
+    for path in paths:
+        if len(path.stem) != 6 or not path.stem.isascii() or not path.stem.isdigit():
+            raise ValueError(f"invalid security metadata symbol: {path.name}")
+        payload = path.read_bytes()
+        digest.update(path.stem.encode("ascii") + b"\0" + payload + b"\0")
+        records.append({"path": path.relative_to(root).as_posix(), "bytes": len(payload),
+                        "sha256": hashlib.sha256(payload).hexdigest()})
+    actual = {"present_count": len(paths), "missing_count": 0, "sha256": digest.hexdigest()}
+    if actual != expected:
+        raise ValueError(f"proxy metadata fingerprint mismatch: expected={expected}, actual={actual}")
+    return records
 
 
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,

@@ -11240,11 +11240,25 @@ def _base_costed_nav_matches_current_hedge_ratio(path: Path, hedge_ratio: float)
     return bool((active["return_raw"] - expected).abs().le(1e-10).all())
 
 
-def _ensure_base_outputs_unlocked() -> None:
+def _ensure_base_outputs_unlocked(*, state_only: bool = False) -> None:
     _sync_embedded_base_config()
     args = _build_base_args()
     resolved = _resolve_base_paths(args)
     base_paths = resolved.output_paths
+    if state_only:
+        # Validate before any seeding, unlinking or rebuilding. This helper runs
+        # before load_realtime_context's state-only branch.
+        required = [resolved.index_csv, resolved.costed_nav_csv] + [
+            base_paths[key] for key in ("proxy_meta", "proxy_members", "proxy_turnover")
+        ]
+        missing = [str(path) for path in required if not path.is_file()]
+        if missing:
+            raise RuntimeError(f"Realtime state-only base files missing: {missing}; sync verified state first")
+        if not _base_costed_nav_matches_current_hedge_ratio(resolved.costed_nav_csv, BASE_HEDGE_RATIO):
+            raise RuntimeError("Realtime state-only costed NAV hedge mismatch; refusing to delete or rebuild")
+        if not _proxy_meta_matches_execution_model(base_paths["proxy_meta"]):
+            raise RuntimeError("Realtime state-only proxy/security metadata mismatch; restore the complete matching bundle")
+        return
     missing_proxy = any(not base_paths[key].exists() for key in ("proxy_meta", "proxy_members", "proxy_turnover"))
     if missing_proxy:
         seeded = _seed_proxy_bundle(base_paths)
@@ -11305,10 +11319,12 @@ def _read_current_reference_summary(min_latest_date: pd.Timestamp | None = None)
     return None
 
 
-def _load_reference_summary_unlocked(min_latest_date: pd.Timestamp | None = None) -> dict[str, object]:
+def _load_reference_summary_unlocked(min_latest_date: pd.Timestamp | None = None, *, state_only: bool = False) -> dict[str, object]:
     summary = _read_current_reference_summary(min_latest_date)
     if summary is not None:
         return summary
+    if state_only:
+        raise RuntimeError("Realtime state-only reference summary missing or stale; refusing implicit rebuild")
     _ensure_base_outputs_unlocked()
     summary = _read_current_reference_summary(min_latest_date)
     if summary is not None:
@@ -11676,7 +11692,7 @@ def _cached_realtime_context_after_anchor_refresh_failure(
 
 def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, object]]:
     with _v2_base_build_lock():
-        _ensure_base_outputs_unlocked()
+        _ensure_base_outputs_unlocked(state_only=realtime_state_required())
         args = _build_base_args()
         base_paths = _resolve_base_paths(args).output_paths
         if realtime_state_required():
@@ -11716,7 +11732,9 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
         turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
-        reference_summary = _load_reference_summary_unlocked(pd.Timestamp(target_end_date))
+        reference_summary = _load_reference_summary_unlocked(
+            pd.Timestamp(target_end_date), state_only=realtime_state_required()
+        )
     return member_context, turnover_df, reference_summary
 
 

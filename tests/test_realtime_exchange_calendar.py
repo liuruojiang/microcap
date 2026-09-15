@@ -141,10 +141,10 @@ def test_all_realtime_fallback_entrypoints_replace_historical_age(oracle, monkey
         fn = v2._load_realtime_embedded_base_context if entrypoint == "legacy" else v2.load_realtime_context
         namespace = fn.__globals__
         monkeypatch.setitem(namespace, "_v2_base_build_lock", nullcontext)
-        monkeypatch.setitem(namespace, "_ensure_base_outputs_unlocked", lambda: None)
+        monkeypatch.setitem(namespace, "_ensure_base_outputs_unlocked", lambda **kw: None)
         monkeypatch.setitem(namespace, "_build_base_args", lambda: args)
         monkeypatch.setitem(namespace, "_resolve_base_paths", lambda args: SimpleNamespace(output_paths=paths))
-        monkeypatch.setitem(namespace, "_load_reference_summary_unlocked", lambda *a: {})
+        monkeypatch.setitem(namespace, "_load_reference_summary_unlocked", lambda *a, **kw: {})
         monkeypatch.setitem(namespace, "realtime_state_required", lambda: False)
         monkeypatch.setattr(v2.base_mod, "refresh_history_anchor", lambda *a: (tmp_path / "panel.csv", target))
         monkeypatch.setattr(v2.base_mod, "ensure_realtime_query_base_context", missing)
