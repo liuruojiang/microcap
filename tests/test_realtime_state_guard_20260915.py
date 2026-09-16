@@ -4,6 +4,7 @@ import json
 from types import SimpleNamespace
 
 import pytest
+import pandas as pd
 import microcap_top100_mom16_biweekly_live_v2_0 as v2
 from scripts import realtime_state_bundle as state
 
@@ -74,6 +75,15 @@ def test_missing_reference_summary_never_rebuilds(monkeypatch):
     monkeypatch.setitem(ns, "_ensure_base_outputs_unlocked", lambda: pytest.fail("rebuild"))
     with pytest.raises(RuntimeError, match="reference summary"):
         ns["_load_reference_summary_unlocked"](state_only=True)
+
+
+def test_certified_dated_summary_is_accepted_after_delivery_only_code_change(tmp_path, monkeypatch):
+    ns = v2.realtime_core.load_realtime_base.__globals__
+    summary = tmp_path / "summary.json"
+    summary.write_text(json.dumps({"latest_trade_date": "2026-09-16", "summary_version_key": "old"}))
+    monkeypatch.setitem(ns, "_read_current_reference_summary", lambda *a: None)
+    monkeypatch.setitem(ns, "_resolved_base_summary_json", lambda: summary)
+    assert ns["_load_reference_summary_unlocked"](pd.Timestamp("2026-09-16"), state_only=True)["summary_version_key"] == "old"
 
 
 def test_metadata_transport_and_changed_bytes_are_checked(tmp_path):
