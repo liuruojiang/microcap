@@ -46,6 +46,28 @@ def test_real_realtime_call_passes_guard_before_data_access(monkeypatch):
         ns["load_realtime_context"]()
 
 
+def test_close_confirmed_generation_uses_validated_state_without_refresh(monkeypatch):
+    ns = v2.embedded_context._load_embedded_base_context.__globals__
+    from contextlib import nullcontext
+    monkeypatch.setenv("TOP100_REALTIME_REQUIRE_STATE", "1")
+    monkeypatch.setitem(ns, "_v2_base_build_lock", nullcontext)
+    monkeypatch.setitem(ns, "_ensure_base_outputs_unlocked", lambda *, state_only: (
+        None if state_only else pytest.fail("close-confirmed delivery rebuilt base state")
+    ))
+    resolved = SimpleNamespace(
+        index_csv=pytest.fail,
+        costed_nav_csv=pytest.fail,
+        output_paths={"panel_shadow": pytest.fail},
+    )
+    # The guard is asserted before any live history refresh; no data fixture is
+    # needed to prove that the unsafe branch is unavailable.
+    monkeypatch.setitem(ns, "_build_base_args", lambda: None)
+    monkeypatch.setitem(ns, "_resolve_base_paths", lambda *_: resolved)
+    monkeypatch.setattr(ns["base_mod"], "read_csv_last_date", lambda *_: None)
+    with pytest.raises(RuntimeError, match="state-only panel"):
+        ns["_load_embedded_base_context"]()
+
+
 def test_missing_reference_summary_never_rebuilds(monkeypatch):
     ns = v2.realtime_core.load_realtime_base.__globals__
     monkeypatch.setitem(ns, "_read_current_reference_summary", lambda *a: None)
