@@ -69,9 +69,10 @@ def test_close_confirmed_generation_uses_validated_state_without_refresh(monkeyp
         ns["_load_embedded_base_context"]()
 
 
-def test_missing_reference_summary_never_rebuilds(monkeypatch):
+def test_missing_reference_summary_never_rebuilds(tmp_path, monkeypatch):
     ns = v2.realtime_core.load_realtime_base.__globals__
     monkeypatch.setitem(ns, "_read_current_reference_summary", lambda *a: None)
+    monkeypatch.setitem(ns, "_resolved_base_summary_json", lambda: tmp_path / "missing.json")
     monkeypatch.setitem(ns, "_ensure_base_outputs_unlocked", lambda: pytest.fail("rebuild"))
     with pytest.raises(RuntimeError, match="reference summary"):
         ns["_load_reference_summary_unlocked"](state_only=True)
