@@ -11349,7 +11349,7 @@ def _state_only_summary_can_carry_forward(
     available_dates: pd.DatetimeIndex | None,
     turnover_df: pd.DataFrame | None,
 ) -> bool:
-    """Allow exactly one persisted, no-rebalance session to finish publication."""
+    """Carry a certified base summary only across a no-rebalance fresh tail."""
     if min_latest_date is None or available_dates is None:
         return False
     summary_value = summary.get("latest_trade_date") or summary.get("target_end_date")
@@ -11359,8 +11359,7 @@ def _state_only_summary_can_carry_forward(
     summary_date = pd.Timestamp(summary_date).normalize()
     target_date = pd.Timestamp(min_latest_date).normalize()
     dates = pd.DatetimeIndex(available_dates).normalize().unique().sort_values()
-    prior_dates = dates[dates <= target_date]
-    if len(prior_dates) < 2 or prior_dates[-1] != target_date or prior_dates[-2] != summary_date:
+    if summary_date > target_date or target_date not in dates:
         return False
     if turnover_df is not None and "rebalance_date" in turnover_df.columns:
         rebalance_dates = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce").dropna()
@@ -11402,7 +11401,7 @@ def _load_reference_summary_unlocked(
                             pd.Timestamp(certified.get("latest_trade_date") or certified.get("target_end_date")).date()
                         ),
                         "target_latest_trade_date": str(pd.Timestamp(min_latest_date).date()),
-                        "reason": "one_session_no_rebalance_after_validated_state_refresh",
+                        "reason": "no_rebalance_after_validated_state_refresh",
                     }
                     return carried
             except (OSError, ValueError):
