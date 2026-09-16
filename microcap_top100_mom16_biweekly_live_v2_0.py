@@ -11343,7 +11343,39 @@ def _read_current_reference_summary(min_latest_date: pd.Timestamp | None = None)
     return None
 
 
-def _load_reference_summary_unlocked(min_latest_date: pd.Timestamp | None = None, *, state_only: bool = False) -> dict[str, object]:
+def _state_only_summary_can_carry_forward(
+    summary: dict[str, object],
+    min_latest_date: pd.Timestamp | None,
+    available_dates: pd.DatetimeIndex | None,
+    turnover_df: pd.DataFrame | None,
+) -> bool:
+    """Allow exactly one persisted, no-rebalance session to finish publication."""
+    if min_latest_date is None or available_dates is None:
+        return False
+    summary_value = summary.get("latest_trade_date") or summary.get("target_end_date")
+    summary_date = pd.to_datetime(summary_value, errors="coerce")
+    if pd.isna(summary_date):
+        return False
+    summary_date = pd.Timestamp(summary_date).normalize()
+    target_date = pd.Timestamp(min_latest_date).normalize()
+    dates = pd.DatetimeIndex(available_dates).normalize().unique().sort_values()
+    prior_dates = dates[dates <= target_date]
+    if len(prior_dates) < 2 or prior_dates[-1] != target_date or prior_dates[-2] != summary_date:
+        return False
+    if turnover_df is not None and "rebalance_date" in turnover_df.columns:
+        rebalance_dates = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce").dropna()
+        if ((rebalance_dates > summary_date) & (rebalance_dates <= target_date)).any():
+            return False
+    return True
+
+
+def _load_reference_summary_unlocked(
+    min_latest_date: pd.Timestamp | None = None,
+    *,
+    state_only: bool = False,
+    available_dates: pd.DatetimeIndex | None = None,
+    turnover_df: pd.DataFrame | None = None,
+) -> dict[str, object]:
     summary = _read_current_reference_summary(min_latest_date)
     if summary is not None:
         return summary
@@ -11358,6 +11390,21 @@ def _load_reference_summary_unlocked(min_latest_date: pd.Timestamp | None = None
                 certified = json.loads(summary_json.read_text(encoding="utf-8"))
                 if _summary_covers_min_latest_date(certified, min_latest_date):
                     return certified
+                if _state_only_summary_can_carry_forward(
+                    certified, min_latest_date, available_dates, turnover_df
+                ):
+                    carried = copy.deepcopy(certified)
+                    # Do not let an older latest_signal act as a fallback:
+                    # publication must derive it from the validated target row.
+                    carried["latest_signal"] = {}
+                    carried["state_only_summary_carry_forward"] = {
+                        "source_latest_trade_date": str(
+                            pd.Timestamp(certified.get("latest_trade_date") or certified.get("target_end_date")).date()
+                        ),
+                        "target_latest_trade_date": str(pd.Timestamp(min_latest_date).date()),
+                        "reason": "one_session_no_rebalance_after_validated_state_refresh",
+                    }
+                    return carried
             except (OSError, ValueError):
                 pass
         raise RuntimeError("Realtime state-only reference summary missing or stale; refusing implicit rebuild")
@@ -11564,7 +11611,10 @@ def _load_embedded_base_context() -> tuple[dict[str, object], pd.DataFrame, pd.D
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
         turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
         reference_summary = _load_reference_summary_unlocked(
-            pd.Timestamp(target_end_date), state_only=state_only
+            pd.Timestamp(target_end_date),
+            state_only=state_only,
+            available_dates=gross.index,
+            turnover_df=turnover_df,
         )
     return reference_summary, gross, turnover_df
 
