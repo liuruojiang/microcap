@@ -102,24 +102,31 @@ def test_state_only_summary_can_carry_exactly_one_no_rebalance_session(tmp_path,
     assert carried["state_only_summary_carry_forward"]["source_latest_trade_date"] == "2026-09-15"
 
 
-@pytest.mark.parametrize(
-    "summary_date, available_dates, turnover_dates",
-    [
-        ("2026-09-14", pd.DatetimeIndex(["2026-09-14", "2026-09-15", "2026-09-16"]), ["2026-09-03"]),
-        ("2026-09-15", pd.DatetimeIndex(["2026-09-15", "2026-09-16"]), ["2026-09-16"]),
-    ],
-)
-def test_state_only_summary_rejects_nonadjacent_or_rebalance_tail(tmp_path, monkeypatch, summary_date, available_dates, turnover_dates):
+def test_state_only_summary_can_carry_long_fresh_tail_without_rebalance(tmp_path, monkeypatch):
     ns = v2.realtime_core.load_realtime_base.__globals__
     summary = tmp_path / "summary.json"
-    summary.write_text(json.dumps({"latest_trade_date": summary_date, "summary_version_key": "old"}))
+    summary.write_text(json.dumps({"latest_trade_date": "2026-09-03", "summary_version_key": "old"}))
+    monkeypatch.setitem(ns, "_read_current_reference_summary", lambda *a: None)
+    monkeypatch.setitem(ns, "_resolved_base_summary_json", lambda: summary)
+    carried = ns["_load_reference_summary_unlocked"](
+        pd.Timestamp("2026-09-16"), state_only=True,
+        available_dates=pd.DatetimeIndex(["2026-09-03", "2026-09-15", "2026-09-16"]),
+        turnover_df=pd.DataFrame({"rebalance_date": ["2026-09-03"]}),
+    )
+    assert carried["state_only_summary_carry_forward"]["target_latest_trade_date"] == "2026-09-16"
+
+
+def test_state_only_summary_rejects_rebalance_tail(tmp_path, monkeypatch):
+    ns = v2.realtime_core.load_realtime_base.__globals__
+    summary = tmp_path / "summary.json"
+    summary.write_text(json.dumps({"latest_trade_date": "2026-09-15", "summary_version_key": "old"}))
     monkeypatch.setitem(ns, "_read_current_reference_summary", lambda *a: None)
     monkeypatch.setitem(ns, "_resolved_base_summary_json", lambda: summary)
     with pytest.raises(RuntimeError, match="reference summary"):
         ns["_load_reference_summary_unlocked"](
             pd.Timestamp("2026-09-16"), state_only=True,
-            available_dates=available_dates,
-            turnover_df=pd.DataFrame({"rebalance_date": turnover_dates}),
+            available_dates=pd.DatetimeIndex(["2026-09-15", "2026-09-16"]),
+            turnover_df=pd.DataFrame({"rebalance_date": ["2026-09-16"]}),
         )
 
 
