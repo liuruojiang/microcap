@@ -11348,6 +11348,18 @@ def _load_reference_summary_unlocked(min_latest_date: pd.Timestamp | None = None
     if summary is not None:
         return summary
     if state_only:
+        # The whole-delivery bundle validates the exact summary bytes alongside
+        # the panel, proxy and NAV.  A code-version key may legitimately differ
+        # after a delivery-only release, so retain the dated certified summary
+        # instead of rebuilding an isolated base during publication.
+        summary_json = _resolved_base_summary_json()
+        if summary_json.is_file():
+            try:
+                certified = json.loads(summary_json.read_text(encoding="utf-8"))
+                if _summary_covers_min_latest_date(certified, min_latest_date):
+                    return certified
+            except (OSError, ValueError):
+                pass
         raise RuntimeError("Realtime state-only reference summary missing or stale; refusing implicit rebuild")
     _ensure_base_outputs_unlocked()
     summary = _read_current_reference_summary(min_latest_date)
