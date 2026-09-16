@@ -11521,13 +11521,25 @@ def augment_close_confirmed_signal_with_member_contract(
 
 def _load_embedded_base_context() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:
     with _v2_base_build_lock():
-        _ensure_base_outputs_unlocked()
+        # The post-close workflow first refreshes and certifies one shared state,
+        # then evaluates each version in an isolated workspace.  Those evaluations
+        # must consume that state rather than independently rebuilding a proxy.
+        state_only = realtime_state_required()
+        _ensure_base_outputs_unlocked(state_only=state_only)
         args = _build_base_args()
         resolved = _resolve_base_paths(args)
         base_paths = resolved.output_paths
-        panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
+        if state_only:
+            panel_path = base_paths["panel_shadow"]
+            target_end_date = base_mod.read_csv_last_date(panel_path)
+            if target_end_date is None:
+                raise RuntimeError("Realtime state-only panel is missing or has no dated rows; refusing implicit rebuild")
+        else:
+            panel_path, target_end_date = base_mod.refresh_history_anchor(args, base_paths)
         costed_end_date = base_mod.read_csv_last_date(resolved.costed_nav_csv)
         if costed_end_date is None or pd.Timestamp(costed_end_date).normalize() < pd.Timestamp(target_end_date).normalize():
+            if state_only:
+                raise RuntimeError("Realtime state-only costed NAV is stale; refusing implicit rebuild")
             base_mod.ensure_strategy_nav_fresh(args, base_paths, panel_path, target_end_date)
         index_end_date = base_mod.read_csv_last_date(args.index_csv)
         if index_end_date is not None:
@@ -11539,7 +11551,9 @@ def _load_embedded_base_context() -> tuple[dict[str, object], pd.DataFrame, pd.D
             raise KeyError(f"Column 'rebalance_date' not found in {base_paths['proxy_turnover']}.")
         turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
         turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
-        reference_summary = _load_reference_summary_unlocked(pd.Timestamp(target_end_date))
+        reference_summary = _load_reference_summary_unlocked(
+            pd.Timestamp(target_end_date), state_only=state_only
+        )
     return reference_summary, gross, turnover_df
 
 
