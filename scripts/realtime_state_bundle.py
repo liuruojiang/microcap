@@ -4,6 +4,8 @@ import argparse
 import csv
 import hashlib
 import json
+import math
+import shutil
 import sys
 import tempfile
 import zipfile
@@ -36,6 +38,8 @@ OPTIONAL_GLOBS = (
 
 PRICE_CACHE_DIR = ".microcap_index_cache/prices_raw"
 SHARE_CACHE_DIR = ".microcap_index_cache/share_change"
+ADJUSTED_PRICE_CACHE_DIR = ".microcap_index_cache/prices_qfq"
+PROXY_EFFECTIVE_MEMBERS_REL = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv"
 STATIC_EFFECTIVE_MEMBER_GLOBS = (
     ".microcap_index_cache/realtime/*static_effective_members.csv",
     ".microcap_index_cache/*_static_effective_members.csv",
@@ -75,6 +79,8 @@ def _iter_bundle_files(root: Path) -> list[str]:
         for path in root.glob(pattern):
             if path.is_file():
                 found.add(path.relative_to(root).as_posix())
+    if (root / PROXY_EFFECTIVE_MEMBERS_REL).is_file():
+        found.add(PROXY_EFFECTIVE_MEMBERS_REL)
     for rel in _iter_current_member_cache_files(root):
         if (root / rel).is_file():
             found.add(rel)
@@ -305,14 +311,123 @@ def _current_v2_effective_member_st_names(root: Path) -> list[str]:
         )
 
 
+def _proxy_effective_member_symbols(root: Path, *, required: bool = False) -> list[str]:
+    path = root / PROXY_EFFECTIVE_MEMBERS_REL
+    if not path.is_file():
+        if required:
+            raise ValueError("missing actual proxy effective-member state required for new packing")
+        return []
+    header, rows, _ = _read_csv_header_and_rows(path)
+    symbols = _csv_symbols(path)
+    if (not {"as_of_date", "symbol"}.issubset(header) or rows != TOP_N
+            or len(symbols) != TOP_N or len(set(symbols)) != TOP_N
+            or any(len(symbol) != 6 or not symbol.isascii() or not symbol.isdigit() for symbol in symbols)):
+        raise ValueError("actual proxy effective-member state must contain 100 unique symbols")
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        dates = {_parse_date(str(row.get("as_of_date") or "")) for row in csv.DictReader(handle)}
+    if len(dates) != 1 or None in dates:
+        raise ValueError("actual proxy effective-member state has missing or inconsistent dates")
+    return sorted(symbols)
+
+
+def _transport_member_symbols(root: Path, *, require_effective: bool = False) -> list[str]:
+    # Transport needs both executed positions and target lists. This union does
+    # not alter which 100 symbols are published as the current live target.
+    symbols = set(_proxy_effective_member_symbols(root, required=require_effective))
+    symbols.update(_current_member_symbols(root))
+    symbols.update(_latest_proxy_member_symbols(root))
+    if _has_current_v2_static_member_context(root):
+        for path in _current_v2_static_member_paths(root):
+            symbols.update(_csv_symbols(path))
+    return sorted(symbols)
+
+
 def _iter_current_member_cache_files(root: Path) -> list[str]:
     files: list[str] = []
-    for symbol in _current_member_symbols(root):
-        for cache_dir in (PRICE_CACHE_DIR, SHARE_CACHE_DIR):
+    for symbol in _transport_member_symbols(root):
+        for cache_dir in (PRICE_CACHE_DIR, SHARE_CACHE_DIR, ADJUSTED_PRICE_CACHE_DIR):
             rel = f"{cache_dir}/{symbol}.csv"
             if (root / rel).is_file():
                 files.append(rel)
     return sorted(set(files))
+
+
+def materialize_member_cache_inputs(root: Path, freq_mod) -> list[dict[str, object]]:
+    """Freeze official shared-cache selections locally without replacing local data."""
+    root = root.resolve()
+    plans = []
+    for symbol in _transport_member_symbols(root, require_effective=True):
+        for relative, local_dir, shared_dir, optional in (
+            (PRICE_CACHE_DIR, freq_mod.PRICE_DIR, freq_mod.SHARED_PRICE_DIR, False),
+            (SHARE_CACHE_DIR, freq_mod.SHARE_DIR, freq_mod.SHARED_SHARE_DIR, False),
+            (ADJUSTED_PRICE_CACHE_DIR, freq_mod.ADJ_PRICE_DIR, freq_mod.SHARED_ADJ_PRICE_DIR, True),
+        ):
+            target = root / relative / f"{symbol}.csv"
+            if Path(local_dir).resolve() != target.parent.resolve():
+                raise ValueError(f"official cache root differs from transport root: {relative}")
+            selected = freq_mod.resolve_cache_path(local_dir, shared_dir, symbol)
+            if target.exists():
+                # Even a damaged local cache is never silently replaced by a
+                # shared copy; the regular transport validator diagnoses it.
+                if selected is None or Path(selected).resolve() != target.resolve():
+                    raise ValueError(f"official resolver did not prefer existing canonical cache: {target}")
+                continue
+            if selected is None:
+                if optional:
+                    continue
+                raise FileNotFoundError(f"official loader has no required member cache: {relative}/{symbol}.csv")
+            source = Path(selected).resolve()
+            if not source.is_file() or source.stat().st_size <= 0:
+                raise ValueError(f"official loader selected empty or invalid cache: {source}")
+            plans.append((source, target, _sha256(source)))
+    records = []
+    for source, target, expected in plans:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        # Exclusive creation also prevents a concurrent refresh from being
+        # overwritten between resolver selection and materialization.
+        with target.open("xb") as destination:
+            try:
+                with source.open("rb") as origin:
+                    shutil.copyfileobj(origin, destination)
+            except BaseException:
+                destination.close()
+                target.unlink()
+                raise
+        if _sha256(target) != expected or _sha256(source) != expected:
+            target.unlink()
+            raise RuntimeError(f"cache changed during materialization: {source}")
+        records.append({"source": str(source), "local": target.relative_to(root).as_posix(),
+                        "source_sha256": expected, "local_sha256": expected,
+                        "bytes": target.stat().st_size})
+    return records
+
+
+def validate_member_cache_transport(root: Path, anchor: date | None) -> list[str]:
+    """New bundles require complete actual-position legs; legacy restore stays readable."""
+    try:
+        symbols = _transport_member_symbols(root, require_effective=True)
+    except (OSError, ValueError) as exc:
+        return [str(exc)]
+    errors = []
+    for symbol in symbols:
+        for directory, date_column, value_columns in (
+            (PRICE_CACHE_DIR, "date", {"close_raw"}),
+            (SHARE_CACHE_DIR, "change_date", {"total_shares_10k"}),
+            (ADJUSTED_PRICE_CACHE_DIR, "date", {"close_qfq", "close_adj", "close_raw"}),
+        ):
+            path = root / directory / f"{symbol}.csv"
+            if directory == ADJUSTED_PRICE_CACHE_DIR and not path.exists():
+                continue
+            try:
+                header, rows, _ = _read_csv_header_and_rows(path)
+                last = _csv_last_date(path, (date_column,))
+                if rows <= 0 or date_column not in header or not value_columns.intersection(header) or last is None:
+                    raise ValueError("empty or invalid cache schema/dates")
+                if directory == PRICE_CACHE_DIR and anchor is not None and last < anchor:
+                    raise ValueError(f"raw-price cache ends at {last}, before anchor {anchor}")
+            except (OSError, ValueError) as exc:
+                errors.append(f"incomplete member cache for transport: {path.relative_to(root).as_posix()}: {exc}")
+    return errors
 
 
 def validate_state(
@@ -532,6 +647,10 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None,
     root = root.resolve()
     before = validate_state(root, max_anchor_age_days=None if expected_date else max_anchor_age_days,
                             require_current_refresh_proof=False)
+    anchor = _parse_date(str(before.get("anchor_dates", {}).get("proxy_index", "")))
+    if anchor is not None:
+        before.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
+        before["ok"] = not before["errors"]
     if not before["ok"]:
         return before
     sys.path.insert(0, str(root))
@@ -627,6 +746,12 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
                extra_files: Iterable[str] = ()) -> dict[str, object]:
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    anchor = _parse_date(str(report.get("anchor_dates", {}).get("proxy_index", "")))
+    if anchor is not None:
+        report.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
+        report["ok"] = not report["errors"]
+    report.setdefault("errors", []).extend(validate_member_cache_transport(root, anchor))
+    report["ok"] = not report["errors"]
     if not report["ok"]:
         return report
     root = root.resolve()
@@ -710,6 +835,54 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
     return manifest
 
 
+def validate_reference_summary(root: Path, target: date) -> list[str]:
+    """Publication readiness, separate from legacy recovery-package integrity."""
+    try:
+        summary = json.loads((root / REQUIRED_FILES[1]).read_text(encoding="utf-8"))
+        rebalance = _csv_last_date(root / REQUIRED_FILES[5], ("rebalance_date",))
+        errors = []
+        for key, expected in (("latest_trade_date", target.isoformat()),
+                              ("latest_rebalance_date", rebalance.isoformat() if rebalance else None),
+                              ("summary_version_key", "hedge_0.8")):
+            if expected is None or summary.get(key) != expected:
+                errors.append(f"reference summary {key}: actual={summary.get(key)!r} expected={expected!r}")
+        signal = summary.get("latest_signal", {})
+        for key in ("current_holding", "next_holding"):
+            if not isinstance(signal.get(key), str) or not signal[key]:
+                errors.append(f"reference summary missing {key}")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap"):
+            if not math.isfinite(float(signal.get(key, float("nan")))):
+                errors.append(f"reference summary invalid {key}")
+        if summary.get("target_members", {}).get("count") != TOP_N:
+            errors.append("reference summary target members must contain 100 symbols")
+        return errors
+    except (OSError, ValueError, TypeError, AttributeError) as exc:
+        return [f"reference summary invalid: {exc}"]
+
+
+def persist_reference_summary(v2_0, args, base_paths, member_context, target: date) -> None:
+    """Build the consumer's summary from refreshed data; never relabel an old one."""
+    base = v2_0.base_mod
+    context = member_context
+    if context["result"].index[-1].date() != target:
+        raise ValueError("reference summary context is not at the refresh target")
+    members = context["target_members"]
+    base.assert_no_st_members(members, "refreshed reference summary members")
+    if len(members) != TOP_N or members["symbol"].nunique() != TOP_N:
+        raise ValueError("reference summary requires 100 unique target members")
+    summary = base.build_summary(
+        result=context["result"], latest_signal=context["latest_signal"],
+        latest_rebalance=context["latest_rebalance"], prev_rebalance=context["prev_rebalance"],
+        next_rebalance=context["next_rebalance"], members_df=members,
+        changes_df=context["changes_df"], capital=args.capital,
+        anchor_freshness=base.assess_history_anchor_freshness(
+            latest_trade_date=context["result"].index[-1],
+            max_stale_days=args.max_stale_anchor_days, trading_dates=context["close_df"].index),
+    )
+    # Only the missing derived artifact is replaced; costed NAV/proxy bytes stay intact.
+    base._atomic_write_json(base_paths["summary"], summary, encoding="utf-8")
+
+
 def validate_refreshed_state(root: Path, target: date, max_age: int | None) -> dict[str, object]:
     """A holiday gap needs independent session and current member proof, not rebuilding."""
     if max_age is not None and (_cn_today() - target).days > max_age:
@@ -717,8 +890,12 @@ def validate_refreshed_state(root: Path, target: date, max_age: int | None) -> d
         expected = latest_completed_session()
         if target != expected:
             raise RuntimeError(f"Refreshed anchor {target} misses completed exchange session {expected}")
-        return preflight_state(root, max_age, expected_date=expected)
-    return validate_state(root, max_anchor_age_days=max_age)
+        report = preflight_state(root, max_age, expected_date=expected)
+    else:
+        report = validate_state(root, max_anchor_age_days=max_age)
+    report.setdefault("errors", []).extend(validate_reference_summary(root, target))
+    report["ok"] = not report["errors"]
+    return report
 
 
 def _log_refresh_phase(phase: str) -> None:
@@ -764,13 +941,17 @@ def refresh_state(
             target_end_ts,
         )
         _log_refresh_phase("validate_static_members")
-        v2_0.base_mod.ensure_static_members_fresh(
+        member_context = v2_0.base_mod.ensure_static_members_fresh(
             args,
             base_paths,
             panel_path,
             target_end_ts,
             base_context,
         )
+        _log_refresh_phase("persist_reference_summary")
+        persist_reference_summary(v2_0, args, base_paths, member_context, target_end_date)
+        _log_refresh_phase("materialize_member_cache_inputs")
+        materialized_caches = materialize_member_cache_inputs(root, v2_0.base_mod.freq_mod)
         _log_refresh_phase("validate_refreshed_state")
         _write_refresh_proof(root, target_end_date)
         report = validate_refreshed_state(root, target_end_date, max_anchor_age_days)
@@ -778,6 +959,7 @@ def refresh_state(
         report["context_anchor_date"] = context_anchor_date.isoformat()
         report["target_end_date"] = target_end_date.isoformat()
         report["panel_path"] = str(panel_path)
+        report["materialized_member_caches"] = materialized_caches
         report["refresh_source"] = "fresh"
         enforce_anchor_target(report, target_end_date)
         if context_anchor_date < target_end_date:

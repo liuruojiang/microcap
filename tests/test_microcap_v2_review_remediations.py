@@ -1776,7 +1776,7 @@ def test_tracked_frozen_tail_authority_matches_post_rebalance_seed(tmp_path: Pat
         snapshot_path.write_bytes(tracked_bytes(path))
         files[label] = snapshot_path
     assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
-    assert authority["seed_end_date"] == "2026-09-03"
+    assert authority["seed_end_date"] == "2026-09-17"
     assert authority["seed_file_sha256"] == {
         label: v2_0.base_mod._file_sha256(path) for label, path in files.items()
     }

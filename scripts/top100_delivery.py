@@ -437,6 +437,7 @@ def main(argv: list[str] | None = None) -> int:
             cached_target = reusable_confirmed_today(root)
             target = cached_target or independent_target(root)
             report = validate_manifest(root, inspect_outputs(root, target))
+            report["errors"].extend(state.validate_reference_summary(root, state._parse_date(target)))
             report["date_proof_source"] = "unchanged_independent_today_close_proof_max_15min" if cached_target else "live_official_history_loader"
             report["release_sha"] = release
             report["errors"].extend(state.validate_state(root, max_anchor_age_days=5).get("errors", []))

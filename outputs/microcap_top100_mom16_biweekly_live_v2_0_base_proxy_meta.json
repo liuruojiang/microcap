@@ -1,13 +1,15 @@
 {
   "index_code": "TOP100_BIWEEKLY_THURSDAY_PROXY",
-  "source_used": "local_cache_proxy",
-  "universe_source": "backtest_cache_security_master",
-  "universe_symbol_count": 4975,
+  "source_used": "approved_executed_member_continuation",
+  "universe_source": "explicit_symbols",
+  "universe_symbol_count": 572,
   "symbol_load_stats": {
-    "requested_count": 4975,
-    "loaded_count": 4975,
-    "legitimately_unavailable_count": 0,
-    "legitimately_unavailable": [],
+    "requested_count": 572,
+    "loaded_count": 571,
+    "legitimately_unavailable_count": 1,
+    "legitimately_unavailable": [
+      "300391"
+    ],
     "failure_count": 0,
     "failures": {}
   },
@@ -36,12 +38,17 @@
     "security_meta_cache_fingerprint": {
       "present_count": 4975,
       "missing_count": 0,
-      "sha256": "1f09de33716deb9742593765a1121f223ed0cee86b29c4e343ce9b63f6e4f94e"
+      "sha256": "464011f06d52b9e5856218f53ad6060507609915ec4b66ce5f10ac29e3270eb2"
     },
     "security_master_enabled": true
   },
   "start_date": "2010-01-05",
-  "end_date": "2026-09-03",
-  "rebalance_dates_count": 431,
-  "effective_start_date": "2010-01-05"
+  "end_date": "2026-09-17",
+  "rebalance_dates_count": 432,
+  "effective_start_date": "2010-01-05",
+  "recent_extension_start": "2026-09-17",
+  "recent_candidate_symbols": 572,
+  "continuation_bridge_date": "2026-09-03",
+  "approved_migration_review_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
+  "metadata_evidence_completion": "2026-09-17 official HTTPS query; ten legacy records completed; ST intervals unchanged"
 }

@@ -64,7 +64,12 @@ def _write_minimal_required_state(root: Path) -> None:
     _write_csv(root / realtime_state_bundle.REQUIRED_FILES[0], daily)
     summary = root / realtime_state_bundle.REQUIRED_FILES[1]
     summary.parent.mkdir(parents=True, exist_ok=True)
-    summary.write_text("{}", encoding="utf-8")
+    summary.write_text(json.dumps({
+        "latest_trade_date": "2026-08-07", "latest_rebalance_date": "2026-08-06",
+        "summary_version_key": "hedge_0.8", "target_members": {"count": 100},
+        "latest_signal": {"current_holding": "cash", "next_holding": "cash",
+                          "microcap_mom": 0., "hedge_mom": 0., "momentum_gap": 0.},
+    }), encoding="utf-8")
     _write_csv(root / realtime_state_bundle.REQUIRED_FILES[2], daily)
     proxy_meta = root / realtime_state_bundle.REQUIRED_FILES[3]
     proxy_meta.write_text("{}", encoding="utf-8")
@@ -208,6 +213,15 @@ def test_restore_state_rejects_tampered_payload_before_extracting(tmp_path: Path
         ),
         encoding="utf-8",
     )
+    # New bundles certify actual holdings and all cache legs, not only display targets.
+    members = _proxy_member_rows("2026-08-06")
+    members.rename(columns={"rebalance_date": "as_of_date"}).to_csv(
+        source / realtime_state_bundle.PROXY_EFFECTIVE_MEMBERS_REL, index=False)
+    for symbol in members["symbol"]:
+        _write_csv(source / realtime_state_bundle.PRICE_CACHE_DIR / f"{symbol}.csv",
+                   pd.DataFrame({"date": ["2026-08-07"], "close_raw": [10.0]}))
+        _write_csv(source / realtime_state_bundle.SHARE_CACHE_DIR / f"{symbol}.csv",
+                   pd.DataFrame({"change_date": ["2026-08-06"], "total_shares_10k": [10000.0]}))
     assert realtime_state_bundle.pack_state(source, bundle, max_anchor_age_days=None)["ok"] is True
     with zipfile.ZipFile(bundle, "a") as archive:
         archive.writestr(realtime_state_bundle.REQUIRED_FILES[1], "tampered")
