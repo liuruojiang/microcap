@@ -342,9 +342,35 @@ def _transport_member_symbols(root: Path, *, require_effective: bool = False) ->
     return sorted(symbols)
 
 
+def _transport_universe_symbols(root: Path) -> list[str]:
+    """Keep the audited ranking universe, not just today's positions, recoverable."""
+    return sorted(path.stem for path in (root / ".microcap_index_cache/security_meta").glob("*.json")
+                  if len(path.stem) == 6 and path.stem.isascii() and path.stem.isdigit())
+
+
+def validate_universe_cache_transport(root: Path) -> list[str]:
+    errors = []
+    for symbol in _transport_universe_symbols(root):
+        for directory, date_column, value_columns in (
+            (PRICE_CACHE_DIR, "date", {"close_raw"}),
+            (SHARE_CACHE_DIR, "change_date", {"total_shares_10k"}),
+        ):
+            path = root / directory / f"{symbol}.csv"
+            try:
+                with path.open("r", encoding="utf-8-sig", newline="") as stream:
+                    reader = csv.DictReader(stream)
+                    if not ({date_column} | value_columns).issubset(reader.fieldnames or []):
+                        raise ValueError("required columns missing")
+                    if next(reader, None) is None:
+                        raise ValueError("empty cache")
+            except (OSError, ValueError) as exc:
+                errors.append(f"ranking universe cache unavailable: {symbol}/{directory}: {exc}")
+    return errors
+
+
 def _iter_current_member_cache_files(root: Path) -> list[str]:
     files: list[str] = []
-    for symbol in _transport_member_symbols(root):
+    for symbol in sorted(set(_transport_member_symbols(root)) | set(_transport_universe_symbols(root))):
         for cache_dir in (PRICE_CACHE_DIR, SHARE_CACHE_DIR, ADJUSTED_PRICE_CACHE_DIR):
             rel = f"{cache_dir}/{symbol}.csv"
             if (root / rel).is_file():
@@ -356,7 +382,7 @@ def materialize_member_cache_inputs(root: Path, freq_mod) -> list[dict[str, obje
     """Freeze official shared-cache selections locally without replacing local data."""
     root = root.resolve()
     plans = []
-    for symbol in _transport_member_symbols(root, require_effective=True):
+    for symbol in sorted(set(_transport_member_symbols(root, require_effective=True)) | set(freq_mod.list_backtest_universe_symbols())):
         for relative, local_dir, shared_dir, optional in (
             (PRICE_CACHE_DIR, freq_mod.PRICE_DIR, freq_mod.SHARED_PRICE_DIR, False),
             (SHARE_CACHE_DIR, freq_mod.SHARE_DIR, freq_mod.SHARED_SHARE_DIR, False),
@@ -751,6 +777,7 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
         report.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
         report["ok"] = not report["errors"]
     report.setdefault("errors", []).extend(validate_member_cache_transport(root, anchor))
+    report["errors"].extend(validate_universe_cache_transport(root))
     report["ok"] = not report["errors"]
     if not report["ok"]:
         return report
