@@ -1,0 +1,44 @@
+{
+  "v2_0": {
+    "migration": {
+      "status": "clean",
+      "costed_sha256": "7087c5af3c6b8c2d37aba52a90e8740f64b82fdd79766d565d103aa73f059f58",
+      "rows": 4025,
+      "latest_date": "2026-09-17"
+    },
+    "clean_rerun": {
+      "status": "clean",
+      "costed_sha256": "7087c5af3c6b8c2d37aba52a90e8740f64b82fdd79766d565d103aa73f059f58",
+      "rows": 4025,
+      "latest_date": "2026-09-17"
+    }
+  },
+  "v2_3": {
+    "migration": {
+      "status": "clean",
+      "costed_sha256": "7e7cba7c8975d4c0e43a63bc827338e8238ba871ec13c4cb83ae837c26353fe4",
+      "rows": 3980,
+      "latest_date": "2026-09-17"
+    },
+    "clean_rerun": {
+      "status": "clean",
+      "costed_sha256": "7e7cba7c8975d4c0e43a63bc827338e8238ba871ec13c4cb83ae837c26353fe4",
+      "rows": 3980,
+      "latest_date": "2026-09-17"
+    }
+  },
+  "v2_5": {
+    "migration": {
+      "status": "clean",
+      "costed_sha256": "f63d67bb2a33bb714fe1c9d707482a531d4817d3a0e8f8ba1e4803e1e722f0dc",
+      "rows": 3980,
+      "latest_date": "2026-09-17"
+    },
+    "clean_rerun": {
+      "status": "clean",
+      "costed_sha256": "f63d67bb2a33bb714fe1c9d707482a531d4817d3a0e8f8ba1e4803e1e722f0dc",
+      "rows": 3980,
+      "latest_date": "2026-09-17"
+    }
+  }
+}

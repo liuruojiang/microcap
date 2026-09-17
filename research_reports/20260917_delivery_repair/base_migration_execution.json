@@ -1,0 +1,32 @@
+{
+  "approved_review_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
+  "backup": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\.codex_backups\\approved_migration_20260917_170121",
+  "base_frozen_prefix_through": "2026-09-03",
+  "base_frozen_prefix_unchanged": true,
+  "files": {
+    "proxy_index": {
+      "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256": "a2dda807e88e49019e646dec462e5e35c3e83792a2b542daa7bd90554177fb23"
+    },
+    "costed_nav": {
+      "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256": "915f19ae2cab9f84772c7b61556c12da992ab453fbba23e90679de009894cbb1"
+    },
+    "proxy_meta": {
+      "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "sha256": "960c530a900b8062fa0c6e460d88d6557c1caeeb09a4f95d2e11ecb0bf28d302"
+    },
+    "proxy_members": {
+      "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+      "sha256": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+    },
+    "proxy_turnover": {
+      "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+    },
+    "proxy_effective_members": {
+      "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv",
+      "sha256": "4aaa0eeb26c14d31a046a97e32cdf5b2ebc320916147c680da1bc22378df23bc"
+    }
+  }
+}
