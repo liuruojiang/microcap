@@ -73,6 +73,7 @@ def test_refreshed_holiday_state_requires_independent_session_and_preflight(monk
     anchor = date(2026,9,30)
     monkeypatch.setattr(state, '_cn_today', lambda: date(2026,10,8))
     monkeypatch.setattr(calendar, 'latest_completed_session', lambda: anchor)
+    monkeypatch.setattr(state, 'validate_reference_summary', lambda *a: [])
     calls = []
     monkeypatch.setattr(state, 'preflight_state', lambda root, age, expected_date: (
         calls.append((root,age,expected_date)) or {'ok':True}))

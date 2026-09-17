@@ -32,6 +32,12 @@ def workspace(tmp_path):
     write(tmp_path, f"outputs/{delivery.BASE_FILES['proxy_turnover']}",
           "rebalance_date\n2026-09-03\n")
     write(tmp_path, delivery.AUTHORITY, "{}")
+    write(tmp_path, delivery.state.REQUIRED_FILES[1], json.dumps({
+        "latest_trade_date": "2026-09-03", "latest_rebalance_date": "2026-09-03",
+        "summary_version_key": "hedge_0.8", "target_members": {"count": 100},
+        "latest_signal": {"current_holding": "cash", "next_holding": "cash",
+                          "microcap_mom": 0., "hedge_mom": 0., "momentum_gap": 0.},
+    }))
     for version, costed in delivery.COSTED.items():
         active_holding = "long_microcap_top100" if version == "5" else "long_microcap_short_zz1000"
         prefix = f"microcap_top100_mom16_biweekly_live_v2_{version}"

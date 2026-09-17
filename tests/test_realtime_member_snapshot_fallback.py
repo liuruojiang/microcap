@@ -64,7 +64,12 @@ def _write_minimal_required_state(root: Path) -> None:
     _write_csv(root / realtime_state_bundle.REQUIRED_FILES[0], daily)
     summary = root / realtime_state_bundle.REQUIRED_FILES[1]
     summary.parent.mkdir(parents=True, exist_ok=True)
-    summary.write_text("{}", encoding="utf-8")
+    summary.write_text(json.dumps({
+        "latest_trade_date": "2026-08-07", "latest_rebalance_date": "2026-08-06",
+        "summary_version_key": "hedge_0.8", "target_members": {"count": 100},
+        "latest_signal": {"current_holding": "cash", "next_holding": "cash",
+                          "microcap_mom": 0., "hedge_mom": 0., "momentum_gap": 0.},
+    }), encoding="utf-8")
     _write_csv(root / realtime_state_bundle.REQUIRED_FILES[2], daily)
     proxy_meta = root / realtime_state_bundle.REQUIRED_FILES[3]
     proxy_meta.write_text("{}", encoding="utf-8")

@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 import sys
 import tempfile
 import zipfile
@@ -532,6 +533,10 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None,
     root = root.resolve()
     before = validate_state(root, max_anchor_age_days=None if expected_date else max_anchor_age_days,
                             require_current_refresh_proof=False)
+    anchor = _parse_date(str(before.get("anchor_dates", {}).get("proxy_index", "")))
+    if anchor is not None:
+        before.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
+        before["ok"] = not before["errors"]
     if not before["ok"]:
         return before
     sys.path.insert(0, str(root))
@@ -627,6 +632,10 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
                extra_files: Iterable[str] = ()) -> dict[str, object]:
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    anchor = _parse_date(str(report.get("anchor_dates", {}).get("proxy_index", "")))
+    if anchor is not None:
+        report.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
+        report["ok"] = not report["errors"]
     if not report["ok"]:
         return report
     root = root.resolve()
@@ -710,6 +719,54 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
     return manifest
 
 
+def validate_reference_summary(root: Path, target: date) -> list[str]:
+    """Publication readiness, separate from legacy recovery-package integrity."""
+    try:
+        summary = json.loads((root / REQUIRED_FILES[1]).read_text(encoding="utf-8"))
+        rebalance = _csv_last_date(root / REQUIRED_FILES[5], ("rebalance_date",))
+        errors = []
+        for key, expected in (("latest_trade_date", target.isoformat()),
+                              ("latest_rebalance_date", rebalance.isoformat() if rebalance else None),
+                              ("summary_version_key", "hedge_0.8")):
+            if expected is None or summary.get(key) != expected:
+                errors.append(f"reference summary {key}: actual={summary.get(key)!r} expected={expected!r}")
+        signal = summary.get("latest_signal", {})
+        for key in ("current_holding", "next_holding"):
+            if not isinstance(signal.get(key), str) or not signal[key]:
+                errors.append(f"reference summary missing {key}")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap"):
+            if not math.isfinite(float(signal.get(key, float("nan")))):
+                errors.append(f"reference summary invalid {key}")
+        if summary.get("target_members", {}).get("count") != TOP_N:
+            errors.append("reference summary target members must contain 100 symbols")
+        return errors
+    except (OSError, ValueError, TypeError, AttributeError) as exc:
+        return [f"reference summary invalid: {exc}"]
+
+
+def persist_reference_summary(v2_0, args, base_paths, member_context, target: date) -> None:
+    """Build the consumer's summary from refreshed data; never relabel an old one."""
+    base = v2_0.base_mod
+    context = member_context
+    if context["result"].index[-1].date() != target:
+        raise ValueError("reference summary context is not at the refresh target")
+    members = context["target_members"]
+    base.assert_no_st_members(members, "refreshed reference summary members")
+    if len(members) != TOP_N or members["symbol"].nunique() != TOP_N:
+        raise ValueError("reference summary requires 100 unique target members")
+    summary = base.build_summary(
+        result=context["result"], latest_signal=context["latest_signal"],
+        latest_rebalance=context["latest_rebalance"], prev_rebalance=context["prev_rebalance"],
+        next_rebalance=context["next_rebalance"], members_df=members,
+        changes_df=context["changes_df"], capital=args.capital,
+        anchor_freshness=base.assess_history_anchor_freshness(
+            latest_trade_date=context["result"].index[-1],
+            max_stale_days=args.max_stale_anchor_days, trading_dates=context["close_df"].index),
+    )
+    # Only the missing derived artifact is replaced; costed NAV/proxy bytes stay intact.
+    base._atomic_write_json(base_paths["summary"], summary, encoding="utf-8")
+
+
 def validate_refreshed_state(root: Path, target: date, max_age: int | None) -> dict[str, object]:
     """A holiday gap needs independent session and current member proof, not rebuilding."""
     if max_age is not None and (_cn_today() - target).days > max_age:
@@ -717,8 +774,12 @@ def validate_refreshed_state(root: Path, target: date, max_age: int | None) -> d
         expected = latest_completed_session()
         if target != expected:
             raise RuntimeError(f"Refreshed anchor {target} misses completed exchange session {expected}")
-        return preflight_state(root, max_age, expected_date=expected)
-    return validate_state(root, max_anchor_age_days=max_age)
+        report = preflight_state(root, max_age, expected_date=expected)
+    else:
+        report = validate_state(root, max_anchor_age_days=max_age)
+    report.setdefault("errors", []).extend(validate_reference_summary(root, target))
+    report["ok"] = not report["errors"]
+    return report
 
 
 def _log_refresh_phase(phase: str) -> None:
@@ -764,13 +825,15 @@ def refresh_state(
             target_end_ts,
         )
         _log_refresh_phase("validate_static_members")
-        v2_0.base_mod.ensure_static_members_fresh(
+        member_context = v2_0.base_mod.ensure_static_members_fresh(
             args,
             base_paths,
             panel_path,
             target_end_ts,
             base_context,
         )
+        _log_refresh_phase("persist_reference_summary")
+        persist_reference_summary(v2_0, args, base_paths, member_context, target_end_date)
         _log_refresh_phase("validate_refreshed_state")
         _write_refresh_proof(root, target_end_date)
         report = validate_refreshed_state(root, target_end_date, max_anchor_age_days)
