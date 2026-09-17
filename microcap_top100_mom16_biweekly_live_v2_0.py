@@ -7541,6 +7541,7 @@ def load_member_snapshot(
 def load_member_snapshot_from_proxy_members(
     paths: dict[str, Path],
     snapshot_dates: list[pd.Timestamp],
+    *, preserve_historical_names: bool = False,
 ) -> dict[pd.Timestamp, pd.DataFrame]:
     if not snapshot_dates or not paths["proxy_members"].exists():
         return {}
@@ -7558,7 +7559,8 @@ def load_member_snapshot_from_proxy_members(
     if "name" not in members.columns:
         return {}
     members["name"] = members["name"].fillna("").astype(str).str.strip()
-    members = members.loc[members["name"].map(is_live_tradable_name)]
+    if not preserve_historical_names:
+        members = members.loc[members["name"].map(is_live_tradable_name)]
     if members.empty:
         return {}
 
@@ -9098,7 +9100,7 @@ def ensure_static_members_fresh(
     # Formal proxy snapshots and executed members own the refreshed state.
     # Re-ranking raw caches here can disagree with the portfolio that earned NAV.
     formal_dates = [dt for dt in [latest_rebalance, prev_rebalance] if dt is not None]
-    formal = load_member_snapshot_from_proxy_members(paths, formal_dates)
+    formal = load_member_snapshot_from_proxy_members(paths, formal_dates, preserve_historical_names=True)
     has_formal_state = paths.get("proxy_effective_members", Path("__missing__")).exists()
     if has_formal_state:
         for dt in formal_dates:
@@ -9106,6 +9108,7 @@ def ensure_static_members_fresh(
             if frame is None or len(frame) != TOP_N or frame["symbol"].nunique() != TOP_N:
                 raise RuntimeError("Formal proxy member snapshot incomplete; refusing independent re-ranking")
         target_members = add_capital_columns(formal[latest_rebalance.normalize()].copy(), capital=args.capital)
+        assert_no_st_members(target_members, "current formal target members")
         prev_members = formal.get(pd.Timestamp(prev_rebalance).normalize()) if prev_rebalance is not None else None
         executed = _continuation_members_at_bridge(paths, pd.Timestamp(target_end_date).normalize())
         names = pd.read_csv(paths["proxy_members"], dtype={"symbol": str})

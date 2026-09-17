@@ -160,8 +160,8 @@ def test_static_refresh_uses_formal_executed_members_without_reranking(tmp_path,
     paths["proxy_members"] = tmp_path / "members.csv"
     symbols = [f"{i:06d}" for i in range(100)]
     target = symbols[1:] + ["000101"]
-    rows = [{"rebalance_date": day, "symbol": symbol, "rank": rank, "name": f"Company{symbol}", "market_cap": 100.0}
-            for day, members in [("2026-08-20", symbols), ("2026-09-03", target)]
+    rows = [{"rebalance_date": day, "symbol": symbol, "rank": rank, "name": "*ST historical label" if symbol == "000102" else f"Company{symbol}", "market_cap": 100.0}
+            for day, members in [("2026-08-20", symbols[:-1] + ["000102"]), ("2026-09-03", target)]
             for rank, symbol in enumerate(members, 1)]
     pd.DataFrame(rows).to_csv(paths["proxy_members"], index=False)
     namespace = base.ensure_static_members_fresh.__globals__
@@ -176,3 +176,15 @@ def test_static_refresh_uses_formal_executed_members_without_reranking(tmp_path,
     assert result["target_members"].symbol.tolist() == target
     assert result["effective_members"].symbol.tolist() == symbols
     assert len(result["effective_members"]) == 100
+
+
+def test_historical_proxy_names_are_not_current_st_admission_filter(tmp_path):
+    path = tmp_path / "members.csv"
+    pd.DataFrame({"rebalance_date": ["2026-09-03", "2026-09-03"],
+                  "symbol": ["000001", "000002"], "name": ["*ST historic label", "Company"]}).to_csv(path, index=False)
+    day = pd.Timestamp("2026-09-03")
+    assert len(base.load_member_snapshot_from_proxy_members({"proxy_members": path}, [day])[day]) == 1
+    preserved = base.load_member_snapshot_from_proxy_members({"proxy_members": path}, [day], preserve_historical_names=True)[day]
+    assert len(preserved) == 2
+    with pytest.raises(RuntimeError):
+        base.assert_no_st_members(preserved, "current formal target members")
