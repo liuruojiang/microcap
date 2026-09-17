@@ -89,6 +89,7 @@ def official_runtime(root):
         SHARED_SHARE_DIR=shared / "share_change",
         SHARED_ADJ_PRICE_DIR=shared / "prices_qfq",
         resolve_cache_path=v2.base_mod.freq_mod.resolve_cache_path,
+        list_backtest_universe_symbols=lambda: [],
     )
 
 
@@ -129,3 +130,25 @@ def test_materialize_missing_required_source_fails_before_any_copy(transport_roo
     with pytest.raises(FileNotFoundError, match="required member cache"):
         state.materialize_member_cache_inputs(transport_root, runtime)
     assert not (runtime.SHARE_DIR / "000100.csv").exists()
+
+
+def test_recovery_includes_nonheld_ranking_candidate_inputs(transport_root):
+    code = "600999"
+    meta = transport_root / ".microcap_index_cache/security_meta"
+    meta.mkdir(parents=True, exist_ok=True)
+    (meta / (code + ".json")).write_text("{}", encoding="utf-8")
+    runtime = official_runtime(transport_root)
+    runtime.list_backtest_universe_symbols = lambda: [code]
+    for directory, content in [(runtime.SHARED_PRICE_DIR, "date,close_raw\n2026-04-30,10\n"),
+                               (runtime.SHARED_SHARE_DIR, "change_date,total_shares_10k\n2020-01-01,1000\n")]:
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / (code + ".csv")).write_text(content, encoding="utf-8")
+    assert state.validate_universe_cache_transport(transport_root)
+    copied = state.materialize_member_cache_inputs(transport_root, runtime)
+    assert len(copied) == 2
+    assert state.validate_universe_cache_transport(transport_root) == []
+    inventory = state._iter_current_member_cache_files(transport_root)
+    assert state.PRICE_CACHE_DIR + "/" + code + ".csv" in inventory
+    assert state.SHARE_CACHE_DIR + "/" + code + ".csv" in inventory
+    # Nonheld history is retained without pretending every inactive stock traded today.
+    assert state.validate_member_cache_transport(transport_root, date(2026, 9, 17)) == []

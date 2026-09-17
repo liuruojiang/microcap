@@ -2076,6 +2076,9 @@ def test_frozen_tail_extension_is_reusable_only_with_validated_written_rows(
             }.items()
         },
     }
+    for label, path in (("proxy_index", args.index_csv), ("costed_nav", args.costed_nav_csv)):
+        prefix = b"".join(path.read_bytes().replace(b"\r\n", b"\n").splitlines(keepends=True)[:2])
+        authority["seed_file_sha256"][label] = hashlib.sha256(prefix).hexdigest()
     authority_path = tmp_path / "authority.json"
     authority_path.write_text(json.dumps(authority), encoding="utf-8")
     meta = {
