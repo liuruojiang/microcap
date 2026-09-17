@@ -213,6 +213,15 @@ def test_restore_state_rejects_tampered_payload_before_extracting(tmp_path: Path
         ),
         encoding="utf-8",
     )
+    # New bundles certify actual holdings and all cache legs, not only display targets.
+    members = _proxy_member_rows("2026-08-06")
+    members.rename(columns={"rebalance_date": "as_of_date"}).to_csv(
+        source / realtime_state_bundle.PROXY_EFFECTIVE_MEMBERS_REL, index=False)
+    for symbol in members["symbol"]:
+        _write_csv(source / realtime_state_bundle.PRICE_CACHE_DIR / f"{symbol}.csv",
+                   pd.DataFrame({"date": ["2026-08-07"], "close_raw": [10.0]}))
+        _write_csv(source / realtime_state_bundle.SHARE_CACHE_DIR / f"{symbol}.csv",
+                   pd.DataFrame({"change_date": ["2026-08-06"], "total_shares_10k": [10000.0]}))
     assert realtime_state_bundle.pack_state(source, bundle, max_anchor_age_days=None)["ok"] is True
     with zipfile.ZipFile(bundle, "a") as archive:
         archive.writestr(realtime_state_bundle.REQUIRED_FILES[1], "tampered")

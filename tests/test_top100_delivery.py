@@ -31,6 +31,14 @@ def workspace(tmp_path):
     )
     write(tmp_path, f"outputs/{delivery.BASE_FILES['proxy_turnover']}",
           "rebalance_date\n2026-09-03\n")
+    effective_lines = ["as_of_date,rank,symbol"] + [
+        f"2026-09-03,{rank},{rank:06d}" for rank in range(1, 101)]
+    write(tmp_path, delivery.state.PROXY_EFFECTIVE_MEMBERS_REL, "\n".join(effective_lines) + "\n")
+    for rank in range(1, 101):
+        write(tmp_path, f"{delivery.state.PRICE_CACHE_DIR}/{rank:06d}.csv",
+              "date,close_raw\n2026-09-03,10.0\n")
+        write(tmp_path, f"{delivery.state.SHARE_CACHE_DIR}/{rank:06d}.csv",
+              "change_date,total_shares_10k\n2026-09-01,10000.0\n")
     write(tmp_path, delivery.AUTHORITY, "{}")
     write(tmp_path, delivery.state.REQUIRED_FILES[1], json.dumps({
         "latest_trade_date": "2026-09-03", "latest_rebalance_date": "2026-09-03",
