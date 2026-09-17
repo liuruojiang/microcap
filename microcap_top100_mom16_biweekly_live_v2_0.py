@@ -3401,20 +3401,30 @@ def simulate_rebalance_path(
     one_side_cost_rate: float,
     top_n: int = TOP_N,
     execution_timing: str = EXECUTION_TIMING_NEXT_OPEN,
+    initial_members: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[pd.Timestamp, list[str]]]:
     if execution_timing not in {EXECUTION_TIMING_NEXT_OPEN, EXECUTION_TIMING_CLOSE}:
         raise ValueError(f"unsupported execution_timing: {execution_timing}")
 
     rebalance_set = set(rebalance_dates)
+    if initial_members is not None:
+        if len(initial_members) != top_n or len(set(initial_members)) != top_n:
+            raise ValueError("Continuation requires a complete unique executed member seed")
+        if not set(initial_members).issubset(returns_df.columns):
+            raise ValueError("Continuation returns are missing executed members")
+        if len(trading_dates):
+            # The seed is the settled state after this close, not an instruction
+            # to execute its rebalance a second time.
+            rebalance_set.discard(pd.Timestamp(trading_dates[0]))
     turnover_rows: list[dict[str, object]] = []
     effective_members_map: dict[pd.Timestamp, list[str]] = {}
 
     index_rows: list[dict[str, object]] = []
-    current_members: list[str] = []
+    current_members: list[str] = list(initial_members or [])
     current_level = 1000.0
     for i, dt in enumerate(trading_dates):
         if i == 0:
-            index_rows.append({"date": dt, "close": current_level, "daily_return": np.nan, "holding_count": 0})
+            index_rows.append({"date": dt, "close": current_level, "daily_return": np.nan, "holding_count": len(current_members)})
             continue
 
         prev_dt = pd.Timestamp(trading_dates[i - 1])
@@ -4655,6 +4665,26 @@ def splice_recent_proxy_extension(
     return combined
 
 
+def _continuation_members_at_bridge(paths: dict[str, Path], bridge: pd.Timestamp) -> list[str]:
+    """Read an executed seed that covers every rebalance through the bridge."""
+    path = paths.get("proxy_effective_members")
+    if path is None or not path.is_file():
+        raise RuntimeError("Missing executed member seed; restore an approved whole-delivery state")
+    frame = pd.read_csv(path, dtype={"symbol": str})
+    frame["as_of_date"] = pd.to_datetime(frame["as_of_date"], errors="raise").dt.normalize()
+    if frame.empty or frame["as_of_date"].nunique() != 1:
+        raise RuntimeError("Executed member seed has no single dated identity")
+    seed_date = pd.Timestamp(frame["as_of_date"].iloc[0])
+    turnover = pd.read_csv(paths["proxy_turnover"])
+    dates = pd.to_datetime(turnover["rebalance_date"], errors="raise").dt.normalize()
+    if seed_date > bridge or ((dates > seed_date) & (dates <= bridge)).any():
+        raise RuntimeError("Executed member seed does not cover the frozen bridge; approved recovery required")
+    members = frame.sort_values("rank")["symbol"].astype(str).str.zfill(6).tolist()
+    if len(members) != TOP_N or len(set(members)) != TOP_N:
+        raise RuntimeError("Executed bridge members must contain 100 unique symbols")
+    return members
+
+
 def extend_index_recent_window(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -4677,21 +4707,22 @@ def extend_index_recent_window(
     if panel_dates.empty:
         raise ValueError("No trading dates available from panel for recent extension.")
 
-    overlap_needed = max(LOOKBACK + 20, 40)
-    recent_dates = pd.DatetimeIndex(panel_dates.tail(overlap_needed))
-    if current_index_end not in recent_dates:
-        recent_dates = pd.DatetimeIndex(panel_dates.loc[panel_dates >= current_index_end - pd.Timedelta(days=45)])
+    # Continue the settled portfolio. Re-ranking a 40-day overlap can silently
+    # create a different historical portfolio even if its output rows are dropped.
+    recent_dates = pd.DatetimeIndex(panel_dates.loc[panel_dates >= current_index_end])
     if current_index_end not in recent_dates:
         raise RuntimeError(
             f"Recent extension window does not overlap current proxy end {current_index_end.date()}."
         )
 
+    initial_members = _continuation_members_at_bridge(paths, current_index_end)
     candidate_symbols = select_recent_candidate_symbols(
         paths=paths,
         current_index_end=current_index_end,
         target_end_date=target_end_date,
         max_workers=args.max_workers,
     )
+    candidate_symbols = sorted(set(candidate_symbols) | set(initial_members))
     refresh_price_cache_tail(
         target_end_date,
         args.max_workers,
@@ -4703,7 +4734,11 @@ def extend_index_recent_window(
         args=args,
         trading_dates=recent_dates,
         symbols=candidate_symbols,
+        initial_members=initial_members,
     )
+    final_members = meta.pop("continuation_effective_members")
+    if len(final_members) != TOP_N or len(set(final_members)) != TOP_N:
+        raise RuntimeError("Continuation produced incomplete executed members; no proxy files replaced")
     bridge_date = current_index_end
     validate_recent_bridge_alignment(index_df, recent_index_df, bridge_date)
     combined_index = splice_recent_proxy_extension(index_df, recent_index_df, bridge_date)
@@ -4718,6 +4753,8 @@ def extend_index_recent_window(
             existing_members["rebalance_date"] = pd.to_datetime(existing_members["rebalance_date"], errors="coerce")
             existing_members = existing_members.loc[existing_members["rebalance_date"] <= bridge_date]
         recent_members_out = recent_members_df.copy()
+        if recent_members_out.empty:
+            recent_members_out = pd.DataFrame(columns=existing_members.columns)
         recent_members_out["rebalance_date"] = pd.to_datetime(recent_members_out["rebalance_date"], errors="coerce")
         recent_members_out = recent_members_out.loc[recent_members_out["rebalance_date"] > bridge_date]
         combined_members = pd.concat([existing_members, recent_members_out], ignore_index=True)
@@ -4730,6 +4767,8 @@ def extend_index_recent_window(
             existing_turnover["rebalance_date"] = pd.to_datetime(existing_turnover["rebalance_date"], errors="coerce")
             existing_turnover = existing_turnover.loc[existing_turnover["rebalance_date"] <= bridge_date]
         recent_turnover_out = recent_turnover_df.copy()
+        if recent_turnover_out.empty:
+            recent_turnover_out = pd.DataFrame(columns=existing_turnover.columns)
         recent_turnover_out["rebalance_date"] = pd.to_datetime(
             recent_turnover_out["rebalance_date"], errors="coerce"
         )
@@ -4757,6 +4796,7 @@ def extend_index_recent_window(
     meta["source_used"] = "local_cache_proxy_recent_extension"
     meta["recent_extension_start"] = str(recent_start.date())
     meta["recent_candidate_symbols"] = int(len(candidate_symbols))
+    _write_proxy_effective_members(paths.get("proxy_effective_members"), target_end_date, final_members)
     _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
 
 
@@ -4784,6 +4824,7 @@ def build_local_proxy_bundle(
     args: argparse.Namespace,
     trading_dates: pd.DatetimeIndex,
     symbols: list[str] | None = None,
+    initial_members: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]:
     model_start = pd.Timestamp(freq_mod.START_DATE).normalize()
     trading_dates = pd.DatetimeIndex(trading_dates).normalize().unique().sort_values()
@@ -4791,6 +4832,8 @@ def build_local_proxy_bundle(
     if trading_dates.empty:
         raise RuntimeError(f"No trading dates available on or after model start {model_start.date()}.")
     rebalance_dates = build_biweekly_rebalance_dates(trading_dates)
+    if initial_members is not None:
+        rebalance_dates = rebalance_dates[rebalance_dates > trading_dates[0]]
     universe_source = "explicit_symbols"
     if symbols is None:
         symbols = freq_mod.load_universe()
@@ -4814,7 +4857,7 @@ def build_local_proxy_bundle(
         top_n=TOP_N,
     )
     members_df = freq_mod.build_target_members_frame(target_members_map, caps_by_date, name_map=name_map)
-    index_df, turnover_df, _ = freq_mod.simulate_rebalance_path(
+    index_df, turnover_df, effective_members_map = freq_mod.simulate_rebalance_path(
         trading_dates=trading_dates,
         returns_df=returns_df,
         target_members_map=target_members_map,
@@ -4824,6 +4867,7 @@ def build_local_proxy_bundle(
         one_side_cost_rate=0.003,
         top_n=TOP_N,
         execution_timing=EXECUTION_TIMING,
+        **({"initial_members": initial_members} if initial_members is not None else {}),
     )
     index_df["holding_effective"] = index_df["holding_count"].gt(0)
     index_df, members_df, turnover_df, effective_start = trim_proxy_history(index_df, members_df, turnover_df)
@@ -4872,6 +4916,11 @@ def build_local_proxy_bundle(
     }
     if effective_start is not None:
         meta["effective_start_date"] = str(effective_start.date())
+    if initial_members is not None:
+        meta["continuation_bridge_date"] = str(trading_dates[0].date())
+        meta["continuation_effective_members"] = (
+            effective_members_map[max(effective_members_map)] if effective_members_map else list(initial_members)
+        )
     return index_df, members_df, turnover_df, meta
 
 
