@@ -5022,6 +5022,34 @@ def _file_sha256(path: Path) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def _csv_frozen_prefix_sha256(path: Path, data_rows: int) -> str:
+    """Hash the original CSV header/rows, retaining all non-newline bytes."""
+    lines = path.read_bytes().replace(bytes((13, 10)), bytes((10,))).splitlines(keepends=True)
+    if data_rows < 1 or len(lines) < data_rows + 1:
+        return ""
+    return hashlib.sha256(b"".join(lines[:data_rows + 1])).hexdigest()
+
+
+def _atomic_append_csv_rows(path: Path, frame: pd.DataFrame) -> None:
+    """Append validated rows without reserializing a frozen numerical prefix."""
+    columns = list(pd.read_csv(path, nrows=0).columns)
+    if set(frame.columns).difference(columns):
+        raise RuntimeError("Frozen CSV continuation cannot introduce new columns")
+    payload = path.read_bytes()
+    if not payload.endswith(bytes((10,))):
+        raise RuntimeError("Frozen CSV seed must end with a complete newline")
+    appended = frame.reindex(columns=columns).to_csv(
+        index=False, header=False, date_format="%Y-%m-%d", lineterminator="\n"
+    ).encode("utf-8")
+    tmp = _atomic_temp_path(path)
+    try:
+        tmp.write_bytes(payload + appended)
+        _replace_with_retry(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
 def _load_frozen_tail_authority() -> dict[str, object] | None:
     try:
         payload = json.loads(FROZEN_TAIL_AUTHORITY_PATH.read_text(encoding="utf-8"))
@@ -5145,8 +5173,6 @@ def frozen_tail_extension_matches_authority(
     extension_end = pd.Timestamp(extension_end).normalize()
     if extension_start != seed_end or extension_end <= seed_end:
         return False
-    if (extension_end - seed_end).days > 10:
-        return False
     if pd.Timestamp(current_index_end).normalize() != extension_end:
         return False
     if pd.Timestamp(current_costed_end).normalize() != extension_end:
@@ -5210,6 +5236,23 @@ def frozen_tail_extension_matches_authority(
     if int((proxy_dates.dt.normalize() > seed_end).sum()) != extension_rows:
         return False
     if int((costed_dates.dt.normalize() > seed_end).sum()) != extension_rows:
+        return False
+    for label, path in (("proxy_index", args.index_csv), ("costed_nav", args.costed_nav_csv)):
+        if _csv_frozen_prefix_sha256(path, int(seed_rows.get(label) or 0)) != expected_hashes.get(label):
+            return False
+    proxy_tail_dates = pd.DatetimeIndex(proxy_dates[proxy_dates > seed_end]).normalize()
+    costed_tail_dates = pd.DatetimeIndex(costed_dates[costed_dates > seed_end]).normalize()
+    if not proxy_tail_dates.equals(costed_tail_dates):
+        return False
+    schedule_dates = pd.DatetimeIndex(proxy_dates).normalize()
+    panel_shadow = paths.get("panel_shadow")
+    if isinstance(panel_shadow, Path) and panel_shadow.is_file():
+        panel_dates = pd.to_datetime(pd.read_csv(panel_shadow, usecols=["date"])["date"], errors="coerce").dropna()
+        schedule_dates = pd.DatetimeIndex(panel_dates[panel_dates <= extension_end]).normalize().unique().sort_values()
+        if not schedule_dates[(schedule_dates > seed_end) & (schedule_dates <= extension_end)].equals(proxy_tail_dates):
+            return False
+    scheduled = build_biweekly_rebalance_dates(schedule_dates)
+    if ((scheduled > seed_end) & (scheduled <= extension_end)).any():
         return False
     proxy_tail = proxy.loc[proxy_dates.dt.normalize() > seed_end]
     costed_tail = costed.loc[costed_dates.dt.normalize() > seed_end]
@@ -5447,7 +5490,30 @@ def try_extend_proxy_index_without_rebalance(
         proxy = proxy.loc[proxy["date"].dt.normalize() <= current_end].copy()
     elif current_end >= target_end:
         return False
-    if (target_end - current_end).days > int(max_tail_calendar_days):
+    prior_meta = {}
+    if paths.get("proxy_meta") is not None and paths["proxy_meta"].exists():
+        prior_meta = json.loads(paths["proxy_meta"].read_text(encoding="utf-8"))
+    certified = False
+    costed_path = getattr(args, "costed_nav_csv", None)
+    if isinstance(costed_path, Path) and costed_path.is_file() and not replaced_flat_placeholder:
+        costed_end = read_csv_last_date(costed_path)
+        certified = frozen_tail_authority_matches_seed(args, paths, prior_meta, current_end, costed_end) or frozen_tail_extension_matches_authority(
+            args, paths, prior_meta, current_end, costed_end
+        )
+        if not certified and proxy_meta_matches_execution_model(prior_meta):
+            # A full cache uses normal compatibility, but an exact approved seed
+            # should still retain its bytes and certification when extending.
+            current_authority = _load_frozen_tail_authority() or {}
+            seed_end = pd.to_datetime(current_authority.get("seed_end_date"), errors="coerce")
+            seed_paths = {"proxy_index": args.index_csv, "costed_nav": costed_path,
+                          **{key: paths.get(key) for key in ("proxy_meta", "proxy_members", "proxy_turnover", "proxy_effective_members")}}
+            hashes = current_authority.get("seed_file_sha256", {})
+            certified = bool(current_authority.get("version") == FROZEN_TAIL_AUTHORITY_VERSION
+                             and current_end == seed_end and pd.Timestamp(costed_end) == seed_end
+                             and set(hashes) == set(seed_paths)
+                             and all(isinstance(path, Path) and path.is_file() and _file_sha256(path) == hashes[key]
+                                     for key, path in seed_paths.items()))
+    if not certified and (target_end - current_end).days > int(max_tail_calendar_days):
         return False
 
     panel_dates_frame = pd.read_csv(panel_path, usecols=["date"])
@@ -5475,7 +5541,18 @@ def try_extend_proxy_index_without_rebalance(
     if not target_members_map:
         return False
     effective_path = paths.get("proxy_effective_members")
-    effective_members = _read_proxy_effective_members(effective_path, current_end)
+    authority = _load_frozen_tail_authority() if certified else None
+    certified_seed = pd.Timestamp(authority["seed_end_date"]).normalize() if certified else current_end
+    effective_members = _read_proxy_effective_members(effective_path, certified_seed)
+    if certified and not effective_members:
+        return False
+    if not effective_members and isinstance(effective_path, Path) and effective_path.is_file():
+        # The file records the last execution, which need not be yesterday.
+        # Never re-rank or replay a frozen executed portfolio just to change its date.
+        try:
+            effective_members = _continuation_members_at_bridge(paths, current_end)
+        except (RuntimeError, ValueError, KeyError, OSError):
+            return False
     if not effective_members:
         effective_members = _reconstruct_effective_members_from_saved_targets(
             target_members_map=target_members_map,
@@ -5573,7 +5650,10 @@ def try_extend_proxy_index_without_rebalance(
     combined = pd.concat([proxy, pd.DataFrame(new_rows)], ignore_index=True, sort=False)
     combined["date"] = pd.to_datetime(combined["date"], errors="coerce")
     combined = combined.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset="date", keep="last")
-    _atomic_to_csv(combined, args.index_csv, index=False, encoding="utf-8")
+    if certified:
+        _atomic_append_csv_rows(args.index_csv, pd.DataFrame(new_rows))
+    else:
+        _atomic_to_csv(combined, args.index_csv, index=False, encoding="utf-8")
 
     if paths["proxy_meta"].exists():
         try:
@@ -5584,9 +5664,9 @@ def try_extend_proxy_index_without_rebalance(
         meta = {}
     meta["end_date"] = str(target_end.date())
     meta["tail_extension_method"] = "no_new_rebalance_saved_target_replay"
-    meta["tail_extension_start"] = str(current_end.date())
+    meta["tail_extension_start"] = str(certified_seed.date())
     meta["tail_extension_end"] = str(target_end.date())
-    meta["tail_extension_rows"] = len(new_rows)
+    meta["tail_extension_rows"] = int((combined["date"].dt.normalize() > certified_seed).sum()) if certified else len(new_rows)
     meta["tail_extension_effective_member_count"] = len(effective_members)
     meta["tail_extension_replaced_flat_placeholder"] = replaced_flat_placeholder
     meta["tail_extension_return_source_counts"] = return_sources
@@ -5687,7 +5767,7 @@ def ensure_strategy_files(
     ):
         return
 
-    if frozen_tail_seed_matches and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize():
+    if (frozen_tail_seed_matches or frozen_tail_extension_matches) and not meta_matches_execution_model and pd.Timestamp(current_index_end).normalize() < pd.Timestamp(target_end_date).normalize():
         if not try_extend_proxy_index_without_rebalance(args, paths, panel_path, target_end_date):
             raise RuntimeError(
                 "Exact frozen proxy seed could not be extended through the no-new-rebalance tail; "
@@ -7265,7 +7345,13 @@ def try_extend_costed_nav_without_turnover(
     ).sort_values("date")
     combined["date"] = pd.to_datetime(combined["date"], errors="coerce")
     combined = combined.dropna(subset=["date"]).drop_duplicates(subset="date", keep="last")
-    _atomic_to_csv(combined, args.costed_nav_csv, index=False, encoding="utf-8")
+    authority = _load_frozen_tail_authority()
+    seed_rows = (authority or {}).get("seed_file_rows", {}).get("costed_nav", 0)
+    seed_hash = (authority or {}).get("seed_file_sha256", {}).get("costed_nav")
+    if seed_hash and _csv_frozen_prefix_sha256(args.costed_nav_csv, int(seed_rows)) == seed_hash:
+        _atomic_append_csv_rows(args.costed_nav_csv, missing.reset_index().rename(columns={"index": "date"}))
+    else:
+        _atomic_to_csv(combined, args.costed_nav_csv, index=False, encoding="utf-8")
     return True
 
 
