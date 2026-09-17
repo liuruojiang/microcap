@@ -2831,6 +2831,32 @@ def latest_symbol_price_date(symbol: str) -> pd.Timestamp | None:
         return None
 
 
+class SecurityMetaHistoryCorrectionRequired(RuntimeError):
+    """A refresh cannot replace certified historical ST evidence implicitly."""
+
+
+def _preserve_security_meta_evidence(previous: dict[str, object], candidate: dict[str, object]) -> dict[str, object]:
+    identity = ("symbol", "meta_version", "st_notice_policy_version", "current_st_snapshot_name")
+    if not all(previous.get(key) == candidate.get(key) for key in identity):
+        return candidate
+    old_intervals = previous.get("st_intervals")
+    if not isinstance(old_intervals, list) or not old_intervals:
+        return candidate
+    source_failed = any(str(candidate.get(key, "")).startswith("error:")
+                        for key in ("name_history_status", "notice_query_status"))
+    if source_failed:
+        # Keep exact certified bytes/lineage. A network failure is not evidence
+        # that an earlier ST interval disappeared or began only today.
+        print(f"[security-meta] preserved existing evidence for {candidate['symbol']}; history source failed")
+        return previous
+    if candidate.get("st_intervals") != old_intervals:
+        raise SecurityMetaHistoryCorrectionRequired(
+            f"Security metadata historical intervals changed for {candidate['symbol']}; "
+            "an exact-hash lineage review is required before replacement"
+        )
+    return candidate
+
+
 def build_security_meta(symbol: str) -> dict[str, object] | None:
     price_path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, symbol)
     if price_path is None:
@@ -2919,6 +2945,16 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         "current_st_history_resolved": bool(current_st_history_resolved),
         "st_intervals": st_intervals,
     }
+    previous_path = resolve_security_meta_path(symbol)
+    if previous_path is not None:
+        try:
+            previous = json.loads(previous_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            previous = None
+        if isinstance(previous, dict):
+            retained = _preserve_security_meta_evidence(previous, meta)
+            if retained is previous:
+                return previous
     SECURITY_META_DIR.mkdir(parents=True, exist_ok=True)
     (SECURITY_META_DIR / f"{str(symbol).zfill(6)}.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2),
@@ -2948,6 +2984,8 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
             pass
     try:
         return build_security_meta(symbol)
+    except SecurityMetaHistoryCorrectionRequired:
+        raise
     except Exception:
         return None
 
@@ -4748,7 +4786,7 @@ def extend_index_recent_window(
     recent_start = pd.Timestamp(appended_dates.min()).normalize()
 
     if paths["proxy_members"].exists():
-        existing_members = pd.read_csv(paths["proxy_members"])
+        existing_members = pd.read_csv(paths["proxy_members"], dtype={"symbol": str})
         if "rebalance_date" in existing_members.columns:
             existing_members["rebalance_date"] = pd.to_datetime(existing_members["rebalance_date"], errors="coerce")
             existing_members = existing_members.loc[existing_members["rebalance_date"] <= bridge_date]
@@ -8970,6 +9008,42 @@ def ensure_static_members_fresh(
     prev_rebalance = context.get("prev_rebalance")
     effective_rebalance = context.get("effective_rebalance")
     rebalance_effective_date = context.get("rebalance_effective_date")
+    # Formal proxy snapshots and executed members own the refreshed state.
+    # Re-ranking raw caches here can disagree with the portfolio that earned NAV.
+    formal_dates = [dt for dt in [latest_rebalance, prev_rebalance] if dt is not None]
+    formal = load_member_snapshot_from_proxy_members(paths, formal_dates)
+    has_formal_state = paths.get("proxy_effective_members", Path("__missing__")).exists()
+    if has_formal_state:
+        for dt in formal_dates:
+            frame = formal.get(pd.Timestamp(dt).normalize())
+            if frame is None or len(frame) != TOP_N or frame["symbol"].nunique() != TOP_N:
+                raise RuntimeError("Formal proxy member snapshot incomplete; refusing independent re-ranking")
+        target_members = add_capital_columns(formal[latest_rebalance.normalize()].copy(), capital=args.capital)
+        prev_members = formal.get(pd.Timestamp(prev_rebalance).normalize()) if prev_rebalance is not None else None
+        executed = _continuation_members_at_bridge(paths, pd.Timestamp(target_end_date).normalize())
+        names = pd.read_csv(paths["proxy_members"], dtype={"symbol": str})
+        names["symbol"] = names["symbol"].astype(str).str.zfill(6)
+        names = names.drop_duplicates("symbol", keep="last").set_index("symbol")
+        effective_members = names.reindex(executed).reset_index()
+        effective_members["rank"] = np.arange(1, TOP_N + 1)
+        effective_members["target_weight"] = 1.0 / TOP_N
+        if effective_members["name"].isna().any() or not effective_members["name"].map(is_live_tradable_name).all():
+            raise RuntimeError("Executed member names missing or restricted; refusing publication")
+        target_members["signal_date"] = latest_rebalance.date()
+        target_members["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
+        changes_df = build_change_table(prev_members, target_members)
+        if not changes_df.empty:
+            changes_df["signal_date"] = latest_rebalance.date()
+            changes_df["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
+        save_static_context_cache(
+            paths=paths, latest_rebalance=latest_rebalance, prev_rebalance=prev_rebalance,
+            effective_rebalance=effective_rebalance, rebalance_effective_date=rebalance_effective_date,
+            target_members=target_members.drop(columns=["target_notional"], errors="ignore"),
+            effective_members=effective_members, changes_df=changes_df,
+        )
+        context.update(target_members=target_members, effective_members=effective_members, changes_df=changes_df)
+        context["latest_signal"] = augment_signal_with_member_rebalance(context["latest_signal"], changes_df)
+        return context
     cached_static = load_cached_static_context(
         paths=paths,
         latest_rebalance=latest_rebalance,

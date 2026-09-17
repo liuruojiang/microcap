@@ -117,7 +117,7 @@ def test_panel_missing_bridge_date_rejected_before_candidate_refresh(tmp_path, m
     pd.DataFrame({"date": ["2026-09-17"]}).to_csv(panel_path, index=False)
     def forbidden(**kwargs):
         pytest.fail("candidate refresh must not run without a bridge")
-    monkeypatch.setattr(base, "select_recent_candidate_symbols", forbidden)
+    monkeypatch.setitem(base.extend_index_recent_window.__globals__, "select_recent_candidate_symbols", forbidden)
     with pytest.raises(RuntimeError, match="does not overlap"):
         base.extend_index_recent_window(SimpleNamespace(index_csv=index_path), {}, panel_path, pd.Timestamp("2026-09-17"))
 
@@ -129,22 +129,50 @@ def test_no_rebalance_extension_preserves_frozen_members_and_advances_effective(
     pd.DataFrame({"rebalance_date": ["2026-09-03"], "symbol": ["000001"]}).to_csv(paths["proxy_members"], index=False)
     old_members = paths["proxy_members"].read_text()
     index_path, panel_path = tmp_path / "index.csv", tmp_path / "panel.csv"
-    pd.DataFrame({"date": ["2026-09-15"], "close": [2000.0], "daily_return": [0.01], "holding_count": [100]}).to_csv(index_path, index=False)
+    pd.DataFrame({"date": ["2026-09-03", "2026-09-15"], "close": [1900.0, 2000.0], "daily_return": [0.01, 0.01], "holding_count": [100, 100]}).to_csv(index_path, index=False)
     pd.DataFrame({"date": ["2026-09-15", "2026-09-16"]}).to_csv(panel_path, index=False)
     captured = {}
-    monkeypatch.setattr(base, "select_recent_candidate_symbols", lambda **kwargs: ["999999"])
-    monkeypatch.setattr(base, "refresh_price_cache_tail", lambda *args, **kwargs: None)
+    monkeypatch.setitem(base.extend_index_recent_window.__globals__, "select_recent_candidate_symbols", lambda **kwargs: ["999999"])
+    monkeypatch.setitem(base.extend_index_recent_window.__globals__, "refresh_price_cache_tail", lambda *args, **kwargs: None)
     def build(**kwargs):
         captured.update(kwargs)
         return (pd.DataFrame({"date": pd.to_datetime(["2026-09-15", "2026-09-16"]),
                               "close": [1000.0, 1010.0], "daily_return": [float("nan"), 0.01], "holding_count": [100, 100]}),
                 pd.DataFrame(), pd.DataFrame(),
                 {"continuation_effective_members": kwargs["initial_members"]})
-    monkeypatch.setattr(base, "build_local_proxy_bundle", build)
+    monkeypatch.setitem(base.extend_index_recent_window.__globals__, "build_local_proxy_bundle", build)
     base.extend_index_recent_window(SimpleNamespace(index_csv=index_path, max_workers=1, force_refresh=False),
                                     paths, panel_path, pd.Timestamp("2026-09-16"))
     assert len(captured["symbols"]) == 101
     assert len(captured["initial_members"]) == 100
     assert pd.read_csv(index_path).iloc[-1].close == pytest.approx(2020.0)
     assert pd.read_csv(paths["proxy_effective_members"]).as_of_date.unique().tolist() == ["2026-09-16"]
-    assert paths["proxy_members"].read_text() == old_members
+    saved = pd.read_csv(paths["proxy_members"], dtype={"symbol": str})
+    assert saved.symbol.str.zfill(6).tolist() == ["000001"]
+    assert pd.to_datetime(saved.rebalance_date).tolist() == [pd.Timestamp("2026-09-03")]
+
+
+
+
+
+def test_static_refresh_uses_formal_executed_members_without_reranking(tmp_path, monkeypatch):
+    paths = seed_files(tmp_path)
+    paths["proxy_members"] = tmp_path / "members.csv"
+    symbols = [f"{i:06d}" for i in range(100)]
+    target = symbols[1:] + ["000101"]
+    rows = [{"rebalance_date": day, "symbol": symbol, "rank": rank, "name": f"Company{symbol}", "market_cap": 100.0}
+            for day, members in [("2026-08-20", symbols), ("2026-09-03", target)]
+            for rank, symbol in enumerate(members, 1)]
+    pd.DataFrame(rows).to_csv(paths["proxy_members"], index=False)
+    namespace = base.ensure_static_members_fresh.__globals__
+    monkeypatch.setitem(namespace, "load_member_snapshot", lambda **kwargs: pytest.fail("must not re-rank"))
+    monkeypatch.setitem(namespace, "load_cached_static_context", lambda **kwargs: pytest.fail("must not trust independent cache"))
+    monkeypatch.setitem(namespace, "save_static_context_cache", lambda **kwargs: None)
+    monkeypatch.setitem(namespace, "augment_signal_with_member_rebalance", lambda signal, changes: signal)
+    context = {"latest_rebalance": pd.Timestamp("2026-09-03"), "prev_rebalance": pd.Timestamp("2026-08-20"),
+               "effective_rebalance": pd.Timestamp("2026-09-03"), "latest_signal": {}}
+    result = base.ensure_static_members_fresh(SimpleNamespace(capital=100000), paths, tmp_path / "panel.csv",
+                                              pd.Timestamp("2026-09-16"), context)
+    assert result["target_members"].symbol.tolist() == target
+    assert result["effective_members"].symbol.tolist() == symbols
+    assert len(result["effective_members"]) == 100
