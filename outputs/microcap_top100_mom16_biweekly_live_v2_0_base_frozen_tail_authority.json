@@ -1,22 +1,23 @@
 {
-  "version": "2026-09-03-post-rebalance-bootstrap-v3",
-  "seed_end_date": "2026-09-03",
-  "purpose": "Exact-hash post-rebalance authority through 2026-09-03 for a short no-new-rebalance production tail extension. The 2026-09-03 close rebalance, execution constraints, and costs are included. Historical or future scheduled-rebalance rebuilds still require the validated full candidate cache.",
+  "version": "2026-09-17-executed-member-continuation-v4",
+  "seed_end_date": "2026-09-17",
+  "purpose": "User-approved exact-hash executed-member continuation correction from 2026-09-04; frozen prefix through 2026-09-03 preserved. Seed includes 2026-09-17 close execution. Future history rewrite remains fail-closed.",
+  "approved_review_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
   "security_meta_cache_fingerprint": {
     "present_count": 4975,
     "missing_count": 0,
-    "sha256": "1f09de33716deb9742593765a1121f223ed0cee86b29c4e343ce9b63f6e4f94e"
+    "sha256": "464011f06d52b9e5856218f53ad6060507609915ec4b66ce5f10ac29e3270eb2"
   },
   "seed_file_rows": {
-    "proxy_index": 4049,
-    "costed_nav": 4032
+    "proxy_index": 4059,
+    "costed_nav": 4042
   },
   "seed_file_sha256": {
-    "proxy_index": "25311cba62cf0a74041a4b83dbf4f395565bb092880e15a767023107a2ee9ad3",
-    "costed_nav": "66c5c63d08090bda5e25d6dda6846955e533fa4399d50805d53138e4638270ab",
-    "proxy_meta": "5216305f5dc18b249822457fc72345e6d1a9c957840719f1171810d9f16d9a73",
-    "proxy_members": "ac6396a16cdd5b493b5a6bede3e7ead2820913e5f92983da166467144392e07e",
-    "proxy_turnover": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
-    "proxy_effective_members": "9558082806163587d9813100bd19cafe92337a2c086e3fc8ac6aa8a71e5825ee"
+    "proxy_index": "9b04ba7b633be63c44b05399460005331150a8605116a79019004d07b3a9a148",
+    "costed_nav": "3f2b68c82ac5f5e8d8611918476a5739cd15e4be8426aa9285bce7bdd48e1bce",
+    "proxy_meta": "c2fcf3b109b26381f178990397f0def5a0a54825753981a7b331bf80a6136fff",
+    "proxy_members": "be964a54caa5b3f294ad3558b7860cadc44974df615aed7640fcac488b53d13a",
+    "proxy_turnover": "a064a6bbbe7442d335556058c732fec584e75e3eff2439e2feb041e5605388e7",
+    "proxy_effective_members": "2e6f7ed59718360e2ed7d4c50ca1c74fb4ec44310dd748490aa84e58a3f8d84f"
   }
 }

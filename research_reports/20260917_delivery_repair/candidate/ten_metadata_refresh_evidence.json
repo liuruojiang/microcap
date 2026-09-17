@@ -1,0 +1,392 @@
+[
+  {
+    "symbol": "301192",
+    "before_sha256": "08ea850060bdf65c9454300a93740f087566aa5d4ce9792d17feda11c5b6f591",
+    "generated_sha256": "27f113aece3385b4356d8bf346d43f3dc8687188a0f397812b5aded4d9af8ab6",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "27f113aece3385b4356d8bf346d43f3dc8687188a0f397812b5aded4d9af8ab6",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "300876",
+    "before_sha256": "72cded92ddd81d5dc6544d42678a904b6c69e4dd7e1a9c4b83a33967d35e8108",
+    "generated_sha256": "55846ad23c55989c2cc1f509008a02c9f375e4b9c90b39d8fc3ba6c5f542b53b",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "55846ad23c55989c2cc1f509008a02c9f375e4b9c90b39d8fc3ba6c5f542b53b",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "301135",
+    "before_sha256": "712c070b7952d09e1cf1b2b9df1301ba75af5156aa8f9f918d8c0461e4b4dd0e",
+    "generated_sha256": "90d0a9bc88e7d3b4acf83c8d3f7c59b53919bfcf4c76edcb5433908b3292047f",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "90d0a9bc88e7d3b4acf83c8d3f7c59b53919bfcf4c76edcb5433908b3292047f",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "300928",
+    "before_sha256": "2b325d5806d642491c73901a8949639a1543198aa7cf013979252ee8a82a7832",
+    "generated_sha256": "8fbbb7c8e2d80a371be43da98f28ee9223efc5d944c6806042f2b1aa7f0050bd",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "8fbbb7c8e2d80a371be43da98f28ee9223efc5d944c6806042f2b1aa7f0050bd",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "301353",
+    "before_sha256": "6aa96d0c12176430e272fdda5ed08567f967178d02d1b0b2dba697b6b25ccfd2",
+    "generated_sha256": "26a8a3e0d1e3093c91baa50523a101b88222956535c66c0fbf2b601711345005",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "26a8a3e0d1e3093c91baa50523a101b88222956535c66c0fbf2b601711345005",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "301520",
+    "before_sha256": "6cb2c564a3512fbdf9b11d98c6e2703a616bf460e4bbd06f3431c3b7ac4519d1",
+    "generated_sha256": "5f63f533ec3a3f9bfe9fd8d1816ec8dc7a12b8e040a261b9788ff68dd3c9b7ec",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "5f63f533ec3a3f9bfe9fd8d1816ec8dc7a12b8e040a261b9788ff68dd3c9b7ec",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "301578",
+    "before_sha256": "9130d2c1251ff5187ead5ef47eff180058babc1e53e2aee651c9c32e9cb344b3",
+    "generated_sha256": "02820ab09df9b1ec4d697d854ecf6392015bb2584965bb01e0d0f94f6a99b3d5",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "02820ab09df9b1ec4d697d854ecf6392015bb2584965bb01e0d0f94f6a99b3d5",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "603585",
+    "before_sha256": "a7ce40d9769ab4120c44910f11a1ce78c4c58f044d49052c6437b16291d8cb01",
+    "generated_sha256": "d862507af61da6ff5105afbd5bdf0751b3b4782f20b5148bdd78dd1bd4f42914",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "not_applicable"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "d862507af61da6ff5105afbd5bdf0751b3b4782f20b5148bdd78dd1bd4f42914",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "603836",
+    "before_sha256": "9adf381bc5768dce9637a1aebdea870e721cc2704bd313267ad1f99fdbe73481",
+    "generated_sha256": "7301fe80d1210cdddb5dd8f9645afafdbaafce95bab542dddba57498ec53c65b",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "not_applicable"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "7301fe80d1210cdddb5dd8f9645afafdbaafce95bab542dddba57498ec53c65b",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  },
+  {
+    "symbol": "688592",
+    "before_sha256": "34cb405e4cf95492fb556d01bed517b1a02e22ad894cbbc9a4d976469eb607cc",
+    "generated_sha256": "9dc8699d7d3dbc16a1d8f4e89ced19be72d9e55359edba50145fce4acaf7015f",
+    "source_evidence_valid": true,
+    "cninfo_protocol": "https",
+    "changed_fields": {
+      "notice_query_status": {
+        "before": null,
+        "after": "ok"
+      },
+      "current_st_history_resolved": {
+        "before": null,
+        "after": true
+      },
+      "st_notice_policy_version": {
+        "before": null,
+        "after": "cninfo-category-plus-entry-exit-keyword-v3"
+      },
+      "notice_count": {
+        "before": null,
+        "after": 0
+      },
+      "name_history_status": {
+        "before": null,
+        "after": "not_applicable"
+      },
+      "last_trade_date": {
+        "before": "2026-04-30",
+        "after": "2026-09-17"
+      }
+    },
+    "after_sha256": "9dc8699d7d3dbc16a1d8f4e89ced19be72d9e55359edba50145fce4acaf7015f",
+    "official_source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c",
+    "official_transport_headers": {
+      "User-Agent": "Mozilla/5.0",
+      "Referer": "https://www.cninfo.com.cn/new/index"
+    }
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "approved": true,
+  "approval_source": "User reply 继续 after explicit exact-hash historical correction approval request",
+  "approved_report_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
+  "approved_report": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260917_delivery_repair\\candidate\\exact_hash_migration_review.json",
+  "scope": "Apply reviewed 2026-09-04 through 2026-09-17 lineage correction, preserve prefix through 2026-09-03; complete clean rerun and cloud validation without additional email",
+  "candidate_hashes": {
+    "v2_0": "adb94b002a9eaeb235dddd6b9f9209307eeb397f0cbd247d4b35e0761558ddf0",
+    "v2_3": "a2060e533d674d75721026ba6840324cf82ec4dd625f4b0208153ecff89cd5a7",
+    "v2_5": "fa0818a3bddebcd19b8d5469930cb93cf68fa0af63c39fdd9c882fe7615d400f"
+  },
+  "recorded_at": "2026-09-17T08:59:11.498953+00:00"
+}

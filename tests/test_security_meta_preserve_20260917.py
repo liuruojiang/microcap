@@ -77,3 +77,23 @@ def test_successful_source_correction_fails_before_overwriting_existing_history(
     with pytest.raises(RuntimeError, match="exact-hash lineage review"):
         ns["load_security_meta"]("002198")
     assert path.read_bytes() == before
+
+def test_cninfo_official_https_transport_preserves_all_notice_queries(monkeypatch):
+    import microcap_top100_mom16_biweekly_live_v2_0 as strategy
+    freq = strategy.base_mod.freq_mod
+    fn = freq.fetch_cninfo_st_notices
+    calls = []
+    monkeypatch.setitem(fn.__globals__, 'fetch_cninfo_org_map', lambda: {'300876': '990003'} )
+    class Response:
+        def raise_for_status(self): pass
+        def json(self): return {'totalAnnouncement': 0, 'announcements': []}
+    def post(url, **kwargs):
+        calls.append((url, kwargs))
+        return Response()
+    monkeypatch.setattr(fn.__globals__['requests'], 'post', post)
+    assert fn('300876', '20200824', '20260917').empty
+    assert len(calls) == 6
+    assert all(url == 'https://www.cninfo.com.cn/new/hisAnnouncement/query' for url, _ in calls)
+    assert all(k['headers']['User-Agent'] == 'Mozilla/5.0' and k['headers']['Referer'] == 'https://www.cninfo.com.cn/new/index' for _, k in calls)
+    assert {k['data']['searchkey'] for _, k in calls} == {'', '风险警示', '特别处理', '撤销风险警示', '撤销特别处理', '摘帽'}
+    assert calls[0][1]['data']['category'] == 'category_tbclts_szsh'
