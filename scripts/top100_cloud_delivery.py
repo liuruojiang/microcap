@@ -60,7 +60,7 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
     for root in roots.values():
         if (root / delivery.LOCK).exists():
             raise RuntimeError("A whole-delivery refresh is active")
-        require_ok(state.validate_state(root, max_anchor_age_days=5))
+        require_ok(delivery.validate_base_state_for_session(root, expected))
     with tempfile.TemporaryDirectory(prefix="top100-pack-") as directory:
         staged = Path(directory)
         for name in set(state._iter_bundle_files(primary)) | set(before["0"]):
@@ -78,7 +78,7 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
         delivery.write_manifest(staged, report)
         extras = (set(report["artifacts"]) | set(report["inputs"]) |
                   {delivery.MANIFEST}) - set(SOURCE_FILES)
-        packed = state.pack_state(staged, bundle, 5, extra_files=extras)
+        packed = state.pack_state(staged, bundle, None, extra_files=extras)
         require_ok(packed)
         with zipfile.ZipFile(bundle) as archive:
             state._verify_bundle_manifest(archive)

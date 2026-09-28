@@ -16,7 +16,8 @@ from test_top100_delivery import workspace, certify  # noqa: F401
 def prepare(workspace, monkeypatch):
     monkeypatch.setattr(state, "validate_state", lambda *a, **kw: {
         "ok": True, "errors": [], "anchor_dates": {
-            "proxy_index": "2026-09-03", "costed_nav": "2026-09-03"}})
+            "proxy_index": "2026-09-03", "costed_nav": "2026-09-03",
+            "panel_shadow": "2026-09-03"}})
     monkeypatch.setattr(cloud.subprocess, "check_output", lambda *a, **kw: "a" * 40)
     bundle = workspace.parent / (workspace.name + "-delivery.zip")
     cloud.pack({v: workspace for v in delivery.COSTED}, bundle, "2026-09-03")
@@ -85,6 +86,53 @@ def test_pack_rejects_different_inputs_across_versions(workspace, monkeypatch):
     with pytest.raises(ValueError, match="identical"):
         cloud.pack({"0": workspace, "3": sibling, "5": workspace},
                    workspace.parent / "bad.zip", "2026-09-03")
+
+
+@pytest.mark.parametrize("completed_text,today_text", [
+    ("2026-09-30", "2026-10-08"),  # Eight-calendar-day closure.
+    ("2027-01-29", "2027-02-12"),  # Fourteen-day synthetic Spring Festival closure.
+])
+def test_pack_accepts_long_holiday_when_anchors_match_completed_session(
+    workspace, monkeypatch, completed_text, today_text
+):
+    from datetime import date
+
+    completed = date.fromisoformat(completed_text)
+    previous = completed - date.resolution
+    for path in workspace.rglob("*"):
+        if path.is_file():
+            payload = path.read_bytes()
+            payload = payload.replace(b"2026-09-03", completed_text.encode("ascii"))
+            payload = payload.replace(b"2026-09-02", previous.isoformat().encode("ascii"))
+            path.write_bytes(payload)
+    calls = []
+
+    def validate(root, **kwargs):
+        calls.append(kwargs)
+        return {"ok": True, "errors": [], "anchor_dates": {
+            "proxy_index": completed_text, "costed_nav": completed_text,
+            "panel_shadow": completed_text}}
+
+    monkeypatch.setattr(state, "validate_state", validate)
+    monkeypatch.setattr(cloud.subprocess, "check_output", lambda *a, **kw: "a" * 40)
+    today = date.fromisoformat(today_text)
+    assert (today - completed).days > 5
+
+    result = cloud.pack({v: workspace for v in delivery.COSTED},
+                        workspace.parent / f"long-holiday-{completed_text}.zip", completed.isoformat())
+
+    assert result["ok"]
+    assert calls and all(call.get("max_anchor_age_days") is None for call in calls)
+
+
+def test_pack_rejects_anchor_that_differs_from_completed_session(workspace, monkeypatch):
+    monkeypatch.setattr(state, "validate_state", lambda *a, **kw: {
+        "ok": True, "errors": [], "anchor_dates": {
+            "proxy_index": "2026-09-30", "costed_nav": "2026-09-30",
+            "panel_shadow": "2026-09-24"}})
+    with pytest.raises(RuntimeError, match="panel_shadow is not aligned with latest completed session"):
+        cloud.pack({v: workspace for v in delivery.COSTED},
+                   workspace.parent / "stale-anchor.zip", "2026-09-30")
 
 
 @settings(max_examples=20, deadline=None)

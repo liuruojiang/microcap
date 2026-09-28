@@ -184,8 +184,15 @@ def test_wrong_identity_or_unclean_audit_rejected(workspace, version):
 def test_base_success_cannot_mask_failed_child(workspace, monkeypatch):
     certify(workspace)
     monkeypatch.setattr(delivery, "verify_release", lambda root: "release")
-    monkeypatch.setattr(delivery.state, "refresh_state", lambda *a, **kw: {"ok": True})
+
+    def refresh(*args, **kwargs):
+        assert kwargs.get("max_anchor_age_days") is None
+        return {"ok": True}
+
+    monkeypatch.setattr(delivery.state, "refresh_state", refresh)
     monkeypatch.setattr(delivery, "independent_target", lambda root: "2026-09-03")
+    monkeypatch.setattr(delivery, "validate_base_state_for_session",
+                        lambda *a, **kw: {"ok": True, "errors": []})
     def fail(*args, **kwargs):
         raise subprocess.CalledProcessError(1, "v2.3")
     monkeypatch.setattr(delivery.subprocess, "run", fail)
@@ -196,8 +203,15 @@ def test_base_success_cannot_mask_failed_child(workspace, monkeypatch):
 
 def test_shared_input_change_during_group_rejected(workspace, monkeypatch):
     monkeypatch.setattr(delivery, "verify_release", lambda root: "release")
-    monkeypatch.setattr(delivery.state, "refresh_state", lambda *a, **kw: {"ok": True})
+
+    def refresh(*args, **kwargs):
+        assert kwargs.get("max_anchor_age_days") is None
+        return {"ok": True}
+
+    monkeypatch.setattr(delivery.state, "refresh_state", refresh)
     monkeypatch.setattr(delivery, "independent_target", lambda root: "2026-09-03")
+    monkeypatch.setattr(delivery, "validate_base_state_for_session",
+                        lambda *a, **kw: {"ok": True, "errors": []})
     def mutate(*args, **kwargs):
         path = workspace / "outputs" / delivery.BASE_PANEL
         path.write_text(path.read_text() + "\n")
@@ -283,6 +297,40 @@ def test_calendar_target_does_not_authorize_stale_real_streams(workspace, monkey
     report = delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, expected))
     assert not report["ok"]
     assert any("date mismatch" in error for error in report["errors"])
+
+
+def test_base_state_uses_completed_session_across_long_calendar_gap(workspace, monkeypatch):
+    from datetime import date
+
+    calls = []
+
+    def validate(root, **kwargs):
+        calls.append(kwargs)
+        return {"ok": True, "errors": [], "anchor_dates": {
+            "proxy_index": "2026-09-30", "costed_nav": "2026-09-30",
+            "panel_shadow": "2026-09-30"}}
+
+    monkeypatch.setattr(delivery.state, "validate_state", validate)
+    today = date.fromisoformat("2026-10-08")
+    completed = date.fromisoformat("2026-09-30")
+    assert (today - completed).days == 8
+
+    report = delivery.validate_base_state_for_session(workspace, completed.isoformat())
+
+    assert report["ok"]
+    assert calls == [{"max_anchor_age_days": None}]
+
+
+def test_base_state_rejects_calendar_age_independent_anchor_mismatch(workspace, monkeypatch):
+    monkeypatch.setattr(delivery.state, "validate_state", lambda *a, **kw: {
+        "ok": True, "errors": [], "anchor_dates": {
+            "proxy_index": "2026-09-30", "costed_nav": "2026-09-24",
+            "panel_shadow": "2026-09-30"}})
+
+    report = delivery.validate_base_state_for_session(workspace, "2026-09-30")
+
+    assert not report["ok"]
+    assert any("costed_nav is not aligned" in error for error in report["errors"])
 
 
 def today_proof(root):
