@@ -25,6 +25,7 @@ AUTHORITY = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_a
 V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
 V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"
 V25_STRATEGY_REVISION = "plain_lb20_hl3_entry0_exit0_20260905"
+DAILY_STATE_ANCHORS = ("proxy_index", "costed_nav", "panel_shadow")
 
 
 def plain_v23_identity(row: dict) -> bool:
@@ -380,13 +381,36 @@ def write_manifest(root: Path, report: dict) -> None:
     temporary.replace(path)
 
 
+def validate_base_state_for_session(root: Path, expected_date: str) -> dict:
+    """Require current proof and exact latest-session anchors without a calendar-age cap."""
+    report = state.validate_state(root, max_anchor_age_days=None)
+    errors = list(report.get("errors") or [])
+    anchors = report.get("anchor_dates")
+    if not isinstance(anchors, dict):
+        errors.append("base state has no daily anchor dates")
+    else:
+        for name in DAILY_STATE_ANCHORS:
+            actual = anchors.get(name)
+            if actual != expected_date:
+                errors.append(
+                    f"{name} is not aligned with latest completed session: "
+                    f"last_date={actual!r} expected_date={expected_date}"
+                )
+    report["errors"] = errors
+    report["ok"] = report.get("ok") is True and not errors
+    return report
+
+
 def _refresh_all_unlocked(root: Path) -> dict:
     release = verify_release(root)
     write_manifest(root, {"status": "refreshing", "verified_at": datetime.now(timezone.utc).isoformat()})
-    base_report = state.refresh_state(root, max_anchor_age_days=5)
+    base_report = state.refresh_state(root, max_anchor_age_days=None)
     if not base_report.get("ok"):
         raise RuntimeError(f"Base refresh failed: {base_report.get('errors')}")
     target = independent_target(root)
+    aligned_base = validate_base_state_for_session(root, target)
+    if not aligned_base["ok"]:
+        raise RuntimeError(f"Base state does not match latest completed session: {aligned_base.get('errors')}")
     before = input_hashes(root)
     for v in COSTED:
         subprocess.run([sys.executable, "-X", "utf8", f"microcap_top100_mom16_biweekly_live_v2_{v}.py"], cwd=root, check=True)
@@ -395,7 +419,7 @@ def _refresh_all_unlocked(root: Path) -> dict:
     report = inspect_outputs(root, target)
     if independent_target(root) != target:
         raise RuntimeError("Completed session advanced during generation; rerun whole delivery")
-    final_base = state.validate_state(root, max_anchor_age_days=5)
+    final_base = validate_base_state_for_session(root, target)
     report["errors"].extend(final_base.get("errors", []))
     report["ok"] = not report["errors"]
     report["release_sha"] = release
@@ -440,7 +464,7 @@ def main(argv: list[str] | None = None) -> int:
             report["errors"].extend(state.validate_reference_summary(root, state._parse_date(target)))
             report["date_proof_source"] = "unchanged_independent_today_close_proof_max_15min" if cached_target else "live_official_history_loader"
             report["release_sha"] = release
-            report["errors"].extend(state.validate_state(root, max_anchor_age_days=5).get("errors", []))
+            report["errors"].extend(validate_base_state_for_session(root, target).get("errors", []))
             report["ok"] = not report["errors"]
     except Exception as exc:
         report = {"ok": False, "scope": "whole_workspace_delivery", "errors": [str(exc)]}
