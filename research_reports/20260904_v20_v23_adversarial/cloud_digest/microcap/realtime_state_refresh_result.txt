@@ -1,0 +1,793 @@
+refresh_attempt=1/3
+Please wait for a moment:   0%|          | 0/70 [00:00<?, ?it/s]Please wait for a moment:   1%|▏         | 1/70 [00:00<00:50,  1.36it/s]Please wait for a moment:   3%|▎         | 2/70 [00:01<01:03,  1.07it/s]Please wait for a moment:   4%|▍         | 3/70 [00:03<01:28,  1.33s/it]Please wait for a moment:   6%|▌         | 4/70 [00:04<01:06,  1.01s/it]Please wait for a moment:   7%|▋         | 5/70 [00:06<01:41,  1.56s/it]Please wait for a moment:   9%|▊         | 6/70 [00:07<01:23,  1.30s/it]Please wait for a moment:  10%|█         | 7/70 [00:08<01:10,  1.12s/it]Please wait for a moment:  11%|█▏        | 8/70 [00:09<01:22,  1.33s/it]Please wait for a moment:  13%|█▎        | 9/70 [00:10<01:06,  1.09s/it]Please wait for a moment:  14%|█▍        | 10/70 [00:11<00:55,  1.08it/s]Please wait for a moment:  16%|█▌        | 11/70 [00:15<02:01,  2.06s/it]Please wait for a moment:  17%|█▋        | 12/70 [00:16<01:35,  1.65s/it]Please wait for a moment:  19%|█▊        | 13/70 [00:16<01:14,  1.31s/it]Please wait for a moment:  20%|██        | 14/70 [00:17<01:00,  1.08s/it]Please wait for a moment:  21%|██▏       | 15/70 [00:18<01:05,  1.20s/it]Please wait for a moment:  23%|██▎       | 16/70 [00:19<00:57,  1.06s/it]Please wait for a moment:  24%|██▍       | 17/70 [00:20<00:48,  1.10it/s]Please wait for a moment:  26%|██▌       | 18/70 [00:20<00:42,  1.23it/s]Please wait for a moment:  27%|██▋       | 19/70 [00:21<00:37,  1.35it/s]Please wait for a moment:  29%|██▊       | 20/70 [00:21<00:33,  1.48it/s]Please wait for a moment:  30%|███       | 21/70 [00:22<00:31,  1.55it/s]Please wait for a moment:  31%|███▏      | 22/70 [00:23<00:34,  1.38it/s]Please wait for a moment:  33%|███▎      | 23/70 [00:24<00:37,  1.24it/s]Please wait for a moment:  34%|███▍      | 24/70 [00:24<00:33,  1.38it/s]Please wait for a moment:  36%|███▌      | 25/70 [00:27<00:51,  1.14s/it]Please wait for a moment:  37%|███▋      | 26/70 [00:28<00:48,  1.11s/it]Please wait for a moment:  39%|███▊      | 27/70 [00:28<00:40,  1.07it/s]Please wait for a moment:  40%|████      | 28/70 [00:29<00:34,  1.22it/s]Please wait for a moment:  41%|████▏     | 29/70 [00:29<00:30,  1.37it/s]Please wait for a moment:  43%|████▎     | 30/70 [00:31<00:41,  1.05s/it]Please wait for a moment:  44%|████▍     | 31/70 [00:33<00:47,  1.21s/it]Please wait for a moment:  46%|████▌     | 32/70 [00:33<00:38,  1.01s/it]Please wait for a moment:  47%|████▋     | 33/70 [00:34<00:32,  1.16it/s]Please wait for a moment:  49%|████▊     | 34/70 [00:34<00:27,  1.29it/s]Please wait for a moment:  50%|█████     | 35/70 [00:35<00:24,  1.42it/s]Please wait for a moment:  51%|█████▏    | 36/70 [00:35<00:22,  1.49it/s]Please wait for a moment:  53%|█████▎    | 37/70 [00:36<00:23,  1.43it/s]Please wait for a moment:  54%|█████▍    | 38/70 [00:37<00:21,  1.52it/s]Please wait for a moment:  56%|█████▌    | 39/70 [00:38<00:29,  1.06it/s]Please wait for a moment:  57%|█████▋    | 40/70 [00:39<00:26,  1.13it/s]Please wait for a moment:  59%|█████▊    | 41/70 [00:40<00:24,  1.18it/s]Please wait for a moment:  60%|██████    | 42/70 [00:40<00:21,  1.30it/s]Please wait for a moment:  61%|██████▏   | 43/70 [00:41<00:18,  1.42it/s]Please wait for a moment:  63%|██████▎   | 44/70 [00:42<00:17,  1.50it/s]Please wait for a moment:  64%|██████▍   | 45/70 [00:42<00:18,  1.35it/s]Please wait for a moment:  66%|██████▌   | 46/70 [00:43<00:16,  1.44it/s]Please wait for a moment:  67%|██████▋   | 47/70 [00:44<00:14,  1.55it/s]Please wait for a moment:  69%|██████▊   | 48/70 [00:48<00:37,  1.70s/it]Please wait for a moment:  70%|███████   | 49/70 [00:50<00:41,  1.97s/it]Please wait for a moment:  71%|███████▏  | 50/70 [00:51<00:31,  1.56s/it]Please wait for a moment:  73%|███████▎  | 51/70 [00:52<00:25,  1.32s/it]Please wait for a moment:  74%|███████▍  | 52/70 [00:53<00:25,  1.40s/it]Please wait for a moment:  76%|███████▌  | 53/70 [00:54<00:19,  1.15s/it]Please wait for a moment:  77%|███████▋  | 54/70 [00:55<00:16,  1.03s/it]Please wait for a moment:  79%|███████▊  | 55/70 [00:55<00:13,  1.13it/s]Please wait for a moment:  80%|████████  | 56/70 [00:56<00:11,  1.20it/s]Please wait for a moment:  81%|████████▏ | 57/70 [00:56<00:09,  1.33it/s]Please wait for a moment:  83%|████████▎ | 58/70 [00:57<00:08,  1.45it/s]Please wait for a moment:  84%|████████▍ | 59/70 [00:58<00:07,  1.56it/s]Please wait for a moment:  86%|████████▌ | 60/70 [00:58<00:06,  1.64it/s]Please wait for a moment:  87%|████████▋ | 61/70 [00:59<00:05,  1.69it/s]Please wait for a moment:  89%|████████▊ | 62/70 [00:59<00:05,  1.58it/s]Please wait for a moment:  90%|█████████ | 63/70 [01:00<00:04,  1.61it/s]Please wait for a moment:  91%|█████████▏| 64/70 [01:00<00:03,  1.67it/s]Please wait for a moment:  93%|█████████▎| 65/70 [01:01<00:02,  1.73it/s]Please wait for a moment:  94%|█████████▍| 66/70 [01:05<00:05,  1.49s/it]Please wait for a moment:  96%|█████████▌| 67/70 [01:05<00:03,  1.21s/it]Please wait for a moment:  97%|█████████▋| 68/70 [01:06<00:02,  1.02s/it]Please wait for a moment:  99%|█████████▊| 69/70 [01:06<00:00,  1.15it/s]Please wait for a moment: 100%|██████████| 70/70 [01:07<00:00,  1.32it/s]                                                                         [top100-refresh] frozen tail seed rejected reason=runner_cache_is_full_sized
+[top100-refresh] price-cache refresh preflight end_date=2026-09-04 symbols=100 stale_or_missing=0 missing=0 stale=0 current=100 force_refresh=False workers=4 sample=
+[top100-refresh] price-cache refresh complete 0/0 failures=0
+[top100-refresh] frozen tail seed rejected reason=runner_cache_is_full_sized
+{
+  "ok": true,
+  "scope": "base_state_only",
+  "final_outputs_validated": false,
+  "errors": [],
+  "warnings": [
+    "current member price cache is stale: .microcap_index_cache/prices_raw/001211.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/002809.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/300854.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/300876.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/300949.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/301113.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/301135.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/301156.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/301336.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/301353.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/301578.csv last_date=2026-09-03 anchor_date=2026-09-04",
+    "current member price cache is stale: .microcap_index_cache/prices_raw/603836.csv last_date=2026-09-03 anchor_date=2026-09-04"
+  ],
+  "files": [
+    {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "bytes": 233483,
+      "sha256": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+      "bytes": 2557,
+      "sha256": "993219c3269b0e7b20b6d7d1b0197867cff81b88e0d14d1ce141624571ec094e"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "bytes": 597578,
+      "sha256": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "bytes": 2496,
+      "sha256": "7f07d377cd34373a3b4d17d65158eccbb0e663aaf6bd13a714bb80f719cc7cab"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+      "bytes": 2083777,
+      "sha256": "ac6396a16cdd5b493b5a6bede3e7ead2820913e5f92983da166467144392e07e"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "bytes": 45185,
+      "sha256": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "bytes": 1492717,
+      "sha256": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291"
+    },
+    {
+      "path": ".microcap_index_cache/active_universe.csv",
+      "bytes": 148578,
+      "sha256": "f126b6aa99058c406e6b2d73445b320efdf02dcf82c4603549a2aae7b2833538"
+    },
+    {
+      "path": ".microcap_index_cache/current_st.csv",
+      "bytes": 3335,
+      "sha256": "a27b7336434a1eb46a72bf53e78e6606b1fe282f391c4f087083720df911935d"
+    }
+  ],
+  "anchor_dates": {
+    "proxy_index": "2026-09-04",
+    "costed_nav": "2026-09-04",
+    "panel_shadow": "2026-09-04",
+    "proxy_turnover": "2026-09-03"
+  },
+  "current_member_symbols": [
+    "001211",
+    "001336",
+    "002188",
+    "002316",
+    "002494",
+    "002591",
+    "002715",
+    "002760",
+    "002809",
+    "003017",
+    "300169",
+    "300176",
+    "300220",
+    "300405",
+    "300417",
+    "300500",
+    "300535",
+    "300605",
+    "300614",
+    "300621",
+    "300635",
+    "300675",
+    "300717",
+    "300823",
+    "300854",
+    "300876",
+    "300886",
+    "300949",
+    "301006",
+    "301010",
+    "301037",
+    "301049",
+    "301063",
+    "301098",
+    "301106",
+    "301113",
+    "301131",
+    "301135",
+    "301156",
+    "301163",
+    "301167",
+    "301233",
+    "301298",
+    "301336",
+    "301353",
+    "301503",
+    "301505",
+    "301512",
+    "301515",
+    "301519",
+    "301578",
+    "600051",
+    "600137",
+    "600149",
+    "600448",
+    "600455",
+    "600493",
+    "600561",
+    "600697",
+    "600778",
+    "600847",
+    "600883",
+    "603022",
+    "603214",
+    "603307",
+    "603709",
+    "603717",
+    "603836",
+    "603860",
+    "603879",
+    "603908",
+    "605567",
+    "688004",
+    "688021",
+    "688051",
+    "688058",
+    "688067",
+    "688078",
+    "688092",
+    "688096",
+    "688193",
+    "688217",
+    "688288",
+    "688329",
+    "688393",
+    "688420",
+    "688466",
+    "688501",
+    "688528",
+    "688565",
+    "688573",
+    "688576",
+    "688592",
+    "688638",
+    "688651",
+    "688659",
+    "688681",
+    "688695",
+    "688701",
+    "688793"
+  ],
+  "price_cache_files": [
+    {
+      "path": ".microcap_index_cache/prices_raw/001211.csv",
+      "bytes": 21991,
+      "sha256": "548086b1f1b4ccc5578b27ea6221af43caa08722eff89c79baab15a08b8e4fe5",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/001336.csv",
+      "bytes": 16872,
+      "sha256": "edb326248cd46d38ad4f022badb41ffbb0c3270254d0548215cffea89e1467a5",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002188.csv",
+      "bytes": 62238,
+      "sha256": "5321d075e345314ec4c597db752a0024a0cf159872c50722b839d610c35dc525",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002316.csv",
+      "bytes": 58138,
+      "sha256": "615addfb3057cd5ff0d76ab1fecc7e6382ad1ee2250a6835184eaa45090b5d04",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002494.csv",
+      "bytes": 62158,
+      "sha256": "c458fb8553baa87ed7e6127bac2c9c9312fd34da551e560a92561500ccd483eb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002591.csv",
+      "bytes": 57447,
+      "sha256": "175053192e8b6e823ab2a29178de1c9aa742dee07ad7fb09747e9da9c31f5cbb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002715.csv",
+      "bytes": 50981,
+      "sha256": "753487c12ff384ae813cdec2a6de1a53fec9680115b99c4b2dab6bea805b3adc",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002760.csv",
+      "bytes": 45598,
+      "sha256": "ea841b617e2867c315a2f9d56e82245d2b8c28f8f68ab5b1d9738c3ae20c4183",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002809.csv",
+      "bytes": 42339,
+      "sha256": "4fb19f476116a4f2daa60203dcb7468ab8d3cedb33140bc3ac2b09d851fa0772",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/003017.csv",
+      "bytes": 24027,
+      "sha256": "9de0d0b51454923aa6ad2e0b14e7b55a7c5ab948941f4b7ff07de13f3b46f2a3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300169.csv",
+      "bytes": 56602,
+      "sha256": "1e03d42f708523e8078c48348cf3d20fb025a8a2f9841be572f515409ed1d887",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300176.csv",
+      "bytes": 59711,
+      "sha256": "fe28b48862a7caefc2ac2cbbb89abe880a4f738c268c9091288ec8d2c6b1549e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300220.csv",
+      "bytes": 58389,
+      "sha256": "14af2c0ebfdf32cce36180019962f341984d7d409591eac6c301ae46ef74f971",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300405.csv",
+      "bytes": 45316,
+      "sha256": "630fc278dceae63fb2788f3362a2b1962373cc67ac275cfb75d11b1567d0989e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300417.csv",
+      "bytes": 47341,
+      "sha256": "d3e7e1b89915c3181dcc7b22ec6d1a4d74b7d9b037746a679ff6e688869a334c",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300500.csv",
+      "bytes": 42094,
+      "sha256": "d704a8b5ba97c7710819e8e91e7532b37566023552ebe3b517b6d814279ace93",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300535.csv",
+      "bytes": 40001,
+      "sha256": "93a081fdb5510b5a990e9d8ceb47d7e980aff162740ef452377e6139367752fb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300605.csv",
+      "bytes": 39171,
+      "sha256": "2a8ba1a2b39f1b60b46667fbc526afd395d2688135811d93a8f48f7c8d7250f8",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300614.csv",
+      "bytes": 21507,
+      "sha256": "839a45ffb4d51c81df5b2d43f8ce5170d17896251df97be528da4f454ad13bf2",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300621.csv",
+      "bytes": 37643,
+      "sha256": "04f05684c6061fda32cd33a2bf7ff5987992ae5b2435e01d9de6a3cc79681ff4",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300635.csv",
+      "bytes": 38305,
+      "sha256": "6568a02f130095acfc6369368cf03f5d5b84f24d43d341c7a3919594ba9a1141",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300675.csv",
+      "bytes": 37414,
+      "sha256": "e33fac55c92c42a617d4bb383748d38d7d28bc99ed12652c3ced7c285d474dac",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300717.csv",
+      "bytes": 36034,
+      "sha256": "ed014120d90866b13ec96f559b4c57a2d3113f8017a4e0324bfcb83ae280b77f",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300823.csv",
+      "bytes": 26494,
+      "sha256": "8222b1a4acfb3c910bec21051365c4ab24121dbc732d0b04ad2e9771e3cc91cb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300854.csv",
+      "bytes": 21441,
+      "sha256": "c4b6f5673df2cedd2f6c9dd4b3462b896305a23b87e27c7592ddcb3d4919901f",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300876.csv",
+      "bytes": 26118,
+      "sha256": "d40747ea3be87adbf8ce263c640f98698839badceed2a01a2b690b86413012ba",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300886.csv",
+      "bytes": 24212,
+      "sha256": "8c0cd7bd4dc17a80d9174f6bd859b29e05b1182441bce6f5f67ecb0be26a5252",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300949.csv",
+      "bytes": 23916,
+      "sha256": "9d6560e84a34d3aaeae82d86aa893aa138ab11cbe60e15cecfe4f0fa07ae5bba",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301006.csv",
+      "bytes": 21503,
+      "sha256": "48109079da29c10743c305d28fa3463d1195baa5aa7afec0d7829ae949e36bc0",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301010.csv",
+      "bytes": 21382,
+      "sha256": "a51d761adcc3887281ee9434b3bf6c7a91f9cc2b33247b1e5ba86929ef98edef",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301037.csv",
+      "bytes": 20811,
+      "sha256": "618d594efd80d54dc6ec2d4ab5f8a9e90a25469d6abcba52dbc1300374d06696",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301049.csv",
+      "bytes": 20564,
+      "sha256": "dabd5f796cd4775c4884825c27cbddba531ce67cd5a6323ffea6575310f86b5d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301063.csv",
+      "bytes": 20220,
+      "sha256": "f686c5d919401ceee0e0d4c1690cfb36c0f8e3989fd1a13d3b5ab39934a14ade",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301098.csv",
+      "bytes": 19152,
+      "sha256": "73e7445a17688f871231728cf7651e5d82783d6ab3c2c2defa783f4d67521f5d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301106.csv",
+      "bytes": 18619,
+      "sha256": "a6943e78e4298d3cbb95095be274edbdfd5ea1bcd43fd28d495808f1dcc3108d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301113.csv",
+      "bytes": 20363,
+      "sha256": "3b798d0dab94f3b2271c5e92e665c245793fb4058a75c2425e94a4f46c062628",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301131.csv",
+      "bytes": 18328,
+      "sha256": "a8dd64cebab29511100bfa03ad23b8e62b9918ad1ad613d9ae4865ba52a3708c",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301135.csv",
+      "bytes": 19108,
+      "sha256": "003e327fade3e3b4bc7140ccd599c00710a9fd008bf3d939dafa9f1ac7b3963b",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301156.csv",
+      "bytes": 18307,
+      "sha256": "d203806674ce014fcd2db6ee874871a823a89c7ffc632fc3eea248dbb60ceeb3",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301163.csv",
+      "bytes": 17943,
+      "sha256": "464df351704751bbd61877c5d389abdb0d9c2b034dab27e805aa54ef1e8ade0f",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301167.csv",
+      "bytes": 19457,
+      "sha256": "689a48c2f7bd0fd96fb36dea2add99f37034fca4e92facd9babab1de13faef31",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301233.csv",
+      "bytes": 17066,
+      "sha256": "037ce8d2900dcd6f690aaf545eb56ee3f4952a1c46b52501a7a6a93bf8ae0fa5",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301298.csv",
+      "bytes": 17455,
+      "sha256": "4b785148d52c166a959557f82f51a6b076499889448c74e1231b5e151ce62ff1",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301336.csv",
+      "bytes": 17575,
+      "sha256": "adeaaaf01c14807202b1cc527c3554ee1c7732e0cebb22780862a1a53454d4fb",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301353.csv",
+      "bytes": 14181,
+      "sha256": "7dad0d20e77a2638161339d94ef3b1a04426408340ce5a7af67c69398e9bc88d",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301503.csv",
+      "bytes": 12872,
+      "sha256": "883c7526c9c8dc963cec1759529c3d33cb59e324d9bbb132d3a24b68f4abad7b",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301505.csv",
+      "bytes": 12677,
+      "sha256": "423a02dafd30db6f212425de8a78ebba635167ced49342765e358bab80cfda02",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301512.csv",
+      "bytes": 12785,
+      "sha256": "d07986b93692db26abe9b4fb043adb3d805f050f9081db38f4445e01f04ea362",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301515.csv",
+      "bytes": 12778,
+      "sha256": "1f60ac581ec6fdcd92252a32d1f1475f56ec0c6c343ad54c6f66d04c21b1adcc",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301519.csv",
+      "bytes": 12762,
+      "sha256": "28dcca4c898331e749f86e9820cafaeacb0f21f77e492e2150d4d41ffca0f32d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301578.csv",
+      "bytes": 11604,
+      "sha256": "8372c720a276d55df86ced34cfe0a06edc664f1ec14a60e2efbb042037931658",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600051.csv",
+      "bytes": 62852,
+      "sha256": "8c2f090838d2f5a092656d2e34180f627cfc3afbe93d97c7a102baa22fb63e13",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600137.csv",
+      "bytes": 66867,
+      "sha256": "511e69f669224a68dd47dcbb460a6b4ed6bde5737e93713129eb5d8e8cb4743d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600149.csv",
+      "bytes": 62542,
+      "sha256": "7cb653be61637cbef24729fe4b7db46df8a487edfaebad9a5704915d7ccd03f0",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600448.csv",
+      "bytes": 63078,
+      "sha256": "66cc96114404e41efed3e72de358dd0e19296426639ea963dfd4bbd9b7659303",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600455.csv",
+      "bytes": 57884,
+      "sha256": "ded3376f5ddcafbde678477b30315ec87380455b37f2678565ad1f19eb475f33",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600493.csv",
+      "bytes": 64936,
+      "sha256": "7338538ac176281bc6eefed31e24f1726a74148356445dcec84cbb640c49f1d6",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600561.csv",
+      "bytes": 64283,
+      "sha256": "e0d6d291158492f5880a4992c0cdc5c13c81aef721dcd073b6c7c7a297923a49",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600697.csv",
+      "bytes": 67924,
+      "sha256": "950d11b3e5042b79d815472638a58ce233c6197e503d86ba18692c08d51a6c74",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600778.csv",
+      "bytes": 63452,
+      "sha256": "c786484846fe89528e8f4226abad0a72e806e609f2f3b3f7f33fb8e21dcc8746",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600847.csv",
+      "bytes": 63151,
+      "sha256": "029549be9c3006c0cd549cf955ab0fabcec17379e714115f33201a1e3284bcb3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600883.csv",
+      "bytes": 65371,
+      "sha256": "90f3e425f207f6f0ebd7a5d1cdaa25979adcb8a81d70dc538aa5709b903c05d3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603022.csv",
+      "bytes": 45284,
+      "sha256": "a2c04d907e67518e7901df8f4e653fb76d1e3bd0d70f7e4f5adc646fe9abe4ad",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603214.csv",
+      "bytes": 34520,
+      "sha256": "cbbcfd9e9f1495a079155a0cc6bb2db5eb0c4367990e89d8d812a7cdd3a4d3df",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603307.csv",
+      "bytes": 14529,
+      "sha256": "a436be1ed6112be2c3f65bff5583b1ac616203b8c6fb03bfb002517f6cf94d86",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603709.csv",
+      "bytes": 34959,
+      "sha256": "21974c135c064fd725e6ac9875b94382cb99825f71dcfd7572e2a067699c1487",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603717.csv",
+      "bytes": 37105,
+      "sha256": "a90c1f2bfed3cf0660ddbe08a619921b1574f7d2e7b220eefaffd467e1c21f30",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603836.csv",
+      "bytes": 22874,
+      "sha256": "63fec8b65dcbb7ab81d7025672e60f279fd18c0880c46b37226aac0dabeabe6b",
+      "last_date": "2026-09-03"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603860.csv",
+      "bytes": 37217,
+      "sha256": "635ae361d1d56dec55db3275856a13a6328b746690c15bd34c65edd339131f38",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603879.csv",
+      "bytes": 36201,
+      "sha256": "0cdaf5f0cacc4f07ee5ebc7d2e14b2281b447290ec0c4528761afef3a783f36a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603908.csv",
+      "bytes": 38912,
+      "sha256": "ce69dca16c914565792272f03a49fe4bee6eb25977d25b00b6ced6eda1c0f290",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/605567.csv",
+      "bytes": 19684,
+      "sha256": "58ecd424f1844c0cc44bca457304b0c72b44e3b4207cf00bd8f1ade0e3cf80fa",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688004.csv",
+      "bytes": 25475,
+      "sha256": "2194c5e52edd75aa4c0a695a3dff5328a409b133d64872d518e52df037a5bcd3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688021.csv",
+      "bytes": 27792,
+      "sha256": "24590af9e5563c8d9238f91fc1a06463063991b54e2e24446f91723c84f7a7ac",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688051.csv",
+      "bytes": 26335,
+      "sha256": "f7f261ba2be4f3f6ba1448693a3e9f6db52b85849df0d7c2193e2aa3c3856543",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688058.csv",
+      "bytes": 28206,
+      "sha256": "33383f5efc0da799f6c868e0b82689bfc9bab8e23dc0a201e900a657f9315eb6",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688067.csv",
+      "bytes": 21384,
+      "sha256": "d1dabda73db3088d45327eafebf750842250e5523b85ba66817d27292ba0cf9a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688078.csv",
+      "bytes": 27233,
+      "sha256": "e758e054dc439b2be3c8e1f8c3a86ad830a6428d1d71076b05c928431f08b7c1",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688092.csv",
+      "bytes": 22321,
+      "sha256": "d7b319ab04df88832a0152e934e2909cc90bb3deb5d019a66bf07a174335cba2",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688096.csv",
+      "bytes": 25631,
+      "sha256": "a937c101b594cc70f6239d9f8a90a9565fc9ccea3cba9af2eee353db3f05b2eb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688193.csv",
+      "bytes": 18051,
+      "sha256": "4b00f7ce635eaf75c8cebd20578dc5dbc04460d57f1d8fb7a660eb4756e12f2a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688217.csv",
+      "bytes": 21749,
+      "sha256": "d0ca13e6fdc89279b0f8d5ebd8bd02de41c003d319d85320637eaf68598459c8",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688288.csv",
+      "bytes": 27901,
+      "sha256": "715e0ef73413df7ade46727eb653e3a7cac5c39f8bb2f13fdd43a731f64f089e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688329.csv",
+      "bytes": 22223,
+      "sha256": "7dbf41a321b3bb4eb3919ef23267784563e943cc9012d08ae6f596058e7f4876",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688393.csv",
+      "bytes": 24672,
+      "sha256": "5374e336b9376052ebee4537661335f4c5e53520a92f1064f3cecd50d63202be",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688420.csv",
+      "bytes": 15299,
+      "sha256": "7ddff1870767be111aec9caac8bd4f04cbba2d3be9ede4afd14ba5450b54c29c",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688466.csv",
+      "bytes": 25928,
+      "sha256": "f93b2bd0bd6fcffced9bb24f1cd44af38b45c5781ce0b06d71574ba0d63cbfa9",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688501.csv",
+      "bytes": 21025,
+      "sha256": "c7eace00e24e940b70e5f09b0c8d6f98e05677cda817cdf8817687d7f8b8a4a3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688528.csv",
+      "bytes": 24961,
+      "sha256": "a3363088b11dba9137e10c9b4705ca7ec8199ae955d32cfac9bd0947233bc972",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688565.csv",
+      "bytes": 21144,
+      "sha256": "d966f4958762da043cb12bcc139ac6a3f548ce35a4adbca17bc79a8b57882614",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688573.csv",
+      "bytes": 12447,
+      "sha256": "ade6a2a4da7d75a508b2c85344c4dfe1e12447515c38b126f94fce8a32ab7af1",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688576.csv",
+      "bytes": 13354,
+      "sha256": "554f447c2a2d00973c6037cf30e32d9a62929eba0a89575e91797363a270f5cb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688592.csv",
+      "bytes": 12419,
+      "sha256": "9a5e4a0372660e16398ee88fef37fb6542e1d358cfa7cae9fc98e43c49d60615",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688638.csv",
+      "bytes": 12889,
+      "sha256": "4ea2576a064e5b9fc4b8a579a9f1886c5555b94a8b576fbfa6b4712673ad4afa",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688651.csv",
+      "bytes": 12706,
+      "sha256": "2a6ddc7211391d960662f5bcce2f99776e8fc62962990c9cecef75c9071c0c38",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688659.csv",
+      "bytes": 21759,
+      "sha256": "7fbd5e3635589c7e1ae9d688831d5a54dec9b9e1c182d8c146085cda3120121a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688681.csv",
+      "bytes": 21299,
+      "sha256": "5c19310a886679acc31d4dc5f9a04fb8222ebf787e61c082d72619cb79cf7735",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688695.csv",
+      "bytes": 10176,
+      "sha256": "5c4b2a57f95e43c5358b17d64e1625ce1bcb0882c1a0c35eca07866636d40638",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688701.csv",
+      "bytes": 19448,
+      "sha256": "04b22a8e8e43150c467630c77e21270cc957574de701c8ce91cee7452216c550",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688793.csv",
+      "bytes": 21013,
+      "sha256": "8f2ffa0f785e8b58acf78653217a4209e20fb4a187f26f45a253935bfc06bc81",
+      "last_date": "2026-09-04"
+    }
+  ],
+  "refresh_proof": {
+    "version": 1,
+    "source": "independent_close_history_refresh",
+    "target_end_date": "2026-09-04",
+    "verified_on": "2026-09-04",
+    "verified_at_utc": "2026-09-04T15:39:01.873221+00:00"
+  },
+  "context_anchor_date": "2026-09-04",
+  "target_end_date": "2026-09-04",
+  "panel_path": "/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+  "refresh_source": "fresh"
+}

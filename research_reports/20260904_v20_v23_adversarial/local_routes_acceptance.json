@@ -1,0 +1,70 @@
+{
+  "scope": "actual after-close CLI checks, not a scheduled 14:30 intraday publication",
+  "started_at": "2026-09-04T23:51:55.036105+08:00",
+  "expected_date": "2026-09-04",
+  "hard_timeout_seconds_each": 60,
+  "steps": [
+    {
+      "name": "sync",
+      "command": [
+        "scripts/top100_cloud_delivery.py",
+        "sync",
+        "--expected-date",
+        "2026-09-04"
+      ],
+      "elapsed_seconds": 1.996,
+      "exit_code": 0,
+      "expected_result_verified": true
+    },
+    {
+      "name": "preflight",
+      "command": [
+        "scripts/realtime_state_bundle.py",
+        "preflight",
+        "--max-anchor-age-days",
+        "5",
+        "--expected-date",
+        "2026-09-04"
+      ],
+      "elapsed_seconds": 15.735,
+      "exit_code": 0,
+      "expected_result_verified": true
+    },
+    {
+      "name": "validate",
+      "command": [
+        "scripts/realtime_state_bundle.py",
+        "validate",
+        "--max-anchor-age-days",
+        "5"
+      ],
+      "elapsed_seconds": 1.022,
+      "exit_code": 0,
+      "expected_result_verified": true
+    },
+    {
+      "name": "check",
+      "command": [
+        "scripts/top100_delivery.py",
+        "check"
+      ],
+      "elapsed_seconds": 10.114,
+      "exit_code": 0,
+      "expected_result_verified": true
+    },
+    {
+      "name": "v2.0_realtime",
+      "command": [
+        "microcap_top100_mom16_biweekly_live_v2_0.py",
+        "实时信号"
+      ],
+      "elapsed_seconds": 30.011,
+      "exit_code": 1,
+      "expected_result_verified": false
+    }
+  ],
+  "base_inputs_unchanged": true,
+  "all_nav_bytes_unchanged": true,
+  "ok": false,
+  "finished_at": "2026-09-04T23:52:55.825118+08:00"
+}

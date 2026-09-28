@@ -1,0 +1,85 @@
+{
+  "symbol": "002743",
+  "org_id": "9900023252",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "szse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "1dc44d2b491ab9665457d308ffd844dd4fbd577e809bb1e8d609d05f6f7d900d",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "1dc44d2b491ab9665457d308ffd844dd4fbd577e809bb1e8d609d05f6f7d900d"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "2d9fa656e27fd318d6ab820799d94ae3b90ea1edbc9fe6e34eec2b1485199b8e",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "2d9fa656e27fd318d6ab820799d94ae3b90ea1edbc9fe6e34eec2b1485199b8e"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-09-05T00:00:00+08:00",
+      "title": "关于公司主要银行账号被冻结暨股票交易被实施其他风险警示及股票停复牌的公告",
+      "announcementId": "1225549240",
+      "adjunctUrl": "finalpage/2026-09-05/1225549240.PDF",
+      "secCode": "002743",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

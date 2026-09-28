@@ -1,0 +1,227 @@
+{
+  "symbol": "000979",
+  "org_id": "gssz0000979",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000979,gssz0000979",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 31,
+  "page_count": 2,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "5b750cd119508f377bba90d1645f5254e7a1de2660a8c770789fe373dfbec1c9",
+      "reported_total": 31,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "f51b71c148dc6e11a4635d97a732ce7603b8896d85e69f6c6001e3973bd4a1fc",
+      "reported_total": 31,
+      "rows": 1
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57623212",
+      "announcementTime": 1267050600000,
+      "title": "股权收购进展情况公告",
+      "adjunctUrl": "finalpage/2010-02-25/57623212.PDF"
+    },
+    {
+      "announcementId": "57623211",
+      "announcementTime": 1267050600000,
+      "title": "关于变更行业分类的公告",
+      "adjunctUrl": "finalpage/2010-02-25/57623211.PDF"
+    },
+    {
+      "announcementId": "57623210",
+      "announcementTime": 1267050600000,
+      "title": "2010年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-02-25/57623210.PDF"
+    },
+    {
+      "announcementId": "57623209",
+      "announcementTime": 1267050600000,
+      "title": "2010年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-02-25/57623209.PDF"
+    },
+    {
+      "announcementId": "57603101",
+      "announcementTime": 1265841000000,
+      "title": "股东股权质押公告",
+      "adjunctUrl": "finalpage/2010-02-11/57603101.PDF"
+    },
+    {
+      "announcementId": "57585398",
+      "announcementTime": 1265581980000,
+      "title": "关于申请撤销股票交易退市风险警示及变更公司名称的提示性公告",
+      "adjunctUrl": "finalpage/2010-02-08/57585398.PDF"
+    },
+    {
+      "announcementId": "57585403",
+      "announcementTime": 1265581800000,
+      "title": "关于重组相关方的承诺",
+      "adjunctUrl": "finalpage/2010-02-08/57585403.PDF"
+    },
+    {
+      "announcementId": "57585402",
+      "announcementTime": 1265581800000,
+      "title": "华泰联合证券有限责任公司关于公司重大资产出售及发行股份购买资产暨关联交易实施情况之独立财务顾问意见",
+      "adjunctUrl": "finalpage/2010-02-08/57585402.PDF"
+    },
+    {
+      "announcementId": "57585401",
+      "announcementTime": 1265581800000,
+      "title": "重大资产出售及发行股份购买资产暨关联交易实施情况报告书",
+      "adjunctUrl": "finalpage/2010-02-08/57585401.PDF"
+    },
+    {
+      "announcementId": "57585400",
+      "announcementTime": 1265581800000,
+      "title": "股份变动暨新增股份上市报告书",
+      "adjunctUrl": "finalpage/2010-02-08/57585400.PDF"
+    },
+    {
+      "announcementId": "57585399",
+      "announcementTime": 1265581800000,
+      "title": "关于公司重大资产出售及发行股份购买资产暨关联交易实施结果的法律意见书",
+      "adjunctUrl": "finalpage/2010-02-08/57585399.PDF"
+    },
+    {
+      "announcementId": "57585281",
+      "announcementTime": 1265409000000,
+      "title": "第五届董事会第一次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-06/57585281.PDF"
+    },
+    {
+      "announcementId": "57585280",
+      "announcementTime": 1265409000000,
+      "title": "第五届监事会第一次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-06/57585280.PDF"
+    },
+    {
+      "announcementId": "57585279",
+      "announcementTime": 1265409000000,
+      "title": "2009年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-02-06/57585279.PDF"
+    },
+    {
+      "announcementId": "57585278",
+      "announcementTime": 1265409000000,
+      "title": "2009年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-02-06/57585278.PDF"
+    },
+    {
+      "announcementId": "57577218",
+      "announcementTime": 1265236200000,
+      "title": "股权收购公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577218.PDF"
+    },
+    {
+      "announcementId": "57577217",
+      "announcementTime": 1265236200000,
+      "title": "第四届董事会2010年第一次临时会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577217.PDF"
+    },
+    {
+      "announcementId": "57577216",
+      "announcementTime": 1265236200000,
+      "title": "关于召开2010年第一次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2010-02-04/57577216.PDF"
+    },
+    {
+      "announcementId": "57568435",
+      "announcementTime": 1265063400000,
+      "title": "华泰联合证券有限责任公司关于公司重大资产出售及发行股份购买资产暨关联交易持续督导意见",
+      "adjunctUrl": "finalpage/2010-02-02/57568435.PDF"
+    },
+    {
+      "announcementId": "57506913",
+      "announcementTime": 1263508230000,
+      "title": "关于2009年度内部控制的自我评价报告",
+      "adjunctUrl": "finalpage/2010-01-15/57506913.PDF"
+    },
+    {
+      "announcementId": "57506902",
+      "announcementTime": 1263508230000,
+      "title": "2009年年度审计报告",
+      "adjunctUrl": "finalpage/2010-01-15/57506902.PDF"
+    },
+    {
+      "announcementId": "57506901",
+      "announcementTime": 1263508230000,
+      "title": "2009年年度报告摘要",
+      "adjunctUrl": "finalpage/2010-01-15/57506901.PDF"
+    },
+    {
+      "announcementId": "57506896",
+      "announcementTime": 1263508200000,
+      "title": "2009年度独立董事述职报告",
+      "adjunctUrl": "finalpage/2010-01-15/57506896.PDF"
+    },
+    {
+      "announcementId": "57506895",
+      "announcementTime": 1263508200000,
+      "title": "独立董事提名人声明",
+      "adjunctUrl": "finalpage/2010-01-15/57506895.PDF"
+    },
+    {
+      "announcementId": "57506894",
+      "announcementTime": 1263508200000,
+      "title": "独立董事意见",
+      "adjunctUrl": "finalpage/2010-01-15/57506894.PDF"
+    },
+    {
+      "announcementId": "57506893",
+      "announcementTime": 1263508200000,
+      "title": "独立董事候选人声明",
+      "adjunctUrl": "finalpage/2010-01-15/57506893.PDF"
+    },
+    {
+      "announcementId": "57506892",
+      "announcementTime": 1263508200000,
+      "title": "关于变更公司联系方式公告",
+      "adjunctUrl": "finalpage/2010-01-15/57506892.PDF"
+    },
+    {
+      "announcementId": "57506891",
+      "announcementTime": 1263508200000,
+      "title": "2009年年度报告",
+      "adjunctUrl": "finalpage/2010-01-15/57506891.PDF"
+    },
+    {
+      "announcementId": "57506890",
+      "announcementTime": 1263508200000,
+      "title": "第四届监事会第十五次会议决议公告",
+      "adjunctUrl": "finalpage/2010-01-15/57506890.PDF"
+    },
+    {
+      "announcementId": "57506889",
+      "announcementTime": 1263508200000,
+      "title": "关于召开2009年度股东大会的通知",
+      "adjunctUrl": "finalpage/2010-01-15/57506889.PDF"
+    },
+    {
+      "announcementId": "57506888",
+      "announcementTime": 1263508200000,
+      "title": "第四届董事会第十五次会议决议公告",
+      "adjunctUrl": "finalpage/2010-01-15/57506888.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

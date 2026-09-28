@@ -1,0 +1,41 @@
+{
+  "events_held_on_ex_date": 300,
+  "held_before_record_date": 299,
+  "candidate_complete": 291,
+  "unresolved": 9,
+  "unresolved_reasons": {
+    "missing_raw_price_pair": 7,
+    "missing_raw_price_pair|missing_or_disagreeing_secondary_source": 1,
+    "not_held_before_record_date": 1
+  },
+  "daily_rows": 1142,
+  "event_days_with_candidate_delta": 189,
+  "first_event_delta": [
+    {
+      "date": "2010-04-08",
+      "official_return": "-0.0006035238691415",
+      "accepted_events": "1.0",
+      "bonus_events": "0.0",
+      "cash_events": "1.0",
+      "bonus_delta": "0.0",
+      "cash_delta": "7.719298245614037e-05",
+      "economic_rights_delta_candidate": "7.719298245614037e-05",
+      "economic_return_candidate": "-0.0005263308866853597",
+      "account_or_cash_reinvestment_validated": "False"
+    }
+  ],
+  "largest_absolute_day_delta": {
+    "date": "2013-05-17 00:00:00",
+    "official_return": "0.0001373808166647",
+    "accepted_events": "5.0",
+    "bonus_events": "3.0",
+    "cash_events": "5.0",
+    "bonus_delta": "0.01267681907983192",
+    "cash_delta": "0.00029522745314526796",
+    "economic_rights_delta_candidate": "0.012972046532977188",
+    "economic_return_candidate": "0.013109427349641888",
+    "account_or_cash_reinvestment_validated": "False"
+  },
+  "ledger_sha256": "7b671a0bdf3b8a06ab46704dd0ec8177ad331b60f3bc57f722998b9024a3d63b",
+  "daily_sha256": "bd807b0ab8aa37665d01c30b9f0a0feb503149fd27a8f302a2caecb61db402e1"
+}

@@ -1,0 +1,139 @@
+{
+  "symbol": "600302",
+  "org_id": "gssh0600302",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 6,
+      "pages_fetched": 1,
+      "first_page_sha256": "83eea53bde7c1143322dba44a8d5d2cd72357b5e821aab5fdd50c715e7e85b2b",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "83eea53bde7c1143322dba44a8d5d2cd72357b5e821aab5fdd50c715e7e85b2b"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 7,
+      "pages_fetched": 1,
+      "first_page_sha256": "401656423683949315350a4a8156839ae3b52c7ec3181e783568ffde246fd6dd",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "401656423683949315350a4a8156839ae3b52c7ec3181e783568ffde246fd6dd"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-04-30T00:00:00+08:00",
+      "title": "标准股份关于实施其他风险警示暨停牌的公告",
+      "announcementId": "1225266703",
+      "adjunctUrl": "finalpage/2026-04-30/1225266703.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-30T00:00:00+08:00",
+      "title": "标准股份关于公司股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1225266706",
+      "adjunctUrl": "finalpage/2026-04-30/1225266706.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-05-30T00:00:00+08:00",
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225337651",
+      "adjunctUrl": "finalpage/2026-05-30/1225337651.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-06-30T00:00:00+08:00",
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225395911",
+      "adjunctUrl": "finalpage/2026-06-30/1225395911.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-31T00:00:00+08:00",
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展的补充公告",
+      "announcementId": "1225449328",
+      "adjunctUrl": "finalpage/2026-07-31/1225449328.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-31T00:00:00+08:00",
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225447647",
+      "adjunctUrl": "finalpage/2026-07-31/1225447647.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-29T00:00:00+08:00",
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225524987",
+      "adjunctUrl": "finalpage/2026-08-29/1225524987.PDF",
+      "secCode": "600302",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

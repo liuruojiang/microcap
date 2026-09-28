@@ -1,0 +1,143 @@
+{
+  "ok": true,
+  "run_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/33865747759",
+  "strategy_sha": "9520cb0312f63fa8939f52f048ff63a3cae77e6b",
+  "automation_sha": "ae36acf269686c95294bc86aa1cffb22c581bcdc",
+  "streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8721,
+      "latest_date": "2026-09-04"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4050,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 431,
+      "latest_date": "2026-09-03"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04"
+    }
+  },
+  "signals": {
+    "0": {
+      "date": "2026-09-04",
+      "version": "2.0",
+      "strategy_revision": "plain_mom16_fixed1_20260904",
+      "current_holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04"
+    },
+    "3": {
+      "date": "2026-09-04",
+      "version": "2.3",
+      "strategy_revision": "spread_nav_log_wls_lb25_vol10_overheat",
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "current_execution_scale": "0.0",
+      "next_session_actionable_scale": "0.0",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04"
+    },
+    "5": {
+      "date": "2026-09-04",
+      "version": "2.5",
+      "strategy_revision": "microcap_only_log_wls_threshold_no_target_vol",
+      "current_holding": "long_microcap_top100",
+      "next_holding": "long_microcap_top100",
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04"
+    }
+  },
+  "cloud_vs_local_exact_return_nav_parity": false,
+  "cloud_vs_local_state_parity": true,
+  "quote_precision_attribution": {
+    "0": {
+      "exact_return_parity": false,
+      "max_return_delta": 9.80517181899121e-07,
+      "max_nav_delta": 2.5732693423208275e-05,
+      "max_hedge_close_delta_points": 0.005000000001018634,
+      "unexplained_return_residual": 2.3991223555176874e-16,
+      "explanation": "hedge quote decimal precision only; identical microcap prices, costs and states"
+    },
+    "3": {
+      "exact_return_parity": false,
+      "max_return_delta": 8.008823595990339e-07,
+      "max_nav_delta": 1.9553283582496306e-05,
+      "max_hedge_close_delta_points": 0.005000000001018634,
+      "unexplained_return_residual": 2.3904487381378034e-16,
+      "explanation": "hedge quote decimal precision only; identical microcap prices, costs and states"
+    },
+    "5": {
+      "exact_return_parity": true,
+      "max_return_delta": 0.0,
+      "max_nav_delta": 0.0,
+      "max_hedge_close_delta_points": 0.005000000001018634,
+      "unexplained_return_residual": 0.0,
+      "explanation": "hedge quote decimal precision only; identical microcap prices, costs and states"
+    }
+  },
+  "changed_inputs": [
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
+  ],
+  "send_gmail_and_marker": "success"
+}

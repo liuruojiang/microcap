@@ -1,0 +1,431 @@
+{
+  "symbol": "600077",
+  "org_id": "gssh0600077",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600077,gssh0600077",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 64,
+  "page_count": 3,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "5a7748afabb5980a31ee64a0a7d72e842add2dceb0e5788d665770463d429214",
+      "reported_total": 64,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "b9c2a6211d9852339d36338c5a9491468b2b5009a6ca217dd57617e029230a48",
+      "reported_total": 64,
+      "rows": 30
+    },
+    {
+      "page": 3,
+      "raw_sha256": "a77f203425d2b2aaa415bf6785e29e4bfdd7db407bf25e7b0dffb6f3925e5b78",
+      "reported_total": 64,
+      "rows": 4
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57479307",
+      "announcementTime": 1262817060000,
+      "title": "2009年度业绩预告",
+      "adjunctUrl": "finalpage/2010-01-07/57479307.PDF"
+    },
+    {
+      "announcementId": "57479306",
+      "announcementTime": 1262817060000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2010-01-07/57479306.PDF"
+    },
+    {
+      "announcementId": "57467923",
+      "announcementTime": 1262644500000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2010-01-05/57467923.PDF"
+    },
+    {
+      "announcementId": "57440034",
+      "announcementTime": 1261780260000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2009-12-26/57440034.PDF"
+    },
+    {
+      "announcementId": "57427586",
+      "announcementTime": 1261521300000,
+      "title": "2010年第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-12-23/57427586.PDF"
+    },
+    {
+      "announcementId": "57419383",
+      "announcementTime": 1261348260000,
+      "title": "详式权益变动报告书",
+      "adjunctUrl": "finalpage/2009-12-21/57419383.PDF"
+    },
+    {
+      "announcementId": "57419382",
+      "announcementTime": 1261348260000,
+      "title": "简式权益变动报告书",
+      "adjunctUrl": "finalpage/2009-12-21/57419382.PDF"
+    },
+    {
+      "announcementId": "57419381",
+      "announcementTime": 1261348260000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-12-21/57419381.PDF"
+    },
+    {
+      "announcementId": "57407136",
+      "announcementTime": 1261002900000,
+      "title": "股权转让提示性公告",
+      "adjunctUrl": "finalpage/2009-12-17/57407136.PDF"
+    },
+    {
+      "announcementId": "57407135",
+      "announcementTime": 1261002900000,
+      "title": "关于召开公司2010年第一次临时股东大会的公告",
+      "adjunctUrl": "finalpage/2009-12-17/57407135.PDF"
+    },
+    {
+      "announcementId": "57407134",
+      "announcementTime": 1261002900000,
+      "title": "重大资产置换及发行股份购买资产暨关联交易预案",
+      "adjunctUrl": "finalpage/2009-12-17/57407134.PDF"
+    },
+    {
+      "announcementId": "57407133",
+      "announcementTime": 1261002900000,
+      "title": "第六届董事会第二十一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-17/57407133.PDF"
+    },
+    {
+      "announcementId": "57394376",
+      "announcementTime": 1260743700000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-12-14/57394376.PDF"
+    },
+    {
+      "announcementId": "57369729",
+      "announcementTime": 1260138690000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-12-07/57369729.PDF"
+    },
+    {
+      "announcementId": "57343958",
+      "announcementTime": 1259534100000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-11-30/57343958.PDF"
+    },
+    {
+      "announcementId": "57319303",
+      "announcementTime": 1258929300000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-11-23/57319303.PDF"
+    },
+    {
+      "announcementId": "57298300",
+      "announcementTime": 1258410900000,
+      "title": "重大资产重组停牌公告",
+      "adjunctUrl": "finalpage/2009-11-17/57298300.PDF"
+    },
+    {
+      "announcementId": "57277779",
+      "announcementTime": 1257892500000,
+      "title": "停牌公告",
+      "adjunctUrl": "finalpage/2009-11-11/57277779.PDF"
+    },
+    {
+      "announcementId": "57234727",
+      "announcementTime": 1256941800000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-31/57234727.PDF"
+    },
+    {
+      "announcementId": "57145388",
+      "announcementTime": 1255559700000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2009-10-15/57145388.PDF"
+    },
+    {
+      "announcementId": "56893935",
+      "announcementTime": 1252103700000,
+      "title": "关于更换职工监事的公告",
+      "adjunctUrl": "finalpage/2009-09-05/56893935.PDF"
+    },
+    {
+      "announcementId": "56677412",
+      "announcementTime": 1251671400000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-31/56677412.PDF"
+    },
+    {
+      "announcementId": "56677411",
+      "announcementTime": 1251671400000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-31/56677411.PDF"
+    },
+    {
+      "announcementId": "55584071",
+      "announcementTime": 1249857300000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-08-10/55584071.PDF"
+    },
+    {
+      "announcementId": "54899031",
+      "announcementTime": 1248129300000,
+      "title": "公司章程（2009年7月）",
+      "adjunctUrl": "finalpage/2009-07-21/54899031.PDF"
+    },
+    {
+      "announcementId": "54899030",
+      "announcementTime": 1248129300000,
+      "title": "关于百科投资管理集团有限公司减持公司股份的公告",
+      "adjunctUrl": "finalpage/2009-07-21/54899030.PDF"
+    },
+    {
+      "announcementId": "54471217",
+      "announcementTime": 1247610900000,
+      "title": "2009年半年度业绩预告公告",
+      "adjunctUrl": "finalpage/2009-07-15/54471217.PDF"
+    },
+    {
+      "announcementId": "54471216",
+      "announcementTime": 1247610900000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2009-07-15/54471216.PDF"
+    },
+    {
+      "announcementId": "54457293",
+      "announcementTime": 1247265300000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2009-07-11/54457293.PDF"
+    },
+    {
+      "announcementId": "54100115",
+      "announcementTime": 1246314900000,
+      "title": "2008年年度报告(修订版)",
+      "adjunctUrl": "finalpage/2009-06-30/54100115.PDF"
+    },
+    {
+      "announcementId": "54099539",
+      "announcementTime": 1246314660000,
+      "title": "更正公告",
+      "adjunctUrl": "finalpage/2009-06-30/54099539.PDF"
+    },
+    {
+      "announcementId": "53802062",
+      "announcementTime": 1245450900000,
+      "title": "第六届董事会第十八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-06-20/53802062.PDF"
+    },
+    {
+      "announcementId": "52878666",
+      "announcementTime": 1243290600000,
+      "title": "2008年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-05-26/52878666.PDF"
+    },
+    {
+      "announcementId": "52878665",
+      "announcementTime": 1243290600000,
+      "title": "股东更名提示性公告",
+      "adjunctUrl": "finalpage/2009-05-26/52878665.PDF"
+    },
+    {
+      "announcementId": "52878664",
+      "announcementTime": 1243290600000,
+      "title": "2008年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-05-26/52878664.PDF"
+    },
+    {
+      "announcementId": "52697034",
+      "announcementTime": 1242772200000,
+      "title": "简式权益变动报告书",
+      "adjunctUrl": "finalpage/2009-05-20/52697034.PDF"
+    },
+    {
+      "announcementId": "52697033",
+      "announcementTime": 1242772200000,
+      "title": "股东权益变动提示性公告",
+      "adjunctUrl": "finalpage/2009-05-20/52697033.PDF"
+    },
+    {
+      "announcementId": "52491390",
+      "announcementTime": 1242253800000,
+      "title": "关于公司与大连加中国际贸易有限公司等公司关联交易的公告",
+      "adjunctUrl": "finalpage/2009-05-14/52491390.PDF"
+    },
+    {
+      "announcementId": "52491389",
+      "announcementTime": 1242253800000,
+      "title": "第六届董事会第十七次会议决议暨增加公司2008年度股东大会关联交易临时提案的公告",
+      "adjunctUrl": "finalpage/2009-05-14/52491389.PDF"
+    },
+    {
+      "announcementId": "52071184",
+      "announcementTime": 1241389800000,
+      "title": "2008年度股东大会资料",
+      "adjunctUrl": "finalpage/2009-05-04/52071184.PDF"
+    },
+    {
+      "announcementId": "52071183",
+      "announcementTime": 1241389800000,
+      "title": "关于百科投资管理有限公司减持公司股份的公告",
+      "adjunctUrl": "finalpage/2009-05-04/52071183.PDF"
+    },
+    {
+      "announcementId": "51940671",
+      "announcementTime": 1240957800000,
+      "title": "关于百科投资管理有限公司减持公司股份的公告",
+      "adjunctUrl": "finalpage/2009-04-29/51940671.PDF"
+    },
+    {
+      "announcementId": "51616778",
+      "announcementTime": 1240439400000,
+      "title": "董事会审计委员会年度报告工作规程",
+      "adjunctUrl": "finalpage/2009-04-23/51616778.PDF"
+    },
+    {
+      "announcementId": "51616777",
+      "announcementTime": 1240439400000,
+      "title": "控股股东及其他关联方资金占用情况专项说明",
+      "adjunctUrl": "finalpage/2009-04-23/51616777.PDF"
+    },
+    {
+      "announcementId": "51616776",
+      "announcementTime": 1240439400000,
+      "title": "关于召开2008年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-04-23/51616776.PDF"
+    },
+    {
+      "announcementId": "51616775",
+      "announcementTime": 1240439400000,
+      "title": "董事会对前期重大会计差错更正的相关说明",
+      "adjunctUrl": "finalpage/2009-04-23/51616775.PDF"
+    },
+    {
+      "announcementId": "51616774",
+      "announcementTime": 1240439400000,
+      "title": "第六届监事会第六次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-23/51616774.PDF"
+    },
+    {
+      "announcementId": "51616773",
+      "announcementTime": 1240439400000,
+      "title": "第六届董事会第十六次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-23/51616773.PDF"
+    },
+    {
+      "announcementId": "51612402",
+      "announcementTime": 1240439400000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612402.PDF"
+    },
+    {
+      "announcementId": "51612275",
+      "announcementTime": 1240439400000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-04-23/51612275.PDF"
+    },
+    {
+      "announcementId": "51612274",
+      "announcementTime": 1240439400000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612274.PDF"
+    },
+    {
+      "announcementId": "51230650",
+      "announcementTime": 1239661800000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2009-04-14/51230650.PDF"
+    },
+    {
+      "announcementId": "51155033",
+      "announcementTime": 1239316200000,
+      "title": "关于本溪超越船板加工有限公司减持公司股份的公告",
+      "adjunctUrl": "finalpage/2009-04-10/51155033.PDF"
+    },
+    {
+      "announcementId": "50433463",
+      "announcementTime": 1237847400000,
+      "title": "2009年第1次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-03-24/50433463.PDF"
+    },
+    {
+      "announcementId": "50433462",
+      "announcementTime": 1237847400000,
+      "title": "2008年度业绩预告",
+      "adjunctUrl": "finalpage/2009-03-24/50433462.PDF"
+    },
+    {
+      "announcementId": "50433461",
+      "announcementTime": 1237847400000,
+      "title": "2009年第1次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-03-24/50433461.PDF"
+    },
+    {
+      "announcementId": "50273427",
+      "announcementTime": 1237329000000,
+      "title": "2009第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-03-18/50273427.PDF"
+    },
+    {
+      "announcementId": "50273426",
+      "announcementTime": 1237329000000,
+      "title": "关于本溪超越船板加工有限公司减持公司股份的公告",
+      "adjunctUrl": "finalpage/2009-03-18/50273426.PDF"
+    },
+    {
+      "announcementId": "49828611",
+      "announcementTime": 1236205800000,
+      "title": "有限售条件的流通股上市流通的公告",
+      "adjunctUrl": "finalpage/2009-03-05/49828611.PDF"
+    },
+    {
+      "announcementId": "49828610",
+      "announcementTime": 1236205800000,
+      "title": "第六届董事会第十五次会议决议暨召开2009年第1次临时股东大会的公告",
+      "adjunctUrl": "finalpage/2009-03-05/49828610.PDF"
+    },
+    {
+      "announcementId": "49527262",
+      "announcementTime": 1235514600000,
+      "title": "股票交易异常波动公告 ",
+      "adjunctUrl": "finalpage/2009-02-25/49527262.PDF"
+    },
+    {
+      "announcementId": "49434010",
+      "announcementTime": 1235169000000,
+      "title": "变更证券简称公告 ",
+      "adjunctUrl": "finalpage/2009-02-21/49434010.PDF"
+    },
+    {
+      "announcementId": "48957774",
+      "announcementTime": 1233959400000,
+      "title": "关于百科投资管理有限公司减持公司股份的公告 ",
+      "adjunctUrl": "finalpage/2009-02-07/48957774.PDF"
+    },
+    {
+      "announcementId": "48477805",
+      "announcementTime": 1232145000000,
+      "title": "公告 ",
+      "adjunctUrl": "finalpage/2009-01-17/48477805.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

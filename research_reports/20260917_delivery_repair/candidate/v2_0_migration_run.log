@@ -1,0 +1,5 @@
+D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py:15032: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+D:\动量策略\微盘股对冲策略\outputs\microcap_top100_mom16_biweekly_live_v2_0_summary.json
+D:\动量策略\微盘股对冲策略\outputs\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv
+D:\动量策略\微盘股对冲策略\outputs\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv

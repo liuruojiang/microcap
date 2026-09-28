@@ -1,0 +1,29 @@
+{
+  "year": 2013,
+  "label": "remove_special",
+  "category": "",
+  "searchkey": "撤销特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2013-01-01~2013-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 4,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "861dca68e1250cd97996f41fdd71dcb7703a7a0812eed280e64f83e9874142b0",
+      "response_bytes": 3035,
+      "row_count": 4,
+      "reported_total": 4
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000585",
+      "announcementId": "62204426",
+      "announcementTime": 1363017600000,
+      "title": "关于提交<em>撤销</em>A股股票交易<em>特别</em><em>处理</em>申请的公告",
+      "adjunctUrl": "finalpage/2013-03-12/62204426.PDF"
+    }
+  ],
+  "complete": true
+}

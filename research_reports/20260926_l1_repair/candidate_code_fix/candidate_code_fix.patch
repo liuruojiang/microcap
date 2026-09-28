@@ -1,0 +1,90 @@
+--- a/analyze_top100_rebalance_frequency.py
++++ b/analyze_top100_rebalance_frequency.py
+@@ -425,8 +425,8 @@
+ 
+ 
+ def is_st_name(name: str | None) -> bool:
+-    text = str(name or "").strip().upper().replace(" ", "")
+-    return text.startswith(("*ST", "ST", "PT"))
++    text = str(name or "").upper()
++    return re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is not None
+ 
+ 
+ def build_st_intervals_from_name_changes(
+@@ -1008,6 +1008,9 @@
+     if code.startswith("688"):
+         return 0.2
+     if is_st:
++        mainland_main_board = code.startswith(("000", "001", "002", "003", "600", "601", "603", "605"))
++        if mainland_main_board and pd.Timestamp(trade_date).normalize() >= pd.Timestamp("2026-07-06"):
++            return 0.1
+         return 0.05
+     return 0.1
+ 
+@@ -1022,7 +1025,8 @@
+         return False
+     if direction not in {-1, 1}:
+         raise ValueError(f"unsupported limit direction: {direction}")
+-    limit_price = round_limit_price(float(prev_close) * (1.0 + direction * float(limit_ratio)))
++    exact_limit = Decimal(str(prev_close)) * (Decimal("1") + Decimal(direction) * Decimal(str(limit_ratio)))
++    limit_price = round_limit_price(exact_limit)
+     expected_return = limit_price / float(prev_close) - 1.0
+     actual_return = float(price) / float(prev_close) - 1.0
+     return abs(actual_return - expected_return) <= LIMIT_PRICE_REL_EPS
+--- a/microcap_top100_mom16_biweekly_live.py
++++ b/microcap_top100_mom16_biweekly_live.py
+@@ -239,8 +239,8 @@
+ 
+ def is_live_tradable_name(name: str) -> bool:
+     """Current/live member rule; deliberately separate from historical ST masks."""
+-    text = str(name or "").strip().upper().replace(" ", "")
+-    return is_tradable_name(name) and not text.startswith(("*ST", "ST", "PT"))
++    text = str(name or "").upper()
++    return is_tradable_name(name) and re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is None
+ 
+ 
+ def assert_no_st_members(members: pd.DataFrame, label: str) -> None:
+--- a/microcap_top100_mom16_biweekly_live_v2_0.py
++++ b/microcap_top100_mom16_biweekly_live_v2_0.py
+@@ -2408,8 +2408,8 @@
+ 
+ 
+ def is_st_name(name: str | None) -> bool:
+-    text = str(name or "").strip().upper().replace(" ", "")
+-    return text.startswith(("*ST", "ST", "PT"))
++    text = str(name or "").upper()
++    return re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is not None
+ 
+ 
+ def build_st_intervals_from_name_changes(
+@@ -3030,6 +3030,9 @@
+     if code.startswith("688"):
+         return 0.2
+     if is_st:
++        mainland_main_board = code.startswith(("000", "001", "002", "003", "600", "601", "603", "605"))
++        if mainland_main_board and pd.Timestamp(trade_date).normalize() >= pd.Timestamp("2026-07-06"):
++            return 0.1
+         return 0.05
+     return 0.1
+ 
+@@ -3044,7 +3047,8 @@
+         return False
+     if direction not in {-1, 1}:
+         raise ValueError(f"unsupported limit direction: {direction}")
+-    limit_price = round_limit_price(float(prev_close) * (1.0 + direction * float(limit_ratio)))
++    exact_limit = Decimal(str(prev_close)) * (Decimal("1") + Decimal(direction) * Decimal(str(limit_ratio)))
++    limit_price = round_limit_price(exact_limit)
+     expected_return = limit_price / float(prev_close) - 1.0
+     actual_return = float(price) / float(prev_close) - 1.0
+     return abs(actual_return - expected_return) <= LIMIT_PRICE_REL_EPS
+@@ -3912,8 +3916,8 @@
+ 
+ def is_live_tradable_name(name: str) -> bool:
+     """Current/live member rule; deliberately separate from historical ST masks."""
+-    text = str(name or "").strip().upper().replace(" ", "")
+-    return is_tradable_name(name) and not text.startswith(("*ST", "ST", "PT"))
++    text = str(name or "").upper()
++    return is_tradable_name(name) and re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is None
+ 
+ 
+ def assert_no_st_members(members: pd.DataFrame, label: str) -> None:

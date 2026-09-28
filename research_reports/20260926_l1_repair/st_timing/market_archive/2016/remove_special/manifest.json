@@ -1,0 +1,36 @@
+{
+  "year": 2016,
+  "label": "remove_special",
+  "category": "",
+  "searchkey": "撤销特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2016-01-01~2016-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 6,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "f66a86d693d7dd3ead868767c3cd770cb05701a40e43a9bbfbee1c93e270e342",
+      "response_bytes": 4582,
+      "row_count": 6,
+      "reported_total": 6
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000590",
+      "announcementId": "1202083968",
+      "announcementTime": 1458921600000,
+      "title": "关于申请<em>撤销</em>退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2016-03-26/1202083968.PDF"
+    },
+    {
+      "symbol": "000976",
+      "announcementId": "1201961576",
+      "announcementTime": 1454428800000,
+      "title": "关于申请<em>撤销</em>退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2016-02-03/1201961576.PDF"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,18 @@
+{
+  "source": "CNInfo webapi via akshare.stock_dividend_cninfo; full per-symbol history",
+  "source_page": "https://webapi.cninfo.com.cn/#/company",
+  "retrieved_utc": "2026-09-26T11:54:41.928903+00:00",
+  "requested_symbols": 1,
+  "successful_symbols": 1,
+  "failed_symbols": 0,
+  "event_rows": 18,
+  "events_sha256": "ed44483f0fdb2da18dc88792e30b2d528818e93b880a9009b40f65722bd02ffb",
+  "per_symbol": [
+    {
+      "symbol": "600433",
+      "status": "ok",
+      "rows": 18,
+      "retrieved_utc": "2026-09-26T11:54:38.398271+00:00"
+    }
+  ]
+}

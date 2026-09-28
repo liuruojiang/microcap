@@ -1,0 +1,47 @@
+{
+  "symbol": "600213",
+  "org_id": "gssh0600213",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600213,gssh0600213",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 2,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "c460b23de19f87d89012b41b0844349334fe957d5e8f7a918bc4beedddecc455",
+      "reported_total": 2,
+      "rows": 2
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57599613",
+      "announcementTime": 1265754660000,
+      "title": "第四届董事会临时会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-10/57599613.PDF"
+    },
+    {
+      "announcementId": "57552008",
+      "announcementTime": 1264631700000,
+      "title": "第四届董事会临时会议决议公告",
+      "adjunctUrl": "finalpage/2010-01-28/57552008.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

@@ -1,0 +1,85 @@
+{
+  "symbol": "002360",
+  "org_id": "9900010767",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "szse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "77bf551e7012695fb2e172b34e2ef17ab2b1172e9634cd69dfc72d42a8e957ee",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "77bf551e7012695fb2e172b34e2ef17ab2b1172e9634cd69dfc72d42a8e957ee"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "d8e33a32821ebb7b4100c4faee7331324ae5fafeae07e42009c118980b87c8e4",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "d8e33a32821ebb7b4100c4faee7331324ae5fafeae07e42009c118980b87c8e4"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-04-28T00:00:00+08:00",
+      "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+      "announcementId": "1225212267",
+      "adjunctUrl": "finalpage/2026-04-28/1225212267.PDF",
+      "secCode": "002360",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

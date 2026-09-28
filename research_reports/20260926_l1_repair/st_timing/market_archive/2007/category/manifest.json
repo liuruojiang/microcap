@@ -1,0 +1,911 @@
+{
+  "year": 2007,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2007-01-01~2007-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 320,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "57ddd42f8af2f3d82cb4692833bb3946090f51832a7513e821827495972aee2f",
+      "response_bytes": 20112,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "8bc8b971d6c869415337443caf918368c71339a7b515061bf7c25a6f8c5aeb0f",
+      "response_bytes": 19980,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "87a4bc8e52b05c7d21442416bcc73ca16404831debe34c21e9b791a9b030ee0c",
+      "response_bytes": 19949,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "4992ead085fbfa2600af60b1efb136310cd986f572168f09a248fd77358057fa",
+      "response_bytes": 20226,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "ff078929c959f4f1dd1e80b1235c3eb1f5f56d79f6ac56bfa96d47e584d334ff",
+      "response_bytes": 20091,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "833a20a3e01e11b270c97809ce3e45c0f7f0e63e419042e8ce1dc5f90099c82c",
+      "response_bytes": 20233,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 7,
+      "sha256_raw_response": "decbabab975b4848785790ed36c10649b946cb443326a4ec1e4dd74ba81bff61",
+      "response_bytes": 20456,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 8,
+      "sha256_raw_response": "36e73a89181cb8f91adb02221bf35e331317490aff1a8a31ce972f5517209964",
+      "response_bytes": 20257,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 9,
+      "sha256_raw_response": "45a791241108498f3b8991239b9fe27d9ebb329a2278afe8ed9779677fe5211c",
+      "response_bytes": 20279,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 10,
+      "sha256_raw_response": "b11fd38c91673ca1090baa473a8d56c7eb576b2b83d9d4688c1cb49f50e1957a",
+      "response_bytes": 20329,
+      "row_count": 30,
+      "reported_total": 320
+    },
+    {
+      "page": 11,
+      "sha256_raw_response": "154965de0fbe911c8f3e7fd90ac52cf254cf29518d74aa2269c7569a24d342f0",
+      "response_bytes": 13518,
+      "row_count": 20,
+      "reported_total": 320
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000693",
+      "announcementId": "35845738",
+      "announcementTime": 1197239400000,
+      "title": "关于为恢复上市所采取的措施的公告",
+      "adjunctUrl": "finalpage/2007-12-10/35845738.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "35788101",
+      "announcementTime": 1196893800000,
+      "title": "关于为恢复上市所采取措施的公告",
+      "adjunctUrl": "finalpage/2007-12-06/35788101.PDF"
+    },
+    {
+      "symbol": "000038",
+      "announcementId": "35751061",
+      "announcementTime": 1196721000000,
+      "title": "关于公司为恢复股票上市所采取的措施及有关工作的进展情况",
+      "adjunctUrl": "finalpage/2007-12-04/35751061.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "35686766",
+      "announcementTime": 1196634600000,
+      "title": "关于恢复上市工作进展公告",
+      "adjunctUrl": "finalpage/2007-12-03/35686766.PDF"
+    },
+    {
+      "symbol": "600705",
+      "announcementId": "35722207",
+      "announcementTime": 1196631900000,
+      "title": "为恢复上市所采取的措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2007-12-03/35722207.PDF"
+    },
+    {
+      "symbol": "600242",
+      "announcementId": "35407162",
+      "announcementTime": 1195422300000,
+      "title": "终止上市风险提示公告",
+      "adjunctUrl": "finalpage/2007-11-19/35407162.PDF"
+    },
+    {
+      "symbol": "000038",
+      "announcementId": "35207841",
+      "announcementTime": 1194820200000,
+      "title": "关于公司为恢复股票上市所采取的措施及有关工作的进展情况",
+      "adjunctUrl": "finalpage/2007-11-12/35207841.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "35080032",
+      "announcementTime": 1194301800000,
+      "title": "董事会关于为恢复上市所采取措施的公告",
+      "adjunctUrl": "finalpage/2007-11-06/35080032.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "35044179",
+      "announcementTime": 1194215400000,
+      "title": "关于恢复上市工作进展公告",
+      "adjunctUrl": "finalpage/2007-11-05/35044179.PDF"
+    },
+    {
+      "symbol": "600705",
+      "announcementId": "35074937",
+      "announcementTime": 1194212700000,
+      "title": "为恢复上市所采取的措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2007-11-05/35074937.PDF"
+    },
+    {
+      "symbol": "600242",
+      "announcementId": "35074822",
+      "announcementTime": 1194212700000,
+      "title": "终止上市风险提示公告",
+      "adjunctUrl": "finalpage/2007-11-05/35074822.PDF"
+    },
+    {
+      "symbol": "000890",
+      "announcementId": "34713189",
+      "announcementTime": 1193178600000,
+      "title": "第五届第二十九次董事会决议公告",
+      "adjunctUrl": "finalpage/2007-10-24/34713189.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "33916722",
+      "announcementTime": 1192743900000,
+      "title": "风险提示性公告",
+      "adjunctUrl": "finalpage/2007-10-19/33916722.PDF"
+    },
+    {
+      "symbol": "000038",
+      "announcementId": "33704678",
+      "announcementTime": 1192573800000,
+      "title": "关于公司为恢复股票上市所采取的措施及有关工作的进展情况",
+      "adjunctUrl": "finalpage/2007-10-17/33704678.PDF"
+    },
+    {
+      "symbol": "600137",
+      "announcementId": "33699715",
+      "announcementTime": 1192484700000,
+      "title": "关于撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-10-16/33699715.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "33563793",
+      "announcementTime": 1192055400000,
+      "title": "关于为恢复上市所采取的措施的公告",
+      "adjunctUrl": "finalpage/2007-10-11/33563793.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "33493600",
+      "announcementTime": 1191882600000,
+      "title": "董事会关于为恢复上市所采取措施的公告",
+      "adjunctUrl": "finalpage/2007-10-09/33493600.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "33486014",
+      "announcementTime": 1191796230000,
+      "title": "关于恢复上市工作进展公告",
+      "adjunctUrl": "finalpage/2007-10-08/33486014.PDF"
+    },
+    {
+      "symbol": "600705",
+      "announcementId": "33491271",
+      "announcementTime": 1191793500000,
+      "title": "为恢复上市所采取的措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2007-10-08/33491271.PDF"
+    },
+    {
+      "symbol": "000038",
+      "announcementId": "31444076",
+      "announcementTime": 1189117800000,
+      "title": "关于公司为恢复股票上市所采取的措施及有关工作的进展情况",
+      "adjunctUrl": "finalpage/2007-09-07/31444076.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "31384265",
+      "announcementTime": 1189031400000,
+      "title": "关于为恢复上市所采取的措施的公告",
+      "adjunctUrl": "finalpage/2007-09-06/31384265.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "31382397",
+      "announcementTime": 1189031400000,
+      "title": "董事会关于为恢复上市所采取措施的公告",
+      "adjunctUrl": "finalpage/2007-09-06/31382397.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "31075614",
+      "announcementTime": 1188167400000,
+      "title": "关于实施股票交易其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-08-27/31075614.PDF"
+    },
+    {
+      "symbol": "000967",
+      "announcementId": "31001934",
+      "announcementTime": 1187822310000,
+      "title": "关于撤消股票交易退市风险警示和其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-08-23/31001934.PDF"
+    },
+    {
+      "symbol": "600093",
+      "announcementId": "31008252",
+      "announcementTime": 1187819100000,
+      "title": "关于申请及撤销对公司股票实行的退市风险警示及其他特别处理公告",
+      "adjunctUrl": "finalpage/2007-08-23/31008252.PDF"
+    },
+    {
+      "symbol": "000034",
+      "announcementId": "30879996",
+      "announcementTime": 1187562810000,
+      "title": "关于撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-08-20/30879996.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "29846354",
+      "announcementTime": 1184276700000,
+      "title": "关于恢复上市进展情况的公告",
+      "adjunctUrl": "finalpage/2007-07-13/29846354.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "29634802",
+      "announcementTime": 1183674630000,
+      "title": "董事会关于为恢复上市所采取措施的公告",
+      "adjunctUrl": "finalpage/2007-07-06/29634802.PDF"
+    },
+    {
+      "symbol": "600705",
+      "announcementId": "29665700",
+      "announcementTime": 1183671900000,
+      "title": "为恢复上市所采取的措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2007-07-06/29665700.PDF"
+    },
+    {
+      "symbol": "000780",
+      "announcementId": "29490593",
+      "announcementTime": 1183329030000,
+      "title": "关于撤销退市风险警示并更改公司股票简称的公告",
+      "adjunctUrl": "finalpage/2007-07-02/29490593.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "29479528",
+      "announcementTime": 1183329030000,
+      "title": "关于恢复上市工作进展公告",
+      "adjunctUrl": "finalpage/2007-07-02/29479528.PDF"
+    },
+    {
+      "symbol": "600767",
+      "announcementId": "29494604",
+      "announcementTime": 1183326300000,
+      "title": "关于撤销对公司股票实行特别处理的公告",
+      "adjunctUrl": "finalpage/2007-07-02/29494604.PDF"
+    },
+    {
+      "symbol": "600213",
+      "announcementId": "29382503",
+      "announcementTime": 1182894300000,
+      "title": "股票恢复上市的公告",
+      "adjunctUrl": "finalpage/2007-06-27/29382503.PDF"
+    },
+    {
+      "symbol": "600419",
+      "announcementId": "29349291",
+      "announcementTime": 1182807900000,
+      "title": "撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-06-26/29349291.PDF"
+    },
+    {
+      "symbol": "600234",
+      "announcementId": "29349173",
+      "announcementTime": 1182807900000,
+      "title": "关于撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-06-26/29349173.PDF"
+    },
+    {
+      "symbol": "600076",
+      "announcementId": "29349025",
+      "announcementTime": 1182807900000,
+      "title": "关于撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-06-26/29349025.PDF"
+    },
+    {
+      "symbol": "600615",
+      "announcementId": "29059069",
+      "announcementTime": 1181771100000,
+      "title": "关于撤消股票交易其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-06-14/29059069.PDF"
+    },
+    {
+      "symbol": "600209",
+      "announcementId": "29026776",
+      "announcementTime": 1181684700000,
+      "title": "董事会关于撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-06-13/29026776.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "24139489",
+      "announcementTime": 1181341830000,
+      "title": "董事会关于为恢复上市所采取措施的公告",
+      "adjunctUrl": "finalpage/2007-06-09/24139489.PDF"
+    },
+    {
+      "symbol": "600705",
+      "announcementId": "24135703",
+      "announcementTime": 1181252700000,
+      "title": "为恢复上市所采取的措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2007-06-08/24135703.PDF"
+    },
+    {
+      "symbol": "000560",
+      "announcementId": "24070725",
+      "announcementTime": 1181170230000,
+      "title": "关于公司股票交易撤销其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-06-07/24070725.PDF"
+    },
+    {
+      "symbol": "000540",
+      "announcementId": "24094878",
+      "announcementTime": 1181169030000,
+      "title": "关于撤销退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-06-07/24094878.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "24037928",
+      "announcementTime": 1181082630000,
+      "title": "关于为恢复上市所采取的措施的公告",
+      "adjunctUrl": "finalpage/2007-06-06/24037928.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "23965208",
+      "announcementTime": 1180909830000,
+      "title": "关于恢复上市工作进展公告",
+      "adjunctUrl": "finalpage/2007-06-04/23965208.PDF"
+    },
+    {
+      "symbol": "600763",
+      "announcementId": "23961807",
+      "announcementTime": 1180647900000,
+      "title": "关于撤销股票交易其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-06-01/23961807.PDF"
+    },
+    {
+      "symbol": "600763",
+      "announcementId": "23961806",
+      "announcementTime": 1180647900000,
+      "title": "关于申请撤销股票其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-06-01/23961806.PDF"
+    },
+    {
+      "symbol": "600576",
+      "announcementId": "23927133",
+      "announcementTime": 1180561500000,
+      "title": "关于撤销股票交易退市风险警示及其他特别处理并变更股票简称的公告",
+      "adjunctUrl": "finalpage/2007-05-31/23927133.PDF"
+    },
+    {
+      "symbol": "600086",
+      "announcementId": "23890765",
+      "announcementTime": 1180475100000,
+      "title": "关于股东股权司法冻结、质押相关情况公告",
+      "adjunctUrl": "finalpage/2007-05-30/23890765.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "23851409",
+      "announcementTime": 1180388700000,
+      "title": "关于补充恢复上市申请材料的公告",
+      "adjunctUrl": "finalpage/2007-05-29/23851409.PDF"
+    },
+    {
+      "symbol": "000633",
+      "announcementId": "23748630",
+      "announcementTime": 1180046370000,
+      "title": "关于撤销退市风险警示并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-05-25/23748630.PDF"
+    },
+    {
+      "symbol": "600890",
+      "announcementId": "23782463",
+      "announcementTime": 1180043220000,
+      "title": "获准撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-05-25/23782463.PDF"
+    },
+    {
+      "symbol": "600695",
+      "announcementId": "23782396",
+      "announcementTime": 1180043100000,
+      "title": "关于上海证券交易所核准撤销公司股票交易退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-05-25/23782396.PDF"
+    },
+    {
+      "symbol": "600695",
+      "announcementId": "23782324",
+      "announcementTime": 1180043100000,
+      "title": "关于申请撤销公司股票交易退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-05-25/23782324.PDF"
+    },
+    {
+      "symbol": "600614",
+      "announcementId": "23782312",
+      "announcementTime": 1180043100000,
+      "title": "关于撤销退市风险警示的提示性公告",
+      "adjunctUrl": "finalpage/2007-05-25/23782312.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "23634312",
+      "announcementTime": 1179786990000,
+      "title": "关于股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2007-05-22/23634312.PDF"
+    },
+    {
+      "symbol": "000757",
+      "announcementId": "23615916",
+      "announcementTime": 1179786990000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2007-05-22/23615916.PDF"
+    },
+    {
+      "symbol": "000038",
+      "announcementId": "23643527",
+      "announcementTime": 1179786630000,
+      "title": "股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2007-05-22/23643527.PDF"
+    },
+    {
+      "symbol": "600705",
+      "announcementId": "23647527",
+      "announcementTime": 1179783900000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2007-05-22/23647527.PDF"
+    },
+    {
+      "symbol": "600656",
+      "announcementId": "23647355",
+      "announcementTime": 1179783900000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2007-05-22/23647355.PDF"
+    },
+    {
+      "symbol": "600242",
+      "announcementId": "23646546",
+      "announcementTime": 1179783900000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2007-05-22/23646546.PDF"
+    },
+    {
+      "symbol": "600225",
+      "announcementId": "23646516",
+      "announcementTime": 1179783900000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2007-05-22/23646516.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "23646509",
+      "announcementTime": 1179783900000,
+      "title": "董事会关于上海证券交易所受理公司股票恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2007-05-22/23646509.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "23534202",
+      "announcementTime": 1179441030000,
+      "title": "关于深圳证券交易所同意受理公司恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2007-05-18/23534202.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "23458511",
+      "announcementTime": 1179179100000,
+      "title": "关于申请上市的提示性公告",
+      "adjunctUrl": "finalpage/2007-05-15/23458511.PDF"
+    },
+    {
+      "symbol": "000622",
+      "announcementId": "23413532",
+      "announcementTime": 1178922630000,
+      "title": "关于申请上市的提示性公告",
+      "adjunctUrl": "finalpage/2007-05-12/23413532.PDF"
+    },
+    {
+      "symbol": "600213",
+      "announcementId": "23420346",
+      "announcementTime": 1178919900000,
+      "title": "关于股票恢复上市进展情况的公告",
+      "adjunctUrl": "finalpage/2007-05-12/23420346.PDF"
+    },
+    {
+      "symbol": "000732",
+      "announcementId": "23353754",
+      "announcementTime": 1178836590000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2007-05-11/23353754.PDF"
+    },
+    {
+      "symbol": "000632",
+      "announcementId": "23353870",
+      "announcementTime": 1178836530000,
+      "title": "关于公司股票交易撤销退市风险警示和其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-05-11/23353870.PDF"
+    },
+    {
+      "symbol": "000862",
+      "announcementId": "23377681",
+      "announcementTime": 1178836410000,
+      "title": "关于变更公司名称和证券简称暨撤销股票交易其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-05-11/23377681.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "23223729",
+      "announcementTime": 1177883100000,
+      "title": "董事会关于股票交易实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-30/23223729.PDF"
+    },
+    {
+      "symbol": "600209",
+      "announcementId": "23206090",
+      "announcementTime": 1177710300000,
+      "title": "关于申请撤销股票交易实行风险退市警示和实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-28/23206090.PDF"
+    },
+    {
+      "symbol": "600242",
+      "announcementId": "23148422",
+      "announcementTime": 1177623900000,
+      "title": "暂停上市风险警示公告",
+      "adjunctUrl": "finalpage/2007-04-27/23148422.PDF"
+    },
+    {
+      "symbol": "000509",
+      "announcementId": "23051112",
+      "announcementTime": 1177453830000,
+      "title": "关于申请撤销退市风险警示的特别处理及实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-25/23051112.PDF"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "23063109",
+      "announcementTime": 1177451100000,
+      "title": "关于公司股票实施退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-04-25/23063109.PDF"
+    },
+    {
+      "symbol": "600656",
+      "announcementId": "23062897",
+      "announcementTime": 1177451100000,
+      "title": "股票异常波动及股票暂停上市风险提示性公告",
+      "adjunctUrl": "finalpage/2007-04-25/23062897.PDF"
+    },
+    {
+      "symbol": "000880",
+      "announcementId": "22962442",
+      "announcementTime": 1177108230000,
+      "title": "关于收到深圳证券交易所《关于同意山东巨力股份有限公司股票恢复上市的决定》的公告",
+      "adjunctUrl": "finalpage/2007-04-21/22962442.PDF"
+    },
+    {
+      "symbol": "000880",
+      "announcementId": "22962383",
+      "announcementTime": 1177108230000,
+      "title": "关于股票恢复上市的公告",
+      "adjunctUrl": "finalpage/2007-04-21/22962383.PDF"
+    },
+    {
+      "symbol": "000007",
+      "announcementId": "22907766",
+      "announcementTime": 1177021830000,
+      "title": "董事会关于股票交易实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-20/22907766.PDF"
+    },
+    {
+      "symbol": "600213",
+      "announcementId": "22877237",
+      "announcementTime": 1176932700000,
+      "title": "关于上海证券交易所受理恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2007-04-19/22877237.PDF"
+    },
+    {
+      "symbol": "000692",
+      "announcementId": "22740247",
+      "announcementTime": 1176676230000,
+      "title": "董事会关于股票交易实行退市风险警示特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-16/22740247.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "22750473",
+      "announcementTime": 1176673500000,
+      "title": "关于股票交易实行退市风险警示特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-16/22750473.PDF"
+    },
+    {
+      "symbol": "600213",
+      "announcementId": "22709482",
+      "announcementTime": 1176414300000,
+      "title": "关于报送恢复上市申请材料的公告",
+      "adjunctUrl": "finalpage/2007-04-13/22709482.PDF"
+    },
+    {
+      "symbol": "000979",
+      "announcementId": "22637702",
+      "announcementTime": 1176331170000,
+      "title": "关于公司股票交易撤销退市风险警示实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-12/22637702.PDF"
+    },
+    {
+      "symbol": "000710",
+      "announcementId": "22603849",
+      "announcementTime": 1176244770000,
+      "title": "关于公司股票交易撤销其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-11/22603849.PDF"
+    },
+    {
+      "symbol": "600139",
+      "announcementId": "22597527",
+      "announcementTime": 1176155100000,
+      "title": "关于公司股票实行退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-04-10/22597527.PDF"
+    },
+    {
+      "symbol": "600076",
+      "announcementId": "22597478",
+      "announcementTime": 1176155100000,
+      "title": "关于申请撤消股票退市风险警示并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-10/22597478.PDF"
+    },
+    {
+      "symbol": "600890",
+      "announcementId": "22488569",
+      "announcementTime": 1175809800000,
+      "title": "申请撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-04-06/22488569.PDF"
+    },
+    {
+      "symbol": "600890",
+      "announcementId": "22488563",
+      "announcementTime": 1175809500000,
+      "title": "第五届董事会十六次会议决议公告",
+      "adjunctUrl": "finalpage/2007-04-06/22488563.PDF"
+    },
+    {
+      "symbol": "000979",
+      "announcementId": "22448130",
+      "announcementTime": 1175725830000,
+      "title": "关于申请撤销股票退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-04-05/22448130.PDF"
+    },
+    {
+      "symbol": "000673",
+      "announcementId": "22293725",
+      "announcementTime": 1175639430000,
+      "title": "董事会关于公司股票交易实行退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-04-04/22293725.PDF"
+    },
+    {
+      "symbol": "000748",
+      "announcementId": "21966714",
+      "announcementTime": 1175553030000,
+      "title": "关于撤销公司股票退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-04-03/21966714.PDF"
+    },
+    {
+      "symbol": "000779",
+      "announcementId": "21890656",
+      "announcementTime": 1175207430000,
+      "title": "关于撤销股票交易退市风险警示及实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-03-30/21890656.PDF"
+    },
+    {
+      "symbol": "000560",
+      "announcementId": "21890600",
+      "announcementTime": 1175207430000,
+      "title": "董事会关于申请撤消其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-03-30/21890600.PDF"
+    },
+    {
+      "symbol": "000862",
+      "announcementId": "21866708",
+      "announcementTime": 1175207430000,
+      "title": "关于申请撤销股票交易其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-03-30/21866708.PDF"
+    },
+    {
+      "symbol": "600781",
+      "announcementId": "21900160",
+      "announcementTime": 1175205000000,
+      "title": "关于撤消退市风险警示及其他处理的公告",
+      "adjunctUrl": "finalpage/2007-03-30/21900160.PDF"
+    },
+    {
+      "symbol": "600766",
+      "announcementId": "21861747",
+      "announcementTime": 1175118600000,
+      "title": "关于撤销退市风险警示及其他特别处理及变更股票简称的公告",
+      "adjunctUrl": "finalpage/2007-03-29/21861747.PDF"
+    },
+    {
+      "symbol": "600714",
+      "announcementId": "21754200",
+      "announcementTime": 1174859130000,
+      "title": "关于股票交易实行退市风险警示特别处理的公告",
+      "adjunctUrl": "finalpage/2007-03-26/21754200.PDF"
+    },
+    {
+      "symbol": "600687",
+      "announcementId": "21712107",
+      "announcementTime": 1174599900000,
+      "title": "有关重大事项的公告",
+      "adjunctUrl": "finalpage/2007-03-23/21712107.PDF"
+    },
+    {
+      "symbol": "600225",
+      "announcementId": "21712030",
+      "announcementTime": 1174599900000,
+      "title": "暂停上市风险提示公告",
+      "adjunctUrl": "finalpage/2007-03-23/21712030.PDF"
+    },
+    {
+      "symbol": "000748",
+      "announcementId": "21676693",
+      "announcementTime": 1174516230000,
+      "title": "关于申请撤消退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-03-22/21676693.PDF"
+    },
+    {
+      "symbol": "000010",
+      "announcementId": "21601653",
+      "announcementTime": 1174343430000,
+      "title": "关于撤销股票退市风险警示的公告",
+      "adjunctUrl": "finalpage/2007-03-20/21601653.PDF"
+    },
+    {
+      "symbol": "600869",
+      "announcementId": "21396545",
+      "announcementTime": 1173649856000,
+      "title": "重大事项停牌公告",
+      "adjunctUrl": "finalpage/2007-03-12/21396545.PDF"
+    },
+    {
+      "symbol": "000791",
+      "announcementId": "21315107",
+      "announcementTime": 1173307530000,
+      "title": "董事会关于撤销股票交易其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-03-08/21315107.PDF"
+    },
+    {
+      "symbol": "000038",
+      "announcementId": "21200024",
+      "announcementTime": 1173134370000,
+      "title": "关于股票可能被暂停上市的风险提示公告",
+      "adjunctUrl": "finalpage/2007-03-06/21200024.PDF"
+    },
+    {
+      "symbol": "000732",
+      "announcementId": "21142619",
+      "announcementTime": 1172788230000,
+      "title": "股票暂停上市风险提示性公告",
+      "adjunctUrl": "finalpage/2007-03-02/21142619.PDF"
+    },
+    {
+      "symbol": "000880",
+      "announcementId": "21093671",
+      "announcementTime": 1172702370000,
+      "title": "关于深交所受理本公司股票恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2007-03-01/21093671.PDF"
+    },
+    {
+      "symbol": "000880",
+      "announcementId": "20992407",
+      "announcementTime": 1171578630000,
+      "title": "关于向深圳证券交易所提出恢复股票上市申请的公告",
+      "adjunctUrl": "finalpage/2007-02-16/20992407.PDF"
+    },
+    {
+      "symbol": "600781",
+      "announcementId": "20965076",
+      "announcementTime": 1171489800000,
+      "title": "关于申请撤销退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-02-15/20965076.PDF"
+    },
+    {
+      "symbol": "600615",
+      "announcementId": "20931996",
+      "announcementTime": 1171403400000,
+      "title": "关于申请撤销本公司股票其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-02-14/20931996.PDF"
+    },
+    {
+      "symbol": "600419",
+      "announcementId": "20931882",
+      "announcementTime": 1171403100000,
+      "title": "第二届董事会第二十五次会议决议公告",
+      "adjunctUrl": "finalpage/2007-02-14/20931882.PDF"
+    },
+    {
+      "symbol": "600766",
+      "announcementId": "20897778",
+      "announcementTime": 1171317000000,
+      "title": "关于申请撤销退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-02-13/20897778.PDF"
+    },
+    {
+      "symbol": "600617",
+      "announcementId": "20757522",
+      "announcementTime": 1170798600000,
+      "title": "撤消退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-02-07/20757522.PDF"
+    },
+    {
+      "symbol": "600225",
+      "announcementId": "20497219",
+      "announcementTime": 1169761500000,
+      "title": "股票暂停上市风险提示公告",
+      "adjunctUrl": "finalpage/2007-01-26/20497219.PDF"
+    },
+    {
+      "symbol": "000732",
+      "announcementId": "20363976",
+      "announcementTime": 1169505570000,
+      "title": "股票暂停上市风险提示性公告",
+      "adjunctUrl": "finalpage/2007-01-23/20363976.PDF"
+    },
+    {
+      "symbol": "600656",
+      "announcementId": "20266042",
+      "announcementTime": 1169070300000,
+      "title": "预亏及股票暂停上市风险提示性公告",
+      "adjunctUrl": "finalpage/2007-01-18/20266042.PDF"
+    },
+    {
+      "symbol": "000732",
+      "announcementId": "20074635",
+      "announcementTime": 1168468230000,
+      "title": "股票暂停上市风险提示性公告",
+      "adjunctUrl": "finalpage/2007-01-11/20074635.PDF"
+    },
+    {
+      "symbol": "000856",
+      "announcementId": "20037500",
+      "announcementTime": 1168381830000,
+      "title": "关于公司股票交易撤销退市风险警示及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2007-01-10/20037500.PDF"
+    }
+  ],
+  "complete": true
+}

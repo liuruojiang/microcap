@@ -1,0 +1,330 @@
+{
+  "year": 2025,
+  "label": "remove_risk",
+  "category": "",
+  "searchkey": "撤销风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2025-01-01~2025-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 189,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "6271d42ac69a1bb72740c2302bd67778118d38aca460567ae2ef99d450cda9eb",
+      "response_bytes": 24721,
+      "row_count": 30,
+      "reported_total": 189
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "ace885f11611ae99efd7eaf5444e37a1e454f2b1128ec26adb061136e675d90f",
+      "response_bytes": 24723,
+      "row_count": 30,
+      "reported_total": 189
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "0668b5ece2207192279bb7c116c8f9d0ecad2f8002fd85a70bf1d11a830f8b5d",
+      "response_bytes": 24571,
+      "row_count": 30,
+      "reported_total": 189
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "a133e54114364e2b46c11576b29d92ea5e7fcc57dffccc4882cea20120a6550b",
+      "response_bytes": 24050,
+      "row_count": 30,
+      "reported_total": 189
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "974b758ab1ef1cd33fd6fed71979a99ca948b0407c66b7095502dfe5add7b8f6",
+      "response_bytes": 25474,
+      "row_count": 30,
+      "reported_total": 189
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "88ac4c39bfe0205adc000b08e43c121afec575d7b46b0a8965f78128846dbd6e",
+      "response_bytes": 24241,
+      "row_count": 30,
+      "reported_total": 189
+    },
+    {
+      "page": 7,
+      "sha256_raw_response": "f48be5ada0e86343afe6348b5b24aa497f0ea5379a3877c262130b3a33b55c6e",
+      "response_bytes": 8917,
+      "row_count": 9,
+      "reported_total": 189
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600603",
+      "announcementId": "1224742121",
+      "announcementTime": 1761580800000,
+      "title": "广汇物流股份有限公司关于<em>撤销</em>股票其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2025-10-28/1224742121.PDF"
+    },
+    {
+      "symbol": "600603",
+      "announcementId": "1224709820",
+      "announcementTime": 1760371200000,
+      "title": "广汇物流股份有限公司关于申请<em>撤销</em>公司股票其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-10-14/1224709820.PDF"
+    },
+    {
+      "symbol": "002316",
+      "announcementId": "1224573829",
+      "announcementTime": 1756137600000,
+      "title": "关于公司股票交易<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-08-26/1224573829.PDF"
+    },
+    {
+      "symbol": "002316",
+      "announcementId": "1224502206",
+      "announcementTime": 1755532800000,
+      "title": "关于申请<em>撤销</em>股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-08-19/1224502206.pdf"
+    },
+    {
+      "symbol": "002141",
+      "announcementId": "1224000301",
+      "announcementTime": 1750953600000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-06-27/1224000301.PDF"
+    },
+    {
+      "symbol": "002141",
+      "announcementId": "1223801068",
+      "announcementTime": 1749225600000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>和其他<em>风险</em><em>警示</em>的进展公告",
+      "adjunctUrl": "finalpage/2025-06-07/1223801068.PDF"
+    },
+    {
+      "symbol": "603023",
+      "announcementId": "1223732508",
+      "announcementTime": 1748620800000,
+      "title": "哈尔滨威帝电子股份有限公司关于<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2025-05-31/1223732508.PDF"
+    },
+    {
+      "symbol": "300600",
+      "announcementId": "1223721957",
+      "announcementTime": 1748534400000,
+      "title": "关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-05-30/1223721957.PDF"
+    },
+    {
+      "symbol": "300163",
+      "announcementId": "1223720778",
+      "announcementTime": 1748534400000,
+      "title": "关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-05-30/1223720778.PDF"
+    },
+    {
+      "symbol": "002141",
+      "announcementId": "1223681607",
+      "announcementTime": 1748275200000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>和其他<em>风险</em><em>警示</em>的进展公告",
+      "adjunctUrl": "finalpage/2025-05-27/1223681607.PDF"
+    },
+    {
+      "symbol": "300163",
+      "announcementId": "1223632879",
+      "announcementTime": 1747905370000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的进展公告",
+      "adjunctUrl": "finalpage/2025-05-22/1223632879.PDF"
+    },
+    {
+      "symbol": "300536",
+      "announcementId": "1223628431",
+      "announcementTime": 1747843200000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>暨停复牌公告",
+      "adjunctUrl": "finalpage/2025-05-22/1223628431.PDF"
+    },
+    {
+      "symbol": "002748",
+      "announcementId": "1223610972",
+      "announcementTime": 1747756800000,
+      "title": "关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-05-21/1223610972.PDF"
+    },
+    {
+      "symbol": "300600",
+      "announcementId": "1223607179",
+      "announcementTime": 1747756800000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-05-21/1223607179.PDF"
+    },
+    {
+      "symbol": "002748",
+      "announcementId": "1223588704",
+      "announcementTime": 1747670400000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-05-20/1223588704.PDF"
+    },
+    {
+      "symbol": "600234",
+      "announcementId": "1223570391",
+      "announcementTime": 1747411200000,
+      "title": "山西科新发展股份有限公司关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-05-17/1223570391.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "1223569079",
+      "announcementTime": 1747411200000,
+      "title": "杭州天目山药业股份有限公司关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2025-05-17/1223569079.PDF"
+    },
+    {
+      "symbol": "603023",
+      "announcementId": "1223536702",
+      "announcementTime": 1747152000000,
+      "title": "哈尔滨威帝电子股份有限公司关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的进展公告",
+      "adjunctUrl": "finalpage/2025-05-14/1223536702.PDF"
+    },
+    {
+      "symbol": "300536",
+      "announcementId": "1223513097",
+      "announcementTime": 1746790469000,
+      "title": "关于向深交所申请<em>撤销</em>退市<em>风险</em><em>警示</em>的进展公告",
+      "adjunctUrl": "finalpage/2025-05-09/1223513097.PDF"
+    },
+    {
+      "symbol": "603879",
+      "announcementId": "1223423243",
+      "announcementTime": 1745942400000,
+      "title": "永悦科技关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2025-04-30/1223423243.PDF"
+    },
+    {
+      "symbol": "002124",
+      "announcementId": "1223419241",
+      "announcementTime": 1745942400000,
+      "title": "关于公司股票交易<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-04-30/1223419241.PDF"
+    },
+    {
+      "symbol": "603608",
+      "announcementId": "1223416363",
+      "announcementTime": 1745942400000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2025-04-30/1223416363.PDF"
+    },
+    {
+      "symbol": "300013",
+      "announcementId": "1223414193",
+      "announcementTime": 1745942400000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>和其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-04-30/1223414193.PDF"
+    },
+    {
+      "symbol": "600234",
+      "announcementId": "1223412844",
+      "announcementTime": 1745942400000,
+      "title": "山西科新发展股份有限公司关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-30/1223412844.PDF"
+    },
+    {
+      "symbol": "603023",
+      "announcementId": "1223390541",
+      "announcementTime": 1745856000000,
+      "title": "哈尔滨威帝电子股份有限公司关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-29/1223390541.PDF"
+    },
+    {
+      "symbol": "300163",
+      "announcementId": "1223386090",
+      "announcementTime": 1745856000000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-29/1223386090.PDF"
+    },
+    {
+      "symbol": "002141",
+      "announcementId": "1223379945",
+      "announcementTime": 1745856000000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>和其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-29/1223379945.PDF"
+    },
+    {
+      "symbol": "000809",
+      "announcementId": "1223243168",
+      "announcementTime": 1745424000000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2025-04-24/1223243168.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "1223211710",
+      "announcementTime": 1745337600000,
+      "title": "杭州天目山药业股份有限公司关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的进展公告",
+      "adjunctUrl": "finalpage/2025-04-23/1223211710.PDF"
+    },
+    {
+      "symbol": "603608",
+      "announcementId": "1223154009",
+      "announcementTime": 1744992000000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>和其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-19/1223154009.PDF"
+    },
+    {
+      "symbol": "600303",
+      "announcementId": "1223122556",
+      "announcementTime": 1744905600000,
+      "title": "ST曙光关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2025-04-18/1223122556.PDF"
+    },
+    {
+      "symbol": "300013",
+      "announcementId": "1223099759",
+      "announcementTime": 1744732800000,
+      "title": "关于申请<em>撤销</em>退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-16/1223099759.PDF"
+    },
+    {
+      "symbol": "300536",
+      "announcementId": "1223096609",
+      "announcementTime": 1744646400000,
+      "title": "关于向深交所申请<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-15/1223096609.PDF"
+    },
+    {
+      "symbol": "600303",
+      "announcementId": "1223058581",
+      "announcementTime": 1744300800000,
+      "title": "ST曙光关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-11/1223058581.PDF"
+    },
+    {
+      "symbol": "000809",
+      "announcementId": "1222993963",
+      "announcementTime": 1743609600000,
+      "title": "关于申请<em>撤销</em>对公司股票交易实施退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-03/1222993963.PDF"
+    },
+    {
+      "symbol": "603879",
+      "announcementId": "1222993757",
+      "announcementTime": 1743609600000,
+      "title": "永悦科技关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-03/1222993757.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "1222974613",
+      "announcementTime": 1743436800000,
+      "title": "杭州天目山药业股份有限公司关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-04-01/1222974613.PDF"
+    },
+    {
+      "symbol": "002124",
+      "announcementId": "1222947588",
+      "announcementTime": 1743350400000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2025-03-31/1222947588.PDF"
+    }
+  ],
+  "complete": true
+}

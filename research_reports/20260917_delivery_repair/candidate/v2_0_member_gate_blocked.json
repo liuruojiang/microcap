@@ -1,0 +1,18 @@
+{
+  "proxy_meta_matches_current_cache": true,
+  "st_violations": 0,
+  "bad_policy_count": 10,
+  "violations": [],
+  "bad_policy_symbols": [
+    "300876",
+    "300928",
+    "301135",
+    "301192",
+    "301353",
+    "301520",
+    "301578",
+    "603585",
+    "603836",
+    "688592"
+  ]
+}

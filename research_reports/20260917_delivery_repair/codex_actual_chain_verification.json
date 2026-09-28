@@ -1,0 +1,39 @@
+{
+  "strategy_sha": "e10e6fc1a3ec0105f2282fb3c1290914c879a09e",
+  "gates": {
+    "sync": {
+      "ok": true,
+      "scope": null,
+      "expected_date": "2026-09-17",
+      "restore_source": "existing_whole_delivery",
+      "errors": [],
+      "evidence": "outputs\\repair_20260917_codex_sync.json"
+    },
+    "preflight": {
+      "ok": true,
+      "scope": "base_state_only",
+      "expected_date": null,
+      "restore_source": null,
+      "errors": [],
+      "evidence": "outputs\\repair_20260917_codex_preflight.json"
+    },
+    "validate": {
+      "ok": true,
+      "scope": "base_state_only",
+      "expected_date": null,
+      "restore_source": null,
+      "errors": [],
+      "evidence": "outputs\\repair_20260917_codex_validate.json"
+    },
+    "delivery_check": {
+      "ok": true,
+      "scope": "whole_workspace_delivery",
+      "expected_date": "2026-09-17",
+      "restore_source": null,
+      "errors": [],
+      "evidence": "outputs\\repair_20260917_codex_delivery_check.json"
+    }
+  },
+  "realtime_signal_published": false,
+  "note": "After-close recovery checks only; no invented intraday snapshot."
+}

@@ -1,0 +1,29 @@
+{
+  "year": 2002,
+  "label": "remove_special",
+  "category": "",
+  "searchkey": "撤销特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2002-01-01~2002-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 3,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "c50ce2e1a7d658769b3d9d4ec81f0246e003ddb7fbbf5ed1ab40da7c3ac6e08e",
+      "response_bytes": 2248,
+      "row_count": 3,
+      "reported_total": 3
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000662",
+      "announcementId": "559994",
+      "announcementTime": 1017327893000,
+      "title": "<em>撤销</em>股票<em>特别</em><em>处理</em>公告等",
+      "adjunctUrl": "finalpage/2002-03-28/559994.html"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,226 @@
+{
+  "ok": true,
+  "scope": "local_acceptance_not_cloud_delivery",
+  "errors": [],
+  "expected_date": "2026-09-04",
+  "streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8721,
+      "latest_date": "2026-09-04",
+      "sha256": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4050,
+      "latest_date": "2026-09-04",
+      "sha256": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-04",
+      "sha256": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 431,
+      "latest_date": "2026-09-03",
+      "sha256": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "7d282d4b1f4cc6e0d7cb79501e6c3745f46aa696033fee887b9e27fc05513ed3"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "71496c81604827cda875996419078b36b281ac4caa2b14df0df150b506e56abb"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "dfa17ca6e71efed447f2aa07ef2d955431739548e48ca058777acc6a9572c8f7"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "01bbfd3561b6d3f300fbe54e0077d46fcf66996d44b93d8de66a0b2ffbf7f86d"
+    },
+    "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "61ea03b82f1c9c5b3b9e410f46eaea7dc01473274f77e0bd9065c26748d62af5"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "61ea03b82f1c9c5b3b9e410f46eaea7dc01473274f77e0bd9065c26748d62af5"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "59fb5b5290faa18e10dc462870f7cd8313812324d24f91802468bce5ca354134"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "7a6a71e82e6b5fc6ff800765d6c6c1093452847d613dd131f75bc6509eaa2671"
+    }
+  },
+  "inputs": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": "7f07d377cd34373a3b4d17d65158eccbb0e663aaf6bd13a714bb80f719cc7cab",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "ac6396a16cdd5b493b5a6bede3e7ead2820913e5f92983da166467144392e07e",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "9558082806163587d9813100bd19cafe92337a2c086e3fc8ac6aa8a71e5825ee",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json": "f2a0c02b046a89b4fab9f4fcf1eddecd7e80f48edb413612abbc27cfc054b7f7",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "1db92ad567be51680b4b6bf4af7615b506ac1bf9e77cd1af3cdd93b2043c3cbd",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "a04af2fc63c82c3bdddbd0c614b50510744370c0e50fb4dfdcdf4c7bb6ac9f8b",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "3b30371a857a72e3736daeb6ef2b82fd286f3d0afc7a0799aeb77e4fc23e9162"
+  },
+  "artifacts": {
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json": "c368d012ca3e8a90c5bab0f9acb1fd9f3361d58f3786f894180481207acd11cb",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.json": "5d41fc4204d51e4908631c68a35756964a44616a5e5e7bddb1ac392546c5851c",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.csv": "28c467e19baa314925a98f4945fe3aa8026ac90c0d7ee7cf2ce7c12a14e5e4fa",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_yearly.csv": "6437c7a31d486594f3efd801d086cc0e75fa565a1ba0532fee79a571c60e7374",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json": "9846ef903aec80f71be86daa6e47c5fe3c7cb6d673af4a81f64d133fc68b5c54",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.json": "fa9c035a11e2e3d7a0ed2055fb84b1e81922e0985dbf10271c5106c57d5ef5d2",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.csv": "ed9ad956d39ca5ba1baf44cb6c67aeedd395aaccace0f3197e3971dbe8c537da",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_yearly.csv": "0bcbdb6a5d87e97a27349d11868eb8d7839e403f5c5231a26243c43b74c87505",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json": "5cfb79c030629ffd3abd1b96a5f8af6ebe1d1a0211e9689477447e4aedc0dcb4",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.json": "1c4f1ee9848bfd737e12665f4932d4852d2455dcd33a6e670e438bdd7776837e",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.csv": "95f0c282471bd1a6e5958ad74708ca7398b433fe61b042218bfd4262df96fe3c",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_yearly.csv": "019470a11a9b465716f5e4bdf070528f804a2ff8741e599042c1faf4fe61a4c3",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3",
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
+    "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": "7d282d4b1f4cc6e0d7cb79501e6c3745f46aa696033fee887b9e27fc05513ed3",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": "71496c81604827cda875996419078b36b281ac4caa2b14df0df150b506e56abb",
+    "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": "dfa17ca6e71efed447f2aa07ef2d955431739548e48ca058777acc6a9572c8f7",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": "01bbfd3561b6d3f300fbe54e0077d46fcf66996d44b93d8de66a0b2ffbf7f86d",
+    "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": "61ea03b82f1c9c5b3b9e410f46eaea7dc01473274f77e0bd9065c26748d62af5",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv": "61ea03b82f1c9c5b3b9e410f46eaea7dc01473274f77e0bd9065c26748d62af5",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": "59fb5b5290faa18e10dc462870f7cd8313812324d24f91802468bce5ca354134",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": "7a6a71e82e6b5fc6ff800765d6c6c1093452847d613dd131f75bc6509eaa2671"
+  },
+  "oracle_parity": true,
+  "unaffected_v20_v23_parity": true,
+  "windows": [
+    {
+      "start_date": "2010-05-05",
+      "end_date": "2026-09-04",
+      "days": 3971,
+      "final_nav": 107.4552920048791,
+      "total_return_pct": 10645.52920048791,
+      "annual_pct": 33.154446916649945,
+      "max_drawdown_pct": -27.657191353570155,
+      "sharpe": 1.5511052590494687,
+      "sharpe_cagr": 1.5511052590494687,
+      "cagr_to_vol": 1.5511052590494687,
+      "sharpe_mean": 1.452823734404052,
+      "sharpe_note": "sharpe is retained as backward-compatible alias for sharpe_cagr = CAGR / annualized volatility; sharpe_mean = mean daily return * trading days / annualized volatility",
+      "vol_pct": 21.374724070607105,
+      "window": "full",
+      "required_start_date": "2010-05-05",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2016-09-05",
+      "end_date": "2026-09-04",
+      "days": 2429,
+      "final_nav": 7.727192953189646,
+      "total_return_pct": 672.7192953189646,
+      "annual_pct": 22.69833225972846,
+      "max_drawdown_pct": -26.902606395251283,
+      "sharpe": 1.1314004899682406,
+      "sharpe_cagr": 1.1314004899682406,
+      "cagr_to_vol": 1.1314004899682406,
+      "sharpe_mean": 1.124983489763099,
+      "sharpe_note": "sharpe is retained as backward-compatible alias for sharpe_cagr = CAGR / annualized volatility; sharpe_mean = mean daily return * trading days / annualized volatility",
+      "vol_pct": 20.062155232375424,
+      "window": "last_10y",
+      "required_start_date": "2016-09-04",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2021-09-06",
+      "end_date": "2026-09-04",
+      "days": 1211,
+      "final_nav": 4.281820231290142,
+      "total_return_pct": 328.1820231290142,
+      "annual_pct": 33.80782620166911,
+      "max_drawdown_pct": -21.874473928715332,
+      "sharpe": 1.5454726242723051,
+      "sharpe_cagr": 1.5454726242723051,
+      "cagr_to_vol": 1.5454726242723051,
+      "sharpe_mean": 1.450002773502485,
+      "sharpe_note": "sharpe is retained as backward-compatible alias for sharpe_cagr = CAGR / annualized volatility; sharpe_mean = mean daily return * trading days / annualized volatility",
+      "vol_pct": 21.87539634847154,
+      "window": "last_5y",
+      "required_start_date": "2021-09-04",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2023-09-04",
+      "end_date": "2026-09-04",
+      "days": 728,
+      "final_nav": 2.6496193443098566,
+      "total_return_pct": 164.96193443098565,
+      "annual_pct": 38.36587237026239,
+      "max_drawdown_pct": -19.7239045860646,
+      "sharpe": 1.5678679553645187,
+      "sharpe_cagr": 1.5678679553645187,
+      "cagr_to_vol": 1.5678679553645187,
+      "sharpe_mean": 1.4581193189512562,
+      "sharpe_note": "sharpe is retained as backward-compatible alias for sharpe_cagr = CAGR / annualized volatility; sharpe_mean = mean daily return * trading days / annualized volatility",
+      "vol_pct": 24.470091527154516,
+      "window": "last_3y",
+      "required_start_date": "2023-09-04",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2025-09-04",
+      "end_date": "2026-09-04",
+      "days": 243,
+      "final_nav": 1.3068570620662197,
+      "total_return_pct": 30.685706206621965,
+      "annual_pct": 30.70966372468602,
+      "max_drawdown_pct": -12.875946570064345,
+      "sharpe": 1.7429380978635005,
+      "sharpe_cagr": 1.7429380978635005,
+      "cagr_to_vol": 1.7429380978635005,
+      "sharpe_mean": 1.6140493429826226,
+      "sharpe_note": "sharpe is retained as backward-compatible alias for sharpe_cagr = CAGR / annualized volatility; sharpe_mean = mean daily return * trading days / annualized volatility",
+      "vol_pct": 17.61948044071676,
+      "window": "last_1y",
+      "required_start_date": "2025-09-04",
+      "unavailable_reason": ""
+    }
+  ],
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20260905_105104"
+}

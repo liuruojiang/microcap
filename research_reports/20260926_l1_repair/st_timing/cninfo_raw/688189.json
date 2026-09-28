@@ -1,0 +1,85 @@
+{
+  "symbol": "688189",
+  "org_id": "9900039656",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "8e5771960162669c3b99d7a0d3dba21ea221e6a9728272dae1aa7fb56c73a92d",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "8e5771960162669c3b99d7a0d3dba21ea221e6a9728272dae1aa7fb56c73a92d"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "365518d4e913bce292dcc77260347ff16c5567a9d6b70d53b032acc0467b2904",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "365518d4e913bce292dcc77260347ff16c5567a9d6b70d53b032acc0467b2904"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-06-10T00:00:00+08:00",
+      "title": "关于实施其他风险警示暨停牌的公告",
+      "announcementId": "1225361134",
+      "adjunctUrl": "finalpage/2026-06-10/1225361134.PDF",
+      "secCode": "688189",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

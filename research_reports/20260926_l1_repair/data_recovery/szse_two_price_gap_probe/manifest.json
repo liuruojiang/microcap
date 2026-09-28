@@ -1,0 +1,51 @@
+{
+  "retrieved_utc": "2026-09-26T14:16:57.948888+00:00",
+  "files": [
+    {
+      "name": "002473_20190318_issuer_suspension.pdf",
+      "url": "https://disc.static.szse.cn/download/disc/disk01/finalpage/2019-03-18/654b32b2-7b01-4ef2-bfa5-cb037c5091ed.PDF",
+      "status": 200,
+      "bytes": 176186,
+      "sha256": "ff5a54fe6255928d76172613aac4cbe497655b55765d265661c73ee229981519",
+      "content_type": "application/pdf"
+    },
+    {
+      "name": "300362_20210806_issuer_trading_period.pdf",
+      "url": "https://static.cninfo.com.cn/finalpage/2021-08-06/1210685888.PDF",
+      "status": 200,
+      "bytes": 223256,
+      "sha256": "03c53de7370773cf435f8769a969a1447002c88c1172f55b69ba17d55d23d6da",
+      "content_type": "application/pdf"
+    },
+    {
+      "name": "szse_202108_month_section.html",
+      "url": "https://docs.static.szse.cn/www/market/periodical/month/W020210907547542491329.html",
+      "status": 200,
+      "bytes": 20133,
+      "sha256": "5c524d22b1f3f86b93002df158d810586ad2832b89d37a34ad4e0da70119f613",
+      "content_type": "text/html; charset=GBK"
+    },
+    {
+      "name": "baostock_diagnostic_daily.csv",
+      "source": "BaoStock anonymous query_history_k_data_plus",
+      "rows": 8,
+      "bytes": 728,
+      "sha256": "55380aa03d29f1bfeb7c0babf64bfb03b479df376f9b28450f59f0b10ac4215c",
+      "adjustflag": "3"
+    }
+  ],
+  "api_attempts": [
+    {
+      "url": "https://www.szse.cn/api/market/ssjjhq/getHistoryData?cycleType=32&marketId=1&code=002473",
+      "code": "002473",
+      "error_type": "ReadTimeout",
+      "error": "HTTPSConnectionPool(host='www.szse.cn', port=443): Read timed out. (read timeout=8)"
+    },
+    {
+      "url": "https://www.szse.cn/api/market/ssjjhq/getHistoryData?cycleType=32&marketId=1&code=300362",
+      "code": "300362",
+      "error_type": "ReadTimeout",
+      "error": "HTTPSConnectionPool(host='www.szse.cn', port=443): Read timed out. (read timeout=8)"
+    }
+  ]
+}

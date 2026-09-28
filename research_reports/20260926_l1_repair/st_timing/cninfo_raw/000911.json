@@ -1,0 +1,243 @@
+{
+  "symbol": "000911",
+  "org_id": "gssz0000911",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "szse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 9,
+      "pages_fetched": 1,
+      "first_page_sha256": "8f2055bee4cd5431b960314df85ae2e7635915d3aa0397f9bb4f718c5b7250d6",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "8f2055bee4cd5431b960314df85ae2e7635915d3aa0397f9bb4f718c5b7250d6"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 18,
+      "pages_fetched": 1,
+      "first_page_sha256": "077d6a3188f94dc9ea4a84c4e43ded1da85e4970a755b7b749f8088d530e8b05",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "077d6a3188f94dc9ea4a84c4e43ded1da85e4970a755b7b749f8088d530e8b05"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 4,
+      "pages_fetched": 1,
+      "first_page_sha256": "881550a8d0aab21d959bc69543b9342cdcf9906e83c407b6aef19f0c417c946a",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "881550a8d0aab21d959bc69543b9342cdcf9906e83c407b6aef19f0c417c946a"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2015-01-26T00:00:00+08:00",
+      "title": "关于公司债券可能被实行风险警示的提示性公告",
+      "announcementId": "1200574172",
+      "adjunctUrl": "finalpage/2015-01-26/1200574172.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2015-04-24T00:00:00+08:00",
+      "title": "关于公司2012年公司债券风险警示公告",
+      "announcementId": "1200895722",
+      "adjunctUrl": "finalpage/2015-04-24/1200895722.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-04-03T00:00:00+08:00",
+      "title": "关于公司股票交易被实行退市风险警示暨停牌的公告",
+      "announcementId": "1205988802",
+      "adjunctUrl": "finalpage/2019-04-03/1205988802.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-04-13T00:00:00+08:00",
+      "title": "关于申请撤销股票交易退市风险警示的公告",
+      "announcementId": "1207483225",
+      "adjunctUrl": "finalpage/2020-04-13/1207483225.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-06-09T00:00:00+08:00",
+      "title": "关于股票撤销退市风险警示并被实行其他风险警示的公告",
+      "announcementId": "1207907858",
+      "adjunctUrl": "finalpage/2020-06-09/1207907858.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-08-28T00:00:00+08:00",
+      "title": "关于申请撤销股票交易其他风险警示的公告",
+      "announcementId": "1208275466",
+      "adjunctUrl": "finalpage/2020-08-28/1208275466.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-09-03T00:00:00+08:00",
+      "title": "关于撤销公司股票其他风险警示暨停复牌的公告",
+      "announcementId": "1208379247",
+      "adjunctUrl": "finalpage/2020-09-03/1208379247.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-01-31T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票交易可能被实施退市风险警示的提示性公告",
+      "announcementId": "1224959045",
+      "adjunctUrl": "finalpage/2026-01-31/1224959045.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-11T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票交易可能被实施退市风险警示的第二次提示性公告",
+      "announcementId": "1225092811",
+      "adjunctUrl": "finalpage/2026-04-11/1225092811.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-18T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票交易可能被实施退市风险警示的第三次提示性公告",
+      "announcementId": "1225115075",
+      "adjunctUrl": "finalpage/2026-04-18/1225115075.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-29T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票交易被实施退市风险警示和其他风险警示暨停牌的公告",
+      "announcementId": "1225245896",
+      "adjunctUrl": "finalpage/2026-04-29/1225245896.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-05-28T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "announcementId": "1225332746",
+      "adjunctUrl": "finalpage/2026-05-28/1225332746.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-06-27T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "announcementId": "1225389952",
+      "adjunctUrl": "finalpage/2026-06-27/1225389952.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-18T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被叠加实施其他风险警示的公告",
+      "announcementId": "1225430726",
+      "adjunctUrl": "finalpage/2026-07-18/1225430726.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-29T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "announcementId": "1225444564",
+      "adjunctUrl": "finalpage/2026-07-29/1225444564.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-06T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被叠加实施其他风险警示的进展公告",
+      "announcementId": "1225459616",
+      "adjunctUrl": "finalpage/2026-08-06/1225459616.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-29T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "announcementId": "1225523860",
+      "adjunctUrl": "finalpage/2026-08-29/1225523860.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-09-05T00:00:00+08:00",
+      "title": "广西农投糖业集团股份有限公司关于公司股票被叠加实施其他风险警示的进展公告",
+      "announcementId": "1225548952",
+      "adjunctUrl": "finalpage/2026-09-05/1225548952.PDF",
+      "secCode": "000911",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

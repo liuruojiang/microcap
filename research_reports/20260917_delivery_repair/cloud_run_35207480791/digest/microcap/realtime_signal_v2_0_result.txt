@@ -1,0 +1,58 @@
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/microcap_top100_mom16_biweekly_live_v2_0.py:15121: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+signal
+strategy_version: v2.0
+base_version: embedded_v2_base
+overlay: score buffer 0.0000, no peak-decay derisk, overheat OFF, target volatility OFF, fixed1; revision=plain_mom16_fixed1_20260904
+current_holding: cash
+next_holding: cash
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-17
+momentum_gap: -2.1610%
+current_execution_scale: 0.00
+target_vol_realized_vol: 0.0000%
+raw_next_target_scale: 0.00
+next_session_actionable_scale: 0.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_leg_cost_est_raw: 0.0000%
+next_session_overlay_cost_est: 0.0000%
+next_session_trade_cost_est: 0.0000%
+next_session_trade_cost_est_type: overlay_only
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/microcap_top100_mom16_biweekly_live_v2_0.py:15121: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+signal
+strategy_version: v2.0
+base_version: embedded_v2_base
+overlay: score buffer 0.0000, no peak-decay derisk, overheat OFF, target volatility OFF, fixed1; revision=plain_mom16_fixed1_20260904
+current_holding: cash
+next_holding: cash
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-17
+momentum_gap: -2.1610%
+current_execution_scale: 0.00
+target_vol_realized_vol: 0.0000%
+raw_next_target_scale: 0.00
+next_session_actionable_scale: 0.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_leg_cost_est_raw: 0.0000%
+next_session_overlay_cost_est: 0.0000%
+next_session_trade_cost_est: 0.0000%
+next_session_trade_cost_est_type: overlay_only
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv

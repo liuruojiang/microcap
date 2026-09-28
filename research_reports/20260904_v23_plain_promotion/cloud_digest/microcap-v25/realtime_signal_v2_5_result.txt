@@ -1,0 +1,57 @@
+[top100-refresh] frozen tail seed rejected reason=runner_cache_is_full_sized
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/microcap_top100_mom16_biweekly_live_v2_0.py:14710: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/microcap_top100_mom16_biweekly_live_v2_5.py:1931: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+signal
+strategy_version: v2.5
+base_version: embedded_v2_base
+signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry threshold 46%, exit threshold 25%, no R2 gate
+overlay: no hedge, no stop-loss/DD/decay/overheat overlay, no target-vol/cash-yield/financing
+current_holding: long_microcap_top100
+next_holding: long_microcap_top100
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+annualized_log_wls_score: +70.3737%
+log_wls_r2: 0.4089
+momentum_gap_legacy_note: legacy field is the annualized microcap-only log-WLS score, not plain gap
+current_execution_scale: 1.00
+next_session_target_scale: 1.00
+next_session_actionable_scale: 1.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_trade_cost_est: 0.0000%
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/microcap_top100_mom16_biweekly_live_v2_0.py:14710: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/microcap_top100_mom16_biweekly_live_v2_5.py:1931: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+signal
+strategy_version: v2.5
+base_version: embedded_v2_base
+signal_model: microcap-only log-WLS exp half-life 3.0, lookback 17, entry threshold 46%, exit threshold 25%, no R2 gate
+overlay: no hedge, no stop-loss/DD/decay/overheat overlay, no target-vol/cash-yield/financing
+current_holding: long_microcap_top100
+next_holding: long_microcap_top100
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+annualized_log_wls_score: +70.3737%
+log_wls_r2: 0.4089
+momentum_gap_legacy_note: legacy field is the annualized microcap-only log-WLS score, not plain gap
+current_execution_scale: 1.00
+next_session_target_scale: 1.00
+next_session_actionable_scale: 1.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_trade_cost_est: 0.0000%
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v25/outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv

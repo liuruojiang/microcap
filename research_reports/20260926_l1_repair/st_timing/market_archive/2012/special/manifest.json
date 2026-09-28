@@ -1,0 +1,190 @@
+{
+  "year": 2012,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2012-01-01~2012-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 64,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "32c9fa9d16b473dee64854bdcd041f93b6170c1d1858d881916366282141f49e",
+      "response_bytes": 21795,
+      "row_count": 30,
+      "reported_total": 64
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "b136215b5999d9a3db1e97adf9dc76042b25a63986d308fd854fe716c32e03cf",
+      "response_bytes": 22320,
+      "row_count": 30,
+      "reported_total": 64
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "0ba1c24763d6ecfa2d83b69a09b5b209b2205691d0de26c30262e387852deeba",
+      "response_bytes": 3181,
+      "row_count": 4,
+      "reported_total": 64
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000856",
+      "announcementId": "61381008",
+      "announcementTime": 1344292200000,
+      "title": "关于撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-07/61381008.PDF"
+    },
+    {
+      "symbol": "600209",
+      "announcementId": "61262086",
+      "announcementTime": 1342132500000,
+      "title": "关于公司撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-07-13/61262086.PDF"
+    },
+    {
+      "symbol": "600727",
+      "announcementId": "61179143",
+      "announcementTime": 1340663700000,
+      "title": "关于撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-06-26/61179143.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "61119523",
+      "announcementTime": 1339367580000,
+      "title": "关于撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-06-11/61119523.PDF"
+    },
+    {
+      "symbol": "600074",
+      "announcementId": "61119522",
+      "announcementTime": 1339367580000,
+      "title": "关于撤销退市风险警示并实行其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-06-11/61119522.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "61110018",
+      "announcementTime": 1339108380000,
+      "title": "关于撤销退市风险警示并实行其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-06-08/61110018.PDF"
+    },
+    {
+      "symbol": "600281",
+      "announcementId": "61044309",
+      "announcementTime": 1337898900000,
+      "title": "关于撤销退市风险警示并实行其他<em>特别</em><em>处理</em>公告",
+      "adjunctUrl": "finalpage/2012-05-25/61044309.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "61018518",
+      "announcementTime": 1337553000000,
+      "title": "关于股票交易撤销退市风险警示并实行其他<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2012-05-21/61018518.PDF"
+    },
+    {
+      "symbol": "600854",
+      "announcementId": "61008364",
+      "announcementTime": 1337207700000,
+      "title": "关于撤销股票交易其他<em>特别</em><em>处理</em>和变更股票简称的公告",
+      "adjunctUrl": "finalpage/2012-05-17/61008364.PDF"
+    },
+    {
+      "symbol": "600847",
+      "announcementId": "61008361",
+      "announcementTime": 1337207700000,
+      "title": "关于撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-05-17/61008361.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "60976516",
+      "announcementTime": 1336602600000,
+      "title": "关于撤销股票交易其他<em>特别</em><em>处理</em>和变更股票简称的公告",
+      "adjunctUrl": "finalpage/2012-05-10/60976516.PDF"
+    },
+    {
+      "symbol": "000587",
+      "announcementId": "60950649",
+      "announcementTime": 1336084200000,
+      "title": "关于申请撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-05-04/60950649.PDF"
+    },
+    {
+      "symbol": "000007",
+      "announcementId": "60942890",
+      "announcementTime": 1335997800000,
+      "title": "关于撤销公司股票交易其他<em>特别</em><em>处理</em>及变更证券简称的公告",
+      "adjunctUrl": "finalpage/2012-05-03/60942890.PDF"
+    },
+    {
+      "symbol": "600209",
+      "announcementId": "60934179",
+      "announcementTime": 1335566280000,
+      "title": "关于公司申请撤销股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-28/60934179.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60921106",
+      "announcementTime": 1335479400000,
+      "title": "关于申请撤销退市风险警示并实施其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-27/60921106.PDF"
+    },
+    {
+      "symbol": "600338",
+      "announcementId": "60913691",
+      "announcementTime": 1335393240000,
+      "title": "关于股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-26/60913691.PDF"
+    },
+    {
+      "symbol": "600083",
+      "announcementId": "60902291",
+      "announcementTime": 1335306780000,
+      "title": "关于撤销退市风险警示并实施其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-25/60902291.PDF"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "60760183",
+      "announcementTime": 1333060200000,
+      "title": "关于公司A股股票交易实行退市风险警示<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2012-03-30/60760183.PDF"
+    },
+    {
+      "symbol": "600149",
+      "announcementId": "60724334",
+      "announcementTime": 1332714900000,
+      "title": "关于撤销退市风险警示并实施其他<em>特别</em><em>处理</em>及变更公司名称、证券简称的公告",
+      "adjunctUrl": "finalpage/2012-03-26/60724334.PDF"
+    },
+    {
+      "symbol": "000007",
+      "announcementId": "60593607",
+      "announcementTime": 1330381800000,
+      "title": "关于申请对公司股票交易撤销其他<em>特别</em><em>处理</em>及变更证券简称的提示性公告",
+      "adjunctUrl": "finalpage/2012-02-28/60593607.PDF"
+    },
+    {
+      "symbol": "600532",
+      "announcementId": "60482586",
+      "announcementTime": 1327962720000,
+      "title": "2011年度业绩预亏暨股票<em>特别</em><em>处理</em>风险提示公告",
+      "adjunctUrl": "finalpage/2012-01-31/60482586.PDF"
+    },
+    {
+      "symbol": "000856",
+      "announcementId": "60429516",
+      "announcementTime": 1326234600000,
+      "title": "关于申请对公司股票交易撤销其他<em>特别</em><em>处理</em>及变更证券简称的提示性公告",
+      "adjunctUrl": "finalpage/2012-01-11/60429516.PDF"
+    }
+  ],
+  "complete": true
+}

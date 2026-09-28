@@ -1,0 +1,41 @@
+{
+  "symbol": "000023",
+  "org_id": "gssz0000023",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000023,gssz0000023",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 1,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "64f5dff6c086ddf95ffed8485bff6fb2ceecc1c3638bd444eb7d9bc3cf4b7f2a",
+      "reported_total": 1,
+      "rows": 1
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57525994",
+      "announcementTime": 1264026600000,
+      "title": "澄清公告",
+      "adjunctUrl": "finalpage/2010-01-21/57525994.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

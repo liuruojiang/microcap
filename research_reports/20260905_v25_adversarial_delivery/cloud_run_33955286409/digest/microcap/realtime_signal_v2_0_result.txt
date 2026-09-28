@@ -1,0 +1,62 @@
+[index-history] {"independent_history_source": "sina_legacy", "independent_history_attempts": [{"source": "eastmoney", "ok": false, "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))", "elapsed_seconds": 0.561}, {"source": "sina_legacy", "ok": true, "elapsed_seconds": 1.261}], "independent_history_start": "2026-02-06", "independent_history_end": "2026-09-04", "independent_calendar_source": "akshare.tool_trade_date_hist_sina", "canonical_overlap_rows": 140, "canonical_max_precision_difference": 0.0}
+[index-history] {"independent_history_source": "sina_legacy", "independent_history_attempts": [{"source": "eastmoney", "ok": false, "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))", "elapsed_seconds": 0.634}, {"source": "sina_legacy", "ok": true, "elapsed_seconds": 1.114}], "independent_history_start": "2026-02-06", "independent_history_end": "2026-09-04", "independent_calendar_source": "akshare.tool_trade_date_hist_sina", "canonical_overlap_rows": 140, "canonical_max_precision_difference": 0.0}
+[top100-refresh] frozen tail seed rejected reason=runner_cache_is_full_sized
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/microcap_top100_mom16_biweekly_live_v2_0.py:14791: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+signal
+strategy_version: v2.0
+base_version: embedded_v2_base
+overlay: score buffer 0.0000, no peak-decay derisk, overheat OFF, target volatility OFF, fixed1; revision=plain_mom16_fixed1_20260904
+current_holding: long_microcap_short_zz1000
+next_holding: long_microcap_short_zz1000
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+momentum_gap: +8.1862%
+current_execution_scale: 1.00
+target_vol_realized_vol: 0.0000%
+raw_next_target_scale: 1.00
+next_session_actionable_scale: 1.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_leg_cost_est_raw: 0.0000%
+next_session_overlay_cost_est: 0.0000%
+next_session_trade_cost_est: 0.0000%
+next_session_trade_cost_est_type: overlay_only
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv
+[index-history] {"independent_history_source": "sina_legacy", "independent_history_attempts": [{"source": "eastmoney", "ok": false, "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))", "elapsed_seconds": 1.129}, {"source": "sina_legacy", "ok": true, "elapsed_seconds": 1.237}], "independent_history_start": "2026-02-06", "independent_history_end": "2026-09-04", "independent_calendar_source": "akshare.tool_trade_date_hist_sina", "canonical_overlap_rows": 140, "canonical_max_precision_difference": 0.0}
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/microcap_top100_mom16_biweekly_live_v2_0.py:14791: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+signal
+strategy_version: v2.0
+base_version: embedded_v2_base
+overlay: score buffer 0.0000, no peak-decay derisk, overheat OFF, target volatility OFF, fixed1; revision=plain_mom16_fixed1_20260904
+current_holding: long_microcap_short_zz1000
+next_holding: long_microcap_short_zz1000
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+momentum_gap: +8.1862%
+current_execution_scale: 1.00
+target_vol_realized_vol: 0.0000%
+raw_next_target_scale: 1.00
+next_session_actionable_scale: 1.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_leg_cost_est_raw: 0.0000%
+next_session_overlay_cost_est: 0.0000%
+next_session_trade_cost_est: 0.0000%
+next_session_trade_cost_est_type: overlay_only
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv

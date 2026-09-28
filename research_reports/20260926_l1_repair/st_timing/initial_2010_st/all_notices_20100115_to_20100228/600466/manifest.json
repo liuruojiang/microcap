@@ -1,0 +1,71 @@
+{
+  "symbol": "600466",
+  "org_id": "gssh0600466",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600466,gssh0600466",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 6,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "a3cf0b04960bfe6e018d73a8a6c35e72b80a450e928417ef1e69c1bfb1514ae7",
+      "reported_total": 6,
+      "rows": 6
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57619955",
+      "announcementTime": 1266964500000,
+      "title": "2010年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-02-24/57619955.PDF"
+    },
+    {
+      "announcementId": "57619954",
+      "announcementTime": 1266964500000,
+      "title": "2010年度第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-02-24/57619954.PDF"
+    },
+    {
+      "announcementId": "57603931",
+      "announcementTime": 1265841300000,
+      "title": "2010年度第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2010-02-11/57603931.PDF"
+    },
+    {
+      "announcementId": "57577603",
+      "announcementTime": 1265236500000,
+      "title": "关于召开2010年度第一次临时股东大会的公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577603.PDF"
+    },
+    {
+      "announcementId": "57577602",
+      "announcementTime": 1265236500000,
+      "title": "第四届董事会第五次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577602.PDF"
+    },
+    {
+      "announcementId": "57521637",
+      "announcementTime": 1263940500000,
+      "title": "有限售条件的流通股上市公告",
+      "adjunctUrl": "finalpage/2010-01-20/57521637.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

@@ -1,0 +1,50 @@
+{
+  "retrieved_utc": "2026-09-26T13:57:33.180337+00:00",
+  "baostock_version": "00.9.10",
+  "source": "BaoStock query_history_k_data_plus",
+  "fields": "date,code,open,high,low,close,volume,tradestatus,isST",
+  "adjustflag": "3",
+  "frequency": "d",
+  "initial_target_count": 51,
+  "initial_symbol_count": 29,
+  "st_sample_count": 12,
+  "sample_rule": "earliest certified wrong target date for 12 frozen symbols",
+  "sample_symbols": [
+    "000010",
+    "600080",
+    "600082",
+    "600119",
+    "600180",
+    "600187",
+    "600423",
+    "600476",
+    "600491",
+    "600543",
+    "600506",
+    "600241"
+  ],
+  "query_count": 41,
+  "query_error_count": 0,
+  "comparison_counts": {
+    "initial_51": {
+      "rows": 51,
+      "missing_date_rows": 0,
+      "st_mismatch": 0,
+      "close_mismatch": 0,
+      "no_local_close": 0,
+      "not_trading": 0
+    },
+    "st_sample": {
+      "rows": 12,
+      "missing_date_rows": 0,
+      "st_mismatch": 0,
+      "close_mismatch": 0,
+      "no_local_close": 0,
+      "not_trading": 0
+    }
+  },
+  "files": {
+    "baostock_query_rows.json": "737dcb8821213b21c829facf2ebe84a0630757b4b05bcfcbe6468c3be5197981",
+    "target_comparison.csv": "5f3aab3fa41b18f06281a922997e2691b2bd87b84c1082dc3575054e3c36afb3"
+  }
+}

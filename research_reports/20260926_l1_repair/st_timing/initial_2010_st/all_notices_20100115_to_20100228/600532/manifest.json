@@ -1,0 +1,47 @@
+{
+  "symbol": "600532",
+  "org_id": "gssh0600532",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600532,gssh0600532",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 2,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "74edc57dde1035a9fdf772803719e5bfb5e576ceace13a4f422eca4a4a9b5776",
+      "reported_total": 2,
+      "rows": 2
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57585885",
+      "announcementTime": 1265409300000,
+      "title": "第四届董事会第二次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-06/57585885.PDF"
+    },
+    {
+      "announcementId": "57556337",
+      "announcementTime": 1264718100000,
+      "title": "2009年度业绩预盈公告",
+      "adjunctUrl": "finalpage/2010-01-29/57556337.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

@@ -1,0 +1,36 @@
+{
+  "year": 2002,
+  "label": "risk",
+  "category": "",
+  "searchkey": "风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2002-01-01~2002-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 4,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "9c1bfb435c097d3cf0804d4b260845eb1d99d82795adee75717bd4c943e87a20",
+      "response_bytes": 2680,
+      "row_count": 4,
+      "reported_total": 4
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600862",
+      "announcementId": "596640",
+      "announcementTime": 1020079829000,
+      "title": "<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2002-04-29/596640.html"
+    },
+    {
+      "symbol": "600112",
+      "announcementId": "536283",
+      "announcementTime": 1011185233000,
+      "title": "<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2002-01-16/536283.html"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,41 @@
+{
+  "symbol": "600385",
+  "org_id": "gssh0600385",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600385,gssh0600385",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 1,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "79dda7bed3cf9855cd42d088f2a6e6666ce3c6d2c75609d5f4b3ce49d22b6bbe",
+      "reported_total": 1,
+      "rows": 1
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57526136",
+      "announcementTime": 1264026900000,
+      "title": "2009年度扭亏预盈公告",
+      "adjunctUrl": "finalpage/2010-01-21/57526136.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

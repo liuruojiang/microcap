@@ -1,0 +1,792 @@
+{
+  "ok": true,
+  "scope": "base_state_only",
+  "final_outputs_validated": false,
+  "errors": [],
+  "warnings": [],
+  "files": [
+    {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "bytes": 237534,
+      "sha256": "10f3ffc11be9aae6ecd9c631bf58487a3ed99526706f72ef6121aa462ec0fee2"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+      "bytes": 2629,
+      "sha256": "d55491348da832072dd37a0608a33df505d823716fbc4439edadec7df908c4ce"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "bytes": 606300,
+      "sha256": "8f8e368e75511af3e391fc542594d6d0b159192e014613b7c7df6a4bfe364ff6"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "bytes": 2553,
+      "sha256": "9f907f31dc605fef768e123b5a50010b98698d1bab4e8bed894903e2b51f48e4"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+      "bytes": 2126878,
+      "sha256": "ff151c48c3963ffc25bab684d45e5618e11adc2b107222bed4073ebf7dd48529"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "bytes": 45617,
+      "sha256": "0bb43938d8693db24a482470f5463106245d86e253cb0f2f23749b5dca7f4f04"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "bytes": 1496751,
+      "sha256": "939e2badde5b67fcefba114c275748041924331cfecffb3d33ed3c0cb9b69e0a"
+    },
+    {
+      "path": ".microcap_index_cache/active_universe.csv",
+      "bytes": 153185,
+      "sha256": "a53ab7f8799e37490ad904e84a5a3315104541212b41e6d27e3a3e39535f0230"
+    },
+    {
+      "path": ".microcap_index_cache/current_st.csv",
+      "bytes": 3573,
+      "sha256": "5dd2542cf70736e175eacb86c3b441320f544500a1e121d9e49838e790ef0c12"
+    }
+  ],
+  "anchor_dates": {
+    "proxy_index": "2026-09-04",
+    "costed_nav": "2026-09-04",
+    "panel_shadow": "2026-09-04",
+    "proxy_turnover": "2026-09-03"
+  },
+  "current_member_symbols": [
+    "000702",
+    "000856",
+    "000995",
+    "001336",
+    "002188",
+    "002316",
+    "002494",
+    "002591",
+    "002715",
+    "002760",
+    "002820",
+    "003017",
+    "300169",
+    "300176",
+    "300220",
+    "300405",
+    "300417",
+    "300500",
+    "300535",
+    "300549",
+    "300605",
+    "300614",
+    "300621",
+    "300635",
+    "300645",
+    "300675",
+    "300717",
+    "300823",
+    "300886",
+    "300923",
+    "300958",
+    "301006",
+    "301010",
+    "301037",
+    "301049",
+    "301063",
+    "301098",
+    "301106",
+    "301131",
+    "301163",
+    "301167",
+    "301233",
+    "301298",
+    "301503",
+    "301505",
+    "301512",
+    "301515",
+    "301519",
+    "600051",
+    "600137",
+    "600149",
+    "600202",
+    "600448",
+    "600455",
+    "600493",
+    "600561",
+    "600697",
+    "600778",
+    "600847",
+    "600883",
+    "603022",
+    "603073",
+    "603214",
+    "603307",
+    "603709",
+    "603717",
+    "603860",
+    "603879",
+    "603908",
+    "605567",
+    "688004",
+    "688021",
+    "688051",
+    "688058",
+    "688067",
+    "688078",
+    "688092",
+    "688096",
+    "688193",
+    "688217",
+    "688288",
+    "688329",
+    "688393",
+    "688420",
+    "688466",
+    "688501",
+    "688528",
+    "688565",
+    "688573",
+    "688576",
+    "688592",
+    "688638",
+    "688651",
+    "688659",
+    "688670",
+    "688671",
+    "688681",
+    "688695",
+    "688701",
+    "688793"
+  ],
+  "price_cache_files": [
+    {
+      "path": ".microcap_index_cache/prices_raw/000702.csv",
+      "bytes": 68769,
+      "sha256": "4ebf04fab5adb66318b33bd5ab99d71184f09cf6a267e5b4193c6e8106c76828",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/000856.csv",
+      "bytes": 69430,
+      "sha256": "a2a663c3cfd4a2f14466e86c1bab53084d14a694d2a54bcd1a8aceb7341099d9",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/000995.csv",
+      "bytes": 56253,
+      "sha256": "c686481d89cbf1fa965bfdec54493c32f47adfe9a799df9b14907cf58a86de5c",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/001336.csv",
+      "bytes": 17873,
+      "sha256": "177d93ffa3c517b0ec62063855ce9f669cca051449147e5b5e46bd33678bf47e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002188.csv",
+      "bytes": 66097,
+      "sha256": "ea8599ed79e3718de402919502f9bd684b6eb3de939a501c92a70b146092a2b0",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002316.csv",
+      "bytes": 61736,
+      "sha256": "272bbbbeeb5ca55aaea37bdf03b217fa91e7b28fc46ba5fb4f0358c0ff897d28",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002494.csv",
+      "bytes": 65969,
+      "sha256": "c68bbcf544d110116615c1aea75091d6aefd86d24257f30eb1c15083bbbaa581",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002591.csv",
+      "bytes": 60983,
+      "sha256": "f829d8cc5c499c3cbc697a161e2c7237da9de46a28293ca7f94ac2e6b90d3a11",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002715.csv",
+      "bytes": 54013,
+      "sha256": "7fbc909214275e124f513a1b3d7e6fa61dbbd2f957e8170f5fbb0bb8aa3bbef2",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002760.csv",
+      "bytes": 48308,
+      "sha256": "f8ce13ea383c0916eb412601bb4188dcd85cfc95247c2153d21d04438dbcfc4e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/002820.csv",
+      "bytes": 41823,
+      "sha256": "d97fc37e7da07e3822c32aad26cda0a6bc68333e18868bc09e3d0007bed1da7d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/003017.csv",
+      "bytes": 25453,
+      "sha256": "cdddf55349bbe4876916cdb11f2b14ac1155ff7300d0267ed2f07dd061df0967",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300169.csv",
+      "bytes": 60121,
+      "sha256": "3607ac57ada490f9532b82fa539aeff9157a8bb456adbec894dd9cf20dbc88fb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300176.csv",
+      "bytes": 63347,
+      "sha256": "fecee37aa182a3c343535af646d8de8094121b0a654fc7125fad33f87ba7c4d8",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300220.csv",
+      "bytes": 61884,
+      "sha256": "40dac0228af82579056cfe600eb50049945f5a01f7e8334508861554f6fd0843",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300405.csv",
+      "bytes": 48113,
+      "sha256": "8b9717be4627ec33dbeda068bc16ac052ee12565fdde84f7717e9ed6cfc17828",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300417.csv",
+      "bytes": 50166,
+      "sha256": "7470bd72ec394140c617dc81c3797f3f82682debc76e911cba9f573e6612d9c1",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300500.csv",
+      "bytes": 44601,
+      "sha256": "dfaa7fb6b93c7857956d2490dd2bb5d1214c6ecd9d4498bfd656995ae33a99f7",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300535.csv",
+      "bytes": 42373,
+      "sha256": "1329d13e62f61111ae9a62fc6a2e08debb5156e568ed103606c48bffd0afc4e7",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300549.csv",
+      "bytes": 43079,
+      "sha256": "ac981c3b3e9e6286dc6eba79760c036a6c15530b8bdc111f77423858b0f58f71",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300605.csv",
+      "bytes": 41501,
+      "sha256": "d5f69bd7ebde83d8952383b26db2cd6079bc69794d5c5b6f76864109fa0bf4db",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300614.csv",
+      "bytes": 22792,
+      "sha256": "dcce20149f5f1608636cdbcf560272924b704bffd7d2a1cf77a979cad02b6faa",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300621.csv",
+      "bytes": 39947,
+      "sha256": "5b06095bf73a1956572ed1a359aa522743a505eda8e5bfe1222be5bfb0b7df96",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300635.csv",
+      "bytes": 40590,
+      "sha256": "12199a4fd8ae70d5f55328ebeba4d5644dca2712232517f8e5f98bcd8b8cd7aa",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300645.csv",
+      "bytes": 40480,
+      "sha256": "f42660e50a0759da7026d8ca0a3cdd31158006fae8849d0fe2bba6f36e08c449",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300675.csv",
+      "bytes": 39634,
+      "sha256": "e460fdefc13359887f7e14c5b95994c1359785e79c5a84cfae83f71648d28d16",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300717.csv",
+      "bytes": 38173,
+      "sha256": "fff17e585ea92943b5ef3009cbc0460aa2ad0fe3b8902819edbefc1c103fa1a4",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300823.csv",
+      "bytes": 28065,
+      "sha256": "fd08a9fc7c2678c3c500d146c8a84ca2ce43d1930928ad186698828e8c1c358a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300886.csv",
+      "bytes": 25650,
+      "sha256": "f1caa13cdff38d8f88d857e1e1647572e6075ede3e4235ac2f6bbff3a12f8c6b",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300923.csv",
+      "bytes": 24688,
+      "sha256": "72f7f905b9cb16460e94195938fa812b37f71e25f4826ed70726d73935138029",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/300958.csv",
+      "bytes": 23608,
+      "sha256": "4c02fd90982f9821ba1db80dd0008a455e12a5318b6d7cec51c7e65146315d78",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301006.csv",
+      "bytes": 22779,
+      "sha256": "b1612c4f9b4363a0c4b63c95ef1a50ff5c6c173581f16f2f6b32fc9ac8945b74",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301010.csv",
+      "bytes": 22650,
+      "sha256": "b84f2ed254c4a916b7b08268e8197e4fd13b5bc8370f5519fff48c2e039c00b4",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301037.csv",
+      "bytes": 22049,
+      "sha256": "b9d67a17aa438db841dacdbd567cca2b608476bbddc2b63a1536b5ed4967f090",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301049.csv",
+      "bytes": 21785,
+      "sha256": "ea2afc2d24f4ae5d70737caa3bf796ad7b48681b478ee2491a0cbb5362f983f4",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301063.csv",
+      "bytes": 21420,
+      "sha256": "644293af1331fcb7cb8cce57951931ab7916b6529a5c2762a62d176a02deccc3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301098.csv",
+      "bytes": 20322,
+      "sha256": "062337c7a2b2e8753d330c06cd6ceadceee0a7cdc1f27578fb75c04f87ed5bea",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301106.csv",
+      "bytes": 19725,
+      "sha256": "8907a7ae2009ba22726b0d2571e7937800809ee4256dd054b2487079b4197a5f",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301131.csv",
+      "bytes": 19418,
+      "sha256": "5c586418aa1bafd3cf13e9c2e82eee4525d60da786bad3777ca890836a51bee6",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301163.csv",
+      "bytes": 19009,
+      "sha256": "b6ba32938712b491bb3694e4f73dc1cc2e043a4e47bf6439b4eb01e2e7c3fb60",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301167.csv",
+      "bytes": 20611,
+      "sha256": "6d1650370eee0c563163bf7932a8f916bfee3cdeaa6ed1a47cae1906c8578243",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301233.csv",
+      "bytes": 18080,
+      "sha256": "4c54d5827cf504e6f8b8228fee4196d8b776687e9f08d1fcd68e6e47e46250cb",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301298.csv",
+      "bytes": 18491,
+      "sha256": "e33e6e17ca76b93e6fd185c034b18d70ec27dbf2fefb41e221ae70a13a8267bd",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301503.csv",
+      "bytes": 13636,
+      "sha256": "7218412c7f78273a374841f42fb66ca148279906dc9de39b567888ce325dbdc9",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301505.csv",
+      "bytes": 13430,
+      "sha256": "dae9f865854ffb20401743bc5d53638572d59120d79514dbfae92790752f09ba",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301512.csv",
+      "bytes": 13546,
+      "sha256": "e54308b81c033bba4aaad5543bc08c78e974e34891b9d6f5295e0b830c921db9",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301515.csv",
+      "bytes": 13536,
+      "sha256": "a528bad4f6fc1c93782438ef4e8435eecd21fc43915ac22407c5dd6996315238",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/301519.csv",
+      "bytes": 13518,
+      "sha256": "c786fbaf7f5f0b194dea034abcbadc1004b6db9b8e1e48861eed44dfd9b0158a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600051.csv",
+      "bytes": 66746,
+      "sha256": "2182fb54b29eee172345997309c7714419ba46d9db8b699a23986691ebab522d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600137.csv",
+      "bytes": 70842,
+      "sha256": "b44316c2b23a15e679f3c9441ba6e3193557347821fcf9bf896bc1a41f9d0265",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600149.csv",
+      "bytes": 66425,
+      "sha256": "3f59cc8b76387d072057e70cc24398b9779b762d30a6dca9aed2ba6ff77c36e3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600202.csv",
+      "bytes": 67550,
+      "sha256": "ab952e8f57c01b6886ca70166bb5c3e888101b1d91c0d38d4157c65394dd2af9",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600448.csv",
+      "bytes": 67045,
+      "sha256": "00f994806c554c888214bf8b8d51f3980338c441a69bb8f1a11f7576971cc4d8",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600455.csv",
+      "bytes": 61321,
+      "sha256": "fc95f5b7fbead21de663c18bff0bcbdda41fe869f34aca42c4102c9d839b5231",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600493.csv",
+      "bytes": 68976,
+      "sha256": "45173c26c987ac43ba1e8a20802aec02e4e315246810254c709cc5243e9bcd47",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600561.csv",
+      "bytes": 68250,
+      "sha256": "83378bbcacd179f2ad97d5b76fedc05c0e24a17b5684f63ad33a860657845193",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600697.csv",
+      "bytes": 71955,
+      "sha256": "0a42a61e989c2feb91393c2ef06e0e8cc778417aaf9b16c15deaa2dc3ffe9a1c",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600778.csv",
+      "bytes": 67384,
+      "sha256": "5b949ea60f38ebe7ebd0d668430366d21eb742c49674e4875455ec0dd71cf674",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600847.csv",
+      "bytes": 66924,
+      "sha256": "31e21e106d0c9914a8f348e637588398ab6e1f57f67ad9dfb95ce85137ece593",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/600883.csv",
+      "bytes": 69413,
+      "sha256": "bb457238f10cbb1069ac56699162d9413420d6758742247ca7f2f5987ab46b70",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603022.csv",
+      "bytes": 48032,
+      "sha256": "7159b75cd5aadf73b99aa79e05a0d9e336da67b2257b51f7cc9c2c569f3dc81a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603073.csv",
+      "bytes": 15083,
+      "sha256": "46ddf515fea6464bab7ee48292c0219c3201df7359fc1ae1ea90a25081aa0b8d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603214.csv",
+      "bytes": 36569,
+      "sha256": "a8ba80fbaababd0a9eca616c65c0172c30a3ebc583074374bc8a592abab96131",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603307.csv",
+      "bytes": 15394,
+      "sha256": "57fcbc8f99232658d5203d326eb093477563ea745b0461e63454891a3b312a98",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603709.csv",
+      "bytes": 37039,
+      "sha256": "21e50798fdcaf82dda02127210c7806d17ece9a2788475119fc2d558f511de4f",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603717.csv",
+      "bytes": 39402,
+      "sha256": "94b76a148f1b36808e9d89d1aed67a03c5a2ea8517e6dc20edc8a84dc03d21b3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603860.csv",
+      "bytes": 39427,
+      "sha256": "a2581d2dc2c53ebeab1f8283cfdcba7961c25522e9d066d9bafc624c45efa28b",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603879.csv",
+      "bytes": 38444,
+      "sha256": "f2a8cff58998d9974495bfb3773a3f218b09b458871e006e8e67b4556dba64f8",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/603908.csv",
+      "bytes": 41223,
+      "sha256": "e03e6d52a080e6533d36cceecc76aa022fa1a5ad41bc109f9d90197c7e6f1ff6",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/605567.csv",
+      "bytes": 20876,
+      "sha256": "59ed4288be57da8e0f9da9cd0026c3cd2f5138731124eb8a3ff3708752d9bd0f",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688004.csv",
+      "bytes": 26989,
+      "sha256": "9ca3eb14186d5e3f09b6112d95f85467d0529c273224d5ad89adc90083083870",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688021.csv",
+      "bytes": 29452,
+      "sha256": "5ee47355f21eb80baedc9683a6e15ac89b94efd363b7d84aa3fd664b0698235b",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688051.csv",
+      "bytes": 27895,
+      "sha256": "95185ffdd2eb939e15356cc5af4d287fc80fe24d33f943d6c6f56a0e98649770",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688058.csv",
+      "bytes": 29869,
+      "sha256": "7b1c0bc4d0e9190ec378f89beaf9d1c7da7ae40a1f709c490d904b95e9a0aab8",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688067.csv",
+      "bytes": 22654,
+      "sha256": "fe03f405251d4c592e51d8b80698007d374bcdc3a8484840aef82d4021d082b4",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688078.csv",
+      "bytes": 28855,
+      "sha256": "33370d24b560a75e8cafaca3c7b6372a7f03b80ab943521984f684e465ad3b3d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688092.csv",
+      "bytes": 23649,
+      "sha256": "b27bc0a160c1424a32b65f8f7c21b1643e1aa365da47e42153c852d623697906",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688096.csv",
+      "bytes": 27188,
+      "sha256": "79bf5f69f4928d99fc89338942e14575d71701b09253890505ad71f0420dd550",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688193.csv",
+      "bytes": 19124,
+      "sha256": "242a5c17903a385e8f4655555cd75a1ee55baed3b1af3d21569cefaacee396b5",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688217.csv",
+      "bytes": 23040,
+      "sha256": "c024fce1f8810c018e4ad86c9f3967331d87eb6abe8aa9b07c179140a809ff8e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688288.csv",
+      "bytes": 29561,
+      "sha256": "0306a503b63ab2652559bbdedf5bafcf83ad634b3611fadc179eb5d5f1e3a24b",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688329.csv",
+      "bytes": 23545,
+      "sha256": "9d0be1519d5cf5db7686c60b8db5e9d8b6f68b8bec6737db4d501d47462a32b2",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688393.csv",
+      "bytes": 26139,
+      "sha256": "6c1c363137f297c2bbd947370c4cf0e90113fa39a14d13ea8fd97d557ba7379d",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688420.csv",
+      "bytes": 16207,
+      "sha256": "c13b34dc6d6b15f387af86c881463a1071bf16a8a1ef502ec3b355916938e1da",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688466.csv",
+      "bytes": 27467,
+      "sha256": "38ed0cc7736ef2fb84b1e74fd115a73cf463cb4bfcacd5abce8d7b33cfe652ae",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688501.csv",
+      "bytes": 22273,
+      "sha256": "27102b89a569b9684caf1ee0722d6eedf8271c9820bcccaae526570fd278fd7f",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688528.csv",
+      "bytes": 26464,
+      "sha256": "ed370c91bae6bf047b0247ca0b2d31034a72ccb00f7381cb66f45bc3429fddba",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688565.csv",
+      "bytes": 22437,
+      "sha256": "73726cc5572565ec998b4d1964eea73bc42597b2ee94f6b9b91e29fb45d0ac73",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688573.csv",
+      "bytes": 13188,
+      "sha256": "e39aaf37da34b423753a3a90a3b27b4d51f8297b6860162b7f914a9368d89c89",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688576.csv",
+      "bytes": 14145,
+      "sha256": "e8c3c72b5e5004e184dcafff70d866e8cf6f02aff669d00357bef31d183cdbd3",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688592.csv",
+      "bytes": 13161,
+      "sha256": "c479141ae3cc60d05f4506219f0fd2dbd5366d274e4c14254479facb2503c269",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688638.csv",
+      "bytes": 13656,
+      "sha256": "9173c2c4ea5a784695b7a08df9c212b19ffe299724e171617acdbc189757db5b",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688651.csv",
+      "bytes": 13463,
+      "sha256": "553aaa96073c702b5fd4960219a97f761c9e2c9afa963a4a961696b1c66d486e",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688659.csv",
+      "bytes": 23079,
+      "sha256": "1f2dba615bc8621deca9e0dbd5f228258f3317c514a4c05b5250c325973a527c",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688670.csv",
+      "bytes": 22059,
+      "sha256": "d72030d6ff12880338b9fe831ec60e7959ba96c5afe9404b03d55c004570baf6",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688671.csv",
+      "bytes": 13326,
+      "sha256": "46e5e680148bf66dff255317bb82a522aa402ca18130f75548bcbdfbb53d67ef",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688681.csv",
+      "bytes": 22569,
+      "sha256": "84c9189696cc06b370785cb36fa4d50ae3c4d972c21adfad519babd23c7cc785",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688695.csv",
+      "bytes": 10781,
+      "sha256": "ba1ee57cfd011599d04edb1f47bdab45249090b0211af6ba74e66921960f6f7a",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688701.csv",
+      "bytes": 20652,
+      "sha256": "eb69b306957bd75f453d5f12f570bbd2a72f5f99d050a10956863b8be56264ff",
+      "last_date": "2026-09-04"
+    },
+    {
+      "path": ".microcap_index_cache/prices_raw/688793.csv",
+      "bytes": 22262,
+      "sha256": "f1f34979bf7378f639145001be2d490454af4e1018ace315c43a59b931e888ea",
+      "last_date": "2026-09-04"
+    }
+  ],
+  "refresh_proof": {
+    "version": 1,
+    "source": "independent_close_history_refresh",
+    "target_end_date": "2026-09-04",
+    "verified_on": "2026-09-04",
+    "verified_at_utc": "2026-09-04T15:54:54.908374+00:00",
+    "preflight_evidence": {
+      "member_name_quote_day": "2026-09-04",
+      "member_name_count": 100,
+      "member_name_source": "tencent_batch_free",
+      "current_st_name_intersection": 0,
+      "independent_completed_day": "2026-09-04",
+      "independent_history_rows": 15,
+      "independent_history_source": "sina_static",
+      "independent_history_attempts": [
+        {
+          "source": "sina_static",
+          "ok": true,
+          "elapsed_seconds": 0.958
+        }
+      ],
+      "independent_history_start": "2026-08-17",
+      "independent_history_end": "2026-09-04",
+      "independent_calendar_source": "akshare.tool_trade_date_hist_sina",
+      "expected_calendar_day": "2026-09-04"
+    }
+  },
+  "preflight_source": "validated_independent_index_history; no panel/NAV rebuild"
+}

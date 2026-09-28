@@ -1,0 +1,11 @@
+{
+  "message_id": "1a06d34efef91a7c",
+  "internal_date": "1788538580000",
+  "subject": "[纠正版][收盘确认][无需操作] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-04",
+  "workflow_run": "33893690575",
+  "strategy_sha": "106902fab330cb33f07be8d944f23c140f14fc79",
+  "full_body_read": true,
+  "body_contains_run": true,
+  "body_contains_sha": true,
+  "qualification": "First delivered acceptance; later internal base/panel price check found a 0.002 point inconsistency, fixed in follow-up release."
+}

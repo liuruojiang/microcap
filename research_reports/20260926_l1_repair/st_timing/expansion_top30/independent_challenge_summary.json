@@ -1,0 +1,144 @@
+{
+  "event_checks": [
+    {
+      "symbol": "600506",
+      "stage": "entry",
+      "local_sha_match": true,
+      "code_in_body": true,
+      "effective_date_in_body": true,
+      "body_length": 950
+    },
+    {
+      "symbol": "600506",
+      "stage": "downgrade",
+      "local_sha_match": true,
+      "code_in_body": true,
+      "effective_date_in_body": true,
+      "body_length": 902
+    },
+    {
+      "symbol": "600506",
+      "stage": "exit",
+      "local_sha_match": true,
+      "code_in_body": true,
+      "effective_date_in_body": true,
+      "body_length": 1316
+    },
+    {
+      "symbol": "600241",
+      "stage": "entry",
+      "local_sha_match": true,
+      "code_in_body": true,
+      "effective_date_in_body": true,
+      "body_length": 1337
+    },
+    {
+      "symbol": "600241",
+      "stage": "downgrade",
+      "local_sha_match": true,
+      "code_in_body": true,
+      "effective_date_in_body": true,
+      "body_length": 1344
+    },
+    {
+      "symbol": "600241",
+      "stage": "exit",
+      "local_sha_match": true,
+      "code_in_body": true,
+      "effective_date_in_body": true,
+      "body_length": 1063
+    }
+  ],
+  "remote_checks": [
+    {
+      "symbol": "600506",
+      "stage": "entry",
+      "http_status": 200,
+      "remote_sha_match": true
+    },
+    {
+      "symbol": "600506",
+      "stage": "downgrade",
+      "http_status": 200,
+      "remote_sha_match": true
+    },
+    {
+      "symbol": "600506",
+      "stage": "exit",
+      "http_status": 200,
+      "remote_sha_match": true
+    },
+    {
+      "symbol": "600241",
+      "stage": "entry",
+      "http_status": 200,
+      "remote_sha_match": true
+    },
+    {
+      "symbol": "600241",
+      "stage": "downgrade",
+      "http_status": 200,
+      "remote_sha_match": true
+    },
+    {
+      "symbol": "600241",
+      "stage": "exit",
+      "http_status": 200,
+      "remote_sha_match": true
+    }
+  ],
+  "new_input_rows": 37,
+  "new_unique_keys": 37,
+  "new_by_symbol": {
+    "600506": 35,
+    "600241": 2
+  },
+  "independent_period_member_counts": {
+    "600506": 35,
+    "600241": 2
+  },
+  "independent_period_matches_new": {
+    "600506": true,
+    "600241": true
+  },
+  "new_exact_formal_member_count": 37,
+  "old_250_overlap_count": 0,
+  "old_meta_st_count": 0,
+  "new_after_downgrade_count": 37,
+  "new_effective_rebalance_member_count": 37,
+  "new_effective_first": "2010-11-18",
+  "old_effective_rebalance_member_count": 235,
+  "combined_effective_rebalance_member_count": 272,
+  "combined_effective_symbols": 20,
+  "combined_effective_first": "2010-01-14",
+  "other_top30_symbols_not_closed": [
+    "300013",
+    "300081",
+    "300087",
+    "300163",
+    "300220",
+    "300594",
+    "600137",
+    "600156",
+    "600250",
+    "600302",
+    "600319",
+    "600444",
+    "600455",
+    "600520",
+    "600539",
+    "600603",
+    "600615",
+    "600689",
+    "600706",
+    "600719",
+    "600727",
+    "600768",
+    "600778",
+    "600847",
+    "600980",
+    "603879",
+    "603880",
+    "688309"
+  ]
+}

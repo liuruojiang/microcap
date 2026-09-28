@@ -1,0 +1,45 @@
+{
+  "formal_source_unchanged": true,
+  "source_sha256": {
+    "analyze_top100_rebalance_frequency.py": "a705e2e7c7090bfdb6e1cfd1eca0382140e1cf617106a8b5a91d23c48b3ba43f",
+    "microcap_top100_mom16_biweekly_live.py": "27018e04195bfd13428b52007a5c4b8fc10ba49e4cc2dc90b630f13f6c5fc82d",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "4e20dea7fb79ccf1658e549ec881ff931d26fb9c1156badc5bf9f7aa5ea5bfb3"
+  },
+  "candidate_patch_sha256": "b150703db3dec20221549326cdb6ba572c160089b6387a7818a5806d69064b67",
+  "steps": [
+    {
+      "argv": [
+        "C:\\Python314\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\candidate_code_fix\\build_patch.py"
+      ],
+      "exit_code": 0,
+      "stdout": "wrote D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\candidate_code_fix\\candidate_code_fix.patch (90 lines)\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\candidate_code_fix\\candidate_code_fix.patch"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "C:\\Python314\\python.exe",
+        "-X",
+        "utf8",
+        "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\candidate_code_fix\\test_candidate.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_decimal_half_up_000632_counterexample (__main__.CandidateTests.test_decimal_half_up_000632_counterexample) ... ok\ntest_sh_sz_mainboard_rule_switch_and_other_boards (__main__.CandidateTests.test_sh_sz_mainboard_rule_switch_and_other_boards) ... ok\ntest_st_name_and_live_gate_both_entrypoints (__main__.CandidateTests.test_st_name_and_live_gate_both_entrypoints) ... ok\ntest_standalone_and_embedded_changed_cases (__main__.CandidateTests.test_standalone_and_embedded_changed_cases) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.758s\n\nOK\n"
+    }
+  ],
+  "pass": true
+}

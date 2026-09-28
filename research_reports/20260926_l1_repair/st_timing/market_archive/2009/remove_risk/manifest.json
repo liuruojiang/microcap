@@ -1,0 +1,183 @@
+{
+  "year": 2009,
+  "label": "remove_risk",
+  "category": "",
+  "searchkey": "撤销风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2009-01-01~2009-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 65,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "99eb4785b3f0e56855dd71649d6085248a557111af933f3f7b9493b401d7e0d2",
+      "response_bytes": 23314,
+      "row_count": 30,
+      "reported_total": 65
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "daf214c8929060933c19f84f5ff8b2783c9fe22bcfc3e71bfc4894101d3decc5",
+      "response_bytes": 22784,
+      "row_count": 30,
+      "reported_total": 65
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "f628ae141892bf9d45a03ed0d2b2e95ef61a276c8f3838677c879fa1673a98b2",
+      "response_bytes": 4062,
+      "row_count": 5,
+      "reported_total": 65
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600275",
+      "announcementId": "57447649",
+      "announcementTime": 1262039700000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>申请的提示性公告",
+      "adjunctUrl": "finalpage/2009-12-29/57447649.PDF"
+    },
+    {
+      "symbol": "600275",
+      "announcementId": "57447648",
+      "announcementTime": 1262039700000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>的提示性公告",
+      "adjunctUrl": "finalpage/2009-12-29/57447648.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "57366070",
+      "announcementTime": 1259965800000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2009-12-05/57366070.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "57255735",
+      "announcementTime": 1257373800000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2009-11-05/57255735.PDF"
+    },
+    {
+      "symbol": "000918",
+      "announcementId": "57156283",
+      "announcementTime": 1255905030000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>及变更公司名称和证券简称的公告",
+      "adjunctUrl": "finalpage/2009-10-19/57156283.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "57144593",
+      "announcementTime": 1255559400000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2009-10-15/57144593.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "56690369",
+      "announcementTime": 1251844200000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2009-09-02/56690369.PDF"
+    },
+    {
+      "symbol": "600793",
+      "announcementId": "56032679",
+      "announcementTime": 1250548500000,
+      "title": "关于<em>撤销</em>股票交易退市<em>风险</em><em>警示</em>并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2009-08-18/56032679.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "55518840",
+      "announcementTime": 1249597860000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2009-08-07/55518840.PDF"
+    },
+    {
+      "symbol": "000971",
+      "announcementId": "55097636",
+      "announcementTime": 1248647760000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>、实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2009-07-27/55097636.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "54316424",
+      "announcementTime": 1246919400000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2009-07-07/54316424.PDF"
+    },
+    {
+      "symbol": "600212",
+      "announcementId": "54210731",
+      "announcementTime": 1246487460000,
+      "title": "关于<em>撤销</em>股票交易退市<em>风险</em><em>警示</em>及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2009-07-02/54210731.PDF"
+    },
+    {
+      "symbol": "002002",
+      "announcementId": "53136925",
+      "announcementTime": 1244154600000,
+      "title": "关于为<em>撤销</em>退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况公告",
+      "adjunctUrl": "finalpage/2009-06-05/53136925.PDF"
+    },
+    {
+      "symbol": "600419",
+      "announcementId": "52602736",
+      "announcementTime": 1242599400000,
+      "title": "<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2009-05-18/52602736.PDF"
+    },
+    {
+      "symbol": "000628",
+      "announcementId": "52338442",
+      "announcementTime": 1241994960000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>特别处理的公告",
+      "adjunctUrl": "finalpage/2009-05-11/52338442.PDF"
+    },
+    {
+      "symbol": "000971",
+      "announcementId": "50734537",
+      "announcementTime": 1238452560000,
+      "title": "关于申请<em>撤销</em>退市<em>风险</em><em>警示</em>的提示性公告",
+      "adjunctUrl": "finalpage/2009-03-31/50734537.PDF"
+    },
+    {
+      "symbol": "600212",
+      "announcementId": "50581697",
+      "announcementTime": 1238020200000,
+      "title": "关于申请<em>撤销</em>股票交易退市<em>风险</em><em>警示</em>特别处理的公告",
+      "adjunctUrl": "finalpage/2009-03-26/50581697.PDF"
+    },
+    {
+      "symbol": "600792",
+      "announcementId": "50320907",
+      "announcementTime": 1237415400000,
+      "title": "<em>撤销</em>“退市<em>风险</em><em>警示</em>”特别处理、实施其他特别处理公告",
+      "adjunctUrl": "finalpage/2009-03-19/50320907.PDF"
+    },
+    {
+      "symbol": "600793",
+      "announcementId": "50226760",
+      "announcementTime": 1237242600000,
+      "title": "关于申请<em>撤销</em>股票交易退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2009-03-17/50226760.PDF"
+    },
+    {
+      "symbol": "000628",
+      "announcementId": "50083357",
+      "announcementTime": 1236810780000,
+      "title": "关于申请<em>撤销</em>退市<em>风险</em><em>警示</em>特别处理的提示性公告",
+      "adjunctUrl": "finalpage/2009-03-12/50083357.PDF"
+    },
+    {
+      "symbol": "600792",
+      "announcementId": "49252296",
+      "announcementTime": 1234823400000,
+      "title": "关于申请<em>撤销</em>退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2009-02-17/49252296.PDF"
+    }
+  ],
+  "complete": true
+}

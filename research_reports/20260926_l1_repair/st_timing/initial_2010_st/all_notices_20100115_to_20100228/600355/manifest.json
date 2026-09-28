@@ -1,0 +1,101 @@
+{
+  "symbol": "600355",
+  "org_id": "gssh0600355",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600355,gssh0600355",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 11,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "4afb1dd99f9674b270589b286908c21aba999c0127485f2d7d25b564ad09819f",
+      "reported_total": 11,
+      "rows": 11
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57547383",
+      "announcementTime": 1264545300000,
+      "title": "2009年年度业绩预亏暨退市风险提示公告",
+      "adjunctUrl": "finalpage/2010-01-27/57547383.PDF"
+    },
+    {
+      "announcementId": "57521581",
+      "announcementTime": 1263940500000,
+      "title": "关联交易管理制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521581.PDF"
+    },
+    {
+      "announcementId": "57521580",
+      "announcementTime": 1263940500000,
+      "title": "资产减值准备管理制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521580.PDF"
+    },
+    {
+      "announcementId": "57521579",
+      "announcementTime": 1263940500000,
+      "title": "预算管理制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521579.PDF"
+    },
+    {
+      "announcementId": "57521578",
+      "announcementTime": 1263940500000,
+      "title": "社会责任制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521578.PDF"
+    },
+    {
+      "announcementId": "57521577",
+      "announcementTime": 1263940500000,
+      "title": "内部审计制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521577.PDF"
+    },
+    {
+      "announcementId": "57521576",
+      "announcementTime": 1263940500000,
+      "title": "高级管理人员工作细则（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521576.PDF"
+    },
+    {
+      "announcementId": "57521575",
+      "announcementTime": 1263940500000,
+      "title": "对外投资管理制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521575.PDF"
+    },
+    {
+      "announcementId": "57521574",
+      "announcementTime": 1263940500000,
+      "title": "对外担保管理制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521574.PDF"
+    },
+    {
+      "announcementId": "57521573",
+      "announcementTime": 1263940500000,
+      "title": "防范大股东及关联方占用上市公司资金管理制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521573.PDF"
+    },
+    {
+      "announcementId": "57521572",
+      "announcementTime": 1263940500000,
+      "title": "存货盘点与报废制度（2010年1月）",
+      "adjunctUrl": "finalpage/2010-01-20/57521572.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

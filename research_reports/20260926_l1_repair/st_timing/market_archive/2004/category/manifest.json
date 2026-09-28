@@ -1,0 +1,344 @@
+{
+  "year": 2004,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2004-01-01~2004-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 161,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "ec1340beee14e32b997918e56aa66fdf0c82655ea88b0aa142cf02607cb0d8ae",
+      "response_bytes": 19988,
+      "row_count": 30,
+      "reported_total": 161
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "a73033e497240e53c853b36ed1c622ec21c4f34a421c81ce3527799fc57b3ddf",
+      "response_bytes": 20619,
+      "row_count": 30,
+      "reported_total": 161
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "efff7f1a9c1bac6f687397e4ebe9db3782e6feb13ac5b3f02da49673dd0900c5",
+      "response_bytes": 20037,
+      "row_count": 30,
+      "reported_total": 161
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "111991bc14f141a5397570aeafc9cf45ccd606953a650b2550ce617c25b86fc1",
+      "response_bytes": 19776,
+      "row_count": 30,
+      "reported_total": 161
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "8639e2f3c5c905670b01e908393d9aad9c61535449e8074746429ad81e99f80a",
+      "response_bytes": 20466,
+      "row_count": 30,
+      "reported_total": 161
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "d53219b23b578fe528069636e3228081e89209841a017f82c5e53d21383f5d9a",
+      "response_bytes": 7448,
+      "row_count": 11,
+      "reported_total": 161
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600615",
+      "announcementId": "14859987",
+      "announcementTime": 1102542684000,
+      "title": "关于股票恢复上市公告",
+      "adjunctUrl": "finalpage/2004-12-09/14859987.html"
+    },
+    {
+      "symbol": "600613",
+      "announcementId": "14845101",
+      "announcementTime": 1101938128000,
+      "title": "股票恢复上市公告",
+      "adjunctUrl": "finalpage/2004-12-02/14845101.html"
+    },
+    {
+      "symbol": "600631",
+      "announcementId": "14829025",
+      "announcementTime": 1101332134000,
+      "title": "股票恢复交易暨换股合并新增流通股上市提示性公告",
+      "adjunctUrl": "finalpage/2004-11-25/14829025.html"
+    },
+    {
+      "symbol": "600631",
+      "announcementId": "14825119",
+      "announcementTime": 1101245515000,
+      "title": "关于股票恢复交易暨换股合并新增流通股上市公告",
+      "adjunctUrl": "finalpage/2004-11-24/14825119.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "14808006",
+      "announcementTime": 1100641553000,
+      "title": "股票恢复上市公告",
+      "adjunctUrl": "finalpage/2004-11-17/14808006.html"
+    },
+    {
+      "symbol": "000594",
+      "announcementId": "14745250",
+      "announcementTime": 1098916643000,
+      "title": "关于公司股票撤销特别处理的公告",
+      "adjunctUrl": "finalpage/2004-10-28/14745250.html"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "14675127",
+      "announcementTime": 1097876188000,
+      "title": "股票恢复上市并实施警示存在终止上市风险特别处理的公告",
+      "adjunctUrl": "finalpage/2004-10-16/14675127.html"
+    },
+    {
+      "symbol": "000695",
+      "announcementId": "14612293",
+      "announcementTime": 1096497954000,
+      "title": "股票恢复上市并实施警示存在终止上市风险的特别处理公告",
+      "adjunctUrl": "finalpage/2004-09-30/14612293.PDF"
+    },
+    {
+      "symbol": "600613",
+      "announcementId": "14524663",
+      "announcementTime": 1095112041000,
+      "title": "董事会关于上海证券交易所受理公司恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-09-14/14524663.html"
+    },
+    {
+      "symbol": "600615",
+      "announcementId": "14522815",
+      "announcementTime": 1094851851000,
+      "title": "关于上海证券交易所受理恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-09-11/14522815.html"
+    },
+    {
+      "symbol": "600613",
+      "announcementId": "14515961",
+      "announcementTime": 1094593266000,
+      "title": "董事会关于向上海证券交易所提出恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-09-08/14515961.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "14514513",
+      "announcementTime": 1094507354000,
+      "title": "董事会关于上海证券交易所受理公司恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-09-07/14514513.html"
+    },
+    {
+      "symbol": "600615",
+      "announcementId": "14514571",
+      "announcementTime": 1094506541000,
+      "title": "关于向上海证券交易所提出恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-09-07/14514571.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "14500727",
+      "announcementTime": 1093901559000,
+      "title": "关于向上海证券交易所提出恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-08-31/14500727.html"
+    },
+    {
+      "symbol": "000695",
+      "announcementId": "14482340",
+      "announcementTime": 1093473679000,
+      "title": "董事会关于深圳证券交易所决定受理本公司恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-08-26/14482340.html"
+    },
+    {
+      "symbol": "000695",
+      "announcementId": "14475304",
+      "announcementTime": 1093300687000,
+      "title": "关于向深圳证券交易所提出恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-08-24/14475304.html"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "14474700",
+      "announcementTime": 1093039190000,
+      "title": "董事会关于上海证券交易所受理公司恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-08-21/14474700.html"
+    },
+    {
+      "symbol": "600615",
+      "announcementId": "14462778",
+      "announcementTime": 1092865376000,
+      "title": "关于公司恢复上市工作的重大进展公告",
+      "adjunctUrl": "finalpage/2004-08-19/14462778.html"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "14452460",
+      "announcementTime": 1092692110000,
+      "title": "董事会关于向上海证券交易所提出恢复上市申请的公告",
+      "adjunctUrl": "finalpage/2004-08-17/14452460.html"
+    },
+    {
+      "symbol": "600613",
+      "announcementId": "14409400",
+      "announcementTime": 1091828540000,
+      "title": "关于股票恢复上市工作进展情况公告",
+      "adjunctUrl": "finalpage/2004-08-07/14409400.html"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "14403729",
+      "announcementTime": 1091742000000,
+      "title": "关于股票恢复上市工作进展情况的公告",
+      "adjunctUrl": "finalpage/2004-08-06/14403729.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "14399159",
+      "announcementTime": 1091655790000,
+      "title": "关于股票恢复上市工作进展情况公告",
+      "adjunctUrl": "finalpage/2004-08-05/14399159.html"
+    },
+    {
+      "symbol": "600615",
+      "announcementId": "14233121",
+      "announcementTime": 1089150219000,
+      "title": "关于股票恢复上市工作进展情况公告",
+      "adjunctUrl": "finalpage/2004-07-07/14233121.html"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "14232806",
+      "announcementTime": 1089149557000,
+      "title": "关于股票恢复上市工作进展情况的公告",
+      "adjunctUrl": "finalpage/2004-07-07/14232806.html"
+    },
+    {
+      "symbol": "000005",
+      "announcementId": "14028539",
+      "announcementTime": 1084746600000,
+      "title": "董事会关于撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2004-05-17/14028539.html"
+    },
+    {
+      "symbol": "000418",
+      "announcementId": "14018835",
+      "announcementTime": 1084229224000,
+      "title": "关于撤销公司股票退市风险警示和特别处理的公告",
+      "adjunctUrl": "finalpage/2004-05-11/14018835.html"
+    },
+    {
+      "symbol": "600769",
+      "announcementId": "14017980",
+      "announcementTime": 1084139636000,
+      "title": "关于撤消特别处理的公告",
+      "adjunctUrl": "finalpage/2004-05-10/14017980.html"
+    },
+    {
+      "symbol": "600613",
+      "announcementId": "14018047",
+      "announcementTime": 1084138809000,
+      "title": "股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2004-05-10/14018047.html"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "14018083",
+      "announcementTime": 1084138542000,
+      "title": "关于公司股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2004-05-10/14018083.html"
+    },
+    {
+      "symbol": "000040",
+      "announcementId": "14010524",
+      "announcementTime": 1083278628000,
+      "title": "关于撤消公司股票交易退市风险警示的公告",
+      "adjunctUrl": "finalpage/2004-04-30/14010524.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "14016962",
+      "announcementTime": 1083275446000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2004-04-30/14016962.html"
+    },
+    {
+      "symbol": "600603",
+      "announcementId": "14016913",
+      "announcementTime": 1083275224000,
+      "title": "股票解除退市风险警示的公告",
+      "adjunctUrl": "finalpage/2004-04-30/14016913.html"
+    },
+    {
+      "symbol": "000838",
+      "announcementId": "13995315",
+      "announcementTime": 1083106386000,
+      "title": "关于撤销公司股票交易特别处理的公告",
+      "adjunctUrl": "finalpage/2004-04-28/13995315.html"
+    },
+    {
+      "symbol": "600749",
+      "announcementId": "13954104",
+      "announcementTime": 1082496847000,
+      "title": "关于撤销公司退市风险警示及股票特别处理的公告",
+      "adjunctUrl": "finalpage/2004-04-21/13954104.html"
+    },
+    {
+      "symbol": "600869",
+      "announcementId": "13947089",
+      "announcementTime": 1082411383000,
+      "title": "关于股票交易实行特别处理的公告",
+      "adjunctUrl": "finalpage/2004-04-20/13947089.html"
+    },
+    {
+      "symbol": "000809",
+      "announcementId": "13861041",
+      "announcementTime": 1080773203000,
+      "title": "关于撤销公司股票退市风险警示的特别处理的公告",
+      "adjunctUrl": "finalpage/2004-04-01/13861041.html"
+    },
+    {
+      "symbol": "000802",
+      "announcementId": "13840371",
+      "announcementTime": 1080514031000,
+      "title": "关于股票交易实行\"退市风险警示\"特别处理的公告",
+      "adjunctUrl": "finalpage/2004-03-29/13840371.html"
+    },
+    {
+      "symbol": "000635",
+      "announcementId": "13822672",
+      "announcementTime": 1080168150000,
+      "title": "关于撤销公司股票特别处理及退市风险警示的公告",
+      "adjunctUrl": "finalpage/2004-03-25/13822672.html"
+    },
+    {
+      "symbol": "600190",
+      "announcementId": "13794119",
+      "announcementTime": 1079559196000,
+      "title": "关于撤销股票特别处理的公告",
+      "adjunctUrl": "finalpage/2004-03-18/13794119.html"
+    },
+    {
+      "symbol": "000586",
+      "announcementId": "13730955",
+      "announcementTime": 1077576268000,
+      "title": "关于撤销公司股票交易特别处理的公告",
+      "adjunctUrl": "finalpage/2004-02-24/13730955.html"
+    },
+    {
+      "symbol": "000049",
+      "announcementId": "13601017",
+      "announcementTime": 1076453080000,
+      "title": "关于股票交易实行特别处理的公告",
+      "adjunctUrl": "finalpage/2004-02-11/13601017.html"
+    }
+  ],
+  "complete": true
+}

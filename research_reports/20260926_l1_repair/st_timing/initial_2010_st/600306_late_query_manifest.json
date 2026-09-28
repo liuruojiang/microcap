@@ -1,0 +1,14 @@
+{
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "symbol": "600306",
+  "column": "sse",
+  "stock": "600306,gssh0600306",
+  "category": "",
+  "searchkey": "",
+  "seDate": "2010-03-01~2010-04-30",
+  "page_size_requested": 30,
+  "totalAnnouncement": 18,
+  "pages": 1,
+  "raw_response_file": "600306_late_query.json.gz",
+  "raw_response_sha256": "1fe39f41d32d0e518ad07267c46e10a1b5e12f5df21eb215c9d953939c160b19"
+}

@@ -1,0 +1,38 @@
+{
+  "scope": "actual after-close CLI checks, not a scheduled 14:30 intraday publication",
+  "started_at": "2026-09-04T23:36:00.046139+08:00",
+  "expected_date": "2026-09-04",
+  "hard_timeout_seconds_each": 60,
+  "steps": [
+    {
+      "name": "sync",
+      "command": [
+        "scripts/top100_cloud_delivery.py",
+        "sync",
+        "--expected-date",
+        "2026-09-04"
+      ],
+      "elapsed_seconds": 2.205,
+      "exit_code": 0,
+      "expected_result_verified": true
+    },
+    {
+      "name": "preflight",
+      "command": [
+        "scripts/realtime_state_bundle.py",
+        "preflight",
+        "--max-anchor-age-days",
+        "5",
+        "--expected-date",
+        "2026-09-04"
+      ],
+      "elapsed_seconds": 41.948,
+      "exit_code": 1,
+      "expected_result_verified": false
+    }
+  ],
+  "base_inputs_unchanged": true,
+  "all_nav_bytes_unchanged": true,
+  "ok": false,
+  "finished_at": "2026-09-04T23:36:46.136733+08:00"
+}

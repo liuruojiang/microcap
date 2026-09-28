@@ -1,0 +1,38 @@
+[
+  {
+    "date": "2014-09-18",
+    "previous_close_date": "2014-09-17",
+    "rebalance_date": "2014-09-04",
+    "held_count": 100,
+    "replay_daily_return": 0.008872898403802483,
+    "official_daily_return": 0.0088728984038024,
+    "difference": 8.326672684688674e-17
+  },
+  {
+    "date": "2015-05-25",
+    "previous_close_date": "2015-05-22",
+    "rebalance_date": "2015-05-14",
+    "held_count": 100,
+    "replay_daily_return": 0.02042543884539841,
+    "official_daily_return": 0.0204254388453984,
+    "difference": 1.0408340855860843e-17
+  },
+  {
+    "date": "2015-07-10",
+    "previous_close_date": "2015-07-09",
+    "rebalance_date": "2015-07-09",
+    "held_count": 90,
+    "replay_daily_return": 0.0513913088003397,
+    "official_daily_return": 0.0513913088003397,
+    "difference": 0.0
+  },
+  {
+    "date": "2026-09-24",
+    "previous_close_date": "2026-09-23",
+    "rebalance_date": "2026-09-17",
+    "held_count": 100,
+    "replay_daily_return": -0.0013714652102500525,
+    "official_daily_return": -0.00137146521025,
+    "difference": -5.2475385148298415e-17
+  }
+]

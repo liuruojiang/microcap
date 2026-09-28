@@ -1,0 +1,835 @@
+{
+  "symbol": "002102",
+  "org_id": "9900001762",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "szse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 26,
+      "pages_fetched": 1,
+      "first_page_sha256": "1c9af35f42f7cfd854beb43ad06da66a8d8226da0cee8f0db85ac3ab94de5a5f",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "1c9af35f42f7cfd854beb43ad06da66a8d8226da0cee8f0db85ac3ab94de5a5f"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 82,
+      "pages_fetched": 3,
+      "first_page_sha256": "5fb818e3ef4a6f4d9f76dd1969c468fcd195fa477f87a8a94a571e5540919328",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "5fb818e3ef4a6f4d9f76dd1969c468fcd195fa477f87a8a94a571e5540919328"
+        },
+        {
+          "pageNum": 2,
+          "sha256": "eff43ab8019887333406bd14f4ff96d898531a530698c35963c2e8e3fbcb89c1"
+        },
+        {
+          "pageNum": 3,
+          "sha256": "966f204917b89689ca79e6c66495bbe8a487458748ab8acde8e25810a462fcd7"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 73,
+      "pages_fetched": 3,
+      "first_page_sha256": "738b7dbf73eb697bf731ae1e79d76b551ee4e637d6ba56dbb3723b1b0d3baf32",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "738b7dbf73eb697bf731ae1e79d76b551ee4e637d6ba56dbb3723b1b0d3baf32"
+        },
+        {
+          "pageNum": 2,
+          "sha256": "c3b326002b4931fb662e3d63d4226fa7be1f42137f3e80c255f022117bdc6565"
+        },
+        {
+          "pageNum": 3,
+          "sha256": "379f1960a5e6a6c009c5bd0674ca919940b2f8ede4ebeb6ae6769c0dc53d66b9"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2012-04-25T06:30:00+08:00",
+      "title": "关于公司股票交易实行退市风险警示的公告",
+      "announcementId": "60901480",
+      "adjunctUrl": "finalpage/2012-04-25/60901480.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-05-03T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "60943203",
+      "adjunctUrl": "finalpage/2012-05-03/60943203.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-06-05T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61088482",
+      "adjunctUrl": "finalpage/2012-06-05/61088482.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-07-05T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61223927",
+      "adjunctUrl": "finalpage/2012-07-05/61223927.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-08-02T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61358409",
+      "adjunctUrl": "finalpage/2012-08-02/61358409.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-09-03T11:41:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61524582",
+      "adjunctUrl": "finalpage/2012-09-03/61524582.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-10-09T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61630024",
+      "adjunctUrl": "finalpage/2012-10-09/61630024.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-11-03T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61755855",
+      "adjunctUrl": "finalpage/2012-11-03/61755855.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2012-12-05T06:30:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61871705",
+      "adjunctUrl": "finalpage/2012-12-05/61871705.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-01-07T11:35:47+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "61990748",
+      "adjunctUrl": "finalpage/2013-01-07/61990748.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-02-04T00:00:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "62097878",
+      "adjunctUrl": "finalpage/2013-02-04/62097878.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-03-05T00:00:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "62181342",
+      "adjunctUrl": "finalpage/2013-03-05/62181342.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-04-03T00:00:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "62319177",
+      "adjunctUrl": "finalpage/2013-04-03/62319177.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-04-16T00:00:00+08:00",
+      "title": "关于申请撤销股票退市风险警示的提示性公告",
+      "announcementId": "62366195",
+      "adjunctUrl": "finalpage/2013-04-16/62366195.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-05-03T00:00:00+08:00",
+      "title": "关于为撤销退市风险警示采取措施及有关工作进展情况的公告",
+      "announcementId": "62450775",
+      "adjunctUrl": "finalpage/2013-05-03/62450775.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2013-05-06T00:00:00+08:00",
+      "title": "关于撤销公司退市风险警示的提示性公告",
+      "announcementId": "62457136",
+      "adjunctUrl": "finalpage/2013-05-06/62457136.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2016-04-19T00:00:00+08:00",
+      "title": "关于股票交易可能被实行其他风险警示的提示公告",
+      "announcementId": "1202197319",
+      "adjunctUrl": "finalpage/2016-04-19/1202197319.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2018-10-15T00:00:00+08:00",
+      "title": "关于公司股票交易实行其他风险警示的提示性公告",
+      "announcementId": "1205501176",
+      "adjunctUrl": "finalpage/2018-10-15/1205501176.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2018-11-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1205605678",
+      "adjunctUrl": "finalpage/2018-11-16/1205605678.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2018-12-15T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1205671647",
+      "adjunctUrl": "finalpage/2018-12-15/1205671647.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-01-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1205773174",
+      "adjunctUrl": "finalpage/2019-01-16/1205773174.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-02-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1205836385",
+      "adjunctUrl": "finalpage/2019-02-16/1205836385.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-03-19T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1205912839",
+      "adjunctUrl": "finalpage/2019-03-19/1205912839.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-04-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206019601",
+      "adjunctUrl": "finalpage/2019-04-16/1206019601.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-05-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206273648",
+      "adjunctUrl": "finalpage/2019-05-16/1206273648.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-06-15T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206354514",
+      "adjunctUrl": "finalpage/2019-06-15/1206354514.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-07-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206447227",
+      "adjunctUrl": "finalpage/2019-07-16/1206447227.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-08-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206533897",
+      "adjunctUrl": "finalpage/2019-08-16/1206533897.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-09-17T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206926087",
+      "adjunctUrl": "finalpage/2019-09-17/1206926087.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-10-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1206985024",
+      "adjunctUrl": "finalpage/2019-10-16/1206985024.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-11-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207094325",
+      "adjunctUrl": "finalpage/2019-11-16/1207094325.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-12-17T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207168527",
+      "adjunctUrl": "finalpage/2019-12-17/1207168527.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-01-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207252798",
+      "adjunctUrl": "finalpage/2020-01-16/1207252798.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-02-18T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207309234",
+      "adjunctUrl": "finalpage/2020-02-18/1207309234.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-03-17T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207376754",
+      "adjunctUrl": "finalpage/2020-03-17/1207376754.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-04-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207505563",
+      "adjunctUrl": "finalpage/2020-04-16/1207505563.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-05-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207817102",
+      "adjunctUrl": "finalpage/2020-05-16/1207817102.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-06-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1207927267",
+      "adjunctUrl": "finalpage/2020-06-16/1207927267.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-07-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1208036046",
+      "adjunctUrl": "finalpage/2020-07-16/1208036046.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-08-18T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1208187627",
+      "adjunctUrl": "finalpage/2020-08-18/1208187627.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-09-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1208444067",
+      "adjunctUrl": "finalpage/2020-09-16/1208444067.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-10-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1208569470",
+      "adjunctUrl": "finalpage/2020-10-16/1208569470.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-11-17T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1208750203",
+      "adjunctUrl": "finalpage/2020-11-17/1208750203.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-12-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1208911274",
+      "adjunctUrl": "finalpage/2020-12-16/1208911274.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-01-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1209114345",
+      "adjunctUrl": "finalpage/2021-01-16/1209114345.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-02-19T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1209280013",
+      "adjunctUrl": "finalpage/2021-02-19/1209280013.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-03-16T00:00:00+08:00",
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1209384921",
+      "adjunctUrl": "finalpage/2021-03-16/1209384921.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-04-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1209698387",
+      "adjunctUrl": "finalpage/2021-04-16/1209698387.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-05-18T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1209995157",
+      "adjunctUrl": "finalpage/2021-05-18/1209995157.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-06-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1210239050",
+      "adjunctUrl": "finalpage/2021-06-16/1210239050.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-07-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1210496208",
+      "adjunctUrl": "finalpage/2021-07-16/1210496208.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-08-17T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1210760994",
+      "adjunctUrl": "finalpage/2021-08-17/1210760994.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-09-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1211066815",
+      "adjunctUrl": "finalpage/2021-09-16/1211066815.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-10-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1211287764",
+      "adjunctUrl": "finalpage/2021-10-16/1211287764.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-11-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1211586293",
+      "adjunctUrl": "finalpage/2021-11-16/1211586293.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-12-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1211921404",
+      "adjunctUrl": "finalpage/2021-12-16/1211921404.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-01-18T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1212200765",
+      "adjunctUrl": "finalpage/2022-01-18/1212200765.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-02-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1212367300",
+      "adjunctUrl": "finalpage/2022-02-16/1212367300.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-03-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1212579733",
+      "adjunctUrl": "finalpage/2022-03-16/1212579733.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-04-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1212940418",
+      "adjunctUrl": "finalpage/2022-04-16/1212940418.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-05-17T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1213367447",
+      "adjunctUrl": "finalpage/2022-05-17/1213367447.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-06-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1213721286",
+      "adjunctUrl": "finalpage/2022-06-16/1213721286.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-07-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1214055945",
+      "adjunctUrl": "finalpage/2022-07-16/1214055945.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-08-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1214295408",
+      "adjunctUrl": "finalpage/2022-08-16/1214295408.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-09-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1214600513",
+      "adjunctUrl": "finalpage/2022-09-16/1214600513.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-10-18T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1214814820",
+      "adjunctUrl": "finalpage/2022-10-18/1214814820.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-11-16T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1215116691",
+      "adjunctUrl": "finalpage/2022-11-16/1215116691.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-12-30T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1215482866",
+      "adjunctUrl": "finalpage/2022-12-30/1215482866.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-01-31T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1215723757",
+      "adjunctUrl": "finalpage/2023-01-31/1215723757.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-02-28T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1215988020",
+      "adjunctUrl": "finalpage/2023-02-28/1215988020.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-01T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1216298745",
+      "adjunctUrl": "finalpage/2023-04-01/1216298745.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-28T00:00:00+08:00",
+      "title": "关于争取撤销风险警示所采取的措施及有关工作进展情况的公告",
+      "announcementId": "1216656929",
+      "adjunctUrl": "finalpage/2023-04-28/1216656929.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-28T00:00:00+08:00",
+      "title": "关于申请撤销公司股票其他风险警示的公告",
+      "announcementId": "1216656928",
+      "adjunctUrl": "finalpage/2023-04-28/1216656928.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-28T00:00:00+08:00",
+      "title": "北京中银律师事务所关于冠福控股股份有限公司申请撤销公司股票交易其他风险警示的法律意见书",
+      "announcementId": "1216656927",
+      "adjunctUrl": "finalpage/2023-04-28/1216656927.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-28T00:00:00+08:00",
+      "title": "独立董事关于申请撤销公司股票其他风险警示的专项意见",
+      "announcementId": "1216656922",
+      "adjunctUrl": "finalpage/2023-04-28/1216656922.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-05-10T00:00:00+08:00",
+      "title": "关于撤销其他风险警示暨停牌的公告",
+      "announcementId": "1216780589",
+      "adjunctUrl": "finalpage/2023-05-10/1216780589.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-29T00:00:00+08:00",
+      "title": "关于公司股票被实施其他风险警示暨停复牌的公告",
+      "announcementId": "1225251583",
+      "adjunctUrl": "finalpage/2026-04-29/1225251583.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-29T00:00:00+08:00",
+      "title": "关于公司股票交易可能被实施退市风险警示的风险提示性公告",
+      "announcementId": "1225251618",
+      "adjunctUrl": "finalpage/2026-04-29/1225251618.pdf",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-05-30T00:00:00+08:00",
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "announcementId": "1225337571",
+      "adjunctUrl": "finalpage/2026-05-30/1225337571.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-06-30T00:00:00+08:00",
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "announcementId": "1225394062",
+      "adjunctUrl": "finalpage/2026-06-30/1225394062.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-31T00:00:00+08:00",
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "announcementId": "1225447594",
+      "adjunctUrl": "finalpage/2026-07-31/1225447594.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-29T00:00:00+08:00",
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "announcementId": "1225523682",
+      "adjunctUrl": "finalpage/2026-08-29/1225523682.PDF",
+      "secCode": "002102",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

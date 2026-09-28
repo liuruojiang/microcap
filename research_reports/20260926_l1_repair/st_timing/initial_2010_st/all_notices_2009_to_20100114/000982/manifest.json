@@ -1,0 +1,539 @@
+{
+  "symbol": "000982",
+  "org_id": "gssz0000982",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000982,gssz0000982",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 82,
+  "page_count": 3,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "5bf0ead1a369b1048157de3ad0e399c0d0498943d18d481118a08b3ce2e4f701",
+      "reported_total": 82,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "32ac8e2703f4ebb1acc1b428490ee9256b800162f2050dc83d3a9a7e44fbbd5c",
+      "reported_total": 82,
+      "rows": 30
+    },
+    {
+      "page": 3,
+      "raw_sha256": "ca8eca0b3530c45ca6f8772339c8a8eaae9bc111e6681ccadb9a6d9b033a15c2",
+      "reported_total": 82,
+      "rows": 22
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57411377",
+      "announcementTime": 1261089000000,
+      "title": "2009年第四次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-12-18/57411377.PDF"
+    },
+    {
+      "announcementId": "57411376",
+      "announcementTime": 1261089000000,
+      "title": "2009年第四次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-12-18/57411376.PDF"
+    },
+    {
+      "announcementId": "57390186",
+      "announcementTime": 1260743520000,
+      "title": "董事会关于召开2009年第四次临时股东大会的催告通知",
+      "adjunctUrl": "finalpage/2009-12-14/57390186.PDF"
+    },
+    {
+      "announcementId": "57347183",
+      "announcementTime": 1259620560000,
+      "title": "向控股股东购买资产暨关联交易公告",
+      "adjunctUrl": "finalpage/2009-12-01/57347183.PDF"
+    },
+    {
+      "announcementId": "57347187",
+      "announcementTime": 1259620200000,
+      "title": "独立董事就公司向控股股东购买资产暨关联交易的独立意见",
+      "adjunctUrl": "finalpage/2009-12-01/57347187.PDF"
+    },
+    {
+      "announcementId": "57347186",
+      "announcementTime": 1259620200000,
+      "title": "拟收购资产项目资产评估报告书摘要",
+      "adjunctUrl": "finalpage/2009-12-01/57347186.PDF"
+    },
+    {
+      "announcementId": "57347185",
+      "announcementTime": 1259620200000,
+      "title": "第四届监事会第十三次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-01/57347185.PDF"
+    },
+    {
+      "announcementId": "57347184",
+      "announcementTime": 1259620200000,
+      "title": "董事会关于召开2009年第四次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-12-01/57347184.PDF"
+    },
+    {
+      "announcementId": "57347182",
+      "announcementTime": 1259620200000,
+      "title": "第四届董事会第十九次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-01/57347182.PDF"
+    },
+    {
+      "announcementId": "57322792",
+      "announcementTime": 1259015400000,
+      "title": "董事会公告",
+      "adjunctUrl": "finalpage/2009-11-24/57322792.PDF"
+    },
+    {
+      "announcementId": "57233966",
+      "announcementTime": 1256941800000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-31/57233966.PDF"
+    },
+    {
+      "announcementId": "57134486",
+      "announcementTime": 1255386600000,
+      "title": "2009年第三次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-10-13/57134486.PDF"
+    },
+    {
+      "announcementId": "57134485",
+      "announcementTime": 1255386600000,
+      "title": "2009年第三次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-10-13/57134485.PDF"
+    },
+    {
+      "announcementId": "57097841",
+      "announcementTime": 1253917800000,
+      "title": "董事会关于召开2009年第三次临时股东大会的补充通知",
+      "adjunctUrl": "finalpage/2009-09-26/57097841.PDF"
+    },
+    {
+      "announcementId": "57092930",
+      "announcementTime": 1253831400000,
+      "title": "独立董事关于提供担保的独立意见",
+      "adjunctUrl": "finalpage/2009-09-25/57092930.PDF"
+    },
+    {
+      "announcementId": "57092929",
+      "announcementTime": 1253831400000,
+      "title": "董事会关于召开2009年第三次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-09-25/57092929.PDF"
+    },
+    {
+      "announcementId": "57092928",
+      "announcementTime": 1253831400000,
+      "title": "为子公司提供担保的公告",
+      "adjunctUrl": "finalpage/2009-09-25/57092928.PDF"
+    },
+    {
+      "announcementId": "57092927",
+      "announcementTime": 1253831400000,
+      "title": "第四届董事会第十七次会议决议公告",
+      "adjunctUrl": "finalpage/2009-09-25/57092927.PDF"
+    },
+    {
+      "announcementId": "56685735",
+      "announcementTime": 1251757800000,
+      "title": "董事会关于收购邓肯纱厂资产交割的进展公告",
+      "adjunctUrl": "finalpage/2009-09-01/56685735.PDF"
+    },
+    {
+      "announcementId": "56605226",
+      "announcementTime": 1251498630000,
+      "title": "2009年半年度财务报告",
+      "adjunctUrl": "finalpage/2009-08-29/56605226.PDF"
+    },
+    {
+      "announcementId": "56605056",
+      "announcementTime": 1251498600000,
+      "title": "独立董事对公司关联方资金占用和对外担保情况的专项说明和独立意见",
+      "adjunctUrl": "finalpage/2009-08-29/56605056.PDF"
+    },
+    {
+      "announcementId": "56605055",
+      "announcementTime": 1251498600000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-29/56605055.PDF"
+    },
+    {
+      "announcementId": "56605054",
+      "announcementTime": 1251498600000,
+      "title": "第四届董事会第十六次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-29/56605054.PDF"
+    },
+    {
+      "announcementId": "56605053",
+      "announcementTime": 1251498600000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-29/56605053.PDF"
+    },
+    {
+      "announcementId": "54452423",
+      "announcementTime": 1247178600000,
+      "title": "董事会关于本公司无毛绒分梳二期技术改造项目实施完成的公告",
+      "adjunctUrl": "finalpage/2009-07-10/54452423.PDF"
+    },
+    {
+      "announcementId": "53968018",
+      "announcementTime": 1245969000000,
+      "title": "董事会公告",
+      "adjunctUrl": "finalpage/2009-06-26/53968018.PDF"
+    },
+    {
+      "announcementId": "53702579",
+      "announcementTime": 1245364320000,
+      "title": "澄清公告",
+      "adjunctUrl": "finalpage/2009-06-19/53702579.PDF"
+    },
+    {
+      "announcementId": "53672170",
+      "announcementTime": 1245277800000,
+      "title": "独立董事关于增持汇中公司股份暨关联交易之独立意见",
+      "adjunctUrl": "finalpage/2009-06-18/53672170.PDF"
+    },
+    {
+      "announcementId": "53672169",
+      "announcementTime": 1245277800000,
+      "title": "关于举办PHILOSOFIE（菲洛索菲）品牌发布及2009秋冬订货会的公告",
+      "adjunctUrl": "finalpage/2009-06-18/53672169.PDF"
+    },
+    {
+      "announcementId": "53672168",
+      "announcementTime": 1245277800000,
+      "title": "增持宁夏灵武市汇中羊绒有限公司股份的公告",
+      "adjunctUrl": "finalpage/2009-06-18/53672168.PDF"
+    },
+    {
+      "announcementId": "53672167",
+      "announcementTime": 1245277800000,
+      "title": "收购资产公告",
+      "adjunctUrl": "finalpage/2009-06-18/53672167.PDF"
+    },
+    {
+      "announcementId": "53672166",
+      "announcementTime": 1245277800000,
+      "title": "第四届董事会第十五次会议决议公告",
+      "adjunctUrl": "finalpage/2009-06-18/53672166.PDF"
+    },
+    {
+      "announcementId": "53376776",
+      "announcementTime": 1244673000000,
+      "title": "董事会关于本公司非公开发行股份事宜审核结果的公告",
+      "adjunctUrl": "finalpage/2009-06-11/53376776.PDF"
+    },
+    {
+      "announcementId": "53292108",
+      "announcementTime": 1244500200000,
+      "title": "董事会关于证监会审核本公司非公开发行股份购买资产暨关联交易事宜的停牌公告",
+      "adjunctUrl": "finalpage/2009-06-09/53292108.PDF"
+    },
+    {
+      "announcementId": "52895380",
+      "announcementTime": 1243377000000,
+      "title": "董事会公告",
+      "adjunctUrl": "finalpage/2009-05-27/52895380.PDF"
+    },
+    {
+      "announcementId": "52347218",
+      "announcementTime": 1242081000000,
+      "title": "关于举办2008年年度报告业绩说明会公告",
+      "adjunctUrl": "finalpage/2009-05-12/52347218.PDF"
+    },
+    {
+      "announcementId": "51903999",
+      "announcementTime": 1240957800000,
+      "title": "股东减持股份公告",
+      "adjunctUrl": "finalpage/2009-04-29/51903999.PDF"
+    },
+    {
+      "announcementId": "51775937",
+      "announcementTime": 1240785000000,
+      "title": "独立董事关于提供担保的独立意见",
+      "adjunctUrl": "finalpage/2009-04-27/51775937.PDF"
+    },
+    {
+      "announcementId": "51775936",
+      "announcementTime": 1240785000000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-27/51775936.PDF"
+    },
+    {
+      "announcementId": "51775933",
+      "announcementTime": 1240785000000,
+      "title": "第四届监事会第十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-27/51775933.PDF"
+    },
+    {
+      "announcementId": "51775932",
+      "announcementTime": 1240785000000,
+      "title": "关于购买上海建科大厦第21层房产的公告",
+      "adjunctUrl": "finalpage/2009-04-27/51775932.PDF"
+    },
+    {
+      "announcementId": "51775931",
+      "announcementTime": 1240785000000,
+      "title": "为子公司提供担保的公告",
+      "adjunctUrl": "finalpage/2009-04-27/51775931.PDF"
+    },
+    {
+      "announcementId": "51775930",
+      "announcementTime": 1240785000000,
+      "title": "第四届董事会第十四次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-27/51775930.PDF"
+    },
+    {
+      "announcementId": "50954588",
+      "announcementTime": 1238797800000,
+      "title": "股东减持股份公告",
+      "adjunctUrl": "finalpage/2009-04-04/50954588.PDF"
+    },
+    {
+      "announcementId": "50654189",
+      "announcementTime": 1238365800000,
+      "title": "限售股份解除限售提示性公告",
+      "adjunctUrl": "finalpage/2009-03-30/50654189.PDF"
+    },
+    {
+      "announcementId": "50684888",
+      "announcementTime": 1238193000000,
+      "title": "2009年第二次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-03-28/50684888.PDF"
+    },
+    {
+      "announcementId": "50684887",
+      "announcementTime": 1238193000000,
+      "title": "2009年第二次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-03-28/50684887.PDF"
+    },
+    {
+      "announcementId": "50543857",
+      "announcementTime": 1238020200000,
+      "title": "2008年年报补充公告",
+      "adjunctUrl": "finalpage/2009-03-26/50543857.PDF"
+    },
+    {
+      "announcementId": "50430741",
+      "announcementTime": 1237847520000,
+      "title": "董事会关于召开2009年第二次临时股东大会的催告",
+      "adjunctUrl": "finalpage/2009-03-24/50430741.PDF"
+    },
+    {
+      "announcementId": "50234535",
+      "announcementTime": 1237329060000,
+      "title": "2008年年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-03-18/50234535.PDF"
+    },
+    {
+      "announcementId": "50234536",
+      "announcementTime": 1237329000000,
+      "title": "2008年年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-03-18/50234536.PDF"
+    },
+    {
+      "announcementId": "50044507",
+      "announcementTime": 1236810780000,
+      "title": "非公开发行股票预案",
+      "adjunctUrl": "finalpage/2009-03-12/50044507.PDF"
+    },
+    {
+      "announcementId": "50044511",
+      "announcementTime": 1236810600000,
+      "title": "独立董事对本次评估的合理性和公允性发表意见",
+      "adjunctUrl": "finalpage/2009-03-12/50044511.PDF"
+    },
+    {
+      "announcementId": "50044510",
+      "announcementTime": 1236810600000,
+      "title": "独立董事关于同意将非公开发行股票方案的议案提交董事会审议的意见",
+      "adjunctUrl": "finalpage/2009-03-12/50044510.PDF"
+    },
+    {
+      "announcementId": "50044509",
+      "announcementTime": 1236810600000,
+      "title": "独立董事就公司向控股股东非公开发行股份购买资产暨关联交易的独立意见",
+      "adjunctUrl": "finalpage/2009-03-12/50044509.PDF"
+    },
+    {
+      "announcementId": "50044508",
+      "announcementTime": 1236810600000,
+      "title": "拟收购资产项目资产评估报告书摘要",
+      "adjunctUrl": "finalpage/2009-03-12/50044508.PDF"
+    },
+    {
+      "announcementId": "50044506",
+      "announcementTime": 1236810600000,
+      "title": "第四届监事会第九次会议决议公告",
+      "adjunctUrl": "finalpage/2009-03-12/50044506.PDF"
+    },
+    {
+      "announcementId": "50044505",
+      "announcementTime": 1236810600000,
+      "title": "董事会关于召开2009年第二次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-03-12/50044505.PDF"
+    },
+    {
+      "announcementId": "50044504",
+      "announcementTime": 1236810600000,
+      "title": "第四届董事会第十三次会议决议公告",
+      "adjunctUrl": "finalpage/2009-03-12/50044504.PDF"
+    },
+    {
+      "announcementId": "50044503",
+      "announcementTime": 1236810600000,
+      "title": "与宁夏中银绒业国际集团有限公司以资产认购非公开发行股份协议",
+      "adjunctUrl": "finalpage/2009-03-12/50044503.PDF"
+    },
+    {
+      "announcementId": "49391761",
+      "announcementTime": 1235169000000,
+      "title": "重大重组事项进展公告",
+      "adjunctUrl": "finalpage/2009-02-21/49391761.PDF"
+    },
+    {
+      "announcementId": "49346657",
+      "announcementTime": 1235082600000,
+      "title": "独立董事关于控股股东资金占用情况的独立意见",
+      "adjunctUrl": "finalpage/2009-02-20/49346657.PDF"
+    },
+    {
+      "announcementId": "49346656",
+      "announcementTime": 1235082600000,
+      "title": "独立董事关于公司对外担保的专项说明及独立意见",
+      "adjunctUrl": "finalpage/2009-02-20/49346656.PDF"
+    },
+    {
+      "announcementId": "49346655",
+      "announcementTime": 1235082600000,
+      "title": "独立董事关于公司内部控制自我评价的意见",
+      "adjunctUrl": "finalpage/2009-02-20/49346655.PDF"
+    },
+    {
+      "announcementId": "49346654",
+      "announcementTime": 1235082600000,
+      "title": "独立董事关于日常关联交易之独立意见",
+      "adjunctUrl": "finalpage/2009-02-20/49346654.PDF"
+    },
+    {
+      "announcementId": "49346653",
+      "announcementTime": 1235082600000,
+      "title": "内部控制自我评估报告",
+      "adjunctUrl": "finalpage/2009-02-20/49346653.PDF"
+    },
+    {
+      "announcementId": "49346652",
+      "announcementTime": 1235082600000,
+      "title": "关于公司担保情况之专项说明",
+      "adjunctUrl": "finalpage/2009-02-20/49346652.PDF"
+    },
+    {
+      "announcementId": "49346651",
+      "announcementTime": 1235082600000,
+      "title": "2008年度社会责任报告",
+      "adjunctUrl": "finalpage/2009-02-20/49346651.PDF"
+    },
+    {
+      "announcementId": "49346650",
+      "announcementTime": 1235082600000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-02-20/49346650.PDF"
+    },
+    {
+      "announcementId": "49346649",
+      "announcementTime": 1235082600000,
+      "title": "第四届监事会第八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-02-20/49346649.PDF"
+    },
+    {
+      "announcementId": "49346648",
+      "announcementTime": 1235082600000,
+      "title": "董事会关于召开2008年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-02-20/49346648.PDF"
+    },
+    {
+      "announcementId": "49346647",
+      "announcementTime": 1235082600000,
+      "title": "第四届董事会第十二次会议决议公告",
+      "adjunctUrl": "finalpage/2009-02-20/49346647.PDF"
+    },
+    {
+      "announcementId": "49346646",
+      "announcementTime": 1235082600000,
+      "title": "2008年度财务报告之审计报告",
+      "adjunctUrl": "finalpage/2009-02-20/49346646.PDF"
+    },
+    {
+      "announcementId": "49346645",
+      "announcementTime": 1235082600000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-02-20/49346645.PDF"
+    },
+    {
+      "announcementId": "49346644",
+      "announcementTime": 1235082600000,
+      "title": "为控股子公司提供担保的公告",
+      "adjunctUrl": "finalpage/2009-02-20/49346644.PDF"
+    },
+    {
+      "announcementId": "49346643",
+      "announcementTime": 1235082600000,
+      "title": "日常关联交易公告",
+      "adjunctUrl": "finalpage/2009-02-20/49346643.PDF"
+    },
+    {
+      "announcementId": "49346642",
+      "announcementTime": 1235082600000,
+      "title": "2008年度中银绒业独立董事述职报告",
+      "adjunctUrl": "finalpage/2009-02-20/49346642.PDF"
+    },
+    {
+      "announcementId": "49346641",
+      "announcementTime": 1235082600000,
+      "title": "关于公司控股股东及其他关联方资金占用之专项说明",
+      "adjunctUrl": "finalpage/2009-02-20/49346641.PDF"
+    },
+    {
+      "announcementId": "49063233",
+      "announcementTime": 1234305000000,
+      "title": "关于收到立案调查结果的公告",
+      "adjunctUrl": "finalpage/2009-02-11/49063233.PDF"
+    },
+    {
+      "announcementId": "48434233",
+      "announcementTime": 1232145000000,
+      "title": "重大重组事项进展公告",
+      "adjunctUrl": "finalpage/2009-01-17/48434233.PDF"
+    },
+    {
+      "announcementId": "47981738",
+      "announcementTime": 1231194600000,
+      "title": "2009年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-01-06/47981738.PDF"
+    },
+    {
+      "announcementId": "47981737",
+      "announcementTime": 1231194600000,
+      "title": "2009年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-01-06/47981737.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

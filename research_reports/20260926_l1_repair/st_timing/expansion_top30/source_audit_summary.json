@@ -1,0 +1,14 @@
+{
+  "frozen_symbols": 30,
+  "old_target_rows": 4421,
+  "source_docs_hash_verified": 262,
+  "pdf_docs": 248,
+  "official_html_docs": 14,
+  "extraction_under_50_chars": 2,
+  "unresolved_state_title_docs": 222,
+  "unresolved_before_first": 55,
+  "unresolved_within_old_target_span": 126,
+  "unresolved_after_last": 41,
+  "new_proven_bad_target_rows": 37,
+  "symbols_with_new_proven_bad_targets": 2
+}

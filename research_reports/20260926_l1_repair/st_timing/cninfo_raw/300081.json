@@ -1,0 +1,130 @@
+{
+  "symbol": "300081",
+  "org_id": "9900012108",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "szse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 6,
+      "pages_fetched": 1,
+      "first_page_sha256": "68439cf0bea8545142312a79000b85a6ec375cf8ba659af931394aeb5836ea37",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "68439cf0bea8545142312a79000b85a6ec375cf8ba659af931394aeb5836ea37"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 6,
+      "pages_fetched": 1,
+      "first_page_sha256": "d7461f7b185d4d84be15c0d4460954b5b4496db90d5fc6d601626cd3011bd870",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "d7461f7b185d4d84be15c0d4460954b5b4496db90d5fc6d601626cd3011bd870"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-04-03T23:15:51+08:00",
+      "title": "关于公司股票被实施其他风险警示暨股票停复牌的提示性公告",
+      "announcementId": "1225080773",
+      "adjunctUrl": "finalpage/2026-04-03/1225080773.pdf",
+      "secCode": "300081",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-05-08T19:52:10+08:00",
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225286707",
+      "adjunctUrl": "finalpage/2026-05-08/1225286707.PDF",
+      "secCode": "300081",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-06-01T17:22:11+08:00",
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225342391",
+      "adjunctUrl": "finalpage/2026-06-01/1225342391.PDF",
+      "secCode": "300081",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-01T18:24:27+08:00",
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225403685",
+      "adjunctUrl": "finalpage/2026-07-01/1225403685.PDF",
+      "secCode": "300081",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-03T18:30:29+08:00",
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225455438",
+      "adjunctUrl": "finalpage/2026-08-03/1225455438.PDF",
+      "secCode": "300081",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-09-01T17:22:08+08:00",
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225541090",
+      "adjunctUrl": "finalpage/2026-09-01/1225541090.PDF",
+      "secCode": "300081",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

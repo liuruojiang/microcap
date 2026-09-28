@@ -1,0 +1,53 @@
+{
+  "symbol": "600766",
+  "org_id": "gssh0600766",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600766,gssh0600766",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 3,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "94043eac82709abdbf230811a2f5e737d624d9d312215202bc016b9ee212e3f1",
+      "reported_total": 3,
+      "rows": 3
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57633032",
+      "announcementTime": 1267223700000,
+      "title": "年报信息披露重大差错责任追究制度（2010年2月）",
+      "adjunctUrl": "finalpage/2010-02-27/57633032.PDF"
+    },
+    {
+      "announcementId": "57633031",
+      "announcementTime": 1267223700000,
+      "title": "第九届董事会第七次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-27/57633031.PDF"
+    },
+    {
+      "announcementId": "57511031",
+      "announcementTime": 1263594900000,
+      "title": "2009年度业绩预亏公告",
+      "adjunctUrl": "finalpage/2010-01-16/57511031.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

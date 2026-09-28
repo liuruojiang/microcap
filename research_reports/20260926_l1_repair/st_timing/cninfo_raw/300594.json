@@ -1,0 +1,130 @@
+{
+  "symbol": "300594",
+  "org_id": "gfbj0871452",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "szse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 6,
+      "pages_fetched": 1,
+      "first_page_sha256": "1262a068848d96754de6a30994f52e16704efde3f48f09b212f3099bc8dc4c75",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "1262a068848d96754de6a30994f52e16704efde3f48f09b212f3099bc8dc4c75"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 6,
+      "pages_fetched": 1,
+      "first_page_sha256": "4613da163f6b2b7885ad4309d7f0acd075f12d6c6a4322bf432db2ab2a23f85d",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "4613da163f6b2b7885ad4309d7f0acd075f12d6c6a4322bf432db2ab2a23f85d"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-04-29T00:00:00+08:00",
+      "title": "山东朗进科技股份有限公司关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+      "announcementId": "1225250543",
+      "adjunctUrl": "finalpage/2026-04-29/1225250543.PDF",
+      "secCode": "300594",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-05-06T17:46:30+08:00",
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225279519",
+      "adjunctUrl": "finalpage/2026-05-06/1225279519.PDF",
+      "secCode": "300594",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-06-02T20:34:10+08:00",
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225347603",
+      "adjunctUrl": "finalpage/2026-06-02/1225347603.PDF",
+      "secCode": "300594",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-03T16:53:14+08:00",
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225408443",
+      "adjunctUrl": "finalpage/2026-07-03/1225408443.PDF",
+      "secCode": "300594",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-05T17:32:08+08:00",
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225459720",
+      "adjunctUrl": "finalpage/2026-08-05/1225459720.PDF",
+      "secCode": "300594",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-09-03T17:34:30+08:00",
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "announcementId": "1225546407",
+      "adjunctUrl": "finalpage/2026-09-03/1225546407.PDF",
+      "secCode": "300594",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

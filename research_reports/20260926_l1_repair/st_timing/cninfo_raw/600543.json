@@ -1,0 +1,180 @@
+{
+  "symbol": "600543",
+  "org_id": "gssh0600543",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "c604460eb477eba50a3bdcff1815abe19de9c144d9e7b2128d372da63ec74cd9",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "c604460eb477eba50a3bdcff1815abe19de9c144d9e7b2128d372da63ec74cd9"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 10,
+      "pages_fetched": 1,
+      "first_page_sha256": "ad8c4d623da7b2473e5dab632bc4a6c542a19af893891161d0019fce187952e8",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "ad8c4d623da7b2473e5dab632bc4a6c542a19af893891161d0019fce187952e8"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "4949cf5863d2b9c283e88c7bf1b7a0c11721613be846abd37c19c7e1fbedb40d",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "4949cf5863d2b9c283e88c7bf1b7a0c11721613be846abd37c19c7e1fbedb40d"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2009-06-02T06:30:00+08:00",
+      "title": "第五届董事会第十七次会议决议公告",
+      "announcementId": "53035832",
+      "adjunctUrl": "finalpage/2009-06-02/53035832.PDF",
+      "secCode": "600543",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2023-01-31T00:00:00+08:00",
+      "title": "莫高股份关于公司股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1215725137",
+      "adjunctUrl": "finalpage/2023-01-31/1215725137.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-03-14T00:00:00+08:00",
+      "title": "莫高股份关于公司股票可能被实施退市风险警示的第二次风险提示公告",
+      "announcementId": "1216108770",
+      "adjunctUrl": "finalpage/2023-03-14/1216108770.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-18T00:00:00+08:00",
+      "title": "莫高股份关于公司股票可能被实施退市风险警示的第三次风险提示公告",
+      "announcementId": "1216437190",
+      "adjunctUrl": "finalpage/2023-04-18/1216437190.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2023-04-28T00:00:00+08:00",
+      "title": "莫高股份关于公司股票被实施退市风险警示暨停牌的公告",
+      "announcementId": "1216663507",
+      "adjunctUrl": "finalpage/2023-04-28/1216663507.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2024-03-30T00:00:00+08:00",
+      "title": "莫高股份关于申请撤销公司股票退市风险警示的公告",
+      "announcementId": "1219474383",
+      "adjunctUrl": "finalpage/2024-03-30/1219474383.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2024-07-05T00:00:00+08:00",
+      "title": "莫高股份关于公司股票撤销退市风险警示暨停牌的公告",
+      "announcementId": "1220534949",
+      "adjunctUrl": "finalpage/2024-07-05/1220534949.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-01-31T00:00:00+08:00",
+      "title": "莫高股份关于公司股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1224960144",
+      "adjunctUrl": "finalpage/2026-01-31/1224960144.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-03-14T00:00:00+08:00",
+      "title": "莫高股份关于公司股票可能被实施退市风险警示的第二次风险提示公告",
+      "announcementId": "1225008009",
+      "adjunctUrl": "finalpage/2026-03-14/1225008009.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-11T00:00:00+08:00",
+      "title": "莫高股份关于公司股票可能被实施退市风险警示的第三次风险提示公告",
+      "announcementId": "1225091726",
+      "adjunctUrl": "finalpage/2026-04-11/1225091726.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-24T00:00:00+08:00",
+      "title": "莫高股份关于公司股票被实施退市风险警示暨停牌的公告",
+      "announcementId": "1225170075",
+      "adjunctUrl": "finalpage/2026-04-24/1225170075.PDF",
+      "secCode": "600543",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

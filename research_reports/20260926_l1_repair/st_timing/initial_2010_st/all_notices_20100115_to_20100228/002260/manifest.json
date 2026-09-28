@@ -1,0 +1,119 @@
+{
+  "symbol": "002260",
+  "org_id": "9900004995",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "002260,9900004995",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 14,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "efe7eb0e4ede83314b7bb5d3ac7dc1a4dbcdfa64d7eba263a7b4e413067c2f97",
+      "reported_total": 14,
+      "rows": 14
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57631682",
+      "announcementTime": 1267223400000,
+      "title": "2009年度业绩快报",
+      "adjunctUrl": "finalpage/2010-02-27/57631682.PDF"
+    },
+    {
+      "announcementId": "57619477",
+      "announcementTime": 1266964200000,
+      "title": "独立董事对相关事项发表的独立意见",
+      "adjunctUrl": "finalpage/2010-02-24/57619477.PDF"
+    },
+    {
+      "announcementId": "57619476",
+      "announcementTime": 1266964200000,
+      "title": "关于第二届董事会第六次会议决议的公告",
+      "adjunctUrl": "finalpage/2010-02-24/57619476.PDF"
+    },
+    {
+      "announcementId": "57603350",
+      "announcementTime": 1265841000000,
+      "title": "2010年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-02-11/57603350.PDF"
+    },
+    {
+      "announcementId": "57603349",
+      "announcementTime": 1265841000000,
+      "title": "关于2010年第一次临时股东大会决议的公告",
+      "adjunctUrl": "finalpage/2010-02-11/57603349.PDF"
+    },
+    {
+      "announcementId": "57598455",
+      "announcementTime": 1265754600000,
+      "title": "关于到期归还暂时用于补充流动资金的募集资金公告",
+      "adjunctUrl": "finalpage/2010-02-10/57598455.PDF"
+    },
+    {
+      "announcementId": "57585005",
+      "announcementTime": 1265409060000,
+      "title": "关于召开2010年第一次临时股东大会提示性公告",
+      "adjunctUrl": "finalpage/2010-02-06/57585005.PDF"
+    },
+    {
+      "announcementId": "57542643",
+      "announcementTime": 1264458600000,
+      "title": "民生证券有限责任公司关于公司继续使用部分闲置募集资金补充公司流动资金的专项意见",
+      "adjunctUrl": "finalpage/2010-01-26/57542643.PDF"
+    },
+    {
+      "announcementId": "57542642",
+      "announcementTime": 1264458600000,
+      "title": "监事会关于相关事项的书面审核意见",
+      "adjunctUrl": "finalpage/2010-01-26/57542642.PDF"
+    },
+    {
+      "announcementId": "57542641",
+      "announcementTime": 1264458600000,
+      "title": "独立董事对相关事项发表的独立意见",
+      "adjunctUrl": "finalpage/2010-01-26/57542641.PDF"
+    },
+    {
+      "announcementId": "57542640",
+      "announcementTime": 1264458600000,
+      "title": "关于第二届监事会第三次会议决议的公告",
+      "adjunctUrl": "finalpage/2010-01-26/57542640.PDF"
+    },
+    {
+      "announcementId": "57542639",
+      "announcementTime": 1264458600000,
+      "title": "关于第二届董事会第五次会议决议的公告",
+      "adjunctUrl": "finalpage/2010-01-26/57542639.PDF"
+    },
+    {
+      "announcementId": "57542638",
+      "announcementTime": 1264458600000,
+      "title": "关于召开2010年第一次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2010-01-26/57542638.PDF"
+    },
+    {
+      "announcementId": "57542637",
+      "announcementTime": 1264458600000,
+      "title": "关于继续使用闲置募集资金暂时补充公司流动资金的公告",
+      "adjunctUrl": "finalpage/2010-01-26/57542637.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

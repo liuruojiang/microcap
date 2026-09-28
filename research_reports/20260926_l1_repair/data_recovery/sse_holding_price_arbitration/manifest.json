@@ -1,0 +1,309 @@
+{
+  "source_csv": "price_challenge\\possible_holding_date_differences.csv",
+  "source_csv_sha256": "898c7063dc864c27556f24348b7e501b2336284e0ccb30ea4c8ecd8da47bbf11",
+  "sse_endpoint": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do",
+  "callback": "jsonpCallbackProbe",
+  "user_agent": "Mozilla/5.0",
+  "referer_template": "https://www.sse.com.cn/assortment/stock/list/info/turnover/index.shtml?COMPANY_CODE={symbol}",
+  "responses": [
+    {
+      "symbol": "600145",
+      "date": "2015-12-03",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600145&inMonth=201512&inYear=2015&searchDate=2015-12-03",
+      "http_status": 200,
+      "response_file": "sse_600145_20151203.jsonp",
+      "response_sha256": "0bebe8aa89fcab670212f267aae1981c428f8c16c3a7818a0e4ce22acab45cc4",
+      "response_bytes": 4075,
+      "result_date_keys": [
+        {
+          "id": "600145",
+          "closeTxDate": "2015-12-03"
+        },
+        {
+          "id": "600145",
+          "closeTxDate": "201512"
+        },
+        {
+          "id": "600145",
+          "closeTxDate": "201512"
+        },
+        {
+          "id": "600145",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600213",
+      "date": "2015-12-03",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600213&inMonth=201512&inYear=2015&searchDate=2015-12-03",
+      "http_status": 200,
+      "response_file": "sse_600213_20151203.jsonp",
+      "response_sha256": "2b3ffa75ba3d88d6cf7ceee9262dc56213154a0e9a696077d78ebd35c3bb3ae2",
+      "response_bytes": 4106,
+      "result_date_keys": [
+        {
+          "id": "600213",
+          "closeTxDate": "2015-12-03"
+        },
+        {
+          "id": "600213",
+          "closeTxDate": "201512"
+        },
+        {
+          "id": "600213",
+          "closeTxDate": "201512"
+        },
+        {
+          "id": "600213",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600306",
+      "date": "2017-02-17",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600306&inMonth=201702&inYear=2017&searchDate=2017-02-17",
+      "http_status": 200,
+      "response_file": "sse_600306_20170217.jsonp",
+      "response_sha256": "cda30226d6ac2befe2fd59e5ce3b29e76fa85f6c910a22f7f91a21f05ed6c76c",
+      "response_bytes": 4088,
+      "result_date_keys": [
+        {
+          "id": "600306",
+          "closeTxDate": "2017-02-17"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201702"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201712"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600306",
+      "date": "2017-10-11",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600306&inMonth=201710&inYear=2017&searchDate=2017-10-11",
+      "http_status": 200,
+      "response_file": "sse_600306_20171011.jsonp",
+      "response_sha256": "5501804d883e6d63182610ea701a36a6f91fa8fbe890316a31c0ab97e7389319",
+      "response_bytes": 4087,
+      "result_date_keys": [
+        {
+          "id": "600306",
+          "closeTxDate": "2017-10-11"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201710"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201712"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600306",
+      "date": "2017-10-18",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600306&inMonth=201710&inYear=2017&searchDate=2017-10-18",
+      "http_status": 200,
+      "response_file": "sse_600306_20171018.jsonp",
+      "response_sha256": "2bee21be37282dc12bdd5176b46763978b16de93915c4a4b5920e120c8263cf7",
+      "response_bytes": 4093,
+      "result_date_keys": [
+        {
+          "id": "600306",
+          "closeTxDate": "2017-10-18"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201710"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201712"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600306",
+      "date": "2018-08-15",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600306&inMonth=201808&inYear=2018&searchDate=2018-08-15",
+      "http_status": 200,
+      "response_file": "sse_600306_20180815.jsonp",
+      "response_sha256": "cb83413d100a3abd90584fcf360fb6f7c00fba26c6b42f61591bc5f1ee383e74",
+      "response_bytes": 4068,
+      "result_date_keys": [
+        {
+          "id": "600306",
+          "closeTxDate": "2018-08-15"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201808"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "201812"
+        },
+        {
+          "id": "600306",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600634",
+      "date": "2018-08-07",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600634&inMonth=201808&inYear=2018&searchDate=2018-08-07",
+      "http_status": 200,
+      "response_file": "sse_600634_20180807.jsonp",
+      "response_sha256": "ef868cef9d8a3d5b643a7689689badc216a474aab451ed8777a01af1898ca3e7",
+      "response_bytes": 4110,
+      "result_date_keys": [
+        {
+          "id": "600634",
+          "closeTxDate": "2018-08-07"
+        },
+        {
+          "id": "600634",
+          "closeTxDate": "201808"
+        },
+        {
+          "id": "600634",
+          "closeTxDate": "201812"
+        },
+        {
+          "id": "600634",
+          "closeTxDate": "2021-07-14"
+        }
+      ]
+    },
+    {
+      "symbol": "600766",
+      "date": "2015-12-03",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600766&inMonth=201512&inYear=2015&searchDate=2015-12-03",
+      "http_status": 200,
+      "response_file": "sse_600766_20151203.jsonp",
+      "response_sha256": "49852c9dc75290c7fc8c7d5b78358094ccf19b66a3630d25dded8548c9a66087",
+      "response_bytes": 4136,
+      "result_date_keys": [
+        {
+          "id": "600766",
+          "closeTxDate": "2015-12-03"
+        },
+        {
+          "id": "600766",
+          "closeTxDate": "201512"
+        },
+        {
+          "id": "600766",
+          "closeTxDate": "201512"
+        },
+        {
+          "id": "600766",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600766",
+      "date": "2018-04-24",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600766&inMonth=201804&inYear=2018&searchDate=2018-04-24",
+      "http_status": 200,
+      "response_file": "sse_600766_20180424.jsonp",
+      "response_sha256": "73b18572a0c44145d95c97f105ee0fef2f7bffd55b99dac2d2db81b52a3912de",
+      "response_bytes": 4127,
+      "result_date_keys": [
+        {
+          "id": "600766",
+          "closeTxDate": "2018-04-24"
+        },
+        {
+          "id": "600766",
+          "closeTxDate": "201804"
+        },
+        {
+          "id": "600766",
+          "closeTxDate": "201812"
+        },
+        {
+          "id": "600766",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600767",
+      "date": "2018-05-17",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600767&inMonth=201805&inYear=2018&searchDate=2018-05-17",
+      "http_status": 200,
+      "response_file": "sse_600767_20180517.jsonp",
+      "response_sha256": "9d5fe932e14acc3c51298dd052a2590005b18f6f1b873fbdfb26ff0ea3d298e0",
+      "response_bytes": 4080,
+      "result_date_keys": [
+        {
+          "id": "600767",
+          "closeTxDate": "2018-05-17"
+        },
+        {
+          "id": "600767",
+          "closeTxDate": "201805"
+        },
+        {
+          "id": "600767",
+          "closeTxDate": "201812"
+        },
+        {
+          "id": "600767",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    },
+    {
+      "symbol": "600767",
+      "date": "2018-05-28",
+      "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600767&inMonth=201805&inYear=2018&searchDate=2018-05-28",
+      "http_status": 200,
+      "response_file": "sse_600767_20180528.jsonp",
+      "response_sha256": "be3515ec2ff35d2adad96f0c6a4a47ceb6ec439502dec904736c1a3ae735755a",
+      "response_bytes": 4082,
+      "result_date_keys": [
+        {
+          "id": "600767",
+          "closeTxDate": "2018-05-28"
+        },
+        {
+          "id": "600767",
+          "closeTxDate": "201805"
+        },
+        {
+          "id": "600767",
+          "closeTxDate": "201812"
+        },
+        {
+          "id": "600767",
+          "closeTxDate": "2022-02-25"
+        }
+      ]
+    }
+  ],
+  "comparison_csv": "SSE_POSSIBLE_HOLDING_PRICE_ARBITRATION.csv",
+  "comparison_csv_sha256": "8ea80e59e585f6219f8fb0d50e3a0cfcbf87438785ed63318a56e15c143b91bb"
+}

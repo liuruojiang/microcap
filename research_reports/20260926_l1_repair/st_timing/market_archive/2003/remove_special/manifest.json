@@ -1,0 +1,64 @@
+{
+  "year": 2003,
+  "label": "remove_special",
+  "category": "",
+  "searchkey": "撤销特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2003-01-01~2003-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 14,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "acec15e624ac412935b16d3fad55dd9f6cc015b92ed9db3f9eb9fc98672c945c",
+      "response_bytes": 9898,
+      "row_count": 14,
+      "reported_total": 14
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600082",
+      "announcementId": "12224577",
+      "announcementTime": 1061502594000,
+      "title": "<em>撤销</em>公司股票交易<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2003-08-22/12224577.html"
+    },
+    {
+      "symbol": "600853",
+      "announcementId": "10712167",
+      "announcementTime": 1053639983000,
+      "title": "关于<em>撤销</em>公司股票<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2003-05-23/10712167.html"
+    },
+    {
+      "symbol": "000723",
+      "announcementId": "10512696",
+      "announcementTime": 1050360782000,
+      "title": "关于<em>撤销</em>本公司股票交易<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2003-04-15/10512696.html"
+    },
+    {
+      "symbol": "600768",
+      "announcementId": "10383103",
+      "announcementTime": 1048714505000,
+      "title": "关于<em>撤销</em>公司股票<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2003-03-27/10383103.html"
+    },
+    {
+      "symbol": "600792",
+      "announcementId": "10263609",
+      "announcementTime": 1048109574000,
+      "title": "<em>撤销</em>公司股票<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2003-03-20/10263609.html"
+    },
+    {
+      "symbol": "600167",
+      "announcementId": "10131151",
+      "announcementTime": 1044914398000,
+      "title": "<em>撤销</em>公司股票<em>特别</em><em>处理</em>公告",
+      "adjunctUrl": "finalpage/2003-02-11/10131151.html"
+    }
+  ],
+  "complete": true
+}

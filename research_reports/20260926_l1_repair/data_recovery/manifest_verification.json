@@ -1,0 +1,12 @@
+{
+  "symbols": 254,
+  "price_fetched": 251,
+  "share_fetched": 254,
+  "file_hashes_matched": 505,
+  "price_start": "2010-01-04",
+  "price_failures": [
+    "000787",
+    "000805",
+    "600003"
+  ]
+}

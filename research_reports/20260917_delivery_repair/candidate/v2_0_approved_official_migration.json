@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "approved": true,
+  "version": "2.0",
+  "approval_source": "User reply 继续 after explicit exact-hash historical correction approval request",
+  "approved_review_report_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
+  "user_approval_sha256": "7ce8225d741facc86bc8f7e87922ce1c225a74673a7b97c49fec6516ae2a4ba7",
+  "previous_costed_nav_sha256": "6a3e7b3ba7e77ce1fb91032d714abd84a397b70884afbab1687742c4d061f43d",
+  "candidate_frame_sha256": "b2a9d20c4a47b14a512c09002fe7efad06b361eb9bf58e28c29427b7f21f6a51",
+  "approved_candidate_csv_sha256": "adb94b002a9eaeb235dddd6b9f9209307eeb397f0cbd247d4b35e0761558ddf0",
+  "base_proxy_meta_sha256": "f7d25401cb25576c7454d85f50807c749fe925b0c8f33666bcb2e0bff6bfa9a9",
+  "rewrite_audit_sha256": null,
+  "previous_row_count": 4025,
+  "candidate_row_count": 4025,
+  "previous_latest_date": "2026-09-17",
+  "candidate_latest_date": "2026-09-17",
+  "new_member_st_violations": 0,
+  "new_member_bad_policy_count": 0,
+  "proxy_meta_matches_current_cache": true,
+  "already_clean": true,
+  "source_sha256": "4f248d39da85e1aa3b0f4a050b3a9425a9e50eecc645088d16095b2427b6684c"
+}

@@ -1,0 +1,288 @@
+{
+  "year": 2023,
+  "label": "remove_risk",
+  "category": "",
+  "searchkey": "撤销风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2023-01-01~2023-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 152,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "ca5a5d17ce2aea1ef9e2bea71356a935e5ad35c55a71ab100cece07afdfa0fd9",
+      "response_bytes": 25941,
+      "row_count": 30,
+      "reported_total": 152
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "a506d5721db3bf677e1c46bfb5cdc720de1f9fd99e00aaa2838841c34593fce2",
+      "response_bytes": 24067,
+      "row_count": 30,
+      "reported_total": 152
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "cb30e38318252fc2c827e5805608633c087b0f94131ba22ff93e5c45f2f4056f",
+      "response_bytes": 24105,
+      "row_count": 30,
+      "reported_total": 152
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "7a053cb978bec6d5179d2900608955348737a9d5967b615c043fe6ba88dc0b6b",
+      "response_bytes": 24401,
+      "row_count": 30,
+      "reported_total": 152
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "04b811fe7ef56f965abf06dde87a60ca585cf16dece1bff470cf78aef3569247",
+      "response_bytes": 24845,
+      "row_count": 30,
+      "reported_total": 152
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "ed49cb618783611ccced4780eb2d2294c47c0bd455850be384d2ad8799c55e62",
+      "response_bytes": 2029,
+      "row_count": 2,
+      "reported_total": 152
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "300108",
+      "announcementId": "1218125160",
+      "announcementTime": 1698076800000,
+      "title": "吉药控股集团股份有限公司关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>并继续实施其他<em>风险</em><em>警示</em>暨停牌一天的公告",
+      "adjunctUrl": "finalpage/2023-10-24/1218125160.PDF"
+    },
+    {
+      "symbol": "600530",
+      "announcementId": "1217970411",
+      "announcementTime": 1695830400000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>并实施其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2023-09-28/1217970411.PDF"
+    },
+    {
+      "symbol": "600530",
+      "announcementId": "1217713365",
+      "announcementTime": 1693411200000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>并继续实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-08-31/1217713365.PDF"
+    },
+    {
+      "symbol": "002535",
+      "announcementId": "1217056000",
+      "announcementTime": 1686672000000,
+      "title": "关于公司<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌公告",
+      "adjunctUrl": "finalpage/2023-06-14/1217056000.PDF"
+    },
+    {
+      "symbol": "600241",
+      "announcementId": "1216934551",
+      "announcementTime": 1685376000000,
+      "title": "辽宁时代万恒股份有限公司关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2023-05-30/1216934551.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1216780589",
+      "announcementTime": 1683648000000,
+      "title": "关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2023-05-10/1216780589.PDF"
+    },
+    {
+      "symbol": "688309",
+      "announcementId": "1216748655",
+      "announcementTime": 1683216000000,
+      "title": "关于公司股票<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌公告",
+      "adjunctUrl": "finalpage/2023-05-05/1216748655.PDF"
+    },
+    {
+      "symbol": "002535",
+      "announcementId": "1216662655",
+      "announcementTime": 1682611200000,
+      "title": "关于申请<em>撤销</em>公司股票交易实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-04-28/1216662655.PDF"
+    },
+    {
+      "symbol": "300108",
+      "announcementId": "1216660309",
+      "announcementTime": 1682611200000,
+      "title": "吉药控股集团股份有限公司关于申请<em>撤销</em>公司股票交易财务类退市<em>风险</em><em>警示</em>暨继续实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-04-28/1216660309.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1216656929",
+      "announcementTime": 1682611200000,
+      "title": "关于争取<em>撤销</em><em>风险</em><em>警示</em>所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2023-04-28/1216656929.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1216656928",
+      "announcementTime": 1682611200000,
+      "title": "关于申请<em>撤销</em>公司股票其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-04-28/1216656928.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1216656927",
+      "announcementTime": 1682611200000,
+      "title": "北京中银律师事务所关于冠福控股股份有限公司申请<em>撤销</em>公司股票交易其他<em>风险</em><em>警示</em>的法律意见书",
+      "adjunctUrl": "finalpage/2023-04-28/1216656927.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1216656922",
+      "announcementTime": 1682611200000,
+      "title": "独立董事关于申请<em>撤销</em>公司股票其他<em>风险</em><em>警示</em>的专项意见",
+      "adjunctUrl": "finalpage/2023-04-28/1216656922.PDF"
+    },
+    {
+      "symbol": "300201",
+      "announcementId": "1216459779",
+      "announcementTime": 1681833600000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌一天的公告",
+      "adjunctUrl": "finalpage/2023-04-19/1216459779.PDF"
+    },
+    {
+      "symbol": "002316",
+      "announcementId": "1216403807",
+      "announcementTime": 1681401600000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>暨股票停牌的公告",
+      "adjunctUrl": "finalpage/2023-04-14/1216403807.PDF"
+    },
+    {
+      "symbol": "600241",
+      "announcementId": "1216362551",
+      "announcementTime": 1681056000000,
+      "title": "辽宁时代万恒股份有限公司关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-04-10/1216362551.PDF"
+    },
+    {
+      "symbol": "600241",
+      "announcementId": "1216362534",
+      "announcementTime": 1681056000000,
+      "title": "辽宁时代万恒股份有限公司独立董事关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的独立意见",
+      "adjunctUrl": "finalpage/2023-04-10/1216362534.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1216298745",
+      "announcementTime": 1680278400000,
+      "title": "关于争取<em>撤销</em><em>风险</em><em>警示</em>所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2023-04-01/1216298745.PDF"
+    },
+    {
+      "symbol": "603603",
+      "announcementId": "1216283151",
+      "announcementTime": 1680192000000,
+      "title": "博天环境集团股份有限公司关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-03-31/1216283151.PDF"
+    },
+    {
+      "symbol": "603603",
+      "announcementId": "1216283150",
+      "announcementTime": 1680192000000,
+      "title": "博天环境集团股份有限公司独立董事关于公司股票申请<em>撤销</em>退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>的专项意见",
+      "adjunctUrl": "finalpage/2023-03-31/1216283150.PDF"
+    },
+    {
+      "symbol": "600719",
+      "announcementId": "1216279251",
+      "announcementTime": 1680192000000,
+      "title": "大连热电股份有限公司关于公司股票<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2023-03-31/1216279251.PDF"
+    },
+    {
+      "symbol": "002316",
+      "announcementId": "1216276448",
+      "announcementTime": 1680192000000,
+      "title": "关于申请<em>撤销</em>退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-03-31/1216276448.PDF"
+    },
+    {
+      "symbol": "603039",
+      "announcementId": "1216276314",
+      "announcementTime": 1680192000000,
+      "title": "泛微网络关于公司股票<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2023-03-31/1216276314.PDF"
+    },
+    {
+      "symbol": "688309",
+      "announcementId": "1216255674",
+      "announcementTime": 1680105600000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-03-30/1216255674.PDF"
+    },
+    {
+      "symbol": "688309",
+      "announcementId": "1216255413",
+      "announcementTime": 1680105600000,
+      "title": "方正证券承销保荐有限责任公司关于济南恒誉环保科技股份有限公司申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的核查意见",
+      "adjunctUrl": "finalpage/2023-03-30/1216255413.PDF"
+    },
+    {
+      "symbol": "300201",
+      "announcementId": "1216181261",
+      "announcementTime": 1679414400000,
+      "title": "关于公司申请<em>撤销</em>退市<em>风险</em><em>警示</em>情形的公告",
+      "adjunctUrl": "finalpage/2023-03-22/1216181261.PDF"
+    },
+    {
+      "symbol": "603039",
+      "announcementId": "1216169386",
+      "announcementTime": 1679328000000,
+      "title": "泛微网络关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-03-21/1216169386.PDF"
+    },
+    {
+      "symbol": "603039",
+      "announcementId": "1216169383",
+      "announcementTime": 1679328000000,
+      "title": "泛微网络独立董事关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的独立意见",
+      "adjunctUrl": "finalpage/2023-03-21/1216169383.PDF"
+    },
+    {
+      "symbol": "600719",
+      "announcementId": "1216149822",
+      "announcementTime": 1679068800000,
+      "title": "大连热电股份有限公司关于向上海证券交易所申请<em>撤销</em>对公司股票实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-03-18/1216149822.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1215988020",
+      "announcementTime": 1677513600000,
+      "title": "关于争取<em>撤销</em><em>风险</em><em>警示</em>所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2023-02-28/1215988020.PDF"
+    },
+    {
+      "symbol": "002499",
+      "announcementId": "1215759762",
+      "announcementTime": 1675385642000,
+      "title": "关于收到深圳证券交易所不予<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>决定的公告",
+      "adjunctUrl": "finalpage/2023-02-03/1215759762.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1215723757",
+      "announcementTime": 1675094400000,
+      "title": "关于争取<em>撤销</em><em>风险</em><em>警示</em>所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2023-01-31/1215723757.PDF"
+    },
+    {
+      "symbol": "603603",
+      "announcementId": "1215539549",
+      "announcementTime": 1673020800000,
+      "title": "博天环境集团股份有限公司关于<em>撤销</em>公司股票因重整而被实施的退市<em>风险</em><em>警示</em>暨继续被实施退市<em>风险</em><em>警示</em>及其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2023-01-07/1215539549.PDF"
+    }
+  ],
+  "complete": true
+}

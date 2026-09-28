@@ -1,0 +1,17 @@
+{
+  "meta_version": 2,
+  "st_notice_policy_version": "cninfo-category-plus-entry-exit-keyword-v3",
+  "symbol": "603836",
+  "first_trade_date": "2021-05-26",
+  "last_trade_date": "2026-09-17",
+  "list_date": "2021-05-26",
+  "delist_date": null,
+  "exchange": "SSE",
+  "board": "主板",
+  "current_st_snapshot_name": null,
+  "name_history_status": "not_applicable",
+  "notice_query_status": "error:RuntimeError:CNInfo announcement query failed for 603836: 403 Client Error: Forbidden for url: https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "notice_count": 0,
+  "current_st_history_resolved": true,
+  "st_intervals": []
+}

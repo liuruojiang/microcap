@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "authorization": "user_replace_existing_v2_3",
+  "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+  "previous_costed_nav_sha256": "21d9618f6dc07d78db3a997197440e6f8a3db4e133bc033eff8dea4cd4728d40",
+  "candidate_frame_sha256": "ba869461681215dfdfbcf05225d86f15d6afd9e0002718d5ef6f95c647242848",
+  "rewrite_audit_sha256": "741e97ea5043861c6602b063b2583a4930d300ddd46e3f13040954a6602c51db",
+  "source_sha256_lf": "b7558f82894860d5b56af760bdbfbcdacfef022ffb539a886d37c1d7967e14ff",
+  "unchanged_base_inputs": {
+    "proxy_meta": "9f907f31dc605fef768e123b5a50010b98698d1bab4e8bed894903e2b51f48e4",
+    "proxy_members": "ff151c48c3963ffc25bab684d45e5618e11adc2b107222bed4073ebf7dd48529",
+    "proxy_turnover": "0bb43938d8693db24a482470f5463106245d86e253cb0f2f23749b5dca7f4f04",
+    "proxy_index": "10f3ffc11be9aae6ecd9c631bf58487a3ed99526706f72ef6121aa462ec0fee2",
+    "base_costed_nav": "939e2badde5b67fcefba114c275748041924331cfecffb3d33ed3c0cb9b69e0a",
+    "panel_shadow": "8f8e368e75511af3e391fc542594d6d0b159192e014613b7c7df6a4bfe364ff6"
+  },
+  "candidate_row_count": 3971,
+  "v2_0_source_sha256_lf": "6e5dbca206821ba00c5db1809b095981126eeffa2a3ff8a64589ac93fb5b8775",
+  "v2_0_costed_nav_sha256": "4346e12e49824a9f632e2c32b43bbeb7ff613f7d86f025505ac859b63361146e",
+  "approved": true,
+  "user_authorization": "替换现在的2.3参数",
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20260904_224941",
+  "oracle": "D:\\动量策略\\微盘股对冲策略\\quant_param_scan_runs\\20260904_v23_entry_score_width_26_20\\daily_outputs\\primary_e+000.csv.gz",
+  "unchanged_proxy_lineage": true
+}

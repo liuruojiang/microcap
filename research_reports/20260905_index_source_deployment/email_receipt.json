@@ -1,0 +1,15 @@
+{
+  "message_id": "1a06d4283d0752e3",
+  "internal_date": "1788539470000",
+  "received_beijing": "2026-09-05 00:31:10",
+  "subject": "[纠正版][收盘确认][无需操作] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-04",
+  "workflow_run": "33895015058",
+  "strategy_sha": "a6820443360ee24ee109ebeb9d0a31485237ae0c",
+  "automation_sha": "9c56df2123c595935ce90e39527b42f77654231e",
+  "full_body_read": true,
+  "body_contains_run": true,
+  "body_contains_sha": true,
+  "publication_mode": "close_confirmed",
+  "correction": true,
+  "signal_date": "2026-09-04"
+}

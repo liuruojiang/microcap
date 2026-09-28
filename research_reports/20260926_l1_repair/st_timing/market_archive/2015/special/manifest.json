@@ -1,0 +1,29 @@
+{
+  "year": 2015,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2015-01-01~2015-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 3,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "7c8b980ef4dfd46045563aeb44ab34262e0bf4757dd898256b71cba844377550",
+      "response_bytes": 2411,
+      "row_count": 3,
+      "reported_total": 3
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "002633",
+      "announcementId": "1200581202",
+      "announcementTime": 1422288000000,
+      "title": "关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2015-01-27/1200581202.PDF"
+    }
+  ],
+  "complete": true
+}

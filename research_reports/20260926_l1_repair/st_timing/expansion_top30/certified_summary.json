@@ -1,0 +1,14 @@
+{
+  "new_proven_bad_target_rows": 37,
+  "new_proven_symbols": 2,
+  "by_symbol": {
+    "600241": 2,
+    "600506": 35
+  },
+  "earliest": {
+    "symbol": "600506",
+    "target_date": "2010-11-18",
+    "rank": 24
+  },
+  "event_pdfs_sha_verified": 6
+}

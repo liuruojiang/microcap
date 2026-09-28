@@ -1,0 +1,211 @@
+{
+  "year": 2005,
+  "label": "remove_special",
+  "category": "",
+  "searchkey": "撤销特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2005-01-01~2005-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 54,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "b6551a97ecef05a1da12d1f8127e45b67412af34aede16388bc4efee232427c9",
+      "response_bytes": 22442,
+      "row_count": 30,
+      "reported_total": 54
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "cf59b184a12422b1c0db9844390e9ae5158d6ceaac43db79190222a954288d74",
+      "response_bytes": 17564,
+      "row_count": 24,
+      "reported_total": 54
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600869",
+      "announcementId": "15477486",
+      "announcementTime": 1118094670000,
+      "title": "关于公司股票获准<em>撤销</em>退市风险警示及其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-06-07/15477486.PDF"
+    },
+    {
+      "symbol": "600077",
+      "announcementId": "15477406",
+      "announcementTime": 1118094300000,
+      "title": "关于<em>撤销</em>公司股票<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-06-07/15477406.PDF"
+    },
+    {
+      "symbol": "600647",
+      "announcementId": "15477459",
+      "announcementTime": 1118093920000,
+      "title": "<em>撤销</em>股票交易其它<em>特别</em><em>处理</em>公告",
+      "adjunctUrl": "finalpage/2005-06-07/15477459.PDF"
+    },
+    {
+      "symbol": "000040",
+      "announcementId": "15422287",
+      "announcementTime": 1116975107000,
+      "title": "关于<em>撤销</em>股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-05-25/15422287.html"
+    },
+    {
+      "symbol": "000411",
+      "announcementId": "15365356",
+      "announcementTime": 1115851696000,
+      "title": "关于<em>撤销</em>股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-05-12/15365356.html"
+    },
+    {
+      "symbol": "600647",
+      "announcementId": "15317621",
+      "announcementTime": 1114637700000,
+      "title": "申请<em>撤销</em>股票实行其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-04-28/15317621.PDF"
+    },
+    {
+      "symbol": "000678",
+      "announcementId": "15271877",
+      "announcementTime": 1114382970000,
+      "title": "关于<em>撤销</em>公司股票交易<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-04-25/15271877.html"
+    },
+    {
+      "symbol": "600156",
+      "announcementId": "15255703",
+      "announcementTime": 1113946680000,
+      "title": "关于<em>撤销</em>股票退市风险警示及其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-04-20/15255703.PDF"
+    },
+    {
+      "symbol": "600385",
+      "announcementId": "15230174",
+      "announcementTime": 1113515400000,
+      "title": "向上交所<em>撤销</em>股票退市风险警示<em>特别</em><em>处理</em>申请的公告",
+      "adjunctUrl": "finalpage/2005-04-15/15230174.PDF"
+    },
+    {
+      "symbol": "600738",
+      "announcementId": "15199195",
+      "announcementTime": 1112910360000,
+      "title": "关于<em>撤销</em>对公司股票实行<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-04-08/15199195.PDF"
+    },
+    {
+      "symbol": "000695",
+      "announcementId": "15177148",
+      "announcementTime": 1112568190000,
+      "title": "关于<em>撤销</em>股票退市风险警示及其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-04-04/15177148.html"
+    },
+    {
+      "symbol": "000809",
+      "announcementId": "15171529",
+      "announcementTime": 1112308779000,
+      "title": "关于<em>撤销</em>股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-04-01/15171529.html"
+    },
+    {
+      "symbol": "600156",
+      "announcementId": "15167703",
+      "announcementTime": 1112218800000,
+      "title": "申请<em>撤销</em>对公司股票实行退市风险警示及其它<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-31/15167703.PDF"
+    },
+    {
+      "symbol": "600338",
+      "announcementId": "15167791",
+      "announcementTime": 1112218260000,
+      "title": "<em>撤销</em>股票退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-31/15167791.PDF"
+    },
+    {
+      "symbol": "000150",
+      "announcementId": "15157540",
+      "announcementTime": 1112136429000,
+      "title": "关于<em>撤销</em>股票退市风险警示及其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-30/15157540.html"
+    },
+    {
+      "symbol": "600847",
+      "announcementId": "15149162",
+      "announcementTime": 1111959540000,
+      "title": "<em>撤销</em>公司上市交易股票退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-28/15149162.PDF"
+    },
+    {
+      "symbol": "600738",
+      "announcementId": "15115248",
+      "announcementTime": 1111096500000,
+      "title": "申请<em>撤销</em>对其股票实行其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-18/15115248.PDF"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "15115263",
+      "announcementTime": 1111096200000,
+      "title": "<em>撤销</em>公司股票其他<em>特别</em><em>处理</em>公告",
+      "adjunctUrl": "finalpage/2005-03-18/15115263.PDF"
+    },
+    {
+      "symbol": "000851",
+      "announcementId": "15108039",
+      "announcementTime": 1111013608000,
+      "title": "关于<em>撤销</em>股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-17/15108039.html"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "15109400",
+      "announcementTime": 1111009080000,
+      "title": "<em>撤销</em>股票退市风险警示和其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-17/15109400.PDF"
+    },
+    {
+      "symbol": "000049",
+      "announcementId": "15098277",
+      "announcementTime": 1110840599000,
+      "title": "关于<em>撤销</em>股票交易其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-15/15098277.html"
+    },
+    {
+      "symbol": "600077",
+      "announcementId": "15095159",
+      "announcementTime": 1110749803000,
+      "title": "申请<em>撤销</em>公司股票<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-14/15095159.PDF"
+    },
+    {
+      "symbol": "600139",
+      "announcementId": "15090056",
+      "announcementTime": 1110490800000,
+      "title": "关于<em>撤销</em>对公司股票实行<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-11/15090056.PDF"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "15073852",
+      "announcementTime": 1110231600000,
+      "title": "向上交所提交<em>撤销</em>公司股票交易其他<em>特别</em><em>处理</em>申请的公告",
+      "adjunctUrl": "finalpage/2005-03-08/15073852.PDF"
+    },
+    {
+      "symbol": "000567",
+      "announcementId": "15062215",
+      "announcementTime": 1109889163000,
+      "title": "关于<em>撤销</em>股票交易<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-03-04/15062215.html"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "15030597",
+      "announcementTime": 1109109180000,
+      "title": "申请<em>撤销</em>股票退市风险警示和其他<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2005-02-23/15030597.PDF"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,19 @@
+{
+  "official_pdf_proved_rows": 236,
+  "official_partial_exit_pdf_proved_rows": 6,
+  "official_ST_downgrade_bridge_rows": 8,
+  "minimum_proved_bad_target_rows": 250,
+  "affected_symbols": 18,
+  "first_proved_bad_target": {
+    "symbol": "600180",
+    "target_date": "2010-01-14",
+    "rank": 49,
+    "proof_kind": "official_entry_exit_pdf_effective_dates"
+  },
+  "last_proved_bad_target": {
+    "symbol": "600082",
+    "target_date": "2026-09-03",
+    "rank": 80,
+    "proof_kind": "official_entry_exit_pdf_effective_dates"
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "symbol": "600423",
+  "org_id": "gssh0600423",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "b2e2b3007c4642cf5fcbef26120ab9652ce0d7ecb35559d318fefefa42966d8a",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "b2e2b3007c4642cf5fcbef26120ab9652ce0d7ecb35559d318fefefa42966d8a"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 14,
+      "pages_fetched": 1,
+      "first_page_sha256": "042d4ff9c77e1c50cd35719f36bb3019be17bbc813e60fe1ac1873bff63afa98",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "042d4ff9c77e1c50cd35719f36bb3019be17bbc813e60fe1ac1873bff63afa98"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 4,
+      "pages_fetched": 1,
+      "first_page_sha256": "5d6d67498aca18fc3dc7c6da11578638be854f1b4dd2372a7362c8e66ea623c5",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "5d6d67498aca18fc3dc7c6da11578638be854f1b4dd2372a7362c8e66ea623c5"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2017-01-21T00:00:00+08:00",
+      "title": "关于公司股票可能被实施退市风险警示及11柳化债相关风险提示公告",
+      "announcementId": "1203037423",
+      "adjunctUrl": "finalpage/2017-01-21/1203037423.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2017-04-11T00:00:00+08:00",
+      "title": "关于公司股票可能被实施退市风险警示及11柳化债可能被暂停上市交易的风险提示公告",
+      "announcementId": "1203274723",
+      "adjunctUrl": "finalpage/2017-04-11/1203274723.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2017-04-21T00:00:00+08:00",
+      "title": "关于公司股票可能被实施退市风险警示及11柳化债可能被暂停上市交易的风险提示公告",
+      "announcementId": "1203345808",
+      "adjunctUrl": "finalpage/2017-04-21/1203345808.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2017-04-29T00:00:00+08:00",
+      "title": "关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+      "announcementId": "1203443124",
+      "adjunctUrl": "finalpage/2017-04-29/1203443124.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2017-05-04T00:00:00+08:00",
+      "title": "关于公司股票实施退市风险警示和公司债券可能暂停交易的公告的更正公告",
+      "announcementId": "1203473739",
+      "adjunctUrl": "finalpage/2017-05-04/1203473739.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2018-02-10T00:00:00+08:00",
+      "title": "管理人关于公司股票继续被实施退市风险警示的公告",
+      "announcementId": "1204411847",
+      "adjunctUrl": "finalpage/2018-02-10/1204411847.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-12-14T00:00:00+08:00",
+      "title": "关于申请撤销公司股票退市风险警示及将被实施其他风险警示的公告",
+      "announcementId": "1207165201",
+      "adjunctUrl": "finalpage/2019-12-14/1207165201.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-12-19T00:00:00+08:00",
+      "title": "关于公司股票撤销退市风险警示并实施其他风险警示的公告",
+      "announcementId": "1207176710",
+      "adjunctUrl": "finalpage/2019-12-19/1207176710.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-05-12T00:00:00+08:00",
+      "title": "ST柳化关于申请撤销公司股票其他风险警示的公告",
+      "announcementId": "1209953800",
+      "adjunctUrl": "finalpage/2021-05-12/1209953800.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-05-19T00:00:00+08:00",
+      "title": "ST柳化关于公司股票撤销其他风险警示暨停牌的公告",
+      "announcementId": "1210003292",
+      "adjunctUrl": "finalpage/2021-05-19/1210003292.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-11T00:00:00+08:00",
+      "title": "柳化股份2025年年度业绩预告更正暨股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1225096673",
+      "adjunctUrl": "finalpage/2026-04-11/1225096673.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-17T00:00:00+08:00",
+      "title": "柳化股份关于公司股票可能被实施退市风险警示的第二次风险提示公告",
+      "announcementId": "1225109701",
+      "adjunctUrl": "finalpage/2026-04-17/1225109701.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-23T00:00:00+08:00",
+      "title": "柳化股份关于公司股票可能被实施退市风险警示的第三次风险提示公告",
+      "announcementId": "1225143827",
+      "adjunctUrl": "finalpage/2026-04-23/1225143827.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-25T00:00:00+08:00",
+      "title": "柳化股份关于公司股票被实施退市风险警示暨停牌的公告",
+      "announcementId": "1225183072",
+      "adjunctUrl": "finalpage/2026-04-25/1225183072.PDF",
+      "secCode": "600423",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

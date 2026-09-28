@@ -1,0 +1,127 @@
+{
+  "year": 2004,
+  "label": "remove_risk",
+  "category": "",
+  "searchkey": "撤销风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2004-01-01~2004-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 36,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "bb6cbaf47b6e0927b64a7d4d53b57b987e3c6ea41467330e1d7dec1f76f03551",
+      "response_bytes": 21712,
+      "row_count": 30,
+      "reported_total": 36
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "d14096bdafa5739eba0d084f54fdf263f774cb7d6e18ba6bf939ab0ff4ba4a17",
+      "response_bytes": 4330,
+      "row_count": 6,
+      "reported_total": 36
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600234",
+      "announcementId": "14114036",
+      "announcementTime": 1086126424000,
+      "title": "关于<em>撤销</em>对公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-06-02/14114036.html"
+    },
+    {
+      "symbol": "000005",
+      "announcementId": "14028539",
+      "announcementTime": 1084746600000,
+      "title": "董事会关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-05-17/14028539.html"
+    },
+    {
+      "symbol": "000418",
+      "announcementId": "14018835",
+      "announcementTime": 1084229224000,
+      "title": "关于<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>和特别处理的公告",
+      "adjunctUrl": "finalpage/2004-05-11/14018835.html"
+    },
+    {
+      "symbol": "600758",
+      "announcementId": "14001895",
+      "announcementTime": 1083101877000,
+      "title": "关于<em>撤销</em>“股票退市<em>风险</em><em>警示</em>”的公告",
+      "adjunctUrl": "finalpage/2004-04-28/14001895.html"
+    },
+    {
+      "symbol": "600749",
+      "announcementId": "13954104",
+      "announcementTime": 1082496847000,
+      "title": "关于<em>撤销</em>公司退市<em>风险</em><em>警示</em>及股票特别处理的公告",
+      "adjunctUrl": "finalpage/2004-04-21/13954104.html"
+    },
+    {
+      "symbol": "600842",
+      "announcementId": "13937397",
+      "announcementTime": 1082325017000,
+      "title": "关于<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>及变更股票简称的公告",
+      "adjunctUrl": "finalpage/2004-04-19/13937397.html"
+    },
+    {
+      "symbol": "600766",
+      "announcementId": "13920803",
+      "announcementTime": 1082065886000,
+      "title": "关于<em>撤销</em>股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-04-16/13920803.html"
+    },
+    {
+      "symbol": "000851",
+      "announcementId": "13907034",
+      "announcementTime": 1081982788000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-04-15/13907034.html"
+    },
+    {
+      "symbol": "000560",
+      "announcementId": "13869772",
+      "announcementTime": 1081118400000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-04-05/13869772.html"
+    },
+    {
+      "symbol": "000809",
+      "announcementId": "13861041",
+      "announcementTime": 1080773203000,
+      "title": "关于<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的特别处理的公告",
+      "adjunctUrl": "finalpage/2004-04-01/13861041.html"
+    },
+    {
+      "symbol": "000710",
+      "announcementId": "13845587",
+      "announcementTime": 1080599903000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-03-30/13845587.html"
+    },
+    {
+      "symbol": "000635",
+      "announcementId": "13822672",
+      "announcementTime": 1080168150000,
+      "title": "关于<em>撤销</em>公司股票特别处理及退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-03-25/13822672.html"
+    },
+    {
+      "symbol": "000801",
+      "announcementId": "13796527",
+      "announcementTime": 1079649239000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-03-19/13796527.html"
+    },
+    {
+      "symbol": "000678",
+      "announcementId": "13735241",
+      "announcementTime": 1077748233000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2004-02-26/13735241.html"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "expected_date": "2026-09-04",
+  "release_sha": "dc0752e67611b765aeada8e3c628c669517de574",
+  "bundle": "/home/runner/work/_temp/microcap-whole-delivery-state.zip",
+  "scope": "whole_workspace_delivery",
+  "files": 244
+}

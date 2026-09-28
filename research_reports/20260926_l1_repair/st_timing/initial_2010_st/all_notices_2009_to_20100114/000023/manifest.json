@@ -1,0 +1,425 @@
+{
+  "symbol": "000023",
+  "org_id": "gssz0000023",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000023,gssz0000023",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 63,
+  "page_count": 3,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "b0d25e6c6593e0dcc14d0f957c5c96d7661876b098b24e726c0991636f07333f",
+      "reported_total": 63,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "22a3e9d077bebbb29bdb0c9149a1f4885348aa4baf734bdb583fbf28775d2cb4",
+      "reported_total": 63,
+      "rows": 30
+    },
+    {
+      "page": 3,
+      "raw_sha256": "333d84f620b8474d7b40d60b6107b906cfc5fccf723936735781d7fa0f96c7f5",
+      "reported_total": 63,
+      "rows": 3
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57446825",
+      "announcementTime": 1262039400000,
+      "title": "关于深圳市投资控股有限公司减持股份的公告",
+      "adjunctUrl": "finalpage/2009-12-29/57446825.PDF"
+    },
+    {
+      "announcementId": "57366334",
+      "announcementTime": 1259965980000,
+      "title": "关于终止筹划发行股份购买资产暨关联交易预案的重大资产重组事项公告",
+      "adjunctUrl": "finalpage/2009-12-05/57366334.PDF"
+    },
+    {
+      "announcementId": "57366333",
+      "announcementTime": 1259965800000,
+      "title": "第六届监事会第十二次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-05/57366333.PDF"
+    },
+    {
+      "announcementId": "57366332",
+      "announcementTime": 1259965800000,
+      "title": "第六届董事会第十三次临时会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-05/57366332.PDF"
+    },
+    {
+      "announcementId": "57336055",
+      "announcementTime": 1259274660000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-11-27/57336055.PDF"
+    },
+    {
+      "announcementId": "57336070",
+      "announcementTime": 1259274630000,
+      "title": "株洲市中亿实业混凝土有限公司2009年1-8月财务报表审计报告",
+      "adjunctUrl": "finalpage/2009-11-27/57336070.PDF"
+    },
+    {
+      "announcementId": "57336054",
+      "announcementTime": 1259274600000,
+      "title": "第六届监事会第十一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-11-27/57336054.PDF"
+    },
+    {
+      "announcementId": "57336053",
+      "announcementTime": 1259274600000,
+      "title": "关于收购株洲市中亿实业混凝土有限公司股权的公告",
+      "adjunctUrl": "finalpage/2009-11-27/57336053.PDF"
+    },
+    {
+      "announcementId": "57336052",
+      "announcementTime": 1259274600000,
+      "title": "第六届董事会第十二次临时会议决议公告",
+      "adjunctUrl": "finalpage/2009-11-27/57336052.PDF"
+    },
+    {
+      "announcementId": "57336051",
+      "announcementTime": 1259274600000,
+      "title": "拟收购株洲市中亿实业混凝土有限公司80%股权项目资产评估报告书",
+      "adjunctUrl": "finalpage/2009-11-27/57336051.PDF"
+    },
+    {
+      "announcementId": "57332072",
+      "announcementTime": 1259188230000,
+      "title": "风险提示性公告",
+      "adjunctUrl": "finalpage/2009-11-26/57332072.PDF"
+    },
+    {
+      "announcementId": "57186566",
+      "announcementTime": 1256250600000,
+      "title": "内幕信息知情人登记制度（2009年10月）",
+      "adjunctUrl": "finalpage/2009-10-23/57186566.PDF"
+    },
+    {
+      "announcementId": "57186565",
+      "announcementTime": 1256250600000,
+      "title": "选聘会计师事务所专项制度（2009年10月）",
+      "adjunctUrl": "finalpage/2009-10-23/57186565.PDF"
+    },
+    {
+      "announcementId": "57186564",
+      "announcementTime": 1256250600000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-23/57186564.PDF"
+    },
+    {
+      "announcementId": "57186561",
+      "announcementTime": 1256250600000,
+      "title": "第六届监事会第十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-23/57186561.PDF"
+    },
+    {
+      "announcementId": "57186560",
+      "announcementTime": 1256250600000,
+      "title": "第六届董事会第十一次临时会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-23/57186560.PDF"
+    },
+    {
+      "announcementId": "57179155",
+      "announcementTime": 1256164260000,
+      "title": "关于深圳市投资控股有限公司减持股份的公告",
+      "adjunctUrl": "finalpage/2009-10-22/57179155.PDF"
+    },
+    {
+      "announcementId": "57144236",
+      "announcementTime": 1255559940000,
+      "title": "2009年第三季度业绩预增公告",
+      "adjunctUrl": "finalpage/2009-10-15/57144236.PDF"
+    },
+    {
+      "announcementId": "57061047",
+      "announcementTime": 1253140500000,
+      "title": "限售股份解除限售提示性公告",
+      "adjunctUrl": "finalpage/2009-09-17/57061047.PDF"
+    },
+    {
+      "announcementId": "57035888",
+      "announcementTime": 1252535400000,
+      "title": "深圳市投资控股有限公司简式权益变动报告书",
+      "adjunctUrl": "finalpage/2009-09-10/57035888.PDF"
+    },
+    {
+      "announcementId": "55988159",
+      "announcementTime": 1250548320000,
+      "title": "2008年度分红派息实施公告",
+      "adjunctUrl": "finalpage/2009-08-18/55988159.PDF"
+    },
+    {
+      "announcementId": "55870030",
+      "announcementTime": 1250202600000,
+      "title": "关于取得上海浦东发展银行股份有限公司深圳分行借款的公告",
+      "adjunctUrl": "finalpage/2009-08-14/55870030.PDF"
+    },
+    {
+      "announcementId": "55744640",
+      "announcementTime": 1250029800000,
+      "title": "董事会公告",
+      "adjunctUrl": "finalpage/2009-08-12/55744640.PDF"
+    },
+    {
+      "announcementId": "55518920",
+      "announcementTime": 1249597800000,
+      "title": "2009年半年度审计报告",
+      "adjunctUrl": "finalpage/2009-08-07/55518920.PDF"
+    },
+    {
+      "announcementId": "55518919",
+      "announcementTime": 1249597800000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-07/55518919.PDF"
+    },
+    {
+      "announcementId": "55518918",
+      "announcementTime": 1249597800000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-07/55518918.PDF"
+    },
+    {
+      "announcementId": "55216440",
+      "announcementTime": 1248906600000,
+      "title": "关于取得江苏银行深圳分行借款的公告",
+      "adjunctUrl": "finalpage/2009-07-30/55216440.PDF"
+    },
+    {
+      "announcementId": "54456665",
+      "announcementTime": 1247437980000,
+      "title": "2009年半年度业绩预告修正公告",
+      "adjunctUrl": "finalpage/2009-07-13/54456665.PDF"
+    },
+    {
+      "announcementId": "54418335",
+      "announcementTime": 1247092200000,
+      "title": "第六届董事会第四次会议决议公告",
+      "adjunctUrl": "finalpage/2009-07-09/54418335.PDF"
+    },
+    {
+      "announcementId": "54418334",
+      "announcementTime": 1247092200000,
+      "title": "第六届监事会第八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-07-09/54418334.PDF"
+    },
+    {
+      "announcementId": "54418333",
+      "announcementTime": 1247092200000,
+      "title": "联合证券有限责任公司关于公司发行股份购买资产暨关联交易预案之独立财务顾问核查意见",
+      "adjunctUrl": "finalpage/2009-07-09/54418333.PDF"
+    },
+    {
+      "announcementId": "54418332",
+      "announcementTime": 1247092200000,
+      "title": "独立董事关于发行股份购买资产暨关联交易预案的独立意见",
+      "adjunctUrl": "finalpage/2009-07-09/54418332.PDF"
+    },
+    {
+      "announcementId": "54418331",
+      "announcementTime": 1247092200000,
+      "title": "发行股份购买资产暨关联交易预案",
+      "adjunctUrl": "finalpage/2009-07-09/54418331.PDF"
+    },
+    {
+      "announcementId": "54267636",
+      "announcementTime": 1246833000000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-07-06/54267636.PDF"
+    },
+    {
+      "announcementId": "54058750",
+      "announcementTime": 1246314600000,
+      "title": "关于取得中信银行股份有限公司借款的公告",
+      "adjunctUrl": "finalpage/2009-06-30/54058750.PDF"
+    },
+    {
+      "announcementId": "54042768",
+      "announcementTime": 1246228200000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-06-29/54042768.PDF"
+    },
+    {
+      "announcementId": "54042778",
+      "announcementTime": 1246055400000,
+      "title": "公司章程（2009年6月）",
+      "adjunctUrl": "finalpage/2009-06-27/54042778.PDF"
+    },
+    {
+      "announcementId": "54042777",
+      "announcementTime": 1246055400000,
+      "title": "2008年年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-06-27/54042777.PDF"
+    },
+    {
+      "announcementId": "54042776",
+      "announcementTime": 1246055400000,
+      "title": "2008年年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-06-27/54042776.PDF"
+    },
+    {
+      "announcementId": "53812846",
+      "announcementTime": 1245709800000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-06-23/53812846.PDF"
+    },
+    {
+      "announcementId": "53589515",
+      "announcementTime": 1245191400000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-06-17/53589515.PDF"
+    },
+    {
+      "announcementId": "53376775",
+      "announcementTime": 1244673000000,
+      "title": "临时停牌公告",
+      "adjunctUrl": "finalpage/2009-06-11/53376775.PDF"
+    },
+    {
+      "announcementId": "53185016",
+      "announcementTime": 1244241000000,
+      "title": "关于召开2008年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-06-06/53185016.PDF"
+    },
+    {
+      "announcementId": "52703170",
+      "announcementTime": 1242859140000,
+      "title": "关于深圳市投资控股有限公司减持股份的公告",
+      "adjunctUrl": "finalpage/2009-05-21/52703170.PDF"
+    },
+    {
+      "announcementId": "52347216",
+      "announcementTime": 1242081000000,
+      "title": "关于取得杭州银行股份有限公司借款的公告",
+      "adjunctUrl": "finalpage/2009-05-12/52347216.PDF"
+    },
+    {
+      "announcementId": "51742773",
+      "announcementTime": 1240785000000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-27/51742773.PDF"
+    },
+    {
+      "announcementId": "51742770",
+      "announcementTime": 1240785000000,
+      "title": "第六届监事会第七次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-27/51742770.PDF"
+    },
+    {
+      "announcementId": "51742769",
+      "announcementTime": 1240785000000,
+      "title": "第六届董事会第五次临时会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-27/51742769.PDF"
+    },
+    {
+      "announcementId": "50906188",
+      "announcementTime": 1238711400000,
+      "title": "关于公司控股股东及其他关联方占用资金情况的专项说明",
+      "adjunctUrl": "finalpage/2009-04-03/50906188.PDF"
+    },
+    {
+      "announcementId": "50906187",
+      "announcementTime": 1238711400000,
+      "title": "独立董事对相关事项的专项说明及独立意见",
+      "adjunctUrl": "finalpage/2009-04-03/50906187.PDF"
+    },
+    {
+      "announcementId": "50906186",
+      "announcementTime": 1238711400000,
+      "title": "关于与深圳市东部开发（集团）有限公司签署混凝土日常关联交易框架协议的独立董事事前认可意见",
+      "adjunctUrl": "finalpage/2009-04-03/50906186.PDF"
+    },
+    {
+      "announcementId": "50906185",
+      "announcementTime": 1238711400000,
+      "title": "与东部集团签署关于商品混凝土日常关联交易公告",
+      "adjunctUrl": "finalpage/2009-04-03/50906185.PDF"
+    },
+    {
+      "announcementId": "50906184",
+      "announcementTime": 1238711400000,
+      "title": "内部控制自我评价报告",
+      "adjunctUrl": "finalpage/2009-04-03/50906184.PDF"
+    },
+    {
+      "announcementId": "50906183",
+      "announcementTime": 1238711400000,
+      "title": "2009年第1季度业绩预亏公告",
+      "adjunctUrl": "finalpage/2009-04-03/50906183.PDF"
+    },
+    {
+      "announcementId": "50906182",
+      "announcementTime": 1238711400000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-04-03/50906182.PDF"
+    },
+    {
+      "announcementId": "50906181",
+      "announcementTime": 1238711400000,
+      "title": "第六届监事会第六次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-03/50906181.PDF"
+    },
+    {
+      "announcementId": "50906180",
+      "announcementTime": 1238711400000,
+      "title": "第六届董事会第三次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-03/50906180.PDF"
+    },
+    {
+      "announcementId": "50906179",
+      "announcementTime": 1238711400000,
+      "title": "2008年度审计报告",
+      "adjunctUrl": "finalpage/2009-04-03/50906179.PDF"
+    },
+    {
+      "announcementId": "50906177",
+      "announcementTime": 1238711400000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-04-03/50906177.PDF"
+    },
+    {
+      "announcementId": "50550024",
+      "announcementTime": 1238020200000,
+      "title": "关于深圳市投资控股有限公司减持股份的公告",
+      "adjunctUrl": "finalpage/2009-03-26/50550024.PDF"
+    },
+    {
+      "announcementId": "49383375",
+      "announcementTime": 1235082900000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-02-20/49383375.PDF"
+    },
+    {
+      "announcementId": "49269473",
+      "announcementTime": 1234910280000,
+      "title": "临时停牌公告",
+      "adjunctUrl": "finalpage/2009-02-18/49269473.PDF"
+    },
+    {
+      "announcementId": "48916310",
+      "announcementTime": 1233959400000,
+      "title": "关于深圳市投资控股有限公司减持股份的公告",
+      "adjunctUrl": "finalpage/2009-02-07/48916310.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

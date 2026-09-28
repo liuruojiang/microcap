@@ -1,0 +1,50 @@
+{
+  "year": 2001,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2001-01-01~2001-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 12,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "31b1ef210fb6220bc6d65ae55b02271458d6f00a78a20a42ef6164d6f65e4a70",
+      "response_bytes": 7542,
+      "row_count": 12,
+      "reported_total": 12
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600898",
+      "announcementId": "509155",
+      "announcementTime": 1002620464000,
+      "title": "郑州百文股份有限公司（集团）重大事项公告",
+      "adjunctUrl": "finalpage/2001-10-09/509155.html"
+    },
+    {
+      "symbol": "600898",
+      "announcementId": "509124",
+      "announcementTime": 992684042000,
+      "title": "郑州百文股份有限公司（集团）关于继续暂停股票特别转让服务的公告",
+      "adjunctUrl": "finalpage/2001-06-16/509124.html"
+    },
+    {
+      "symbol": "600898",
+      "announcementId": "509104",
+      "announcementTime": 990091787000,
+      "title": "郑州百文股份有限公司（集团）关于继续暂停股票特别转让服务的公告",
+      "adjunctUrl": "finalpage/2001-05-17/509104.html"
+    },
+    {
+      "symbol": "600898",
+      "announcementId": "509093",
+      "announcementTime": 989400350000,
+      "title": "郑州百文股份有限公司(集团)董事会关于办理重组所涉及的股份变动手续的公告",
+      "adjunctUrl": "finalpage/2001-05-09/509093.html"
+    }
+  ],
+  "complete": true
+}

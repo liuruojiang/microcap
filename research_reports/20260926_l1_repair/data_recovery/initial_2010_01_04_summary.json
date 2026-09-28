@@ -1,0 +1,12 @@
+{
+  "date": "2010-01-04",
+  "old_executed_seed_100th_symbol": "002193",
+  "old_executed_seed_100th_cap": 1904000000.0,
+  "old_seed_cap_nonmonotonic_adjacent_count": 0,
+  "delisted_listed_symbols": 169,
+  "delisted_exact_price": 154,
+  "delisted_exact_price_with_three_date_shares": 154,
+  "delisted_possible_below_rank100": 24,
+  "unknown_st_or_executability": true,
+  "note": "Executed-seed rank100 cap is a comparator, not a complete reconstructed initial target membership decision."
+}

@@ -1,0 +1,47 @@
+{
+  "symbol": "600687",
+  "org_id": "gssh0600687",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600687,gssh0600687",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 2,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "2abe2d76684476c93d685be7950579dc68f90ef142b8a06236b22b78894db2d2",
+      "reported_total": 2,
+      "rows": 2
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57521594",
+      "announcementTime": 1263940500000,
+      "title": "关于2010年第二次临时股东大会增加临时提案的通知",
+      "adjunctUrl": "finalpage/2010-01-20/57521594.PDF"
+    },
+    {
+      "announcementId": "57521593",
+      "announcementTime": 1263940500000,
+      "title": "第六届董事会第二十七次会议决议公告",
+      "adjunctUrl": "finalpage/2010-01-20/57521593.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

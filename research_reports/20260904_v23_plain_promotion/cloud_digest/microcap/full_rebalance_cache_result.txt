@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "errors": [],
+  "cache_root": "/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap/.microcap_index_cache",
+  "counts": {
+    "prices_raw": 4975,
+    "security_meta": 4975,
+    "share_change": 4975
+  },
+  "active_universe_count": 5214,
+  "min_symbols": 4500
+}

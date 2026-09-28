@@ -1,0 +1,185 @@
+{
+  "symbol": "002013",
+  "org_id": "gssz0002013",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "002013,gssz0002013",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 25,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "2b1c79c8f2432d803ad8a2b5fd7c08091c6824678bedeaa1bd379696b6db8892",
+      "reported_total": 25,
+      "rows": 25
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57632572",
+      "announcementTime": 1267223400000,
+      "title": "宏源证券股份有限公司关于公司调整部分募集资金投资项目建设内容的核查意见",
+      "adjunctUrl": "finalpage/2010-02-27/57632572.PDF"
+    },
+    {
+      "announcementId": "57632571",
+      "announcementTime": 1267223400000,
+      "title": "宏源证券股份有限公司关于公司2009年度募集资金存放及使用情况的核查意见",
+      "adjunctUrl": "finalpage/2010-02-27/57632571.PDF"
+    },
+    {
+      "announcementId": "57632570",
+      "announcementTime": 1267223400000,
+      "title": "年报披露重大差错责任追究制度（2010年2月）",
+      "adjunctUrl": "finalpage/2010-02-27/57632570.PDF"
+    },
+    {
+      "announcementId": "57632569",
+      "announcementTime": 1267223400000,
+      "title": "年度报告工作制度（2010年2月）",
+      "adjunctUrl": "finalpage/2010-02-27/57632569.PDF"
+    },
+    {
+      "announcementId": "57632568",
+      "announcementTime": 1267223400000,
+      "title": "外部单位报送信息管理制度（2010年2月）",
+      "adjunctUrl": "finalpage/2010-02-27/57632568.PDF"
+    },
+    {
+      "announcementId": "57632567",
+      "announcementTime": 1267223400000,
+      "title": "内幕信息知情人登记制度（2010年2月）",
+      "adjunctUrl": "finalpage/2010-02-27/57632567.PDF"
+    },
+    {
+      "announcementId": "57632566",
+      "announcementTime": 1267223400000,
+      "title": "独立董事2009年度述职报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632566.PDF"
+    },
+    {
+      "announcementId": "57632565",
+      "announcementTime": 1267223400000,
+      "title": "独立董事对相关事项的独立意见",
+      "adjunctUrl": "finalpage/2010-02-27/57632565.PDF"
+    },
+    {
+      "announcementId": "57632564",
+      "announcementTime": 1267223400000,
+      "title": "关于公司募集资金年度使用情况的鉴证报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632564.PDF"
+    },
+    {
+      "announcementId": "57632563",
+      "announcementTime": 1267223400000,
+      "title": "关于2009年度募集资金存放与使用情况的专项说明",
+      "adjunctUrl": "finalpage/2010-02-27/57632563.PDF"
+    },
+    {
+      "announcementId": "57632562",
+      "announcementTime": 1267223400000,
+      "title": "内部控制制度报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632562.PDF"
+    },
+    {
+      "announcementId": "57632561",
+      "announcementTime": 1267223400000,
+      "title": "董事会关于2009年度内部控制的自我评价报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632561.PDF"
+    },
+    {
+      "announcementId": "57632560",
+      "announcementTime": 1267223400000,
+      "title": "2009年年度报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632560.PDF"
+    },
+    {
+      "announcementId": "57632559",
+      "announcementTime": 1267223400000,
+      "title": "关于公司关联方占用上市公司资金情况的专项审核报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632559.PDF"
+    },
+    {
+      "announcementId": "57632558",
+      "announcementTime": 1267223400000,
+      "title": "第四届监事会第二次会议决议",
+      "adjunctUrl": "finalpage/2010-02-27/57632558.PDF"
+    },
+    {
+      "announcementId": "57632557",
+      "announcementTime": 1267223400000,
+      "title": "关于召开2009年度股东大会的通知",
+      "adjunctUrl": "finalpage/2010-02-27/57632557.PDF"
+    },
+    {
+      "announcementId": "57632556",
+      "announcementTime": 1267223400000,
+      "title": "第四届董事会第二次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-27/57632556.PDF"
+    },
+    {
+      "announcementId": "57632555",
+      "announcementTime": 1267223400000,
+      "title": "2009年年度审计报告",
+      "adjunctUrl": "finalpage/2010-02-27/57632555.PDF"
+    },
+    {
+      "announcementId": "57632553",
+      "announcementTime": 1267223400000,
+      "title": "2009年年度报告摘要",
+      "adjunctUrl": "finalpage/2010-02-27/57632553.PDF"
+    },
+    {
+      "announcementId": "57632552",
+      "announcementTime": 1267223400000,
+      "title": "审计情况说明",
+      "adjunctUrl": "finalpage/2010-02-27/57632552.PDF"
+    },
+    {
+      "announcementId": "57632551",
+      "announcementTime": 1267223400000,
+      "title": "董事会关于公司合并报表范围发生变更的公告",
+      "adjunctUrl": "finalpage/2010-02-27/57632551.PDF"
+    },
+    {
+      "announcementId": "57632550",
+      "announcementTime": 1267223400000,
+      "title": "关于调整公司募集资金项目部分建设内容的公告",
+      "adjunctUrl": "finalpage/2010-02-27/57632550.PDF"
+    },
+    {
+      "announcementId": "57632549",
+      "announcementTime": 1267223400000,
+      "title": "关于举办2009年度报告网上说明会的公告",
+      "adjunctUrl": "finalpage/2010-02-27/57632549.PDF"
+    },
+    {
+      "announcementId": "57599148",
+      "announcementTime": 1265754600000,
+      "title": "关于以自有资金归还募集资金的公告",
+      "adjunctUrl": "finalpage/2010-02-10/57599148.PDF"
+    },
+    {
+      "announcementId": "57520914",
+      "announcementTime": 1263940380000,
+      "title": "2009年度业绩快报",
+      "adjunctUrl": "finalpage/2010-01-20/57520914.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

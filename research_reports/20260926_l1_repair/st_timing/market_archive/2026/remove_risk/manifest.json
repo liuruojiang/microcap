@@ -1,0 +1,91 @@
+{
+  "year": 2026,
+  "label": "remove_risk",
+  "category": "",
+  "searchkey": "撤销风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2026-01-01~2026-09-24",
+  "page_size_requested": 30,
+  "totalAnnouncement": 309,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "182213c9fa071ce7bf5cce8ce3fb71c72c6ded9f28fe88add85b20234c40a2ed",
+      "response_bytes": 24024,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "da0ffda52fe6e129c22e3fc6942a04683bfdbc23810fecf4821d282dfd2dace2",
+      "response_bytes": 23771,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "d0689686a639142e11f794a0399dc9314376904826b7c2f2486047b0efda96a8",
+      "response_bytes": 24470,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "60aa5603cb189b0067f4c1988870411cfef3a95026b1a39ef1583a231df714b4",
+      "response_bytes": 23752,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "ae96957a590c209fafba976a9456f33ba2b4e6e9fc9b5c6ffbf61f151d630a69",
+      "response_bytes": 24062,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "eb6f28ca7638f8621586e218241a4f8f865be398adf4688667cd3eb25ede4dd8",
+      "response_bytes": 24591,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 7,
+      "sha256_raw_response": "672283a38262679724a019c53eb4f386de2dbb9978ed4b3cfa0559a545498e97",
+      "response_bytes": 23833,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 8,
+      "sha256_raw_response": "00dd3eb45994a7d43640c7ceedbb10289131b54b8dca968d4bba053999d5f067",
+      "response_bytes": 23828,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 9,
+      "sha256_raw_response": "95f1699d1d21719e56c61d31d77c78f8399281bd68fa6a78c3ab6084e07630bc",
+      "response_bytes": 24214,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 10,
+      "sha256_raw_response": "56f2d1c880ddf45aca148bbae88b839c0bc66446a758a57db53ceaebb9592073",
+      "response_bytes": 25040,
+      "row_count": 30,
+      "reported_total": 309
+    },
+    {
+      "page": 11,
+      "sha256_raw_response": "1d65d629ec26997e4fc65204bcf7b0d80d620753fba5f254bbe198396409648b",
+      "response_bytes": 7953,
+      "row_count": 9,
+      "reported_total": 309
+    }
+  ],
+  "candidate_announcements": [],
+  "complete": true
+}

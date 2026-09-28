@@ -1,0 +1,266 @@
+{
+  "symbol": "600187",
+  "org_id": "gssh0600187",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 15,
+      "pages_fetched": 1,
+      "first_page_sha256": "27b41ed4a30d93e849d52837226044a2ab1f5b9dc3b46b25e9f9952513762575",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "27b41ed4a30d93e849d52837226044a2ab1f5b9dc3b46b25e9f9952513762575"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 8,
+      "pages_fetched": 1,
+      "first_page_sha256": "99cf86283dcefd6b7d07052ad32ec5ce4839b7cc01f0666e03e1e4676288dd68",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "99cf86283dcefd6b7d07052ad32ec5ce4839b7cc01f0666e03e1e4676288dd68"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "b30e2602d27848be26ee9f1d7f83c67b474befb22177754230b7d3d3b580931e",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "b30e2602d27848be26ee9f1d7f83c67b474befb22177754230b7d3d3b580931e"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "00f81b8b3b72ba925a712fd32d32ccab5658e075d49628cefcc508b771b3235b",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "00f81b8b3b72ba925a712fd32d32ccab5658e075d49628cefcc508b771b3235b"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2005-04-20T05:42:00+08:00",
+      "title": "关于股票实行退市风险的警示公告",
+      "announcementId": "15255709",
+      "adjunctUrl": "finalpage/2005-04-20/15255709.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2006-05-16T07:06:00+08:00",
+      "title": "关于股票暂停上市的公告",
+      "announcementId": "17089213",
+      "adjunctUrl": "finalpage/2006-05-16/17089213.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2007-05-15T05:45:00+08:00",
+      "title": "关于申请上市的提示性公告",
+      "announcementId": "23458511",
+      "adjunctUrl": "finalpage/2007-05-15/23458511.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2007-05-22T05:45:00+08:00",
+      "title": "董事会关于上海证券交易所受理公司股票恢复上市申请的公告",
+      "announcementId": "23646509",
+      "adjunctUrl": "finalpage/2007-05-22/23646509.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2007-05-29T05:45:00+08:00",
+      "title": "关于补充恢复上市申请材料的公告",
+      "announcementId": "23851409",
+      "adjunctUrl": "finalpage/2007-05-29/23851409.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2007-07-13T05:45:00+08:00",
+      "title": "关于恢复上市进展情况的公告",
+      "announcementId": "29846354",
+      "adjunctUrl": "finalpage/2007-07-13/29846354.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2007-10-19T05:45:00+08:00",
+      "title": "风险提示性公告",
+      "announcementId": "33916722",
+      "adjunctUrl": "finalpage/2007-10-19/33916722.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2008-09-06T06:30:00+08:00",
+      "title": "关于恢复上市进展情况的公告 ",
+      "announcementId": "43130501",
+      "adjunctUrl": "finalpage/2008-09-06/43130501.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2008-10-24T06:30:00+08:00",
+      "title": "关于恢复上市进展情况的公告 ",
+      "announcementId": "44571184",
+      "adjunctUrl": "finalpage/2008-10-24/44571184.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2009-03-06T06:30:00+08:00",
+      "title": "关于恢复上市进展情况的公告",
+      "announcementId": "49883494",
+      "adjunctUrl": "finalpage/2009-03-06/49883494.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2009-04-14T06:30:00+08:00",
+      "title": "关于公司股票恢复上市的公告",
+      "announcementId": "51230700",
+      "adjunctUrl": "finalpage/2009-04-14/51230700.PDF",
+      "secCode": "600187",
+      "query_category": "category_tbclts_szsh",
+      "query_searchkey": ""
+    },
+    {
+      "notice_time_shanghai": "2010-03-18T06:31:00+08:00",
+      "title": "关于申请股票交易撤销其他特别处理并变更股票简称的公告",
+      "announcementId": "57700548",
+      "adjunctUrl": "finalpage/2010-03-18/57700548.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "撤销特别处理"
+    },
+    {
+      "notice_time_shanghai": "2010-08-25T06:32:00+08:00",
+      "title": "关于股票交易撤销其他特别处理并变更股票简称的公告",
+      "announcementId": "58350339",
+      "adjunctUrl": "finalpage/2010-08-25/58350339.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "撤销特别处理"
+    },
+    {
+      "notice_time_shanghai": "2026-01-30T00:00:00+08:00",
+      "title": "公司股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1224956491",
+      "adjunctUrl": "finalpage/2026-01-30/1224956491.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-02-28T00:00:00+08:00",
+      "title": "公司股票可能被实施退市风险警示的第二次风险提示公告",
+      "announcementId": "1224987859",
+      "adjunctUrl": "finalpage/2026-02-28/1224987859.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-03-28T00:00:00+08:00",
+      "title": "公司股票可能被实施退市风险警示的第三次风险提示公告",
+      "announcementId": "1225042358",
+      "adjunctUrl": "finalpage/2026-03-28/1225042358.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-30T00:00:00+08:00",
+      "title": "关于实施退市风险警示及叠加其他风险警示暨停牌的公告",
+      "announcementId": "1225268438",
+      "adjunctUrl": "finalpage/2026-04-30/1225268438.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-01T00:00:00+08:00",
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "announcementId": "1225400864",
+      "adjunctUrl": "finalpage/2026-07-01/1225400864.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-01T00:00:00+08:00",
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "announcementId": "1225452144",
+      "adjunctUrl": "finalpage/2026-08-01/1225452144.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-09-01T00:00:00+08:00",
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "announcementId": "1225538055",
+      "adjunctUrl": "finalpage/2026-09-01/1225538055.PDF",
+      "secCode": "600187",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

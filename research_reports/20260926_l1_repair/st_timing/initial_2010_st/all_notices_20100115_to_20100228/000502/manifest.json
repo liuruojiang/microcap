@@ -1,0 +1,95 @@
+{
+  "symbol": "000502",
+  "org_id": "gssz0000502",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000502,gssz0000502",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 10,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "6283671b0ef02ee15032822f03b13b6ec15f5cae725a8568c880cb2b76f55b47",
+      "reported_total": 10,
+      "rows": 10
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57598424",
+      "announcementTime": 1265754600000,
+      "title": "对外担保进展公告",
+      "adjunctUrl": "finalpage/2010-02-10/57598424.PDF"
+    },
+    {
+      "announcementId": "57594223",
+      "announcementTime": 1265668200000,
+      "title": "2010年第一次临时股东大会法律意见书",
+      "adjunctUrl": "finalpage/2010-02-09/57594223.PDF"
+    },
+    {
+      "announcementId": "57594222",
+      "announcementTime": 1265668200000,
+      "title": "股东减持股份公告",
+      "adjunctUrl": "finalpage/2010-02-09/57594222.PDF"
+    },
+    {
+      "announcementId": "57594221",
+      "announcementTime": 1265668200000,
+      "title": "2010年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-02-09/57594221.PDF"
+    },
+    {
+      "announcementId": "57535230",
+      "announcementTime": 1264199400000,
+      "title": "第八届董事会第六次会议决议公告",
+      "adjunctUrl": "finalpage/2010-01-23/57535230.PDF"
+    },
+    {
+      "announcementId": "57535229",
+      "announcementTime": 1264199400000,
+      "title": "对外担保公告",
+      "adjunctUrl": "finalpage/2010-01-23/57535229.PDF"
+    },
+    {
+      "announcementId": "57535228",
+      "announcementTime": 1264199400000,
+      "title": "关于召开2010年第一次临时股东大会的通知公告",
+      "adjunctUrl": "finalpage/2010-01-23/57535228.PDF"
+    },
+    {
+      "announcementId": "57525391",
+      "announcementTime": 1264026600000,
+      "title": "关于诉讼事项进展的公告",
+      "adjunctUrl": "finalpage/2010-01-21/57525391.PDF"
+    },
+    {
+      "announcementId": "57525390",
+      "announcementTime": 1264026600000,
+      "title": "股东减持股份公告",
+      "adjunctUrl": "finalpage/2010-01-21/57525390.PDF"
+    },
+    {
+      "announcementId": "57510226",
+      "announcementTime": 1263594600000,
+      "title": "关于解除股份限售的提示性公告",
+      "adjunctUrl": "finalpage/2010-01-16/57510226.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

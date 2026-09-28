@@ -1,0 +1,40 @@
+{
+  "retrieved_utc": "2026-09-26T13:54:32.760119+00:00",
+  "queries": [
+    {
+      "code": "sz.000787",
+      "start": "2013-01-01",
+      "end": "2013-03-15",
+      "rows": 26,
+      "first": "2013-01-04",
+      "last": "2013-02-08",
+      "sha256": "ba6dc83b81d393010dc5ca905e89248274f1bd6f6df39d73668a672114b2a60b"
+    },
+    {
+      "code": "sz.002071",
+      "start": "2021-04-20",
+      "end": "2021-06-01",
+      "rows": 11,
+      "first": "2021-04-20",
+      "last": "2021-05-07",
+      "sha256": "3557ccc7c9f91fdea6c3dc34b24707a216de3c5a5a72576d14dbb58e5c2ce23b"
+    },
+    {
+      "code": "sh.600070",
+      "start": "2025-04-10",
+      "end": "2025-06-01",
+      "rows": 15,
+      "first": "2025-04-10",
+      "last": "2025-04-30",
+      "sha256": "1d15ffc4939ad6aad196d28591b10006a427b268b77bcbbe3d2892d834ab5a04"
+    }
+  ],
+  "calendar": {
+    "fields": [
+      "calendar_date",
+      "is_trading_day"
+    ],
+    "rows": 4839,
+    "sha256": "a34ed1b2692c8598ad16ab7ed3eea90c7360a0e4680ad259ee0bfb7ec19678da"
+  }
+}

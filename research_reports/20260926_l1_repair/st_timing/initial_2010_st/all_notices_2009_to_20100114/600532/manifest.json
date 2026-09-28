@@ -1,0 +1,365 @@
+{
+  "symbol": "600532",
+  "org_id": "gssh0600532",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600532,gssh0600532",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 54,
+  "page_count": 2,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "b73fbbc64bdc6deafb736b2e09ac202e485c49d9dfc3cc739230343ed3187b6d",
+      "reported_total": 54,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "bb48c18591dfd591fe12a5d72c558650996d6d69b89520531ee2e3d3c7d4a04e",
+      "reported_total": 54,
+      "rows": 24
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57503300",
+      "announcementTime": 1263422100000,
+      "title": "控股股东减持公告",
+      "adjunctUrl": "finalpage/2010-01-14/57503300.PDF"
+    },
+    {
+      "announcementId": "57452709",
+      "announcementTime": 1262126100000,
+      "title": "关于控股股东拟协议转让所持国有股份进展情况的公告",
+      "adjunctUrl": "finalpage/2009-12-30/57452709.PDF"
+    },
+    {
+      "announcementId": "57452708",
+      "announcementTime": 1262126100000,
+      "title": "关于获得政府补助的公告",
+      "adjunctUrl": "finalpage/2009-12-30/57452708.PDF"
+    },
+    {
+      "announcementId": "57447677",
+      "announcementTime": 1262039700000,
+      "title": "2009年度第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-12-29/57447677.PDF"
+    },
+    {
+      "announcementId": "57447676",
+      "announcementTime": 1262039700000,
+      "title": "四届一次监事会会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-29/57447676.PDF"
+    },
+    {
+      "announcementId": "57447675",
+      "announcementTime": 1262039700000,
+      "title": "第四届董事会第一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-29/57447675.PDF"
+    },
+    {
+      "announcementId": "57447673",
+      "announcementTime": 1262039700000,
+      "title": "2009年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-12-29/57447673.PDF"
+    },
+    {
+      "announcementId": "57416012",
+      "announcementTime": 1261175700000,
+      "title": "2009年第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-12-19/57416012.PDF"
+    },
+    {
+      "announcementId": "57391256",
+      "announcementTime": 1260570900000,
+      "title": "出售资产暨关联交易公告",
+      "adjunctUrl": "finalpage/2009-12-12/57391256.PDF"
+    },
+    {
+      "announcementId": "57391255",
+      "announcementTime": 1260570900000,
+      "title": "三届十四次监事会会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-12/57391255.PDF"
+    },
+    {
+      "announcementId": "57391254",
+      "announcementTime": 1260570900000,
+      "title": "第三届董事会第二十五次会议决议公告暨召开2009年度第一次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-12-12/57391254.PDF"
+    },
+    {
+      "announcementId": "57351733",
+      "announcementTime": 1259706900000,
+      "title": "控股股东质押股权部分解除公告",
+      "adjunctUrl": "finalpage/2009-12-02/57351733.PDF"
+    },
+    {
+      "announcementId": "57347397",
+      "announcementTime": 1259620500000,
+      "title": "控股股东减持公告",
+      "adjunctUrl": "finalpage/2009-12-01/57347397.PDF"
+    },
+    {
+      "announcementId": "57327739",
+      "announcementTime": 1259102100000,
+      "title": "关于控股股东拟协议转让所持国有股份进展情况的公告",
+      "adjunctUrl": "finalpage/2009-11-25/57327739.PDF"
+    },
+    {
+      "announcementId": "57196671",
+      "announcementTime": 1256337300000,
+      "title": "三届二十四次董事会会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-24/57196671.PDF"
+    },
+    {
+      "announcementId": "57196585",
+      "announcementTime": 1256337000000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-24/57196585.PDF"
+    },
+    {
+      "announcementId": "57168879",
+      "announcementTime": 1255991700000,
+      "title": "关于控股股东拟协议转让所持国有股份进展情况的公告",
+      "adjunctUrl": "finalpage/2009-10-20/57168879.PDF"
+    },
+    {
+      "announcementId": "57168878",
+      "announcementTime": 1255991700000,
+      "title": "董事会秘书辞职的公告",
+      "adjunctUrl": "finalpage/2009-10-20/57168878.PDF"
+    },
+    {
+      "announcementId": "56893957",
+      "announcementTime": 1252103700000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2009-09-05/56893957.PDF"
+    },
+    {
+      "announcementId": "56887678",
+      "announcementTime": 1252017300000,
+      "title": "股东减持公告",
+      "adjunctUrl": "finalpage/2009-09-04/56887678.PDF"
+    },
+    {
+      "announcementId": "56229278",
+      "announcementTime": 1250894100000,
+      "title": "副总经理辞职的公告",
+      "adjunctUrl": "finalpage/2009-08-22/56229278.PDF"
+    },
+    {
+      "announcementId": "56229075",
+      "announcementTime": 1250893800000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-22/56229075.PDF"
+    },
+    {
+      "announcementId": "56229074",
+      "announcementTime": 1250893800000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-22/56229074.PDF"
+    },
+    {
+      "announcementId": "56216243",
+      "announcementTime": 1250807700000,
+      "title": "关于控股股东华阳集团人事变动的公告",
+      "adjunctUrl": "finalpage/2009-08-21/56216243.PDF"
+    },
+    {
+      "announcementId": "56091085",
+      "announcementTime": 1250634900000,
+      "title": "关于获得政府补贴的公告",
+      "adjunctUrl": "finalpage/2009-08-19/56091085.PDF"
+    },
+    {
+      "announcementId": "56091084",
+      "announcementTime": 1250634900000,
+      "title": "副总经理辞职公告",
+      "adjunctUrl": "finalpage/2009-08-19/56091084.PDF"
+    },
+    {
+      "announcementId": "55336334",
+      "announcementTime": 1248993300000,
+      "title": "关于控股股东拟协议转让所持国有股份进展情况的公告",
+      "adjunctUrl": "finalpage/2009-07-31/55336334.PDF"
+    },
+    {
+      "announcementId": "55223967",
+      "announcementTime": 1248906900000,
+      "title": "副总经理辞职公告",
+      "adjunctUrl": "finalpage/2009-07-30/55223967.PDF"
+    },
+    {
+      "announcementId": "54471276",
+      "announcementTime": 1247610900000,
+      "title": "控股股东减持公告",
+      "adjunctUrl": "finalpage/2009-07-15/54471276.PDF"
+    },
+    {
+      "announcementId": "54049946",
+      "announcementTime": 1246055700000,
+      "title": "公司章程（2009年6月）",
+      "adjunctUrl": "finalpage/2009-06-27/54049946.PDF"
+    },
+    {
+      "announcementId": "54049945",
+      "announcementTime": 1246055700000,
+      "title": "2008年年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-06-27/54049945.PDF"
+    },
+    {
+      "announcementId": "54049944",
+      "announcementTime": 1246055700000,
+      "title": "2008年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-06-27/54049944.PDF"
+    },
+    {
+      "announcementId": "53997149",
+      "announcementTime": 1245969300000,
+      "title": "关于控股股东拟协议转让所持国有股份进展情况的公告",
+      "adjunctUrl": "finalpage/2009-06-26/53997149.PDF"
+    },
+    {
+      "announcementId": "53802145",
+      "announcementTime": 1245450900000,
+      "title": "2008年度股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-06-20/53802145.PDF"
+    },
+    {
+      "announcementId": "53340910",
+      "announcementTime": 1244583240000,
+      "title": "关于控股股东拟协议转让所持国有股份进展情况的公告",
+      "adjunctUrl": "finalpage/2009-06-10/53340910.PDF"
+    },
+    {
+      "announcementId": "53294009",
+      "announcementTime": 1244496600000,
+      "title": "关于控股股东拟协议转让公司股份公开征集受让方进展情况的公告",
+      "adjunctUrl": "finalpage/2009-06-09/53294009.PDF"
+    },
+    {
+      "announcementId": "53239157",
+      "announcementTime": 1244237400000,
+      "title": "董事长辞职公告",
+      "adjunctUrl": "finalpage/2009-06-06/53239157.PDF"
+    },
+    {
+      "announcementId": "53239156",
+      "announcementTime": 1244237400000,
+      "title": "关联交易公告",
+      "adjunctUrl": "finalpage/2009-06-06/53239156.PDF"
+    },
+    {
+      "announcementId": "53239155",
+      "announcementTime": 1244237400000,
+      "title": "第三届董事会第二十二次会议决议公告暨召开2008年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-06-06/53239155.PDF"
+    },
+    {
+      "announcementId": "52388181",
+      "announcementTime": 1242081000000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-05-12/52388181.PDF"
+    },
+    {
+      "announcementId": "52388180",
+      "announcementTime": 1242081000000,
+      "title": "澄清公告",
+      "adjunctUrl": "finalpage/2009-05-12/52388180.PDF"
+    },
+    {
+      "announcementId": "52182662",
+      "announcementTime": 1241562600000,
+      "title": "关于控股股东拟协议转让公司股份公开征集受让方的公告",
+      "adjunctUrl": "finalpage/2009-05-06/52182662.PDF"
+    },
+    {
+      "announcementId": "52182661",
+      "announcementTime": 1241562600000,
+      "title": "有限售条件的流通股上市流通的公告",
+      "adjunctUrl": "finalpage/2009-05-06/52182661.PDF"
+    },
+    {
+      "announcementId": "51895846",
+      "announcementTime": 1240871400000,
+      "title": "被认定为高新技术企业及驰名商标的公告",
+      "adjunctUrl": "finalpage/2009-04-28/51895846.PDF"
+    },
+    {
+      "announcementId": "51791433",
+      "announcementTime": 1240612200000,
+      "title": "董事会审计委员会年报工作规程",
+      "adjunctUrl": "finalpage/2009-04-25/51791433.PDF"
+    },
+    {
+      "announcementId": "51791432",
+      "announcementTime": 1240612200000,
+      "title": "控股股东及其他关联方占用资金情况的专项说明",
+      "adjunctUrl": "finalpage/2009-04-25/51791432.PDF"
+    },
+    {
+      "announcementId": "51791431",
+      "announcementTime": 1240612200000,
+      "title": "三届十次监事会会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-25/51791431.PDF"
+    },
+    {
+      "announcementId": "51791430",
+      "announcementTime": 1240612200000,
+      "title": "第三届董事会第二十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-25/51791430.PDF"
+    },
+    {
+      "announcementId": "51789730",
+      "announcementTime": 1240612200000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-25/51789730.PDF"
+    },
+    {
+      "announcementId": "51789667",
+      "announcementTime": 1240612200000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-04-25/51789667.PDF"
+    },
+    {
+      "announcementId": "51789665",
+      "announcementTime": 1240612200000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-04-25/51789665.PDF"
+    },
+    {
+      "announcementId": "49769714",
+      "announcementTime": 1236119400000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-03-04/49769714.PDF"
+    },
+    {
+      "announcementId": "48669102",
+      "announcementTime": 1232663400000,
+      "title": "审计机构更名公告 ",
+      "adjunctUrl": "finalpage/2009-01-23/48669102.PDF"
+    },
+    {
+      "announcementId": "48669101",
+      "announcementTime": 1232663400000,
+      "title": "2008年度业绩预亏公告 ",
+      "adjunctUrl": "finalpage/2009-01-23/48669101.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

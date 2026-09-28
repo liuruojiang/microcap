@@ -1,0 +1,561 @@
+{
+  "year": 2012,
+  "label": "risk",
+  "category": "",
+  "searchkey": "风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2012-01-01~2012-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 191,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "34354a379dd0143624c759f5889988aab40661ca81ea386c3e9da1cecbcce7c0",
+      "response_bytes": 22710,
+      "row_count": 30,
+      "reported_total": 191
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "49bd9cd8ff12e336888142f33f274c1a6a76243e0e59eaf7bf20a710fa44dbe5",
+      "response_bytes": 21279,
+      "row_count": 30,
+      "reported_total": 191
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "5aad5eea9ad7f3a9d44282a749904c44201cea30a2bdab61ded89c1497b4c640",
+      "response_bytes": 21126,
+      "row_count": 30,
+      "reported_total": 191
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "d98d3c666d62c86cf49b93cc3bcbe899240b02f46484deb9a9a0b2581c06bbc4",
+      "response_bytes": 22762,
+      "row_count": 30,
+      "reported_total": 191
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "8dcf013b35cdd236786a7dddd105f805255b2382bb180460bf3784342a60dd66",
+      "response_bytes": 22053,
+      "row_count": 30,
+      "reported_total": 191
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "fdd1b61f83016b428f67d40110dfbaaacc5b5427efb19689d316e359e74785af",
+      "response_bytes": 22058,
+      "row_count": 30,
+      "reported_total": 191
+    },
+    {
+      "page": 7,
+      "sha256_raw_response": "87dffdf0868784acf6c39013803e95b37d591f5f6b714e31d5c1a385c06936ad",
+      "response_bytes": 8490,
+      "row_count": 11,
+      "reported_total": 191
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600532",
+      "announcementId": "61893971",
+      "announcementTime": 1355178720000,
+      "title": "关于撤销股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-12-11/61893971.PDF"
+    },
+    {
+      "symbol": "600532",
+      "announcementId": "61881741",
+      "announcementTime": 1354833180000,
+      "title": "关于申请撤销股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-12-07/61881741.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61871705",
+      "announcementTime": 1354660200000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-12-05/61871705.PDF"
+    },
+    {
+      "symbol": "600882",
+      "announcementId": "61824274",
+      "announcementTime": 1353537360000,
+      "title": "关于撤销股票退市<em>风险</em><em>警示</em>、变更证券简称的公告",
+      "adjunctUrl": "finalpage/2012-11-22/61824274.PDF"
+    },
+    {
+      "symbol": "600882",
+      "announcementId": "61820463",
+      "announcementTime": 1353450780000,
+      "title": "关于申请撤销股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-11-21/61820463.PDF"
+    },
+    {
+      "symbol": "000420",
+      "announcementId": "61815625",
+      "announcementTime": 1353364200000,
+      "title": "关于公司应对暂停上市<em>风险</em><em>警示</em>防范措施、经营情况等相关事项的公告",
+      "adjunctUrl": "finalpage/2012-11-20/61815625.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61755855",
+      "announcementTime": 1351895400000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-11-03/61755855.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61630024",
+      "announcementTime": 1349735400000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-10-09/61630024.PDF"
+    },
+    {
+      "symbol": "600870",
+      "announcementId": "61604895",
+      "announcementTime": 1348526100000,
+      "title": "关于公司应对退市<em>风险</em><em>警示</em>防范措施、经营情况等相关事项的公告",
+      "adjunctUrl": "finalpage/2012-09-25/61604895.PDF"
+    },
+    {
+      "symbol": "000587",
+      "announcementId": "61542623",
+      "announcementTime": 1346970600000,
+      "title": "关于撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-09-07/61542623.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61524582",
+      "announcementTime": 1346643660000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-09-03/61524582.PDF"
+    },
+    {
+      "symbol": "600706",
+      "announcementId": "61520250",
+      "announcementTime": 1346625120000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-09-03/61520250.PDF"
+    },
+    {
+      "symbol": "600074",
+      "announcementId": "61520233",
+      "announcementTime": 1346625120000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-09-03/61520233.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "61517297",
+      "announcementTime": 1346452320000,
+      "title": "关于暂不申请撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-09-01/61517297.PDF"
+    },
+    {
+      "symbol": "600444",
+      "announcementId": "61512302",
+      "announcementTime": 1346365920000,
+      "title": "关于撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-31/61512302.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "61512277",
+      "announcementTime": 1346365920000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-31/61512277.PDF"
+    },
+    {
+      "symbol": "600706",
+      "announcementId": "61512191",
+      "announcementTime": 1346365920000,
+      "title": "关于申请股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-31/61512191.PDF"
+    },
+    {
+      "symbol": "600074",
+      "announcementId": "61512098",
+      "announcementTime": 1346365920000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>申请的公告",
+      "adjunctUrl": "finalpage/2012-08-31/61512098.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "61506582",
+      "announcementTime": 1346279580000,
+      "title": "关于申请撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-30/61506582.PDF"
+    },
+    {
+      "symbol": "600444",
+      "announcementId": "61506322",
+      "announcementTime": 1346279580000,
+      "title": "关于申请撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-30/61506322.PDF"
+    },
+    {
+      "symbol": "600275",
+      "announcementId": "61491341",
+      "announcementTime": 1346106900000,
+      "title": "关于撤销股票其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-28/61491341.PDF"
+    },
+    {
+      "symbol": "600681",
+      "announcementId": "61491917",
+      "announcementTime": 1346106840000,
+      "title": "关于未申请撤销股票交易其他<em>风险</em><em>警示</em>的提示性公告",
+      "adjunctUrl": "finalpage/2012-08-28/61491917.PDF"
+    },
+    {
+      "symbol": "600145",
+      "announcementId": "61491831",
+      "announcementTime": 1346106840000,
+      "title": "关于撤消股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-28/61491831.PDF"
+    },
+    {
+      "symbol": "600419",
+      "announcementId": "61485171",
+      "announcementTime": 1346020380000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-27/61485171.PDF"
+    },
+    {
+      "symbol": "600281",
+      "announcementId": "61485154",
+      "announcementTime": 1346020380000,
+      "title": "关于撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-27/61485154.PDF"
+    },
+    {
+      "symbol": "600145",
+      "announcementId": "61485144",
+      "announcementTime": 1346020380000,
+      "title": "关于申请撤消股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-27/61485144.PDF"
+    },
+    {
+      "symbol": "600281",
+      "announcementId": "61471032",
+      "announcementTime": 1345761180000,
+      "title": "关于申请撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-24/61471032.PDF"
+    },
+    {
+      "symbol": "600538",
+      "announcementId": "61464918",
+      "announcementTime": 1345674900000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-23/61464918.PDF"
+    },
+    {
+      "symbol": "600506",
+      "announcementId": "61464917",
+      "announcementTime": 1345674900000,
+      "title": "关于股票交易撤销其它特别<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-23/61464917.PDF"
+    },
+    {
+      "symbol": "600890",
+      "announcementId": "61464513",
+      "announcementTime": 1345674900000,
+      "title": "关于撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-23/61464513.PDF"
+    },
+    {
+      "symbol": "600539",
+      "announcementId": "61458985",
+      "announcementTime": 1345588380000,
+      "title": "关于2012年公司股票仍将被实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-22/61458985.PDF"
+    },
+    {
+      "symbol": "600355",
+      "announcementId": "61458966",
+      "announcementTime": 1345588380000,
+      "title": "关于股票交易撤销其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-22/61458966.PDF"
+    },
+    {
+      "symbol": "600355",
+      "announcementId": "61452465",
+      "announcementTime": 1345501980000,
+      "title": "关于申请撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-21/61452465.PDF"
+    },
+    {
+      "symbol": "600149",
+      "announcementId": "61452436",
+      "announcementTime": 1345501980000,
+      "title": "关于撤销股票交易其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-08-21/61452436.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61358409",
+      "announcementTime": 1343860200000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-08-02/61358409.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61223927",
+      "announcementTime": 1341441000000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-07-05/61223927.PDF"
+    },
+    {
+      "symbol": "600074",
+      "announcementId": "61119522",
+      "announcementTime": 1339367580000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2012-06-11/61119522.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "61110018",
+      "announcementTime": 1339108380000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2012-06-08/61110018.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "61088482",
+      "announcementTime": 1338849000000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-06-05/61088482.PDF"
+    },
+    {
+      "symbol": "600281",
+      "announcementId": "61044309",
+      "announcementTime": 1337898900000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实行其他特别处理公告",
+      "adjunctUrl": "finalpage/2012-05-25/61044309.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "61018518",
+      "announcementTime": 1337553000000,
+      "title": "关于股票交易撤销退市<em>风险</em><em>警示</em>并实行其他特别处理的提示性公告",
+      "adjunctUrl": "finalpage/2012-05-21/61018518.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "60943203",
+      "announcementTime": 1335997800000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-05-03/60943203.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60943169",
+      "announcementTime": 1335997800000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-05-03/60943169.PDF"
+    },
+    {
+      "symbol": "600359",
+      "announcementId": "60938785",
+      "announcementTime": 1335911520000,
+      "title": "关于公司股票交易实行退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-05-02/60938785.PDF"
+    },
+    {
+      "symbol": "600250",
+      "announcementId": "60938784",
+      "announcementTime": 1335911520000,
+      "title": "关于公司实施退市<em>风险</em><em>警示</em>的<em>风险</em>提示公告",
+      "adjunctUrl": "finalpage/2012-05-02/60938784.PDF"
+    },
+    {
+      "symbol": "600766",
+      "announcementId": "60922942",
+      "announcementTime": 1335479580000,
+      "title": "关于公司股票实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-27/60922942.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60921106",
+      "announcementTime": 1335479400000,
+      "title": "关于申请撤销退市<em>风险</em><em>警示</em>并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2012-04-27/60921106.PDF"
+    },
+    {
+      "symbol": "600338",
+      "announcementId": "60913691",
+      "announcementTime": 1335393240000,
+      "title": "关于股票交易实行退市<em>风险</em><em>警示</em>特别处理的公告",
+      "adjunctUrl": "finalpage/2012-04-26/60913691.PDF"
+    },
+    {
+      "symbol": "600083",
+      "announcementId": "60902291",
+      "announcementTime": 1335306780000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2012-04-25/60902291.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "60901480",
+      "announcementTime": 1335306600000,
+      "title": "关于公司股票交易实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-25/60901480.PDF"
+    },
+    {
+      "symbol": "000806",
+      "announcementId": "60900452",
+      "announcementTime": 1335306600000,
+      "title": "关于公司股票交易实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-25/60900452.PDF"
+    },
+    {
+      "symbol": "000815",
+      "announcementId": "60872527",
+      "announcementTime": 1335133800000,
+      "title": "关于公司股票实行退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-04-23/60872527.PDF"
+    },
+    {
+      "symbol": "000662",
+      "announcementId": "60864426",
+      "announcementTime": 1334874600000,
+      "title": "关于股票实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-20/60864426.PDF"
+    },
+    {
+      "symbol": "000056",
+      "announcementId": "60863392",
+      "announcementTime": 1334874600000,
+      "title": "关于公司股票实行退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-04-20/60863392.PDF"
+    },
+    {
+      "symbol": "600385",
+      "announcementId": "60856604",
+      "announcementTime": 1334788380000,
+      "title": "关于公司股票交易实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-19/60856604.PDF"
+    },
+    {
+      "symbol": "600076",
+      "announcementId": "60835581",
+      "announcementTime": 1334529120000,
+      "title": "关于公司股票实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-16/60835581.PDF"
+    },
+    {
+      "symbol": "000602",
+      "announcementId": "60824574",
+      "announcementTime": 1334269800000,
+      "title": "关于撤销股票交易退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-04-13/60824574.PDF"
+    },
+    {
+      "symbol": "600087",
+      "announcementId": "60818147",
+      "announcementTime": 1334183580000,
+      "title": "实施退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-04-12/60818147.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60786752",
+      "announcementTime": 1333665000000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-04-06/60786752.PDF"
+    },
+    {
+      "symbol": "000838",
+      "announcementId": "60761244",
+      "announcementTime": 1333060200000,
+      "title": "实施退市<em>风险</em><em>警示</em>公告的公告",
+      "adjunctUrl": "finalpage/2012-03-30/60761244.PDF"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "60760183",
+      "announcementTime": 1333060200000,
+      "title": "关于公司A股股票交易实行退市<em>风险</em><em>警示</em>特别处理的提示性公告",
+      "adjunctUrl": "finalpage/2012-03-30/60760183.PDF"
+    },
+    {
+      "symbol": "600532",
+      "announcementId": "60752043",
+      "announcementTime": 1332974100000,
+      "title": "实施退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-03-29/60752043.PDF"
+    },
+    {
+      "symbol": "600149",
+      "announcementId": "60724334",
+      "announcementTime": 1332714900000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实施其他特别处理及变更公司名称、证券简称的公告",
+      "adjunctUrl": "finalpage/2012-03-26/60724334.PDF"
+    },
+    {
+      "symbol": "600882",
+      "announcementId": "60688667",
+      "announcementTime": 1332109980000,
+      "title": "实施退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-03-19/60688667.PDF"
+    },
+    {
+      "symbol": "000605",
+      "announcementId": "60645865",
+      "announcementTime": 1331245800000,
+      "title": "关于股票交易实施退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-03-09/60645865.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60617052",
+      "announcementTime": 1330727400000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-03-03/60617052.PDF"
+    },
+    {
+      "symbol": "000420",
+      "announcementId": "60584975",
+      "announcementTime": 1330295400000,
+      "title": "关于股权交易实施退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2012-02-27/60584975.PDF"
+    },
+    {
+      "symbol": "000602",
+      "announcementId": "60564964",
+      "announcementTime": 1329777000000,
+      "title": "关于申请撤销退市<em>风险</em><em>警示</em>处理的提示性公告",
+      "adjunctUrl": "finalpage/2012-02-21/60564964.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60490877",
+      "announcementTime": 1328135400000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-02-02/60490877.PDF"
+    },
+    {
+      "symbol": "600603",
+      "announcementId": "60458361",
+      "announcementTime": 1326839580000,
+      "title": "关于公司股票被实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2012-01-18/60458361.PDF"
+    },
+    {
+      "symbol": "002113",
+      "announcementId": "60405614",
+      "announcementTime": 1325716200000,
+      "title": "关于为撤销退市<em>风险</em><em>警示</em>采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2012-01-05/60405614.PDF"
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,95 @@
+{
+  "symbol": "600898",
+  "org_id": "gssh0600898",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600898,gssh0600898",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 10,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "bfdd6101d6949523e099532052d2b34180539ca3805a304c700ad9fe1145b34b",
+      "reported_total": 10,
+      "rows": 10
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57633047",
+      "announcementTime": 1267223700000,
+      "title": "2010年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-02-27/57633047.PDF"
+    },
+    {
+      "announcementId": "57633046",
+      "announcementTime": 1267223700000,
+      "title": "2010年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-02-27/57633046.PDF"
+    },
+    {
+      "announcementId": "57616150",
+      "announcementTime": 1266878100000,
+      "title": "2010年第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2010-02-23/57616150.PDF"
+    },
+    {
+      "announcementId": "57573410",
+      "announcementTime": 1265150100000,
+      "title": "澄清公告",
+      "adjunctUrl": "finalpage/2010-02-03/57573410.PDF"
+    },
+    {
+      "announcementId": "57568650",
+      "announcementTime": 1265063460000,
+      "title": "关于公司2009年度财务审计机构变更的更正公告",
+      "adjunctUrl": "finalpage/2010-02-02/57568650.PDF"
+    },
+    {
+      "announcementId": "57561080",
+      "announcementTime": 1264804380000,
+      "title": "2009年业绩预盈公告",
+      "adjunctUrl": "finalpage/2010-01-30/57561080.PDF"
+    },
+    {
+      "announcementId": "57561079",
+      "announcementTime": 1264804320000,
+      "title": "关于前期差错更正的公告",
+      "adjunctUrl": "finalpage/2010-01-30/57561079.PDF"
+    },
+    {
+      "announcementId": "57561078",
+      "announcementTime": 1264804320000,
+      "title": "第七届监事会第十一次会议决议公告",
+      "adjunctUrl": "finalpage/2010-01-30/57561078.PDF"
+    },
+    {
+      "announcementId": "57561077",
+      "announcementTime": 1264804320000,
+      "title": "第七届董事会第十七次会议决议暨召开2010年第一次临时股东大会通知的公告",
+      "adjunctUrl": "finalpage/2010-01-30/57561077.PDF"
+    },
+    {
+      "announcementId": "57530824",
+      "announcementTime": 1264113300000,
+      "title": "关于公司中小股东代表诉讼侵权纠纷案的进展公告",
+      "adjunctUrl": "finalpage/2010-01-22/57530824.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

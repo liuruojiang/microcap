@@ -1,0 +1,72 @@
+/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/openpyxl/styles/stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+  0%|          | 0/18 [00:00<?, ?it/s]  6%|▌         | 1/18 [00:00<00:15,  1.10it/s] 11%|█         | 2/18 [00:01<00:13,  1.16it/s] 17%|█▋        | 3/18 [00:02<00:13,  1.11it/s] 22%|██▏       | 4/18 [00:03<00:12,  1.11it/s] 28%|██▊       | 5/18 [00:04<00:11,  1.13it/s] 33%|███▎      | 6/18 [00:05<00:10,  1.14it/s] 39%|███▉      | 7/18 [00:06<00:09,  1.13it/s] 44%|████▍     | 8/18 [00:07<00:08,  1.17it/s] 50%|█████     | 9/18 [00:07<00:07,  1.16it/s] 56%|█████▌    | 10/18 [00:08<00:06,  1.18it/s] 61%|██████    | 11/18 [00:09<00:05,  1.18it/s] 67%|██████▋   | 12/18 [00:10<00:05,  1.19it/s] 72%|███████▏  | 13/18 [00:11<00:04,  1.17it/s] 78%|███████▊  | 14/18 [00:12<00:03,  1.16it/s] 83%|████████▎ | 15/18 [00:13<00:02,  1.15it/s] 89%|████████▉ | 16/18 [00:13<00:01,  1.15it/s] 94%|█████████▍| 17/18 [00:14<00:00,  1.17it/s]100%|██████████| 18/18 [00:15<00:00,  1.14it/s]                                               [top100-refresh] frozen tail seed rejected reason=proxy_index_end_mismatch
+[top100-refresh] frozen tail seed rejected reason=proxy_index_end_mismatch
+[top100-refresh] frozen tail seed rejected reason=proxy_index_end_mismatch
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_0.py:14710: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_3.py:1758: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+[top100-refresh] frozen tail seed rejected reason=proxy_index_end_mismatch
+signal
+strategy_version: v2.3
+base_version: embedded_v2_base
+signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, R2 entry gate 0.08, signal spread 1.0x, execution hedge 0.8x
+overlay: entry score > 0.00, exit buffer 0.08, vol10 overheat trigger 26%, recovery 19.5%, no target-vol/cash-yield/financing
+current_holding: cash
+next_holding: cash
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+annualized_log_wls_score: +90.1536%
+log_wls_r2: 0.5784
+momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap
+current_execution_scale: 0.00
+next_session_target_scale: 0.00
+next_session_actionable_scale: 0.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_trade_cost_est: 0.0000%
+overheat_feature_value: 26.7828%
+overheat_risk_off: True
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv
+[top100-refresh] frozen tail seed rejected reason=proxy_index_end_mismatch
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_0.py:14710: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_3.py:1758: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+[top100-refresh] frozen tail seed rejected reason=proxy_index_end_mismatch
+signal
+strategy_version: v2.3
+base_version: embedded_v2_base
+signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, R2 entry gate 0.08, signal spread 1.0x, execution hedge 0.8x
+overlay: entry score > 0.00, exit buffer 0.08, vol10 overheat trigger 26%, recovery 19.5%, no target-vol/cash-yield/financing
+current_holding: cash
+next_holding: cash
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+annualized_log_wls_score: +90.1536%
+log_wls_r2: 0.5784
+momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap
+current_execution_scale: 0.00
+next_session_target_scale: 0.00
+next_session_actionable_scale: 0.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_trade_cost_est: 0.0000%
+overheat_feature_value: 26.7828%
+overheat_risk_off: True
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv

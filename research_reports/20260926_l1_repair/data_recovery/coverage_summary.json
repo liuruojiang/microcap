@@ -1,0 +1,12 @@
+{
+  "symbols": 254,
+  "price_fetched": 251,
+  "share_fetched": 254,
+  "both_fetched": 251,
+  "price_rows_total": 612879,
+  "share_rows_total": 7558,
+  "notice_after_end_rows": 3165,
+  "notice_missing_rows": 0,
+  "price_observed_rebalance_dates": 65249,
+  "price_rebalance_dates_with_pit_shares": 65249
+}

@@ -1,0 +1,263 @@
+{
+  "symbol": "600355",
+  "org_id": "gssh0600355",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600355,gssh0600355",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 37,
+  "page_count": 2,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "2d825cc476ccc69915e55a7ef021dcc8408a931591136be999f6e73845af21b4",
+      "reported_total": 37,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "0b939b54f434204ad5f81f8d53c657444687865b43cc1fc1239d0ee15a41526d",
+      "reported_total": 37,
+      "rows": 7
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57234809",
+      "announcementTime": 1256941800000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-31/57234809.PDF"
+    },
+    {
+      "announcementId": "57157261",
+      "announcementTime": 1255732500000,
+      "title": "公司章程（2009修订）",
+      "adjunctUrl": "finalpage/2009-10-17/57157261.PDF"
+    },
+    {
+      "announcementId": "57157260",
+      "announcementTime": 1255732500000,
+      "title": "监事会议事规则（2009年10月）",
+      "adjunctUrl": "finalpage/2009-10-17/57157260.PDF"
+    },
+    {
+      "announcementId": "57157259",
+      "announcementTime": 1255732500000,
+      "title": "董事会议事规则（2009年10月）",
+      "adjunctUrl": "finalpage/2009-10-17/57157259.PDF"
+    },
+    {
+      "announcementId": "57157258",
+      "announcementTime": 1255732500000,
+      "title": "2009年度第一次临时股东大会之法律意见书",
+      "adjunctUrl": "finalpage/2009-10-17/57157258.PDF"
+    },
+    {
+      "announcementId": "57157257",
+      "announcementTime": 1255732500000,
+      "title": "第四届监事会第一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-17/57157257.PDF"
+    },
+    {
+      "announcementId": "57157256",
+      "announcementTime": 1255732500000,
+      "title": "第四届董事会第一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-17/57157256.PDF"
+    },
+    {
+      "announcementId": "57157255",
+      "announcementTime": 1255732500000,
+      "title": "2009年度第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-10-17/57157255.PDF"
+    },
+    {
+      "announcementId": "57127784",
+      "announcementTime": 1255127700000,
+      "title": "2009年第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-10-10/57127784.PDF"
+    },
+    {
+      "announcementId": "57098373",
+      "announcementTime": 1253918100000,
+      "title": "关于召开2009年度第一次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-09-26/57098373.PDF"
+    },
+    {
+      "announcementId": "57098372",
+      "announcementTime": 1253918100000,
+      "title": "职工民主选举第四届监事会职工代表监事公告",
+      "adjunctUrl": "finalpage/2009-09-26/57098372.PDF"
+    },
+    {
+      "announcementId": "57088860",
+      "announcementTime": 1253745300000,
+      "title": "第三届监事会第十五次会议决议公告",
+      "adjunctUrl": "finalpage/2009-09-24/57088860.PDF"
+    },
+    {
+      "announcementId": "57088859",
+      "announcementTime": 1253745300000,
+      "title": "第三届董事会第二十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-09-24/57088859.PDF"
+    },
+    {
+      "announcementId": "56442420",
+      "announcementTime": 1251239700000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-08-26/56442420.PDF"
+    },
+    {
+      "announcementId": "56147830",
+      "announcementTime": 1250721300000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2009-08-20/56147830.PDF"
+    },
+    {
+      "announcementId": "55913111",
+      "announcementTime": 1250202900000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-14/55913111.PDF"
+    },
+    {
+      "announcementId": "55913110",
+      "announcementTime": 1250202900000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-14/55913110.PDF"
+    },
+    {
+      "announcementId": "52790036",
+      "announcementTime": 1242945000000,
+      "title": "有限售条件的流通股第五批上市公告",
+      "adjunctUrl": "finalpage/2009-05-22/52790036.PDF"
+    },
+    {
+      "announcementId": "51607318",
+      "announcementTime": 1240350300000,
+      "title": "2008年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-04-22/51607318.PDF"
+    },
+    {
+      "announcementId": "51607317",
+      "announcementTime": 1240350300000,
+      "title": "股东大会议事规则",
+      "adjunctUrl": "finalpage/2009-04-22/51607317.PDF"
+    },
+    {
+      "announcementId": "51607316",
+      "announcementTime": 1240350300000,
+      "title": "公司章程（2009修订）",
+      "adjunctUrl": "finalpage/2009-04-22/51607316.PDF"
+    },
+    {
+      "announcementId": "51607315",
+      "announcementTime": 1240350300000,
+      "title": "2008年度股东大会之法律意见书",
+      "adjunctUrl": "finalpage/2009-04-22/51607315.PDF"
+    },
+    {
+      "announcementId": "51607314",
+      "announcementTime": 1240350300000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-22/51607314.PDF"
+    },
+    {
+      "announcementId": "51323755",
+      "announcementTime": 1239834600000,
+      "title": "2008年度股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-04-16/51323755.PDF"
+    },
+    {
+      "announcementId": "51274372",
+      "announcementTime": 1239748200000,
+      "title": "有限售条件的流通股第四批上市公告",
+      "adjunctUrl": "finalpage/2009-04-15/51274372.PDF"
+    },
+    {
+      "announcementId": "50580621",
+      "announcementTime": 1238020200000,
+      "title": "董事会审计委员会工作制度",
+      "adjunctUrl": "finalpage/2009-03-26/50580621.PDF"
+    },
+    {
+      "announcementId": "50488763",
+      "announcementTime": 1237933800000,
+      "title": "与控股股东及其他关联方资金往来情况的专项说明",
+      "adjunctUrl": "finalpage/2009-03-25/50488763.PDF"
+    },
+    {
+      "announcementId": "50488762",
+      "announcementTime": 1237933800000,
+      "title": "关于召开2008年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-03-25/50488762.PDF"
+    },
+    {
+      "announcementId": "50488761",
+      "announcementTime": 1237933800000,
+      "title": "第三届监事会第十二次会议决议公告",
+      "adjunctUrl": "finalpage/2009-03-25/50488761.PDF"
+    },
+    {
+      "announcementId": "50488760",
+      "announcementTime": 1237933800000,
+      "title": "第三届董事会第十七次会议决议公告",
+      "adjunctUrl": "finalpage/2009-03-25/50488760.PDF"
+    },
+    {
+      "announcementId": "50486329",
+      "announcementTime": 1237933800000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-03-25/50486329.PDF"
+    },
+    {
+      "announcementId": "50486328",
+      "announcementTime": 1237933800000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-03-25/50486328.PDF"
+    },
+    {
+      "announcementId": "49828622",
+      "announcementTime": 1236205800000,
+      "title": "关于更换股权分置改革保荐代表人的公告",
+      "adjunctUrl": "finalpage/2009-03-05/49828622.PDF"
+    },
+    {
+      "announcementId": "49723278",
+      "announcementTime": 1236033000000,
+      "title": "关于高新技术企业认定的提示性公告",
+      "adjunctUrl": "finalpage/2009-03-03/49723278.PDF"
+    },
+    {
+      "announcementId": "49723277",
+      "announcementTime": 1236033000000,
+      "title": "股东股份减持公告",
+      "adjunctUrl": "finalpage/2009-03-03/49723277.PDF"
+    },
+    {
+      "announcementId": "49020915",
+      "announcementTime": 1234218600000,
+      "title": "简式权益变动报告书 ",
+      "adjunctUrl": "finalpage/2009-02-10/49020915.PDF"
+    },
+    {
+      "announcementId": "49020914",
+      "announcementTime": 1234218600000,
+      "title": "关于公司股东权益变动的提示性公告 ",
+      "adjunctUrl": "finalpage/2009-02-10/49020914.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

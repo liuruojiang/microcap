@@ -1,0 +1,6 @@
+{
+  "ok": true,
+  "expected_date": "2026-09-04",
+  "restore_source": "existing_whole_delivery",
+  "signal_ready": false
+}

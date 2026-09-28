@@ -1,0 +1,47 @@
+{
+  "symbol": "600647",
+  "org_id": "gssh0600647",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600647,gssh0600647",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 2,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "5b3947a9ceb3d2b306a7c2834d67666785d3907d4218f030f6a8c535f40aa6b1",
+      "reported_total": 2,
+      "rows": 2
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57543111",
+      "announcementTime": 1264458900000,
+      "title": "2009年度业绩预增公告",
+      "adjunctUrl": "finalpage/2010-01-26/57543111.PDF"
+    },
+    {
+      "announcementId": "57526141",
+      "announcementTime": 1264026900000,
+      "title": "关于整改事项进展情况的公告",
+      "adjunctUrl": "finalpage/2010-01-21/57526141.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

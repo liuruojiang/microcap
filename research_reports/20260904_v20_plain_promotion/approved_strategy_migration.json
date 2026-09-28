@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "authorization": "user_replace_existing_v2_0",
+  "strategy_revision": "plain_mom16_fixed1_20260904",
+  "previous_costed_nav_sha256": "980692ea7498be8d2ee7b1222c1ad2b3d5ebc612299a6c6716b8131954ca4951",
+  "candidate_frame_sha256": "e6dcc2acb16ecbbfd09d7ada5549e80be7035a379399b9a8c523037452e23f1d",
+  "rewrite_audit_sha256": "84fb60d986f60a8dcdb76a0922311fe6067e855a440a87be60686898538e9a38",
+  "source_sha256_lf": "c72625d348de1b22bb9daa44a3288a5e8452e509f56f077b53cd253423e71455",
+  "unchanged_base_inputs": {
+    "proxy_meta": "9f907f31dc605fef768e123b5a50010b98698d1bab4e8bed894903e2b51f48e4",
+    "proxy_members": "ff151c48c3963ffc25bab684d45e5618e11adc2b107222bed4073ebf7dd48529",
+    "proxy_turnover": "0bb43938d8693db24a482470f5463106245d86e253cb0f2f23749b5dca7f4f04",
+    "proxy_index": "10f3ffc11be9aae6ecd9c631bf58487a3ed99526706f72ef6121aa462ec0fee2",
+    "base_costed_nav": "939e2badde5b67fcefba114c275748041924331cfecffb3d33ed3c0cb9b69e0a",
+    "panel_shadow": "8f8e368e75511af3e391fc542594d6d0b159192e014613b7c7df6a4bfe364ff6"
+  },
+  "candidate_row_count": 4016,
+  "approved": true,
+  "user_authorization": "替换现有2.0",
+  "backup": ".codex_backups/20260904_182723",
+  "oracle": "research_reports/20260904_v20_plain_vs_original/plain16_fixed1.csv.gz",
+  "unchanged_proxy_lineage": true,
+  "known_historical_policy_gap": "688592 retained, not relabeled or repaired",
+  "validation": "native4016rows return/state/scale exact oracle parity at1e-12; same pre-approved real data"
+}

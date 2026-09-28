@@ -1,0 +1,50 @@
+{
+  "year": 2013,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2013-01-01~2013-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 12,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "926908a7a894a0616364491d694dd2fd799e05aab4f09ec866d9604d23bd07e9",
+      "response_bytes": 8888,
+      "row_count": 12,
+      "reported_total": 12
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000676",
+      "announcementId": "62407625",
+      "announcementTime": 1366646400000,
+      "title": "董事会关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的意见",
+      "adjunctUrl": "finalpage/2013-04-23/62407625.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "62405199",
+      "announcementTime": 1366646400000,
+      "title": "关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2013-04-23/62405199.PDF"
+    },
+    {
+      "symbol": "000617",
+      "announcementId": "62295079",
+      "announcementTime": 1364486400000,
+      "title": "关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2013-03-29/62295079.PDF"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "62204426",
+      "announcementTime": 1363017600000,
+      "title": "关于提交撤销A股股票交易<em>特别</em><em>处理</em>申请的公告",
+      "adjunctUrl": "finalpage/2013-03-12/62204426.PDF"
+    }
+  ],
+  "complete": true
+}

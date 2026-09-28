@@ -1,0 +1,305 @@
+{
+  "symbol": "600306",
+  "org_id": "gssh0600306",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600306,gssh0600306",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 44,
+  "page_count": 2,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "86beac909ca201223c22c652195e71103da658129fb4628d6579b07751685d41",
+      "reported_total": 44,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "55d1edcad655cb5887df7efb05225a3109f7483b063170982c06ff95d5c5d360",
+      "reported_total": 44,
+      "rows": 14
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57494675",
+      "announcementTime": 1263249300000,
+      "title": "2009年年度业绩扭亏公告",
+      "adjunctUrl": "finalpage/2010-01-12/57494675.PDF"
+    },
+    {
+      "announcementId": "57463787",
+      "announcementTime": 1262558100000,
+      "title": "2009年第三次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-01-04/57463787.PDF"
+    },
+    {
+      "announcementId": "57463786",
+      "announcementTime": 1262558100000,
+      "title": "2009年第三次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-01-04/57463786.PDF"
+    },
+    {
+      "announcementId": "57435770",
+      "announcementTime": 1261694100000,
+      "title": "2009年第3次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-12-25/57435770.PDF"
+    },
+    {
+      "announcementId": "57402759",
+      "announcementTime": 1260916500000,
+      "title": "出售盛京银行部分股权公告",
+      "adjunctUrl": "finalpage/2009-12-16/57402759.PDF"
+    },
+    {
+      "announcementId": "57402758",
+      "announcementTime": 1260916500000,
+      "title": "四届六次董事会决议暨召开2009年第三次临时股东大会通知公告",
+      "adjunctUrl": "finalpage/2009-12-16/57402758.PDF"
+    },
+    {
+      "announcementId": "57234804",
+      "announcementTime": 1256941800000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-31/57234804.PDF"
+    },
+    {
+      "announcementId": "57150759",
+      "announcementTime": 1255646100000,
+      "title": "公司章程（2009年10月）",
+      "adjunctUrl": "finalpage/2009-10-16/57150759.PDF"
+    },
+    {
+      "announcementId": "57150758",
+      "announcementTime": 1255646100000,
+      "title": "2009年第二次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-10-16/57150758.PDF"
+    },
+    {
+      "announcementId": "57150757",
+      "announcementTime": 1255646100000,
+      "title": "2009年第2次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-10-16/57150757.PDF"
+    },
+    {
+      "announcementId": "57127780",
+      "announcementTime": 1255127700000,
+      "title": "2009年第2次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-10-10/57127780.PDF"
+    },
+    {
+      "announcementId": "57127779",
+      "announcementTime": 1255127700000,
+      "title": "四届监事会临时会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-10/57127779.PDF"
+    },
+    {
+      "announcementId": "57127778",
+      "announcementTime": 1255127700000,
+      "title": "四届董事会第2次临时会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-10/57127778.PDF"
+    },
+    {
+      "announcementId": "57098368",
+      "announcementTime": 1253918100000,
+      "title": "为沈阳储运集团公司提供担保的公告",
+      "adjunctUrl": "finalpage/2009-09-26/57098368.PDF"
+    },
+    {
+      "announcementId": "57098367",
+      "announcementTime": 1253918100000,
+      "title": "四届四次董事会决议暨召开2009年第二次临时股东大会通知公告",
+      "adjunctUrl": "finalpage/2009-09-26/57098367.PDF"
+    },
+    {
+      "announcementId": "56228930",
+      "announcementTime": 1250893800000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-22/56228930.PDF"
+    },
+    {
+      "announcementId": "56228929",
+      "announcementTime": 1250893800000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-22/56228929.PDF"
+    },
+    {
+      "announcementId": "56147753",
+      "announcementTime": 1250721300000,
+      "title": "关于股东产权转让办理交割手续的公告",
+      "adjunctUrl": "finalpage/2009-08-20/56147753.PDF"
+    },
+    {
+      "announcementId": "54453008",
+      "announcementTime": 1247178900000,
+      "title": "关于独立董事辞职的公告",
+      "adjunctUrl": "finalpage/2009-07-10/54453008.PDF"
+    },
+    {
+      "announcementId": "54152144",
+      "announcementTime": 1246401300000,
+      "title": "公司章程（2009年7月）",
+      "adjunctUrl": "finalpage/2009-07-01/54152144.PDF"
+    },
+    {
+      "announcementId": "54152143",
+      "announcementTime": 1246401300000,
+      "title": "2008年年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-07-01/54152143.PDF"
+    },
+    {
+      "announcementId": "54152142",
+      "announcementTime": 1246401300000,
+      "title": "2008年年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-07-01/54152142.PDF"
+    },
+    {
+      "announcementId": "54099549",
+      "announcementTime": 1246314900000,
+      "title": "关于股东产权转让事项获国资委批复的公告",
+      "adjunctUrl": "finalpage/2009-06-30/54099549.PDF"
+    },
+    {
+      "announcementId": "53950186",
+      "announcementTime": 1245882900000,
+      "title": "2008年年度股东大会会议资料",
+      "adjunctUrl": "finalpage/2009-06-25/53950186.PDF"
+    },
+    {
+      "announcementId": "53340828",
+      "announcementTime": 1244583000000,
+      "title": "关于召开2008年年度股东大会通知公告",
+      "adjunctUrl": "finalpage/2009-06-10/53340828.PDF"
+    },
+    {
+      "announcementId": "51895693",
+      "announcementTime": 1240871400000,
+      "title": "审计委员会年报工作规程",
+      "adjunctUrl": "finalpage/2009-04-28/51895693.PDF"
+    },
+    {
+      "announcementId": "51895691",
+      "announcementTime": 1240871400000,
+      "title": "关于公司2008年度控股股东及其他关联方资金占用情况的专项说明",
+      "adjunctUrl": "finalpage/2009-04-28/51895691.PDF"
+    },
+    {
+      "announcementId": "51895690",
+      "announcementTime": 1240871400000,
+      "title": "关于会计差错更正的公告",
+      "adjunctUrl": "finalpage/2009-04-28/51895690.PDF"
+    },
+    {
+      "announcementId": "51895689",
+      "announcementTime": 1240871400000,
+      "title": "四届二次监事会决议公告",
+      "adjunctUrl": "finalpage/2009-04-28/51895689.PDF"
+    },
+    {
+      "announcementId": "51895688",
+      "announcementTime": 1240871400000,
+      "title": "四届二次董事会决议公告",
+      "adjunctUrl": "finalpage/2009-04-28/51895688.PDF"
+    },
+    {
+      "announcementId": "51878769",
+      "announcementTime": 1240871400000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-28/51878769.PDF"
+    },
+    {
+      "announcementId": "51878566",
+      "announcementTime": 1240871400000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-04-28/51878566.PDF"
+    },
+    {
+      "announcementId": "51878564",
+      "announcementTime": 1240871400000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-04-28/51878564.PDF"
+    },
+    {
+      "announcementId": "51467256",
+      "announcementTime": 1240007400000,
+      "title": "详式权益变动报告书",
+      "adjunctUrl": "finalpage/2009-04-18/51467256.PDF"
+    },
+    {
+      "announcementId": "51467255",
+      "announcementTime": 1240007400000,
+      "title": "简式权益变动报告书",
+      "adjunctUrl": "finalpage/2009-04-18/51467255.PDF"
+    },
+    {
+      "announcementId": "51210322",
+      "announcementTime": 1239402600000,
+      "title": "关于沈阳商业城（集团）产权转让的提示性公告",
+      "adjunctUrl": "finalpage/2009-04-11/51210322.PDF"
+    },
+    {
+      "announcementId": "50898885",
+      "announcementTime": 1238625000000,
+      "title": "2008年年度业绩预亏公告",
+      "adjunctUrl": "finalpage/2009-04-02/50898885.PDF"
+    },
+    {
+      "announcementId": "50367004",
+      "announcementTime": 1237501800000,
+      "title": "关于股权分置改革保荐人变更的公告",
+      "adjunctUrl": "finalpage/2009-03-20/50367004.PDF"
+    },
+    {
+      "announcementId": "49616956",
+      "announcementTime": 1235687400000,
+      "title": "2009年第一次临时股东大会的法律意见书 ",
+      "adjunctUrl": "finalpage/2009-02-27/49616956.PDF"
+    },
+    {
+      "announcementId": "49616955",
+      "announcementTime": 1235687400000,
+      "title": "2009年第1次临时股东大会决议公告 ",
+      "adjunctUrl": "finalpage/2009-02-27/49616955.PDF"
+    },
+    {
+      "announcementId": "49434022",
+      "announcementTime": 1235169000000,
+      "title": "2009年第一次临时股东大会会议资料 ",
+      "adjunctUrl": "finalpage/2009-02-21/49434022.PDF"
+    },
+    {
+      "announcementId": "49113115",
+      "announcementTime": 1234391400000,
+      "title": "关于沈阳商业城（集团）产权转让进展情况的公告 ",
+      "adjunctUrl": "finalpage/2009-02-12/49113115.PDF"
+    },
+    {
+      "announcementId": "49020846",
+      "announcementTime": 1234218600000,
+      "title": "关于为子公司沈阳铁西百货大楼有限公司提供担保的公告 ",
+      "adjunctUrl": "finalpage/2009-02-10/49020846.PDF"
+    },
+    {
+      "announcementId": "49020845",
+      "announcementTime": 1234218600000,
+      "title": "四届董事会临时会议决议暨召开2009年第一次临时股东大会通知公告 ",
+      "adjunctUrl": "finalpage/2009-02-10/49020845.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

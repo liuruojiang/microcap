@@ -1,0 +1,1464 @@
+{
+  "year": 2026,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2026-01-01~2026-09-24",
+  "page_size_requested": 30,
+  "totalAnnouncement": 850,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "4934071d15a79540baaf9675a3de3cd30ae65a1fa760be36d13c1d85d05c4fa6",
+      "response_bytes": 22355,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "0f329761374a80675965794795e1b3ed04ad2dbf63cc096dd6fd9a0a40ef9b81",
+      "response_bytes": 22702,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "f0f0bc1d073d67e23fb31f39220646413686352ecea4ad1f4af722fe788f93c2",
+      "response_bytes": 22611,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "4993f5799975dbd3db282f9654dbe2da082754e2eb5f2383941fa3ef8e3b2d40",
+      "response_bytes": 22458,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "7717d89283510f119a37f2a35fef91eaacb7d2e08b6c6b4147cb89ac946b9b6b",
+      "response_bytes": 21581,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "4466d5b3d30dea7abb631dd7900da8163256c30972241f13dc7800964e4b9dee",
+      "response_bytes": 20096,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 7,
+      "sha256_raw_response": "1a0c04071c5c98f891f76b78c5b622f6bcb09047d6d424c0a61353fae8334792",
+      "response_bytes": 21933,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 8,
+      "sha256_raw_response": "efc6937a06b3f8e2f2da02cdd57a47f1b988d9a14175bba6e9d6322dfc83d535",
+      "response_bytes": 22445,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 9,
+      "sha256_raw_response": "d86b80320f17e920cc382aecf1a6dd8e65ceca74fbc8cdf1b0a5920c43224a6e",
+      "response_bytes": 22424,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 10,
+      "sha256_raw_response": "04c0b89f2b298ec0a02a3d3606cfcc9ea92ff39a96a643e9837ee39bdf468308",
+      "response_bytes": 23042,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 11,
+      "sha256_raw_response": "b295878478077fc7de4eba9d60807a40c8001e4de9b59e46f92019cff1458f5a",
+      "response_bytes": 22381,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 12,
+      "sha256_raw_response": "35db6609111306095e01267bc67a228cadf01a1ea358ab850f97554876fe20aa",
+      "response_bytes": 22134,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 13,
+      "sha256_raw_response": "636d5bd48c67deed56b95725ce494099923773de99cb50672881b65fdac36ba8",
+      "response_bytes": 21981,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 14,
+      "sha256_raw_response": "2538db79f440003a2f647a1b03ec3c374f5f2e37d3e7a53bbf0d0bd9d4660f6e",
+      "response_bytes": 21928,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 15,
+      "sha256_raw_response": "87307d8c5de357c33b47226db6ec08d5efaccb00165bac5f5b1e80b3b20f429a",
+      "response_bytes": 22383,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 16,
+      "sha256_raw_response": "f4d627083664f6e39625a0a9c802dfe81debedbf97078faba284511e52960b98",
+      "response_bytes": 22715,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 17,
+      "sha256_raw_response": "b6b8db2f9b053c529cdddc28946c23b5da7087706d71d68665d09713abf51c42",
+      "response_bytes": 21484,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 18,
+      "sha256_raw_response": "65bb568c89ee3fde80bb6be10b49c5c2cdb27182e95434d673ee0b0e318042b7",
+      "response_bytes": 22655,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 19,
+      "sha256_raw_response": "fc454d8d8318bd41e89d5148fdd53aefe688a1a612331c305c8fcdce4bd7b83b",
+      "response_bytes": 22777,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 20,
+      "sha256_raw_response": "80299b58ab201a01c40671f34acef671da2611f4631932996a56eef3b87a30dc",
+      "response_bytes": 23169,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 21,
+      "sha256_raw_response": "0a2946310999a049a183aeb448b3300b840f0700595f943392958636d6e63508",
+      "response_bytes": 22653,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 22,
+      "sha256_raw_response": "3b0f2372c0dcfed097d2115f96dcf1ecca165eafeccf8d18954d3d04097c95a2",
+      "response_bytes": 22531,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 23,
+      "sha256_raw_response": "5136daf539f5dde4aea7517e32a1934f7f4eb8c2a46379f8adb33bbf14c90957",
+      "response_bytes": 22599,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 24,
+      "sha256_raw_response": "e7f05621bab43c2b124917f47b9be8b3c9d0609a53cfb3ff85b5e8596ea6b6c0",
+      "response_bytes": 21564,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 25,
+      "sha256_raw_response": "037777e1c6cb9d82f652ad4129c14611062d7f12944e2ce910448a8a62b8f7a6",
+      "response_bytes": 22263,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 26,
+      "sha256_raw_response": "319152a3579b4156bdbd0238800110a28b4fe2c8e8c2002ff31c9276bd5e0dd9",
+      "response_bytes": 22459,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 27,
+      "sha256_raw_response": "86589859ccf644b3d19addea8c932f2062d6cfd0f6863b04b7ee6569da0e75aa",
+      "response_bytes": 22564,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 28,
+      "sha256_raw_response": "f14549130278ed7fcfc6ffca6868ac20879d25a71da7325df470a0a10e67a4e2",
+      "response_bytes": 22675,
+      "row_count": 30,
+      "reported_total": 850
+    },
+    {
+      "page": 29,
+      "sha256_raw_response": "fa576066c0355c121bdea433e5fda2875319783d9af04dfc7ed9e90e197caffd",
+      "response_bytes": 7610,
+      "row_count": 10,
+      "reported_total": 850
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600180",
+      "announcementId": "1225579034",
+      "announcementTime": 1790179200000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-09-24/1225579034.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225577681",
+      "announcementTime": 1790076970000,
+      "title": "关于董事长辞职的公告",
+      "adjunctUrl": "finalpage/2026-09-22/1225577681.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225575963",
+      "announcementTime": 1789999107000,
+      "title": "关于公司股票进入退市整理期交易的公告",
+      "adjunctUrl": "finalpage/2026-09-21/1225575963.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225575962",
+      "announcementTime": 1789999107000,
+      "title": "关于收到股票终止上市决定的公告",
+      "adjunctUrl": "finalpage/2026-09-21/1225575962.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225575964",
+      "announcementTime": 1789999089000,
+      "title": "关于公司股票被实施其他风险警示的第九次提示性公告",
+      "adjunctUrl": "finalpage/2026-09-21/1225575964.PDF"
+    },
+    {
+      "symbol": "000639",
+      "announcementId": "1225573373",
+      "announcementTime": 1789747200000,
+      "title": "关于公司股票被叠加实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2026-09-19/1225573373.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225563865",
+      "announcementTime": 1789383730000,
+      "title": "关于公司股票被实施其他风险警示的第八次提示性公告",
+      "adjunctUrl": "finalpage/2026-09-14/1225563865.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225551366",
+      "announcementTime": 1788774250000,
+      "title": "关于公司股票被实施其他风险警示的第七次提示性公告",
+      "adjunctUrl": "finalpage/2026-09-07/1225551366.PDF"
+    },
+    {
+      "symbol": "002743",
+      "announcementId": "1225549240",
+      "announcementTime": 1788537600000,
+      "title": "关于公司主要银行账号被冻结暨股票交易被实施其他风险警示及股票停复牌的公告",
+      "adjunctUrl": "finalpage/2026-09-05/1225549240.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225548952",
+      "announcementTime": 1788537600000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被叠加实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-09-05/1225548952.PDF"
+    },
+    {
+      "symbol": "300594",
+      "announcementId": "1225546407",
+      "announcementTime": 1788428070000,
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-09-03/1225546407.PDF"
+    },
+    {
+      "symbol": "002109",
+      "announcementId": "1225543738",
+      "announcementTime": 1788364800000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-09-03/1225543738.PDF"
+    },
+    {
+      "symbol": "002082",
+      "announcementId": "1225543737",
+      "announcementTime": 1788364800000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-09-03/1225543737.PDF"
+    },
+    {
+      "symbol": "300245",
+      "announcementId": "1225542516",
+      "announcementTime": 1788262330000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-09-01/1225542516.PDF"
+    },
+    {
+      "symbol": "300081",
+      "announcementId": "1225541090",
+      "announcementTime": 1788254528000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-09-01/1225541090.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "1225538055",
+      "announcementTime": 1788192000000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-09-01/1225538055.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225537671",
+      "announcementTime": 1788170530000,
+      "title": "关于公司股票被实施其他风险警示的第六次提示性公告",
+      "adjunctUrl": "finalpage/2026-08-31/1225537671.PDF"
+    },
+    {
+      "symbol": "688121",
+      "announcementId": "1225534796",
+      "announcementTime": 1788105600000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-31/1225534796.PDF"
+    },
+    {
+      "symbol": "300430",
+      "announcementId": "1225533450",
+      "announcementTime": 1787932800000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225533450.PDF"
+    },
+    {
+      "symbol": "600678",
+      "announcementId": "1225525954",
+      "announcementTime": 1787932800000,
+      "title": "四川金顶（集团）股份有限公司关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225525954.PDF"
+    },
+    {
+      "symbol": "600302",
+      "announcementId": "1225524987",
+      "announcementTime": 1787932800000,
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225524987.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225523860",
+      "announcementTime": 1787932800000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225523860.PDF"
+    },
+    {
+      "symbol": "002198",
+      "announcementId": "1225523834",
+      "announcementTime": 1787932800000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225523834.PDF"
+    },
+    {
+      "symbol": "002598",
+      "announcementId": "1225523730",
+      "announcementTime": 1787932800000,
+      "title": "关于公司股票交易被叠加实施其他风险警示和可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225523730.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1225523682",
+      "announcementTime": 1787932800000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225523682.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "1225523643",
+      "announcementTime": 1787932800000,
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-29/1225523643.PDF"
+    },
+    {
+      "symbol": "300290",
+      "announcementId": "1225529614",
+      "announcementTime": 1787912551000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-28/1225529614.PDF"
+    },
+    {
+      "symbol": "600370",
+      "announcementId": "1225522787",
+      "announcementTime": 1787846400000,
+      "title": "江苏三房巷聚材股份有限公司关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-28/1225522787.PDF"
+    },
+    {
+      "symbol": "002082",
+      "announcementId": "1225515495",
+      "announcementTime": 1787760000000,
+      "title": "关于对2025年度非标准审计意见涉及事项自查进展暨公司股票可能被叠加实施其他风险警示的提示公告",
+      "adjunctUrl": "finalpage/2026-08-27/1225515495.pdf"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "1225512856",
+      "announcementTime": 1787760000000,
+      "title": "关于公司股票被实施其他风险警示及可能被实施退市风险警示相关事项的进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2026-08-27/1225512856.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "1225496821",
+      "announcementTime": 1787587200000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-25/1225496821.PDF"
+    },
+    {
+      "symbol": "600965",
+      "announcementId": "1225496456",
+      "announcementTime": 1787587200000,
+      "title": "福成股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-25/1225496456.PDF"
+    },
+    {
+      "symbol": "000639",
+      "announcementId": "1225492354",
+      "announcementTime": 1787328000000,
+      "title": "关于公司股票可能被叠加实施其他风险警示的提示性公告",
+      "adjunctUrl": "finalpage/2026-08-22/1225492354.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225489884",
+      "announcementTime": 1787304030000,
+      "title": "关于公司股票被实施其他风险警示的第五次提示性公告",
+      "adjunctUrl": "finalpage/2026-08-21/1225489884.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225464731",
+      "announcementTime": 1786101339000,
+      "title": "关于公司股票被实施其他风险警示的第四次提示性公告",
+      "adjunctUrl": "finalpage/2026-08-07/1225464731.PDF"
+    },
+    {
+      "symbol": "688121",
+      "announcementId": "1225459660",
+      "announcementTime": 1785945600000,
+      "title": "关于公司股票继续实施财务类退市风险警示并实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2026-08-06/1225459660.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225459616",
+      "announcementTime": 1785945600000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被叠加实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-08-06/1225459616.PDF"
+    },
+    {
+      "symbol": "300594",
+      "announcementId": "1225459720",
+      "announcementTime": 1785922328000,
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-05/1225459720.PDF"
+    },
+    {
+      "symbol": "002082",
+      "announcementId": "1225457212",
+      "announcementTime": 1785859200000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-08-05/1225457212.PDF"
+    },
+    {
+      "symbol": "002109",
+      "announcementId": "1225453352",
+      "announcementTime": 1785772800000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-04/1225453352.PDF"
+    },
+    {
+      "symbol": "300245",
+      "announcementId": "1225456112",
+      "announcementTime": 1785758309000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-03/1225456112.PDF"
+    },
+    {
+      "symbol": "300081",
+      "announcementId": "1225455438",
+      "announcementTime": 1785753029000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-03/1225455438.PDF"
+    },
+    {
+      "symbol": "600530",
+      "announcementId": "1225452476",
+      "announcementTime": 1785513600000,
+      "title": "关于实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-08-01/1225452476.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "1225452144",
+      "announcementTime": 1785513600000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-01/1225452144.PDF"
+    },
+    {
+      "symbol": "600370",
+      "announcementId": "1225450840",
+      "announcementTime": 1785513600000,
+      "title": "江苏三房巷聚材股份有限公司关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-08-01/1225450840.PDF"
+    },
+    {
+      "symbol": "300430",
+      "announcementId": "1225452441",
+      "announcementTime": 1785501620000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-31/1225452441.PDF"
+    },
+    {
+      "symbol": "600302",
+      "announcementId": "1225449328",
+      "announcementTime": 1785427200000,
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展的补充公告",
+      "adjunctUrl": "finalpage/2026-07-31/1225449328.PDF"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "1225448933",
+      "announcementTime": 1785427200000,
+      "title": "关于公司股票被实施其他风险警示及可能被实施退市风险警示相关事项的进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2026-07-31/1225448933.PDF"
+    },
+    {
+      "symbol": "600302",
+      "announcementId": "1225447647",
+      "announcementTime": 1785427200000,
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-31/1225447647.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1225447594",
+      "announcementTime": 1785427200000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-07-31/1225447594.PDF"
+    },
+    {
+      "symbol": "002198",
+      "announcementId": "1225446217",
+      "announcementTime": 1785340800000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-30/1225446217.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "1225445923",
+      "announcementTime": 1785340800000,
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-30/1225445923.PDF"
+    },
+    {
+      "symbol": "600678",
+      "announcementId": "1225445029",
+      "announcementTime": 1785254400000,
+      "title": "四川金顶（集团）股份有限公司关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-29/1225445029.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225444564",
+      "announcementTime": 1785254400000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-07-29/1225444564.PDF"
+    },
+    {
+      "symbol": "002598",
+      "announcementId": "1225444140",
+      "announcementTime": 1785254400000,
+      "title": "关于公司股票交易被叠加实施其他风险警示和可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-29/1225444140.PDF"
+    },
+    {
+      "symbol": "300290",
+      "announcementId": "1225443467",
+      "announcementTime": 1785148707000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-27/1225443467.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "1225441162",
+      "announcementTime": 1784908800000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-25/1225441162.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225440926",
+      "announcementTime": 1784886728000,
+      "title": "关于公司股票被实施其他风险警示的第三次提示性公告",
+      "adjunctUrl": "finalpage/2026-07-24/1225440926.PDF"
+    },
+    {
+      "symbol": "600965",
+      "announcementId": "1225438781",
+      "announcementTime": 1784822400000,
+      "title": "福成股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-24/1225438781.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225430726",
+      "announcementTime": 1784304000000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被叠加实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2026-07-18/1225430726.PDF"
+    },
+    {
+      "symbol": "002759",
+      "announcementId": "1225422610",
+      "announcementTime": 1783958400000,
+      "title": "关于公司股票被实施其他风险警示暨停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-07-14/1225422610.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225419656",
+      "announcementTime": 1783680490000,
+      "title": "关于公司股票被实施其他风险警示的第二次提示性公告",
+      "adjunctUrl": "finalpage/2026-07-10/1225419656.PDF"
+    },
+    {
+      "symbol": "300594",
+      "announcementId": "1225408443",
+      "announcementTime": 1783068794000,
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-03/1225408443.PDF"
+    },
+    {
+      "symbol": "002082",
+      "announcementId": "1225406415",
+      "announcementTime": 1783008000000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-07-03/1225406415.PDF"
+    },
+    {
+      "symbol": "002109",
+      "announcementId": "1225403967",
+      "announcementTime": 1782921600000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-02/1225403967.PDF"
+    },
+    {
+      "symbol": "300245",
+      "announcementId": "1225404315",
+      "announcementTime": 1782908187000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-01/1225404315.PDF"
+    },
+    {
+      "symbol": "300081",
+      "announcementId": "1225403685",
+      "announcementTime": 1782901467000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-01/1225403685.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "1225400864",
+      "announcementTime": 1782835200000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-01/1225400864.PDF"
+    },
+    {
+      "symbol": "600370",
+      "announcementId": "1225400347",
+      "announcementTime": 1782835200000,
+      "title": "江苏三房巷聚材股份有限公司关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-07-01/1225400347.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "1225397185",
+      "announcementTime": 1782748800000,
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-30/1225397185.PDF"
+    },
+    {
+      "symbol": "002198",
+      "announcementId": "1225395935",
+      "announcementTime": 1782748800000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-30/1225395935.PDF"
+    },
+    {
+      "symbol": "600302",
+      "announcementId": "1225395911",
+      "announcementTime": 1782748800000,
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-30/1225395911.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1225394062",
+      "announcementTime": 1782748800000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-06-30/1225394062.PDF"
+    },
+    {
+      "symbol": "300290",
+      "announcementId": "1225393205",
+      "announcementTime": 1782489600000,
+      "title": "关于公司股票被实施其他风险警示暨停复牌的公告",
+      "adjunctUrl": "finalpage/2026-06-27/1225393205.pdf"
+    },
+    {
+      "symbol": "300087",
+      "announcementId": "1225392834",
+      "announcementTime": 1782489600000,
+      "title": "关于公司股票被实施其他风险警示暨股票停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-06-27/1225392834.PDF"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "1225392070",
+      "announcementTime": 1782489600000,
+      "title": "关于公司股票被实施其他风险警示及可能被实施退市风险警示相关事项的进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2026-06-27/1225392070.PDF"
+    },
+    {
+      "symbol": "600678",
+      "announcementId": "1225390375",
+      "announcementTime": 1782489600000,
+      "title": "四川金顶（集团）股份有限公司关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-27/1225390375.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225389952",
+      "announcementTime": 1782489600000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-06-27/1225389952.PDF"
+    },
+    {
+      "symbol": "002598",
+      "announcementId": "1225389846",
+      "announcementTime": 1782489600000,
+      "title": "关于公司股票交易被叠加实施其他风险警示和可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-27/1225389846.PDF"
+    },
+    {
+      "symbol": "301139",
+      "announcementId": "1225393091",
+      "announcementTime": 1782477026000,
+      "title": "关于公司股票被实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2026-06-26/1225393091.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "1225387913",
+      "announcementTime": 1782403200000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-26/1225387913.PDF"
+    },
+    {
+      "symbol": "300430",
+      "announcementId": "1225388856",
+      "announcementTime": 1782387628000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-25/1225388856.PDF"
+    },
+    {
+      "symbol": "600965",
+      "announcementId": "1225384335",
+      "announcementTime": 1782230400000,
+      "title": "福成股份：关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-24/1225384335.PDF"
+    },
+    {
+      "symbol": "688189",
+      "announcementId": "1225361134",
+      "announcementTime": 1781020800000,
+      "title": "关于实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-06-10/1225361134.PDF"
+    },
+    {
+      "symbol": "300594",
+      "announcementId": "1225347603",
+      "announcementTime": 1780403650000,
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-02/1225347603.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "1225343328",
+      "announcementTime": 1780329600000,
+      "title": "关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-02/1225343328.PDF"
+    },
+    {
+      "symbol": "002082",
+      "announcementId": "1225342585",
+      "announcementTime": 1780329600000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-02/1225342585.PDF"
+    },
+    {
+      "symbol": "300245",
+      "announcementId": "1225343942",
+      "announcementTime": 1780311611000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-01/1225343942.PDF"
+    },
+    {
+      "symbol": "300081",
+      "announcementId": "1225342391",
+      "announcementTime": 1780305731000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-06-01/1225342391.PDF"
+    },
+    {
+      "symbol": "300430",
+      "announcementId": "1225340143",
+      "announcementTime": 1780070400000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225340143.PDF"
+    },
+    {
+      "symbol": "002109",
+      "announcementId": "1225339756",
+      "announcementTime": 1780070400000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225339756.PDF"
+    },
+    {
+      "symbol": "600370",
+      "announcementId": "1225338984",
+      "announcementTime": 1780070400000,
+      "title": "江苏三房巷聚材股份有限公司关于公司股票被实施退市风险警示及其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225338984.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "1225338566",
+      "announcementTime": 1780070400000,
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225338566.PDF"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "1225338351",
+      "announcementTime": 1780070400000,
+      "title": "关于公司股票被实施其他风险警示及可能被实施退市风险警示相关事项的进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225338351.PDF"
+    },
+    {
+      "symbol": "002598",
+      "announcementId": "1225337943",
+      "announcementTime": 1780070400000,
+      "title": "关于公司股票交易被叠加实施其他风险警示和可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225337943.PDF"
+    },
+    {
+      "symbol": "600302",
+      "announcementId": "1225337651",
+      "announcementTime": 1780070400000,
+      "title": "标准股份关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225337651.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1225337571",
+      "announcementTime": 1780070400000,
+      "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+      "adjunctUrl": "finalpage/2026-05-30/1225337571.PDF"
+    },
+    {
+      "symbol": "002198",
+      "announcementId": "1225335056",
+      "announcementTime": 1779984000000,
+      "title": "关于公司股票交易被实施其他风险警示暨可能被实施退市风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-29/1225335056.PDF"
+    },
+    {
+      "symbol": "600678",
+      "announcementId": "1225334990",
+      "announcementTime": 1779984000000,
+      "title": "四川金顶（集团）股份有限公司关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-29/1225334990.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225332746",
+      "announcementTime": 1779897600000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票被实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-05-28/1225332746.PDF"
+    },
+    {
+      "symbol": "000632",
+      "announcementId": "1225327407",
+      "announcementTime": 1779465600000,
+      "title": "关于公司股票交易被叠加实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2026-05-23/1225327407.PDF"
+    },
+    {
+      "symbol": "300081",
+      "announcementId": "1225286707",
+      "announcementTime": 1778241130000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-08/1225286707.PDF"
+    },
+    {
+      "symbol": "300245",
+      "announcementId": "1225280626",
+      "announcementTime": 1778068350000,
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-06/1225280626.PDF"
+    },
+    {
+      "symbol": "300594",
+      "announcementId": "1225279519",
+      "announcementTime": 1778060790000,
+      "title": "山东朗进科技股份有限公司关于公司股票交易被实施其他风险警示相关事项的进展公告",
+      "adjunctUrl": "finalpage/2026-05-06/1225279519.PDF"
+    },
+    {
+      "symbol": "002667",
+      "announcementId": "1225269071",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票交易被实施退市风险警示及其他风险警示暨停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225269071.PDF"
+    },
+    {
+      "symbol": "002082",
+      "announcementId": "1225268899",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票交易被实施其他风险警示暨股票停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225268899.PDF"
+    },
+    {
+      "symbol": "300430",
+      "announcementId": "1225268570",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票交易被实施退市风险警示叠加其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225268570.PDF"
+    },
+    {
+      "symbol": "600187",
+      "announcementId": "1225268438",
+      "announcementTime": 1777478400000,
+      "title": "关于实施退市风险警示及叠加其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225268438.PDF"
+    },
+    {
+      "symbol": "600302",
+      "announcementId": "1225266703",
+      "announcementTime": 1777478400000,
+      "title": "标准股份关于实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225266703.PDF"
+    },
+    {
+      "symbol": "002514",
+      "announcementId": "1225266381",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票交易被实施退市风险警示及其他风险警示暨股票停牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225266381.PDF"
+    },
+    {
+      "symbol": "600965",
+      "announcementId": "1225266131",
+      "announcementTime": 1777478400000,
+      "title": "福成股份：关于股票被实施退市风险警示及叠加其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225266131.PDF"
+    },
+    {
+      "symbol": "002198",
+      "announcementId": "1225265919",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票将被实施其他风险警示暨停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225265919.PDF"
+    },
+    {
+      "symbol": "002109",
+      "announcementId": "1225265687",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票被实施其他风险警示暨公司股票停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225265687.PDF"
+    },
+    {
+      "symbol": "002193",
+      "announcementId": "1225263624",
+      "announcementTime": 1777478400000,
+      "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告(4)",
+      "adjunctUrl": "finalpage/2026-04-30/1225263624.PDF"
+    },
+    {
+      "symbol": "600491",
+      "announcementId": "1225263031",
+      "announcementTime": 1777478400000,
+      "title": "龙元建设关于实施其他风险警示暨股票停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-30/1225263031.PDF"
+    },
+    {
+      "symbol": "603359",
+      "announcementId": "1225256589",
+      "announcementTime": 1777392000000,
+      "title": "东珠生态环保股份有限公司关于公司股票被实施退市风险警示及叠加其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225256589.PDF"
+    },
+    {
+      "symbol": "000010",
+      "announcementId": "1225251716",
+      "announcementTime": 1777392000000,
+      "title": "关于公司股票交易将被实施退市风险警示及其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225251716.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1225251583",
+      "announcementTime": 1777392000000,
+      "title": "关于公司股票被实施其他风险警示暨停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225251583.PDF"
+    },
+    {
+      "symbol": "002598",
+      "announcementId": "1225251369",
+      "announcementTime": 1777392000000,
+      "title": "关于公司股票交易将被叠加实施其他风险警示和可能被实施退市风险警示的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225251369.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "1225251103",
+      "announcementTime": 1777392000000,
+      "title": "瑞茂通关于公司股票被实施退市风险警示并叠加其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225251103.PDF"
+    },
+    {
+      "symbol": "300594",
+      "announcementId": "1225250543",
+      "announcementTime": 1777392000000,
+      "title": "山东朗进科技股份有限公司关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225250543.PDF"
+    },
+    {
+      "symbol": "000632",
+      "announcementId": "1225248807",
+      "announcementTime": 1777392000000,
+      "title": "关于公司股票交易被实施其他风险警示暨停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225248807.PDF"
+    },
+    {
+      "symbol": "002856",
+      "announcementId": "1225248771",
+      "announcementTime": 1777392000000,
+      "title": "2026-027：关于公司股票交易被实施退市风险警示及其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225248771.PDF"
+    },
+    {
+      "symbol": "603729",
+      "announcementId": "1225247965",
+      "announcementTime": 1777392000000,
+      "title": "上海龙韵文创科技集团股份有限公司关于股票被实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225247965.PDF"
+    },
+    {
+      "symbol": "000639",
+      "announcementId": "1225247389",
+      "announcementTime": 1777392000000,
+      "title": "关于公司股票交易被实施其他风险警示、停牌暨可能被实施退市风险警示的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225247389.PDF"
+    },
+    {
+      "symbol": "000911",
+      "announcementId": "1225245896",
+      "announcementTime": 1777392000000,
+      "title": "广西农投糖业集团股份有限公司关于公司股票交易被实施退市风险警示和其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225245896.PDF"
+    },
+    {
+      "symbol": "600678",
+      "announcementId": "1225244747",
+      "announcementTime": 1777392000000,
+      "title": "四川金顶（集团）股份有限公司关于实施其他风险警示暨停牌公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225244747.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "1225242871",
+      "announcementTime": 1777392000000,
+      "title": "金花企业（集团）股份有限公司关于实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225242871.PDF"
+    },
+    {
+      "symbol": "300212",
+      "announcementId": "1225239125",
+      "announcementTime": 1777392000000,
+      "title": "关于公司股票交易被实施退市风险警示及其他风险警示暨停牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225239125.PDF"
+    },
+    {
+      "symbol": "600370",
+      "announcementId": "1225233408",
+      "announcementTime": 1777392000000,
+      "title": "江苏三房巷聚材股份有限公司关于实施退市风险警示及叠加其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225233408.PDF"
+    },
+    {
+      "symbol": "600476",
+      "announcementId": "1225227384",
+      "announcementTime": 1777392000000,
+      "title": "湖南湘邮科技股份有限公司关于股票被实施退市风险警示及叠加其他风险警示暨复牌的的公告",
+      "adjunctUrl": "finalpage/2026-04-29/1225227384.PDF"
+    },
+    {
+      "symbol": "002719",
+      "announcementId": "1225222777",
+      "announcementTime": 1777305600000,
+      "title": "关于公司股票交易被实施其他风险警示暨停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-28/1225222777.PDF"
+    },
+    {
+      "symbol": "600818",
+      "announcementId": "1225221644",
+      "announcementTime": 1777305600000,
+      "title": "关于股票被实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-28/1225221644.PDF"
+    },
+    {
+      "symbol": "300245",
+      "announcementId": "1225219856",
+      "announcementTime": 1777305600000,
+      "title": "关于公司股票被实施其他风险警示暨股票停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-28/1225219856.PDF"
+    },
+    {
+      "symbol": "002360",
+      "announcementId": "1225212267",
+      "announcementTime": 1777305600000,
+      "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-28/1225212267.PDF"
+    },
+    {
+      "symbol": "002634",
+      "announcementId": "1225195300",
+      "announcementTime": 1777046400000,
+      "title": "关于公司股票将被实施退市风险警示和其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-25/1225195300.PDF"
+    },
+    {
+      "symbol": "600965",
+      "announcementId": "1225187304",
+      "announcementTime": 1777046400000,
+      "title": "福成股份：关于延期披露定期报告暨可能会被实施退市风险警示和其他风险警示的风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-25/1225187304.PDF"
+    },
+    {
+      "symbol": "000056",
+      "announcementId": "1225173882",
+      "announcementTime": 1776960000000,
+      "title": "关于公司股票交易被实施退市风险警示及其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-24/1225173882.PDF"
+    },
+    {
+      "symbol": "000838",
+      "announcementId": "1225170536",
+      "announcementTime": 1776960000000,
+      "title": "关于公司股票交易被实施退市风险警示、其他风险警示暨股票停复牌的公告",
+      "adjunctUrl": "finalpage/2026-04-24/1225170536.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225137725",
+      "announcementTime": 1776787200000,
+      "title": "关于公司副总经理、董事会秘书辞职的公告",
+      "adjunctUrl": "finalpage/2026-04-22/1225137725.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225137724",
+      "announcementTime": 1776787200000,
+      "title": "关于公司股票终止上市暨摘牌的公告",
+      "adjunctUrl": "finalpage/2026-04-22/1225137724.PDF"
+    },
+    {
+      "symbol": "600355",
+      "announcementId": "1225127344",
+      "announcementTime": 1776700800000,
+      "title": "精伦电子股票终止上市暨摘牌的公告",
+      "adjunctUrl": "finalpage/2026-04-21/1225127344.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225125690",
+      "announcementTime": 1776700800000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-21/1225125690.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225116090",
+      "announcementTime": 1776614400000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-20/1225116090.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225110982",
+      "announcementTime": 1776355200000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-17/1225110982.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225105372",
+      "announcementTime": 1776268800000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-16/1225105372.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225100325",
+      "announcementTime": 1776182400000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-15/1225100325.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225098861",
+      "announcementTime": 1776096000000,
+      "title": "北京炜衡（上海）律师事务所关于立方数科股份有限公司2026年第二次临时股东会的法律意见书",
+      "adjunctUrl": "finalpage/2026-04-14/1225098861.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225098860",
+      "announcementTime": 1776096000000,
+      "title": "2026年第二次临时股东会决议公告",
+      "adjunctUrl": "finalpage/2026-04-14/1225098860.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225098859",
+      "announcementTime": 1776096000000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-14/1225098859.PDF"
+    },
+    {
+      "symbol": "300385",
+      "announcementId": "1225096562",
+      "announcementTime": 1775836800000,
+      "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-11/1225096562.PDF"
+    },
+    {
+      "symbol": "600082",
+      "announcementId": "1225096042",
+      "announcementTime": 1775836800000,
+      "title": "天津海泰科技发展股份有限公司关于实施其他风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2026-04-11/1225096042.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225092243",
+      "announcementTime": 1775810894000,
+      "title": "关于聘请主办券商的公告",
+      "adjunctUrl": "finalpage/2026-04-10/1225092243.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225082246",
+      "announcementTime": 1775557196000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示公告",
+      "adjunctUrl": "finalpage/2026-04-07/1225082246.PDF"
+    },
+    {
+      "symbol": "002598",
+      "announcementId": "1225080609",
+      "announcementTime": 1775232000000,
+      "title": "关于公司股票交易将被实施其他风险警示暨股票及可转换公司债券停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-04/1225080609.PDF"
+    },
+    {
+      "symbol": "300081",
+      "announcementId": "1225080773",
+      "announcementTime": 1775229351000,
+      "title": "关于公司股票被实施其他风险警示暨股票停复牌的提示性公告",
+      "adjunctUrl": "finalpage/2026-04-03/1225080773.pdf"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225053819",
+      "announcementTime": 1774886400000,
+      "title": "关于公司股票进入退市整理期交易首日的风险提示公告",
+      "adjunctUrl": "finalpage/2026-03-31/1225053819.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225042328",
+      "announcementTime": 1774627200000,
+      "title": "关于全资子公司终止对外投资事项的公告",
+      "adjunctUrl": "finalpage/2026-03-28/1225042328.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225042327",
+      "announcementTime": 1774627200000,
+      "title": "关于召开2026年第二次临时股东会通知的公告",
+      "adjunctUrl": "finalpage/2026-03-28/1225042327.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225042326",
+      "announcementTime": 1774627200000,
+      "title": "第九届董事会第十六次会议决议公告",
+      "adjunctUrl": "finalpage/2026-03-28/1225042326.PDF"
+    },
+    {
+      "symbol": "002231",
+      "announcementId": "1225037517",
+      "announcementTime": 1774540800000,
+      "title": "股票终止上市暨摘牌公告",
+      "adjunctUrl": "finalpage/2026-03-27/1225037517.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225024738",
+      "announcementTime": 1774257370000,
+      "title": "关于公司股票进入退市整理期交易的公告",
+      "adjunctUrl": "finalpage/2026-03-23/1225024738.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1225024737",
+      "announcementTime": 1774257369000,
+      "title": "关于收到股票终止上市决定的公告",
+      "adjunctUrl": "finalpage/2026-03-23/1225024737.PDF"
+    },
+    {
+      "symbol": "002231",
+      "announcementId": "1225021671",
+      "announcementTime": 1774022400000,
+      "title": "关于收到股票终止上市决定的公告",
+      "adjunctUrl": "finalpage/2026-03-21/1225021671.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1224997569",
+      "announcementTime": 1772704331000,
+      "title": "关于公司股票交易其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-03-05/1224997569.PDF"
+    },
+    {
+      "symbol": "002231",
+      "announcementId": "1224983890",
+      "announcementTime": 1772035200000,
+      "title": "关于公司股票交易被实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-02-26/1224983890.PDF"
+    },
+    {
+      "symbol": "300344",
+      "announcementId": "1224982245",
+      "announcementTime": 1770998400000,
+      "title": "关于收到终止上市事先告知书的公告",
+      "adjunctUrl": "finalpage/2026-02-14/1224982245.pdf"
+    },
+    {
+      "symbol": "002231",
+      "announcementId": "1224956425",
+      "announcementTime": 1769702400000,
+      "title": "关于收到终止上市事先告知书的公告",
+      "adjunctUrl": "finalpage/2026-01-30/1224956425.PDF"
+    },
+    {
+      "symbol": "002231",
+      "announcementId": "1224946955",
+      "announcementTime": 1769184000000,
+      "title": "关于公司股票交易被实施其他风险警示的进展公告",
+      "adjunctUrl": "finalpage/2026-01-24/1224946955.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224943647",
+      "announcementTime": 1769011200000,
+      "title": "关于公司股票终止上市暨摘牌的公告",
+      "adjunctUrl": "finalpage/2026-01-22/1224943647.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224941125",
+      "announcementTime": 1768924800000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-21/1224941125.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224939502",
+      "announcementTime": 1768838400000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-20/1224939502.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224938293",
+      "announcementTime": 1768752000000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-19/1224938293.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224935805",
+      "announcementTime": 1768492800000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-16/1224935805.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224934089",
+      "announcementTime": 1768406400000,
+      "title": "关于聘请主办券商的公告",
+      "adjunctUrl": "finalpage/2026-01-15/1224934089.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224934088",
+      "announcementTime": 1768406400000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-15/1224934088.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224932528",
+      "announcementTime": 1768320000000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-14/1224932528.PDF"
+    },
+    {
+      "symbol": "300379",
+      "announcementId": "1224921620",
+      "announcementTime": 1767715200000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示公告",
+      "adjunctUrl": "finalpage/2026-01-07/1224921620.PDF"
+    }
+  ],
+  "complete": true
+}

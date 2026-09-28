@@ -1,0 +1,71 @@
+{
+  "year": 2014,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2014-01-01~2014-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 7,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "df53643ce4f18f0715f41280cb4b2c4e02f93535bef6f4ae0dc077de3b106699",
+      "response_bytes": 5326,
+      "row_count": 7,
+      "reported_total": 7
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000779",
+      "announcementId": "63855896",
+      "announcementTime": 1397664000000,
+      "title": "董事会关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的意见",
+      "adjunctUrl": "finalpage/2014-04-17/63855896.PDF"
+    },
+    {
+      "symbol": "000755",
+      "announcementId": "63718398",
+      "announcementTime": 1395676800000,
+      "title": "董事会关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的意见",
+      "adjunctUrl": "finalpage/2014-03-25/63718398.PDF"
+    },
+    {
+      "symbol": "000755",
+      "announcementId": "63718383",
+      "announcementTime": 1395676800000,
+      "title": "关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2014-03-25/63718383.PDF"
+    },
+    {
+      "symbol": "002459",
+      "announcementId": "63674041",
+      "announcementTime": 1394726400000,
+      "title": "关于公司股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2014-03-14/63674041.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "63664541",
+      "announcementTime": 1394553600000,
+      "title": "董事会关于撤销退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2014-03-12/63664541.PDF"
+    },
+    {
+      "symbol": "002160",
+      "announcementId": "63651923",
+      "announcementTime": 1394380800000,
+      "title": "关于公司股票将被实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2014-03-10/63651923.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "63616538",
+      "announcementTime": 1393516800000,
+      "title": "董事会申请撤销退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2014-02-28/63616538.PDF"
+    }
+  ],
+  "complete": true
+}

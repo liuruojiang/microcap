@@ -1,0 +1,99 @@
+{
+  "year": 2002,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2002-01-01~2002-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 19,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "be93afd23ead57212d5f8a40771b7a90a06eceaa195a4ae9d88378217551b638",
+      "response_bytes": 12917,
+      "row_count": 19,
+      "reported_total": 19
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000613",
+      "announcementId": "10011662",
+      "announcementTime": 1034376055000,
+      "title": "股票恢复上市并实施<em>特别</em><em>处理</em>",
+      "adjunctUrl": "finalpage/2002-10-12/10011662.html"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "654592",
+      "announcementTime": 1033080853000,
+      "title": "股票恢复上市并实施<em>特别</em><em>处理</em>",
+      "adjunctUrl": "finalpage/2002-09-27/654592.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "617550",
+      "announcementTime": 1026942576000,
+      "title": "关于公司股票实行<em>特别</em><em>处理</em>的公告等",
+      "adjunctUrl": "finalpage/2002-07-18/617550.html"
+    },
+    {
+      "symbol": "600137",
+      "announcementId": "616302",
+      "announcementTime": 1026508560000,
+      "title": "公司股票实行<em>特别</em><em>处理</em>",
+      "adjunctUrl": "finalpage/2002-07-13/616302.html"
+    },
+    {
+      "symbol": "000411",
+      "announcementId": "608784",
+      "announcementTime": 1024437710000,
+      "title": "股票恢复上市并实施<em>特别</em><em>处理</em>公告",
+      "adjunctUrl": "finalpage/2002-06-19/608784.html"
+    },
+    {
+      "symbol": "600870",
+      "announcementId": "579011",
+      "announcementTime": 1019646070000,
+      "title": "股票<em>特别</em><em>处理</em>的公告等",
+      "adjunctUrl": "finalpage/2002-04-24/579011.html"
+    },
+    {
+      "symbol": "000723",
+      "announcementId": "10526786",
+      "announcementTime": 1018305548000,
+      "title": "关于本公司股票实行<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2002-04-09/10526786.html"
+    },
+    {
+      "symbol": "000662",
+      "announcementId": "559994",
+      "announcementTime": 1017327893000,
+      "title": "撤销股票<em>特别</em><em>处理</em>公告等",
+      "adjunctUrl": "finalpage/2002-03-28/559994.html"
+    },
+    {
+      "symbol": "000678",
+      "announcementId": "558250",
+      "announcementTime": 1017154697000,
+      "title": "股票交易实行<em>特别</em><em>处理</em>",
+      "adjunctUrl": "finalpage/2002-03-26/558250.html"
+    },
+    {
+      "symbol": "000678",
+      "announcementId": "557118",
+      "announcementTime": 1017069324000,
+      "title": "股票交易实行<em>特别</em><em>处理</em>公告",
+      "adjunctUrl": "finalpage/2002-03-25/557118.html"
+    },
+    {
+      "symbol": "600097",
+      "announcementId": "554168",
+      "announcementTime": 1016459599000,
+      "title": "撤消股票交易<em>特别</em><em>处理</em>等",
+      "adjunctUrl": "finalpage/2002-03-18/554168.html"
+    }
+  ],
+  "complete": true
+}

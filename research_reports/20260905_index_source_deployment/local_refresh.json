@@ -1,0 +1,38 @@
+{
+  "started_at": "2026-09-05T00:23:02.684381+08:00",
+  "steps": [
+    {
+      "command": "refresh-all",
+      "exit_code": 0,
+      "elapsed_seconds": 128.044
+    },
+    {
+      "command": "check",
+      "exit_code": 0,
+      "elapsed_seconds": 9.291
+    }
+  ],
+  "mode": "close-confirmed refresh; no realtime publication",
+  "parity": {
+    "0": {
+      "rows": 4016,
+      "last_date": "2026-09-04",
+      "max_nav_delta": 0.0,
+      "file_bytes_unchanged": true
+    },
+    "3": {
+      "rows": 3971,
+      "last_date": "2026-09-04",
+      "max_nav_delta": 0.0,
+      "file_bytes_unchanged": true
+    },
+    "5": {
+      "rows": 3971,
+      "last_date": "2026-09-04",
+      "max_nav_delta": 0.0,
+      "file_bytes_unchanged": true
+    }
+  },
+  "ok": true,
+  "finished_at": "2026-09-05T00:25:20.213211+08:00"
+}

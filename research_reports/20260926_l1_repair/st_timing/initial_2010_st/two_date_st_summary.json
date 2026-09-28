@@ -1,0 +1,22 @@
+{
+  "complete_symbol_period_queries": 58,
+  "raw_pages_verified": 103,
+  "raw_notice_ids_verified": 1989,
+  "additional_600306_late_page_verified": 1,
+  "additional_600306_late_notice_ids_verified": 18,
+  "total_raw_pages_verified": 104,
+  "total_raw_notice_ids_verified": 2007,
+  "pdfs_verified": 213,
+  "target_rows": 51,
+  "status_counts": {
+    "2010-01-04": {
+      "proven_ST": 7,
+      "proven_non_ST": 17
+    },
+    "2010-01-14": {
+      "proven_ST": 10,
+      "proven_non_ST": 17
+    }
+  },
+  "unknown_symbols": []
+}

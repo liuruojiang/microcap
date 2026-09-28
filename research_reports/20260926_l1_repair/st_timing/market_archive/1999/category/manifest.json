@@ -1,0 +1,21 @@
+{
+  "year": 1999,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "1999-01-01~1999-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 2,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "82a30ce1d478be7fe5782815bdf5e6a06c43d5b60ceb066ec2fcc0a1ed443a8e",
+      "response_bytes": 1392,
+      "row_count": 2,
+      "reported_total": 2
+    }
+  ],
+  "candidate_announcements": [],
+  "complete": true
+}

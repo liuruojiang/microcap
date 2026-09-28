@@ -1,0 +1,126 @@
+{
+  "symbol": "603729",
+  "org_id": "9900023473",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "6d33f968a8d53a4c5c652bb993bdcb89a491aeb90b779f88e7585aaf1fc26546",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "6d33f968a8d53a4c5c652bb993bdcb89a491aeb90b779f88e7585aaf1fc26546"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 5,
+      "pages_fetched": 1,
+      "first_page_sha256": "0ba32594a6adea033fae8412a37e51c7f25b2c0399615c41850fea8fad78e089",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "0ba32594a6adea033fae8412a37e51c7f25b2c0399615c41850fea8fad78e089"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "97645c062722af335c5ee33b1543989440c55771863852820fcaa3bfd644737a",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "97645c062722af335c5ee33b1543989440c55771863852820fcaa3bfd644737a"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2021-04-30T00:00:00+08:00",
+      "title": "\\n上海龙韵传媒集团股份有限公司股票实施其他风险警示暨临时停牌的公告",
+      "announcementId": "1209880000",
+      "adjunctUrl": "finalpage/2021-04-30/1209880000.PDF",
+      "secCode": "603729",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-04-27T00:00:00+08:00",
+      "title": "上海龙韵文创科技集团股份有限公司关于申请撤销公司股票其他风险警示的公告",
+      "announcementId": "1213137234",
+      "adjunctUrl": "finalpage/2022-04-27/1213137234.PDF",
+      "secCode": "603729",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2022-05-30T00:00:00+08:00",
+      "title": "上海龙韵文创科技集团股份有限公司关于公司股票撤销其他风险警示暨临时停牌的公告",
+      "announcementId": "1213539406",
+      "adjunctUrl": "finalpage/2022-05-30/1213539406.PDF",
+      "secCode": "603729",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-29T00:00:00+08:00",
+      "title": "上海龙韵文创科技集团股份有限公司关于股票被实施其他风险警示暨停牌的公告",
+      "announcementId": "1225247965",
+      "adjunctUrl": "finalpage/2026-04-29/1225247965.PDF",
+      "secCode": "603729",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-30T00:00:00+08:00",
+      "title": "上海龙韵文创科技集团股份有限公司关于公司股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1225267322",
+      "adjunctUrl": "finalpage/2026-04-30/1225267322.PDF",
+      "secCode": "603729",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

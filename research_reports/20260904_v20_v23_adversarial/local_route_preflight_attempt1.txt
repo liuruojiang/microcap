@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "D:\动量策略\微盘股对冲策略\scripts\realtime_state_bundle.py", line 884, in <module>
+    raise SystemExit(main(sys.argv[1:]))
+                     ~~~~^^^^^^^^^^^^^^
+  File "D:\动量策略\微盘股对冲策略\scripts\realtime_state_bundle.py", line 866, in main
+    report = preflight_state(args.root, max_anchor_age_days=args.max_anchor_age_days,
+                             expected_date=args.expected_date)
+  File "D:\动量策略\微盘股对冲策略\scripts\realtime_state_bundle.py", line 536, in preflight_state
+    history = base.fetch_eastmoney_index_history(
+        "1.000852", base.pd.Timestamp(anchor) - base.pd.Timedelta(days=20)
+    )
+  File "<embedded_top100_base>", line 542, in fetch_eastmoney_index_history
+RuntimeError: Free index history sources returned empty data for 1.000852; QVeris fallback is disabled: HTTPSConnectionPool(host='money.finance.sina.com.cn', port=443): Read timed out.

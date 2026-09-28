@@ -1,0 +1,16 @@
+[
+  {
+    "candidate": "original_v20",
+    "start": "2010-03-01",
+    "latest_date": "2026-09-04",
+    "rows": 4016,
+    "sha256_bytes": "24decf8cdaae0df541c78d18c1418b821e3fe8f77d56d7050516fbd8fbfff0e9"
+  },
+  {
+    "candidate": "plain16_fixed1",
+    "start": "2010-03-01",
+    "latest_date": "2026-09-04",
+    "rows": 4016,
+    "sha256_bytes": "c4591f27948fc0f15e22a01e8470268a49876872470cb3cb4091a1b1676b3b15"
+  }
+]

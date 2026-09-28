@@ -1,0 +1,53 @@
+{
+  "symbol": "600634",
+  "org_id": "gssh0600634",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600634,gssh0600634",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 3,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "4a98797a35253765416f57f304c211392198aee7549bf6a42ba8ad993a58d312",
+      "reported_total": 3,
+      "rows": 3
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57560943",
+      "announcementTime": 1264804320000,
+      "title": "2010年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-01-30/57560943.PDF"
+    },
+    {
+      "announcementId": "57560942",
+      "announcementTime": 1264804320000,
+      "title": "2010年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-01-30/57560942.PDF"
+    },
+    {
+      "announcementId": "57543108",
+      "announcementTime": 1264458900000,
+      "title": "2010年第一次临时股东大会会议资料",
+      "adjunctUrl": "finalpage/2010-01-26/57543108.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

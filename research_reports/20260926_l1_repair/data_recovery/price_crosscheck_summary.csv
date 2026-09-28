@@ -1,0 +1,8 @@
+symbol,independent_source,sina_rows,tencent_rows,overlap_rows,overlap_first,overlap_last,max_abs_close_error,nonzero_error_rows,sina_only_dates,tencent_only_dates
+000005,Tencent stock_zh_a_hist_tx adjust='',3098,3098,3098,2010-01-05,2024-03-05,0.0,0,0,0
+000023,Tencent stock_zh_a_hist_tx adjust='',3240,3240,3240,2010-01-05,2024-07-24,0.0,0,0,0
+002447,Tencent stock_zh_a_hist_tx adjust='',2568,2568,2568,2010-07-13,2022-06-24,0.0,0,0,0
+300023,Tencent stock_zh_a_hist_tx adjust='',2895,2895,2895,2010-01-05,2022-06-28,0.0,0,0,0
+600005,Tencent stock_zh_a_hist_tx adjust='',1598,1598,1598,2010-01-05,2017-01-23,0.010000000000000231,1,0,0
+600068,Tencent stock_zh_a_hist_tx adjust='',2791,2791,2791,2010-01-05,2021-09-01,0.009999999999999787,1,0,0
+600093,Tencent stock_zh_a_hist_tx adjust='',2905,2905,2905,2010-01-05,2022-06-16,0.02000000000000135,6,0,0

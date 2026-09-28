@@ -1,0 +1,351 @@
+{
+  "year": 2008,
+  "label": "risk",
+  "category": "",
+  "searchkey": "风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2008-01-01~2008-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 137,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "41386032bd80399d78c45d551acc7cbb2881fa8d3c064c5bef67aba72b449b6a",
+      "response_bytes": 21335,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "16202c2f211eb35f3e2ef0ec22338c4baf0ba254834d1089191ec65d810457c3",
+      "response_bytes": 21461,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "469bc2098e4e4c5656831fd1c215af2cf27226e0bc983261aa01daf332b32ec2",
+      "response_bytes": 21958,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "8388b1bbd5acce8a01db99661cefe780ed9eafeb8f54359904b92779d847aafe",
+      "response_bytes": 22227,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "dafbd740424cce99951e1db3c2817b73272002c0afcc9f9ae3b622c77eaaeb22",
+      "response_bytes": 12740,
+      "row_count": 17,
+      "reported_total": 137
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000587",
+      "announcementId": "47106583",
+      "announcementTime": 1228775700000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实行其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-12-09/47106583.PDF"
+    },
+    {
+      "symbol": "000605",
+      "announcementId": "42214102",
+      "announcementTime": 1219012680000,
+      "title": "关于撤消退市<em>风险</em><em>警示</em>处理并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-08-18/42214102.PDF"
+    },
+    {
+      "symbol": "000605",
+      "announcementId": "42077788",
+      "announcementTime": 1218580200000,
+      "title": "关于申请撤销公司股票交易退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-08-13/42077788.PDF"
+    },
+    {
+      "symbol": "000673",
+      "announcementId": "41308859",
+      "announcementTime": 1216247400000,
+      "title": "关于撤销股票交易退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-07-17/41308859.PDF"
+    },
+    {
+      "symbol": "600180",
+      "announcementId": "40807752",
+      "announcementTime": 1214433000000,
+      "title": "关于公司股票将实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-26/40807752.PDF"
+    },
+    {
+      "symbol": "600083",
+      "announcementId": "40743483",
+      "announcementTime": 1214260200000,
+      "title": "关于公司股票撤销退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-24/40743483.PDF"
+    },
+    {
+      "symbol": "600083",
+      "announcementId": "40743482",
+      "announcementTime": 1214260200000,
+      "title": "关于向上海证券交易所申请撤销公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-24/40743482.PDF"
+    },
+    {
+      "symbol": "600706",
+      "announcementId": "40554439",
+      "announcementTime": 1213741800000,
+      "title": "撤销退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-18/40554439.PDF"
+    },
+    {
+      "symbol": "600385",
+      "announcementId": "40404087",
+      "announcementTime": 1213137000000,
+      "title": "关于撤销公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-11/40404087.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "40271256",
+      "announcementTime": 1212618600000,
+      "title": "撤销退市<em>风险</em><em>警示</em>公告",
+      "adjunctUrl": "finalpage/2008-06-05/40271256.PDF"
+    },
+    {
+      "symbol": "600462",
+      "announcementId": "40238211",
+      "announcementTime": 1212532200000,
+      "title": "撤销退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-04/40238211.PDF"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "40170526",
+      "announcementTime": 1212359400000,
+      "title": "关于撤销股票交易退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-06-02/40170526.PDF"
+    },
+    {
+      "symbol": "600139",
+      "announcementId": "40130509",
+      "announcementTime": 1212100200000,
+      "title": "关于撤销股票退市<em>风险</em><em>警示</em>处理的公告",
+      "adjunctUrl": "finalpage/2008-05-30/40130509.PDF"
+    },
+    {
+      "symbol": "600466",
+      "announcementId": "40130449",
+      "announcementTime": 1212100200000,
+      "title": "关于公司股票获准撤消退市<em>风险</em><em>警示</em>处理的公告",
+      "adjunctUrl": "finalpage/2008-05-30/40130449.PDF"
+    },
+    {
+      "symbol": "600714",
+      "announcementId": "40096738",
+      "announcementTime": 1212013800000,
+      "title": "撤销退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-05-29/40096738.PDF"
+    },
+    {
+      "symbol": "000150",
+      "announcementId": "39701212",
+      "announcementTime": 1210717830000,
+      "title": "关于撤销公司股票退市<em>风险</em><em>警示</em>及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-05-14/39701212.PDF"
+    },
+    {
+      "symbol": "600275",
+      "announcementId": "39420385",
+      "announcementTime": 1209508200000,
+      "title": "武昌鱼股票退市<em>风险</em><em>警示</em>性公告",
+      "adjunctUrl": "finalpage/2008-04-30/39420385.PDF"
+    },
+    {
+      "symbol": "600275",
+      "announcementId": "39351183",
+      "announcementTime": 1209508200000,
+      "title": "股票退市<em>风险</em><em>警示</em>性公告",
+      "adjunctUrl": "finalpage/2008-04-30/39351183.PDF"
+    },
+    {
+      "symbol": "000587",
+      "announcementId": "39311740",
+      "announcementTime": 1209508200000,
+      "title": "申请撤销退市<em>风险</em><em>警示</em>特别处理的公告",
+      "adjunctUrl": "finalpage/2008-04-30/39311740.PDF"
+    },
+    {
+      "symbol": "600419",
+      "announcementId": "39294966",
+      "announcementTime": 1209421800000,
+      "title": "关于股票实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-04-29/39294966.PDF"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "39212855",
+      "announcementTime": 1209335400000,
+      "title": "关于撤消退市<em>风险</em><em>警示</em>及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-04-28/39212855.PDF"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "39160278",
+      "announcementTime": 1209076200000,
+      "title": "关于申请撤销退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-04-25/39160278.PDF"
+    },
+    {
+      "symbol": "600706",
+      "announcementId": "39160234",
+      "announcementTime": 1209076200000,
+      "title": "关于提交撤销股票交易实行退市<em>风险</em><em>警示</em>特别处理申请的公告",
+      "adjunctUrl": "finalpage/2008-04-25/39160234.PDF"
+    },
+    {
+      "symbol": "600139",
+      "announcementId": "39063800",
+      "announcementTime": 1208903400000,
+      "title": "关于申请撤销公司股票交易退市<em>风险</em><em>警示</em>处理的公告",
+      "adjunctUrl": "finalpage/2008-04-23/39063800.PDF"
+    },
+    {
+      "symbol": "000413",
+      "announcementId": "38979496",
+      "announcementTime": 1208817360000,
+      "title": "关于撤销股票交易退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-04-22/38979496.PDF"
+    },
+    {
+      "symbol": "000628",
+      "announcementId": "38932490",
+      "announcementTime": 1208730600000,
+      "title": "关于公司股票交易实行退市<em>风险</em><em>警示</em>的提示性公告",
+      "adjunctUrl": "finalpage/2008-04-21/38932490.PDF"
+    },
+    {
+      "symbol": "600714",
+      "announcementId": "38899256",
+      "announcementTime": 1208468700000,
+      "title": "关于向上海证券交易所申请撤销对公司股票交易实行退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-04-18/38899256.PDF"
+    },
+    {
+      "symbol": "600212",
+      "announcementId": "38745214",
+      "announcementTime": 1208123100000,
+      "title": "董事会关于公司股票交易实施退市<em>风险</em><em>警示</em>特别处理的公告",
+      "adjunctUrl": "finalpage/2008-04-14/38745214.PDF"
+    },
+    {
+      "symbol": "000971",
+      "announcementId": "38700683",
+      "announcementTime": 1207866600000,
+      "title": "关于退市<em>风险</em><em>警示</em>提示性的公告",
+      "adjunctUrl": "finalpage/2008-04-11/38700683.PDF"
+    },
+    {
+      "symbol": "600080",
+      "announcementId": "38668476",
+      "announcementTime": 1207777500000,
+      "title": "关于向上海证券交易所申请撤销股票退市<em>风险</em><em>警示</em>处理的公告",
+      "adjunctUrl": "finalpage/2008-04-10/38668476.PDF"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "38598589",
+      "announcementTime": 1207604700000,
+      "title": "关于申请撤消退市<em>风险</em><em>警示</em>及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-04-08/38598589.PDF"
+    },
+    {
+      "symbol": "600792",
+      "announcementId": "38393788",
+      "announcementTime": 1206913500000,
+      "title": "关于公司股票被实施退市<em>风险</em><em>警示</em>特别处理的公告",
+      "adjunctUrl": "finalpage/2008-03-31/38393788.PDF"
+    },
+    {
+      "symbol": "000413",
+      "announcementId": "38327685",
+      "announcementTime": 1206657000000,
+      "title": "关于向深圳证券交易所申请撤销公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-03-28/38327685.PDF"
+    },
+    {
+      "symbol": "000692",
+      "announcementId": "38198854",
+      "announcementTime": 1206397890000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-03-25/38198854.PDF"
+    },
+    {
+      "symbol": "600462",
+      "announcementId": "38124695",
+      "announcementTime": 1205963100000,
+      "title": "关于申请撤销股票退市<em>风险</em><em>警示</em>特别处理请示的公告",
+      "adjunctUrl": "finalpage/2008-03-20/38124695.PDF"
+    },
+    {
+      "symbol": "600101",
+      "announcementId": "37924242",
+      "announcementTime": 1205271900000,
+      "title": "董事会关于撤销股票退市<em>风险</em><em>警示</em>及其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-03-12/37924242.PDF"
+    },
+    {
+      "symbol": "600466",
+      "announcementId": "37853503",
+      "announcementTime": 1204926300000,
+      "title": "关于向上海证券交易所申请撤销公司股票交易退市<em>风险</em><em>警示</em>处理的公告",
+      "adjunctUrl": "finalpage/2008-03-08/37853503.PDF"
+    },
+    {
+      "symbol": "000509",
+      "announcementId": "37790747",
+      "announcementTime": 1204843140000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>的特别处理及实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-03-07/37790747.PDF"
+    },
+    {
+      "symbol": "000918",
+      "announcementId": "37815804",
+      "announcementTime": 1204842600000,
+      "title": "关于撤消股票退市<em>风险</em><em>警示</em>并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-03-07/37815804.PDF"
+    },
+    {
+      "symbol": "600101",
+      "announcementId": "37644481",
+      "announcementTime": 1204235100000,
+      "title": "董事会关于向上海证券交易所申请撤销对公司股票交易实行退市<em>风险</em><em>警示</em>和其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-02-29/37644481.PDF"
+    },
+    {
+      "symbol": "600385",
+      "announcementId": "37140553",
+      "announcementTime": 1201815900000,
+      "title": "关于申请撤销股票退市<em>风险</em><em>警示</em>特别处理请示的公告",
+      "adjunctUrl": "finalpage/2008-02-01/37140553.PDF"
+    },
+    {
+      "symbol": "600793",
+      "announcementId": "37108904",
+      "announcementTime": 1201729500000,
+      "title": "股票关于实施退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2008-01-31/37108904.PDF"
+    },
+    {
+      "symbol": "000578",
+      "announcementId": "36657640",
+      "announcementTime": 1200350280000,
+      "title": "关于撤销退市<em>风险</em><em>警示</em>并实施其他特别处理的公告",
+      "adjunctUrl": "finalpage/2008-01-15/36657640.PDF"
+    }
+  ],
+  "complete": true
+}

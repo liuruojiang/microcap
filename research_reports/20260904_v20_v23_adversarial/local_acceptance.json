@@ -1,0 +1,332 @@
+{
+  "ok": true,
+  "scope": "local formal artifact acceptance; cloud delivery verified separately",
+  "errors": [],
+  "expected_date": "2026-09-04",
+  "streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8721,
+      "latest_date": "2026-09-04",
+      "sha256": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4050,
+      "latest_date": "2026-09-04",
+      "sha256": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-04",
+      "sha256": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 431,
+      "latest_date": "2026-09-03",
+      "sha256": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "7d282d4b1f4cc6e0d7cb79501e6c3745f46aa696033fee887b9e27fc05513ed3"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "71496c81604827cda875996419078b36b281ac4caa2b14df0df150b506e56abb"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "dfa17ca6e71efed447f2aa07ef2d955431739548e48ca058777acc6a9572c8f7"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "01bbfd3561b6d3f300fbe54e0077d46fcf66996d44b93d8de66a0b2ffbf7f86d"
+    },
+    "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "dd4d19ae27234cd6739dd2a5bbfebc9c2376e73b4054b1b76850cb055e46ad68"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "dd4d19ae27234cd6739dd2a5bbfebc9c2376e73b4054b1b76850cb055e46ad68"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "cd5e81a9d4bce7222820f4492de2d6189d1ac9b9b2c3f4ed751be2c06c7d06ab"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "728303e7b44fd48bbf386639b6e58d1ef2e822bd54575b92b487663010095e92"
+    }
+  },
+  "inputs": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": "7f07d377cd34373a3b4d17d65158eccbb0e663aaf6bd13a714bb80f719cc7cab",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "ac6396a16cdd5b493b5a6bede3e7ead2820913e5f92983da166467144392e07e",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "9558082806163587d9813100bd19cafe92337a2c086e3fc8ac6aa8a71e5825ee",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json": "f2a0c02b046a89b4fab9f4fcf1eddecd7e80f48edb413612abbc27cfc054b7f7",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "a05a32ed087bd7a807a91fa4fd18c2b29e17820c22b2a309eef53e4866501b8e",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "a04af2fc63c82c3bdddbd0c614b50510744370c0e50fb4dfdcdf4c7bb6ac9f8b",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "3fbe9af673449b1e42beaae659fdb8f262d3910ed2301bcd34089c412767be4f"
+  },
+  "artifacts": {
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json": "895dd089bdea6e91d93f5f50dc1ffdbdc70f1b1970713233ab32b94099d8a3bc",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.json": "5d41fc4204d51e4908631c68a35756964a44616a5e5e7bddb1ac392546c5851c",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.csv": "28c467e19baa314925a98f4945fe3aa8026ac90c0d7ee7cf2ce7c12a14e5e4fa",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_yearly.csv": "6437c7a31d486594f3efd801d086cc0e75fa565a1ba0532fee79a571c60e7374",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json": "331816b45b136622a3a58996469844241b5346e488251e13930c0b7ab186a37e",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.json": "fa9c035a11e2e3d7a0ed2055fb84b1e81922e0985dbf10271c5106c57d5ef5d2",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.csv": "ed9ad956d39ca5ba1baf44cb6c67aeedd395aaccace0f3197e3971dbe8c537da",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_yearly.csv": "0bcbdb6a5d87e97a27349d11868eb8d7839e403f5c5231a26243c43b74c87505",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json": "fea47436114044d6af8815be5e662ec507827bcfe32e6daca37f1f268af001fc",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.json": "641c233ae336d69f2a3cb9e1c3047a4a7b7d3e98c4eb0e286b083ed39644ba86",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.csv": "81ec93d581ac9bbc449d391d3c5d45f267a26503db80e77099bc8185d9f4995e",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_yearly.csv": "b31bc97da091e9ad2d1e239a844b712a36d68f4093287f21ba9a05d90b61f885",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3",
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
+    "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "163e3ab2d915e061a09b1b813117752c49a57d92135f2393d83137ad7be3ddf6",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": "7d282d4b1f4cc6e0d7cb79501e6c3745f46aa696033fee887b9e27fc05513ed3",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": "71496c81604827cda875996419078b36b281ac4caa2b14df0df150b506e56abb",
+    "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "312e9cf34cafcc1b666c0979695a1bd2cc3de30df71b0d1d05260595466bd556",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": "dfa17ca6e71efed447f2aa07ef2d955431739548e48ca058777acc6a9572c8f7",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": "01bbfd3561b6d3f300fbe54e0077d46fcf66996d44b93d8de66a0b2ffbf7f86d",
+    "outputs/microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv": "dd4d19ae27234cd6739dd2a5bbfebc9c2376e73b4054b1b76850cb055e46ad68",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv": "dd4d19ae27234cd6739dd2a5bbfebc9c2376e73b4054b1b76850cb055e46ad68",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": "cd5e81a9d4bce7222820f4492de2d6189d1ac9b9b2c3f4ed751be2c06c7d06ab",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": "728303e7b44fd48bbf386639b6e58d1ef2e822bd54575b92b487663010095e92"
+  },
+  "strategy_sha": "dc0752e67611b765aeada8e3c628c669517de574",
+  "daily_parity": {
+    "v2.0": {
+      "rows": 4016,
+      "max_absolute_deltas": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0,
+        "next_session_actionable_scale": 0.0
+      },
+      "state_equal": true
+    },
+    "v2.3": {
+      "rows": 3971,
+      "max_absolute_deltas": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0,
+        "next_session_actionable_scale": 0.0
+      },
+      "state_equal": true
+    },
+    "v2.5": {
+      "rows": 3971,
+      "max_absolute_deltas": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0,
+        "next_session_actionable_scale": 0.0
+      },
+      "state_equal": true
+    }
+  },
+  "windows": {
+    "v2.0": [
+      {
+        "start_date": "2010-03-01",
+        "end_date": "2026-09-04",
+        "days": 4016,
+        "final_nav": 32.75744964117651,
+        "total_return_pct": 3175.744964117651,
+        "annual_pct": 23.529406376765948,
+        "max_drawdown_pct": -14.594915685187804,
+        "sharpe": 1.9847182860552928,
+        "vol_pct": 11.855287746419462,
+        "window": "full",
+        "required_start_date": "2010-03-01",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2016-09-05",
+        "end_date": "2026-09-04",
+        "days": 2429,
+        "final_nav": 6.636253899170139,
+        "total_return_pct": 563.6253899170139,
+        "annual_pct": 20.844271448572815,
+        "max_drawdown_pct": -14.28591039236915,
+        "sharpe": 1.5609103681204008,
+        "vol_pct": 13.353919529455641,
+        "window": "last_10y",
+        "required_start_date": "2016-09-04",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2021-09-06",
+        "end_date": "2026-09-04",
+        "days": 1211,
+        "final_nav": 3.2910492690248616,
+        "total_return_pct": 229.10492690248617,
+        "annual_pct": 26.938835129637994,
+        "max_drawdown_pct": -14.28591039236916,
+        "sharpe": 1.6942974839483163,
+        "vol_pct": 15.899707923109771,
+        "window": "last_5y",
+        "required_start_date": "2021-09-04",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2023-09-04",
+        "end_date": "2026-09-04",
+        "days": 728,
+        "final_nav": 1.7972451438687507,
+        "total_return_pct": 79.72451438687507,
+        "annual_pct": 21.576531041752567,
+        "max_drawdown_pct": -14.28591039236915,
+        "sharpe": 1.2948715052494204,
+        "vol_pct": 16.663067303806685,
+        "window": "last_3y",
+        "required_start_date": "2023-09-04",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2025-09-04",
+        "end_date": "2026-09-04",
+        "days": 243,
+        "final_nav": 1.1958838870389488,
+        "total_return_pct": 19.58838870389488,
+        "annual_pct": 19.603042092429956,
+        "max_drawdown_pct": -14.285910392369194,
+        "sharpe": 1.2122227619025523,
+        "vol_pct": 16.171154930025804,
+        "window": "last_1y",
+        "required_start_date": "2025-09-04",
+        "unavailable_reason": ""
+      }
+    ],
+    "v2.3": [
+      {
+        "start_date": "2010-05-05",
+        "end_date": "2026-09-04",
+        "days": 3971,
+        "final_nav": 30.904074884490868,
+        "total_return_pct": 2990.407488449087,
+        "annual_pct": 23.37342776912521,
+        "max_drawdown_pct": -12.924336369644562,
+        "sharpe": 2.1830103524971616,
+        "vol_pct": 10.706970648301404,
+        "window": "full",
+        "required_start_date": "2010-05-05",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2016-09-05",
+        "end_date": "2026-09-04",
+        "days": 2429,
+        "final_nav": 6.295639705482353,
+        "total_return_pct": 529.5639705482353,
+        "annual_pct": 20.208953082379153,
+        "max_drawdown_pct": -12.924336369644596,
+        "sharpe": 1.7265815231630062,
+        "vol_pct": 11.704604046357115,
+        "window": "last_10y",
+        "required_start_date": "2016-09-04",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2021-09-06",
+        "end_date": "2026-09-04",
+        "days": 1211,
+        "final_nav": 2.692938905267585,
+        "total_return_pct": 169.2938905267585,
+        "annual_pct": 21.941474329837042,
+        "max_drawdown_pct": -11.715521446343457,
+        "sharpe": 1.648957686358817,
+        "vol_pct": 13.306268869935408,
+        "window": "last_5y",
+        "required_start_date": "2021-09-04",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2023-09-04",
+        "end_date": "2026-09-04",
+        "days": 728,
+        "final_nav": 1.6180528540933166,
+        "total_return_pct": 61.80528540933166,
+        "annual_pct": 17.39466045897633,
+        "max_drawdown_pct": -8.795247155053332,
+        "sharpe": 1.3346096696201022,
+        "vol_pct": 13.03351897931905,
+        "window": "last_3y",
+        "required_start_date": "2023-09-04",
+        "unavailable_reason": ""
+      },
+      {
+        "start_date": "2025-09-04",
+        "end_date": "2026-09-04",
+        "days": 243,
+        "final_nav": 1.0775861092653287,
+        "total_return_pct": 7.758610926532872,
+        "annual_pct": 7.7641262017636326,
+        "max_drawdown_pct": -8.795247155053376,
+        "sharpe": 0.6463452429809371,
+        "vol_pct": 12.012351426855977,
+        "window": "last_1y",
+        "required_start_date": "2025-09-04",
+        "unavailable_reason": ""
+      }
+    ]
+  },
+  "annual_drawdown_corrections": {
+    "v2.0": {
+      "2016": {
+        "previous_pct": -6.968919235187798,
+        "corrected_pct": -7.163320927086403
+      }
+    },
+    "v2.3": {
+      "2010": {
+        "previous_pct": -5.535479924490428,
+        "corrected_pct": -5.818873484716958
+      },
+      "2016": {
+        "previous_pct": -7.545255796120342,
+        "corrected_pct": -8.804429555849014
+      }
+    }
+  },
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20260904_231246"
+}

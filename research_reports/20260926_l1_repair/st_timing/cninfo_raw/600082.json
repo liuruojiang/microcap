@@ -1,0 +1,104 @@
+{
+  "symbol": "600082",
+  "org_id": "gssh0600082",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "0fd5085eb6db51e3bcfc54c3f8ccc56d9b822fc777cc23764ea20d7fb2e6967e",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "0fd5085eb6db51e3bcfc54c3f8ccc56d9b822fc777cc23764ea20d7fb2e6967e"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "32b2594d19a5e0263b82ecd3d33bfbe97cbcf9aead21dbe6d1a7462908f43f5f",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "32b2594d19a5e0263b82ecd3d33bfbe97cbcf9aead21dbe6d1a7462908f43f5f"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "3975df95901c91b4ae6a998f6a3dd20f178b4b8ab46fa8218591eaf13325e415",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "3975df95901c91b4ae6a998f6a3dd20f178b4b8ab46fa8218591eaf13325e415"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "01668fe3b94815109a0f91ea38c8947aba4815f23ae558b153b1e2a6febf0ef2",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "01668fe3b94815109a0f91ea38c8947aba4815f23ae558b153b1e2a6febf0ef2"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2003-08-22T05:49:54+08:00",
+      "title": "撤销公司股票交易特别处理的公告",
+      "announcementId": "12224577",
+      "adjunctUrl": "finalpage/2003-08-22/12224577.html",
+      "secCode": "600082",
+      "query_category": "",
+      "query_searchkey": "撤销特别处理"
+    },
+    {
+      "notice_time_shanghai": "2026-04-11T00:00:00+08:00",
+      "title": "天津海泰科技发展股份有限公司关于实施其他风险警示暨停牌的公告",
+      "announcementId": "1225096042",
+      "adjunctUrl": "finalpage/2026-04-11/1225096042.PDF",
+      "secCode": "600082",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

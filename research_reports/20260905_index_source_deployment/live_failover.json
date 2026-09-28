@@ -1,0 +1,79 @@
+{
+  "started_at": "2026-09-05T00:06:55.951020+08:00",
+  "injected": "transport errors only; real provider responses",
+  "cases": [
+    {
+      "source": "sina_static",
+      "rows": 140,
+      "start": "2026-02-06",
+      "end": "2026-09-04",
+      "elapsed_seconds": 4.484,
+      "independent_history_source": "sina_static",
+      "independent_history_attempts": [
+        {
+          "source": "eastmoney",
+          "ok": false,
+          "error": "TimeoutError: explicit acceptance outage injection",
+          "elapsed_seconds": 0.0
+        },
+        {
+          "source": "sina_legacy",
+          "ok": false,
+          "error": "TimeoutError: explicit acceptance outage injection",
+          "elapsed_seconds": 0.0
+        },
+        {
+          "source": "sina_static",
+          "ok": true,
+          "elapsed_seconds": 0.988
+        }
+      ],
+      "independent_history_start": "2026-02-06",
+      "independent_history_end": "2026-09-04",
+      "independent_calendar_source": "akshare.tool_trade_date_hist_sina",
+      "canonical_overlap_rows": 140,
+      "canonical_max_precision_difference": 0.0
+    },
+    {
+      "source": "tencent",
+      "rows": 140,
+      "start": "2026-02-06",
+      "end": "2026-09-04",
+      "elapsed_seconds": 0.818,
+      "independent_history_source": "tencent",
+      "independent_history_attempts": [
+        {
+          "source": "eastmoney",
+          "ok": false,
+          "error": "TimeoutError: explicit acceptance outage injection",
+          "elapsed_seconds": 0.0
+        },
+        {
+          "source": "sina_legacy",
+          "ok": false,
+          "error": "TimeoutError: explicit acceptance outage injection",
+          "elapsed_seconds": 0.0
+        },
+        {
+          "source": "sina_static",
+          "ok": false,
+          "error": "TimeoutError: explicit acceptance outage injection",
+          "elapsed_seconds": 0.0
+        },
+        {
+          "source": "tencent",
+          "ok": true,
+          "elapsed_seconds": 0.806
+        }
+      ],
+      "independent_history_start": "2026-02-06",
+      "independent_history_end": "2026-09-04",
+      "independent_calendar_source": "akshare.tool_trade_date_hist_sina",
+      "canonical_overlap_rows": 140,
+      "canonical_max_precision_difference": 0.005000000001018634
+    }
+  ],
+  "base_inputs_unchanged": true,
+  "nav_bytes_unchanged": true,
+  "ok": true
+}

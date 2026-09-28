@@ -1,0 +1,169 @@
+{
+  "year": 2002,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2002-01-01~2002-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 64,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "a3791d855e5d8489818d3d1209d0f09e26b7923da4fbf9b6b18e8601f389ec4d",
+      "response_bytes": 18409,
+      "row_count": 30,
+      "reported_total": 64
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "3abf9e13c0f2671c742cb2095b342e6779cc067c18caa6491cea1894876960ac",
+      "response_bytes": 18988,
+      "row_count": 30,
+      "reported_total": 64
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "ff786dafc9b891e334432edc72f3e376f34cfba7dfff26ae3022cb58ac292f60",
+      "response_bytes": 2651,
+      "row_count": 4,
+      "reported_total": 64
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000585",
+      "announcementId": "10017653",
+      "announcementTime": 1034808020000,
+      "title": "H股股票恢复上市",
+      "adjunctUrl": "finalpage/2002-10-17/10017653.html"
+    },
+    {
+      "symbol": "000613",
+      "announcementId": "10011662",
+      "announcementTime": 1034376055000,
+      "title": "股票恢复上市并实施特别处理",
+      "adjunctUrl": "finalpage/2002-10-12/10011662.html"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "654592",
+      "announcementTime": 1033080853000,
+      "title": "股票恢复上市并实施特别处理",
+      "adjunctUrl": "finalpage/2002-09-27/654592.html"
+    },
+    {
+      "symbol": "600853",
+      "announcementId": "653271",
+      "announcementTime": 1032471028000,
+      "title": "公司股票简称更名等",
+      "adjunctUrl": "finalpage/2002-09-20/653271.html"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "648733",
+      "announcementTime": 1031091842000,
+      "title": "提出恢复上市申请",
+      "adjunctUrl": "finalpage/2002-09-04/648733.html"
+    },
+    {
+      "symbol": "600853",
+      "announcementId": "647759",
+      "announcementTime": 1030657563000,
+      "title": "恢复上市申请公告",
+      "adjunctUrl": "finalpage/2002-08-30/647759.html"
+    },
+    {
+      "symbol": "600853",
+      "announcementId": "643037",
+      "announcementTime": 1030051990000,
+      "title": "董事会会议决议公告等",
+      "adjunctUrl": "finalpage/2002-08-23/643037.html"
+    },
+    {
+      "symbol": "600862",
+      "announcementId": "617550",
+      "announcementTime": 1026942576000,
+      "title": "关于公司股票实行特别处理的公告等",
+      "adjunctUrl": "finalpage/2002-07-18/617550.html"
+    },
+    {
+      "symbol": "600137",
+      "announcementId": "616302",
+      "announcementTime": 1026508560000,
+      "title": "公司股票实行特别处理",
+      "adjunctUrl": "finalpage/2002-07-13/616302.html"
+    },
+    {
+      "symbol": "600083",
+      "announcementId": "597633",
+      "announcementTime": 1021298100000,
+      "title": "股票恢复上市公告书",
+      "adjunctUrl": "finalpage/2002-05-13/597633.html"
+    },
+    {
+      "symbol": "600853",
+      "announcementId": "597355",
+      "announcementTime": 1021038300000,
+      "title": "股票暂停上市公告 ",
+      "adjunctUrl": "finalpage/2002-05-10/597355.html"
+    },
+    {
+      "symbol": "000150",
+      "announcementId": "586260",
+      "announcementTime": 1020004320000,
+      "title": "2001年度利润分配预案等",
+      "adjunctUrl": "finalpage/2002-04-28/586260.PDF"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "576435",
+      "announcementTime": 1019489460000,
+      "title": "公司股票暂停上市",
+      "adjunctUrl": "finalpage/2002-04-22/576435.html"
+    },
+    {
+      "symbol": "000567",
+      "announcementId": "571125",
+      "announcementTime": 1018969620000,
+      "title": "2001年度利润分配预案等",
+      "adjunctUrl": "finalpage/2002-04-16/571125.PDF"
+    },
+    {
+      "symbol": "000033",
+      "announcementId": "570186",
+      "announcementTime": 1018882860000,
+      "title": "2001年度利润分配预案等",
+      "adjunctUrl": "finalpage/2002-04-15/570186.PDF"
+    },
+    {
+      "symbol": "000723",
+      "announcementId": "10526786",
+      "announcementTime": 1018305548000,
+      "title": "关于本公司股票实行特别处理的公告",
+      "adjunctUrl": "finalpage/2002-04-09/10526786.html"
+    },
+    {
+      "symbol": "000678",
+      "announcementId": "558250",
+      "announcementTime": 1017154697000,
+      "title": "股票交易实行特别处理",
+      "adjunctUrl": "finalpage/2002-03-26/558250.html"
+    },
+    {
+      "symbol": "000678",
+      "announcementId": "557118",
+      "announcementTime": 1017069324000,
+      "title": "股票交易实行特别处理公告",
+      "adjunctUrl": "finalpage/2002-03-25/557118.html"
+    },
+    {
+      "symbol": "000851",
+      "announcementId": "557040",
+      "announcementTime": 1017067104000,
+      "title": "2001年度利润分配预案等",
+      "adjunctUrl": "finalpage/2002-03-25/557040.PDF"
+    }
+  ],
+  "complete": true
+}

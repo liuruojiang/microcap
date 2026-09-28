@@ -1,0 +1,8 @@
+{
+  "rows": 20,
+  "symbols": 12,
+  "st_rows": 8,
+  "non_st_rows": 12,
+  "source_url": "https://www.szse.cn/api/report/ShowReport?SHOWTYPE=xlsx&CATALOGID=SSGSGMXX&TABKEY=tab2",
+  "derived_cache_sha256": "856e18b71a21c14eba80b7111316ad5a99a30660d007248b95773affb8caca93"
+}

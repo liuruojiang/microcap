@@ -1,0 +1,53 @@
+{
+  "source_change_rule": "research_only_no_production_changes",
+  "git_status_before": " M README.md\n M microcap_top100_mom16_biweekly_live_v2_0.py\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_latest_signal.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json\n M outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv\n M outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv\n M scripts/realtime_state_bundle.py\n M scripts/top100_cloud_delivery.py\n M scripts/top100_delivery.py\n M tests/test_microcap_v2_review_remediations.py\n M tests/test_top100_data_guards.py\n M tests/test_top100_delivery.py\n?? docs/adversarial_delivery_20260904.md\n?? docs/microcap_v20_cost_stability_20260904.md\n?? docs/microcap_v20_exit_buffer_20260904.md\n?? docs/microcap_v20_overheat_20260904.md\n?? docs/microcap_v20_plain_vs_original_20260904.md\n?? docs/microcap_v20_r2_quality_20260904.md\n?? docs/microcap_v20_raw_momentum_width_20260904.md\n?? docs/microcap_v20_target_vol_ablation_20260904.md\n?? docs/microcap_v20_target_vol_width_20260904.md\n?? docs/realtime_calendar_freshness_v1_20260904.md\n?? research_reports/\n?? scripts/exchange_calendar.py\n?? tests/test_adversarial_microcap_delivery.py\n?? tests/test_exchange_calendar_provider.py\n?? tests/test_realtime_exchange_calendar.py\n",
+  "git_status_after": " M README.md\n M microcap_top100_mom16_biweekly_live_v2_0.py\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_latest_signal.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json\n M outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv\n M outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv\n M scripts/realtime_state_bundle.py\n M scripts/top100_cloud_delivery.py\n M scripts/top100_delivery.py\n M tests/test_microcap_v2_review_remediations.py\n M tests/test_top100_data_guards.py\n M tests/test_top100_delivery.py\n?? docs/adversarial_delivery_20260904.md\n?? docs/microcap_v20_cost_stability_20260904.md\n?? docs/microcap_v20_exit_buffer_20260904.md\n?? docs/microcap_v20_overheat_20260904.md\n?? docs/microcap_v20_plain_vs_original_20260904.md\n?? docs/microcap_v20_r2_quality_20260904.md\n?? docs/microcap_v20_raw_momentum_width_20260904.md\n?? docs/microcap_v20_target_vol_ablation_20260904.md\n?? docs/microcap_v20_target_vol_width_20260904.md\n?? docs/realtime_calendar_freshness_v1_20260904.md\n?? research_reports/\n?? scripts/exchange_calendar.py\n?? tests/test_adversarial_microcap_delivery.py\n?? tests/test_exchange_calendar_provider.py\n?? tests/test_realtime_exchange_calendar.py\n",
+  "source_hashes": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "bee1342fe407494fdfe0edb9d597ba5d0887811c81a1455ac722af47f3e89291",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": "7f07d377cd34373a3b4d17d65158eccbb0e663aaf6bd13a714bb80f719cc7cab",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "ac6396a16cdd5b493b5a6bede3e7ead2820913e5f92983da166467144392e07e",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "9558082806163587d9813100bd19cafe92337a2c086e3fc8ac6aa8a71e5825ee",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "b8919cbd98f1d310ab8f0166d49ec3325c7f49489c40b5f624de952a3a712df3",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json": "f2a0c02b046a89b4fab9f4fcf1eddecd7e80f48edb413612abbc27cfc054b7f7",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "94efdcd6870db10f4fd0665880a780701494c861cebf20bc41bf389e2fe1bc48",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "3af3aece4702afb06fb297087405cb4bf007673ff962b01c00826466b9ddde6e",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "3fbe9af673449b1e42beaae659fdb8f262d3910ed2301bcd34089c412767be4f"
+  },
+  "harness_hashes": {
+    "research_reports\\20260904_v20_plain_vs_original\\run_comparison.py": "5ed4f23d55cec0096146bcbfe79ceb86726b1330688cf76f219c8a43209bf3d8",
+    "quant_param_scan_runs\\20260904_v20_target_vol_ablation\\run_target_vol_ablation.py": "70bd9ee48a97b38dd9df4f0c3723a8b3d4f5e891f3d60a072b11a11275fce501",
+    "quant_param_scan_runs\\20260904_v20_overheat\\run_overheat_scan.py": "0069be5f9c1ffaa86cc5e1abb068fb06cf3e4378b2a5e7b1902a1939c658e54b",
+    "quant_param_scan_runs\\20260904_v20_r2_quality\\run_r2_scan.py": "2292827df5aa6af28eeff62d3624e24fd33cf118bb2d6a8197a80e2317401fe7",
+    "quant_param_scan_runs\\20260904_v20_momentum_width_resumed\\run_scan.py": "2f631fea51a7d153a3846e6543eed8999d4f9b43156310826081f85fc348eb72"
+  },
+  "original_target_vol_params": {
+    "TARGET_VOL": 0.15,
+    "TARGET_VOL_WINDOW": 75,
+    "TARGET_VOL_MAX_LEVERAGE": 1.5,
+    "TARGET_VOL_SCALE_REBALANCE_THRESHOLD": 0.1,
+    "TARGET_VOL_FINANCING_RATE": 0.03,
+    "IDLE_CASH_YIELD": 0.02
+  },
+  "native_start": "2010-03-01 00:00:00",
+  "previous_research_start": "2010-07-27",
+  "target_date": "2026-09-04 00:00:00",
+  "member_caveat": {
+    "member_rows": 43100,
+    "rebalance_dates": 431,
+    "distinct_symbols": 1176,
+    "bad_policy_count": 1,
+    "bad_policy_symbols": [
+      "688592"
+    ],
+    "st_violations": 0,
+    "st_violation_symbols": [],
+    "st_violation_rebalance_dates": [],
+    "st_violation_sample": []
+  },
+  "refresh_release_sha": "5b728c415d868e8442455a2196117cc672f3442f",
+  "refresh_verified_at": "2026-09-04T10:13:16.150228+00:00",
+  "state_cash_cost_prefix_parity_pass": true,
+  "comparison_is_not_a_cost_sweep": true
+}

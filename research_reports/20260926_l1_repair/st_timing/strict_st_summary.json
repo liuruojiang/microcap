@@ -1,0 +1,21 @@
+{
+  "symbols_analyzed": 57,
+  "all_six_queries_complete_symbols": 57,
+  "target_rows": 2656,
+  "notice_titles": 419,
+  "entry_titles": 89,
+  "exit_titles": 0,
+  "remain_st_titles": 12,
+  "needs_review_titles": 30,
+  "target_status_counts": {
+    "not_flagged_by_strict_titles": 2420,
+    "explicit_entry_interior": 236
+  },
+  "first_explicit_entry_interior_target": [
+    {
+      "symbol": "600180",
+      "target_date": "2010-01-14",
+      "rank": 49
+    }
+  ]
+}

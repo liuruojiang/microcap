@@ -1,0 +1,125 @@
+{
+  "symbol": "600077",
+  "org_id": "gssh0600077",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600077,gssh0600077",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 15,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "2fc0e5af3a91d816de1c5c6bbb2c210ec223b6b763edd058592ddc1fc202fdc6",
+      "reported_total": 15,
+      "rows": 15
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57628129",
+      "announcementTime": 1267137300000,
+      "title": "关于公司控股股东及其他关联方占用资金情况的专项说明",
+      "adjunctUrl": "finalpage/2010-02-26/57628129.PDF"
+    },
+    {
+      "announcementId": "57628128",
+      "announcementTime": 1267137300000,
+      "title": "股票交易实行退市风险警示的提示性公告",
+      "adjunctUrl": "finalpage/2010-02-26/57628128.PDF"
+    },
+    {
+      "announcementId": "57628127",
+      "announcementTime": 1267137300000,
+      "title": "关于召开2009年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2010-02-26/57628127.PDF"
+    },
+    {
+      "announcementId": "57628126",
+      "announcementTime": 1267137300000,
+      "title": "董事会对前期重大会计差错更正的相关说明的公告",
+      "adjunctUrl": "finalpage/2010-02-26/57628126.PDF"
+    },
+    {
+      "announcementId": "57628125",
+      "announcementTime": 1267137300000,
+      "title": "第六届监事会第九次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-26/57628125.PDF"
+    },
+    {
+      "announcementId": "57628124",
+      "announcementTime": 1267137300000,
+      "title": "第六届董事会第二十二次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-26/57628124.PDF"
+    },
+    {
+      "announcementId": "57627894",
+      "announcementTime": 1267137000000,
+      "title": "2009年年度报告摘要",
+      "adjunctUrl": "finalpage/2010-02-26/57627894.PDF"
+    },
+    {
+      "announcementId": "57627893",
+      "announcementTime": 1267137000000,
+      "title": "2009年年度报告",
+      "adjunctUrl": "finalpage/2010-02-26/57627893.PDF"
+    },
+    {
+      "announcementId": "57623687",
+      "announcementTime": 1267050660000,
+      "title": "临时停牌的公告",
+      "adjunctUrl": "finalpage/2010-02-25/57623687.PDF"
+    },
+    {
+      "announcementId": "57607750",
+      "announcementTime": 1265927700000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2010-02-12/57607750.PDF"
+    },
+    {
+      "announcementId": "57568658",
+      "announcementTime": 1265063460000,
+      "title": "股改限售流通股上市公告",
+      "adjunctUrl": "finalpage/2010-02-02/57568658.PDF"
+    },
+    {
+      "announcementId": "57543084",
+      "announcementTime": 1264458900000,
+      "title": "更正公告",
+      "adjunctUrl": "finalpage/2010-01-26/57543084.PDF"
+    },
+    {
+      "announcementId": "57521560",
+      "announcementTime": 1263940500000,
+      "title": "公告",
+      "adjunctUrl": "finalpage/2010-01-20/57521560.PDF"
+    },
+    {
+      "announcementId": "57510981",
+      "announcementTime": 1263594900000,
+      "title": "2010年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2010-01-16/57510981.PDF"
+    },
+    {
+      "announcementId": "57510980",
+      "announcementTime": 1263594900000,
+      "title": "2010年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2010-01-16/57510980.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

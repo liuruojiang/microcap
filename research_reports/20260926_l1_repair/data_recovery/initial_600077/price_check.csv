@@ -1,0 +1,3 @@
+﻿symbol,date,shares,previous_traded_date,previous_close,open,close,low,high,volume_lots,limit_low,limit_high,market_cap,old_rank100_cap,below_old_rank100,paper_tradable,source_url,response_sha256
+600077,2010-01-04,159118417,2009-12-31,11.86,11.90,11.96,11.65,12.25,93472,10.67,13.05,1903056267.32,1904000000.0,True,True,https://q.stock.sohu.com/hisHq?code=cn_600077&start=20091228&end=20100115&stat=1&order=A&period=d,f8dfffcbf92e9c02d378ae116b2f589626ef45ed204b733a6d395fb9fcac1f31
+600077,2010-01-14,159118417,2010-01-13,11.59,11.63,11.71,11.50,11.76,59075,10.43,12.75,1863276663.07,1966272000.0,True,True,https://q.stock.sohu.com/hisHq?code=cn_600077&start=20091228&end=20100115&stat=1&order=A&period=d,f8dfffcbf92e9c02d378ae116b2f589626ef45ed204b733a6d395fb9fcac1f31

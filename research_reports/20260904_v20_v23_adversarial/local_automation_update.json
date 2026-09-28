@@ -1,0 +1,14 @@
+{
+  "automation_id": "ic-im",
+  "local_schedule": "14:30 Asia/Shanghai",
+  "status": "ACTIVE",
+  "scope": "Only Microcap adversarial tests and final realtime CSV validation appended; original prompt and all schedule/model/project/ICIM settings preserved",
+  "original_sha256": "3dd9aa342805e7439f3b056b31be2b5c39bba9b363e77030ca3f19db9a91ffe9",
+  "updated_sha256": "847b4c98785db362682afea83d5bc7bf3366cad49d03b4560de087bb7e512db3",
+  "backup": "D:/Codex/home/automations/ic-im/.codex_backups/20260904_233012/automation.toml",
+  "readback_verified": true,
+  "offline_tests": 250,
+  "elapsed_seconds": 17.783398,
+  "hard_timeout_seconds": 60,
+  "actual_intraday_scheduled_run": false
+}

@@ -1,0 +1,113 @@
+{
+  "symbol": "600242",
+  "org_id": "gssh0600242",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600242,gssh0600242",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 13,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "cc880d039e35eaf7619afdf6675fa43821b0bed743823f3b902f0049cce48427",
+      "reported_total": 13,
+      "rows": 13
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57632993",
+      "announcementTime": 1267223700000,
+      "title": "关于重大资产重组进展公告",
+      "adjunctUrl": "finalpage/2010-02-27/57632993.PDF"
+    },
+    {
+      "announcementId": "57623652",
+      "announcementTime": 1267050660000,
+      "title": "北京易购坊国际资讯有限公司关于减持公司股份的简式权益变动报告书",
+      "adjunctUrl": "finalpage/2010-02-25/57623652.PDF"
+    },
+    {
+      "announcementId": "57607675",
+      "announcementTime": 1265927640000,
+      "title": "关于大股东减持股份的公告",
+      "adjunctUrl": "finalpage/2010-02-12/57607675.PDF"
+    },
+    {
+      "announcementId": "57581574",
+      "announcementTime": 1265322900000,
+      "title": "股改限售流通股上市公告",
+      "adjunctUrl": "finalpage/2010-02-05/57581574.PDF"
+    },
+    {
+      "announcementId": "57577593",
+      "announcementTime": 1265236500000,
+      "title": "与控股股东及其他关联方资金往来情况的专项说明",
+      "adjunctUrl": "finalpage/2010-02-04/57577593.PDF"
+    },
+    {
+      "announcementId": "57577592",
+      "announcementTime": 1265236500000,
+      "title": "第六届监事会第八次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577592.PDF"
+    },
+    {
+      "announcementId": "57577591",
+      "announcementTime": 1265236500000,
+      "title": "第六届董事会第十七次会议决议公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577591.PDF"
+    },
+    {
+      "announcementId": "57577431",
+      "announcementTime": 1265236500000,
+      "title": "2009年年度报告摘要",
+      "adjunctUrl": "finalpage/2010-02-04/57577431.PDF"
+    },
+    {
+      "announcementId": "57577430",
+      "announcementTime": 1265236500000,
+      "title": "2009年年度报告",
+      "adjunctUrl": "finalpage/2010-02-04/57577430.PDF"
+    },
+    {
+      "announcementId": "57552014",
+      "announcementTime": 1264631700000,
+      "title": "关于本公司股东股权解除质押的公告",
+      "adjunctUrl": "finalpage/2010-01-28/57552014.PDF"
+    },
+    {
+      "announcementId": "57552013",
+      "announcementTime": 1264631700000,
+      "title": "关于本公司股东股权解除冻结的公告",
+      "adjunctUrl": "finalpage/2010-01-28/57552013.PDF"
+    },
+    {
+      "announcementId": "57547428",
+      "announcementTime": 1264545320000,
+      "title": "2009年度业绩预告",
+      "adjunctUrl": "finalpage/2010-01-27/57547428.PDF"
+    },
+    {
+      "announcementId": "57547427",
+      "announcementTime": 1264545300000,
+      "title": "关于重大资产重组进展公告",
+      "adjunctUrl": "finalpage/2010-01-27/57547427.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

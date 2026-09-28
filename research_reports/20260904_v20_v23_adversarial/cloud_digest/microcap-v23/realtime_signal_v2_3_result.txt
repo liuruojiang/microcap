@@ -1,0 +1,65 @@
+[top100-refresh] frozen tail seed rejected reason=runner_cache_is_full_sized
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_0.py:14726: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_3.py:1811: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+signal
+strategy_version: v2.3
+base_version: embedded_v2_base
+signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, R2 entry filter OFF, signal spread 1.0x, execution hedge 0.8x
+overlay: entry score > 0.00, exit buffer 0.08, vol10 overheat trigger 26%, recovery 20.0%, no target-vol/cash-yield/financing
+current_holding: cash
+next_holding: cash
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+annualized_log_wls_score: +90.1535%
+log_wls_r2: 0.5784
+momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap
+current_execution_scale: 0.00
+next_session_target_scale: 0.00
+next_session_actionable_scale: 0.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_trade_cost_est: 0.0000%
+overheat_feature_value: 26.7826%
+overheat_risk_off: True
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_0.py:14726: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_3.py:1811: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+signal
+strategy_version: v2.3
+base_version: embedded_v2_base
+signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, R2 entry filter OFF, signal spread 1.0x, execution hedge 0.8x
+overlay: entry score > 0.00, exit buffer 0.08, vol10 overheat trigger 26%, recovery 20.0%, no target-vol/cash-yield/financing
+current_holding: cash
+next_holding: cash
+trade_state: hold
+holding_trade_state: hold
+scale_trade_state: hold_scale
+signal_date: 2026-09-04
+annualized_log_wls_score: +90.1535%
+log_wls_r2: 0.5784
+momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap
+current_execution_scale: 0.00
+next_session_target_scale: 0.00
+next_session_actionable_scale: 0.00
+raw_scale_delta: +0.00
+actionable_scale_delta: +0.00
+scale_delta: +0.00
+next_session_turnover: 0.0000
+next_session_leg_turnover: 0.0000
+next_session_trade_cost_est: 0.0000%
+overheat_feature_value: 26.7826%
+overheat_risk_off: True
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv

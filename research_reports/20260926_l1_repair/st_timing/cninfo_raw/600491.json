@@ -1,0 +1,85 @@
+{
+  "symbol": "600491",
+  "org_id": "gssh0600491",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "c47fb82b7a92d021d2cac3ef42ee8db3c1c05ab61ad90085fdeff8ed95e9e044",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "c47fb82b7a92d021d2cac3ef42ee8db3c1c05ab61ad90085fdeff8ed95e9e044"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 1,
+      "pages_fetched": 1,
+      "first_page_sha256": "abb6e094cc4458d7c0ed79cd10b456c8164961836e28e94f852bc91366a918e2",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "abb6e094cc4458d7c0ed79cd10b456c8164961836e28e94f852bc91366a918e2"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2026-04-30T00:00:00+08:00",
+      "title": "龙元建设关于实施其他风险警示暨股票停牌的公告",
+      "announcementId": "1225263031",
+      "adjunctUrl": "finalpage/2026-04-30/1225263031.PDF",
+      "secCode": "600491",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

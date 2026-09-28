@@ -1,0 +1,47 @@
+{
+  "symbol": "000971",
+  "org_id": "gssz0000971",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000971,gssz0000971",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 2,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "0971cc209253cb208fb4edbc00cf5da08ba7c043bdbeace5576a23a46c673711",
+      "reported_total": 2,
+      "rows": 2
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57551645",
+      "announcementTime": 1264631400000,
+      "title": "业绩预告公告",
+      "adjunctUrl": "finalpage/2010-01-28/57551645.PDF"
+    },
+    {
+      "announcementId": "57521542",
+      "announcementTime": 1263940200000,
+      "title": "关于控股子公司清算进展的提示性公告",
+      "adjunctUrl": "finalpage/2010-01-20/57521542.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

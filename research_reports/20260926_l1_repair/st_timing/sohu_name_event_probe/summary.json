@@ -1,0 +1,18 @@
+{
+  "600603": {
+    "pages": 70,
+    "pagination_exhausted": true,
+    "event_rows": 2168,
+    "min_date": "1992-01-10",
+    "max_date": "2026-05-15",
+    "name_events": 6
+  },
+  "600137": {
+    "pages": 36,
+    "pagination_exhausted": true,
+    "event_rows": 1109,
+    "min_date": "1998-04-10",
+    "max_date": "2025-10-31",
+    "name_events": 6
+  }
+}

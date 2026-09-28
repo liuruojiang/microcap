@@ -1,0 +1,57 @@
+{
+  "year": 2016,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2016-01-01~2016-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 10,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "821821c43bd62ebc632fb7e0b8eb888016b05a32e9c906f80a4d164cdb08532d",
+      "response_bytes": 7502,
+      "row_count": 10,
+      "reported_total": 10
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "002173",
+      "announcementId": "1202196880",
+      "announcementTime": 1460995200000,
+      "title": "关于股票交易实施退市风险警示<em>特别</em><em>处理</em>公告的更正公告",
+      "adjunctUrl": "finalpage/2016-04-19/1202196880.PDF"
+    },
+    {
+      "symbol": "002173",
+      "announcementId": "1202187572",
+      "announcementTime": 1460908800000,
+      "title": "关于股票交易实施退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2016-04-18/1202187572.PDF"
+    },
+    {
+      "symbol": "000617",
+      "announcementId": "1202112971",
+      "announcementTime": 1459353600000,
+      "title": "关于股票交易实行退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2016-03-31/1202112971.PDF"
+    },
+    {
+      "symbol": "000590",
+      "announcementId": "1202083968",
+      "announcementTime": 1458921600000,
+      "title": "关于申请撤销退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2016-03-26/1202083968.PDF"
+    },
+    {
+      "symbol": "000976",
+      "announcementId": "1201961576",
+      "announcementTime": 1454428800000,
+      "title": "关于申请撤销退市风险警示<em>特别</em><em>处理</em>的公告",
+      "adjunctUrl": "finalpage/2016-02-03/1201961576.PDF"
+    }
+  ],
+  "complete": true
+}

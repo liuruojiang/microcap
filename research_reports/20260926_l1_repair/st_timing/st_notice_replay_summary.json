@@ -1,0 +1,11 @@
+{
+  "symbols_replayed": 57,
+  "complete_six_query_symbols": 57,
+  "incomplete_six_query_symbols": 0,
+  "fetched_notice_titles": 419,
+  "target_rows_covered_by_complete_six_queries": 2656,
+  "target_rows_incomplete_queries": 0,
+  "replayed_notice_st_target_rows": 445,
+  "newly_st_target_rows": 445,
+  "earliest_newly_st_target": "2010-01-14"
+}

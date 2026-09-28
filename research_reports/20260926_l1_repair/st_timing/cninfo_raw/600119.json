@@ -1,0 +1,184 @@
+{
+  "symbol": "600119",
+  "org_id": "gssh0600119",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 12,
+      "pages_fetched": 1,
+      "first_page_sha256": "2ee69475b60af32e73ee2c67197b41b7897ee0711d2b2f5e72eec47cf783108d",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "2ee69475b60af32e73ee2c67197b41b7897ee0711d2b2f5e72eec47cf783108d"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 4,
+      "pages_fetched": 1,
+      "first_page_sha256": "6c7dbf30ab353865c5b4b5705b412ea657b3fe20f2ac29cd3d3212b6426d73c9",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "6c7dbf30ab353865c5b4b5705b412ea657b3fe20f2ac29cd3d3212b6426d73c9"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2019-01-31T00:00:00+08:00",
+      "title": "股票可能被实施退市风险警示的提示性公告",
+      "announcementId": "1205814210",
+      "adjunctUrl": "finalpage/2019-01-31/1205814210.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-03-16T00:00:00+08:00",
+      "title": "股票可能被实施退市风险警示的第二次提示性公告",
+      "announcementId": "1205902321",
+      "adjunctUrl": "finalpage/2019-03-16/1205902321.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-04-20T00:00:00+08:00",
+      "title": "股票可能被实施退市风险警示的第三次提示性公告",
+      "announcementId": "1206061918",
+      "adjunctUrl": "finalpage/2019-04-20/1206061918.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2019-04-30T00:00:00+08:00",
+      "title": "关于公司股票实施退市风险警示暨停牌的公告",
+      "announcementId": "1206164498",
+      "adjunctUrl": "finalpage/2019-04-30/1206164498.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-04-11T00:00:00+08:00",
+      "title": "关于申请撤销公司股票退市风险警示及可能被实施其他风险警示的公告",
+      "announcementId": "1207482848",
+      "adjunctUrl": "finalpage/2020-04-11/1207482848.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2020-04-20T00:00:00+08:00",
+      "title": "关于撤销公司股票退市风险警示及实施其他风险警示的公告",
+      "announcementId": "1207534138",
+      "adjunctUrl": "finalpage/2020-04-20/1207534138.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-04-27T00:00:00+08:00",
+      "title": "ST长投：关于申请撤销股票其他风险警示的公告",
+      "announcementId": "1209809565",
+      "adjunctUrl": "finalpage/2021-04-27/1209809565.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-05-14T00:00:00+08:00",
+      "title": "ST长投：关于撤销公司股票其他风险警示暨停牌的公告",
+      "announcementId": "1209971140",
+      "adjunctUrl": "finalpage/2021-05-14/1209971140.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-01-29T00:00:00+08:00",
+      "title": "长江投资：股票可能被实施退市风险警示的风险提示公告",
+      "announcementId": "1224954336",
+      "adjunctUrl": "finalpage/2026-01-29/1224954336.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-02-28T00:00:00+08:00",
+      "title": "长江投资：股票可能被实施退市风险警示的第二次风险提示公告",
+      "announcementId": "1224986769",
+      "adjunctUrl": "finalpage/2026-02-28/1224986769.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-03-25T00:00:00+08:00",
+      "title": "长江投资：股票可能被实施退市风险警示的第三次风险提示公告",
+      "announcementId": "1225027294",
+      "adjunctUrl": "finalpage/2026-03-25/1225027294.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-27T00:00:00+08:00",
+      "title": "长江投资：关于实施退市风险警示暨停牌的公告",
+      "announcementId": "1225197307",
+      "adjunctUrl": "finalpage/2026-04-27/1225197307.PDF",
+      "secCode": "600119",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

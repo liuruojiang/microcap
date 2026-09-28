@@ -1,0 +1,113 @@
+{
+  "year": 2020,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2020-01-01~2020-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 13,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "90cf9b6cea7fedf3316030281ac6baf2ca07f65fe47e2df15eeb31e8a49debde",
+      "response_bytes": 10005,
+      "row_count": 13,
+      "reported_total": 13
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000835",
+      "announcementId": "1207943516",
+      "announcementTime": 1592582400000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-06-20/1207943516.PDF"
+    },
+    {
+      "symbol": "000835",
+      "announcementId": "1207922871",
+      "announcementTime": 1591977600000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-06-13/1207922871.PDF"
+    },
+    {
+      "symbol": "002071",
+      "announcementId": "1207922571",
+      "announcementTime": 1591977600000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-06-13/1207922571.PDF"
+    },
+    {
+      "symbol": "002071",
+      "announcementId": "1207900901",
+      "announcementTime": 1591372800000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-06-06/1207900901.PDF"
+    },
+    {
+      "symbol": "000835",
+      "announcementId": "1207900334",
+      "announcementTime": 1591372800000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-06-06/1207900334.PDF"
+    },
+    {
+      "symbol": "000835",
+      "announcementId": "1207876247",
+      "announcementTime": 1590768000000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-30/1207876247.PDF"
+    },
+    {
+      "symbol": "002071",
+      "announcementId": "1207875670",
+      "announcementTime": 1590768000000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-30/1207875670.PDF"
+    },
+    {
+      "symbol": "002071",
+      "announcementId": "1207851387",
+      "announcementTime": 1590163200000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-23/1207851387.PDF"
+    },
+    {
+      "symbol": "000835",
+      "announcementId": "1207849976",
+      "announcementTime": 1590163200000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-23/1207849976.PDF"
+    },
+    {
+      "symbol": "000835",
+      "announcementId": "1207817274",
+      "announcementTime": 1589558400000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-16/1207817274.PDF"
+    },
+    {
+      "symbol": "002071",
+      "announcementId": "1207816783",
+      "announcementTime": 1589558400000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-16/1207816783.PDF"
+    },
+    {
+      "symbol": "000835",
+      "announcementId": "1207723640",
+      "announcementTime": 1588953600000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-09/1207723640.PDF"
+    },
+    {
+      "symbol": "002071",
+      "announcementId": "1207722812",
+      "announcementTime": 1588953600000,
+      "title": "关于公司股票可能触及被实施<em>特别</em><em>处理</em>的提示性公告",
+      "adjunctUrl": "finalpage/2020-05-09/1207722812.PDF"
+    }
+  ],
+  "complete": true
+}

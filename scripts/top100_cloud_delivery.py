@@ -2,12 +2,16 @@
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
+import time
+import urllib.error
+import urllib.request
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -179,6 +183,100 @@ def gh_json(*args: str):
     return json.loads(subprocess.check_output(["gh", *args], text=True, encoding="utf-8"))
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, fp, code, msg, headers, newurl):
+        return None
+
+
+def _signed_artifact_url(artifact_id: int) -> str:
+    """Get a fresh official artifact URL without forwarding GitHub credentials."""
+    token = subprocess.check_output(["gh", "auth", "token"], text=True, encoding="utf-8").strip()
+    if not token:
+        raise RuntimeError("GitHub authentication is unavailable")
+    request = urllib.request.Request(
+        f"https://api.github.com/repos/{REPOSITORY}/actions/artifacts/{artifact_id}/zip",
+        headers={"Authorization": f"Bearer {token}",
+                 "Accept": "application/vnd.github+json",
+                 "User-Agent": "microcap-whole-delivery-sync"},
+    )
+    try:
+        with urllib.request.build_opener(_NoRedirect).open(request, timeout=30):
+            pass
+    except urllib.error.HTTPError as exc:
+        location = exc.headers.get("Location")
+        status = exc.code
+        exc.close()
+        if status != 302 or not location or not location.startswith("https://"):
+            raise RuntimeError(f"GitHub artifact redirect rejected: HTTP {status}") from None
+        return location
+    raise RuntimeError("GitHub artifact API did not return a download redirect")
+
+
+def _download_artifact(artifact: dict, directory: Path) -> tuple[Path, dict]:
+    """Stream and resume the exact Actions artifact; restore still owns all state checks."""
+    expected_bytes = int(artifact["size_in_bytes"])
+    if expected_bytes <= 0:
+        raise ValueError("Empty GitHub whole-delivery artifact")
+    partial = directory / "github-artifact.part"
+    outer = directory / "github-artifact.zip"
+    progress_step = 8 * 1024 * 1024
+    for attempt in range(1, 4):
+        offset = partial.stat().st_size if partial.exists() else 0
+        if offset > expected_bytes:
+            raise ValueError("Downloaded artifact exceeds GitHub metadata size")
+        if offset == expected_bytes:
+            break
+        headers = {"User-Agent": "microcap-whole-delivery-sync"}
+        if offset:
+            headers["Range"] = f"bytes={offset}-"
+        try:
+            request = urllib.request.Request(_signed_artifact_url(int(artifact["id"])), headers=headers)
+            with urllib.request.urlopen(request, timeout=35) as response:
+                if offset:
+                    content_range = response.headers.get("Content-Range", "")
+                    if (response.status != 206 or
+                        not content_range.startswith(f"bytes {offset}-") or
+                        not content_range.endswith(f"/{expected_bytes}")):
+                        raise ValueError("Artifact resume range does not match downloaded bytes")
+                elif response.status != 200:
+                    raise ValueError(f"Unexpected artifact download status: {response.status}")
+                mode = "ab" if offset else "wb"
+                next_progress = ((offset // progress_step) + 1) * progress_step
+                with partial.open(mode) as stream:
+                    while chunk := response.read(1024 * 1024):
+                        stream.write(chunk)
+                        offset += len(chunk)
+                        if offset > expected_bytes:
+                            raise ValueError("Artifact body exceeds GitHub metadata size")
+                        if offset >= next_progress:
+                            print(f"[cloud-sync] downloaded {offset}/{expected_bytes} bytes",
+                                  file=sys.stderr, flush=True)
+                            next_progress += progress_step
+        except (OSError, urllib.error.URLError, http.client.IncompleteRead) as exc:
+            if attempt == 3:
+                raise RuntimeError(f"GitHub artifact download failed after 3 attempts: {type(exc).__name__}") from None
+            print(f"[cloud-sync] transport retry {attempt}/2 after {type(exc).__name__}",
+                  file=sys.stderr, flush=True)
+            time.sleep(attempt)
+            continue
+        if offset == expected_bytes:
+            break
+        print(f"[cloud-sync] incomplete download {offset}/{expected_bytes}; resuming",
+              file=sys.stderr, flush=True)
+    if not partial.exists() or partial.stat().st_size != expected_bytes:
+        raise RuntimeError("GitHub artifact download is incomplete")
+    partial.replace(outer)
+    inner = directory / f"{ARTIFACT}.zip"
+    with zipfile.ZipFile(outer) as archive:
+        if archive.namelist() != [inner.name]:
+            raise ValueError("Unexpected GitHub artifact archive contents")
+        with archive.open(inner.name) as source, inner.open("wb") as target:
+            shutil.copyfileobj(source, target)
+    return inner, {"github_artifact": int(artifact["id"]),
+                   "github_artifact_bytes": expected_bytes,
+                   "github_artifact_sha256": state._sha256(outer)}
+
+
 def sync(root: Path, expected: str) -> dict:
     existing = delivery.validate_manifest(root, delivery.inspect_outputs(root, expected))
     if existing["ok"]:
@@ -193,14 +291,17 @@ def sync(root: Path, expected: str) -> dict:
                    "--limit", "10", "--json", "databaseId,headSha")
     for run in runs:
         artifacts = gh_json("api", f"repos/{REPOSITORY}/actions/runs/{run['databaseId']}/artifacts")
-        if not any(item["name"] == ARTIFACT and not item["expired"]
-                   for item in artifacts.get("artifacts", [])):
+        artifact = next((item for item in artifacts.get("artifacts", [])
+                         if item["name"] == ARTIFACT and not item["expired"]), None)
+        if artifact is None:
             continue
-        with tempfile.TemporaryDirectory(prefix="top100-download-") as directory:
-            subprocess.run(["gh", "run", "download", str(run["databaseId"]), "--repo", REPOSITORY,
-                            "--name", ARTIFACT, "--dir", directory], check=True)
-            report = restore(root, Path(directory) / f"{ARTIFACT}.zip", expected)
-            return {**report, "github_run": run["databaseId"], "automation_sha": run["headSha"]}
+        transport_root = root / ".codex_backups"
+        transport_root.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="top100-download-", dir=transport_root) as directory:
+            bundle, transport = _download_artifact(artifact, Path(directory))
+            report = restore(root, bundle, expected)
+            return {**report, **transport, "github_run": run["databaseId"],
+                    "automation_sha": run["headSha"]}
     raise RuntimeError("No successful GitHub whole-delivery artifact is available")
 
 

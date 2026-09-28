@@ -1,0 +1,47 @@
+{
+  "symbol": "002113",
+  "org_id": "9900002122",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "002113,9900002122",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 2,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "f0dca3557ce954343b751f4fe10dc5270aa7224295e6d861459635d47d7523c4",
+      "reported_total": 2,
+      "rows": 2
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57627671",
+      "announcementTime": 1267137000000,
+      "title": "2009年度业绩快报公告",
+      "adjunctUrl": "finalpage/2010-02-26/57627671.PDF"
+    },
+    {
+      "announcementId": "57576777",
+      "announcementTime": 1265236200000,
+      "title": "重大资产重组事项进展公告",
+      "adjunctUrl": "finalpage/2010-02-04/57576777.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

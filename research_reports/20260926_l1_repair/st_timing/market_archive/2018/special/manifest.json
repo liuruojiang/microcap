@@ -1,0 +1,21 @@
+{
+  "year": 2018,
+  "label": "special",
+  "category": "",
+  "searchkey": "特别处理",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2018-01-01~2018-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 1,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "21eaf6a2657470b8ee68c0c5c6e7d30e6d7277dff16f51e8f70852c76efd6dae",
+      "response_bytes": 975,
+      "row_count": 1,
+      "reported_total": 1
+    }
+  ],
+  "candidate_announcements": [],
+  "complete": true
+}

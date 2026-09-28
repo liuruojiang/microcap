@@ -1,0 +1,13 @@
+{
+  "affected_name_change_symbols_among_1185": 14,
+  "affected_name_change_rows_among_1185": 42,
+  "newly_st_target_rows": 6,
+  "newly_st_target_symbols": 1,
+  "first_newly_st_target": [
+    {
+      "symbol": "000010",
+      "target_date": "2010-01-14",
+      "rank": 69
+    }
+  ]
+}

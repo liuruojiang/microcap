@@ -1,0 +1,157 @@
+{
+  "retrieved_utc": "2026-09-26T14:21:08.910962+00:00",
+  "ledger_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\corporate_actions\\rights_event_ledger_2010_2014.csv",
+  "events": [
+    {
+      "symbol": "600211",
+      "ex_date": "2010-09-07",
+      "rows": 4,
+      "target_row": {
+        "date": "2010-09-07",
+        "code": "sh.600211",
+        "open": "15.3600",
+        "high": "15.3600",
+        "low": "15.3600",
+        "close": "15.3600",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "000810",
+      "ex_date": "2011-06-17",
+      "rows": 3,
+      "target_row": {
+        "date": "2011-06-17",
+        "code": "sz.000810",
+        "open": "14.0000",
+        "high": "14.0000",
+        "low": "14.0000",
+        "close": "14.0000",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "002624",
+      "ex_date": "2014-05-23",
+      "rows": 3,
+      "target_row": {
+        "date": "2014-05-23",
+        "code": "sz.002624",
+        "open": "8.0500",
+        "high": "8.0500",
+        "low": "8.0500",
+        "close": "8.0500",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "600758",
+      "ex_date": "2014-06-17",
+      "rows": 4,
+      "target_row": {
+        "date": "2014-06-17",
+        "code": "sh.600758",
+        "open": "7.2000",
+        "high": "7.2000",
+        "low": "7.2000",
+        "close": "7.2000",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "002319",
+      "ex_date": "2014-06-20",
+      "rows": 3,
+      "target_row": {
+        "date": "2014-06-20",
+        "code": "sz.002319",
+        "open": "8.1600",
+        "high": "8.1600",
+        "low": "8.1600",
+        "close": "8.1600",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "002112",
+      "ex_date": "2014-07-11",
+      "rows": 3,
+      "target_row": {
+        "date": "2014-07-11",
+        "code": "sz.002112",
+        "open": "8.2500",
+        "high": "8.2500",
+        "low": "8.2500",
+        "close": "8.2500",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "000560",
+      "ex_date": "2014-08-22",
+      "rows": 3,
+      "target_row": {
+        "date": "2014-08-22",
+        "code": "sz.000560",
+        "open": "8.4300",
+        "high": "8.4300",
+        "low": "8.4300",
+        "close": "8.4300",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    },
+    {
+      "symbol": "300319",
+      "ex_date": "2014-09-18",
+      "rows": 4,
+      "target_row": {
+        "date": "2014-09-18",
+        "code": "sz.300319",
+        "open": "10.6400",
+        "high": "10.6400",
+        "low": "10.6400",
+        "close": "10.6400",
+        "volume": "0",
+        "amount": "0.0000",
+        "tradestatus": "0"
+      }
+    }
+  ],
+  "files": [
+    {
+      "name": "600211_20130905_retrospective.pdf",
+      "url": "https://static.cninfo.com.cn/finalpage/2013-09-05/63049912.PDF",
+      "status": 200,
+      "bytes": 393539,
+      "sha256": "8a7e73c07b696ee4db1bc09b830e202ecb6ea32055268874bdf23e79aaae8e7e"
+    },
+    {
+      "name": "600758_20140606_issuer_status.pdf",
+      "url": "https://static.cninfo.com.cn/finalpage/2014-06-06/64106790.PDF",
+      "status": 200,
+      "bytes": 58070,
+      "sha256": "be5a68c621ae103ed6f17c1688382e211390a62ce0e7fe1b682948cab033f722"
+    },
+    {
+      "name": "baostock_eight_exdate_window.csv",
+      "source": "BaoStock anonymous history_k_data_plus",
+      "rows": 27,
+      "sha256": "6ad18bad2930ef98f864b899b5fbff5d6fe4007c3c9c199b00d1b64d3e824477",
+      "adjustflag": "3"
+    }
+  ]
+}

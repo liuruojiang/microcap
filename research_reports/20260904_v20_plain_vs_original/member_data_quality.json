@@ -1,0 +1,13 @@
+{
+  "member_rows": 43100,
+  "rebalance_dates": 431,
+  "distinct_symbols": 1176,
+  "bad_policy_count": 1,
+  "bad_policy_symbols": [
+    "688592"
+  ],
+  "st_violations": 0,
+  "st_violation_symbols": [],
+  "st_violation_rebalance_dates": [],
+  "st_violation_sample": []
+}

@@ -1,0 +1,14 @@
+diff --git a/microcap_top100_mom16_biweekly_live_v2_0.py b/microcap_top100_mom16_biweekly_live_v2_0.py
+--- a/microcap_top100_mom16_biweekly_live_v2_0.py
++++ b/microcap_top100_mom16_biweekly_live_v2_0.py
+@@ -5408,7 +5408,11 @@ def _reconstruct_effective_members_from_saved_targets(
+     )
+     if len(rebalance_dates) == 0:
+         return []
+-    trade_dates = _minimal_tradeability_dates(panel_dates, rebalance_dates)
++    # A sparse date set can lose the last traded close before a long suspension.
++    # Close-limit detection must see the full historical calendar to carry it
++    # forward to the reopening session (600862 on 2014-09-18 is a real case).
++    trade_dates = pd.DatetimeIndex(panel_dates).normalize().unique().sort_values()
+     if len(trade_dates) == 0:
+         return []

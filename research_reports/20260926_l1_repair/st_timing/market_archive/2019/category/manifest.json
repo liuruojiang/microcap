@@ -1,0 +1,1905 @@
+{
+  "year": 2019,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2019-01-01~2019-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 315,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "4e93e921e47fd7067df04833ba3b4311687f26dd6dbe260c9930d478310d07f0",
+      "response_bytes": 21314,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "76e8b9c2e51f8261ab3e0a8302c4419ce05464fdf1209cc03850305a85dd9259",
+      "response_bytes": 21615,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "4c2e904f106b7981c0deb89175467bba8840cd17d8bfdbf0f6bd0946aaba15fa",
+      "response_bytes": 22303,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "c96fc5aff7efcd6afba1294454103649faa4184be9910323570ffb1fc93faf8c",
+      "response_bytes": 22561,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "24e655b19ff9f60f505995378846709bdb4255142ee8ac98f134b3eda3f0726e",
+      "response_bytes": 22675,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 6,
+      "sha256_raw_response": "113fe2ba9aefc5f9260d350547419d41767171dec81d3916e6784ccf225730de",
+      "response_bytes": 22229,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 7,
+      "sha256_raw_response": "10b78ba9450b60cff3cdda1e9b8a3b5d80bdb9caef907580e66bfd5e5e2fc145",
+      "response_bytes": 22134,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 8,
+      "sha256_raw_response": "f6fab5656b924adc503cd0c300487d1ecaa7732389c77ddb636eaad290649c95",
+      "response_bytes": 21079,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 9,
+      "sha256_raw_response": "35401a77d0e99562ba420f8ae0b26a0e448747f3c4e5e9aab408b8faa93030a8",
+      "response_bytes": 21054,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 10,
+      "sha256_raw_response": "2c2271c185458174fddbcff897557c87073919408017b0d878bfece40d28fe17",
+      "response_bytes": 21131,
+      "row_count": 30,
+      "reported_total": 315
+    },
+    {
+      "page": 11,
+      "sha256_raw_response": "bce31fb0b9415ad50e2da0624dd5d7cbda5213856cfb02aa8c5ae674219b3c2b",
+      "response_bytes": 10610,
+      "row_count": 15,
+      "reported_total": 315
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "000018",
+      "announcementId": "1207208278",
+      "announcementTime": 1577721600000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-31/1207208278.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207201834",
+      "announcementTime": 1577635200000,
+      "title": "第八届董事会第十五次会议决议公告",
+      "adjunctUrl": "finalpage/2019-12-30/1207201834.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207201833",
+      "announcementTime": 1577635200000,
+      "title": "关于股票终止上市后聘请全国股份转让系统主办券商的公告",
+      "adjunctUrl": "finalpage/2019-12-30/1207201833.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207201832",
+      "announcementTime": 1577635200000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-30/1207201832.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207197692",
+      "announcementTime": 1577376000000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-27/1207197692.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207194976",
+      "announcementTime": 1577289600000,
+      "title": "关于可能对德国巴登巴登阿库尔医院失去控制权的提示性公告",
+      "adjunctUrl": "finalpage/2019-12-26/1207194976.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207191686",
+      "announcementTime": 1577203200000,
+      "title": "2015年公司债券临时受托管理事务报告",
+      "adjunctUrl": "finalpage/2019-12-25/1207191686.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207191685",
+      "announcementTime": 1577203200000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-25/1207191685.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207191684",
+      "announcementTime": 1577203200000,
+      "title": "关于延期支付2015年非公开发行公司债券本金及2019年度利息的公告",
+      "adjunctUrl": "finalpage/2019-12-25/1207191684.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207188612",
+      "announcementTime": 1577116800000,
+      "title": "关于股东权益变动的提示性公告",
+      "adjunctUrl": "finalpage/2019-12-24/1207188612.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207188611",
+      "announcementTime": 1577116800000,
+      "title": "简式权益变动报告书",
+      "adjunctUrl": "finalpage/2019-12-24/1207188611.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207180233",
+      "announcementTime": 1576771200000,
+      "title": "关于召开2020年第一次临时股东大会的通知公告（更新后）",
+      "adjunctUrl": "finalpage/2019-12-20/1207180233.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207180232",
+      "announcementTime": 1576771200000,
+      "title": "关于召开2020年第一次临时股东大会通知的更正公告",
+      "adjunctUrl": "finalpage/2019-12-20/1207180232.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207180231",
+      "announcementTime": 1576771200000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-20/1207180231.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207179889",
+      "announcementTime": 1576771200000,
+      "title": "关于涉及案件进展的公告",
+      "adjunctUrl": "finalpage/2019-12-20/1207179889.PDF"
+    },
+    {
+      "symbol": "600423",
+      "announcementId": "1207176710",
+      "announcementTime": 1576684800000,
+      "title": "关于公司股票撤销退市风险警示并实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2019-12-19/1207176710.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207175919",
+      "announcementTime": 1576684800000,
+      "title": "关于立案调查事项进展暨风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-19/1207175919.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173662",
+      "announcementTime": 1576598400000,
+      "title": "关于参加独立董事培训并取得独立董事资格证书的承诺函",
+      "adjunctUrl": "finalpage/2019-12-18/1207173662.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173661",
+      "announcementTime": 1576598400000,
+      "title": "第八届董事会第十四次会议决议公告",
+      "adjunctUrl": "finalpage/2019-12-18/1207173661.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173660",
+      "announcementTime": 1576598400000,
+      "title": "关于更换会计师事务所的公告",
+      "adjunctUrl": "finalpage/2019-12-18/1207173660.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173659",
+      "announcementTime": 1576598400000,
+      "title": "关于裁定债权人撤回破产重整申请暨与豫发集团自动解除协议的公告",
+      "adjunctUrl": "finalpage/2019-12-18/1207173659.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173658",
+      "announcementTime": 1576598400000,
+      "title": "独立董事提名人声明（二）",
+      "adjunctUrl": "finalpage/2019-12-18/1207173658.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173657",
+      "announcementTime": 1576598400000,
+      "title": "独立董事提名人声明（一）",
+      "adjunctUrl": "finalpage/2019-12-18/1207173657.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173656",
+      "announcementTime": 1576598400000,
+      "title": "独立董事关于更换会计师事务所的事前认可意见",
+      "adjunctUrl": "finalpage/2019-12-18/1207173656.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173655",
+      "announcementTime": 1576598400000,
+      "title": "独立董事关于第八届董事会第十四次会议相关事项的独立意见",
+      "adjunctUrl": "finalpage/2019-12-18/1207173655.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173654",
+      "announcementTime": 1576598400000,
+      "title": "关于召开2020年第一次临时股东大会的通知公告（已取消）",
+      "adjunctUrl": "finalpage/2019-12-18/1207173654.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173653",
+      "announcementTime": 1576598400000,
+      "title": "独立董事候选人声明（高立平）",
+      "adjunctUrl": "finalpage/2019-12-18/1207173653.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173652",
+      "announcementTime": 1576598400000,
+      "title": "独立董事候选人声明（黄国宝）",
+      "adjunctUrl": "finalpage/2019-12-18/1207173652.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173651",
+      "announcementTime": 1576598400000,
+      "title": "关于董事辞职的公告",
+      "adjunctUrl": "finalpage/2019-12-18/1207173651.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207173650",
+      "announcementTime": 1576598400000,
+      "title": "第八届监事会第七次会议决议公告",
+      "adjunctUrl": "finalpage/2019-12-18/1207173650.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207172936",
+      "announcementTime": 1576598400000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-18/1207172936.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207160737",
+      "announcementTime": 1576166400000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-13/1207160737.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207156325",
+      "announcementTime": 1576080000000,
+      "title": "退市华业关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-12/1207156325.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207150049",
+      "announcementTime": 1575907200000,
+      "title": "关于收到《执行裁定书》的公告",
+      "adjunctUrl": "finalpage/2019-12-10/1207150049.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207150048",
+      "announcementTime": 1575907200000,
+      "title": "关于收到《执行裁定书》的公告",
+      "adjunctUrl": "finalpage/2019-12-10/1207150048.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1207149205",
+      "announcementTime": 1575907200000,
+      "title": "关于重整及恢复上市进展情况的公告",
+      "adjunctUrl": "finalpage/2019-12-10/1207149205.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207147293",
+      "announcementTime": 1575820800000,
+      "title": "关于整理期结束及摘牌暨后续有关事项安排的公告",
+      "adjunctUrl": "finalpage/2019-12-09/1207147293.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1207143962",
+      "announcementTime": 1575648000000,
+      "title": "关于为恢复上市所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-12-07/1207143962.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207141707",
+      "announcementTime": 1575561600000,
+      "title": "关于公司股票进入退市整理期交易最后一个交易日的风险提示公告",
+      "adjunctUrl": "finalpage/2019-12-06/1207141707.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207140949",
+      "announcementTime": 1575561600000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-06/1207140949.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207138493",
+      "announcementTime": 1575475200000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-12-05/1207138493.PDF"
+    },
+    {
+      "symbol": "600240",
+      "announcementId": "1207138492",
+      "announcementTime": 1575475200000,
+      "title": "关于公司股票进入退市整理期交易的公告",
+      "adjunctUrl": "finalpage/2019-12-05/1207138492.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207138191",
+      "announcementTime": 1575475200000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-05/1207138191.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207138189",
+      "announcementTime": 1575475200000,
+      "title": "关于聘请代办机构的公告",
+      "adjunctUrl": "finalpage/2019-12-05/1207138189.PDF"
+    },
+    {
+      "symbol": "002323",
+      "announcementId": "1207130925",
+      "announcementTime": 1575302400000,
+      "title": "关于撤销退市风险警示及继续实行其他风险警示暨风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-03/1207130925.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207130261",
+      "announcementTime": 1575302400000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-03/1207130261.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207126588",
+      "announcementTime": 1575216000000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-12-02/1207126588.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207121983",
+      "announcementTime": 1574956800000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-29/1207121983.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207121728",
+      "announcementTime": 1574956800000,
+      "title": "关于公司股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-11-29/1207121728.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207121580",
+      "announcementTime": 1574956800000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-29/1207121580.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207121579",
+      "announcementTime": 1574956800000,
+      "title": "关于股东权益变动的提示性公告",
+      "adjunctUrl": "finalpage/2019-11-29/1207121579.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207118644",
+      "announcementTime": 1574870400000,
+      "title": "关于公司股票进入退市整理期交易的第十一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-28/1207118644.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207116312",
+      "announcementTime": 1574784000000,
+      "title": "关于公司股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-11-27/1207116312.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207115792",
+      "announcementTime": 1574784000000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-27/1207115792.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207113390",
+      "announcementTime": 1574697600000,
+      "title": "独立董事关于第八届董事会第十三次会议相关事项的独立意见",
+      "adjunctUrl": "finalpage/2019-11-26/1207113390.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207113389",
+      "announcementTime": 1574697600000,
+      "title": "关于公司高级管理人员辞职的公告",
+      "adjunctUrl": "finalpage/2019-11-26/1207113389.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207113388",
+      "announcementTime": 1574697600000,
+      "title": "第八届董事会第十三次会议决议公告",
+      "adjunctUrl": "finalpage/2019-11-26/1207113388.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207113347",
+      "announcementTime": 1574697600000,
+      "title": "关于公司股票进入退市整理期交易的第十一次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-26/1207113347.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207112916",
+      "announcementTime": 1574697600000,
+      "title": "关于公司股票进入退市整理期交易的第九次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-26/1207112916.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207109898",
+      "announcementTime": 1574611200000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-25/1207109898.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207109586",
+      "announcementTime": 1574611200000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-25/1207109586.PDF"
+    },
+    {
+      "symbol": "600112",
+      "announcementId": "1207109795",
+      "announcementTime": 1574438400000,
+      "title": "关于公司股票被实行其他风险警示的相关事项进展情况公告",
+      "adjunctUrl": "finalpage/2019-11-23/1207109795.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207108935",
+      "announcementTime": 1574438400000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-23/1207108935.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207106668",
+      "announcementTime": 1574352000000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-22/1207106668.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207106335",
+      "announcementTime": 1574352000000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-22/1207106335.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207106319",
+      "announcementTime": 1574352000000,
+      "title": "关于公司股票进入退市整理期交易的第九次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-22/1207106319.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207103977",
+      "announcementTime": 1574265600000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-21/1207103977.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207103202",
+      "announcementTime": 1574265600000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-21/1207103202.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207101119",
+      "announcementTime": 1574179200000,
+      "title": "关于立案调查事项进展暨风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-20/1207101119.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207100517",
+      "announcementTime": 1574179200000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-20/1207100517.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207097512",
+      "announcementTime": 1574092800000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-19/1207097512.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1207095692",
+      "announcementTime": 1573833600000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-11-16/1207095692.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207092177",
+      "announcementTime": 1573747200000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-15/1207092177.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207087357",
+      "announcementTime": 1573660800000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-14/1207087357.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207080850",
+      "announcementTime": 1573488000000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-12/1207080850.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207077864",
+      "announcementTime": 1573228800000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-09/1207077864.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207076903",
+      "announcementTime": 1573228800000,
+      "title": "关于公司被中国证监会立案调查进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-09/1207076903.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207073347",
+      "announcementTime": 1573142400000,
+      "title": "关于公司全资子公司破产清算的公告",
+      "adjunctUrl": "finalpage/2019-11-08/1207073347.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1207070499",
+      "announcementTime": 1573056000000,
+      "title": "关于重整及恢复上市进展情况的公告",
+      "adjunctUrl": "finalpage/2019-11-07/1207070499.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207070370",
+      "announcementTime": 1573056000000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-07/1207070370.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1207070349",
+      "announcementTime": 1573056000000,
+      "title": "关于为恢复上市所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-11-07/1207070349.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207064306",
+      "announcementTime": 1572883200000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示公告",
+      "adjunctUrl": "finalpage/2019-11-05/1207064306.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207064177",
+      "announcementTime": 1572883200000,
+      "title": "关于重大诉讼事项的进展公告",
+      "adjunctUrl": "finalpage/2019-11-05/1207064177.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207060506",
+      "announcementTime": 1572624000000,
+      "title": "更正公告",
+      "adjunctUrl": "finalpage/2019-11-02/1207060506.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207055125",
+      "announcementTime": 1572537600000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-11-01/1207055125.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207054670",
+      "announcementTime": 1572537600000,
+      "title": "关于公司股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-11-01/1207054670.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207048030",
+      "announcementTime": 1572451200000,
+      "title": "2019年第三季度报告全文",
+      "adjunctUrl": "finalpage/2019-10-31/1207048030.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207048028",
+      "announcementTime": 1572451200000,
+      "title": "2019年第三季度报告正文",
+      "adjunctUrl": "finalpage/2019-10-31/1207048028.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207047878",
+      "announcementTime": 1572451200000,
+      "title": "关于无法在法定期限内披露2019年第三季度报告的风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-31/1207047878.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207046791",
+      "announcementTime": 1572451200000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-31/1207046791.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207046116",
+      "announcementTime": 1572451200000,
+      "title": "关于公司全资子公司诉讼事项的进展公告",
+      "adjunctUrl": "finalpage/2019-10-31/1207046116.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207046115",
+      "announcementTime": 1572451200000,
+      "title": "关于公司股票进入退市整理期交易的第十一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-31/1207046115.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207046114",
+      "announcementTime": 1572451200000,
+      "title": "2019年第三季度报告全文",
+      "adjunctUrl": "finalpage/2019-10-31/1207046114.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207046113",
+      "announcementTime": 1572451200000,
+      "title": "2019年第三季度报告正文",
+      "adjunctUrl": "finalpage/2019-10-31/1207046113.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207035900",
+      "announcementTime": 1572364800000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-30/1207035900.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1207029705",
+      "announcementTime": 1572278400000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示公告",
+      "adjunctUrl": "finalpage/2019-10-29/1207029705.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207027186",
+      "announcementTime": 1572278400000,
+      "title": "关于公司股票进入退市整理期交易的第九次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-29/1207027186.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207024674",
+      "announcementTime": 1572192000000,
+      "title": "退市大控关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-28/1207024674.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1207020002",
+      "announcementTime": 1572019200000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-26/1207020002.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207019618",
+      "announcementTime": 1572019200000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-26/1207019618.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207013527",
+      "announcementTime": 1571932800000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-25/1207013527.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1207008405",
+      "announcementTime": 1571846400000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-24/1207008405.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1207008318",
+      "announcementTime": 1571846400000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-24/1207008318.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1206998041",
+      "announcementTime": 1571673600000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示公告",
+      "adjunctUrl": "finalpage/2019-10-22/1206998041.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1206994209",
+      "announcementTime": 1571414400000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-10-19/1206994209.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1206991082",
+      "announcementTime": 1571328000000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-18/1206991082.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206990966",
+      "announcementTime": 1571328000000,
+      "title": "关于公司被中国证监会立案调查进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2019-10-18/1206990966.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206988348",
+      "announcementTime": 1571241600000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-17/1206988348.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206985665",
+      "announcementTime": 1571155200000,
+      "title": "公司债券临时受托管理事务报告（2019年度第二十二期）",
+      "adjunctUrl": "finalpage/2019-10-16/1206985665.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206985624",
+      "announcementTime": 1571155200000,
+      "title": "关于公司股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-10-16/1206985624.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1206985118",
+      "announcementTime": 1571155200000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示公告",
+      "adjunctUrl": "finalpage/2019-10-16/1206985118.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1206982062",
+      "announcementTime": 1571068800000,
+      "title": "关于公司董事、董事会秘书辞职的公告",
+      "adjunctUrl": "finalpage/2019-10-15/1206982062.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1206982060",
+      "announcementTime": 1571068800000,
+      "title": "第三届董事会第二十八次会议决议公告",
+      "adjunctUrl": "finalpage/2019-10-15/1206982060.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206981683",
+      "announcementTime": 1571068800000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-15/1206981683.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206976092",
+      "announcementTime": 1570982400000,
+      "title": "关于公司股票进入退市整理期交易的第九次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-14/1206976092.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1206973091",
+      "announcementTime": 1570723200000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-10-11/1206973091.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206972820",
+      "announcementTime": 1570723200000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-11/1206972820.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1206972582",
+      "announcementTime": 1570723200000,
+      "title": "关于重整及恢复上市进展情况的公告",
+      "adjunctUrl": "finalpage/2019-10-11/1206972582.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206970064",
+      "announcementTime": 1570636800000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-10/1206970064.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206969968",
+      "announcementTime": 1570636800000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-10/1206969968.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1206969967",
+      "announcementTime": 1570636800000,
+      "title": "关于为恢复上市所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-10-10/1206969967.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1206967385",
+      "announcementTime": 1570550400000,
+      "title": "关于公司股票进入退市整理期交易的公告",
+      "adjunctUrl": "finalpage/2019-10-09/1206967385.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1206967384",
+      "announcementTime": 1570550400000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-10-09/1206967384.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206967062",
+      "announcementTime": 1570550400000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-10-09/1206967062.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206966802",
+      "announcementTime": 1570550400000,
+      "title": "关于公司被移出失信被执行人名单的公告",
+      "adjunctUrl": "finalpage/2019-10-09/1206966802.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206966721",
+      "announcementTime": 1570550400000,
+      "title": "公司债券临时受托管理事务报告（2019年度第二十一期）",
+      "adjunctUrl": "finalpage/2019-10-09/1206966721.PDF"
+    },
+    {
+      "symbol": "300028",
+      "announcementId": "1206967462",
+      "announcementTime": 1570534743000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-10-08/1206967462.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206949615",
+      "announcementTime": 1569427200000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-26/1206949615.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206946988",
+      "announcementTime": 1569340800000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-25/1206946988.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206946986",
+      "announcementTime": 1569340800000,
+      "title": "关于对公司2018年年报问询函的专项说明",
+      "adjunctUrl": "finalpage/2019-09-25/1206946986.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206946985",
+      "announcementTime": 1569340800000,
+      "title": "关于公司2017年度审计报告无法表示意见所涉及事项的重大影响是否予以消除的专项说明",
+      "adjunctUrl": "finalpage/2019-09-25/1206946985.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206946984",
+      "announcementTime": 1569340800000,
+      "title": "关于对深圳证券交易所问询函（中小板年报问询函【2019】第156号）的回复的公告",
+      "adjunctUrl": "finalpage/2019-09-25/1206946984.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206946983",
+      "announcementTime": 1569340800000,
+      "title": "董事会关于公司2017年度审计报告无法表示意见所涉及事项的重大影响予以部分消除的专项说明",
+      "adjunctUrl": "finalpage/2019-09-25/1206946983.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206939939",
+      "announcementTime": 1568995200000,
+      "title": "公司债券临时受托管理事务报告（2019年度第二十期）",
+      "adjunctUrl": "finalpage/2019-09-21/1206939939.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206936521",
+      "announcementTime": 1568908800000,
+      "title": "关于公司全资子公司诉讼事项的公告",
+      "adjunctUrl": "finalpage/2019-09-20/1206936521.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206933095",
+      "announcementTime": 1568822400000,
+      "title": "关于公司被中国证监会立案调查进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2019-09-19/1206933095.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206933094",
+      "announcementTime": 1568822400000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-19/1206933094.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1206929171",
+      "announcementTime": 1568736000000,
+      "title": "关于公司股票可能将被终止上市的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-18/1206929171.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206929003",
+      "announcementTime": 1568736000000,
+      "title": "关于立案调查进展暨风险提示公告",
+      "adjunctUrl": "finalpage/2019-09-18/1206929003.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206929002",
+      "announcementTime": 1568736000000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-18/1206929002.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206926313",
+      "announcementTime": 1568649600000,
+      "title": "关于延期回复深圳证券交易所函件的公告",
+      "adjunctUrl": "finalpage/2019-09-17/1206926313.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206917629",
+      "announcementTime": 1568217600000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-12/1206917629.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206917209",
+      "announcementTime": 1568217600000,
+      "title": "关于“14雏鹰债”2019年第一次债券持有人会议决议答复的公告",
+      "adjunctUrl": "finalpage/2019-09-12/1206917209.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206914343",
+      "announcementTime": 1568131200000,
+      "title": "上会会计师事务所（特殊普通合伙）关于对公司年审工作的关注函的专项说明",
+      "adjunctUrl": "finalpage/2019-09-11/1206914343.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1206913904",
+      "announcementTime": 1568131200000,
+      "title": "关于公司股票可能被终止上市的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2019-09-11/1206913904.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206910901",
+      "announcementTime": 1568044800000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-10/1206910901.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1206904548",
+      "announcementTime": 1567699200000,
+      "title": "关于为恢复上市所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-09-06/1206904548.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206889587",
+      "announcementTime": 1567612800000,
+      "title": "关于公司股票进入退市整理期交易的公告",
+      "adjunctUrl": "finalpage/2019-09-05/1206889587.PDF"
+    },
+    {
+      "symbol": "002018",
+      "announcementId": "1206889586",
+      "announcementTime": 1567612800000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-09-05/1206889586.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1206873668",
+      "announcementTime": 1567440000000,
+      "title": "关于重整及恢复上市进展情况的公告",
+      "adjunctUrl": "finalpage/2019-09-03/1206873668.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206873184",
+      "announcementTime": 1567440000000,
+      "title": "高级管理人员辞职公告",
+      "adjunctUrl": "finalpage/2019-09-03/1206873184.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206873183",
+      "announcementTime": 1567440000000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-09-03/1206873183.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206873179",
+      "announcementTime": 1567440000000,
+      "title": "公司债券临时受托管理事务报告（2019年度第十九期）",
+      "adjunctUrl": "finalpage/2019-09-03/1206873179.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577700",
+      "announcementTime": 1566835200000,
+      "title": "2019年半年度报告",
+      "adjunctUrl": "finalpage/2019-08-27/1206577700.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577699",
+      "announcementTime": 1566835200000,
+      "title": "2019年半年度报告摘要",
+      "adjunctUrl": "finalpage/2019-08-27/1206577699.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577698",
+      "announcementTime": 1566835200000,
+      "title": "独立董事关于第三届董事会第三十四次会议相关事项的独立意见",
+      "adjunctUrl": "finalpage/2019-08-27/1206577698.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577697",
+      "announcementTime": 1566835200000,
+      "title": "第三届监事会第三十二次会议决议公告",
+      "adjunctUrl": "finalpage/2019-08-27/1206577697.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577696",
+      "announcementTime": 1566835200000,
+      "title": "第三届董事会第三十四次会议决议公告",
+      "adjunctUrl": "finalpage/2019-08-27/1206577696.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577695",
+      "announcementTime": 1566835200000,
+      "title": "关于变更会计政策的公告",
+      "adjunctUrl": "finalpage/2019-08-27/1206577695.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206577694",
+      "announcementTime": 1566835200000,
+      "title": "2019年上半年财务报告",
+      "adjunctUrl": "finalpage/2019-08-27/1206577694.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206576687",
+      "announcementTime": 1566835200000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示性公告",
+      "adjunctUrl": "finalpage/2019-08-27/1206576687.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206554902",
+      "announcementTime": 1566489600000,
+      "title": "公司债券临时受托管理事务报告（2019年度第十八期）",
+      "adjunctUrl": "finalpage/2019-08-23/1206554902.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206554901",
+      "announcementTime": 1566489600000,
+      "title": "联合信用评级有限公司关于公司股票终止上市及进入退市整理期交易的关注公告",
+      "adjunctUrl": "finalpage/2019-08-23/1206554901.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206546612",
+      "announcementTime": 1566230400000,
+      "title": "关于公司股票进入退市整理期交易的公告",
+      "adjunctUrl": "finalpage/2019-08-20/1206546612.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206546611",
+      "announcementTime": 1566230400000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-08-20/1206546611.PDF"
+    },
+    {
+      "symbol": "000585",
+      "announcementId": "1206545895",
+      "announcementTime": 1566230400000,
+      "title": "关于A股股票撤销退市风险警示及实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2019-08-20/1206545895.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1206502007",
+      "announcementTime": 1565107200000,
+      "title": "关于为恢复上市所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-08-07/1206502007.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1206499122",
+      "announcementTime": 1565020800000,
+      "title": "关于为恢复上市采取的相关措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2019-08-06/1206499122.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1206447227",
+      "announcementTime": 1563206400000,
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-07-16/1206447227.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206432917",
+      "announcementTime": 1562601600000,
+      "title": "关于公司股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-07-09/1206432917.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206432170",
+      "announcementTime": 1562601600000,
+      "title": "关于公司股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-07-09/1206432170.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206429648",
+      "announcementTime": 1562515200000,
+      "title": "关于公司股票进入退市整理期交易的最后一个交易日的风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-08/1206429648.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1206427784",
+      "announcementTime": 1562256000000,
+      "title": "关于与保荐机构签订恢复上市相关协议的公告",
+      "adjunctUrl": "finalpage/2019-07-05/1206427784.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1206427783",
+      "announcementTime": 1562256000000,
+      "title": "关于为恢复上市所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-07-05/1206427783.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206427591",
+      "announcementTime": 1562256000000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-05/1206427591.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1206427210",
+      "announcementTime": 1562256000000,
+      "title": "关于为恢复上市采取的相关措施及有关工作进展的公告",
+      "adjunctUrl": "finalpage/2019-07-05/1206427210.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206426880",
+      "announcementTime": 1562256000000,
+      "title": "关于公司股票进入退市整理期交易的第十次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-05/1206426880.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206425285",
+      "announcementTime": 1562169600000,
+      "title": "关于公司股票进入退市整理期交易的第九次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-04/1206425285.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206424825",
+      "announcementTime": 1562169600000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-04/1206424825.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206424824",
+      "announcementTime": 1562169600000,
+      "title": "第九届董事会第四十次会议决议公告",
+      "adjunctUrl": "finalpage/2019-07-04/1206424824.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206422091",
+      "announcementTime": 1562169600000,
+      "title": "关于公司股票进入退市整理期交易的第九次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-04/1206422091.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206415988",
+      "announcementTime": 1562083200000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-03/1206415988.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206415684",
+      "announcementTime": 1562083200000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-03/1206415684.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206415090",
+      "announcementTime": 1562083200000,
+      "title": "关于公司股票进入退市整理期交易的第八次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-03/1206415090.PDF"
+    },
+    {
+      "symbol": "300028",
+      "announcementId": "1206414809",
+      "announcementTime": 1562053341000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-07-02/1206414809.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206412687",
+      "announcementTime": 1561996800000,
+      "title": "关于下属全资子公司被法院受理破产清算申请的公告",
+      "adjunctUrl": "finalpage/2019-07-02/1206412687.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206412686",
+      "announcementTime": 1561996800000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-02/1206412686.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206412022",
+      "announcementTime": 1561996800000,
+      "title": "关于公司股票进入退市整理期交易的第七次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-02/1206412022.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206411820",
+      "announcementTime": 1561996800000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-02/1206411820.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206410491",
+      "announcementTime": 1561910400000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-01/1206410491.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206409410",
+      "announcementTime": 1561910400000,
+      "title": "关于公司股票进入退市整理期交易的第六次风险提示公告",
+      "adjunctUrl": "finalpage/2019-07-01/1206409410.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206400493",
+      "announcementTime": 1561564800000,
+      "title": "关于债权人债权转让的提示性公告",
+      "adjunctUrl": "finalpage/2019-06-27/1206400493.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206396351",
+      "announcementTime": 1561478400000,
+      "title": "关于收到中国证监会（2019）61号行政处罚决定书的公告",
+      "adjunctUrl": "finalpage/2019-06-26/1206396351.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206396350",
+      "announcementTime": 1561478400000,
+      "title": "关于收到中国证监会（2019）60号行政处罚决定书的公告",
+      "adjunctUrl": "finalpage/2019-06-26/1206396350.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206384338",
+      "announcementTime": 1561392000000,
+      "title": "SolarKarValuationReport（评估报告）",
+      "adjunctUrl": "finalpage/2019-06-25/1206384338.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206384337",
+      "announcementTime": 1561392000000,
+      "title": "关于聘请代办机构的公告",
+      "adjunctUrl": "finalpage/2019-06-25/1206384337.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206383474",
+      "announcementTime": 1561392000000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-25/1206383474.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206381449",
+      "announcementTime": 1561305600000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-24/1206381449.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206378696",
+      "announcementTime": 1561305600000,
+      "title": "关于公司股票进入退市整理期交易的第五次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-24/1206378696.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206375715",
+      "announcementTime": 1561046400000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2019-06-21/1206375715.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206375714",
+      "announcementTime": 1561046400000,
+      "title": "关于债权人债权转让的提示性公告",
+      "adjunctUrl": "finalpage/2019-06-21/1206375714.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206365307",
+      "announcementTime": 1560873600000,
+      "title": "2018年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2019-06-19/1206365307.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206365306",
+      "announcementTime": 1560873600000,
+      "title": "2018年年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2019-06-19/1206365306.PDF"
+    },
+    {
+      "symbol": "000418",
+      "announcementId": "1206364715",
+      "announcementTime": 1560873600000,
+      "title": "关于公司A股股票终止上市并摘牌的公告",
+      "adjunctUrl": "finalpage/2019-06-19/1206364715.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206358645",
+      "announcementTime": 1560700800000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-17/1206358645.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206354261",
+      "announcementTime": 1560700800000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-17/1206354261.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206354156",
+      "announcementTime": 1560700800000,
+      "title": "关于公司股票进入退市整理期交易的第四次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-17/1206354156.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206355343",
+      "announcementTime": 1560528000000,
+      "title": "关于董事会秘书辞职的公告",
+      "adjunctUrl": "finalpage/2019-06-15/1206355343.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206348169",
+      "announcementTime": 1560268800000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2019-06-12/1206348169.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206345921",
+      "announcementTime": 1560182400000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-11/1206345921.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206344704",
+      "announcementTime": 1560182400000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-11/1206344704.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206341719",
+      "announcementTime": 1560096000000,
+      "title": "关于公司股票进入退市整理期交易的第三次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-10/1206341719.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206337736",
+      "announcementTime": 1559750400000,
+      "title": "关于金融机构债务逾期的公告",
+      "adjunctUrl": "finalpage/2019-06-06/1206337736.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206337735",
+      "announcementTime": 1559750400000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2019-06-06/1206337735.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206337734",
+      "announcementTime": 1559750400000,
+      "title": "累计涉及诉讼（仲裁）公告",
+      "adjunctUrl": "finalpage/2019-06-06/1206337734.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206332691",
+      "announcementTime": 1559664000000,
+      "title": "关于独立董事（张志国）辞职的公告",
+      "adjunctUrl": "finalpage/2019-06-05/1206332691.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206323372",
+      "announcementTime": 1559491200000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2019-06-03/1206323372.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206322543",
+      "announcementTime": 1559491200000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示公告",
+      "adjunctUrl": "finalpage/2019-06-03/1206322543.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206320418",
+      "announcementTime": 1559232000000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示公告",
+      "adjunctUrl": "finalpage/2019-05-31/1206320418.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206319251",
+      "announcementTime": 1559232000000,
+      "title": "关于公司收到福建证监局行政监管措施决定书的公告",
+      "adjunctUrl": "finalpage/2019-05-31/1206319251.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206319250",
+      "announcementTime": 1559232000000,
+      "title": "关于公司股票进入退市整理期交易的第二次风险提示公告",
+      "adjunctUrl": "finalpage/2019-05-31/1206319250.PDF"
+    },
+    {
+      "symbol": "000939",
+      "announcementId": "1206312981",
+      "announcementTime": 1559145600000,
+      "title": "关于公司股票可能被终止上市的风险提示暨暂停上市进展公告",
+      "adjunctUrl": "finalpage/2019-05-30/1206312981.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206311597",
+      "announcementTime": 1559059200000,
+      "title": "股票交易异常波动公告",
+      "adjunctUrl": "finalpage/2019-05-29/1206311597.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206306632",
+      "announcementTime": 1558886400000,
+      "title": "退市海润关于公司股票进入退市整理期交易的第一次风险提示公告",
+      "adjunctUrl": "finalpage/2019-05-27/1206306632.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206304213",
+      "announcementTime": 1558886400000,
+      "title": "关于公司股票进入退市整理期交易的第一次风险提示公告",
+      "adjunctUrl": "finalpage/2019-05-27/1206304213.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206289139",
+      "announcementTime": 1558454400000,
+      "title": "2018年年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2019-05-22/1206289139.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1206283550",
+      "announcementTime": 1558108800000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-05-18/1206283550.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206283352",
+      "announcementTime": 1558108800000,
+      "title": "关于公司股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-05-18/1206283352.PDF"
+    },
+    {
+      "symbol": "600074",
+      "announcementId": "1206282908",
+      "announcementTime": 1558108800000,
+      "title": "关于股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2019-05-18/1206282908.PDF"
+    },
+    {
+      "symbol": "600401",
+      "announcementId": "1206282894",
+      "announcementTime": 1558108800000,
+      "title": "关于股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-05-18/1206282894.PDF"
+    },
+    {
+      "symbol": "600680",
+      "announcementId": "1206282885",
+      "announcementTime": 1558108800000,
+      "title": "关于股票终止上市的公告",
+      "adjunctUrl": "finalpage/2019-05-18/1206282885.PDF"
+    },
+    {
+      "symbol": "002102",
+      "announcementId": "1206273648",
+      "announcementTime": 1557936000000,
+      "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-05-16/1206273648.PDF"
+    },
+    {
+      "symbol": "002260",
+      "announcementId": "1206258506",
+      "announcementTime": 1557676800000,
+      "title": "关于公司股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2019-05-13/1206258506.PDF"
+    },
+    {
+      "symbol": "300028",
+      "announcementId": "1206258985",
+      "announcementTime": 1557495145000,
+      "title": "关于公司股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2019-05-10/1206258985.PDF"
+    },
+    {
+      "symbol": "300216",
+      "announcementId": "1206258264",
+      "announcementTime": 1557488368000,
+      "title": "股票暂停上市公告",
+      "adjunctUrl": "finalpage/2019-05-10/1206258264.PDF"
+    },
+    {
+      "symbol": "300104",
+      "announcementId": "1206258138",
+      "announcementTime": 1557487921000,
+      "title": "关于公司股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2019-05-10/1206258138.PDF"
+    },
+    {
+      "symbol": "600247",
+      "announcementId": "1206237608",
+      "announcementTime": 1557244800000,
+      "title": "关于撤销公司股票退市风险警示及实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2019-05-08/1206237608.PDF"
+    },
+    {
+      "symbol": "600778",
+      "announcementId": "1206200533",
+      "announcementTime": 1556640000000,
+      "title": "关于公司股票撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2019-05-01/1206200533.PDF"
+    },
+    {
+      "symbol": "600891",
+      "announcementId": "1206168527",
+      "announcementTime": 1556553600000,
+      "title": "关于公司股票实施退市风险警示的公告",
+      "adjunctUrl": "finalpage/2019-04-30/1206168527.PDF"
+    },
+    {
+      "symbol": "600747",
+      "announcementId": "1206167829",
+      "announcementTime": 1556553600000,
+      "title": "关于公司股票实施退市风险警示暨临时停牌的公告",
+      "adjunctUrl": "finalpage/2019-04-30/1206167829.PDF"
+    },
+    {
+      "symbol": "000018",
+      "announcementId": "1206166752",
+      "announcementTime": 1556553600000,
+      "title": "关于公司股票被实施退市风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2019-04-30/1206166752.PDF"
+    },
+    {
+      "symbol": "002089",
+      "announcementId": "1206166656",
+      "announcementTime": 1556553600000,
+      "title": "关于公司股票实施退市风险警示暨停牌的公告",
+      "adjunctUrl": "finalpage/2019-04-30/1206166656.PDF"
+    },
+    {
+      "symbol": "002604",
+      "announcementId": "1206101813",
+      "announcementTime": 1556208000000,
+      "title": "关于公司股票可能被暂停上市的风险提示公告",
+      "adjunctUrl": "finalpage/2019-04-26/1206101813.PDF"
+    },
+    {
+      "symbol": "002477",
+      "announcementId": "1206091348",
+      "announcementTime": 1556121600000,
+      "title": "关于股票交易实行退市风险警示的公告",
+      "adjunctUrl": "finalpage/2019-04-25/1206091348.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1206001309",
+      "announcementTime": 1554825600000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-04-10/1206001309.PDF"
+    },
+    {
+      "symbol": "002143",
+      "announcementId": "1205992748",
+      "announcementTime": 1554307200000,
+      "title": "关于公司股票被实行其他风险警示的公告",
+      "adjunctUrl": "finalpage/2019-04-04/1205992748.PDF"
+    },
+    {
+      "symbol": "000806",
+      "announcementId": "1205950507",
+      "announcementTime": 1553702400000,
+      "title": "关于公司股票交易实行其他风险警示的公告",
+      "adjunctUrl": "finalpage/2019-03-28/1205950507.PDF"
+    },
+    {
+      "symbol": "600680",
+      "announcementId": "1205938406",
+      "announcementTime": 1553529600000,
+      "title": "关于主动退市涉及融资融券信用证券账户现金选择权申报的提示性公告",
+      "adjunctUrl": "finalpage/2019-03-26/1205938406.PDF"
+    },
+    {
+      "symbol": "002473",
+      "announcementId": "1205902118",
+      "announcementTime": 1552838400000,
+      "title": "关于公司股票撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2019-03-18/1205902118.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1205897713",
+      "announcementTime": 1552492800000,
+      "title": "关于公司股票暂停上市的公告",
+      "adjunctUrl": "finalpage/2019-03-14/1205897713.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1205892358",
+      "announcementTime": 1552320000000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-03-12/1205892358.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1205884643",
+      "announcementTime": 1551974400000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-03-08/1205884643.PDF"
+    },
+    {
+      "symbol": "002473",
+      "announcementId": "1205858241",
+      "announcementTime": 1551369600000,
+      "title": "关于申请撤销退市风险警示的公告",
+      "adjunctUrl": "finalpage/2019-03-01/1205858241.PDF"
+    },
+    {
+      "symbol": "600796",
+      "announcementId": "1205840014",
+      "announcementTime": 1550505600000,
+      "title": "关于控股股东出资人变更的公告",
+      "adjunctUrl": "finalpage/2019-02-19/1205840014.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1205826911",
+      "announcementTime": 1549987200000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-02-13/1205826911.PDF"
+    },
+    {
+      "symbol": "002450",
+      "announcementId": "1205786099",
+      "announcementTime": 1548086400000,
+      "title": "关于公司股票交易被实施其他风险警示的公告",
+      "adjunctUrl": "finalpage/2019-01-22/1205786099.PDF"
+    },
+    {
+      "symbol": "002680",
+      "announcementId": "1205769977",
+      "announcementTime": 1547481600000,
+      "title": "关于收到深圳证券交易所重大违法强制退市决定暨复牌的公告",
+      "adjunctUrl": "finalpage/2019-01-15/1205769977.PDF"
+    },
+    {
+      "symbol": "002070",
+      "announcementId": "1205717058",
+      "announcementTime": 1546963200000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-01-09/1205717058.PDF"
+    },
+    {
+      "symbol": "000693",
+      "announcementId": "1205711625",
+      "announcementTime": 1546617600000,
+      "title": "关于公司股票暂停上市期间工作进展情况的公告",
+      "adjunctUrl": "finalpage/2019-01-05/1205711625.PDF"
+    }
+  ],
+  "complete": true
+}

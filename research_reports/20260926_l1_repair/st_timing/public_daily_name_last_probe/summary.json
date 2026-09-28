@@ -1,0 +1,231 @@
+{
+  "sh.600603": {
+    "request_start": "2004-01-01",
+    "request_end": "2026-09-24",
+    "rows": 5522,
+    "first_date": "2004-01-02",
+    "last_date": "2026-09-24",
+    "isST_counts": {
+      "1": 3017,
+      "0": 2505
+    },
+    "suspended_rows": 448,
+    "zero_volume_rows": 448,
+    "sha256_csv": "06b72028b88cd5deeee4d919e6c4e3a60f8866a3dec25237e444f4a62cdf81dc",
+    "transitions": [
+      {
+        "previous_date": "2014-03-07",
+        "previous_isST": "1",
+        "date": "2014-03-10",
+        "isST": "0"
+      },
+      {
+        "previous_date": "2016-02-05",
+        "previous_isST": "0",
+        "date": "2016-02-15",
+        "isST": "1"
+      },
+      {
+        "previous_date": "2017-03-27",
+        "previous_isST": "1",
+        "date": "2017-03-28",
+        "isST": "0"
+      },
+      {
+        "previous_date": "2024-09-02",
+        "previous_isST": "0",
+        "date": "2024-09-03",
+        "isST": "1"
+      },
+      {
+        "previous_date": "2025-10-28",
+        "previous_isST": "1",
+        "date": "2025-10-29",
+        "isST": "0"
+      }
+    ]
+  },
+  "sh.600137": {
+    "request_start": "2006-01-01",
+    "request_end": "2009-01-01",
+    "rows": 729,
+    "first_date": "2006-01-04",
+    "last_date": "2008-12-31",
+    "isST_counts": {
+      "1": 590,
+      "0": 139
+    },
+    "suspended_rows": 94,
+    "zero_volume_rows": 94,
+    "sha256_csv": "8519587dbcd6775bbf1bdc4d78d538a6d5ce4b2dc1c37925a9d52d5f114672a4",
+    "transitions": [
+      {
+        "previous_date": "2008-06-11",
+        "previous_isST": "1",
+        "date": "2008-06-12",
+        "isST": "0"
+      }
+    ]
+  },
+  "sh.600506": {
+    "request_start": "2009-01-01",
+    "request_end": "2013-01-01",
+    "rows": 973,
+    "first_date": "2009-01-05",
+    "last_date": "2012-12-31",
+    "isST_counts": {
+      "0": 131,
+      "1": 842
+    },
+    "suspended_rows": 41,
+    "zero_volume_rows": 41,
+    "sha256_csv": "bed7ac8a481997f0dec5ca322530277f0fb60595077abf2a66e5078e99a10198",
+    "transitions": [
+      {
+        "previous_date": "2009-03-12",
+        "previous_isST": "0",
+        "date": "2009-03-13",
+        "isST": "1"
+      },
+      {
+        "previous_date": "2012-08-23",
+        "previous_isST": "1",
+        "date": "2012-08-24",
+        "isST": "0"
+      }
+    ]
+  },
+  "sh.600241": {
+    "request_start": "2020-01-01",
+    "request_end": "2023-12-31",
+    "rows": 970,
+    "first_date": "2020-01-02",
+    "last_date": "2023-12-29",
+    "isST_counts": {
+      "0": 220,
+      "1": 750
+    },
+    "suspended_rows": 3,
+    "zero_volume_rows": 3,
+    "sha256_csv": "07615c2778504ae581993e20f004e9afe72ab98e2906ca62f3e68c3cfbc053ed",
+    "transitions": [
+      {
+        "previous_date": "2020-04-24",
+        "previous_isST": "0",
+        "date": "2020-04-27",
+        "isST": "1"
+      },
+      {
+        "previous_date": "2023-05-30",
+        "previous_isST": "1",
+        "date": "2023-05-31",
+        "isST": "0"
+      }
+    ]
+  },
+  "sz.002113": {
+    "request_start": "2010-01-01",
+    "request_end": "2010-02-01",
+    "rows": 21,
+    "first_date": "2010-01-04",
+    "last_date": "2010-02-01",
+    "isST_counts": {
+      "0": 21
+    },
+    "suspended_rows": 0,
+    "zero_volume_rows": 0,
+    "sha256_csv": "e734617b5184b606dfcbf3fc3c9e152988663bc95274c2d8170ad861f5355d03",
+    "transitions": []
+  },
+  "sz.000787": {
+    "request_start": "2010-01-01",
+    "request_end": "2010-12-31",
+    "rows": 242,
+    "first_date": "2010-01-04",
+    "last_date": "2010-12-31",
+    "isST_counts": {
+      "1": 242
+    },
+    "suspended_rows": 242,
+    "zero_volume_rows": 242,
+    "sha256_csv": "c74dc68a5149ee477f925238856813f146b81d3a77bf077523663e25b3733720",
+    "transitions": []
+  },
+  "sz.000805": {
+    "request_start": "2010-01-01",
+    "request_end": "2010-12-31",
+    "rows": 242,
+    "first_date": "2010-01-04",
+    "last_date": "2010-12-31",
+    "isST_counts": {
+      "1": 242
+    },
+    "suspended_rows": 242,
+    "zero_volume_rows": 242,
+    "sha256_csv": "021e7e34b37cc464b0315afca1d1a75b92437cbbd73e15b1198a90da74e06e7e",
+    "transitions": []
+  },
+  "sh.600003": {
+    "request_start": "2010-01-01",
+    "request_end": "2010-12-31",
+    "rows": 35,
+    "first_date": "2010-01-04",
+    "last_date": "2010-02-26",
+    "isST_counts": {
+      "1": 35
+    },
+    "suspended_rows": 35,
+    "zero_volume_rows": 35,
+    "sha256_csv": "16634634cb71a34b1dc911ca646fee02be5e207b6fb60834a71242a72723c318",
+    "transitions": []
+  },
+  "600603_2010_2011_old_proxy_targets": {
+    "rows": 41,
+    "unique_dates": 41,
+    "first_date": "2010-01-14",
+    "last_date": "2011-08-25",
+    "matched": 41,
+    "isST_one": 41,
+    "isST_zero": 0,
+    "tradestatus_one_positive_volume": 41,
+    "missing_dates": [],
+    "target_source": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+    "sha256_csv": "be44f56e848efb01bf8afacce0e4ed46df38178b8a35dd6e3dfabb4df2d05f1b"
+  },
+  "600603_2010_2011_replay_effective_rebalances": {
+    "rows": 40,
+    "unique_dates": 40,
+    "first_date": "2010-01-14",
+    "last_date": "2011-07-14",
+    "matched": 40,
+    "isST_one": 40,
+    "isST_zero": 0,
+    "tradestatus_one_positive_volume": 40,
+    "missing_dates": [],
+    "target_source": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\full_replay\\members_by_rebalance.csv",
+    "sha256_csv": "ce511b044309a973dedc0e796a9e52ff93c6adfec4b2f8d22e0777ea8d9143b2"
+  },
+  "600603_2010_2011_effective_bridge": {
+    "rows": 41,
+    "unique_dates": 41,
+    "first_date": "2010-01-04",
+    "last_date": "2011-07-14",
+    "matched": 41,
+    "isST_one": 41,
+    "isST_zero": 0,
+    "tradestatus_one_positive_volume": 41,
+    "missing_dates": [],
+    "target_source": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\corporate_actions\\replayed_effective_members_by_rebalance.csv",
+    "sha256_csv": "55c46b0f2f7b1fe9118b3b745e3560fee553b1f5510d63a63279f251b77b91e5"
+  },
+  "initial_51_official_crosscheck": {
+    "rows": 51,
+    "symbols": 29,
+    "matched": 51,
+    "trading_positive_volume": 51,
+    "agree": 51,
+    "mismatches": [],
+    "sha256_csv": "c97a8619ce18395e1bea1f4e1359a568be4a0b685043e95e5c416b388eb7b52e",
+    "official_source": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\st_timing\\initial_2010_st\\two_date_st_status_evidence.csv"
+  }
+}

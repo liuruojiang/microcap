@@ -1,0 +1,449 @@
+{
+  "symbol": "002113",
+  "org_id": "9900002122",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "002113,9900002122",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 67,
+  "page_count": 3,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "861f2059e4ac877e7e0fe2ee9c92fd4b8d95f9789b837dee2c1b5ab258227775",
+      "reported_total": 67,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "fc179cab7fc6fdf8ab8d2e9c2a4b8cf3973f563eb84f4d51334734be4b9e7513",
+      "reported_total": 67,
+      "rows": 30
+    },
+    {
+      "page": 3,
+      "raw_sha256": "f15a8368ade48b9ecd9459c400b6c72c6f278c17faf92f802d306ba23ea194fe",
+      "reported_total": 67,
+      "rows": 7
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57503136",
+      "announcementTime": 1263421800000,
+      "title": "关于湖南省证监局对兆山新星集团有限公司及其一致行动人违规买卖本公司股票立案稽查的公告",
+      "adjunctUrl": "finalpage/2010-01-14/57503136.PDF"
+    },
+    {
+      "announcementId": "57503135",
+      "announcementTime": 1263421800000,
+      "title": "简式权益变动报告书",
+      "adjunctUrl": "finalpage/2010-01-14/57503135.PDF"
+    },
+    {
+      "announcementId": "57498686",
+      "announcementTime": 1263335940000,
+      "title": "关于股东增持本公司股份的提示性公告",
+      "adjunctUrl": "finalpage/2010-01-13/57498686.PDF"
+    },
+    {
+      "announcementId": "57461562",
+      "announcementTime": 1262557800000,
+      "title": "重大资产重组事项进展公告",
+      "adjunctUrl": "finalpage/2010-01-04/57461562.PDF"
+    },
+    {
+      "announcementId": "57361820",
+      "announcementTime": 1259879400000,
+      "title": "重大资产重组事项进展公告",
+      "adjunctUrl": "finalpage/2009-12-04/57361820.PDF"
+    },
+    {
+      "announcementId": "57251225",
+      "announcementTime": 1257287550000,
+      "title": "重大资产重组事项进展公告",
+      "adjunctUrl": "finalpage/2009-11-04/57251225.PDF"
+    },
+    {
+      "announcementId": "57228137",
+      "announcementTime": 1256855400000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-30/57228137.PDF"
+    },
+    {
+      "announcementId": "57098472",
+      "announcementTime": 1254090600000,
+      "title": "独立董事关于重大资产重组的意见",
+      "adjunctUrl": "finalpage/2009-09-28/57098472.PDF"
+    },
+    {
+      "announcementId": "57098471",
+      "announcementTime": 1254090600000,
+      "title": "岳阳市国有资产经营有限责任公司关于提供资料真实、准确和完整的承诺函",
+      "adjunctUrl": "finalpage/2009-09-28/57098471.PDF"
+    },
+    {
+      "announcementId": "57098470",
+      "announcementTime": 1254090600000,
+      "title": "重大资产重组预案",
+      "adjunctUrl": "finalpage/2009-09-28/57098470.PDF"
+    },
+    {
+      "announcementId": "57098469",
+      "announcementTime": 1254090600000,
+      "title": "平安证券有限责任公司关于公司重大资产重组预案之独立财务顾问核查意见",
+      "adjunctUrl": "finalpage/2009-09-28/57098469.PDF"
+    },
+    {
+      "announcementId": "57098468",
+      "announcementTime": 1254090600000,
+      "title": "第八届董事会第十三次会议决议公告",
+      "adjunctUrl": "finalpage/2009-09-28/57098468.PDF"
+    },
+    {
+      "announcementId": "57098467",
+      "announcementTime": 1254090600000,
+      "title": "股票复牌公告",
+      "adjunctUrl": "finalpage/2009-09-28/57098467.PDF"
+    },
+    {
+      "announcementId": "57098250",
+      "announcementTime": 1253917800000,
+      "title": "北京市金诚同达律师事务所关于公司2009年第二次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-09-26/57098250.PDF"
+    },
+    {
+      "announcementId": "57098249",
+      "announcementTime": 1253917800000,
+      "title": "2009年第二次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-09-26/57098249.PDF"
+    },
+    {
+      "announcementId": "57083450",
+      "announcementTime": 1253658600000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-09-23/57083450.PDF"
+    },
+    {
+      "announcementId": "57056867",
+      "announcementTime": 1253053800000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-09-16/57056867.PDF"
+    },
+    {
+      "announcementId": "56999930",
+      "announcementTime": 1252449000000,
+      "title": "重大资产重组停牌公告",
+      "adjunctUrl": "finalpage/2009-09-09/56999930.PDF"
+    },
+    {
+      "announcementId": "56845911",
+      "announcementTime": 1252017060000,
+      "title": "2009年半年度报告摘要（更正后）",
+      "adjunctUrl": "finalpage/2009-09-04/56845911.PDF"
+    },
+    {
+      "announcementId": "56845908",
+      "announcementTime": 1252017030000,
+      "title": "2009年半年度报告（更正后）",
+      "adjunctUrl": "finalpage/2009-09-04/56845908.PDF"
+    },
+    {
+      "announcementId": "56845904",
+      "announcementTime": 1252017030000,
+      "title": "关于修正《2009年半年度报告》及摘要的公告",
+      "adjunctUrl": "finalpage/2009-09-04/56845904.PDF"
+    },
+    {
+      "announcementId": "56497531",
+      "announcementTime": 1251325800000,
+      "title": "独立董事对高管聘任发表的独立意见",
+      "adjunctUrl": "finalpage/2009-08-27/56497531.PDF"
+    },
+    {
+      "announcementId": "56497530",
+      "announcementTime": 1251325800000,
+      "title": "独立董事关于对关联方资金占用和对外担保情况的专项说明和独立意见的公告",
+      "adjunctUrl": "finalpage/2009-08-27/56497530.PDF"
+    },
+    {
+      "announcementId": "56497529",
+      "announcementTime": 1251325800000,
+      "title": "关于高级管理人员辞职的公告",
+      "adjunctUrl": "finalpage/2009-08-27/56497529.PDF"
+    },
+    {
+      "announcementId": "56497528",
+      "announcementTime": 1251325800000,
+      "title": "平安证券有限责任公司关于公司继续使用部分闲置募集资金暂时补充流动资金的保荐意见",
+      "adjunctUrl": "finalpage/2009-08-27/56497528.PDF"
+    },
+    {
+      "announcementId": "56497527",
+      "announcementTime": 1251325800000,
+      "title": "关于召开2009年第二次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-08-27/56497527.PDF"
+    },
+    {
+      "announcementId": "56497526",
+      "announcementTime": 1251325800000,
+      "title": "独立董事关于使用闲置募集资金补充流动资金的独立意见",
+      "adjunctUrl": "finalpage/2009-08-27/56497526.PDF"
+    },
+    {
+      "announcementId": "56497525",
+      "announcementTime": 1251325800000,
+      "title": "关于使用部分闲置募集资金暂时补充流动资金的公告",
+      "adjunctUrl": "finalpage/2009-08-27/56497525.PDF"
+    },
+    {
+      "announcementId": "56497524",
+      "announcementTime": 1251325800000,
+      "title": "第六届监事会第八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-27/56497524.PDF"
+    },
+    {
+      "announcementId": "56497523",
+      "announcementTime": 1251325800000,
+      "title": "第八届董事会第十一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-27/56497523.PDF"
+    },
+    {
+      "announcementId": "56497522",
+      "announcementTime": 1251325800000,
+      "title": "2009年半年度财务报告",
+      "adjunctUrl": "finalpage/2009-08-27/56497522.PDF"
+    },
+    {
+      "announcementId": "56497521",
+      "announcementTime": 1251325800000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-27/56497521.PDF"
+    },
+    {
+      "announcementId": "56497520",
+      "announcementTime": 1251325800000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-27/56497520.PDF"
+    },
+    {
+      "announcementId": "55988365",
+      "announcementTime": 1250548200000,
+      "title": "关于归还募集资金的公告",
+      "adjunctUrl": "finalpage/2009-08-18/55988365.PDF"
+    },
+    {
+      "announcementId": "54464374",
+      "announcementTime": 1247524200000,
+      "title": "2009年中期业绩预告的修正公告",
+      "adjunctUrl": "finalpage/2009-07-14/54464374.PDF"
+    },
+    {
+      "announcementId": "54107193",
+      "announcementTime": 1246401000000,
+      "title": "2008年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-07-01/54107193.PDF"
+    },
+    {
+      "announcementId": "54107192",
+      "announcementTime": 1246401000000,
+      "title": "2008年年度股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-07-01/54107192.PDF"
+    },
+    {
+      "announcementId": "53299392",
+      "announcementTime": 1244519100000,
+      "title": "第八届董事会第十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-06-09/53299392.PDF"
+    },
+    {
+      "announcementId": "53299391",
+      "announcementTime": 1244519100000,
+      "title": "关于对外担保事项的公告",
+      "adjunctUrl": "finalpage/2009-06-09/53299391.PDF"
+    },
+    {
+      "announcementId": "53299390",
+      "announcementTime": 1244519100000,
+      "title": "关于召开公司2008年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-06-09/53299390.PDF"
+    },
+    {
+      "announcementId": "52294432",
+      "announcementTime": 1241821800000,
+      "title": "2008年年度报告摘要（更正后）",
+      "adjunctUrl": "finalpage/2009-05-09/52294432.PDF"
+    },
+    {
+      "announcementId": "52294428",
+      "announcementTime": 1241821800000,
+      "title": "2008年年度报告（更正后）",
+      "adjunctUrl": "finalpage/2009-05-09/52294428.PDF"
+    },
+    {
+      "announcementId": "52294427",
+      "announcementTime": 1241821800000,
+      "title": "关于2008年年度报告及摘要的更正公告",
+      "adjunctUrl": "finalpage/2009-05-09/52294427.PDF"
+    },
+    {
+      "announcementId": "51834673",
+      "announcementTime": 1240871580000,
+      "title": "关于举行2008年年度报告网上说明会的通知",
+      "adjunctUrl": "finalpage/2009-04-28/51834673.PDF"
+    },
+    {
+      "announcementId": "51834672",
+      "announcementTime": 1240871400000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-28/51834672.PDF"
+    },
+    {
+      "announcementId": "51612206",
+      "announcementTime": 1240439430000,
+      "title": "内部控制鉴证报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612206.PDF"
+    },
+    {
+      "announcementId": "51612205",
+      "announcementTime": 1240439430000,
+      "title": "关于2008年度公司与控股股东及其他关联方资金占用情况的专项说明",
+      "adjunctUrl": "finalpage/2009-04-23/51612205.PDF"
+    },
+    {
+      "announcementId": "51612128",
+      "announcementTime": 1240439400000,
+      "title": "董事会关于2008年度募集资金使用情况的专项报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612128.PDF"
+    },
+    {
+      "announcementId": "51612127",
+      "announcementTime": 1240439400000,
+      "title": "关于独立董事相关事项独立意见的公告",
+      "adjunctUrl": "finalpage/2009-04-23/51612127.PDF"
+    },
+    {
+      "announcementId": "51612126",
+      "announcementTime": 1240439400000,
+      "title": "平安证券有限责任公司关于公司2008年度募集资金使用与存放情况专项核查报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612126.PDF"
+    },
+    {
+      "announcementId": "51612125",
+      "announcementTime": 1240439400000,
+      "title": "平安证券有限责任公司关于公司《内部控制自我评价报告》的核查意见",
+      "adjunctUrl": "finalpage/2009-04-23/51612125.PDF"
+    },
+    {
+      "announcementId": "51612124",
+      "announcementTime": 1240439400000,
+      "title": "董事会关于2008年度内部控制的自我评价报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612124.PDF"
+    },
+    {
+      "announcementId": "51612123",
+      "announcementTime": 1240439400000,
+      "title": "独立董事2008年度述职报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612123.PDF"
+    },
+    {
+      "announcementId": "51612122",
+      "announcementTime": 1240439400000,
+      "title": "募集资金年度使用情况鉴证报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612122.PDF"
+    },
+    {
+      "announcementId": "51612121",
+      "announcementTime": 1240439400000,
+      "title": "第六届监事会第七次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-23/51612121.PDF"
+    },
+    {
+      "announcementId": "51612120",
+      "announcementTime": 1240439400000,
+      "title": "第八届董事会第八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-04-23/51612120.PDF"
+    },
+    {
+      "announcementId": "51612119",
+      "announcementTime": 1240439400000,
+      "title": "2008年年度财务报告之审计报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612119.PDF"
+    },
+    {
+      "announcementId": "51612118",
+      "announcementTime": 1240439400000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-04-23/51612118.PDF"
+    },
+    {
+      "announcementId": "51612117",
+      "announcementTime": 1240439400000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-04-23/51612117.PDF"
+    },
+    {
+      "announcementId": "50044597",
+      "announcementTime": 1236810600000,
+      "title": "关于董事辞职的公告",
+      "adjunctUrl": "finalpage/2009-03-12/50044597.PDF"
+    },
+    {
+      "announcementId": "49616199",
+      "announcementTime": 1235687400000,
+      "title": "2009年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-02-27/49616199.PDF"
+    },
+    {
+      "announcementId": "49616198",
+      "announcementTime": 1235687400000,
+      "title": "2009年第一次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-02-27/49616198.PDF"
+    },
+    {
+      "announcementId": "49616197",
+      "announcementTime": 1235687400000,
+      "title": "2008年度业绩快报",
+      "adjunctUrl": "finalpage/2009-02-27/49616197.PDF"
+    },
+    {
+      "announcementId": "49486696",
+      "announcementTime": 1235446680000,
+      "title": "关于归还募集资金的公告",
+      "adjunctUrl": "finalpage/2009-02-24/49486696.PDF"
+    },
+    {
+      "announcementId": "49486695",
+      "announcementTime": 1235446440000,
+      "title": "关于召开2009年第一次临时股东大会的提示性公告",
+      "adjunctUrl": "finalpage/2009-02-24/49486695.PDF"
+    },
+    {
+      "announcementId": "49026678",
+      "announcementTime": 1234305060000,
+      "title": "关于召开2009年第一次临时股东大会通知",
+      "adjunctUrl": "finalpage/2009-02-11/49026678.PDF"
+    },
+    {
+      "announcementId": "49026679",
+      "announcementTime": 1234305000000,
+      "title": "第八届董事会第七次会议决议公告",
+      "adjunctUrl": "finalpage/2009-02-11/49026679.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

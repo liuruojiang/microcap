@@ -1,0 +1,217 @@
+{
+  "symbol": "600080",
+  "org_id": "gssh0600080",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_start_date": "1990-01-01",
+  "query_end_date": "2026-09-24",
+  "column": "sse",
+  "specs": [
+    {
+      "category": "category_tbclts_szsh",
+      "searchkey": "",
+      "totalAnnouncement": 10,
+      "pages_fetched": 1,
+      "first_page_sha256": "e5fe1acbfe1abe4dc579bf34c1329a95cb54396af891512101cb538752bca55d",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "e5fe1acbfe1abe4dc579bf34c1329a95cb54396af891512101cb538752bca55d"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "风险警示",
+      "totalAnnouncement": 13,
+      "pages_fetched": 1,
+      "first_page_sha256": "f054750552d8eef5e2b41803ed4d4750ba11bc9c5917d8153b2550b184c04cea",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "f054750552d8eef5e2b41803ed4d4750ba11bc9c5917d8153b2550b184c04cea"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "特别处理",
+      "totalAnnouncement": 4,
+      "pages_fetched": 1,
+      "first_page_sha256": "2ecd3362616645c9e4b6f50cc75d38ee2372bd041c9f890c9f6c7c33cc122faf",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "2ecd3362616645c9e4b6f50cc75d38ee2372bd041c9f890c9f6c7c33cc122faf"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销风险警示",
+      "totalAnnouncement": 5,
+      "pages_fetched": 1,
+      "first_page_sha256": "3b9ba80f5f7b761da4555f260ebd9fd4a9d4acca80fcb24fa07b6f13554158b7",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "3b9ba80f5f7b761da4555f260ebd9fd4a9d4acca80fcb24fa07b6f13554158b7"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "撤销特别处理",
+      "totalAnnouncement": 2,
+      "pages_fetched": 1,
+      "first_page_sha256": "d5345192b5dbb3377449ed2fc5a0a8f847330c0e4a3907f2e0cbb4159637040c",
+      "response_sha256_pages": [
+        {
+          "pageNum": 1,
+          "sha256": "d5345192b5dbb3377449ed2fc5a0a8f847330c0e4a3907f2e0cbb4159637040c"
+        }
+      ],
+      "error": null
+    },
+    {
+      "category": "",
+      "searchkey": "摘帽",
+      "totalAnnouncement": 0,
+      "pages_fetched": 0,
+      "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114",
+      "response_sha256_pages": [],
+      "error": null
+    }
+  ],
+  "announcements": [
+    {
+      "notice_time_shanghai": "2007-04-16T05:45:00+08:00",
+      "title": "关于股票交易实行退市风险警示特别处理的公告",
+      "announcementId": "22750473",
+      "adjunctUrl": "finalpage/2007-04-16/22750473.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "特别处理"
+    },
+    {
+      "notice_time_shanghai": "2008-04-10T05:45:00+08:00",
+      "title": "关于向上海证券交易所申请撤销股票退市风险警示处理的公告",
+      "announcementId": "38668476",
+      "adjunctUrl": "finalpage/2008-04-10/38668476.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2008-06-05T06:30:00+08:00",
+      "title": "撤销退市风险警示公告",
+      "announcementId": "40271256",
+      "adjunctUrl": "finalpage/2008-06-05/40271256.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2010-04-26T06:32:00+08:00",
+      "title": "关于股票交易实行退市风险警示特别处理的公告",
+      "announcementId": "57870545",
+      "adjunctUrl": "finalpage/2010-04-26/57870545.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "特别处理"
+    },
+    {
+      "notice_time_shanghai": "2011-07-05T06:35:00+08:00",
+      "title": "关于撤销退市风险警示并实施其他特别处理的公告",
+      "announcementId": "59634691",
+      "adjunctUrl": "finalpage/2011-07-05/59634691.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "撤销特别处理"
+    },
+    {
+      "notice_time_shanghai": "2012-06-11T06:33:00+08:00",
+      "title": "关于撤销股票交易其他特别处理的公告",
+      "announcementId": "61119523",
+      "adjunctUrl": "finalpage/2012-06-11/61119523.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "撤销特别处理"
+    },
+    {
+      "notice_time_shanghai": "2020-06-01T00:00:00+08:00",
+      "title": "关于股票交易实施其他风险警示暨公司股票停牌的提示性公告",
+      "announcementId": "1207878970",
+      "adjunctUrl": "finalpage/2020-06-01/1207878970.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-04-23T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于公司申请撤销股票其他风险警示的公告",
+      "announcementId": "1209776519",
+      "adjunctUrl": "finalpage/2021-04-23/1209776519.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2021-05-11T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于公司股票撤销其他风险警示暨停牌的公告",
+      "announcementId": "1209948204",
+      "adjunctUrl": "finalpage/2021-05-11/1209948204.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "撤销风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-04-29T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于实施其他风险警示暨停牌的公告",
+      "announcementId": "1225242871",
+      "adjunctUrl": "finalpage/2026-04-29/1225242871.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-05-30T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "announcementId": "1225338566",
+      "adjunctUrl": "finalpage/2026-05-30/1225338566.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-06-30T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "announcementId": "1225397185",
+      "adjunctUrl": "finalpage/2026-06-30/1225397185.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-07-30T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "announcementId": "1225445923",
+      "adjunctUrl": "finalpage/2026-07-30/1225445923.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    },
+    {
+      "notice_time_shanghai": "2026-08-29T00:00:00+08:00",
+      "title": "金花企业（集团）股份有限公司关于公司股票被实施其他风险警示事项的进展公告",
+      "announcementId": "1225523643",
+      "adjunctUrl": "finalpage/2026-08-29/1225523643.PDF",
+      "secCode": "600080",
+      "query_category": "",
+      "query_searchkey": "风险警示"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "run": 35207480791,
+  "automation_sha": "d67de5703d050f689acf1aeb0b15a2f89894e24f",
+  "strategy_sha": "e10e6fc1a3ec0105f2282fb3c1290914c879a09e",
+  "default_release_recovery_passed": true,
+  "bundle_files_verified": 14982,
+  "final_artifact_hashes_verified": 28,
+  "bundle_sha256": "2baf7f98747a3acdfb8ffa3852f285cd995faa64106094f471b066ee08987785",
+  "streams": {
+    "v2.0": {
+      "signal": {
+        "date": "2026-09-17",
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "signal_timing": "close_confirmed",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "",
+        "member_rebalance_actionable": "False"
+      },
+      "costed_rows": 4025,
+      "all_costed_columns_match_local": true,
+      "costed_sha256": "d31de2c231bc30f790d9bd522d3454535e00637eb7ee9e6cefc7276cb19212f3"
+    },
+    "v2.3": {
+      "signal": {
+        "date": "2026-09-17",
+        "version": "2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "signal_timing": "close_confirmed",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "",
+        "member_rebalance_actionable": "False"
+      },
+      "costed_rows": 3980,
+      "all_costed_columns_match_local": true,
+      "costed_sha256": "49193270c9dbf456dca270f5d7499d279a94e0a0d7337bd609b1364221167fdd"
+    },
+    "v2.5": {
+      "signal": {
+        "date": "2026-09-17",
+        "version": "2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "signal_timing": "close_confirmed",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "",
+        "member_rebalance_actionable": "False"
+      },
+      "costed_rows": 3980,
+      "all_costed_columns_match_local": true,
+      "costed_sha256": "f6e0ea3032fd6a6938621bd7f35e31cebcf42f57c8649e35d64aef158f90bbfd"
+    }
+  },
+  "extra_email_sent": false,
+  "production_cache_and_delivery_markers_written": false
+}

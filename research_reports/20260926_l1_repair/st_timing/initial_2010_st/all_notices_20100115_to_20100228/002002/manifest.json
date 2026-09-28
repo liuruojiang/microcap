@@ -1,0 +1,101 @@
+{
+  "symbol": "002002",
+  "org_id": "gssz0002002",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "002002,gssz0002002",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 11,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "5b95e9a3aae1037c2716961e72b7df2608ff824b848e7db4f90831797b1e210f",
+      "reported_total": 11,
+      "rows": 11
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57627063",
+      "announcementTime": 1267137000000,
+      "title": "2009年度业绩快报",
+      "adjunctUrl": "finalpage/2010-02-26/57627063.PDF"
+    },
+    {
+      "announcementId": "57615850",
+      "announcementTime": 1266877800000,
+      "title": "关于重大资产重组进展情况的公告",
+      "adjunctUrl": "finalpage/2010-02-23/57615850.PDF"
+    },
+    {
+      "announcementId": "57607299",
+      "announcementTime": 1265927400000,
+      "title": "关于股东完成股份划转过户的公告",
+      "adjunctUrl": "finalpage/2010-02-12/57607299.PDF"
+    },
+    {
+      "announcementId": "57594675",
+      "announcementTime": 1265668200000,
+      "title": "简式权益变动报告书（一）",
+      "adjunctUrl": "finalpage/2010-02-09/57594675.PDF"
+    },
+    {
+      "announcementId": "57594674",
+      "announcementTime": 1265668200000,
+      "title": "简式权益变动报告书（二）",
+      "adjunctUrl": "finalpage/2010-02-09/57594674.PDF"
+    },
+    {
+      "announcementId": "57585000",
+      "announcementTime": 1265409000000,
+      "title": "关于控股股东流通股股份将被司法执行用于偿还债务的公告",
+      "adjunctUrl": "finalpage/2010-02-06/57585000.PDF"
+    },
+    {
+      "announcementId": "57577067",
+      "announcementTime": 1265236560000,
+      "title": "关于江苏省国资委同意公司非公开发行股票暨资产重组总体方案的公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577067.PDF"
+    },
+    {
+      "announcementId": "57572666",
+      "announcementTime": 1265149800000,
+      "title": "关于为撤销退市风险警示采取的措施及有关工作进展情况的公告",
+      "adjunctUrl": "finalpage/2010-02-03/57572666.PDF"
+    },
+    {
+      "announcementId": "57506921",
+      "announcementTime": 1263508560000,
+      "title": "关于2009年1-12月业绩预告的修正公告",
+      "adjunctUrl": "finalpage/2010-01-15/57506921.PDF"
+    },
+    {
+      "announcementId": "57506923",
+      "announcementTime": 1263508200000,
+      "title": "大信会计师事务有限公司关于公司预计负债转回相关会计处理事项的专项说明",
+      "adjunctUrl": "finalpage/2010-01-15/57506923.PDF"
+    },
+    {
+      "announcementId": "57506922",
+      "announcementTime": 1263508200000,
+      "title": "关于重大资产重组进展情况的公告",
+      "adjunctUrl": "finalpage/2010-01-15/57506922.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

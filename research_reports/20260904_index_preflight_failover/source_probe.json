@@ -1,0 +1,50 @@
+{
+  "observed_at": "2026-09-04T23:55:37.060428+08:00",
+  "instrument": "sh000852",
+  "purpose": "preflight only, never overwrite formal prices",
+  "sources": [
+    {
+      "source": "sina_static",
+      "ok": true,
+      "rows": 15,
+      "first": "2026-08-17",
+      "last": "2026-09-04",
+      "elapsed_seconds": 1.868
+    },
+    {
+      "source": "tencent",
+      "ok": true,
+      "rows": 15,
+      "first": "2026-08-17",
+      "last": "2026-09-04",
+      "elapsed_seconds": 2.935
+    },
+    {
+      "source": "eastmoney",
+      "selected": false,
+      "received": false,
+      "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "elapsed_seconds": 9.504
+    },
+    {
+      "source": "sina_legacy",
+      "selected": false,
+      "http_status": 200,
+      "received": true,
+      "elapsed_seconds": 4.357
+    },
+    {
+      "source": "csindex",
+      "selected": false,
+      "http_status": 200,
+      "received": true,
+      "non_session_dates": [
+        "2026-08-15"
+      ],
+      "rows": 16,
+      "reason_not_selected": "Non-session rows present; quarantine rather than silently clean",
+      "elapsed_seconds": 1.639
+    }
+  ],
+  "max_close_difference_points": 0.005000000000109139
+}

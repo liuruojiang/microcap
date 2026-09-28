@@ -1,0 +1,239 @@
+{
+  "year": 2024,
+  "label": "remove_risk",
+  "category": "",
+  "searchkey": "撤销风险警示",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2024-01-01~2024-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 137,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "320516dbf47143495b910aefa2957cacecbd60c9c656674316b2ec7b659a1240",
+      "response_bytes": 26064,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 2,
+      "sha256_raw_response": "e6c438052c118ed59ab0ab5ca79beff14e5d410ddc469df436ff737a85f2e709",
+      "response_bytes": 23581,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 3,
+      "sha256_raw_response": "6cf6b90cc542c02cf9408cd3ea8c41106290d9ecf374fe0762b10e4424005978",
+      "response_bytes": 24518,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 4,
+      "sha256_raw_response": "ca6a1d3b6b44f69457185c8c55cdd08dff95ef70a96c111a364141fbf0675b71",
+      "response_bytes": 24309,
+      "row_count": 30,
+      "reported_total": 137
+    },
+    {
+      "page": 5,
+      "sha256_raw_response": "001bbeb05f03a6fd8273e918c9d19fac38c3c8d9b460cc5e37e0c873eed74ed1",
+      "response_bytes": 16427,
+      "row_count": 17,
+      "reported_total": 137
+    }
+  ],
+  "candidate_announcements": [
+    {
+      "symbol": "600543",
+      "announcementId": "1220534949",
+      "announcementTime": 1720108800000,
+      "title": "莫高股份关于公司股票<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-07-05/1220534949.PDF"
+    },
+    {
+      "symbol": "000007",
+      "announcementId": "1220502482",
+      "announcementTime": 1719763200000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-07-01/1220502482.PDF"
+    },
+    {
+      "symbol": "603880",
+      "announcementId": "1220443053",
+      "announcementTime": 1719244800000,
+      "title": "南卫股份关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-06-25/1220443053.PDF"
+    },
+    {
+      "symbol": "603880",
+      "announcementId": "1220416426",
+      "announcementTime": 1718899200000,
+      "title": "南卫股份关于公司股票申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-06-21/1220416426.PDF"
+    },
+    {
+      "symbol": "600530",
+      "announcementId": "1220401609",
+      "announcementTime": 1718812800000,
+      "title": "关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-06-20/1220401609.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "1220338348",
+      "announcementTime": 1718208000000,
+      "title": "杭州天目山药业股份有限公司关于公司股票<em>撤销</em>退市<em>风险</em><em>警示</em>并继续实施其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-06-13/1220338348.PDF"
+    },
+    {
+      "symbol": "002800",
+      "announcementId": "1220325260",
+      "announcementTime": 1718121600000,
+      "title": "关于<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2024-06-12/1220325260.PDF"
+    },
+    {
+      "symbol": "600530",
+      "announcementId": "1220324631",
+      "announcementTime": 1718121600000,
+      "title": "关于申请<em>撤销</em>公司股票其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-06-12/1220324631.PDF"
+    },
+    {
+      "symbol": "300220",
+      "announcementId": "1220303569",
+      "announcementTime": 1718035200000,
+      "title": "关于公司股票交易<em>撤销</em>其他<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2024-06-11/1220303569.PDF"
+    },
+    {
+      "symbol": "000637",
+      "announcementId": "1220303068",
+      "announcementTime": 1718035200000,
+      "title": "关于公司股票交易<em>撤销</em>其他<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-06-11/1220303068.PDF"
+    },
+    {
+      "symbol": "002800",
+      "announcementId": "1220289338",
+      "announcementTime": 1717689600000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-06-07/1220289338.PDF"
+    },
+    {
+      "symbol": "688500",
+      "announcementId": "1220289292",
+      "announcementTime": 1717689600000,
+      "title": "关于公司股票<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌的公告",
+      "adjunctUrl": "finalpage/2024-06-07/1220289292.PDF"
+    },
+    {
+      "symbol": "688272",
+      "announcementId": "1220289286",
+      "announcementTime": 1717689600000,
+      "title": "关于<em>撤销</em>退市<em>风险</em><em>警示</em>暨停牌公告",
+      "adjunctUrl": "finalpage/2024-06-07/1220289286.PDF"
+    },
+    {
+      "symbol": "000692",
+      "announcementId": "1220174546",
+      "announcementTime": 1716825600000,
+      "title": "关于公司股票交易<em>撤销</em>退市<em>风险</em><em>警示</em>暨停复牌的公告",
+      "adjunctUrl": "finalpage/2024-05-28/1220174546.PDF"
+    },
+    {
+      "symbol": "000637",
+      "announcementId": "1219958004",
+      "announcementTime": 1714924800000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-05-06/1219958004.PDF"
+    },
+    {
+      "symbol": "000637",
+      "announcementId": "1219958002",
+      "announcementTime": 1714924800000,
+      "title": "广东华商律师事务所关于茂化实华申请<em>撤销</em>其他<em>风险</em><em>警示</em>的法律意见书",
+      "adjunctUrl": "finalpage/2024-05-06/1219958002.PDF"
+    },
+    {
+      "symbol": "000692",
+      "announcementId": "1219918230",
+      "announcementTime": 1714406400000,
+      "title": "关于申请<em>撤销</em>对公司股票交易实施退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-04-30/1219918230.PDF"
+    },
+    {
+      "symbol": "000007",
+      "announcementId": "1219862509",
+      "announcementTime": 1714320000000,
+      "title": "关于申请<em>撤销</em>对公司股票交易实施退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-04-29/1219862509.PDF"
+    },
+    {
+      "symbol": "600671",
+      "announcementId": "1219876378",
+      "announcementTime": 1714147200000,
+      "title": "杭州天目山药业股份有限公司关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>并继续实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-04-27/1219876378.PDF"
+    },
+    {
+      "symbol": "300220",
+      "announcementId": "1219868316",
+      "announcementTime": 1714147200000,
+      "title": "关于申请<em>撤销</em>其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-04-27/1219868316.PDF"
+    },
+    {
+      "symbol": "688500",
+      "announcementId": "1219838933",
+      "announcementTime": 1714060800000,
+      "title": "中信证券关于北京慧辰资道资讯股份有限公司申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的核查意见",
+      "adjunctUrl": "finalpage/2024-04-26/1219838933.PDF"
+    },
+    {
+      "symbol": "688500",
+      "announcementId": "1219838930",
+      "announcementTime": 1714060800000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-04-26/1219838930.PDF"
+    },
+    {
+      "symbol": "688272",
+      "announcementId": "1219788665",
+      "announcementTime": 1713974400000,
+      "title": "华英证券有限责任公司关于北京富吉瑞光电科技股份有限公司申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的核查意见",
+      "adjunctUrl": "finalpage/2024-04-25/1219788665.PDF"
+    },
+    {
+      "symbol": "688272",
+      "announcementId": "1219788636",
+      "announcementTime": 1713974400000,
+      "title": "关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-04-25/1219788636.PDF"
+    },
+    {
+      "symbol": "600543",
+      "announcementId": "1219474383",
+      "announcementTime": 1711728000000,
+      "title": "莫高股份关于申请<em>撤销</em>公司股票退市<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-03-30/1219474383.PDF"
+    },
+    {
+      "symbol": "600306",
+      "announcementId": "1218869206",
+      "announcementTime": 1705075200000,
+      "title": "沈阳商业城股份有限公司关于<em>撤销</em>公司股票因重整而被实施的退市<em>风险</em><em>警示</em>并继续被实施退市<em>风险</em><em>警示</em>及叠加实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-01-13/1218869206.PDF"
+    },
+    {
+      "symbol": "600306",
+      "announcementId": "1218789351",
+      "announcementTime": 1704211200000,
+      "title": "沈阳商业城股份有限公司关于申请<em>撤销</em>因重整而被实施的退市<em>风险</em><em>警示</em>并继续被实施退市<em>风险</em><em>警示</em>及叠加实施其他<em>风险</em><em>警示</em>的公告",
+      "adjunctUrl": "finalpage/2024-01-03/1218789351.PDF"
+    }
+  ],
+  "complete": true
+}

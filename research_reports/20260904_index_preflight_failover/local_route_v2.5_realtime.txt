@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2355, in <module>
+    main()
+    ~~~~^^
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2342, in main
+    _handle_query(query)
+    ~~~~~~~~~~~~~^^^^^^^
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2320, in _handle_query
+    _print_realtime_signal_query()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2257, in _print_realtime_signal_query
+    v2_0.run_realtime_query_with_fresh_state(emit)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py", line 11522, in run_realtime_query_with_fresh_state
+    return action()
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2221, in emit
+    signal_df, meta, _ = build_realtime_v2_5_outputs()
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2180, in build_realtime_v2_5_outputs
+    return _build_realtime_v2_5_outputs_unlocked()
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_5.py", line 2147, in _build_realtime_v2_5_outputs_unlocked
+    realtime_base = v2_0.realtime_core.load_realtime_base()
+  File "D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py", line 11666, in load_realtime_base
+    base_mod.assert_realtime_meta_is_actionable(meta)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "<embedded_top100_base>", line 4105, in assert_realtime_meta_is_actionable
+  File "<embedded_top100_base>", line 4199, in assert_realtime_anchor_precedes_quote_trade_date
+RuntimeError: latest_anchor_trade_date does not equal the official previous completed trading day before snapshot: anchor=2026-09-04 expected=2026-09-04 quote=2026-09-04

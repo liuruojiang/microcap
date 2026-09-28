@@ -1,0 +1,59 @@
+{
+  "symbol": "600656",
+  "org_id": "gssh0600656",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600656,gssh0600656",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 4,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "6035d01a69ee2fd14d4bfcfe98dec5c7ae9140e46c7ea8f991be801c0f0db0fb",
+      "reported_total": 4,
+      "rows": 4
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57577613",
+      "announcementTime": 1265236500000,
+      "title": "关于借款合同纠纷诉讼进展的公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577613.PDF"
+    },
+    {
+      "announcementId": "57573463",
+      "announcementTime": 1265150100000,
+      "title": "关于中国证监会立案调查的公告",
+      "adjunctUrl": "finalpage/2010-02-03/57573463.PDF"
+    },
+    {
+      "announcementId": "57560947",
+      "announcementTime": 1264804440000,
+      "title": "2009年度业绩预亏公告",
+      "adjunctUrl": "finalpage/2010-01-30/57560947.PDF"
+    },
+    {
+      "announcementId": "57535910",
+      "announcementTime": 1264199460000,
+      "title": "变更公司法人公告",
+      "adjunctUrl": "finalpage/2010-01-23/57535910.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

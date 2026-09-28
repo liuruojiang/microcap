@@ -1,0 +1,27 @@
+{
+  "certified_daily_parity_window": [
+    "2010-01-05",
+    "2014-09-18"
+  ],
+  "cninfo_positive_ex_date_events_all_target_symbols": 1447,
+  "cninfo_positive_ex_date_events_held": 300,
+  "held_stock_bonus_events": 100,
+  "held_cash_events": 286,
+  "held_record_date_equals_rebalance": 44,
+  "held_share_change_bonus_candidates": 99,
+  "first_held_action": [
+    {
+      "symbol": "002049",
+      "ex_date": "2010-04-08",
+      "previous_rebalance": "2010-03-25",
+      "record_date": "2010-04-07",
+      "record_date_at_rebalance": "False",
+      "stock_bonus_per_10": "0.0",
+      "cash_per_10": "1.1",
+      "派息日": "2010-04-08",
+      "股份到账日": "nan",
+      "实施方案公告日期": "2010-03-31",
+      "实施方案分红说明": "10派1.1元（含税）"
+    }
+  ]
+}

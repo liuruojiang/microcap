@@ -1,0 +1,161 @@
+{
+  "ok": true,
+  "strategy_sha": "b2ef53b477dea3590c6025d579ef33d0373d9e3e",
+  "automation_sha": "d5751cd48016474074c6ead62b368270e2fb23f9",
+  "run_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/33887118373",
+  "signals": {
+    "0": {
+      "date": "2026-09-04",
+      "version": "2.0",
+      "strategy_revision": "plain_mom16_fixed1_20260904",
+      "current_holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "r2_entry_gate": null,
+      "overheat_recovery_threshold": null,
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04"
+    },
+    "3": {
+      "date": "2026-09-04",
+      "version": "2.3",
+      "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "r2_entry_gate": "0.0",
+      "overheat_recovery_threshold": "0.2",
+      "current_execution_scale": "0.0",
+      "next_session_actionable_scale": "0.0",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04"
+    },
+    "5": {
+      "date": "2026-09-04",
+      "version": "2.5",
+      "strategy_revision": "microcap_only_log_wls_threshold_no_target_vol",
+      "current_holding": "long_microcap_top100",
+      "next_holding": "long_microcap_top100",
+      "r2_entry_gate": null,
+      "overheat_recovery_threshold": null,
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04"
+    }
+  },
+  "streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8721,
+      "latest_date": "2026-09-04",
+      "sha256": "fa8dca62f54dddd0d5db3c16f192ab25b19e174ab286738ea873dec8f68e32ce"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4050,
+      "latest_date": "2026-09-04",
+      "sha256": "ba808f3b19b96d2948b74c621fa2dafc242f933791b618aeb8040709abe0e75c"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-04",
+      "sha256": "711b89fba08e21459400252b7fecabe18f6c5557924ef9dae838ea0b55409114"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 431,
+      "latest_date": "2026-09-03",
+      "sha256": "e3dfb5dc4e5b07eb19ecd6b98443723dde1873f5b10393a1ce587d544cc18ce9"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "e4528f5038ed4681d05c954a9866c41136db24e6248ad667e7a98a2fa1c50dfa"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "e4528f5038ed4681d05c954a9866c41136db24e6248ad667e7a98a2fa1c50dfa"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4016,
+      "latest_date": "2026-09-04",
+      "sha256": "7e9f84cef9cfb2896cbb056191e3d214f9bbd3e7e97dede87dd3aa1b4935098e"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "4f955e90e280784a2bad90dbefae04ec882ea262b376f5c46aa204d76d233367"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "c58a7b4d392743ec1bfefd6d422ef0f45bd8e1ccf153393082983c2fe138d4e1"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "c58a7b4d392743ec1bfefd6d422ef0f45bd8e1ccf153393082983c2fe138d4e1"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "fc7c5d06090998aa4170f2e43a26403ba3b6fba186b79f4a3dd6b8b1c84e51a9"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "e1bf8a67ffdc1c8499ea448edce39a1b8bd926c1881c71fd2dff563026ca6dc4"
+    },
+    "microcap_top100_mom16_lb17_hl3_entry46_exit25_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "00d5d8b409c46df32d6fca031e532d8335d507c203c9c5e60666aae2467fdf52"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "00d5d8b409c46df32d6fca031e532d8335d507c203c9c5e60666aae2467fdf52"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3971,
+      "latest_date": "2026-09-04",
+      "sha256": "cd5e81a9d4bce7222820f4492de2d6189d1ac9b9b2c3f4ed751be2c06c7d06ab"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-04",
+      "sha256": "43fe947733fff20aa943e1aeff69350d76203d1786e29050b18b77cb6287777a"
+    }
+  },
+  "quote_precision_attribution": {
+    "0": {
+      "max_return_delta": 9.80517181899121e-07,
+      "max_nav_delta": 2.5732693423208275e-05,
+      "max_hedge_price_delta": 0.005000000001018634,
+      "unexplained_residual": 2.3991223555176874e-16,
+      "state_cost_parity": true
+    },
+    "3": {
+      "max_return_delta": 8.008823595990339e-07,
+      "max_nav_delta": 3.1617187151056214e-05,
+      "max_hedge_price_delta": 0.005000000001018634,
+      "unexplained_residual": 2.3904487381378034e-16,
+      "state_cost_parity": true
+    },
+    "5": {
+      "max_return_delta": 0.0,
+      "max_nav_delta": 0.0,
+      "max_hedge_price_delta": 0.005000000001018634,
+      "unexplained_residual": 0.0,
+      "state_cost_parity": true
+    }
+  },
+  "changed_inputs": [
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
+  ],
+  "gmail_send_and_marker": "success",
+  "inbox_receipt": "verify_separately"
+}

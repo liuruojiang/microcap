@@ -1,0 +1,10 @@
+{
+  "certified_target_rows": 250,
+  "certified_symbols": 18,
+  "effective_rows": 235,
+  "effective_symbols": 18,
+  "first_effective_date": "2010-01-14",
+  "bridge_target_rows": 10,
+  "bridge_effective_rows": 0,
+  "other_noneffective_rows": 5
+}

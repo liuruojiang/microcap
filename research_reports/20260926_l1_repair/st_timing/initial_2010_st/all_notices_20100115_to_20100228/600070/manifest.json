@@ -1,0 +1,59 @@
+{
+  "symbol": "600070",
+  "org_id": "gssh0600070",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600070,gssh0600070",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 4,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "a6737a35562644c4b0edd48d4fe81478f7bb6793666b2a0c2de7a041ecd69162",
+      "reported_total": 4,
+      "rows": 4
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57603810",
+      "announcementTime": 1265841300000,
+      "title": "关于拟取消22省道诸暨收费站的公告",
+      "adjunctUrl": "finalpage/2010-02-11/57603810.PDF"
+    },
+    {
+      "announcementId": "57577551",
+      "announcementTime": 1265236500000,
+      "title": "五届十五次董事会决议公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577551.PDF"
+    },
+    {
+      "announcementId": "57577550",
+      "announcementTime": 1265236500000,
+      "title": "关于取消31省道绍诸收费站的公告",
+      "adjunctUrl": "finalpage/2010-02-04/57577550.PDF"
+    },
+    {
+      "announcementId": "57510979",
+      "announcementTime": 1263594900000,
+      "title": "2009年度业绩预增公告",
+      "adjunctUrl": "finalpage/2010-01-16/57510979.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

@@ -1,0 +1,533 @@
+{
+  "symbol": "002071",
+  "org_id": "9900000861",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "002071,9900000861",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-01-01~2010-01-14",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 81,
+  "page_count": 3,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "90e574801a7d60e1d7f6cd9e85f40d0ed752abbba376ce5a425dc4baaf626c88",
+      "reported_total": 81,
+      "rows": 30
+    },
+    {
+      "page": 2,
+      "raw_sha256": "4a5b79167c738e546655ab42428ed8c6a8f3bc851a415501fdff31386513dfba",
+      "reported_total": 81,
+      "rows": 30
+    },
+    {
+      "page": 3,
+      "raw_sha256": "22e9dff2cfd0bf1450a907b043d78e3af371264bc129ec03ca7b8dad2c7389a2",
+      "reported_total": 81,
+      "rows": 21
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57502318",
+      "announcementTime": 1263354780000,
+      "title": "关于使用流动资金归还募集资金的公告",
+      "adjunctUrl": "finalpage/2010-01-13/57502318.PDF"
+    },
+    {
+      "announcementId": "57452023",
+      "announcementTime": 1262125980000,
+      "title": "关于签署《房屋拆迁补偿协议书》的公告",
+      "adjunctUrl": "finalpage/2009-12-30/57452023.PDF"
+    },
+    {
+      "announcementId": "57446489",
+      "announcementTime": 1262039400000,
+      "title": "独立董事提名人声明",
+      "adjunctUrl": "finalpage/2009-12-29/57446489.PDF"
+    },
+    {
+      "announcementId": "57446488",
+      "announcementTime": 1262039400000,
+      "title": "独立董事对相关事项的独立意见",
+      "adjunctUrl": "finalpage/2009-12-29/57446488.PDF"
+    },
+    {
+      "announcementId": "57446487",
+      "announcementTime": 1262039400000,
+      "title": "独立董事候选人声明（龚伟）",
+      "adjunctUrl": "finalpage/2009-12-29/57446487.PDF"
+    },
+    {
+      "announcementId": "57446486",
+      "announcementTime": 1262039400000,
+      "title": "东吴证券有限责任公司关于公司使用闲置募集资金暂时补充流动资金的意见",
+      "adjunctUrl": "finalpage/2009-12-29/57446486.PDF"
+    },
+    {
+      "announcementId": "57446485",
+      "announcementTime": 1262039400000,
+      "title": "第三届监事会第十三次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-29/57446485.PDF"
+    },
+    {
+      "announcementId": "57446484",
+      "announcementTime": 1262039400000,
+      "title": "关于继续使用闲置募集资金暂时补充流动资金的公告",
+      "adjunctUrl": "finalpage/2009-12-29/57446484.PDF"
+    },
+    {
+      "announcementId": "57446483",
+      "announcementTime": 1262039400000,
+      "title": "第三届董事会第十八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-12-29/57446483.PDF"
+    },
+    {
+      "announcementId": "57446482",
+      "announcementTime": 1262039400000,
+      "title": "关于召开2010年第一次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-12-29/57446482.PDF"
+    },
+    {
+      "announcementId": "57446481",
+      "announcementTime": 1262039400000,
+      "title": "关于为全资子公司江苏宏宝锻造有限公司提供担保的公告",
+      "adjunctUrl": "finalpage/2009-12-29/57446481.PDF"
+    },
+    {
+      "announcementId": "57335650",
+      "announcementTime": 1259274600000,
+      "title": "股票异动公告",
+      "adjunctUrl": "finalpage/2009-11-27/57335650.PDF"
+    },
+    {
+      "announcementId": "57173395",
+      "announcementTime": 1256077800000,
+      "title": "内幕信息知情人报备制度（2009年10月）",
+      "adjunctUrl": "finalpage/2009-10-21/57173395.PDF"
+    },
+    {
+      "announcementId": "57173394",
+      "announcementTime": 1256077800000,
+      "title": "2009年第三季度报告",
+      "adjunctUrl": "finalpage/2009-10-21/57173394.PDF"
+    },
+    {
+      "announcementId": "57173391",
+      "announcementTime": 1256077800000,
+      "title": "第三届董事会第十七次会议决议公告",
+      "adjunctUrl": "finalpage/2009-10-21/57173391.PDF"
+    },
+    {
+      "announcementId": "57106051",
+      "announcementTime": 1254177030000,
+      "title": "首次公开发行前已发行股份上市流通提示性公告",
+      "adjunctUrl": "finalpage/2009-09-29/57106051.PDF"
+    },
+    {
+      "announcementId": "57079560",
+      "announcementTime": 1253572560000,
+      "title": "关于参股公司—上海新朋实业股份有限公司首次公开发行股票申请获得通过的公告",
+      "adjunctUrl": "finalpage/2009-09-22/57079560.PDF"
+    },
+    {
+      "announcementId": "57056472",
+      "announcementTime": 1253053830000,
+      "title": "2009年第四次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-09-16/57056472.PDF"
+    },
+    {
+      "announcementId": "57056447",
+      "announcementTime": 1253053800000,
+      "title": "公司章程（2009年9月）",
+      "adjunctUrl": "finalpage/2009-09-16/57056447.PDF"
+    },
+    {
+      "announcementId": "57056446",
+      "announcementTime": 1253053800000,
+      "title": "2009年第四次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-09-16/57056446.PDF"
+    },
+    {
+      "announcementId": "56532147",
+      "announcementTime": 1251412200000,
+      "title": "独立董事对相关事项的独立意见",
+      "adjunctUrl": "finalpage/2009-08-28/56532147.PDF"
+    },
+    {
+      "announcementId": "56532146",
+      "announcementTime": 1251412200000,
+      "title": "东吴证券有限责任公司关于公司变更部分募集资金用途的意见",
+      "adjunctUrl": "finalpage/2009-08-28/56532146.PDF"
+    },
+    {
+      "announcementId": "56532145",
+      "announcementTime": 1251412200000,
+      "title": "2009年半年度报告",
+      "adjunctUrl": "finalpage/2009-08-28/56532145.PDF"
+    },
+    {
+      "announcementId": "56532144",
+      "announcementTime": 1251412200000,
+      "title": "第三届监事会第十一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-28/56532144.PDF"
+    },
+    {
+      "announcementId": "56532143",
+      "announcementTime": 1251412200000,
+      "title": "第三届董事会第十六次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-28/56532143.PDF"
+    },
+    {
+      "announcementId": "56532142",
+      "announcementTime": 1251412200000,
+      "title": "2009年半年度财务报告",
+      "adjunctUrl": "finalpage/2009-08-28/56532142.PDF"
+    },
+    {
+      "announcementId": "56532140",
+      "announcementTime": 1251412200000,
+      "title": "2009年半年度报告摘要",
+      "adjunctUrl": "finalpage/2009-08-28/56532140.PDF"
+    },
+    {
+      "announcementId": "56532139",
+      "announcementTime": 1251412200000,
+      "title": "关于召开2009年第四次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-08-28/56532139.PDF"
+    },
+    {
+      "announcementId": "56532138",
+      "announcementTime": 1251412200000,
+      "title": "关于变更部分募集资金用途的公告",
+      "adjunctUrl": "finalpage/2009-08-28/56532138.PDF"
+    },
+    {
+      "announcementId": "56115040",
+      "announcementTime": 1250721000000,
+      "title": "股票异动公告",
+      "adjunctUrl": "finalpage/2009-08-20/56115040.PDF"
+    },
+    {
+      "announcementId": "55920917",
+      "announcementTime": 1250461830000,
+      "title": "关于公司股票复牌的提示性公告",
+      "adjunctUrl": "finalpage/2009-08-17/55920917.PDF"
+    },
+    {
+      "announcementId": "55920966",
+      "announcementTime": 1250289330000,
+      "title": "关于终止筹划重大资产重组事项暨公司股票复牌公告",
+      "adjunctUrl": "finalpage/2009-08-15/55920966.PDF"
+    },
+    {
+      "announcementId": "55920962",
+      "announcementTime": 1250289330000,
+      "title": "第三届董事会第十五次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-15/55920962.PDF"
+    },
+    {
+      "announcementId": "55632687",
+      "announcementTime": 1249943400000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-08-11/55632687.PDF"
+    },
+    {
+      "announcementId": "55497837",
+      "announcementTime": 1249511400000,
+      "title": "关于退付增值税的公告",
+      "adjunctUrl": "finalpage/2009-08-06/55497837.PDF"
+    },
+    {
+      "announcementId": "55401810",
+      "announcementTime": 1249338600000,
+      "title": "重大事项进展公告",
+      "adjunctUrl": "finalpage/2009-08-04/55401810.PDF"
+    },
+    {
+      "announcementId": "55401809",
+      "announcementTime": 1249338600000,
+      "title": "第三届董事会第十四次会议决议公告",
+      "adjunctUrl": "finalpage/2009-08-04/55401809.PDF"
+    },
+    {
+      "announcementId": "55217839",
+      "announcementTime": 1248906600000,
+      "title": "2009年半年度业绩快报",
+      "adjunctUrl": "finalpage/2009-07-30/55217839.PDF"
+    },
+    {
+      "announcementId": "55157517",
+      "announcementTime": 1248733800000,
+      "title": "关于涉及筹划重大资产重组的停牌公告",
+      "adjunctUrl": "finalpage/2009-07-28/55157517.PDF"
+    },
+    {
+      "announcementId": "54522815",
+      "announcementTime": 1247697060000,
+      "title": "2009年第三次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-07-16/54522815.PDF"
+    },
+    {
+      "announcementId": "54522830",
+      "announcementTime": 1247697030000,
+      "title": "2009年第三次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-07-16/54522830.PDF"
+    },
+    {
+      "announcementId": "54463959",
+      "announcementTime": 1247524200000,
+      "title": "关于使用流动资金归还募集资金的公告",
+      "adjunctUrl": "finalpage/2009-07-14/54463959.PDF"
+    },
+    {
+      "announcementId": "54003109",
+      "announcementTime": 1246055400000,
+      "title": "独立董事关于继续使用闲置募集资金暂时补充流动资金独立意见",
+      "adjunctUrl": "finalpage/2009-06-27/54003109.PDF"
+    },
+    {
+      "announcementId": "54003108",
+      "announcementTime": 1246055400000,
+      "title": "东吴证券有限责任公司关于公司使用闲置募集资金暂时补充流动资金的意见",
+      "adjunctUrl": "finalpage/2009-06-27/54003108.PDF"
+    },
+    {
+      "announcementId": "54003107",
+      "announcementTime": 1246055400000,
+      "title": "第三届监事会第十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-06-27/54003107.PDF"
+    },
+    {
+      "announcementId": "54003106",
+      "announcementTime": 1246055400000,
+      "title": "关于召开2009年第三次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-06-27/54003106.PDF"
+    },
+    {
+      "announcementId": "54003105",
+      "announcementTime": 1246055400000,
+      "title": "第三届董事会第十三次会议决议公告",
+      "adjunctUrl": "finalpage/2009-06-27/54003105.PDF"
+    },
+    {
+      "announcementId": "54003104",
+      "announcementTime": 1246055400000,
+      "title": "关于继续使用闲置募集资金暂时补充流动资金的公告",
+      "adjunctUrl": "finalpage/2009-06-27/54003104.PDF"
+    },
+    {
+      "announcementId": "52437551",
+      "announcementTime": 1242254160000,
+      "title": "关于公司厂房拆迁的提示公告",
+      "adjunctUrl": "finalpage/2009-05-14/52437551.PDF"
+    },
+    {
+      "announcementId": "51784256",
+      "announcementTime": 1240612200000,
+      "title": "2009年第一季度报告",
+      "adjunctUrl": "finalpage/2009-04-25/51784256.PDF"
+    },
+    {
+      "announcementId": "51681430",
+      "announcementTime": 1240525830000,
+      "title": "2008年年度股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-04-24/51681430.PDF"
+    },
+    {
+      "announcementId": "51680967",
+      "announcementTime": 1240525800000,
+      "title": "2008年年度股东大会大会决议公告",
+      "adjunctUrl": "finalpage/2009-04-24/51680967.PDF"
+    },
+    {
+      "announcementId": "51371272",
+      "announcementTime": 1239921000000,
+      "title": "2009年第一季度业绩预告",
+      "adjunctUrl": "finalpage/2009-04-17/51371272.PDF"
+    },
+    {
+      "announcementId": "50568351",
+      "announcementTime": 1238020200000,
+      "title": "独立董事对相关事项的独立意见",
+      "adjunctUrl": "finalpage/2009-03-26/50568351.PDF"
+    },
+    {
+      "announcementId": "50568350",
+      "announcementTime": 1238020200000,
+      "title": "独立董事2008年度述职报告（黄雄）",
+      "adjunctUrl": "finalpage/2009-03-26/50568350.PDF"
+    },
+    {
+      "announcementId": "50568349",
+      "announcementTime": 1238020200000,
+      "title": "独立董事2008年度述职报告（张洪发）",
+      "adjunctUrl": "finalpage/2009-03-26/50568349.PDF"
+    },
+    {
+      "announcementId": "50568348",
+      "announcementTime": 1238020200000,
+      "title": "独立董事2008年度述职报告（周继华）",
+      "adjunctUrl": "finalpage/2009-03-26/50568348.PDF"
+    },
+    {
+      "announcementId": "50568347",
+      "announcementTime": 1238020200000,
+      "title": "公司章程（2009年3月）",
+      "adjunctUrl": "finalpage/2009-03-26/50568347.PDF"
+    },
+    {
+      "announcementId": "50568346",
+      "announcementTime": 1238020200000,
+      "title": "关于公司对募集资金年度使用情况专项报告的鉴证报告",
+      "adjunctUrl": "finalpage/2009-03-26/50568346.PDF"
+    },
+    {
+      "announcementId": "50568345",
+      "announcementTime": 1238020200000,
+      "title": "关于公司关联方资金占用情况的专项审核报告",
+      "adjunctUrl": "finalpage/2009-03-26/50568345.PDF"
+    },
+    {
+      "announcementId": "50568344",
+      "announcementTime": 1238020200000,
+      "title": "东吴证券有限责任公司关于公司《内部控制自我评价报告》的核查意见",
+      "adjunctUrl": "finalpage/2009-03-26/50568344.PDF"
+    },
+    {
+      "announcementId": "50568343",
+      "announcementTime": 1238020200000,
+      "title": "关于举行2008年度报告网上说明会的通知",
+      "adjunctUrl": "finalpage/2009-03-26/50568343.PDF"
+    },
+    {
+      "announcementId": "50568342",
+      "announcementTime": 1238020200000,
+      "title": "董事会2008年度关于募集资金使用情况的公告",
+      "adjunctUrl": "finalpage/2009-03-26/50568342.PDF"
+    },
+    {
+      "announcementId": "50568341",
+      "announcementTime": 1238020200000,
+      "title": "2008年年度报告",
+      "adjunctUrl": "finalpage/2009-03-26/50568341.PDF"
+    },
+    {
+      "announcementId": "50568340",
+      "announcementTime": 1238020200000,
+      "title": "第三届监事会第八次会议决议公告",
+      "adjunctUrl": "finalpage/2009-03-26/50568340.PDF"
+    },
+    {
+      "announcementId": "50568339",
+      "announcementTime": 1238020200000,
+      "title": "关于召开2008年年度股东大会的通知",
+      "adjunctUrl": "finalpage/2009-03-26/50568339.PDF"
+    },
+    {
+      "announcementId": "50568338",
+      "announcementTime": 1238020200000,
+      "title": "第三届董事会第十一次会议决议公告",
+      "adjunctUrl": "finalpage/2009-03-26/50568338.PDF"
+    },
+    {
+      "announcementId": "50568337",
+      "announcementTime": 1238020200000,
+      "title": "2008年度审计报告",
+      "adjunctUrl": "finalpage/2009-03-26/50568337.PDF"
+    },
+    {
+      "announcementId": "50568336",
+      "announcementTime": 1238020200000,
+      "title": "2008年年度报告摘要",
+      "adjunctUrl": "finalpage/2009-03-26/50568336.PDF"
+    },
+    {
+      "announcementId": "50568335",
+      "announcementTime": 1238020200000,
+      "title": "关于2008年度内部控制的自我评价报告",
+      "adjunctUrl": "finalpage/2009-03-26/50568335.PDF"
+    },
+    {
+      "announcementId": "49577483",
+      "announcementTime": 1235619180000,
+      "title": "2008年度业绩快报",
+      "adjunctUrl": "finalpage/2009-02-26/49577483.PDF"
+    },
+    {
+      "announcementId": "49481412",
+      "announcementTime": 1235428380000,
+      "title": "关于公司经营范围变更情况说明的公告",
+      "adjunctUrl": "finalpage/2009-02-24/49481412.PDF"
+    },
+    {
+      "announcementId": "49212922",
+      "announcementTime": 1234823700000,
+      "title": "关于取得发明专利证书的公告",
+      "adjunctUrl": "finalpage/2009-02-17/49212922.PDF"
+    },
+    {
+      "announcementId": "49070346",
+      "announcementTime": 1234391430000,
+      "title": "2009年第二次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-02-12/49070346.PDF"
+    },
+    {
+      "announcementId": "49070305",
+      "announcementTime": 1234391400000,
+      "title": "公司章程（2009年1月）",
+      "adjunctUrl": "finalpage/2009-02-12/49070305.PDF"
+    },
+    {
+      "announcementId": "49070304",
+      "announcementTime": 1234391400000,
+      "title": "2009年第二次临时股东大会决议公告",
+      "adjunctUrl": "finalpage/2009-02-12/49070304.PDF"
+    },
+    {
+      "announcementId": "48539149",
+      "announcementTime": 1232490639000,
+      "title": "关于召开2009年第二次临时股东大会的通知",
+      "adjunctUrl": "finalpage/2009-01-21/48539149.PDF"
+    },
+    {
+      "announcementId": "48539148",
+      "announcementTime": 1232490600000,
+      "title": "第三届董事会第十次会议决议公告",
+      "adjunctUrl": "finalpage/2009-01-21/48539148.PDF"
+    },
+    {
+      "announcementId": "48398218",
+      "announcementTime": 1232058630000,
+      "title": "2009年第一次临时股东大会的法律意见书",
+      "adjunctUrl": "finalpage/2009-01-16/48398218.PDF"
+    },
+    {
+      "announcementId": "48390571",
+      "announcementTime": 1232058600000,
+      "title": "2009年第一次临时股东大会大会决议公告",
+      "adjunctUrl": "finalpage/2009-01-16/48390571.PDF"
+    },
+    {
+      "announcementId": "48346013",
+      "announcementTime": 1231972380000,
+      "title": "关于使用流动资金归还募集资金的公告",
+      "adjunctUrl": "finalpage/2009-01-15/48346013.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}

@@ -1,0 +1,21 @@
+{
+  "year": 1998,
+  "label": "category",
+  "category": "category_tbclts_szsh",
+  "searchkey": "",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "1998-01-01~1998-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 1,
+  "page_manifests": [
+    {
+      "page": 1,
+      "sha256_raw_response": "d6935cbdc24b9c5751b4af4dbf1ca3da8b595c2406a4a3a2116102380b3e575c",
+      "response_bytes": 758,
+      "row_count": 1,
+      "reported_total": 1
+    }
+  ],
+  "candidate_announcements": [],
+  "complete": true
+}

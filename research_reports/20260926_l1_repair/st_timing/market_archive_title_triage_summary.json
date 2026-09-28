@@ -1,0 +1,61 @@
+{
+  "all_title_lead_notices": 7597,
+  "all_title_lead_symbols": 499,
+  "old_title_lead_symbols": 258,
+  "extra_title_lead_symbols": 241,
+  "old_actionable_event_lead_symbols": 214,
+  "extra_actionable_event_lead_symbols": 215,
+  "old_historical_target_rows_on_actionable_lead_symbols_needing_PIT_review": 11054,
+  "old_historical_target_dates_on_actionable_lead_symbols": 432,
+  "title_classes_are_discovery_only": true,
+  "classification_counts": [
+    {
+      "cohort": "new_delisted_251",
+      "title_class": "context",
+      "notices": 4916,
+      "symbols": 240
+    },
+    {
+      "cohort": "new_delisted_251",
+      "title_class": "entry",
+      "notices": 511,
+      "symbols": 213
+    },
+    {
+      "cohort": "new_delisted_251",
+      "title_class": "needs_review",
+      "notices": 159,
+      "symbols": 88
+    },
+    {
+      "cohort": "new_delisted_251",
+      "title_class": "remain_st",
+      "notices": 148,
+      "symbols": 84
+    },
+    {
+      "cohort": "old_target_1185",
+      "title_class": "context",
+      "notices": 1147,
+      "symbols": 234
+    },
+    {
+      "cohort": "old_target_1185",
+      "title_class": "entry",
+      "notices": 363,
+      "symbols": 202
+    },
+    {
+      "cohort": "old_target_1185",
+      "title_class": "needs_review",
+      "notices": 281,
+      "symbols": 170
+    },
+    {
+      "cohort": "old_target_1185",
+      "title_class": "remain_st",
+      "notices": 72,
+      "symbols": 45
+    }
+  ]
+}

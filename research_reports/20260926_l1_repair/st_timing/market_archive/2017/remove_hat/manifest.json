@@ -1,0 +1,14 @@
+{
+  "year": 2017,
+  "label": "remove_hat",
+  "category": "",
+  "searchkey": "摘帽",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "seDate": "2017-01-01~2017-12-31",
+  "page_size_requested": 30,
+  "totalAnnouncement": 0,
+  "page_manifests": [],
+  "candidate_announcements": [],
+  "complete": true,
+  "first_page_sha256": "c2a890bbf3a6a53ab02ddc6c1794bf1c72ba45799fe9f59dcc5ba2cc18467114"
+}

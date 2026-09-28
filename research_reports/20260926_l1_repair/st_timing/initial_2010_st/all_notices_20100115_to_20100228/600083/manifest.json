@@ -1,0 +1,41 @@
+{
+  "symbol": "600083",
+  "org_id": "gssh0600083",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600083,gssh0600083",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2010-01-15~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "totalAnnouncement": 1,
+  "page_count": 1,
+  "pages": [
+    {
+      "page": 1,
+      "raw_sha256": "6e19bb7d6424c28292c3b6fba76890937430b02e41e52a1d94036a13529558f8",
+      "reported_total": 1,
+      "rows": 1
+    }
+  ],
+  "notices": [
+    {
+      "announcementId": "57547412",
+      "announcementTime": 1264545300000,
+      "title": "2009年业绩预告公告",
+      "adjunctUrl": "finalpage/2010-01-27/57547412.PDF"
+    }
+  ],
+  "zero_result_response_sha256": null,
+  "complete": true
+}
