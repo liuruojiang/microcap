@@ -11778,6 +11778,14 @@ def augment_close_confirmed_signal_with_member_contract(
         later_sessions = calendar[calendar > latest_rebalance]
         if len(later_sessions):
             execution_date = pd.Timestamp(later_sessions[0])
+        elif latest_rebalance == signal_date:
+            # The close-confirmed NAV ends today and has no future session.
+            from scripts.exchange_calendar import sessions_for_day
+
+            future = [day for day in sessions_for_day(signal_date.date()) if day > signal_date.date()]
+            if not future:
+                raise RuntimeError("independent exchange calendar has no next execution session")
+            execution_date = pd.Timestamp(future[0])
 
     required = _safe_bool(out.iloc[0].get("member_rebalance_required"), False)
     official = bool(pd.notna(latest_rebalance))

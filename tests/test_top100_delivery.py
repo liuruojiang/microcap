@@ -1,7 +1,7 @@
 import csv
 import json
 import subprocess
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import pytest
@@ -110,9 +110,9 @@ def workspace(tmp_path):
                 content = "\n".join(lines) + "\n"
             write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
-              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official,member_rebalance_signal_date,member_enter_count,member_exit_count,member_rebalance_label{identity_header if version in ('0', '3', '5') else ''},current_holding,next_holding"
+              f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official,member_rebalance_signal_date,member_rebalance_execution_date,member_enter_count,member_exit_count,member_rebalance_label{identity_header if version in ('0', '3', '5') else ''},current_holding,next_holding"
               f"{',current_execution_scale,next_session_actionable_scale' if version != '0' else ''}\n"
-              f"2026-09-03,2.{version},False,False,False,2026-09-03,0,0,名单不变{identity if version in ('0', '3', '5') else ''},{active_holding},{active_holding}"
+              f"2026-09-03,2.{version},False,False,False,2026-09-03,,0,0,名单不变{identity if version in ('0', '3', '5') else ''},{active_holding},{active_holding}"
               f"{',1.0,1.0' if version != '0' else ''}\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
@@ -406,3 +406,58 @@ def test_summary_rejects_parameter_identity_drift(workspace, version, group, fie
     target[field] = bad
     path.write_text(json.dumps(summary), encoding="utf-8")
     assert not delivery.inspect_outputs(workspace, "2026-09-03")["ok"]
+
+
+@pytest.mark.parametrize("actionable,execution", [
+    ("False", "2026-09-04"),
+    ("True", "2099-01-01"),
+])
+def test_member_action_contract_rejects_missed_or_far_future_execution(
+    workspace, monkeypatch, actionable, execution,
+):
+    from scripts import exchange_calendar
+
+    monkeypatch.setattr(exchange_calendar, "sessions_for_day",
+                        lambda _day: (date(2026, 9, 3), date(2026, 9, 4)))
+    members = workspace / "outputs" / delivery.BASE_FILES["proxy_members"]
+    members.write_text(members.read_text(encoding="utf-8").replace(
+        "2026-09-03,100,000100,member-100",
+        "2026-09-03,100,000101,member-100",
+    ), encoding="utf-8")
+    for version in delivery.COSTED:
+        path = workspace / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_latest_signal.csv"
+        with path.open(encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fields, rows = reader.fieldnames, list(reader)
+        assert fields and len(rows) == 1
+        rows[0].update(member_rebalance_actionable=actionable,
+                       member_rebalance_required="True", member_rebalance_official="True",
+                       member_rebalance_execution_date=execution, member_enter_count="1",
+                       member_exit_count="1", member_rebalance_label="名单调仓（调入 1，调出 1）")
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+    report = delivery.inspect_outputs(workspace, "2026-09-03")
+    assert not report["ok"]
+    assert any("member actionability" in error or "member execution date" in error
+               for error in report["errors"])
+
+
+def test_release_identity_rejects_modified_delivery_guard(tmp_path, monkeypatch):
+    for name in delivery.RELEASE_FILES:
+        write(tmp_path, name, "approved\n")
+    (tmp_path / "scripts/top100_delivery.py").write_text("modified\n", encoding="utf-8")
+
+    def fake_git(args, **_kwargs):
+        if args[1] == "ls-remote":
+            return "a" * 40 + "\trefs/heads/main\n"
+        if args[1] == "cat-file":
+            return b""
+        if args[1] == "show":
+            return b"approved\n"
+        raise AssertionError(args)
+
+    monkeypatch.setattr(delivery.subprocess, "check_output", fake_git)
+    with pytest.raises(ValueError, match="scripts/top100_delivery.py"):
+        delivery.verify_release(tmp_path)
