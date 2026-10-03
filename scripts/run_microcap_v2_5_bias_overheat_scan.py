@@ -274,7 +274,7 @@ def _metrics(ret: pd.Series) -> dict[str, float | int]:
         }
     nav = (1.0 + r).cumprod()
     final_nav = float(nav.iloc[-1])
-    years = (pd.Timestamp(r.index[-1]) - pd.Timestamp(r.index[0])).days / 365.25
+    years = rows / TRADING_DAYS
     ann_return = (
         final_nav ** (1.0 / years) - 1.0
         if final_nav > 0 and years > 0
@@ -282,7 +282,7 @@ def _metrics(ret: pd.Series) -> dict[str, float | int]:
     )
     ann_vol = float(r.std(ddof=1) * math.sqrt(TRADING_DAYS)) if rows > 1 else 0.0
     sharpe = ann_return / ann_vol if ann_vol and math.isfinite(ann_vol) else np.nan
-    dd = nav.div(nav.cummax()).sub(1.0)
+    dd = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
     return {
         "rows": rows,
         "ann_return": float(ann_return),

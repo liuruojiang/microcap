@@ -1,0 +1,64 @@
+{
+  "scope": "conditional_117_symbol_paper_ranking_only",
+  "input_sha256": {
+    "old_initial": "e667587245d9944950d858da78763ba6c4d06accdb083b799052828429acd9f4",
+    "old_first_target": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "new_candidates": "18f3609ea6fd0d9c3b8d271ca0cb7374f292d5f7b8a23dced7faa3e0fe5a5189"
+  },
+  "2010-01-04": {
+    "old_cutoff_rmb": "1904000000.00",
+    "conditional_cutoff_rmb": "1810502442.85",
+    "evidenced_additions_below_old_cutoff": 17,
+    "additions_in_conditional_top100": 12,
+    "additions_outside_conditional_top100": [
+      "600856",
+      "600466",
+      "000502",
+      "000982",
+      "600077"
+    ],
+    "displaced_old_symbols": [
+      "600137",
+      "002198",
+      "600433",
+      "600080",
+      "000790",
+      "300025",
+      "002101",
+      "000710",
+      "600483",
+      "600250",
+      "600979",
+      "002193"
+    ],
+    "warning": "Other omitted stocks or invalid old members may change this set."
+  },
+  "2010-01-14": {
+    "old_cutoff_rmb": "1966272000.00",
+    "conditional_cutoff_rmb": "1883643001.20",
+    "evidenced_additions_below_old_cutoff": 17,
+    "additions_in_conditional_top100": 14,
+    "additions_outside_conditional_top100": [
+      "600355",
+      "000982",
+      "600306"
+    ],
+    "displaced_old_symbols": [
+      "000019",
+      "600985",
+      "002033",
+      "000967",
+      "000695",
+      "002234",
+      "600979",
+      "600483",
+      "600833",
+      "600137",
+      "600613",
+      "000790",
+      "600794",
+      "002245"
+    ],
+    "warning": "Other omitted stocks or invalid old members may change this set."
+  }
+}

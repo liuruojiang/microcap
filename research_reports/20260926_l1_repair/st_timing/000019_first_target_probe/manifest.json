@@ -1,0 +1,88 @@
+{
+  "scope": "research_only_first_target_000019",
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "query_payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "szse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "000019,gssz0000019",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-10-01~2010-02-28",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "query_sha256": "569501b427c040b6aaff966a0c7ef27a5a0c41a10b3b0b777d6d8d7a7d4cfd92",
+  "query_bytes": 15168,
+  "query_total": 23,
+  "query_unique_ids": 23,
+  "selected_sources": [
+    {
+      "announcement_id": "57186212",
+      "day": "2009-10-23",
+      "url": "https://static.cninfo.com.cn/finalpage/2009-10-23/57186212.PDF",
+      "announcement_time_ms": 1256250600000,
+      "sec_name": "深深宝Ａ",
+      "sha256": "6042212e073f43b3f23dc7da558caeffeed4f3e31bdf6ec11d9fbb1238d43cbf",
+      "bytes": 225280,
+      "pdf_pages": 12,
+      "text_chars": 14369
+    },
+    {
+      "announcement_id": "57335885",
+      "day": "2009-11-27",
+      "url": "https://static.cninfo.com.cn/finalpage/2009-11-27/57335885.PDF",
+      "announcement_time_ms": 1259274600000,
+      "sec_name": "深深宝Ａ",
+      "sha256": "2285b37f9c444ff3c632ecc22ad53865694bea6a0570effb5c640504c6bf01fd",
+      "bytes": 83185,
+      "pdf_pages": 1,
+      "text_chars": 502
+    },
+    {
+      "announcement_id": "57456706",
+      "day": "2009-12-31",
+      "url": "https://static.cninfo.com.cn/finalpage/2009-12-31/57456706.PDF",
+      "announcement_time_ms": 1262212200000,
+      "sec_name": "深深宝Ａ",
+      "sha256": "98cd2aff1338742b22fbc1e603a465fc0c7a990a36fa2aa87cde74f9ea6b1319",
+      "bytes": 120739,
+      "pdf_pages": 4,
+      "text_chars": 2385
+    },
+    {
+      "announcement_id": "57483178",
+      "day": "2010-01-08",
+      "url": "https://static.cninfo.com.cn/finalpage/2010-01-08/57483178.PDF",
+      "announcement_time_ms": 1262903400000,
+      "sec_name": "深深宝Ａ",
+      "sha256": "18e57a2f0a470268cc265d8d81d13dffcae9df16f94fc8790d3796179d4be463",
+      "bytes": 91199,
+      "pdf_pages": 1,
+      "text_chars": 566
+    },
+    {
+      "announcement_id": "57535691",
+      "day": "2010-01-25",
+      "url": "https://static.cninfo.com.cn/finalpage/2010-01-25/57535691.PDF",
+      "announcement_time_ms": 1264372260000,
+      "sec_name": "深深宝Ａ",
+      "sha256": "67ad44dcf0586111ed97ecb4ea21b12b16c928a061d50f3ac9a49a9468bb62d4",
+      "bytes": 90085,
+      "pdf_pages": 2,
+      "text_chars": 1032
+    }
+  ],
+  "szse_name_history_local_path": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\sz_name_change_short.csv",
+  "szse_name_history_sha256": "856e18b71a21c14eba80b7111316ad5a99a30660d007248b95773affb8caca93",
+  "szse_000019_rows": [
+    "2006-07-27,000019,深深宝Ａ,G 深宝Ａ",
+    "2006-10-09,000019,G 深宝Ａ,深深宝Ａ",
+    "2019-02-28,000019,深深宝Ａ,深粮控股"
+  ]
+}

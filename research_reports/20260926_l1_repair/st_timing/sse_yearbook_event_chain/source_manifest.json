@@ -1,0 +1,29 @@
+[
+  {
+    "covered_year": 2008,
+    "publisher": "Shanghai Stock Exchange",
+    "url": "https://www.sse.com.cn/aboutus/publication/factbook/documents/c/10170573/files/073e042b8b87407b919e3d8e75ee91a5.pdf",
+    "local_file": "sse_factbook_2008.pdf",
+    "bytes": 2132962,
+    "sha256": "c962379b144ace00f189065ce7d1d32ea8f5d7fe47e3e617adc8383a291262c2",
+    "pdf_pages": 121
+  },
+  {
+    "covered_year": 2009,
+    "publisher": "Shanghai Stock Exchange",
+    "url": "https://www.sse.com.cn/aboutus/publication/factbook/documents/c/10170572/files/36d0635dee474838943e931bcc04c3df.pdf",
+    "local_file": "sse_factbook_2009.pdf",
+    "bytes": 3724576,
+    "sha256": "ff1c1b811bba65e3f4051e7570eb01513b88dd37c0c940efa3311701535a266b",
+    "pdf_pages": 298
+  },
+  {
+    "covered_year": 2015,
+    "publisher": "Shanghai Stock Exchange",
+    "url": "https://www.sse.com.cn/aboutus/publication/factbook/documents/c/10170566/files/23ad0cdde73846fa88b1ee417d306eb9.pdf",
+    "local_file": "sse_factbook_2015.pdf",
+    "bytes": 32772509,
+    "sha256": "aa93cf2e9b746b6b0246e5adfd3d2706910171e7ea2f75dd0aa05c63445aa24a",
+    "pdf_pages": 218
+  }
+]

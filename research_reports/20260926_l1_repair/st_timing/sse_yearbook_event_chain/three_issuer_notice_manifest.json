@@ -1,0 +1,461 @@
+[
+  {
+    "code": "600633",
+    "payload": {
+      "pageNum": "1",
+      "pageSize": "30",
+      "column": "sse",
+      "tabName": "fulltext",
+      "plate": "",
+      "searchkey": "",
+      "secid": "",
+      "category": "",
+      "trade": "",
+      "seDate": "2009-09-01~2010-01-14",
+      "sortName": "",
+      "sortType": "",
+      "isHLtitle": "true",
+      "stock": "600633,gssh0600633"
+    },
+    "total": 17,
+    "pages": [
+      {
+        "page": 1,
+        "raw_file": "cninfo_600633_20090901_20100114_page1.json.gz",
+        "sha256": "3ef231d02f6004ea825e51cee32ab8794eebdec0ad31ef30f6d897fc829bf801",
+        "bytes": 11224,
+        "rows": 17
+      }
+    ],
+    "notices": [
+      {
+        "date": "2010-01-12",
+        "id": "57494686",
+        "title": "五届董事会第三十四次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2010-01-12/57494686.PDF"
+      },
+      {
+        "date": "2010-01-06",
+        "id": "57472798",
+        "title": "预亏公告暨暂停交易风险特别提示公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2010-01-06/57472798.PDF"
+      },
+      {
+        "date": "2009-12-25",
+        "id": "57435883",
+        "title": "关于股东股权解除质押公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-25/57435883.PDF"
+      },
+      {
+        "date": "2009-10-24",
+        "id": "57196558",
+        "title": "2009年度预亏公告暨风险提示公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-24/57196558.PDF"
+      },
+      {
+        "date": "2009-10-24",
+        "id": "57196278",
+        "title": "2009年第三季度报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-24/57196278.PDF"
+      },
+      {
+        "date": "2009-10-13",
+        "id": "57135301",
+        "title": "2009年第一次临时股东大会的法律意见书",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-13/57135301.PDF"
+      },
+      {
+        "date": "2009-10-13",
+        "id": "57135300",
+        "title": "2009年第一次临时股东大会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-13/57135300.PDF"
+      },
+      {
+        "date": "2009-10-09",
+        "id": "57119329",
+        "title": "2009年第一次临时股东大会会议资料",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-09/57119329.PDF"
+      },
+      {
+        "date": "2009-10-09",
+        "id": "57119328",
+        "title": "关于召开2009年第一次临时股东大会的二次通知",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-09/57119328.PDF"
+      },
+      {
+        "date": "2009-09-30",
+        "id": "57111174",
+        "title": "澄清公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-30/57111174.PDF"
+      },
+      {
+        "date": "2009-09-21",
+        "id": "57075132",
+        "title": "股票交易异常波动提示性公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-21/57075132.PDF"
+      },
+      {
+        "date": "2009-09-16",
+        "id": "57057113",
+        "title": "重大资产置换暨关联交易报告书摘要（草案）",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-16/57057113.PDF"
+      },
+      {
+        "date": "2009-09-16",
+        "id": "57057112",
+        "title": "重大资产置换暨关联交易报告书（草案）",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-16/57057112.PDF"
+      },
+      {
+        "date": "2009-09-16",
+        "id": "57057111",
+        "title": "关于公司面临被暂停上市交易的特别提示公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-16/57057111.PDF"
+      },
+      {
+        "date": "2009-09-16",
+        "id": "57057110",
+        "title": "第五届监事会第二十三次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-16/57057110.PDF"
+      },
+      {
+        "date": "2009-09-16",
+        "id": "57057109",
+        "title": "第五届董事会第三十次会议决议公告暨召开2009年第一次临时股东大会的通知",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-16/57057109.PDF"
+      },
+      {
+        "date": "2009-09-07",
+        "id": "56897427",
+        "title": "重大资产重组进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-07/56897427.PDF"
+      }
+    ]
+  },
+  {
+    "code": "600617",
+    "payload": {
+      "pageNum": "1",
+      "pageSize": "30",
+      "column": "sse",
+      "tabName": "fulltext",
+      "plate": "",
+      "searchkey": "",
+      "secid": "",
+      "category": "",
+      "trade": "",
+      "seDate": "2009-09-01~2010-01-14",
+      "sortName": "",
+      "sortType": "",
+      "isHLtitle": "true",
+      "stock": "600617,gssh0600617"
+    },
+    "total": 20,
+    "pages": [
+      {
+        "page": 1,
+        "raw_file": "cninfo_600617_20090901_20100114_page1.json.gz",
+        "sha256": "38aa872402e91a6e15df3dea51b68197532db43b18deee677091b7d6bf663d44",
+        "bytes": 12720,
+        "rows": 20
+      }
+    ],
+    "notices": [
+      {
+        "date": "2009-12-31",
+        "id": "57457285",
+        "title": "诉讼进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-31/57457285.PDF"
+      },
+      {
+        "date": "2009-12-30",
+        "id": "57452716",
+        "title": "诉讼进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-30/57452716.PDF"
+      },
+      {
+        "date": "2009-12-15",
+        "id": "57398270",
+        "title": "诉讼进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-15/57398270.PDF"
+      },
+      {
+        "date": "2009-12-09",
+        "id": "57378309",
+        "title": "诉讼进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-09/57378309.PDF"
+      },
+      {
+        "date": "2009-11-27",
+        "id": "57336253",
+        "title": "股票交易异常波动公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-27/57336253.PDF"
+      },
+      {
+        "date": "2009-11-24",
+        "id": "57323195",
+        "title": "重大诉讼进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-24/57323195.PDF"
+      },
+      {
+        "date": "2009-11-13",
+        "id": "57286213",
+        "title": "子公司整改公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-13/57286213.PDF"
+      },
+      {
+        "date": "2009-10-28",
+        "id": "57215001",
+        "title": "重大诉讼公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-28/57215001.PDF"
+      },
+      {
+        "date": "2009-10-28",
+        "id": "57215000",
+        "title": "2009年度业绩预告公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-28/57215000.PDF"
+      },
+      {
+        "date": "2009-10-28",
+        "id": "57214999",
+        "title": "第六届监事会第二次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-28/57214999.PDF"
+      },
+      {
+        "date": "2009-10-28",
+        "id": "57214998",
+        "title": "第六届董事会第二次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-28/57214998.PDF"
+      },
+      {
+        "date": "2009-10-28",
+        "id": "57214194",
+        "title": "2009年第三季度报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-28/57214194.PDF"
+      },
+      {
+        "date": "2009-10-10",
+        "id": "57127881",
+        "title": "2009年第一次临时股东大会的法律意见书",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-10/57127881.PDF"
+      },
+      {
+        "date": "2009-10-10",
+        "id": "57127880",
+        "title": "六届一次监事会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-10/57127880.PDF"
+      },
+      {
+        "date": "2009-10-10",
+        "id": "57127879",
+        "title": "六届一次董事会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-10/57127879.PDF"
+      },
+      {
+        "date": "2009-10-10",
+        "id": "57127878",
+        "title": "2009年第一次临时股东大会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-10/57127878.PDF"
+      },
+      {
+        "date": "2009-09-30",
+        "id": "57111173",
+        "title": "关于控股子公司上海联源经贸发展有限公司破产进程公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-30/57111173.PDF"
+      },
+      {
+        "date": "2009-09-22",
+        "id": "57079804",
+        "title": "2009年第一次临时股东大会授权委托书样本更正公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-22/57079804.PDF"
+      },
+      {
+        "date": "2009-09-17",
+        "id": "57061798",
+        "title": "五届十三次监事会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-17/57061798.PDF"
+      },
+      {
+        "date": "2009-09-17",
+        "id": "57061797",
+        "title": "五届三十三次董事会决议暨召开公司2009年第一次临时股东大会公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-09-17/57061797.PDF"
+      }
+    ]
+  },
+  {
+    "code": "600792",
+    "payload": {
+      "pageNum": "1",
+      "pageSize": "30",
+      "column": "sse",
+      "tabName": "fulltext",
+      "plate": "",
+      "searchkey": "",
+      "secid": "",
+      "category": "",
+      "trade": "",
+      "seDate": "2009-09-01~2010-01-14",
+      "sortName": "",
+      "sortType": "",
+      "isHLtitle": "true",
+      "stock": "600792,gssh0600792"
+    },
+    "total": 24,
+    "pages": [
+      {
+        "page": 1,
+        "raw_file": "cninfo_600792_20090901_20100114_page1.json.gz",
+        "sha256": "ecd6d5073c47a36d621491f9543c8b50f6986af081875e56788d41f2a777c7b5",
+        "bytes": 15426,
+        "rows": 24
+      }
+    ],
+    "notices": [
+      {
+        "date": "2010-01-11",
+        "id": "57491007",
+        "title": "重大资产重组进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2010-01-11/57491007.PDF"
+      },
+      {
+        "date": "2009-12-28",
+        "id": "57443563",
+        "title": "第五届监事会第一次（临时）会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-28/57443563.PDF"
+      },
+      {
+        "date": "2009-12-28",
+        "id": "57443562",
+        "title": "第五届董事会第一次(临时)会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-28/57443562.PDF"
+      },
+      {
+        "date": "2009-12-25",
+        "id": "57435893",
+        "title": "2009年第二次（临时）股东大会法律意见书",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-25/57435893.PDF"
+      },
+      {
+        "date": "2009-12-25",
+        "id": "57435892",
+        "title": "2009年第二次（临时）股东大会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-25/57435892.PDF"
+      },
+      {
+        "date": "2009-12-11",
+        "id": "57386875",
+        "title": "重大资产重组进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-11/57386875.PDF"
+      },
+      {
+        "date": "2009-12-09",
+        "id": "57378382",
+        "title": "第四届监事会第十八次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-09/57378382.PDF"
+      },
+      {
+        "date": "2009-12-09",
+        "id": "57378381",
+        "title": "第四届董事会第三十五次会议决议公告暨关于召开2009年第二次（临时）股东大会的通知",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-12-09/57378381.PDF"
+      },
+      {
+        "date": "2009-11-27",
+        "id": "57336274",
+        "title": "股票交易异常波动公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-27/57336274.PDF"
+      },
+      {
+        "date": "2009-11-24",
+        "id": "57323266",
+        "title": "股票交易异常波动公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-24/57323266.PDF"
+      },
+      {
+        "date": "2009-11-19",
+        "id": "57308894",
+        "title": "股票交易异常波动公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-19/57308894.PDF"
+      },
+      {
+        "date": "2009-11-16",
+        "id": "57294729",
+        "title": "股票交易异常波动公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-16/57294729.PDF"
+      },
+      {
+        "date": "2009-11-11",
+        "id": "57277761",
+        "title": "重大资产出售及发行股份购买资产暨关联交易预案",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-11/57277761.PDF"
+      },
+      {
+        "date": "2009-11-11",
+        "id": "57277760",
+        "title": "第四届董事会第三十四次（临时）会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-11/57277760.PDF"
+      },
+      {
+        "date": "2009-11-09",
+        "id": "57269634",
+        "title": "重大事项进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-09/57269634.PDF"
+      },
+      {
+        "date": "2009-11-02",
+        "id": "57245319",
+        "title": "重大事项进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-02/57245319.PDF"
+      },
+      {
+        "date": "2009-11-02",
+        "id": "57241616",
+        "title": "重大事项进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-11-02/57241616.PDF"
+      },
+      {
+        "date": "2009-10-30",
+        "id": "57229055",
+        "title": "2009年度业绩预亏公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-30/57229055.PDF"
+      },
+      {
+        "date": "2009-10-30",
+        "id": "57229054",
+        "title": "第四届董事会第三十三次（临时）会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-30/57229054.PDF"
+      },
+      {
+        "date": "2009-10-30",
+        "id": "57228980",
+        "title": "2009年第三季度报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-30/57228980.PDF"
+      },
+      {
+        "date": "2009-10-26",
+        "id": "57201554",
+        "title": "重大事项进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-26/57201554.PDF"
+      },
+      {
+        "date": "2009-10-19",
+        "id": "57163973",
+        "title": "重大事项进展公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-19/57163973.PDF"
+      },
+      {
+        "date": "2009-10-13",
+        "id": "57135314",
+        "title": "临时公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-13/57135314.PDF"
+      },
+      {
+        "date": "2009-10-12",
+        "id": "57131102",
+        "title": "重大事项暨停牌公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-10-12/57131102.PDF"
+      }
+    ]
+  }
+]

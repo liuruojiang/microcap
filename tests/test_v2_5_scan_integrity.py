@@ -439,8 +439,8 @@ def test_bias_hot_signal_cancels_base_entry_cost_without_roundtrip() -> None:
 
 
 @pytest.mark.parametrize("module", [cooldown, pool_scan, bias_overheat])
-def test_v2_5_scan_metrics_use_formal_calendar_year_annualization(module) -> None:
-    idx = pd.to_datetime(["2020-01-02", "2021-01-04", "2022-01-03"])
+def test_v2_5_scan_metrics_use_formal_return_day_annualization(module) -> None:
+    idx = pd.bdate_range("2020-01-02", periods=3)
     returns = pd.Series([0.10, -0.05, 0.20], index=idx)
     expected = v2_5.summarize_returns(returns)["annual_pct"] / 100.0
 

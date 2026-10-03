@@ -1,0 +1,122 @@
+[
+  {
+    "date": "2014-03-24",
+    "time": "00:00:01",
+    "id": "63713707",
+    "title": "关于公司股票撤销退市风险警示的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2014-03-24/63713707.PDF",
+    "pdf_file": "pdfs\\63713707.pdf",
+    "pdf_sha256": "a8e1d8c6cee0f84ee1ef4bb0e8421529f2af53ae1503208f5e073a8fb93816fc",
+    "bytes": 122527,
+    "pages": 3,
+    "first_two_pages_text_file": "pdfs\\63713707.first_two_pages.txt"
+  },
+  {
+    "date": "2014-03-15",
+    "time": "00:00:32",
+    "id": "63679727",
+    "title": "关于申请公司股票撤销退市风险警示的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2014-03-15/63679727.PDF",
+    "pdf_file": "pdfs\\63679727.pdf",
+    "pdf_sha256": "cbb76a3ec39f93d533e1fbf24bbac1e62602b5c3714cd6459442161014d8b21a",
+    "bytes": 115678,
+    "pages": 2,
+    "first_two_pages_text_file": "pdfs\\63679727.first_two_pages.txt"
+  },
+  {
+    "date": "2013-04-27",
+    "time": "00:00:01",
+    "id": "62441396",
+    "title": "关于被实施退市风险警示的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2013-04-27/62441396.PDF",
+    "pdf_file": "pdfs\\62441396.pdf",
+    "pdf_sha256": "c11b3108224ccbb3999ddac395fc6554c996c97ce43a9d09b5da76a64b01e971",
+    "bytes": 134716,
+    "pages": 2,
+    "first_two_pages_text_file": "pdfs\\62441396.first_two_pages.txt"
+  },
+  {
+    "date": "2013-04-24",
+    "time": "00:00:01",
+    "id": "62415175",
+    "title": "关于股票实施退市风险警示的提示公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2013-04-24/62415175.PDF",
+    "pdf_file": "pdfs\\62415175.pdf",
+    "pdf_sha256": "4dfc3ecb7da32cff4cad2b5e71f3380b220d0f5b2243917a2c03ab8979db92cd",
+    "bytes": 102705,
+    "pages": 1,
+    "first_two_pages_text_file": "pdfs\\62415175.first_two_pages.txt"
+  },
+  {
+    "date": "2013-04-12",
+    "time": "00:00:01",
+    "id": "62352262",
+    "title": "关于股票实施退市风险警示的提示公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2013-04-12/62352262.PDF",
+    "pdf_file": "pdfs\\62352262.pdf",
+    "pdf_sha256": "4a4a44234ed13116a45b28163d55ef2ac1f9964cdfd0ceda2f7d33190a48ef09",
+    "bytes": 113567,
+    "pages": 1,
+    "first_two_pages_text_file": "pdfs\\62352262.first_two_pages.txt"
+  },
+  {
+    "date": "2013-01-31",
+    "time": "00:00:01",
+    "id": "62087422",
+    "title": "2012年年度业绩预亏暨股票实施退市风险警示的提示公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2013-01-31/62087422.PDF",
+    "pdf_file": "pdfs\\62087422.pdf",
+    "pdf_sha256": "237ad0b937a47492d652a079b3a46732d85590f75e97fa360f3b3482464bd117",
+    "bytes": 127644,
+    "pages": 2,
+    "first_two_pages_text_file": "pdfs\\62087422.first_two_pages.txt"
+  },
+  {
+    "date": "2011-12-21",
+    "time": "06:40:00",
+    "id": "60349071",
+    "title": "关于股票撤销退市风险警示并实施其他特别处理的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2011-12-21/60349071.PDF",
+    "pdf_file": "pdfs\\60349071.pdf",
+    "pdf_sha256": "cc2b139aafe6b5d3660761062e4a8c9d82cbaa6a521c5b3f4005d2aaca7a33e1",
+    "bytes": 39453,
+    "pages": 1,
+    "first_two_pages_text_file": "pdfs\\60349071.first_two_pages.txt"
+  },
+  {
+    "date": "2011-12-21",
+    "time": "06:40:00",
+    "id": "60349070",
+    "title": "关于申请股票撤销退市风险警示并实施其他特别处理的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2011-12-21/60349070.PDF",
+    "pdf_file": "pdfs\\60349070.pdf",
+    "pdf_sha256": "a1b51187f779d91b7d8ed25bb6f62b0c9477a071b2b299b7ab4bc1262515e579",
+    "bytes": 54302,
+    "pages": 1,
+    "first_two_pages_text_file": "pdfs\\60349070.first_two_pages.txt"
+  },
+  {
+    "date": "2010-04-30",
+    "time": "06:31:00",
+    "id": "57900859",
+    "title": "关于股票实行退市风险警示的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2010-04-30/57900859.PDF",
+    "pdf_file": "pdfs\\57900859.pdf",
+    "pdf_sha256": "c2cec9627fb7b06046112b7020658ff6de93a78c9825ef24c6afb3bc1e7cfa05",
+    "bytes": 209578,
+    "pages": 2,
+    "first_two_pages_text_file": "pdfs\\57900859.first_two_pages.txt"
+  },
+  {
+    "date": "2009-04-29",
+    "time": "06:30:00",
+    "id": "51947726",
+    "title": "关于股票交易实行其他特别处理的公告",
+    "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51947726.PDF",
+    "pdf_file": "pdfs\\51947726.pdf",
+    "pdf_sha256": "8778ef741d5b964a8fb8d2891c901623628292ba3a9c3f74f5739827704d7e48",
+    "bytes": 51009,
+    "pages": 2,
+    "first_two_pages_text_file": "pdfs\\51947726.first_two_pages.txt"
+  }
+]

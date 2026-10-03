@@ -43,7 +43,7 @@
     "security_master_enabled": true
   },
   "start_date": "2010-01-05",
-  "end_date": "2026-09-28",
+  "end_date": "2026-09-30",
   "rebalance_dates_count": 432,
   "effective_start_date": "2010-01-05",
   "recent_extension_start": "2026-09-17",
@@ -53,8 +53,8 @@
   "metadata_evidence_completion": "2026-09-17 official HTTPS query; ten legacy records completed; ST intervals unchanged",
   "tail_extension_method": "no_new_rebalance_saved_target_replay",
   "tail_extension_start": "2026-09-17",
-  "tail_extension_end": "2026-09-28",
-  "tail_extension_rows": 6,
+  "tail_extension_end": "2026-09-30",
+  "tail_extension_rows": 8,
   "tail_extension_effective_member_count": 100,
   "tail_extension_replaced_flat_placeholder": false,
   "tail_extension_return_source_counts": {

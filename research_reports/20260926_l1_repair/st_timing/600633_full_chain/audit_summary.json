@@ -1,0 +1,22 @@
+{
+  "scope": "research_only_600633_old_replay_status_not_valuation",
+  "old_members_sha256": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+  "full_replay_members_sha256": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c",
+  "full_replay_sellable_sha256": "d09e933a9b2af7b313739b1f02d0e3955dac5a1f8fced1ee148ae314f91c8b7b",
+  "raw_price_sha256": "10ed74e3c5e9c8535b0bdb920bd1fa389626cf5e10e825e34730d7e1a1714908",
+  "issuer_announcements": 135,
+  "issuer_pdfs_checked": 11,
+  "old_target_rows": 8,
+  "old_initial_seed_mentioned": true,
+  "old_effective_holding_rebalance_states": 45,
+  "halted_unsellable_rebalance_states": 37,
+  "halted_state_first": "2010-05-06",
+  "halted_state_last": "2011-09-22",
+  "last_raw_price_before_halt": "2010-04-29",
+  "first_raw_price_after_halt": "2011-09-29",
+  "risk_warning_entry_effective": "2009-03-24",
+  "halt_issuer_notice_date": "2010-04-30",
+  "listing_suspension_effective": "2010-05-25",
+  "resume_full_ST_exit_effective": "2011-09-29",
+  "warning": "Rebalance holding snapshots are not trades or an account valuation."
+}

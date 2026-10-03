@@ -1,0 +1,10 @@
+﻿date,symbol,old_rank,conditional_rank,conditional_top100,old_meta_st,old_meta_present,old_meta_sha256,old_meta_notice_count,source_flags,unresolved_old_meta_non_st_lead
+2010-01-04,600633,9,12,True,False,True,addce5043e8b620c8cf0fa1bed07933c104073d053e7965bb463f95090fa6701,6,2009_risk_warning_entry,True
+2010-01-04,600617,13,18,True,False,True,62f69eddaf3c88a8316d8285ffd52dc8e51c539e89eb9f66d598d94ff1de6e85,9,2009_other_ST_entry,True
+2010-01-04,600792,53,63,True,False,True,88d0e7f888e884876ca21633fd5c5b9293e9ed39f793f59e79fee5b15cea874c,2,2008-12-31_ST_snapshot,True
+2010-01-04,600603,63,73,True,False,True,6f062d2c3d447cde6db7f819988056cdef9984136bf08788fcf2841b9cca16fa,10,2008-12-31_ST_snapshot,True
+2010-01-14,600633,6,8,True,False,True,addce5043e8b620c8cf0fa1bed07933c104073d053e7965bb463f95090fa6701,6,2009_risk_warning_entry,True
+2010-01-14,600617,10,14,True,False,True,62f69eddaf3c88a8316d8285ffd52dc8e51c539e89eb9f66d598d94ff1de6e85,9,2009_other_ST_entry,True
+2010-01-14,600792,28,37,True,False,True,88d0e7f888e884876ca21633fd5c5b9293e9ed39f793f59e79fee5b15cea874c,2,2008-12-31_ST_snapshot,True
+2010-01-14,600603,40,49,True,False,True,6f062d2c3d447cde6db7f819988056cdef9984136bf08788fcf2841b9cca16fa,10,2008-12-31_ST_snapshot,True
+2010-01-14,600180,49,58,True,False,True,65c236aef45f2a02209e744e45af368b252e493b17c2717785ed0774bae888f2,0,2008-12-31_ST_snapshot,True

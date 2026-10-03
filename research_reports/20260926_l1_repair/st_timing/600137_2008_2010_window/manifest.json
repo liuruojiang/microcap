@@ -1,0 +1,42 @@
+{
+  "query_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600137,gssh0600137",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2008-06-12~2010-01-04",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "total": 61,
+  "pages": [
+    {
+      "page": 1,
+      "rows": 30,
+      "raw_sha256": "b205ed8e32cf36685aa0df634993ca9c016f7abecc1ec48b9a724d7da94eee23",
+      "bytes": 19539
+    },
+    {
+      "page": 2,
+      "rows": 30,
+      "raw_sha256": "c078dc7822fb574382ea425acff0a9faf8204d9b0659ac9de5aa3b5051bc3b24",
+      "bytes": 19565
+    },
+    {
+      "page": 3,
+      "rows": 1,
+      "raw_sha256": "2b42d54bf72156b13463162ef3b3eb2ac12a0ed9180193cee496045e594a92b9",
+      "bytes": 785
+    }
+  ],
+  "unique_ids": 61,
+  "complete_within_cninfo_query": true
+}

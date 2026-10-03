@@ -1,0 +1,150 @@
+{
+  "url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600617,gssh0600617",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-04-29~2014-03-25",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "total": 511,
+  "unique_ids": 511,
+  "pages": [
+    {
+      "page": 1,
+      "rows": 30,
+      "raw_sha256": "a1d47945a1cf9d089aa73e4a9b7384cf040f7f4f1301c202895321a0849defd2",
+      "raw_bytes": 20210,
+      "file": "page_001.json.gz"
+    },
+    {
+      "page": 2,
+      "rows": 30,
+      "raw_sha256": "b24aef2019272fedb917c2f401e0cbf96ff366413d65f0533c5700b706fa3ce1",
+      "raw_bytes": 21003,
+      "file": "page_002.json.gz"
+    },
+    {
+      "page": 3,
+      "rows": 30,
+      "raw_sha256": "2893feeec5a95690399296638a5b64754e489c5dda22040324ebb9080e48692f",
+      "raw_bytes": 21418,
+      "file": "page_003.json.gz"
+    },
+    {
+      "page": 4,
+      "rows": 30,
+      "raw_sha256": "ee8dfa0705fde399fcaf5c96ef9e5c3dd8606d41d53d3ff994315e4dac4fa078",
+      "raw_bytes": 19813,
+      "file": "page_004.json.gz"
+    },
+    {
+      "page": 5,
+      "rows": 30,
+      "raw_sha256": "26e56a001956b7dcdfd9403877b27294c7afbb2a8ad216cf8e39a41284d6732c",
+      "raw_bytes": 20170,
+      "file": "page_005.json.gz"
+    },
+    {
+      "page": 6,
+      "rows": 30,
+      "raw_sha256": "df7bd8363312620eabbab4a32223637e9f00dd260b143cd22966ddf8719ae31f",
+      "raw_bytes": 20079,
+      "file": "page_006.json.gz"
+    },
+    {
+      "page": 7,
+      "rows": 30,
+      "raw_sha256": "b15943d99bd1abadf32a670e12e5fe0dfeeac1deb256ea4c0a7b43a65da58ddd",
+      "raw_bytes": 19090,
+      "file": "page_007.json.gz"
+    },
+    {
+      "page": 8,
+      "rows": 30,
+      "raw_sha256": "e79b1c5c3544d77d3e6e7bd897abeca0f6b50999cb213012566e1a447efeb315",
+      "raw_bytes": 19208,
+      "file": "page_008.json.gz"
+    },
+    {
+      "page": 9,
+      "rows": 30,
+      "raw_sha256": "06807137a151d25291e05504f7bd7248cc1aa57f7da2ea43ac892e41db9f308e",
+      "raw_bytes": 19064,
+      "file": "page_009.json.gz"
+    },
+    {
+      "page": 10,
+      "rows": 30,
+      "raw_sha256": "11d294eacea4e67c63eb2613bef7bf404fec8fb8a9e758c9cc442cbcc6e5480c",
+      "raw_bytes": 18604,
+      "file": "page_010.json.gz"
+    },
+    {
+      "page": 11,
+      "rows": 30,
+      "raw_sha256": "cf974cf8bf59f366a4249e86afd67b27cc5322ae1e36fb22f47e8f091b106bf0",
+      "raw_bytes": 19302,
+      "file": "page_011.json.gz"
+    },
+    {
+      "page": 12,
+      "rows": 30,
+      "raw_sha256": "4af3689daf83e3bf94d9850ab6d610a84d84981bbd982f46f7402f9eb9cd3c53",
+      "raw_bytes": 18724,
+      "file": "page_012.json.gz"
+    },
+    {
+      "page": 13,
+      "rows": 30,
+      "raw_sha256": "bfe3dc97fa3b045afe278ef82e10e8f7726d4ce22cba1d6601a3c897db96bd22",
+      "raw_bytes": 18830,
+      "file": "page_013.json.gz"
+    },
+    {
+      "page": 14,
+      "rows": 30,
+      "raw_sha256": "3be38ee05d5cefbd99d9bb17907fea0fb8d4536d5089a8ad75df46dfb8a0da5b",
+      "raw_bytes": 19146,
+      "file": "page_014.json.gz"
+    },
+    {
+      "page": 15,
+      "rows": 30,
+      "raw_sha256": "404eca1846db4ee727809c0834c0de8d5ea7cdeb2d8c187390bbf668001762eb",
+      "raw_bytes": 19170,
+      "file": "page_015.json.gz"
+    },
+    {
+      "page": 16,
+      "rows": 30,
+      "raw_sha256": "671218fb841759ec7a02570342b93301242cd463a233f002d2a13dce0a0ac2a1",
+      "raw_bytes": 18994,
+      "file": "page_016.json.gz"
+    },
+    {
+      "page": 17,
+      "rows": 30,
+      "raw_sha256": "7e247af4e55e17271e7d4ac186110f46b2dcd0ea7812eb8570f845759e800aad",
+      "raw_bytes": 19494,
+      "file": "page_017.json.gz"
+    },
+    {
+      "page": 18,
+      "rows": 1,
+      "raw_sha256": "3e9eae6edca4521189a09b2b6f0597589cbc99bec9f058a57a9de8ad990bece2",
+      "raw_bytes": 783,
+      "file": "page_018.json.gz"
+    }
+  ],
+  "all_notices_sha256": "8b22ce3ffab6c83582ffb7f721d8d5a727f8443821e29176b206e17f21ed3eae"
+}

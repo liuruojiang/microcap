@@ -1,0 +1,119 @@
+﻿date,rank,symbol,derived_short_name,derived_st_prefix,name_provenance,last_change_date,next_change_date,next_old_name,chain_break,official_ST_independently_proven,official_vs_derived_conflict,certification_block
+2010-01-04,1,002057,中钢天源,False,last_dated_change_new_name,2006-09-11,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,3,000803,金宇车城,False,last_dated_change_new_name,2006-10-09,2017-03-20,金宇车城,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,4,002034,美 欣 达,False,last_dated_change_new_name,2005-12-01,2018-01-05,美 欣 达,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,5,002020,京新药业,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,7,002175,广陆数测,False,last_dated_change_new_name,2007-10-15,2015-07-13,广陆数测,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,8,002136,安 纳 达,False,last_dated_change_new_name,2007-05-31,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,12,002141,蓉胜超微,False,last_dated_change_new_name,2007-07-23,2017-01-24,蓉胜超微,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,14,000705,浙江震元,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,15,002043,兔 宝 宝,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,16,002178,延华智能,False,last_dated_change_new_name,2007-11-02,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,17,002174,梅 花 伞,False,last_dated_change_new_name,2007-09-26,2014-06-05,梅 花 伞,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,18,000567,海德股份,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,19,002044,江苏三友,False,last_dated_change_new_name,2005-12-01,2016-01-08,江苏三友,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,24,002125,湘潭电化,False,last_dated_change_new_name,2007-04-04,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,25,002213,特 尔 佳,False,last_dated_change_new_name,2008-02-04,2020-08-28,特 尔 佳,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,26,000810,华润锦华,False,last_dated_change_new_name,2006-11-17,2014-11-11,华润锦华,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,27,002144,宏达经编,False,last_dated_change_new_name,2007-08-06,2010-08-11,宏达经编,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,28,000779,三毛派神,False,last_dated_change_new_name,2009-12-31,2014-04-18,三毛派神,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,29,002102,冠福家用,False,last_dated_change_new_name,2007-01-04,2012-04-26,冠福家用,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,30,000049,德赛电池,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,32,000610,西安旅游,False,last_dated_change_new_name,2006-10-09,2026-04-27,西安旅游,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,34,000411,英特集团,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,37,000801,四川湖山,False,last_dated_change_new_name,2006-10-09,2010-11-30,四川湖山,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,38,000915,山大华特,False,last_dated_change_new_name,2006-10-09,2021-04-28,山大华特,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,39,002201,九鼎新材,False,last_dated_change_new_name,2007-12-27,2021-11-11,九鼎新材,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,40,000590,紫光古汉,False,last_dated_change_new_name,2006-10-09,2015-05-04,紫光古汉,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,41,002036,宜科科技,False,last_dated_change_new_name,2005-12-01,2015-01-05,宜科科技,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,42,000665,武汉塑料,False,last_dated_change_new_name,2006-12-12,2012-12-11,武汉塑料,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,43,002195,海隆软件,False,last_dated_change_new_name,2007-12-13,2015-03-13,海隆软件,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,47,000721,西安饮食,False,last_dated_change_new_name,2007-03-05,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,50,002049,晶源电子,False,last_dated_change_new_name,2005-12-01,2012-07-23,晶源电子,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,51,000791,西北化工,False,last_dated_change_new_name,2007-03-09,2012-12-27,西北化工,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,52,002035,华帝股份,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,54,000815,美利纸业,False,last_dated_change_new_name,2006-10-09,2012-04-24,美利纸业,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,56,000560,昆百大Ａ,False,last_dated_change_new_name,2007-06-08,2018-05-02,昆百大Ａ,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,59,002188,新 嘉 联,False,last_dated_change_new_name,2007-11-23,2016-01-22,新 嘉 联,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,60,002173,山 下 湖,False,last_dated_change_new_name,2007-09-26,2012-07-02,山 下 湖,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,62,002112,三变科技,False,last_dated_change_new_name,2007-02-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,64,002120,新海股份,False,last_dated_change_new_name,2007-03-07,2017-01-18,新海股份,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,67,002098,浔兴股份,False,last_dated_change_new_name,2006-12-25,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,68,000626,如意集团,False,last_dated_change_new_name,2006-12-28,2016-10-25,如意集团,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,72,002046,轴研科技,False,last_dated_change_new_name,2005-12-01,2020-12-18,轴研科技,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,73,000923,河北宣工,False,last_dated_change_new_name,2008-05-05,2019-12-31,河北宣工,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,74,000010,S ST华新,True,last_dated_change_new_name,2007-03-21,2013-07-19,S ST华新,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,76,002150,江苏通润,False,last_dated_change_new_name,2007-08-13,2013-09-06,江苏通润,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,77,002159,三特索道,False,last_dated_change_new_name,2007-08-20,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,79,002189,利达光电,False,last_dated_change_new_name,2007-12-04,2019-06-28,利达光电,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,81,000702,正虹科技,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,82,002196,方正电机,False,last_dated_change_new_name,2007-12-13,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,83,002033,丽江旅游,False,last_dated_change_new_name,2005-12-01,2020-03-31,丽江旅游,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,85,002026,山东威达,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,88,000695,滨海能源,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,90,002198,嘉应制药,False,last_dated_change_new_name,2007-12-19,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,93,000790,华神集团,False,last_dated_change_new_name,2006-10-09,2016-09-27,华神集团,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,94,300025,华星创业,False,last_dated_change_new_name,2009-11-02,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,95,002101,广东鸿图,False,last_dated_change_new_name,2007-01-04,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,96,000710,天兴仪表,False,last_dated_change_new_name,2007-04-12,2017-03-01,天兴仪表,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-04,100,002193,山东如意,False,last_dated_change_new_name,2007-12-10,2017-06-12,山东如意,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,1,002057,中钢天源,False,last_dated_change_new_name,2006-09-11,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,2,000803,金宇车城,False,last_dated_change_new_name,2006-10-09,2017-03-20,金宇车城,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,3,002034,美 欣 达,False,last_dated_change_new_name,2005-12-01,2018-01-05,美 欣 达,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,5,002020,京新药业,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,7,002136,安 纳 达,False,last_dated_change_new_name,2007-05-31,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,8,002175,广陆数测,False,last_dated_change_new_name,2007-10-15,2015-07-13,广陆数测,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,12,000705,浙江震元,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,13,002141,蓉胜超微,False,last_dated_change_new_name,2007-07-23,2017-01-24,蓉胜超微,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,14,002174,梅 花 伞,False,last_dated_change_new_name,2007-09-26,2014-06-05,梅 花 伞,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,15,002043,兔 宝 宝,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,16,002178,延华智能,False,last_dated_change_new_name,2007-11-02,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,17,000779,三毛派神,False,last_dated_change_new_name,2009-12-31,2014-04-18,三毛派神,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,20,000526,旭飞投资,False,last_dated_change_new_name,2006-10-09,2012-03-29,旭飞投资,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,21,000810,华润锦华,False,last_dated_change_new_name,2006-11-17,2014-11-11,华润锦华,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,22,002102,冠福家用,False,last_dated_change_new_name,2007-01-04,2012-04-26,冠福家用,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,24,002125,湘潭电化,False,last_dated_change_new_name,2007-04-04,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,25,002044,江苏三友,False,last_dated_change_new_name,2005-12-01,2016-01-08,江苏三友,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,27,002213,特 尔 佳,False,last_dated_change_new_name,2008-02-04,2020-08-28,特 尔 佳,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,29,002144,宏达经编,False,last_dated_change_new_name,2007-08-06,2010-08-11,宏达经编,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,32,000567,海德股份,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,33,002035,华帝股份,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,34,000049,德赛电池,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,36,000791,西北化工,False,last_dated_change_new_name,2007-03-09,2012-12-27,西北化工,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,41,000411,英特集团,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,42,000610,西安旅游,False,last_dated_change_new_name,2006-10-09,2026-04-27,西安旅游,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,43,000590,紫光古汉,False,last_dated_change_new_name,2006-10-09,2015-05-04,紫光古汉,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,45,000721,西安饮食,False,last_dated_change_new_name,2007-03-05,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,46,000665,武汉塑料,False,last_dated_change_new_name,2006-12-12,2012-12-11,武汉塑料,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,47,002201,九鼎新材,False,last_dated_change_new_name,2007-12-27,2021-11-11,九鼎新材,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,48,000815,美利纸业,False,last_dated_change_new_name,2006-10-09,2012-04-24,美利纸业,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,52,000801,四川湖山,False,last_dated_change_new_name,2006-10-09,2010-11-30,四川湖山,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,53,002026,山东威达,False,last_dated_change_new_name,2005-12-01,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,54,000560,昆百大Ａ,False,last_dated_change_new_name,2007-06-08,2018-05-02,昆百大Ａ,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,56,002036,宜科科技,False,last_dated_change_new_name,2005-12-01,2015-01-05,宜科科技,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,57,002120,新海股份,False,last_dated_change_new_name,2007-03-07,2017-01-18,新海股份,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,58,002195,海隆软件,False,last_dated_change_new_name,2007-12-13,2015-03-13,海隆软件,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,63,000626,如意集团,False,last_dated_change_new_name,2006-12-28,2016-10-25,如意集团,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,64,000923,河北宣工,False,last_dated_change_new_name,2008-05-05,2019-12-31,河北宣工,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,67,000915,山大华特,False,last_dated_change_new_name,2006-10-09,2021-04-28,山大华特,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,68,002049,晶源电子,False,last_dated_change_new_name,2005-12-01,2012-07-23,晶源电子,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,69,000010,S ST华新,True,last_dated_change_new_name,2007-03-21,2013-07-19,S ST华新,False,True,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,70,002188,新 嘉 联,False,last_dated_change_new_name,2007-11-23,2016-01-22,新 嘉 联,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,72,000838,国兴地产,False,last_dated_change_new_name,2007-12-05,2012-04-05,国兴地产,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,74,002159,三特索道,False,last_dated_change_new_name,2007-08-20,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,75,002098,浔兴股份,False,last_dated_change_new_name,2006-12-25,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,76,002112,三变科技,False,last_dated_change_new_name,2007-02-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,77,000702,正虹科技,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,78,002173,山 下 湖,False,last_dated_change_new_name,2007-09-26,2012-07-02,山 下 湖,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,81,002150,江苏通润,False,last_dated_change_new_name,2007-08-13,2013-09-06,江苏通润,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,82,002198,嘉应制药,False,last_dated_change_new_name,2007-12-19,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,83,002046,轴研科技,False,last_dated_change_new_name,2005-12-01,2020-12-18,轴研科技,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,84,002196,方正电机,False,last_dated_change_new_name,2007-12-13,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,86,000663,永安林业,False,last_dated_change_new_name,2006-10-09,2020-05-06,永安林业,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,87,000019,深深宝Ａ,False,last_dated_change_new_name,2006-10-09,2019-02-28,深深宝Ａ,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,89,002033,丽江旅游,False,last_dated_change_new_name,2005-12-01,2020-03-31,丽江旅游,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,90,000967,上风高科,False,last_dated_change_new_name,2007-08-24,2016-03-02,上风高科,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,91,000695,滨海能源,False,last_dated_change_new_name,2006-10-09,,,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,92,002234,民和股份,False,last_dated_change_new_name,2008-05-19,2014-04-22,民和股份,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,98,000790,华神集团,False,last_dated_change_new_name,2006-10-09,2016-09-27,华神集团,False,False,False,no_exhaustiveness_or_raw_xlsx_proof
+2010-01-14,100,002245,澳洋顺昌,False,last_dated_change_new_name,2008-06-06,2020-12-14,澳洋顺昌,False,False,False,no_exhaustiveness_or_raw_xlsx_proof

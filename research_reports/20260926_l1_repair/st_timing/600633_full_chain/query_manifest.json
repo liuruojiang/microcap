@@ -1,0 +1,53 @@
+{
+  "url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "payload": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600633,gssh0600633",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2009-03-23~2011-09-29",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "total": 135,
+  "unique_ids": 135,
+  "pages": [
+    {
+      "page": 1,
+      "rows": 30,
+      "bytes": 20292,
+      "sha256": "d68ab0a1476f9bb3a6232eb5cc130634c9c1cea55cdafc19f847bf58bacc3246"
+    },
+    {
+      "page": 2,
+      "rows": 30,
+      "bytes": 19436,
+      "sha256": "492e2a3b39927cc538a352837572e6c258e0079bb625c346e303e5ef83c09ece"
+    },
+    {
+      "page": 3,
+      "rows": 30,
+      "bytes": 19777,
+      "sha256": "2abd193401674d2f84b2128ad9bfdf5984aed20d93afb59d17f503e94f187d98"
+    },
+    {
+      "page": 4,
+      "rows": 30,
+      "bytes": 19682,
+      "sha256": "718b66aaf4fd14c1dbb31e529b4601337fdd3d7ecbe9233b2d9a828883bc464f"
+    },
+    {
+      "page": 5,
+      "rows": 15,
+      "bytes": 9746,
+      "sha256": "6590189438d8e05f623d8e79b2a48a684588645803f6414bd0c2101c8844f94b"
+    }
+  ]
+}

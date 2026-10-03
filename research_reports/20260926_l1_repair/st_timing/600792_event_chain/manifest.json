@@ -1,0 +1,93 @@
+{
+  "params": {
+    "pageNum": "1",
+    "pageSize": "30",
+    "column": "sse",
+    "tabName": "fulltext",
+    "plate": "",
+    "stock": "600792,gssh0600792",
+    "searchkey": "",
+    "secid": "",
+    "category": "",
+    "trade": "",
+    "seDate": "2008-01-01~2012-12-31",
+    "sortName": "",
+    "sortType": "",
+    "isHLtitle": "true"
+  },
+  "total": 340,
+  "pages": [
+    {
+      "page": 1,
+      "rows": 30,
+      "sha256": "c2c4e8b9e8392cf20338fd27690b194e5976ae2a7af0cf3d49590f82c407b3a1",
+      "bytes": 20157
+    },
+    {
+      "page": 2,
+      "rows": 30,
+      "sha256": "fa47b9882cd49fb3dcb3f1278ca284d8f782a13d57c75468d403e25a762948f6",
+      "bytes": 19680
+    },
+    {
+      "page": 3,
+      "rows": 30,
+      "sha256": "656e6925ee758b83dd33ecdd7d0acdeb04ec2e2574a2dcb567a8720ba28f7576",
+      "bytes": 20254
+    },
+    {
+      "page": 4,
+      "rows": 30,
+      "sha256": "51210ea08c63759f5c3d9df3db47b27d9aa495b0ef3a00a62bd9a4037ea97b73",
+      "bytes": 19908
+    },
+    {
+      "page": 5,
+      "rows": 30,
+      "sha256": "cc48b27d5bba8fb0f3e99553bfb8556f7314ed3b381faf3db518ba5e60e06a61",
+      "bytes": 19676
+    },
+    {
+      "page": 6,
+      "rows": 30,
+      "sha256": "efee6a9be9972aa80c797e2b06135f13b3b27b5d5ca7690e8b3f53e0c079b9a7",
+      "bytes": 19377
+    },
+    {
+      "page": 7,
+      "rows": 30,
+      "sha256": "a412e6c4d2bff9f0f2ef2f59da8e71a958d11928d183bb707b3ca64777e5079c",
+      "bytes": 19845
+    },
+    {
+      "page": 8,
+      "rows": 30,
+      "sha256": "e379d711fe8e246f079df9c4576ca5e21734ea96c7c3cf09b515b3b1a7fb29a0",
+      "bytes": 19120
+    },
+    {
+      "page": 9,
+      "rows": 30,
+      "sha256": "9c866bebdc731be1807e59cc52a63fe2e40fbbd06c6cf0c6fff29a657c563a19",
+      "bytes": 19216
+    },
+    {
+      "page": 10,
+      "rows": 30,
+      "sha256": "444b96efc2e17123a847c9857c8817b5dc3627cf1bb0a0f559662831a72a6b39",
+      "bytes": 18868
+    },
+    {
+      "page": 11,
+      "rows": 30,
+      "sha256": "21284d60306719e47c343859fa6c657f4df65cc20d4be6d9ec3defc9c690f735",
+      "bytes": 19097
+    },
+    {
+      "page": 12,
+      "rows": 10,
+      "sha256": "9a89982e0eb4802ae454b5e26bf547db4bed387ccd9a6b59539931a672939530",
+      "bytes": 6490
+    }
+  ]
+}

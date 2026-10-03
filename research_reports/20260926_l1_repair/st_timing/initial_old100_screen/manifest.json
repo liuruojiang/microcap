@@ -1,0 +1,15 @@
+{
+  "scope": "BaoStock triage only; no formal status certification",
+  "run_utc": "2026-10-02T06:11:09.138721+00:00",
+  "input_sha256": {
+    "2010-01-04": "e667587245d9944950d858da78763ba6c4d06accdb083b799052828429acd9f4",
+    "2010-01-14": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+  },
+  "conditional_rank_sha256": "f2af7b41b8e5c50c99d3f74d8870d78ce7696606ba8163dc5f0b8366b7bab59f",
+  "symbols": 110,
+  "old_rows": 200,
+  "response_files": 110,
+  "response_error_symbols": [],
+  "response_missing_target_rows": [],
+  "raw_response_fingerprint": "da281fde4687f0c97567d9f454beed1e493384e65295647493ecde90817b36ae"
+}

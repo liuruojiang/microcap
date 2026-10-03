@@ -1,0 +1,124 @@
+{
+  "scope": "date_bounded_issuer_evidence_117_stock_paper_only",
+  "input_sha256": {
+    "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\data_recovery\\initial_formal_seed_caps.csv": "e667587245d9944950d858da78763ba6c4d06accdb083b799052828429acd9f4",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\data_recovery\\INITIAL_TWO_DATE_CLOSEOUT.csv": "18f3609ea6fd0d9c3b8d271ca0cb7374f292d5f7b8a23dced7faa3e0fe5a5189"
+  },
+  "2010-01-04": {
+    "issuer_date_bounded_ST_old_symbols": [
+      "000010",
+      "600080",
+      "600603",
+      "600617",
+      "600633",
+      "600792"
+    ],
+    "baseline_additions_in_117_top100": 12,
+    "removed_old_ST_in_baseline_top100": [
+      "000010",
+      "600603",
+      "600617",
+      "600633",
+      "600792"
+    ],
+    "old_removed_ST_but_already_outside_baseline_top100": [
+      "600080"
+    ],
+    "additions_in_conditional_top100": 14,
+    "old_original_symbols_absent": 14,
+    "conditional_cutoff_rmb": "1845800000.0",
+    "replacements_entering_vs_baseline": [
+      "002198",
+      "600137",
+      "600433",
+      "600466",
+      "600856"
+    ],
+    "baseline_members_exiting_due_to_ST": [
+      "000010",
+      "600603",
+      "600617",
+      "600633",
+      "600792"
+    ],
+    "external_additions_in_conditional_top100": [
+      "000023",
+      "002013",
+      "002071",
+      "002113",
+      "002260",
+      "600070",
+      "600355",
+      "600466",
+      "600532",
+      "600634",
+      "600647",
+      "600687",
+      "600766",
+      "600856"
+    ],
+    "warning": "Not the complete point-in-time universe or executable NAV."
+  },
+  "2010-01-14": {
+    "issuer_date_bounded_ST_old_symbols": [
+      "000010",
+      "600080",
+      "600180",
+      "600603",
+      "600617",
+      "600633",
+      "600792"
+    ],
+    "baseline_additions_in_117_top100": 14,
+    "removed_old_ST_in_baseline_top100": [
+      "000010",
+      "600080",
+      "600180",
+      "600603",
+      "600617",
+      "600633",
+      "600792"
+    ],
+    "old_removed_ST_but_already_outside_baseline_top100": [],
+    "additions_in_conditional_top100": 15,
+    "old_original_symbols_absent": 15,
+    "conditional_cutoff_rmb": "1913500000.0",
+    "replacements_entering_vs_baseline": [
+      "000019",
+      "000695",
+      "000967",
+      "002033",
+      "002234",
+      "600355",
+      "600985"
+    ],
+    "baseline_members_exiting_due_to_ST": [
+      "000010",
+      "600080",
+      "600180",
+      "600603",
+      "600617",
+      "600633",
+      "600792"
+    ],
+    "external_additions_in_conditional_top100": [
+      "000023",
+      "002071",
+      "002113",
+      "002260",
+      "600070",
+      "600077",
+      "600213",
+      "600355",
+      "600466",
+      "600532",
+      "600634",
+      "600647",
+      "600687",
+      "600766",
+      "600856"
+    ],
+    "warning": "Not the complete point-in-time universe or executable NAV."
+  }
+}

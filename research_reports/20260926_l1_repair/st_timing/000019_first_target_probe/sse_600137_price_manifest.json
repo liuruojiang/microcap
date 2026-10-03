@@ -1,0 +1,22 @@
+[
+  {
+    "day": "2010-01-04",
+    "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600137&inMonth=201001&inYear=2010&searchDate=2010-01-04",
+    "response_sha256": "7e91ecdd753773f745ddd9fb5141451c6781246fd1481fc605e2c9b7fbffcec6",
+    "response_bytes": 4125,
+    "price": "18.9",
+    "issuer_q3_shares": "97217588",
+    "calculated_cap_rmb": "1837412413.2",
+    "sse_close_market_value_10k_rmb": 183741.24
+  },
+  {
+    "day": "2010-01-14",
+    "request_url": "https://query.sse.com.cn/security/fund/queryNewAllQuatAbel.do?jsonCallBack=jsonpCallbackProbe&FUNDID=600137&inMonth=201001&inYear=2010&searchDate=2010-01-14",
+    "response_sha256": "a3a2fa13d90ac964ab80a319494925d1a74b6955dd3cd049f9130b794349f60b",
+    "response_bytes": 4122,
+    "price": "20.05",
+    "issuer_q3_shares": "97217588",
+    "calculated_cap_rmb": "1949212639.40",
+    "sse_close_market_value_10k_rmb": 194921.26
+  }
+]

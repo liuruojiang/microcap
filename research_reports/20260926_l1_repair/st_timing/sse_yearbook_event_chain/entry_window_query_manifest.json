@@ -1,0 +1,161 @@
+[
+  {
+    "code": "600633",
+    "payload": {
+      "pageNum": "1",
+      "pageSize": "30",
+      "column": "sse",
+      "tabName": "fulltext",
+      "plate": "",
+      "stock": "600633,gssh0600633",
+      "searchkey": "",
+      "secid": "",
+      "category": "",
+      "trade": "",
+      "seDate": "2009-03-20~2009-03-25",
+      "sortName": "",
+      "sortType": "",
+      "isHLtitle": "true"
+    },
+    "raw_file": "cninfo_600633_entry_window.json.gz",
+    "raw_sha256": "de0fbe3672ab851d6ffdcd57c99ba495d4a7f3d43884de53de5924ac2f4cf975",
+    "notices": [
+      {
+        "id": "50424637",
+        "title": "关于公司股票将实施退市风险警示的公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-23/50424637.PDF"
+      },
+      {
+        "id": "50418713",
+        "title": "董事会审计委员会年报工作规程",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50418713.PDF"
+      },
+      {
+        "id": "50418712",
+        "title": "关联方资金往来审核报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50418712.PDF"
+      },
+      {
+        "id": "50418711",
+        "title": "第五届监事会第二十次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50418711.PDF"
+      },
+      {
+        "id": "50418710",
+        "title": "日常关联交易公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50418710.PDF"
+      },
+      {
+        "id": "50418709",
+        "title": "第五届董事会第二十六次会议决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50418709.PDF"
+      },
+      {
+        "id": "50417744",
+        "title": "2008年年度报告摘要",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50417744.PDF"
+      },
+      {
+        "id": "50417743",
+        "title": "2008年年度报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-21/50417743.PDF"
+      }
+    ]
+  },
+  {
+    "code": "600617",
+    "payload": {
+      "pageNum": "1",
+      "pageSize": "30",
+      "column": "sse",
+      "tabName": "fulltext",
+      "plate": "",
+      "stock": "600617,gssh0600617",
+      "searchkey": "",
+      "secid": "",
+      "category": "",
+      "trade": "",
+      "seDate": "2009-04-27~2009-05-01",
+      "sortName": "",
+      "sortType": "",
+      "isHLtitle": "true"
+    },
+    "raw_file": "cninfo_600617_entry_window.json.gz",
+    "raw_sha256": "e63980d040724b16c027bafaf228fb5edf8387ed1f95df9928eef450ec05e7bb",
+    "notices": [
+      {
+        "id": "51947728",
+        "title": "董事会审计委员会年度财务报告审议工作规程",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51947728.PDF"
+      },
+      {
+        "id": "51947727",
+        "title": "2008年度与关联方资金往来的专项审计报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51947727.PDF"
+      },
+      {
+        "id": "51947726",
+        "title": "关于股票交易实行其他特别处理的公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51947726.PDF"
+      },
+      {
+        "id": "51947725",
+        "title": "五届十一次监事会决议公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51947725.PDF"
+      },
+      {
+        "id": "51947724",
+        "title": "五届三十一次董事会决议公告暨召开2008年年度股东大会的通知",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51947724.PDF"
+      },
+      {
+        "id": "51940482",
+        "title": "2009年第一季度报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51940482.PDF"
+      },
+      {
+        "id": "51939449",
+        "title": "2008年年度报告摘要",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51939449.PDF"
+      },
+      {
+        "id": "51939448",
+        "title": "2008年年度报告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-04-29/51939448.PDF"
+      }
+    ]
+  },
+  {
+    "code": "600792",
+    "payload": {
+      "pageNum": "1",
+      "pageSize": "30",
+      "column": "sse",
+      "tabName": "fulltext",
+      "plate": "",
+      "stock": "600792,gssh0600792",
+      "searchkey": "",
+      "secid": "",
+      "category": "",
+      "trade": "",
+      "seDate": "2009-03-17~2009-03-21",
+      "sortName": "",
+      "sortType": "",
+      "isHLtitle": "true"
+    },
+    "raw_file": "cninfo_600792_entry_window.json.gz",
+    "raw_sha256": "3c7ce2c859f66535bfbc66b5cc4eeabb3dd86f683505981555fbe5528a34a491",
+    "notices": [
+      {
+        "id": "50320908",
+        "title": "2009年一季度业绩预亏公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-19/50320908.PDF"
+      },
+      {
+        "id": "50320907",
+        "title": "撤销“退市风险警示”特别处理、实施其他特别处理公告",
+        "url": "https://static.cninfo.com.cn/finalpage/2009-03-19/50320907.PDF"
+      }
+    ]
+  }
+]
