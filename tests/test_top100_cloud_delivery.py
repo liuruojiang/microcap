@@ -96,9 +96,12 @@ def test_pack_accepts_long_holiday_when_anchors_match_completed_session(
     workspace, monkeypatch, completed_text, today_text
 ):
     from datetime import date
+    from scripts import exchange_calendar
 
     completed = date.fromisoformat(completed_text)
     previous = completed - date.resolution
+    monkeypatch.setattr(exchange_calendar, "sessions_for_day",
+                        lambda _day: (previous, completed))
     for path in workspace.rglob("*"):
         if path.is_file():
             payload = path.read_bytes()

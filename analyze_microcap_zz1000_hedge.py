@@ -305,11 +305,11 @@ def calc_metrics(ret: pd.Series) -> Metrics:
         raise ValueError("Return series is empty.")
 
     nav = (1.0 + ret).cumprod()
-    years = (ret.index[-1] - ret.index[0]).days / 365.25
-    annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else np.nan
+    years = len(ret) / CN_TRADING_DAYS
+    annual = nav.iloc[-1] ** (1.0 / years) - 1.0
     vol = ret.std(ddof=1) * np.sqrt(CN_TRADING_DAYS)
     sharpe = annual / vol if pd.notna(vol) and vol > 0 else np.nan
-    max_dd = ((nav - nav.cummax()) / nav.cummax()).min()
+    max_dd = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0).min()
     calmar = annual / abs(max_dd) if pd.notna(max_dd) and max_dd != 0 else np.nan
     total_return = nav.iloc[-1] - 1.0
     monthly = ret.groupby(ret.index.to_period("M")).apply(lambda x: (1.0 + x).prod() - 1.0)

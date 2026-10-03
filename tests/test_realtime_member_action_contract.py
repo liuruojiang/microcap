@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from datetime import date
 
 import pandas as pd
 import pytest
@@ -95,6 +96,23 @@ def test_close_confirmed_rows_publish_dated_member_contract(
     assert row["member_rebalance_execution_date"] == "2026-08-07"
     assert bool(row["member_rebalance_actionable"]) is expected_actionable
     assert bool(row["member_rebalance_official"]) is True
+
+
+def test_close_confirmed_rebalance_on_last_history_day_uses_next_exchange_session(monkeypatch):
+    from scripts import exchange_calendar
+
+    monkeypatch.setattr(exchange_calendar, "sessions_for_day",
+                        lambda _day: (date(2026, 9, 3), date(2026, 9, 4)))
+    signal = pd.DataFrame([{"date": "2026-09-03", "member_rebalance_required": True}])
+    turnover = pd.DataFrame({"rebalance_date": ["2026-08-20", "2026-09-03"]})
+    history_through_close = pd.DatetimeIndex(["2026-09-02", "2026-09-03"])
+
+    row = v2_0.augment_close_confirmed_signal_with_member_contract(
+        signal, turnover, history_through_close,
+    ).iloc[0]
+
+    assert row["member_rebalance_execution_date"] == "2026-09-04"
+    assert bool(row["member_rebalance_actionable"])
 
 
 def _fake_realtime_base(

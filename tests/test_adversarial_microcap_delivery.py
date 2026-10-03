@@ -88,6 +88,11 @@ def test_windows_case_aliases_rejected_before_any_extract():
 def test_verify_release_fetches_remote_object_not_present_locally(workspace, monkeypatch):
     fetched = []
     sha = "b" * 40
+    for name in delivery.RELEASE_FILES:
+        path = workspace / name
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("approved\n", encoding="utf-8")
     def check_output(args, **kw):
         if args[1] == "ls-remote":
             return sha + "\trefs/heads/main\n"
