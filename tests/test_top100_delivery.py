@@ -1,3 +1,4 @@
+import csv
 import json
 import subprocess
 from datetime import datetime
@@ -12,6 +13,19 @@ def write(root, name, content):
     path = root / name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def change_csv_cell(path, field, value):
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = reader.fieldnames
+        rows = list(reader)
+    assert fieldnames and rows and field in fieldnames
+    rows[-1][field] = value
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 @pytest.fixture
@@ -56,28 +70,32 @@ def workspace(tmp_path):
                                             "expected_latest_rebalance_date": "2026-09-03"}}
         if version == "0":
             summary.update(strategy_revision=delivery.V20_STRATEGY_REVISION, core_params={
+                "lookback": 16, "fixed_hedge_ratio": .8,
                 "momentum_gap_exit_buffer": 0., "target_volatility_scaling": {"enabled": False},
                 "overheat_defense": {"enabled": False}})
         if version == "3":
             summary.update(strategy_revision=delivery.V23_STRATEGY_REVISION, core_params={
-                "signal_model": {"r2_entry_gate": 0.},
-                "overheat_defense": {"trigger_threshold": .26, "recovery_threshold": .20}})
+                "signal_model": {"lookback": 25, "halflife": 2.5, "r2_entry_gate": 0.},
+                "execution_hedge_ratio": .8,
+                "overheat_defense": {"enabled": True, "feature_window": 10,
+                                     "trigger_threshold": .26, "recovery_threshold": .20}})
         if version == "5":
             summary.update(strategy_revision=delivery.V25_STRATEGY_REVISION, core_params={
                 "signal_model": {"lookback": 20, "halflife": 3.0},
                 "entry_threshold": 0.0, "exit_threshold": 0.0,
+                "overheat_overlay": {"enabled": False},
                 "target_volatility_scaling": {"enabled": False}})
         write(tmp_path, f"outputs/{prefix}_summary.json", json.dumps(summary))
-        identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,current_execution_scale,next_session_actionable_scale"
-        identity = f",{delivery.V20_STRATEGY_REVISION},False,False,1.0,1.0"
+        identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,lookback,fixed_hedge_ratio,current_execution_scale,next_session_actionable_scale"
+        identity = f",{delivery.V20_STRATEGY_REVISION},False,False,16,0.8,1.0,1.0"
         if version == "3":
-            identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,r2_entry_gate,overheat_trigger_threshold,overheat_recovery_threshold"
-                               ",signal_spread_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
-            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,0.0,0.26,0.20,1.0,0.0,0.08,False,False"
+            identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,overheat_enabled,lookback,halflife,r2_entry_gate,overheat_feature_window,overheat_trigger_threshold,overheat_recovery_threshold"
+                               ",signal_spread_hedge_ratio,execution_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
+            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,True,25,2.5,0.0,10,0.26,0.20,1.0,0.8,0.0,0.08,False,False"
         if version == "5":
-            identity_header = (",strategy_revision,target_vol_enabled,cash_day_yield_enabled,financing_enabled,lookback,halflife"
+            identity_header = (",strategy_revision,target_vol_enabled,overheat_enabled,cash_day_yield_enabled,financing_enabled,lookback,halflife"
                                ",entry_threshold,exit_threshold,signal_spread_hedge_ratio,execution_hedge_ratio")
-            identity = f",{delivery.V25_STRATEGY_REVISION},False,False,False,20,3.0,0.0,0.0,0.0,0.0"
+            identity = f",{delivery.V25_STRATEGY_REVISION},False,False,False,False,20,3.0,0.0,0.0,0.0,0.0"
         for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv"):
             content = daily
             if version in ("0", "3", "5") and not name.endswith("performance_nav.csv"):
@@ -360,3 +378,31 @@ def test_same_day_proof_cannot_hide_changed_input(workspace):
     path = workspace / "outputs" / delivery.BASE_PANEL
     path.write_text(path.read_text() + "\n")
     assert delivery.reusable_confirmed_today(workspace, datetime.fromisoformat("2026-09-03T15:36:00+08:00")) is None
+
+
+@pytest.mark.parametrize("version,suffix,field,bad", [
+    ("0", "latest_signal", "lookback", "17"),
+    ("3", "nav", "execution_hedge_ratio", "0.7"),
+    ("3", "latest_signal", "overheat_enabled", ""),
+    ("5", "latest_signal", "overheat_enabled", "True"),
+])
+def test_final_stream_rejects_parameter_identity_drift(workspace, version, suffix, field, bad):
+    certify(workspace)
+    path = workspace / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_{suffix}.csv"
+    change_csv_cell(path, field, bad)
+    assert not delivery.inspect_outputs(workspace, "2026-09-03")["ok"]
+
+
+@pytest.mark.parametrize("version,group,field,bad", [
+    ("0", "core_params", "fixed_hedge_ratio", 0.7),
+    ("3", "signal_model", "halflife", 3.0),
+    ("5", "overheat_overlay", "enabled", True),
+])
+def test_summary_rejects_parameter_identity_drift(workspace, version, group, field, bad):
+    certify(workspace)
+    path = workspace / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json"
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    target = summary["core_params"] if group == "core_params" else summary["core_params"][group]
+    target[field] = bad
+    path.write_text(json.dumps(summary), encoding="utf-8")
+    assert not delivery.inspect_outputs(workspace, "2026-09-03")["ok"]

@@ -33,17 +33,23 @@ def plain_v23_identity(row: dict) -> bool:
         return (row.get("strategy_revision") == V23_STRATEGY_REVISION
                 and str(row.get("target_vol_enabled")) == "False"
                 and str(row.get("r2_gate_enabled")) == "False"
+                and all(str(row[key]) == "True" for key in ("overheat_enabled", "overheat_overlay_enabled")
+                        if key in row)
                 and str(row.get("cash_day_yield_enabled")) == "False"
                 and str(row.get("financing_enabled")) == "False"
+                and float(row.get("lookback", -1)) == 25.
+                and float(row.get("halflife", -1)) == 2.5
                 and float(row.get("r2_entry_gate", -1)) == 0.
                 and float(row.get("signal_spread_hedge_ratio", -1)) == 1.
+                and float(row.get("execution_hedge_ratio", -1)) == .8
                 and abs(float(row.get("momentum_gap_exit_buffer", -1)) - .08) < 1e-12
                 # NAV and final signal use these two established entry aliases.
                 and any(key in row for key in ("entry_threshold", "momentum_gap_entry_threshold"))
                 and all(float(row[key]) == 0. for key in ("entry_threshold", "momentum_gap_entry_threshold")
                         if key in row)
                 and abs(float(row.get("overheat_trigger_threshold", -1)) - .26) < 1e-12
-                and abs(float(row.get("overheat_recovery_threshold", -1)) - .20) < 1e-12)
+                and abs(float(row.get("overheat_recovery_threshold", -1)) - .20) < 1e-12
+                and float(row.get("overheat_feature_window", -1)) == 10.)
     except (TypeError, ValueError):
         return False
 
@@ -54,6 +60,8 @@ def plain_v20_identity(row: dict) -> bool:
         return (row.get("strategy_revision") == V20_STRATEGY_REVISION
                 and str(row.get("target_vol_enabled")) == "False"
                 and str(row.get("overheat_enabled")) == "False"
+                and ("lookback" not in row or float(row["lookback"]) == 16.)
+                and ("fixed_hedge_ratio" not in row or float(row["fixed_hedge_ratio"]) == .8)
                 and float(row.get("current_execution_scale", -1)) in (0., 1.)
                 and float(row.get("next_session_actionable_scale", -1)) in (0., 1.))
     except (TypeError, ValueError):
@@ -66,6 +74,8 @@ def plain_v25_identity(row: dict) -> bool:
         return (
             row.get("strategy_revision") == V25_STRATEGY_REVISION
             and str(row.get("target_vol_enabled")) == "False"
+            and all(str(row[key]) == "False" for key in ("overheat_enabled", "overheat_overlay_enabled")
+                    if key in row)
             and str(row.get("cash_day_yield_enabled")) == "False"
             and str(row.get("financing_enabled")) == "False"
             and float(row.get("lookback", -1)) == 20.0
@@ -205,16 +215,25 @@ def inspect_outputs(root: Path, expected: str) -> dict:
             if v == "0":
                 params = summary.get("core_params", {})
                 if (summary.get("strategy_revision") != V20_STRATEGY_REVISION or
+                        params.get("lookback") != 16 or
+                        params.get("fixed_hedge_ratio") != .8 or
                         params.get("momentum_gap_exit_buffer") != 0 or
                         params.get("target_volatility_scaling", {}).get("enabled") is not False or
                         params.get("overheat_defense", {}).get("enabled") is not False):
                     errors.append("v2.0 summary plain revision mismatch")
             if v == "3":
                 params = summary.get("core_params", {})
+                signal_model = params.get("signal_model", {})
+                overheat = params.get("overheat_defense", {})
                 if (summary.get("strategy_revision") != V23_STRATEGY_REVISION or
-                        params.get("signal_model", {}).get("r2_entry_gate") != 0 or
-                        params.get("overheat_defense", {}).get("trigger_threshold") != .26 or
-                        params.get("overheat_defense", {}).get("recovery_threshold") != .20):
+                        signal_model.get("lookback") != 25 or
+                        signal_model.get("halflife") != 2.5 or
+                        signal_model.get("r2_entry_gate") != 0 or
+                        params.get("execution_hedge_ratio") != .8 or
+                        overheat.get("enabled") is not True or
+                        overheat.get("feature_window") != 10 or
+                        overheat.get("trigger_threshold") != .26 or
+                        overheat.get("recovery_threshold") != .20):
                     errors.append("v2.3 summary plain revision mismatch")
             if v == "5":
                 params = summary.get("core_params", {})
@@ -224,6 +243,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                         signal_model.get("halflife") != 3.0 or
                         params.get("entry_threshold") != 0.0 or
                         params.get("exit_threshold") != 0.0 or
+                        params.get("overheat_overlay", {}).get("enabled") is not False or
                         params.get("target_volatility_scaling", {}).get("enabled") is not False):
                     errors.append("v2.5 plain revision mismatch")
             if summary.get("historical_rewrite_audit", {}).get("status") != "clean":
@@ -255,6 +275,13 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                 if name.endswith("latest_signal.csv"):
                     if len(rows) != 1 or rows[0].get("version") != f"2.{v}":
                         errors.append(f"v2.{v} final CSV identity mismatch")
+                    if v == "0" and (rows[0].get("lookback") != "16" or
+                                     float(rows[0].get("fixed_hedge_ratio", -1)) != .8):
+                        errors.append("v2.0 final lookback/hedge identity mismatch")
+                    if v == "3" and rows[0].get("overheat_enabled") != "True":
+                        errors.append("v2.3 final overheat enabled identity mismatch")
+                    if v == "5" and rows[0].get("overheat_enabled") != "False":
+                        errors.append("v2.5 final overheat disabled identity mismatch")
                     # Member instructions must carry explicit dated action fields.
                     if any(rows[0].get(key) not in ("True", "False") for key in (
                             "member_rebalance_actionable", "member_rebalance_required", "member_rebalance_official")):

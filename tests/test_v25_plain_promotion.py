@@ -35,6 +35,7 @@ def test_delivery_identity_rejects_retired_v25_line() -> None:
     row = {
         "strategy_revision": delivery.V25_STRATEGY_REVISION,
         "target_vol_enabled": "False",
+        "overheat_enabled": "False",
         "cash_day_yield_enabled": "False",
         "financing_enabled": "False",
         "lookback": 20,
