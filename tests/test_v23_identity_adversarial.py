@@ -9,14 +9,18 @@ from scripts import top100_delivery as delivery
 
 def _identity():
     return dict(strategy_revision=delivery.V23_STRATEGY_REVISION,
-                target_vol_enabled="False", r2_gate_enabled="False", r2_entry_gate="0",
-                overheat_trigger_threshold=".26", overheat_recovery_threshold=".20",
-                signal_spread_hedge_ratio="1", momentum_gap_entry_threshold="0",
+                target_vol_enabled="False", r2_gate_enabled="False", overheat_enabled="True",
+                lookback="25", halflife="2.5", r2_entry_gate="0",
+                overheat_feature_window="10", overheat_trigger_threshold=".26",
+                overheat_recovery_threshold=".20", signal_spread_hedge_ratio="1",
+                execution_hedge_ratio=".8", momentum_gap_entry_threshold="0",
                 momentum_gap_exit_buffer=".08", cash_day_yield_enabled="False", financing_enabled="False")
 
 
 @pytest.mark.parametrize("field,bad", [
     ("r2_gate_enabled", "True"), ("signal_spread_hedge_ratio", ".8"),
+    ("lookback", "26"), ("halflife", "3"), ("execution_hedge_ratio", ".7"),
+    ("overheat_feature_window", "9"), ("overheat_enabled", "False"),
     ("momentum_gap_entry_threshold", ".9"), ("momentum_gap_exit_buffer", ".09"),
     ("cash_day_yield_enabled", "True"), ("financing_enabled", "True"),
 ])
@@ -26,7 +30,11 @@ def test_missing_and_contradictory_v23_parameter_rejected(field, bad):
     row[field] = bad
     assert not delivery.plain_v23_identity(row)
     row.pop(field)
-    assert not delivery.plain_v23_identity(row)
+    if field == "overheat_enabled":
+        # NAV rows omit this flag; the final one-row signal is checked separately.
+        assert delivery.plain_v23_identity(row)
+    else:
+        assert not delivery.plain_v23_identity(row)
 
 
 def test_nav_entry_alias_supported_but_contradiction_rejected():

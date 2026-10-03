@@ -2021,6 +2021,8 @@ TOP_N = 100
 SECURITY_META_VERSION = 2
 ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
+# Both exchanges raised main-board ST limits from 5% to 10% on this date.
+MAINBOARD_ST_LIMIT_SWITCH = pd.Timestamp("2026-07-06")
 LIMIT_PRICE_REL_EPS = 1e-4
 SCHEDULES = {
     "monthly": "month_start",
@@ -3021,16 +3023,17 @@ def round_limit_price(value: float) -> float:
 
 def get_price_limit_ratio(symbol: str, trade_date: pd.Timestamp, is_st: bool = False) -> float:
     code = str(symbol).zfill(6)
+    day = pd.Timestamp(trade_date)
     if code.startswith(("4", "8", "920")):
         return 0.3
-    if is_st and code.startswith(("300", "301")) and pd.Timestamp(trade_date) < CHINEXT_LIMIT_SWITCH:
+    if is_st and code.startswith(("300", "301")) and day < CHINEXT_LIMIT_SWITCH:
         return 0.05
     if code.startswith(("300", "301")):
-        return 0.2 if pd.Timestamp(trade_date) >= CHINEXT_LIMIT_SWITCH else 0.1
+        return 0.2 if day >= CHINEXT_LIMIT_SWITCH else 0.1
     if code.startswith("688"):
         return 0.2
     if is_st:
-        return 0.05
+        return 0.1 if day >= MAINBOARD_ST_LIMIT_SWITCH else 0.05
     return 0.1
 
 
@@ -11775,6 +11778,14 @@ def augment_close_confirmed_signal_with_member_contract(
         later_sessions = calendar[calendar > latest_rebalance]
         if len(later_sessions):
             execution_date = pd.Timestamp(later_sessions[0])
+        elif latest_rebalance == signal_date:
+            # The close-confirmed NAV ends today and has no future session.
+            from scripts.exchange_calendar import sessions_for_day
+
+            future = [day for day in sessions_for_day(signal_date.date()) if day > signal_date.date()]
+            if not future:
+                raise RuntimeError("independent exchange calendar has no next execution session")
+            execution_date = pd.Timestamp(future[0])
 
     required = _safe_bool(out.iloc[0].get("member_rebalance_required"), False)
     official = bool(pd.notna(latest_rebalance))
@@ -13889,7 +13900,7 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     if ret.empty:
         raise ValueError("empty return series")
     nav = (1.0 + ret).cumprod()
-    years = (ret.index[-1] - ret.index[0]).days / 365.25
+    years = len(ret) / TARGET_VOL_TRADING_DAYS
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
     vol = ret.std(ddof=1) * (TARGET_VOL_TRADING_DAYS**0.5)
     sharpe = annual / vol if vol > 0 else 0.0
@@ -13972,7 +13983,7 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
         if part.empty:
             continue
         nav = (1.0 + part).cumprod()
-        years = (part.index[-1] - part.index[0]).days / 365.25
+        years = len(part) / TARGET_VOL_TRADING_DAYS
         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
         vol = part.std(ddof=1) * (TARGET_VOL_TRADING_DAYS**0.5)
         sharpe = annual / vol if vol > 0 else 0.0

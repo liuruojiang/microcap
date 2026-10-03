@@ -1466,12 +1466,12 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
     if ret.empty:
         raise ValueError("empty return series")
     nav = (1.0 + ret).cumprod()
-    years = (ret.index[-1] - ret.index[0]).days / 365.25
+    years = len(ret) / TRADING_DAYS
     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
     vol = ret.std(ddof=1) * (TRADING_DAYS**0.5)
     sharpe_cagr = annual / vol if vol > 0 else 0.0
     sharpe_mean = ret.mean() * TRADING_DAYS / vol if vol > 0 else 0.0
-    drawdown = nav.div(nav.cummax()).sub(1.0)
+    drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
     return {
         "start_date": str(pd.Timestamp(ret.index[0]).date()),
         "end_date": str(pd.Timestamp(ret.index[-1]).date()),
@@ -1549,10 +1549,10 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
         if part.empty:
             continue
         nav = (1.0 + part).cumprod()
-        years = (part.index[-1] - part.index[0]).days / 365.25
+        years = len(part) / TRADING_DAYS
         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
         vol = part.std(ddof=1) * (TRADING_DAYS**0.5)
-        drawdown = nav.div(nav.cummax()).sub(1.0)
+        drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
         rows.append(
             {
                 "year": str(year),
