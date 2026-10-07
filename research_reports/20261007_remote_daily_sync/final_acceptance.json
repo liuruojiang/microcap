@@ -1,0 +1,144 @@
+{
+  "completed_beijing": "2026-10-07T22:08:33.400766+08:00",
+  "scope": "code_state_and_daily_generation_sync",
+  "strategy_pin_sha": "501b269b9f51a83f05f3b71488143b4da285cd0b",
+  "automation_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f",
+  "cloud_run_id": 37631244056,
+  "cloud_run_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/37631244056",
+  "latest_completed_session": "2026-09-30",
+  "local_whole_delivery_check": true,
+  "local_daily_sync_recovery_route": true,
+  "local_official_close_commands_and_digest_preview": true,
+  "local_daily_gate_tests": {
+    "passed": 173,
+    "failed": 0,
+    "seconds": 33.27
+  },
+  "local_automation_status": "ACTIVE",
+  "local_schedule_preserved": true,
+  "cloud_workflow_success": true,
+  "cloud_independent_bundle_readback": true,
+  "cloud_test_counts": {
+    "automation": {
+      "tests": 127,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 127
+    },
+    "strategy": {
+      "tests": 449,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 448
+    }
+  },
+  "cloud_cold_checkout_skips": [
+    {
+      "test": "tests.test_v23_identity_adversarial.test_real_v23_written_nav_and_signal_identity_when_available",
+      "reason": "real local v2.3 artifacts unavailable; synthetic identity tests still run"
+    }
+  ],
+  "later_real_v23_identity_verified": true,
+  "all_source_and_base_input_hashes_equal": true,
+  "bundle_files_verified": 14982,
+  "version_economics_and_actions_equal": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "all_holdings_and_version_rows_equal": true,
+      "all_final_csv_authoritative_fields_equal": true,
+      "final_csv_identity_and_member_action_fields": {
+        "date": "2026-09-30",
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "current_holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "all_holdings_and_version_rows_equal": true,
+      "all_final_csv_authoritative_fields_equal": true,
+      "final_csv_identity_and_member_action_fields": {
+        "date": "2026-09-30",
+        "version": "2.3",
+        "strategy_version": "v2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "current_holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "open",
+        "current_execution_scale": "0.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "all_holdings_and_version_rows_equal": true,
+      "all_final_csv_authoritative_fields_equal": true,
+      "final_csv_identity_and_member_action_fields": {
+        "date": "2026-09-30",
+        "version": "2.5",
+        "strategy_version": "v2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    }
+  },
+  "historical_paths_unchanged_after_formal_refresh": true,
+  "sent_email": false,
+  "smtp_and_delivery_marker_steps": "skipped_under_validation_only",
+  "delivered_message": null,
+  "normal_daily_holiday_gate_preserved": true,
+  "real_time_signal_generated": false,
+  "actual_orders": false
+}

@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "scope": "whole_workspace_delivery_independent_cloud_readback",
+  "run_id": 37631244056,
+  "strategy_sha": "501b269b9f51a83f05f3b71488143b4da285cd0b",
+  "automation_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f",
+  "expected_date": "2026-09-30",
+  "cloud_tests": {
+    "automation": {
+      "tests": 127,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 127
+    },
+    "strategy": {
+      "tests": 449,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 448
+    }
+  },
+  "cold_checkout_skips": [
+    {
+      "test": "tests.test_v23_identity_adversarial.test_real_v23_written_nav_and_signal_identity_when_available",
+      "reason": "real local v2.3 artifacts unavailable; synthetic identity tests still run"
+    }
+  ],
+  "later_real_v23_artifacts_independently_identity_validated": true,
+  "cloud_digest_status": "OK",
+  "cloud_digest_signal_date": "2026-09-30",
+  "all_base_and_source_input_hashes_equal": true,
+  "bundle_file_hashes_verified": 14982,
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "all_holdings_and_version_rows_equal": true,
+      "all_final_csv_authoritative_fields_equal": true,
+      "final_csv_identity_and_member_action_fields": {
+        "date": "2026-09-30",
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "current_holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "all_holdings_and_version_rows_equal": true,
+      "all_final_csv_authoritative_fields_equal": true,
+      "final_csv_identity_and_member_action_fields": {
+        "date": "2026-09-30",
+        "version": "2.3",
+        "strategy_version": "v2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "current_holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "open",
+        "current_execution_scale": "0.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "all_holdings_and_version_rows_equal": true,
+      "all_final_csv_authoritative_fields_equal": true,
+      "final_csv_identity_and_member_action_fields": {
+        "date": "2026-09-30",
+        "version": "2.5",
+        "strategy_version": "v2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    }
+  },
+  "sent_email": false,
+  "actual_orders": false,
+  "all_cloud_job_conclusions": "success"
+}

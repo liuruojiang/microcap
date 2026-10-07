@@ -1,0 +1,55 @@
+{
+  "normal_historical_path_unchanged": true,
+  "comparison": "backup before formal refresh vs regenerated official costed streams",
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "end_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0
+      },
+      "holdings_equal": true,
+      "rewrite_audit_fields": {
+        "historical_rewrite_audit": {
+          "status": "clean",
+          "allowed_tail_rows": 95,
+          "audit_csv": null
+        }
+      }
+    },
+    "v2.3": {
+      "rows": 3988,
+      "end_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0
+      },
+      "holdings_equal": true,
+      "rewrite_audit_fields": {
+        "historical_rewrite_audit": {
+          "status": "clean",
+          "audit_csv": null
+        }
+      }
+    },
+    "v2.5": {
+      "rows": 3988,
+      "end_date": "2026-09-30",
+      "max_abs_differences": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0
+      },
+      "holdings_equal": true,
+      "rewrite_audit_fields": {
+        "historical_rewrite_audit": {
+          "status": "clean",
+          "audit_csv": null
+        }
+      }
+    }
+  }
+}

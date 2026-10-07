@@ -1,0 +1,9 @@
+{
+  "id": "ic-im",
+  "status": "ACTIVE",
+  "only_microcap_gate_changed": true,
+  "schedule_and_other_strategy_settings_preserved": true,
+  "local_gate_passed": 173,
+  "local_gate_elapsed_seconds": 33.27,
+  "before_configuration_backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_213127\\local_automation_before.json"
+}

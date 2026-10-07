@@ -1,0 +1,34 @@
+{
+  "workflow_succeeded": true,
+  "run_id": 37631244056,
+  "automation_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f",
+  "mail_steps": [
+    {
+      "name": "Recover delivery marker from accepted SMTP receipt",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Persist normal-send intent before SMTP",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Send Gmail",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Preserve accepted SMTP receipt",
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Mark digest delivered",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "sent_email": false,
+  "artifact_readback_folder": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_remote_daily_sync\\cloud_artifacts_readback"
+}

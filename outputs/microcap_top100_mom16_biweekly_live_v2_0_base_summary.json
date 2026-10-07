@@ -32,14 +32,14 @@
   "next_rebalance_date": null,
   "history_anchor": {
     "latest_trade_date": "2026-09-30",
-    "current_date": "2026-10-03",
-    "stale_calendar_days": 3,
+    "current_date": "2026-10-07",
+    "stale_calendar_days": 7,
     "stale_trading_days": 0,
-    "staleness_value": 3,
+    "staleness_value": 7,
     "staleness_unit": "calendar_days",
     "max_stale_anchor_days": 5,
-    "is_stale": false,
-    "status": "fresh"
+    "is_stale": true,
+    "status": "stale"
   },
   "latest_signal": {
     "signal_label": "long_microcap_short_zz1000",
