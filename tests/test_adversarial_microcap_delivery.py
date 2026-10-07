@@ -199,13 +199,10 @@ def test_real_core_next_session_member_contract_is_accepted(workspace):
         path = workspace / f"outputs/microcap_top100_mom16_biweekly_live_v2_{version}_latest_signal.csv"
         peer = pd.read_csv(path)
         peer["member_rebalance_required"] = True
-        peer["member_rebalance_actionable"] = True
-        peer["member_rebalance_official"] = True
-        peer["member_rebalance_signal_date"] = "2026-09-03"
-        peer["member_rebalance_execution_date"] = "2026-09-04"
-        peer["member_enter_count"] = 1
-        peer["member_exit_count"] = 1
-        peer["member_rebalance_label"] = "名单调仓（调入 1，调出 1）"
+        peer = v2.augment_close_confirmed_signal_with_member_contract(
+            peer, pd.DataFrame({"rebalance_date": ["2026-09-03"]}),
+            pd.DatetimeIndex(["2026-09-03", "2026-09-04"]),
+            proxy_members_path=proxy_members)
         peer.to_csv(path, index=False)
     result = delivery.inspect_outputs(workspace, "2026-09-03")
     assert result["ok"], result["errors"]

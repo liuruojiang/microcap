@@ -1,0 +1,26 @@
+{
+  "scope": [
+    "v2.0",
+    "v2.3",
+    "v2.5"
+  ],
+  "final_test_counts": {
+    "tests": 856,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "syntax_checked_files": 12,
+  "actual_data_cutoff": "2026-09-30",
+  "formal_rows": {
+    "v2.0": 4033,
+    "v2.3": 3988,
+    "v2.5": 3988
+  },
+  "official_prices_costed_nav_members_and_authority_unchanged": true,
+  "strategy_parameters_unchanged": true,
+  "final_readonly_parity_verified": true,
+  "publication_status": "local_fixes_only_not_deployed",
+  "production_gate_after_changes": "BLOCKED_expected_local_remote_source_difference",
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135"
+}

@@ -1,0 +1,70 @@
+{
+  "scope": "doublecheck_diagnostic_only",
+  "checked_at_bj": "2026-10-07T16:12:56.927643+08:00",
+  "latest_completed_session": "2026-09-30",
+  "same_batch_formal_refresh": "20261007_script_adversarial/pre_refresh_all.log",
+  "same_batch_formal_check": "20261007_script_adversarial/pre_delivery_check.json",
+  "fresh_written_artifacts_rechecked_and_unchanged": true,
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_161253",
+  "backup_files": 9,
+  "backup_verified": true,
+  "artifacts": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "rows": 8738,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054"
+    },
+    "proxy_index": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "rows": 4067,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973"
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "rows": 432,
+      "latest_date": "2026-09-17",
+      "raw_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+    },
+    "base_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "rows": 4050,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45"
+    },
+    "v20_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+    },
+    "v23_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5"
+    },
+    "v25_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+    }
+  },
+  "start_source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "894b59a608d7ae52eb3e4d1b6795ffc26bd5cc5aac3d3282f43bef0d975ede8b",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "3b5f31eefe74da5714d08762c2573edbaedbb551e6b05e33b724f1da71be244c",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "dab988798bd1e262f2b8f738620b72794a38a79c55fa4d7c017b770c618a250a",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "087ec7caa89d3556d16a70558ff6e08212449a5a28140b0aac365a276ba5a18a",
+    "scripts/top100_delivery.py": "67b810087dce54799f2c9a2fdc5a7424500b5e60951d606720151bbdcfc2cccc",
+    "tests/test_adversarial_delivery_state_consistency.py": "e40304f1197bdaaf1ef833329bd39a4aca6ef5d5dc32ed7d9ae991731b91f1a1",
+    "tests/test_microcap_v2_review_remediations.py": "24f522b2057e0de52cfd7b9ca96aa1959f50a3e24d527a97dfacda635210603e",
+    "tests/test_top100_delivery.py": "f7c8564e2422768e391afa4b9f3c998c92b40aa048cec421931c6f0a0aa944ab",
+    "tests/test_script_data_adversarial.py": "74142337f3ae6aec5b04ddb309e1a396a44482fe2dc1851f68a742ad5355dbce",
+    "tests/test_script_delivery_adversarial.py": "85e4f74cb95a3f0b861f81db3ca8ec448d61a714f7e2050b19462959ededc53a",
+    "tests/test_script_math_adversarial.py": "fa2bdacc2572e8513deeac1a08a13fea32bd2a6867081d1391e51f733c1fcbf6",
+    "tests/test_script_signal_adversarial.py": "4cf11731ee17323fca61128ff8fc6804cb216d12a333f7d3adfb200f35a9cc56"
+  },
+  "formal_deployment_gate": "blocked_local_remote_source_difference_not_bypassed"
+}

@@ -1,7 +1,8 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import copy
+import csv
 import hashlib
 import importlib
 import json
@@ -503,19 +504,20 @@ def exp_weights(lookback: int = LOOKBACK, halflife: float = HALFLIFE) -> tuple[f
 
 
 def microcap_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series]:
-    validate_close_df(close_df)
-    close_df = close_df.sort_index()
+    close_df = validate_close_df(close_df).sort_index()
     micro_ret = close_df["microcap"].pct_change(fill_method=None)
     if "hedge" in close_df.columns:
         hedge_ret = close_df["hedge"].pct_change(fill_method=None)
     else:
         hedge_ret = pd.Series(0.0, index=close_df.index, dtype=float)
-    nav = (1.0 + micro_ret.fillna(0.0)).cumprod()
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        nav = (1.0 + micro_ret.fillna(0.0)).cumprod()
+    nav = _positive_finite_series(nav, label="v2.5 microcap NAV")
     nav.name = "microcap_nav"
     return nav, micro_ret, hedge_ret
 
 
-def validate_close_df(close_df: pd.DataFrame) -> None:
+def validate_close_df(close_df: pd.DataFrame) -> pd.DataFrame:
     required = {"microcap"}
     missing = required - set(close_df.columns)
     if missing:
@@ -532,6 +534,10 @@ def validate_close_df(close_df: pd.DataFrame) -> None:
         raise ValueError("close_df contains inf prices")
     if (prices <= 0).any().any():
         raise ValueError("close_df contains non-positive prices")
+    normalized = close_df.copy()
+    for column in price_cols:
+        normalized[column] = prices[column].astype(float)
+    return normalized
 
 
 def log_wls_score_and_r2(
@@ -543,7 +549,7 @@ def log_wls_score_and_r2(
     if lookback <= 0:
         raise ValueError("lookback must be positive")
     weights = np.asarray(exp_weights(lookback, halflife), dtype=float)
-    y = np.log(pd.to_numeric(spread_nav, errors="coerce").replace(0.0, np.nan))
+    y = np.log(_positive_finite_series(spread_nav, label="v2.5 log-WLS NAV"))
     x = np.arange(lookback, dtype=float)
     w_sum = float(weights.sum())
     x_bar = float((weights * x).sum() / w_sum)
@@ -559,6 +565,9 @@ def log_wls_score_and_r2(
     valid = np.isfinite(windows).all(axis=1)
     if valid.any():
         valid_windows = windows[valid]
+        # Translating log NAV leaves the fitted slope/R2 unchanged and makes a
+        # constant-price window exactly zero under the formal zero threshold.
+        valid_windows = valid_windows - valid_windows[:, -1:]
         y_bar = valid_windows @ weights / w_sum
         y_centered = valid_windows - y_bar[:, None]
         slope = y_centered @ (weights * x_centered) / denom
@@ -609,8 +618,7 @@ def _assert_official_index_covers_valid_signal_index(
             f"{label} official v2.0 output is stale: "
             f"official_last_date={official_idx.max().date()}, valid_signal_last_date={valid_idx.max().date()}"
         )
-    in_overlap = valid_idx[(valid_idx >= official_idx.min()) & (valid_idx <= official_idx.max())]
-    missing_internal = pd.DatetimeIndex(in_overlap.difference(official_idx)).sort_values()
+    missing_internal = pd.DatetimeIndex(valid_idx.difference(official_idx)).sort_values()
     if len(missing_internal):
         examples = ", ".join(str(pd.Timestamp(dt).date()) for dt in missing_internal[:5])
         raise RuntimeError(
@@ -680,7 +688,7 @@ def _common_index_gap_summary(common_index: pd.DatetimeIndex, expected_index: pd
 
 
 def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex | None = None) -> pd.DataFrame:
-    close_df = close_df.sort_index()
+    close_df = validate_close_df(close_df.sort_index())
     nav, micro_ret, hedge_ret = microcap_nav(close_df)
     log_wls = log_wls_score_and_r2(nav)
     common_index = _valid_log_wls_index(close_df) if index is None else pd.DatetimeIndex(index)
@@ -748,25 +756,80 @@ def build_microcap_log_wls_gross(close_df: pd.DataFrame, index: pd.DatetimeIndex
 
 def apply_cost(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
     _ensure_v2_0_contract_validated()
+    _finite_numeric_column(gross, "return", label="v2.5 gross")
     out = v2_0.base_mod.freq_mod.cost_mod.apply_cost_model(gross, turnover_df)
-    _assert_apply_cost_model_preserves_gross_return(gross, out)
+    _assert_apply_cost_model_preserves_gross_return(gross, out, turnover_df)
     out["overlay_pre_cost_return"] = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
     return out
 
 
-def _assert_apply_cost_model_preserves_gross_return(gross: pd.DataFrame, costed: pd.DataFrame) -> None:
+def _assert_apply_cost_model_preserves_gross_return(
+    gross: pd.DataFrame, costed: pd.DataFrame, turnover_df: pd.DataFrame | None = None,
+) -> None:
     if "return" not in gross.columns or "return" not in costed.columns:
         raise RuntimeError("v2_0 cost model contract changed: gross and costed outputs must contain return")
-    common_index = pd.Index(costed.index).intersection(pd.Index(gross.index))
-    if len(common_index) != len(costed.index):
+    if not costed.index.equals(gross.index):
         raise RuntimeError("v2_0 cost model contract changed: costed output index must stay aligned with gross input")
-    expected = pd.to_numeric(gross.loc[common_index, "return"], errors="coerce").fillna(0.0)
-    actual = pd.to_numeric(costed.loc[common_index, "return"], errors="coerce").fillna(0.0)
+    for column in ("holding", "next_holding", "signal_on"):
+        if column in gross and (column not in costed or not gross[column].equals(costed[column])):
+            raise RuntimeError(f"v2_0 cost model contract changed: {column} must preserve the gross execution state")
+    common_index = gross.index
+    expected = _finite_numeric_column(gross.loc[common_index], "return", label="v2.5 gross")
+    actual = _finite_numeric_column(costed.loc[common_index], "return", label="v2.5 cost model")
     if not np.allclose(actual.to_numpy(dtype=float), expected.to_numpy(dtype=float), rtol=1e-9, atol=1e-9):
         raise RuntimeError(
             "v2_0 cost model contract changed: apply_cost_model must preserve gross return in out['return']; "
             "costed values belong in return_net and total_cost"
         )
+    fee_columns = ("entry_exit_cost", "rebalance_cost", "total_cost")
+    if any(column not in costed.columns for column in fee_columns):
+        raise RuntimeError("v2_0 cost model contract changed: costed output must contain all cost components")
+    fees = {column: _finite_numeric_column(costed, column, label="v2.5 cost model")
+            for column in fee_columns}
+    for column, values in fees.items():
+        if ((values < 0.0) | (values >= 1.0)).any():
+            raise ValueError(f"v2.5 cost model {column} is outside [0, 1)")
+    if not np.allclose(fees["entry_exit_cost"] + fees["rebalance_cost"], fees["total_cost"],
+                       rtol=1e-10, atol=1e-12):
+        raise RuntimeError("v2_0 cost model contract changed: total_cost differs from entry/exit and rebalance costs")
+    if turnover_df is not None:
+        from scripts.top100_data_contracts import normalise_turnover_table, expected_rebalance_costs
+        events = normalise_turnover_table(turnover_df)
+        timing = events["execution_timing"].iloc[0] if len(events) else "next_open"
+        current = gross["holding"].ne("cash")
+        active = gross["next_holding"].ne("cash") if timing == "close" else current
+        previous = current if timing == "close" else active.shift(1, fill_value=False)
+        expected_entry_exit = (active & ~previous).astype(float) * float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
+        expected_entry_exit += (~active & previous).astype(float) * float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
+        expected_rebalance = expected_rebalance_costs(gross.index, events).where(active & previous, 0.0)
+        for column, expected_values in (("entry_exit_cost", expected_entry_exit), ("rebalance_cost", expected_rebalance)):
+            if not np.allclose(fees[column], expected_values, rtol=0.0, atol=1e-12):
+                raise RuntimeError(f"v2_0 cost model contract changed: {column} differs from execution states and dated events")
+
+
+def _finite_numeric_column(frame: pd.DataFrame, column: str, *, label: str) -> pd.Series:
+    values = pd.to_numeric(frame[column], errors="coerce").astype(float)
+    invalid_positions = np.flatnonzero(~np.isfinite(values.to_numpy(dtype=float)))
+    if len(invalid_positions):
+        position = int(invalid_positions[0])
+        raise ValueError(
+            f"{label} {column} is non-finite: "
+            f"date={pd.Timestamp(values.index[position]).isoformat()}, "
+            f"value={frame[column].iloc[position]!r}"
+        )
+    return values
+
+
+def _positive_finite_series(values: pd.Series, *, label: str) -> pd.Series:
+    numeric = pd.to_numeric(values, errors="coerce").astype(float)
+    invalid_positions = np.flatnonzero(~np.isfinite(numeric.to_numpy(dtype=float)) | numeric.le(0.0).to_numpy())
+    if len(invalid_positions):
+        position = int(invalid_positions[0])
+        raise ValueError(
+            f"{label} must be finite and positive: "
+            f"date={pd.Timestamp(numeric.index[position]).isoformat()}, value={values.iloc[position]!r}"
+        )
+    return numeric
 
 
 def _safe_float(value: object, default: float = 0.0) -> float:
@@ -1143,9 +1206,43 @@ def apply_no_target_vol(costed_base: pd.DataFrame) -> pd.DataFrame:
     next_holding = out["next_holding"].fillna(holding).astype(str)
     active_scale = holding.ne("cash").astype(float)
     next_scale = next_holding.ne("cash").astype(float)
-    ret = pd.to_numeric(out["return_net"], errors="coerce").fillna(0.0)
-    total_cost = pd.to_numeric(out["total_cost"], errors="coerce").fillna(0.0)
-    base_pre_cost_return = pd.to_numeric(out["overlay_pre_cost_return"], errors="coerce").fillna(0.0)
+    ret = _finite_numeric_column(out, "return_net", label="v2.5 costed base")
+    total_cost = _finite_numeric_column(out, "total_cost", label="v2.5 costed base")
+    base_pre_cost_return = _finite_numeric_column(out, "overlay_pre_cost_return", label="v2.5 costed base")
+    invalid_cost_positions = np.flatnonzero(((total_cost < 0.0) | (total_cost >= 1.0)).to_numpy())
+    if len(invalid_cost_positions):
+        position = int(invalid_cost_positions[0])
+        raise ValueError(
+            "v2.5 total_cost is outside [0, 1): "
+            f"date={pd.Timestamp(out.index[position]).isoformat()}, "
+            f"value={total_cost.iloc[position]!r}"
+        )
+    insolvent_positions = np.flatnonzero(ret.le(-1.0).to_numpy())
+    if len(insolvent_positions):
+        position = int(insolvent_positions[0])
+        raise ValueError(
+            "v2.5 return_net is at or below -1: "
+            f"date={pd.Timestamp(out.index[position]).isoformat()}, value={ret.iloc[position]!r}"
+        )
+    invalid_cash_positions = np.flatnonzero((~holding.ne("cash") & base_pre_cost_return.abs().gt(1e-12)).to_numpy())
+    if len(invalid_cash_positions):
+        position = int(invalid_cash_positions[0])
+        raise ValueError(
+            "v2.5 cash holding has non-zero pre-cost return: "
+            f"date={pd.Timestamp(out.index[position]).isoformat()}, value={base_pre_cost_return.iloc[position]!r}"
+        )
+    expected_net = (1.0 + base_pre_cost_return) * (1.0 - total_cost) - 1.0
+    mismatch_positions = np.flatnonzero(~np.isclose(ret, expected_net, rtol=1e-10, atol=1e-12))
+    if len(mismatch_positions):
+        position = int(mismatch_positions[0])
+        raise ValueError(
+            "v2.5 return_net does not match fixed-exposure cost arithmetic: "
+            f"date={pd.Timestamp(out.index[position]).isoformat()}, "
+            f"actual={ret.iloc[position]!r}, expected={expected_net.iloc[position]!r}"
+        )
+    with np.errstate(over="ignore", under="ignore", invalid="ignore"):
+        nav = (1.0 + ret).cumprod()
+    nav = _positive_finite_series(nav, label="v2.5 costed NAV")
     zero = pd.Series(0.0, index=out.index, dtype=float)
     frozen_source_dates = pd.Series(
         [str(pd.Timestamp(idx).date()) for idx in out.index],
@@ -1196,7 +1293,7 @@ def apply_no_target_vol(costed_base: pd.DataFrame) -> pd.DataFrame:
     out["embedded_lineage_return_net"] = ret
     out["embedded_lineage_nav_net"] = pd.to_numeric(out.get("nav_net", pd.Series(np.nan, index=out.index)), errors="coerce")
     out["return_net"] = ret
-    out["nav_net"] = (1.0 + out["return_net"].fillna(0.0)).cumprod()
+    out["nav_net"] = nav
     out["return"] = out["return_net"]
     out["nav"] = out["nav_net"]
     out["return_column_semantics"] = (
@@ -1229,6 +1326,8 @@ def build_v2_5_result(
         common_index = pd.DatetimeIndex(common_index)
         common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
     gross = build_microcap_log_wls_gross(close_df, common_index)
+    if not gross.index.equals(common_index):
+        raise RuntimeError("v2.5 gross dependency changed the requested common session index")
     costed = apply_cost(gross, turnover_df)
     out = apply_no_target_vol(costed)
     if out.empty:
@@ -1376,8 +1475,11 @@ def realtime_signal_matches_current_v2_5(path: Path | None = None) -> bool:
     if not signal_path.exists():
         return False
     try:
-        row = pd.read_csv(signal_path, nrows=1, encoding="utf-8").iloc[0]
-        false_fields = ("target_vol_enabled", "cash_day_yield_enabled", "financing_enabled")
+        from scripts.top100_data_contracts import read_single_csv_row, realtime_row_is_consistent
+        row = read_single_csv_row(signal_path)
+        if not realtime_row_is_consistent(row, "long_microcap_top100"):
+            return False
+        false_fields = ("target_vol_enabled", "cash_day_yield_enabled", "financing_enabled", "overheat_enabled")
         false_values_match = all(
             str(row.get(field, "")).strip().lower() in {"false", "0", "0.0"}
             for field in false_fields
@@ -1394,9 +1496,13 @@ def realtime_signal_matches_current_v2_5(path: Path | None = None) -> bool:
             }.items()
         )
         return bool(
-            str(row.get("strategy_revision", "")) == STRATEGY_REVISION
+            str(row.get("version", "")) == VERSION
+            and str(row.get("strategy_version", "")) == f"v{VERSION}"
+            and str(row.get("strategy_revision", "")) == STRATEGY_REVISION
             and false_values_match
             and numeric_values_match
+            and ("overheat_overlay_enabled" not in row
+                 or str(row["overheat_overlay_enabled"]).strip().lower() in {"false", "0", "0.0"})
         )
     except (OSError, ValueError, TypeError, KeyError, IndexError, pd.errors.EmptyDataError):
         return False
@@ -1960,7 +2066,7 @@ def v2_5_rewrite_audit_matches_approved_lineage_migration(
         }
     except Exception:
         return False
-    return all(report.get(key) == value for key, value in expected.items())
+    return report.get("approved") is True and all(report.get(key) == value for key, value in expected.items())
 
 
 def _write_v2_5_lineage_migration_diagnostics(report_path: Path, audit_path: Path) -> Path:
@@ -2258,6 +2364,8 @@ def _build_realtime_v2_5_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     common_index = build_v2_5_common_index(close_df, signal_official_index)
     gross = build_microcap_log_wls_gross(close_df, common_index)
     costed = apply_cost(gross, realtime_base.turnover_df)
+    if not gross.index.equals(common_index):
+        raise RuntimeError("v2.5 realtime gross dependency changed the requested common session index")
     is_snapshot = bool(realtime_base.meta.get("snapshot_row_appended", False))
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
     out = apply_no_target_vol(costed)

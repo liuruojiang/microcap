@@ -16,6 +16,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts import realtime_state_bundle as state
+from scripts.top100_data_contracts import daily_session_date
 from scripts.restore_approved_top100_seed import BASE_FILES, COSTED
 
 MANIFEST = "outputs/top100_delivery_manifest.json"
@@ -28,6 +29,7 @@ RELEASE_FILES = [
     "scripts/realtime_state_bundle.py",
     "scripts/top100_cloud_delivery.py",
     "scripts/top100_delivery.py",
+    "scripts/top100_data_contracts.py",
 ] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
 V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
 V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"
@@ -103,10 +105,15 @@ def sha(path: Path) -> str:
 def csv_info(path: Path, column: str = "date") -> tuple[dict, list[dict]]:
     with path.open(encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
+        fields = reader.fieldnames or []
+        if len(fields) != len(set(fields)):
+            raise ValueError(f"Duplicate CSV column names: {path.name}")
         if column not in (reader.fieldnames or []):
             raise ValueError(f"Missing {column}: {path.name}")
         rows = list(reader)
-    dates = [state._parse_date(row[column]) for row in rows]
+    if any(None in row or any(value is None for value in row.values()) for row in rows):
+        raise ValueError(f"CSV row width differs from its header: {path.name}")
+    dates = [daily_session_date(row[column]) for row in rows]
     if not dates or any(day is None for day in dates) or dates != sorted(set(dates)):
         raise ValueError(f"Empty, invalid, duplicate or unsorted dates: {path.name}")
     return {"rows": len(rows), "latest_date": dates[-1].isoformat(), "sha256": sha(path)}, rows
@@ -115,6 +122,7 @@ def csv_info(path: Path, column: str = "date") -> tuple[dict, list[dict]]:
 def input_hashes(root: Path) -> dict:
     names = [f"outputs/{name}" for name in (*BASE_FILES.values(), BASE_PANEL)]
     names += [AUTHORITY] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
+    names += ["scripts/top100_data_contracts.py"]
     return {name: sha(root / name) for name in names}
 
 
@@ -122,20 +130,28 @@ def canonical_member_rebalance(root: Path, expected: str) -> dict[str, object]:
     """Derive formal list changes from the delivered point-in-time member lineage."""
     path = root / "outputs" / BASE_FILES["proxy_members"]
     with path.open(encoding="utf-8-sig", newline="") as handle:
-        rows = list(csv.DictReader(handle))
-    if not rows or any(key not in rows[0] for key in ("rebalance_date", "symbol")):
-        raise ValueError("proxy members are missing rebalance_date/symbol")
+        reader = csv.DictReader(handle)
+        fields = reader.fieldnames or []
+        if len(fields) != len(set(fields)):
+            raise ValueError("proxy members contain duplicate CSV column names")
+        rows = list(reader)
+    if any(None in row or any(value is None for value in row.values()) for row in rows):
+        raise ValueError("proxy members contain a row/header width mismatch")
+    if not rows or any(key not in rows[0] for key in ("rebalance_date", "symbol", "rank")):
+        raise ValueError("proxy members are missing rebalance_date/symbol/rank")
     target = state._parse_date(expected)
     if target is None:
         raise ValueError("invalid expected date for proxy-member lineage")
     by_date: dict[object, list[str]] = {}
+    ranks_by_date: dict[object, list[str]] = {}
     for row in rows:
         day = state._parse_date(row.get("rebalance_date", ""))
         symbol = str(row.get("symbol", "")).strip().zfill(6)
-        if day is None or len(symbol) != 6 or not symbol.isdigit() or symbol == "000000":
+        if day is None or re.fullmatch(r"[0-9]{6}", symbol) is None or symbol == "000000":
             raise ValueError("proxy members contain an invalid rebalance date or symbol")
         if day <= target:
             by_date.setdefault(day, []).append(symbol)
+            ranks_by_date.setdefault(day, []).append(row["rank"])
     dates = sorted(by_date)
     if len(dates) < 2:
         raise ValueError("proxy members do not contain the latest two formal rebalances")
@@ -144,6 +160,13 @@ def canonical_member_rebalance(root: Path, expected: str) -> dict[str, object]:
     if (len(by_date[previous]) != 100 or len(previous_symbols) != 100 or
             len(by_date[current]) != 100 or len(current_symbols) != 100):
         raise ValueError("latest proxy member snapshots are not exactly 100 unique symbols")
+    for day in (previous, current):
+        try:
+            ranks = [int(value) for value in ranks_by_date[day]]
+        except (TypeError, ValueError) as exc:
+            raise ValueError("latest proxy member snapshots contain invalid ranks") from exc
+        if sorted(ranks) != list(range(1, 101)):
+            raise ValueError("latest proxy member snapshots must contain unique ranks 1-100")
     enter_count = len(current_symbols - previous_symbols)
     exit_count = len(previous_symbols - current_symbols)
     required = bool(enter_count or exit_count)
@@ -177,6 +200,13 @@ def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
                        "5": "long_microcap_top100"}
     if version not in active_holdings:
         raise ValueError(f"Unsupported final signal version: {version}")
+    if str(signal.get("version", "")) != f"2.{version}":
+        raise ValueError(f"v2.{version} final version identity mismatch")
+    if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+        raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+    if (signal.get("signal_timing") != "close_confirmed"
+            or str(signal.get("official_close_confirmed_signal")) != "True"):
+        raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
     allowed_holdings = {"cash", active_holdings[version]}
     for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
         holding = signal.get(signal_key)
@@ -192,6 +222,46 @@ def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
                 not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
                 scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
                 nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+            raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+    if signal.get("signal_label") != signal["next_holding"]:
+        raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+    current, nxt = signal["current_holding"], signal["next_holding"]
+    action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+    if signal.get("trade_state") != action:
+        raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+    for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+        if key in signal and signal[key] != action:
+            raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+    if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+        raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+    for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+        if key in signal and str(signal[key]) != str(expected):
+            raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+    current_scale = float(signal["current_execution_scale"])
+    next_scale = float(signal["next_session_actionable_scale"])
+    aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                          "raw_next_target_scale", "target_vol_scale_next_session")}
+    aliases["execution_scale"] = current_scale
+    aliases.update({key: next_scale - current_scale for key in (
+        "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+    for key, expected in aliases.items():
+        if key not in signal:
+            continue
+        try:
+            actual = float(signal[key])
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+        if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+            raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+    for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+        if key not in nav:
+            continue
+        try:
+            actual, expected = float(signal[key]), float(nav[key])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+        if (not math.isfinite(actual) or not math.isfinite(expected)
+                or not math.isclose(actual, expected, rel_tol=0.0, abs_tol=1e-12)):
             raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
 
 
@@ -270,6 +340,8 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                     validate_final_nav(rows, name)
                 if info["latest_date"] != expected:
                     errors.append(f"final date mismatch: {name}={info['latest_date']} expected={expected}")
+                if not name.endswith("performance_nav.csv") and any(row.get("version") != f"2.{v}" for row in rows):
+                    errors.append(f"v2.{v} final stream version identity mismatch: {name}")
                 if v == "0" and not name.endswith("performance_nav.csv"):
                     if not all(plain_v20_identity(row) for row in rows):
                         errors.append(f"v2.0 plain revision/state mismatch: {name}")
@@ -300,6 +372,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                             and int(rows[0].get("member_enter_count", -1)) == member_rebalance["enter_count"]
                             and int(rows[0].get("member_exit_count", -1)) == member_rebalance["exit_count"]
                             and rows[0].get("member_rebalance_label") == member_rebalance["label"]
+                            and rows[0].get("member_rebalance_state") == ("rebalance" if member_rebalance["required"] else "none")
                         )
                     except (TypeError, ValueError):
                         member_fields_match = False

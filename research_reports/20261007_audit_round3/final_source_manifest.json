@@ -1,0 +1,110 @@
+{
+  "microcap_top100_mom16_biweekly_live.py": {
+    "syntax_checked": true,
+    "sha256": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710"
+  },
+  "microcap_top100_mom16_biweekly_live_v2_0.py": {
+    "syntax_checked": true,
+    "sha256": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442"
+  },
+  "microcap_top100_mom16_biweekly_live_v2_3.py": {
+    "syntax_checked": true,
+    "sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f"
+  },
+  "microcap_top100_mom16_biweekly_live_v2_5.py": {
+    "syntax_checked": true,
+    "sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db"
+  },
+  "scripts/top100_delivery.py": {
+    "syntax_checked": true,
+    "sha256": "4027af3fa1681eb3a3c0632fe20fea9606d41a6f41b0a4adba98d8a5aa8fbe7f"
+  },
+  "tests/test_adversarial_delivery_state_consistency.py": {
+    "syntax_checked": true,
+    "sha256": "bb8e8efe27655f800ba2893242459b43af14915c0ba1556764c540d4e9058570"
+  },
+  "tests/test_microcap_v2_review_remediations.py": {
+    "syntax_checked": true,
+    "sha256": "24f522b2057e0de52cfd7b9ca96aa1959f50a3e24d527a97dfacda635210603e"
+  },
+  "tests/test_top100_delivery.py": {
+    "syntax_checked": true,
+    "sha256": "7dcf62f2871201879717107f96042a2c8b00458943a14266911bfe16fd6a7b63"
+  },
+  "tests/test_script_data_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "5ef0dd2cf63b045ca05862bf7975872b01eff558cc72c1a852bdcd1b6343f9f2"
+  },
+  "tests/test_script_delivery_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "85e4f74cb95a3f0b861f81db3ca8ec448d61a714f7e2050b19462959ededc53a"
+  },
+  "tests/test_script_math_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "fa2bdacc2572e8513deeac1a08a13fea32bd2a6867081d1391e51f733c1fcbf6"
+  },
+  "tests/test_script_signal_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "e9257590dc5c93b5ee47b498c17418ede6dd25a49f4f8de52bf7e0e4a508adc0"
+  },
+  "tests/test_security_meta_preserve_20260917.py": {
+    "syntax_checked": true,
+    "sha256": "017af225d48461d56bd0999cb068dcf8acfd03c365e1bd775fee7a91398652f0"
+  },
+  "tests/test_v25_realtime_artifact_invalidation.py": {
+    "syntax_checked": true,
+    "sha256": "fe8d10b2ffc01d6f325443c6529f81945fb35a11238c943079f66c4f2bf8167c"
+  },
+  "tests/test_adversarial_microcap_delivery.py": {
+    "syntax_checked": true,
+    "sha256": "08c33c2b47581cc5283aade5aa26fff6b43afeb753f95899ec5c68999aa65ae8"
+  },
+  "tests/test_doublecheck_data_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "7305c4a7a3a27839d06ad822d7fa6847b1f1fa2aa56aa217f8bdf1ed32557e80"
+  },
+  "tests/test_doublecheck_math_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "eb734af9e49069cf95728ab458b4f4842fc270ebee2bb2cb1a94da4f77aea1ea"
+  },
+  "tests/test_doublecheck_contract_adversarial.py": {
+    "syntax_checked": true,
+    "sha256": "4b24e3a6840f9145df36771efeb3f6875d2d901060a64bd56fc926a3c9b7c36a"
+  },
+  "scripts/top100_cloud_delivery.py": {
+    "syntax_checked": true,
+    "sha256": "2741d0b8a009cffa8069781d6f8a7072425e5f3017e1825bb6d035e519c08962"
+  },
+  "scripts/top100_data_contracts.py": {
+    "syntax_checked": true,
+    "sha256": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288"
+  },
+  "tests/test_frozen_member_continuation_20260917.py": {
+    "syntax_checked": true,
+    "sha256": "f93260e7342e673903b900fa15bca414ec17e7edec3de1fd556dd22691da0cdb"
+  },
+  "tests/test_realtime_exchange_calendar.py": {
+    "syntax_checked": true,
+    "sha256": "1fefc0609c43b3dd5c7f355052583532b8530b5c0882fd97003de5b494011b41"
+  },
+  "tests/test_round3_data_boundary.py": {
+    "syntax_checked": true,
+    "sha256": "a758f542d9fdc1800bcdd5a0a195d0a3c5cc4689d6ac61f89c0dbe503ca1d113"
+  },
+  "tests/test_round3_math_ledger.py": {
+    "syntax_checked": true,
+    "sha256": "098f3d801c82e8bb2a65c9a4bb3cdb47031add9c64692d0d2ef60162ed0ff297"
+  },
+  "tests/test_round3_state_contract.py": {
+    "syntax_checked": true,
+    "sha256": "649c4096f45ae906df06619105266302db1cb86e6186434ec1f2c5b3141c5eac"
+  },
+  "tests/test_round3_delivery_boundary.py": {
+    "syntax_checked": true,
+    "sha256": "a66fc1a0646e9bb14213e9e487592786ec49bdf38747f3dc81d46a4c3b1df524"
+  },
+  "research_reports/20261007_audit_round3/root_final_checks.py": {
+    "syntax_checked": true,
+    "sha256": "9707c2de87a127905da9ff73e53fa6fd76d66b7e1f4bb63bf45fd94920b89fb8"
+  }
+}

@@ -902,6 +902,9 @@ def build_close_df(args: argparse.Namespace) -> pd.DataFrame:
     return hedge_mod.build_close_df(ns)
 
 
+from scripts.top100_data_contracts import normalise_turnover_table, expected_rebalance_costs
+
+
 def load_turnover_table(path: Path) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Turnover table not found: {path}")
@@ -910,25 +913,16 @@ def load_turnover_table(path: Path) -> pd.DataFrame:
     missing = required.difference(turnover.columns)
     if missing:
         raise ValueError(f"Turnover table missing columns: {sorted(missing)}")
-    turnover["rebalance_date"] = pd.to_datetime(turnover["rebalance_date"])
-    return turnover.sort_values("rebalance_date").reset_index(drop=True)
+    return normalise_turnover_table(turnover)
 
 
 def map_rebalance_apply_costs(index: pd.Index, turnover: pd.DataFrame) -> pd.Series:
-    cost_series = pd.Series(0.0, index=index, dtype=float)
-    date_array = index.to_numpy()
-    for row in turnover.itertuples(index=False):
-        execution_timing = getattr(row, "execution_timing", "next_open")
-        cost_date = getattr(row, "execution_date", row.rebalance_date)
-        side = "left" if execution_timing == "close" else "right"
-        pos = date_array.searchsorted(np.datetime64(cost_date), side=side)
-        if pos < len(date_array):
-            cost_series.iloc[pos] += float(row.two_side_cost_rate)
-    return cost_series
+    return expected_rebalance_costs(index, turnover)
 
 
 def apply_cost_model(result: pd.DataFrame, turnover: pd.DataFrame) -> pd.DataFrame:
     out = result.copy()
+    turnover = normalise_turnover_table(turnover)
     execution_timing = "next_open"
     if len(turnover) and "execution_timing" in turnover.columns:
         non_null = turnover["execution_timing"].dropna().astype(str)
@@ -2840,14 +2834,20 @@ class SecurityMetaHistoryCorrectionRequired(RuntimeError):
 
 def _preserve_security_meta_evidence(previous: dict[str, object], candidate: dict[str, object]) -> dict[str, object]:
     identity = ("symbol", "meta_version", "st_notice_policy_version", "current_st_snapshot_name")
-    if not all(previous.get(key) == candidate.get(key) for key in identity):
+    if str(previous.get("symbol", "")).zfill(6) != str(candidate.get("symbol", "")).zfill(6):
         return candidate
+    identity_matches = all(previous.get(key) == candidate.get(key) for key in identity)
     old_intervals = previous.get("st_intervals")
     if not isinstance(old_intervals, list) or not old_intervals:
         return candidate
     source_failed = any(str(candidate.get(key, "")).startswith("error:")
                         for key in ("name_history_status", "notice_query_status"))
     if source_failed:
+        if not identity_matches:
+            raise SecurityMetaHistoryCorrectionRequired(
+                f"Security metadata identity changed for {candidate['symbol']} while history sources failed; "
+                "an exact-hash lineage review is required before replacement"
+            )
         # Keep exact certified bytes/lineage. A network failure is not evidence
         # that an earlier ST interval disappeared or began only today.
         print(f"[security-meta] preserved existing evidence for {candidate['symbol']}; history source failed")
@@ -2973,7 +2973,14 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
     if meta_path is not None:
         try:
             payload = json.loads(meta_path.read_text(encoding="utf-8"))
-            if payload.get("meta_version") == SECURITY_META_VERSION:
+            identity_matches = str(payload.get("symbol") or "").zfill(6) == code
+            # Legacy non-ST metadata omits the newer policy field; formal proxy
+            # reuse additionally requires its approved content fingerprint.
+            # An explicit superseded policy is never reusable.
+            policy = payload.get("st_notice_policy_version")
+            policy_matches = policy == ST_NOTICE_POLICY_VERSION or (policy is None and not current_st_name)
+            name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
+            if payload.get("meta_version") == SECURITY_META_VERSION and identity_matches and policy_matches and name_matches:
                 if not current_st_name:
                     return payload
                 meta_last = pd.to_datetime(payload.get("last_trade_date"), errors="coerce")
@@ -4268,6 +4275,7 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
     if dates.empty:
         raise RuntimeError("No valid historical dates available.")
     current_day = pd.Timestamp(current_ts.date())
+    dates = dates[dates.dt.normalize() <= current_day]
     hour, minute = (int(part) for part in CN_CLOSE_CONFIRM_TIME.split(":", 1))
     close_confirm_ts = current_ts.normalize() + pd.Timedelta(hours=hour, minutes=minute)
     if current_ts < close_confirm_ts:
@@ -5894,10 +5902,10 @@ def validate_close_df(close_df: pd.DataFrame, label: str = "close_df") -> None:
 
 def load_close_df(panel_path: Path, index_csv: Path, max_date: pd.Timestamp | None = None) -> pd.DataFrame:
     panel = pd.read_csv(panel_path, usecols=["date", HEDGE_COLUMN])
-    panel["date"] = pd.to_datetime(panel["date"])
+    panel = _normalise_dated_frame(panel, "hedge panel").reset_index()
 
     proxy = pd.read_csv(index_csv)
-    proxy["date"] = pd.to_datetime(proxy["date"])
+    proxy = _normalise_dated_frame(proxy, "microcap proxy").reset_index()
     if max_date is not None:
         max_ts = pd.Timestamp(max_date).normalize()
         panel = panel.loc[panel["date"].dt.normalize() <= max_ts].copy()
@@ -5907,20 +5915,10 @@ def load_close_df(panel_path: Path, index_csv: Path, max_date: pd.Timestamp | No
     microcap = proxy.set_index("date")["close"].rename("microcap").astype(float)
 
     aligned = pd.concat([microcap, hedge], axis=1).sort_index()
-    close_df = aligned.dropna()
-    proxy_tail = microcap.dropna().index.max() if not microcap.dropna().empty else None
-    aligned_tail = close_df.index.max() if not close_df.empty else None
-    if proxy_tail is not None and aligned_tail is not None and pd.Timestamp(aligned_tail) < pd.Timestamp(proxy_tail):
-        truncated_dates = microcap.loc[microcap.index > aligned_tail].dropna().index
-        warnings.warn(
-            "load_close_df truncated proxy tail because hedge data was missing: "
-            f"{len(truncated_dates)} rows, last_proxy_date={pd.Timestamp(proxy_tail).date()}, "
-            f"last_aligned_date={pd.Timestamp(aligned_tail).date()}",
-            RuntimeWarning,
-            stacklevel=2,
-        )
-    if effective_start is not None:
-        close_df = close_df.loc[close_df.index >= effective_start].copy()
+    # Keep every observed session inside the active proxy window. Dropping an
+    # unmatched or NaN row would silently change momentum and execution lags.
+    window_start = effective_start if effective_start is not None else microcap.index.min()
+    close_df = aligned.loc[(aligned.index >= window_start) & (aligned.index <= microcap.index.max())].copy()
     validate_close_df(close_df, "load_close_df close_df")
     if len(close_df) < LOOKBACK + 3:
         raise ValueError(f"Not enough aligned rows for lookback={LOOKBACK}: got {len(close_df)}.")
@@ -5986,8 +5984,8 @@ def trim_proxy_history(
     turnover_out = turnover_df
     if turnover_df is not None and not turnover_df.empty and "rebalance_date" in turnover_df.columns:
         turnover_out = turnover_df.copy()
-        turnover_out["rebalance_date"] = pd.to_datetime(turnover_out["rebalance_date"], errors="coerce")
-        turnover_out = turnover_out.dropna(subset=["rebalance_date"])
+        from scripts.top100_data_contracts import normalise_turnover_table
+        turnover_out = normalise_turnover_table(turnover_out)
         turnover_out = turnover_out.loc[turnover_out["rebalance_date"] >= effective_start].copy()
 
     return index_out, members_out, turnover_out, effective_start
@@ -6020,8 +6018,8 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
     if paths["proxy_turnover"].exists():
         turnover = pd.read_csv(paths["proxy_turnover"])
         if "rebalance_date" in turnover.columns:
-            turnover["rebalance_date"] = pd.to_datetime(turnover["rebalance_date"], errors="coerce")
-            turnover = turnover.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+            from scripts.top100_data_contracts import normalise_turnover_table
+            turnover = normalise_turnover_table(turnover)
             trimmed_turnover = turnover.loc[turnover["rebalance_date"] >= effective_start].copy()
             if len(trimmed_turnover) != len(turnover):
                 _atomic_to_csv(trimmed_turnover, paths["proxy_turnover"], index=False, encoding="utf-8")
@@ -6173,6 +6171,8 @@ def apply_single_trade_forced_stop_loss(
     out["base_signal_on"] = out["base_next_holding"].ne("cash")
 
     rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    from scripts.top100_data_contracts import validate_mapped_rebalance_costs
+    validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
     returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
 
     executed_holding: list[str] = []
@@ -6372,6 +6372,8 @@ def apply_peak_drawdown_forced_stop_loss(
     out["base_signal_on"] = out["base_next_holding"].ne("cash")
 
     rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    from scripts.top100_data_contracts import validate_mapped_rebalance_costs
+    validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
     returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
 
     executed_holding: list[str] = []
@@ -6607,6 +6609,8 @@ def apply_ratio_bias_take_profit(
     out["ratio_bias"] = ratio.div(ratio.rolling(int(bias_window)).mean()).sub(1.0)
 
     rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    from scripts.top100_data_contracts import validate_mapped_rebalance_costs
+    validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
     returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
 
     executed_holding: list[str] = []
@@ -6765,6 +6769,8 @@ def apply_momentum_gap_peak_decay_exit(
     out["base_signal_on"] = out["base_next_holding"].ne("cash")
 
     rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    from scripts.top100_data_contracts import validate_mapped_rebalance_costs
+    validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
     returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
     momentum_gap_series = pd.to_numeric(out["momentum_gap"], errors="coerce")
 
@@ -6969,6 +6975,8 @@ def apply_momentum_gap_peak_decay_derisk(
     out["base_signal_on"] = out["base_next_holding"].ne("cash")
 
     rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
+    from scripts.top100_data_contracts import validate_mapped_rebalance_costs
+    validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
     returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
     momentum_gap_series = pd.to_numeric(out["momentum_gap"], errors="coerce")
 
@@ -7230,8 +7238,8 @@ def run_forced_stop_loss_scan_from_proxy_turnover(
     turnover_df = pd.read_csv(turnover_path)
     if "rebalance_date" not in turnover_df.columns:
         raise KeyError(f"Column 'rebalance_date' not found in {turnover_path}.")
-    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+    from scripts.top100_data_contracts import normalise_turnover_table
+    turnover_df = normalise_turnover_table(turnover_df)
 
     close_df = load_close_df(panel_path, args.index_csv)
     gross = run_signal(close_df)
@@ -7259,8 +7267,8 @@ def rebuild_costed_nav_from_proxy_turnover(
     turnover_df = pd.read_csv(turnover_path)
     if "rebalance_date" not in turnover_df.columns:
         raise KeyError(f"Column 'rebalance_date' not found in {turnover_path}.")
-    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+    from scripts.top100_data_contracts import normalise_turnover_table
+    turnover_df = normalise_turnover_table(turnover_df)
 
     close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     gross = run_signal(close_df)
@@ -8627,12 +8635,18 @@ def calc_max_drawdown_from_returns(returns: pd.Series) -> float:
 def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
     out = frame.copy()
     if "date" in out.columns:
-        out["date"] = pd.to_datetime(out["date"], errors="coerce")
-        out = out.dropna(subset=["date"]).set_index("date")
+        out["date"] = pd.to_datetime(out["date"], format="mixed", errors="coerce")
+        if out["date"].isna().any():
+            raise ValueError(f"{label} contains invalid dates/NaT")
+        out = out.set_index("date")
     elif isinstance(out.index, pd.DatetimeIndex):
         out.index = pd.to_datetime(out.index)
+        if out.index.hasnans:
+            raise ValueError(f"{label} contains invalid dates/NaT")
     else:
         raise ValueError(f"{label} requires a date column or DatetimeIndex.")
+    if out.index.tz is not None or not out.index.equals(out.index.normalize()):
+        raise ValueError(f"{label} requires timezone-naive daily session dates")
     out = out.sort_index()
     if out.index.duplicated().any():
         dupes = out.index[out.index.duplicated()].strftime("%Y-%m-%d").unique().tolist()
@@ -8758,12 +8772,17 @@ def assert_no_historical_rewrite(
             changed = left.astype("boolean").ne(right.astype("boolean"))
             changed = changed | (left.isna() ^ right.isna())
         elif numeric_like:
-            diff = (left_num - right_num).abs()
-            threshold = float(atol) + float(rtol) * right_num.abs()
-            changed = diff.gt(threshold)
-            changed = changed | (left_num.isna() ^ right_num.isna())
+            changed = pd.Series(
+                ~np.isclose(left_num.to_numpy(dtype=float, na_value=np.nan),
+                            right_num.to_numpy(dtype=float, na_value=np.nan),
+                            atol=float(atol), rtol=float(rtol), equal_nan=True),
+                index=frozen_common,
+            )
+            unparsed = left_num.isna() & right_num.isna() & ~(left.isna() & right.isna())
+            changed |= unparsed & left.astype(str).ne(right.astype(str))
         else:
             changed = left.astype(str).ne(right.astype(str))
+        changed = (changed & ~(left.isna() & right.isna())) | (left.isna() ^ right.isna())
         for dt in frozen_common[changed.fillna(False)]:
             changes.append(
                 {
@@ -8795,10 +8814,16 @@ def validate_performance_frame(perf_df: pd.DataFrame, ret_col: str, nav_col: str
         raise ValueError(f"{source_label} performance input missing columns: {missing}")
     data[ret_col] = pd.to_numeric(data[ret_col], errors="coerce")
     data[nav_col] = pd.to_numeric(data[nav_col], errors="coerce")
-    if data[ret_col].isna().all():
-        raise ValueError(f"{source_label} performance input has no numeric {ret_col}.")
-    if data[nav_col].isna().all():
-        raise ValueError(f"{source_label} performance input has no numeric {nav_col}.")
+    if data.empty:
+        raise ValueError(f"{source_label} performance input is empty.")
+    for column in (ret_col, nav_col):
+        if not np.isfinite(data[column].to_numpy(dtype=float, na_value=np.nan)).all():
+            raise ValueError(f"{source_label} performance input contains non-finite {column}.")
+    if data[ret_col].le(-1.0).any() or data[nav_col].le(0.0).any():
+        raise ValueError(f"{source_label} performance input has invalid return or non-positive NAV.")
+    implied_return = data[nav_col].div(data[nav_col].shift(1)).sub(1.0).iloc[1:]
+    if not np.isclose(implied_return, data[ret_col].iloc[1:], atol=1e-9, rtol=1e-7).all():
+        raise ValueError(f"{source_label} performance input has inconsistent NAV and daily returns.")
     return data
 
 
@@ -8936,6 +8961,8 @@ def reusable_cached_proxy_end_for_realtime(
     if current_index_end is None or current_costed_end is None:
         return None
     if not args.index_csv.exists() or not args.costed_nav_csv.exists() or not paths["proxy_turnover"].exists():
+        return None
+    if not paths["proxy_meta"].is_file():
         return None
     if paths["proxy_meta"].exists():
         try:
@@ -11831,8 +11858,8 @@ def _load_embedded_base_context() -> tuple[dict[str, object], pd.DataFrame, pd.D
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         if "rebalance_date" not in turnover_df.columns:
             raise KeyError(f"Column 'rebalance_date' not found in {base_paths['proxy_turnover']}.")
-        turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-        turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+        from scripts.top100_data_contracts import normalise_turnover_table
+        turnover_df = normalise_turnover_table(turnover_df)
         reference_summary = _load_reference_summary_unlocked(
             pd.Timestamp(target_end_date),
             state_only=state_only,
@@ -11856,8 +11883,8 @@ def _load_realtime_embedded_base_context() -> tuple[dict[str, object], pd.DataFr
             pd.Timestamp(base_context["close_df"].index[-1]), args.max_stale_anchor_days)
         member_context = base_mod.ensure_static_members_fresh(args, base_paths, panel_path, target_end_date, base_context)
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
-        turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-        turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+        from scripts.top100_data_contracts import normalise_turnover_table
+        turnover_df = normalise_turnover_table(turnover_df)
         reference_summary = _load_reference_summary_unlocked(pd.Timestamp(target_end_date))
     return member_context, turnover_df, reference_summary
 
@@ -12053,8 +12080,8 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
         member_context["expected_latest_completed_trade_date_source"] = refresh_proof.get("source", "")
         member_context["expected_latest_completed_trade_date_verified_on"] = refresh_proof.get("verified_on", "")
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
-        turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-        turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+        from scripts.top100_data_contracts import normalise_turnover_table
+        turnover_df = normalise_turnover_table(turnover_df)
         reference_summary = _load_reference_summary_unlocked(
             pd.Timestamp(target_end_date), state_only=realtime_state_required()
         )
@@ -13112,6 +13139,23 @@ def invalidate_incompatible_v2_0_outputs() -> list[Path]:
     return removed
 
 
+def realtime_signal_matches_current_v2_0(path: Path | None = None) -> bool:
+    from scripts.top100_data_contracts import read_single_csv_row, realtime_row_is_consistent
+    signal_path = REALTIME_SIGNAL_CSV if path is None else Path(path)
+    try:
+        row = read_single_csv_row(signal_path)
+        return (str(row.get("version")) == VERSION
+                and ("strategy_version" not in row or row["strategy_version"] == f"v{VERSION}")
+                and row.get("strategy_revision") == STRATEGY_REVISION
+                and float(row.get("lookback", -1)) == 16.0
+                and float(row.get("fixed_hedge_ratio", -1)) == 0.8
+                and all(str(row.get(field)).lower() in {"false", "0", "0.0"}
+                        for field in ("target_vol_enabled", "overheat_enabled"))
+                and realtime_row_is_consistent(row, "long_microcap_short_zz1000"))
+    except (OSError, ValueError, TypeError, KeyError):
+        return False
+
+
 def incompatible_v2_0_outputs() -> list[Path]:
     all_outputs = [
         SUMMARY_JSON,
@@ -13138,15 +13182,15 @@ def incompatible_v2_0_outputs() -> list[Path]:
     except Exception:
         summary = None
     if summary_matches_current_v2_0_base(summary):
-        return []
+        return [REALTIME_SIGNAL_CSV] if REALTIME_SIGNAL_CSV.exists() and not realtime_signal_matches_current_v2_0() else []
     return all_outputs
 
 
 def _stale_outputs_to_remove_after_generate(stale_outputs: list[Path], regenerated_outputs: set[Path]) -> list[Path]:
     preserved = set(regenerated_outputs)
-    # Close-confirmed generation does not own the realtime signal artifact; the
-    # realtime route refreshes it atomically when queried.
-    preserved.add(REALTIME_SIGNAL_CSV)
+    # Preserve only a compatible dated snapshot, including a concurrent writer.
+    if realtime_signal_matches_current_v2_0():
+        preserved.add(REALTIME_SIGNAL_CSV)
     return [path for path in stale_outputs if path not in preserved]
 
 
@@ -14370,7 +14414,9 @@ def _candidate_frame_sha256(candidate: pd.DataFrame) -> str:
     if "date" not in frame.columns and isinstance(frame.index, pd.DatetimeIndex):
         frame = frame.rename_axis("date").reset_index()
     if "date" in frame.columns:
-        frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        from scripts.top100_data_contracts import daily_session_date
+        parsed = pd.to_datetime(frame["date"], format="mixed", errors="raise")
+        frame["date"] = parsed.map(daily_session_date).map(lambda day: day.isoformat())
     payload = frame.to_csv(
         index=False,
         lineterminator="\n",
@@ -14415,7 +14461,7 @@ def v2_0_rewrite_audit_matches_approved_lineage_migration(
         }
     except Exception:
         return False
-    return all(report.get(key) == value for key, value in expected.items())
+    return report.get("approved") is True and all(report.get(key) == value for key, value in expected.items())
 
 
 def _write_v2_0_lineage_migration_diagnostics(report_path: Path, audit_path: Path) -> Path:
@@ -14468,7 +14514,7 @@ def v2_0_rewrite_audit_matches_strategy_promotion(report_path: Path | None, prev
         expected = strategy_promotion_evidence(previous_path, candidate, audit_path)
         if report.get("approved") is not True:
             return False
-        return all(report.get(key) == value for key, value in expected.items())
+        return report.get("approved") is True and all(report.get(key) == value for key, value in expected.items())
     except (OSError, ValueError, TypeError, KeyError, AttributeError):
         return False
 
@@ -14739,7 +14785,11 @@ def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFra
         PERF_PNG,
     }
     for stale_path in _stale_outputs_to_remove_after_generate(stale_outputs, regenerated_outputs):
-        if stale_path.exists():
+        if stale_path == REALTIME_SIGNAL_CSV:
+            with _v2_realtime_output_lock():
+                if not realtime_signal_matches_current_v2_0():
+                    stale_path.unlink(missing_ok=True)
+        elif stale_path.exists():
             stale_path.unlink(missing_ok=True)
     return summary, signal_row, out
 
@@ -15119,6 +15169,9 @@ def _v2_realtime_output_lock(
         stale_lock_seconds=stale_lock_seconds,
     ):
         yield
+
+
+_overlay_ns["_v2_realtime_output_lock"] = _v2_realtime_output_lock
 
 
 def generate_v2_0_outputs() -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]:

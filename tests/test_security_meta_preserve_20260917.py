@@ -60,12 +60,17 @@ def test_actual_loader_does_not_relabel_old_snapshot_on_source_failure(meta_runt
 
 
 @pytest.mark.parametrize("field,value", [("meta_version", -1), ("st_notice_policy_version", "different-policy"), ("current_st_snapshot_name", "ST另一名称"), ("symbol", "000001")])
-def test_preservation_never_crosses_identity_or_policy(meta_runtime, field, value):
+def test_failed_history_source_cannot_replace_same_security_after_identity_drift(meta_runtime, field, value):
     ns, path, previous = meta_runtime
     candidate = copy.deepcopy(previous)
     candidate[field] = value
     candidate["notice_query_status"] = "error:outage"
-    assert ns["_preserve_security_meta_evidence"](previous, candidate) is candidate
+    if field == "symbol":
+        # A different security's cache cannot certify this one's history.
+        assert ns["_preserve_security_meta_evidence"](previous, candidate) is candidate
+    else:
+        with pytest.raises(ns["SecurityMetaHistoryCorrectionRequired"], match="exact-hash lineage review"):
+            ns["_preserve_security_meta_evidence"](previous, candidate)
 
 
 def test_successful_source_correction_fails_before_overwriting_existing_history(meta_runtime, monkeypatch):

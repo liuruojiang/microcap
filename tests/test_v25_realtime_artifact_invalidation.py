@@ -8,6 +8,20 @@ import microcap_top100_mom16_biweekly_live_v2_5 as v25
 
 def _write_realtime(path: Path, **overrides: object) -> None:
     row: dict[str, object] = {
+        "date": "2026-09-29",
+        "quote_trade_date": "2026-09-29",
+        "latest_anchor_trade_date": "2026-09-28",
+        "snapshot_time": "2026-09-29T14:46:54+08:00",
+        "signal_timing": "intraday_hypothetical_if_now_close",
+        "official_close_confirmed_signal": False,
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "signal_label": "long_microcap_top100",
+        "trade_state": "hold",
+        "current_execution_scale": 1.0,
+        "next_session_actionable_scale": 1.0,
+        "version": v25.VERSION,
+        "strategy_version": f"v{v25.VERSION}",
         "strategy_revision": v25.STRATEGY_REVISION,
         "lookback": v25.LOOKBACK,
         "halflife": v25.HALFLIFE,
@@ -16,6 +30,7 @@ def _write_realtime(path: Path, **overrides: object) -> None:
         "target_vol_enabled": False,
         "cash_day_yield_enabled": False,
         "financing_enabled": False,
+        "overheat_enabled": False,
         "signal_spread_hedge_ratio": v25.SIGNAL_SPREAD_HEDGE_RATIO,
         "execution_hedge_ratio": v25.EXECUTION_HEDGE_RATIO,
     }

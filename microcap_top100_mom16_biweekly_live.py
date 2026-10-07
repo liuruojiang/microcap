@@ -548,6 +548,7 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
     if dates.empty:
         raise RuntimeError("No valid historical dates available.")
     current_day = pd.Timestamp(current_ts.date())
+    dates = dates[dates.dt.normalize() <= current_day]
     hour, minute = (int(part) for part in CN_CLOSE_CONFIRM_TIME.split(":", 1))
     close_confirm_ts = current_ts.normalize() + pd.Timedelta(hours=hour, minutes=minute)
     if current_ts < close_confirm_ts:
@@ -555,6 +556,7 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
     if dates.empty:
         raise RuntimeError("No close-confirmed historical dates available.")
     return pd.Timestamp(dates.max()).normalize()
+
 
 
 def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
@@ -1316,12 +1318,33 @@ def ensure_strategy_files(
     assert_proxy_tail_is_actionable(args.index_csv, target_end_date)
 
 
+def validate_close_df(close_df: pd.DataFrame, label: str = "close_df") -> None:
+    required = {"microcap", "hedge"}
+    missing = required - set(close_df.columns)
+    if missing:
+        raise ValueError(f"{label} missing columns: {sorted(missing)}")
+    idx = pd.DatetimeIndex(close_df.index)
+    if idx.has_duplicates:
+        dupes = idx[idx.duplicated()].strftime("%Y-%m-%d").unique().tolist()
+        raise ValueError(f"{label} has duplicate dates: {dupes[:5]}")
+    if not idx.is_monotonic_increasing:
+        raise ValueError(f"{label} index must be monotonic increasing")
+    prices = close_df[["microcap", "hedge"]].apply(pd.to_numeric, errors="coerce")
+    if prices.isna().any().any():
+        raise ValueError(f"{label} contains NaN prices")
+    if np.isinf(prices.to_numpy(dtype=float)).any():
+        raise ValueError(f"{label} contains inf prices")
+    if (prices <= 0).any().any():
+        raise ValueError(f"{label} contains non-positive prices")
+
+
+
 def load_close_df(panel_path: Path, index_csv: Path, max_date: pd.Timestamp | None = None) -> pd.DataFrame:
     panel = pd.read_csv(panel_path, usecols=["date", HEDGE_COLUMN])
-    panel["date"] = pd.to_datetime(panel["date"])
+    panel = _normalise_dated_frame(panel, "hedge panel").reset_index()
 
     proxy = pd.read_csv(index_csv)
-    proxy["date"] = pd.to_datetime(proxy["date"])
+    proxy = _normalise_dated_frame(proxy, "microcap proxy").reset_index()
     if max_date is not None:
         max_ts = pd.Timestamp(max_date).normalize()
         panel = panel.loc[panel["date"].dt.normalize() <= max_ts].copy()
@@ -1331,23 +1354,15 @@ def load_close_df(panel_path: Path, index_csv: Path, max_date: pd.Timestamp | No
     microcap = proxy.set_index("date")["close"].rename("microcap").astype(float)
 
     aligned = pd.concat([microcap, hedge], axis=1).sort_index()
-    close_df = aligned.dropna()
-    proxy_tail = microcap.dropna().index.max() if not microcap.dropna().empty else None
-    aligned_tail = close_df.index.max() if not close_df.empty else None
-    if proxy_tail is not None and aligned_tail is not None and pd.Timestamp(aligned_tail) < pd.Timestamp(proxy_tail):
-        truncated_dates = microcap.loc[microcap.index > aligned_tail].dropna().index
-        warnings.warn(
-            "load_close_df truncated proxy tail because hedge data was missing: "
-            f"{len(truncated_dates)} rows, last_proxy_date={pd.Timestamp(proxy_tail).date()}, "
-            f"last_aligned_date={pd.Timestamp(aligned_tail).date()}",
-            RuntimeWarning,
-            stacklevel=2,
-        )
-    if effective_start is not None:
-        close_df = close_df.loc[close_df.index >= effective_start].copy()
+    # Keep every observed session inside the active proxy window. Dropping an
+    # unmatched or NaN row would silently change momentum and execution lags.
+    window_start = effective_start if effective_start is not None else microcap.index.min()
+    close_df = aligned.loc[(aligned.index >= window_start) & (aligned.index <= microcap.index.max())].copy()
+    validate_close_df(close_df, "load_close_df close_df")
     if len(close_df) < LOOKBACK + 3:
         raise ValueError(f"Not enough aligned rows for lookback={LOOKBACK}: got {len(close_df)}.")
     return close_df
+
 
 
 def infer_proxy_effective_start(proxy_df: pd.DataFrame) -> pd.Timestamp | None:
@@ -1409,8 +1424,8 @@ def trim_proxy_history(
     turnover_out = turnover_df
     if turnover_df is not None and not turnover_df.empty and "rebalance_date" in turnover_df.columns:
         turnover_out = turnover_df.copy()
-        turnover_out["rebalance_date"] = pd.to_datetime(turnover_out["rebalance_date"], errors="coerce")
-        turnover_out = turnover_out.dropna(subset=["rebalance_date"])
+        from scripts.top100_data_contracts import normalise_turnover_table
+        turnover_out = normalise_turnover_table(turnover_out)
         turnover_out = turnover_out.loc[turnover_out["rebalance_date"] >= effective_start].copy()
 
     return index_out, members_out, turnover_out, effective_start
@@ -1443,8 +1458,8 @@ def normalize_existing_proxy_outputs(args: argparse.Namespace, paths: dict[str, 
     if paths["proxy_turnover"].exists():
         turnover = pd.read_csv(paths["proxy_turnover"])
         if "rebalance_date" in turnover.columns:
-            turnover["rebalance_date"] = pd.to_datetime(turnover["rebalance_date"], errors="coerce")
-            turnover = turnover.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+            from scripts.top100_data_contracts import normalise_turnover_table
+            turnover = normalise_turnover_table(turnover)
             trimmed_turnover = turnover.loc[turnover["rebalance_date"] >= effective_start].copy()
             if len(trimmed_turnover) != len(turnover):
                 _atomic_to_csv(trimmed_turnover, paths["proxy_turnover"], index=False, encoding="utf-8")
@@ -2634,8 +2649,8 @@ def run_forced_stop_loss_scan_from_proxy_turnover(
     turnover_df = pd.read_csv(turnover_path)
     if "rebalance_date" not in turnover_df.columns:
         raise KeyError(f"Column 'rebalance_date' not found in {turnover_path}.")
-    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+    from scripts.top100_data_contracts import normalise_turnover_table
+    turnover_df = normalise_turnover_table(turnover_df)
 
     close_df = load_close_df(panel_path, args.index_csv)
     gross = run_signal(close_df)
@@ -2663,8 +2678,8 @@ def rebuild_costed_nav_from_proxy_turnover(
     turnover_df = pd.read_csv(turnover_path)
     if "rebalance_date" not in turnover_df.columns:
         raise KeyError(f"Column 'rebalance_date' not found in {turnover_path}.")
-    turnover_df["rebalance_date"] = pd.to_datetime(turnover_df["rebalance_date"], errors="coerce")
-    turnover_df = turnover_df.dropna(subset=["rebalance_date"]).sort_values("rebalance_date")
+    from scripts.top100_data_contracts import normalise_turnover_table
+    turnover_df = normalise_turnover_table(turnover_df)
 
     close_df = load_close_df(panel_path, args.index_csv, max_date=target_end_date)
     gross = run_signal(close_df)
@@ -3689,17 +3704,34 @@ def calc_max_drawdown_from_returns(returns: pd.Series) -> float:
 def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
     out = frame.copy()
     if "date" in out.columns:
-        out["date"] = pd.to_datetime(out["date"], errors="coerce")
-        out = out.dropna(subset=["date"]).set_index("date")
+        out["date"] = pd.to_datetime(out["date"], format="mixed", errors="coerce")
+        if out["date"].isna().any():
+            raise ValueError(f"{label} contains invalid dates/NaT")
+        out = out.set_index("date")
     elif isinstance(out.index, pd.DatetimeIndex):
         out.index = pd.to_datetime(out.index)
+        if out.index.hasnans:
+            raise ValueError(f"{label} contains invalid dates/NaT")
     else:
         raise ValueError(f"{label} requires a date column or DatetimeIndex.")
+    if out.index.tz is not None or not out.index.equals(out.index.normalize()):
+        raise ValueError(f"{label} requires timezone-naive daily session dates")
     out = out.sort_index()
     if out.index.duplicated().any():
         dupes = out.index[out.index.duplicated()].strftime("%Y-%m-%d").unique().tolist()
         raise ValueError(f"{label} has duplicate dates: {dupes[:5]}")
     return out
+
+
+
+def clear_rewrite_audit_after_clean_result(audit_path: Path | None) -> None:
+    if audit_path is None:
+        return
+    try:
+        Path(audit_path).unlink(missing_ok=True)
+    except OSError as exc:
+        raise RuntimeError(f"failed to clear stale clean rewrite audit: {audit_path}") from exc
+
 
 
 def assert_no_historical_rewrite(
@@ -3709,38 +3741,131 @@ def assert_no_historical_rewrite(
     allowed_tail_rows: int,
     label: str,
     audit_path: Path | None = None,
-    numeric_tolerance: float = 1e-10,
+    atol: float = 1e-10,
+    rtol: float = 0.0,
+    numeric_tolerance: float | None = None,
+    column_allowed_tail_rows: dict[str, int] | None = None,
 ) -> None:
+    if numeric_tolerance is not None:
+        atol = float(numeric_tolerance)
+        rtol = 0.0
     prev = _normalise_dated_frame(previous, f"{label} previous")
     cand = _normalise_dated_frame(candidate, f"{label} candidate")
-    common = prev.index.intersection(cand.index).sort_values()
-    if len(common) <= int(allowed_tail_rows):
-        return
-    frozen_common = common[:-int(allowed_tail_rows)] if allowed_tail_rows > 0 else common
+    tail_rows = max(0, int(allowed_tail_rows))
+    frozen_prev = prev.index[:-tail_rows] if tail_rows > 0 else prev.index
     changes: list[dict[str, object]] = []
+
+    missing_key_columns = sorted({col for col in key_columns if col not in prev.columns or col not in cand.columns})
+    for col in missing_key_columns:
+        changes.append(
+            {
+                "date": "",
+                "column": col,
+                "change_type": "missing_key_column",
+                "previous": "present" if col in prev.columns else "missing",
+                "candidate": "present" if col in cand.columns else "missing",
+            }
+        )
+    if missing_key_columns:
+        diff_df = pd.DataFrame(changes)
+        if audit_path is not None:
+            audit_path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+        raise RuntimeError(
+            f"{label} historical rewrite audit missing key columns: {missing_key_columns}. "
+            "Refusing to publish query/chart output until the schema lineage is audited."
+        )
+
+    missing_dates = pd.DatetimeIndex(prev.index.difference(cand.index)).sort_values()
+    if len(prev.index):
+        historical_added_index = cand.index[cand.index <= prev.index.max()]
+        added_dates = pd.DatetimeIndex(historical_added_index.difference(prev.index)).sort_values()
+    else:
+        added_dates = pd.DatetimeIndex([])
+    for dt in missing_dates:
+        changes.append(
+            {
+                "date": str(pd.Timestamp(dt).date()),
+                "column": "__date__",
+                "change_type": "date_removed",
+                "previous": "present",
+                "candidate": "missing",
+            }
+        )
+    for dt in added_dates:
+        changes.append(
+            {
+                "date": str(pd.Timestamp(dt).date()),
+                "column": "__date__",
+                "change_type": "date_added",
+                "previous": "missing",
+                "candidate": "present",
+            }
+        )
+    if missing_dates.size or added_dates.size:
+        diff_df = pd.DataFrame(changes)
+        if audit_path is not None:
+            audit_path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+        examples = ", ".join(f"{row['date']}:{row['change_type']}" for row in changes[:5])
+        if missing_dates.size:
+            raise RuntimeError(
+                f"{label} historical date set changed: candidate removed previously published dates; "
+                f"examples: {examples}. "
+                "Refusing to publish query/chart output until the data lineage is audited."
+            )
+        raise RuntimeError(
+            f"{label} historical date set changed: candidate inserted dates into published history; "
+            f"examples: {examples}. "
+            "Refusing to publish query/chart output until the data lineage is audited."
+        )
+
     for col in key_columns:
-        if col not in prev.columns or col not in cand.columns:
+        col_tail_rows = tail_rows
+        if column_allowed_tail_rows is not None and col in column_allowed_tail_rows:
+            col_tail_rows = max(0, int(column_allowed_tail_rows[col]))
+        col_frozen_prev = prev.index[:-col_tail_rows] if col_tail_rows > 0 else prev.index
+        if len(col_frozen_prev) == 0:
             continue
+        frozen_common = col_frozen_prev.intersection(cand.index).sort_values()
         left = prev.loc[frozen_common, col]
         right = cand.loc[frozen_common, col]
         left_num = pd.to_numeric(left, errors="coerce")
         right_num = pd.to_numeric(right, errors="coerce")
-        numeric_like = left_num.notna().any() or right_num.notna().any()
-        if numeric_like:
-            changed = (left_num - right_num).abs().gt(float(numeric_tolerance))
-            changed = changed | (left_num.isna() ^ right_num.isna())
+        bool_like = (
+            pd.api.types.is_bool_dtype(left)
+            or pd.api.types.is_bool_dtype(right)
+            or pd.api.types.is_bool_dtype(left_num)
+            or pd.api.types.is_bool_dtype(right_num)
+        )
+        numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+        if bool_like:
+            changed = left.astype("boolean").ne(right.astype("boolean"))
+            changed = changed | (left.isna() ^ right.isna())
+        elif numeric_like:
+            changed = pd.Series(
+                ~np.isclose(left_num.to_numpy(dtype=float, na_value=np.nan),
+                            right_num.to_numpy(dtype=float, na_value=np.nan),
+                            atol=float(atol), rtol=float(rtol), equal_nan=True),
+                index=frozen_common,
+            )
+            unparsed = left_num.isna() & right_num.isna() & ~(left.isna() & right.isna())
+            changed |= unparsed & left.astype(str).ne(right.astype(str))
         else:
             changed = left.astype(str).ne(right.astype(str))
+        changed = (changed & ~(left.isna() & right.isna())) | (left.isna() ^ right.isna())
         for dt in frozen_common[changed.fillna(False)]:
             changes.append(
                 {
                     "date": str(pd.Timestamp(dt).date()),
                     "column": col,
+                    "change_type": "value_changed",
                     "previous": prev.at[dt, col],
                     "candidate": cand.at[dt, col],
                 }
             )
     if not changes:
+        clear_rewrite_audit_after_clean_result(audit_path)
         return
     diff_df = pd.DataFrame(changes)
     if audit_path is not None:
@@ -3753,6 +3878,7 @@ def assert_no_historical_rewrite(
     )
 
 
+
 def validate_performance_frame(perf_df: pd.DataFrame, ret_col: str, nav_col: str, source_label: str) -> pd.DataFrame:
     data = _normalise_dated_frame(perf_df, f"{source_label} performance input")
     missing = [col for col in [ret_col, nav_col] if col not in data.columns]
@@ -3760,11 +3886,18 @@ def validate_performance_frame(perf_df: pd.DataFrame, ret_col: str, nav_col: str
         raise ValueError(f"{source_label} performance input missing columns: {missing}")
     data[ret_col] = pd.to_numeric(data[ret_col], errors="coerce")
     data[nav_col] = pd.to_numeric(data[nav_col], errors="coerce")
-    if data[ret_col].isna().all():
-        raise ValueError(f"{source_label} performance input has no numeric {ret_col}.")
-    if data[nav_col].isna().all():
-        raise ValueError(f"{source_label} performance input has no numeric {nav_col}.")
+    if data.empty:
+        raise ValueError(f"{source_label} performance input is empty.")
+    for column in (ret_col, nav_col):
+        if not np.isfinite(data[column].to_numpy(dtype=float, na_value=np.nan)).all():
+            raise ValueError(f"{source_label} performance input contains non-finite {column}.")
+    if data[ret_col].le(-1.0).any() or data[nav_col].le(0.0).any():
+        raise ValueError(f"{source_label} performance input has invalid return or non-positive NAV.")
+    implied_return = data[nav_col].div(data[nav_col].shift(1)).sub(1.0).iloc[1:]
+    if not np.isclose(implied_return, data[ret_col].iloc[1:], atol=1e-9, rtol=1e-7).all():
+        raise ValueError(f"{source_label} performance input has inconsistent NAV and daily returns.")
     return data
+
 
 
 def build_performance_outputs(
@@ -3901,6 +4034,8 @@ def reusable_cached_proxy_end_for_realtime(
     if current_index_end is None or current_costed_end is None:
         return None
     if not args.index_csv.exists() or not args.costed_nav_csv.exists() or not paths["proxy_turnover"].exists():
+        return None
+    if not paths["proxy_meta"].is_file():
         return None
     if paths["proxy_meta"].exists():
         try:

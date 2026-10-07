@@ -1,0 +1,77 @@
+{
+  "scope": "round3_diagnostic_only",
+  "checked_at_bj": "2026-10-07T20:05:48.072440+08:00",
+  "latest_completed_session": "2026-09-30",
+  "formal_refresh": "BLOCKED: local core/authority differs from remote release; no guard bypass",
+  "formal_refresh_evidence": "pre_refresh_result.json",
+  "same_day_successful_refresh": "research_reports/20261007_script_adversarial/pre_refresh_all.log",
+  "artifacts": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "date_field": "date",
+      "rows": 8738,
+      "first_date": "1990-12-19",
+      "latest_date": "2026-09-30",
+      "raw_sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "matches_same_day_refreshed_input": true
+    },
+    "proxy_index": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "date_field": "date",
+      "rows": 4067,
+      "first_date": "2010-01-05",
+      "latest_date": "2026-09-30",
+      "raw_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "matches_same_day_refreshed_input": true
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "date_field": "rebalance_date",
+      "rows": 432,
+      "first_date": "2010-01-14",
+      "latest_date": "2026-09-17",
+      "raw_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "matches_same_day_refreshed_input": true
+    },
+    "base_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "date_field": "date",
+      "rows": 4050,
+      "first_date": "2010-01-28",
+      "latest_date": "2026-09-30",
+      "raw_sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "matches_same_day_refreshed_input": true
+    },
+    "v20_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "date_field": "date",
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30",
+      "raw_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "matches_same_day_refreshed_input": true
+    },
+    "v23_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "date_field": "date",
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "raw_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+      "matches_same_day_refreshed_input": true
+    },
+    "v25_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "date_field": "date",
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "raw_sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+      "matches_same_day_refreshed_input": true
+    }
+  },
+  "turnover_is_event_table_not_daily": "Latest actual event 2026-09-17; all daily streams end at completed 2026-09-30",
+  "old_source_backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436",
+  "formal_delivery_manifest_left_blocked": true,
+  "permissions": "isolated diagnostic script counterexamples only; no formal performance/signal/holding publication, history rewrite, deployment, email or orders"
+}

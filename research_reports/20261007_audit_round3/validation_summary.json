@@ -1,0 +1,158 @@
+{
+  "scope": "local_third_adversarial_script_audit_v20_v23_v25",
+  "created_at_bj": "2026-10-07T20:52:27.468579+08:00",
+  "status": "PASS_DIAGNOSTIC_WITH_FORMAL_DELIVERY_BLOCKED",
+  "versions": [
+    "v2.0",
+    "v2.3",
+    "v2.5"
+  ],
+  "excluded": [
+    "v2.6"
+  ],
+  "independent_agents": 3,
+  "findings_fixed": {
+    "group_count": 18,
+    "data_and_history": 7,
+    "math_and_fees": 6,
+    "native_state_and_final_contract": 3,
+    "root_delivery_csv": 2
+  },
+  "full_suite": {
+    "tests": 1189,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 1189,
+    "elapsed_seconds": 341.552,
+    "warnings": 8,
+    "process_exit_code": 0,
+    "log": "final_verified_suite.log",
+    "xml": "final_verified_suite.xml"
+  },
+  "previous_suite_tests": 1048,
+  "new_cases": {
+    "test_round3_data_boundary": 57,
+    "test_round3_math_ledger": 25,
+    "test_round3_state_contract": 46,
+    "test_round3_delivery_boundary": 13
+  },
+  "independent_validation": {
+    "data_passed": 182,
+    "math_passed": 170,
+    "state_passed": 46,
+    "counts_overlap_full_suite": true
+  },
+  "latest_completed_session": "2026-09-30",
+  "real_inputs_raw_sha256_verified_unchanged": 7,
+  "formal_artifacts_delivery_normalized_sha256_verified_unchanged": 28,
+  "state_real_input_raw_sha256_verified_unchanged": 36,
+  "security_metadata_files_verified_unchanged": 4975,
+  "source_files_syntax_and_sha_verified": 27,
+  "agent_source_bindings_verified": true,
+  "normal_real_history_changed": false,
+  "normal_complete_frozen_stack_comparison_exact": true,
+  "literal_parameters_unchanged": true,
+  "production_delivery_check": {
+    "ok": false,
+    "scope": "whole_workspace_delivery",
+    "errors": [
+      "Local core/authority differs from remote release: scripts/top100_cloud_delivery.py"
+    ]
+  },
+  "formal_delivery_manifest_status": "blocked",
+  "manifest_changed_this_round": true,
+  "remote_main_checked_sha": "eefd27d81d2c9c9f1438975c4d5c221d1b81bf96",
+  "external_digest_exact_snapshot": {
+    "scope": "read_only_external_digest_contract_tests",
+    "repository": "liuruojiang/codex-daily-automation-probe",
+    "remote_sha": "a89e9099f33ce291830a1415893a6e7cec5eb4cd",
+    "github_blob_sha": "54acd09f16e8cf19df6d5ed1dc64fb7e833233c1",
+    "snapshot": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_script_adversarial\\external_digest_source.py",
+    "sha256": "2fee97afec037470290a3be97538aa528ecc5f7ea63b7f9c3b37ee4aa38578f4",
+    "same_as_local_checkout": false
+  },
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "sent_email": false,
+  "placed_orders": false,
+  "history_migration_run": false,
+  "backups": [
+    ".codex_backups/20261007_200436",
+    ".codex_backups/20261007_202622",
+    ".codex_backups/20261007_2030_test_fixtures",
+    ".codex_backups/20261007_2038_test_fixtures"
+  ],
+  "uncertified": [
+    "complete_historical_PIT_universe_and_ST",
+    "corporate_action_entitlement",
+    "historical_nontrading_proxy_bars",
+    "actual_fills_and_futures_margin",
+    "self_financing_shared_cash_account",
+    "production_deployment_and_email_delivery"
+  ],
+  "performance_metrics": {
+    "Full": "N/A",
+    "10Y": "N/A",
+    "5Y": "N/A",
+    "3Y": "N/A",
+    "1Y": "N/A",
+    "reason": "script_correctness_and_unchanged_baseline_audit_no_performance_study"
+  },
+  "state_control_limit": [
+    "Actual full native close-command generation, staged promotion, history audit and cleanup are preserved; upstream write-capable loader is replaced by context recomputed from verified real inputs.",
+    "Actual delivery check executes against complete isolated final-file copies; remote and base freshness gates are explicitly isolated.",
+    "No complete production actionable=True intraday CSV was available. Three authentic archived controls cover legal nonactionable snapshots. Existing native member contract definition tests use diagnostic generated fixtures.",
+    "Frozen function probes compile the exact old function with unchanged parameter constants; they are separate from full native CLI evidence.",
+    "No deployment, external email, order, historical migration approval, full strategy performance certification or actual-fill certification."
+  ],
+  "prior_cleanup_rejections": "Seven prior script_adversarial temp targets remain; no deletion retried",
+  "reports": [
+    "report.md",
+    "data_review.md",
+    "math_report.md",
+    "state_report.md"
+  ],
+  "final_evidence_raw_sha256": {
+    "report.md": "e4fed6ae69618a7033b30b4db49a713c743669f360d02e4d8d115e88c0a679d7",
+    "data_review.md": "cbcfc1a2122ba9b31405d86757ba64703019fceaa5f98af33ac93364acb1f756",
+    "math_report.md": "2d69583c2f7f1de1088f3cdbd089f60ef28c3006806ff9fcf9f26b381f909012",
+    "state_report.md": "4c6b76ac8d899615735ae9b2fd06e8311f5f7c93b1f35bb5fc94523e3c142d4d",
+    "data_summary.json": "f04cc306cff4d23051aae9a0a465e373c7f178fcdbdea41d93130073e651a35f",
+    "math_summary.json": "c241a2fb36a2ad40a51aaf4d2f19276ecd409791a1611d49c7ed9ad7a3a1cd32",
+    "math_summary_before_full_integration.json": "57f559b5532e1df72ce701994fd408cea392378acd9174310715c6ee9057d89e",
+    "state_final_validation.json": "5db4431af4fe363e64a2f11b01ef7f231b4be0803a64da6114e905c004977907",
+    "final_source_manifest.json": "26fa4b75a04cd6017bf1bf02fee2e34d833e56774eab92dbf148e2fce18f75b4",
+    "root_official_artifact_check.json": "16c51ce6f907b1b4605786c2d9ec993cb656e7bcc2787a674e92903e3d4eb7a6",
+    "root_final_checks.py": "9707c2de87a127905da9ff73e53fa6fd76d66b7e1f4bb63bf45fd94920b89fb8",
+    "final_verified_suite.log": "bc35bd377915889fa9564342e6a0b803321ad86fcbcc37a0cbb4cb3f5ba7acaa",
+    "final_verified_suite.xml": "d40073b8ace36aea022990e5af3d70be9a1e897228e033a9f459bb37d08cacae",
+    "baseline_and_freshness.json": "d54c4cb5bf29d3169c3f40a46c47a3704c6fad2f7c1e2c8252e6f35e882d3f60",
+    "start_source_manifest.json": "a2e76247e1c3369a914c3bce89c382d942f0a00f4bede3d5bf9bf9cc0ead68a3",
+    "pre_refresh_all.log": "3822ff20f23973e05cb83612273fc397bd1e2e28240d001cccf4c322de809782",
+    "pre_refresh_result.json": "8a5d0311a97b0d3a9356b1f7cdbd25af2e26c40be47f4da70e82a6ce897a16a8",
+    "post_delivery_check.log": "b5c9cd7890bad630bcc90e696e1ccc1dba81067e0c21ebfc922c566ccc68634e",
+    "backup_verification.json": "ba53fc4e29c8fae24a2fba1be5440c4f8bf49dc1bef9b5d1736bc4140cf0b270",
+    "cloud_backup_verification.json": "624a673188c344d71fcb70b0ce19b1d44b818e580f15fea728580e24ba52b95b",
+    "root_delivery_before2.log": "244dc3299d60e3d80afc8da5118feb0dc914042cd6cb80282fc3c48c655b9169",
+    "root_delivery_before2.xml": "2c3f0cd91e9dbf7ae6a529eb291c4be3be9bd1becfec7aab6349dc6394e7ae77",
+    "root_delivery_probes.jsonl": "364b039377e488a396324c735f47fd1de7587dac5d52903938a49fe5740a1271",
+    "root_fixture_regression.log": "b297a778e128ba1e69aa5ab2a8c51fa8c1fc241e2c690fadd633108dba700c88",
+    "root_fixture_regression.xml": "744cb05fffba4ba1483549ae5d3804d9cdd3461b7b4e23e46c6477b31dc47d56",
+    "root_native_transition.xml": "27f1d8dd3c5b8c07dadf1a04fa38a8209f2da6715ba6f037a14659b6c7dae5df",
+    "data_final_baseline.xml": "507031022bb47faf98dec550d762e8d344a3c1ffd0fe3e958b514849ec195d4a",
+    "data_final_current.xml": "b097d683dbcbddc97d935f609239b83724574cf05dbbefa313e8afef2938e1b8",
+    "data_st_regression.xml": "6d57ba8fb2dcebd2c818ee973a74e821e2daa9f4c0a0e05f26d3a2141ff16f6d",
+    "math_before_complete.xml": "9c78da096592b5ea42f981d66c338d8c59979cf3942d19e8dbee2c304792637b",
+    "math_final_suite.xml": "3575a63c79aec1461353e8be43e94abccb8f8f7a51ccf31ef4f06cd9ab372711",
+    "math_defense_regression.xml": "d05f354b2dbadd780c2178710ccc8a99c6af93842b81a9918b65f1fbde81b733",
+    "math_real.json": "8a727020ef9c1286e5bd6b142521b48614abfed3e749450db0437b60f4f2e370",
+    "math_real_final.log": "4817bb673386fdfb058a02362a4f8b03597f30dcc06d1ce349a83b14c9fa8605",
+    "math_faults.jsonl": "baf1c66af07293da85d03dbaeefbc9578a95a4a5df97564e72fd8d8e8afc6dc5",
+    "state_final_verified.xml": "8b048413838afce06b566ea5d7e65bed392d3627fbd5cab0d66919dfbc1cdd79",
+    "state_final_verified.log": "63eb28d21a2be67e4c0b2bec2d44dfda91ee5da5d6dab64b0caaf7be764b0aba",
+    "state_final_verified_probes.jsonl": "fb0b8d2c67feb12e38382c8ba1745cff1b7933f059e05335e31e694596ecee1e",
+    "state_frozen_matcher_before_after.json": "af2be0a50038b63191e3ab1bd72e91fcc579499b2c9aa92e8efb02fb2d11c66d"
+  }
+}

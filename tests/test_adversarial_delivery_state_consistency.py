@@ -14,8 +14,12 @@ ACTIVE = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
 
 def pair(version, current, nxt):
     signal = {"current_holding": current, "next_holding": nxt,
+              "version": f"2.{version}", "strategy_version": f"v2.{version}",
+              "signal_timing": "close_confirmed", "official_close_confirmed_signal": "True",
               "current_execution_scale": "0" if current == "cash" else "1",
-              "next_session_actionable_scale": "0" if nxt == "cash" else "1"}
+              "next_session_actionable_scale": "0" if nxt == "cash" else "1",
+              "signal_label": nxt,
+              "trade_state": "hold" if current == nxt else ("open" if current == "cash" else "close")}
     nav = {**signal, "holding": current}
     return signal, nav
 

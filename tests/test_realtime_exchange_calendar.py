@@ -112,7 +112,7 @@ def test_cached_context_receives_realtime_freshness_not_historical_age(oracle, m
 def test_all_realtime_fallback_entrypoints_replace_historical_age(oracle, monkeypatch, tmp_path, entrypoint):
     from contextlib import nullcontext
     turnover = tmp_path / "turnover.csv"
-    turnover.write_text("rebalance_date\n2026-09-24\n", encoding="utf-8")
+    turnover.write_text("rebalance_date,two_side_cost_rate,execution_timing\n2026-09-24,0.0,close\n", encoding="utf-8")
     paths = {"proxy_turnover": turnover}
     args = SimpleNamespace(output_prefix="fixture", max_stale_anchor_days=5)
     close = pd.DataFrame(index=pd.DatetimeIndex(["2026-09-30"]))

@@ -1,7 +1,8 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import copy
+import csv
 import hashlib
 import importlib
 import json
@@ -172,6 +173,13 @@ MIN_V2_0_BASE_API_REVISION = 12
 MIN_V2_0_HISTORICAL_AUDIT_REVISION = 5
 MIN_V2_0_DATA_STATE_FINGERPRINT_REVISION = 2
 MIN_V2_0_REALTIME_CALENDAR_GUARD_REVISION = 3
+DISABLED_LEGACY_SIGNAL_NUMERIC_FIELDS: tuple[str, ...] = (
+    "gap_peak",
+    "gap_decay_ratio",
+    "trade_return_net",
+    "latest_realized_vol",
+    "return_gross_base",
+)
 
 
 def _require_v2_0_attr(parent: object, attr: str, label: str) -> object:
@@ -236,6 +244,8 @@ def validate_v2_0_contract() -> None:
     _require_v2_0_callable(overlay_mod, "apply_target_vol_scaling", "overlay_mod.apply_target_vol_scaling")
 
     expected_constants = {
+        "cost_mod.ENTRY_COST": (float(cost_mod.ENTRY_COST), 0.003),
+        "cost_mod.EXIT_COST": (float(cost_mod.EXIT_COST), 0.003),
         "BASE_HEDGE_RATIO": (float(v2_0.BASE_HEDGE_RATIO), EXPECTED_V2_0_BASE_HEDGE_RATIO),
         "base_mod.FUTURES_DRAG": (float(base_mod.FUTURES_DRAG), EXPECTED_V2_0_FUTURES_DRAG),
         "overlay_mod.TARGET_VOL_WINDOW": (int(overlay_mod.TARGET_VOL_WINDOW), EXPECTED_V2_0_TARGET_VOL_WINDOW),
@@ -511,7 +521,22 @@ def always_on_spread_nav(close_df: pd.DataFrame) -> tuple[pd.Series, pd.Series, 
     hedge_ret = close_df["hedge"].pct_change(fill_method=None)
     daily_drag = float(v2_0.base_mod.FUTURES_DRAG) * SIGNAL_SPREAD_HEDGE_RATIO
     spread_ret = micro_ret.fillna(0.0) - SIGNAL_SPREAD_HEDGE_RATIO * hedge_ret.fillna(0.0) - daily_drag
-    spread_nav = (1.0 + spread_ret.fillna(0.0)).cumprod()
+    invalid_returns = ~np.isfinite(spread_ret) | spread_ret.le(-1.0)
+    if invalid_returns.any():
+        invalid_date = spread_ret.index[np.flatnonzero(invalid_returns.to_numpy())[0]]
+        raise ValueError(
+            "v2.3 spread return is non-finite or implies non-positive NAV (ruin): "
+            f"date={invalid_date}, value={spread_ret.loc[invalid_date]!r}"
+        )
+    with np.errstate(over="ignore", invalid="ignore", under="ignore"):
+        spread_nav = (1.0 + spread_ret).cumprod()
+    invalid_nav = ~np.isfinite(spread_nav) | spread_nav.le(0.0)
+    if invalid_nav.any():
+        invalid_date = spread_nav.index[np.flatnonzero(invalid_nav.to_numpy())[0]]
+        raise ValueError(
+            "v2.3 spread NAV is non-finite or non-positive: "
+            f"date={invalid_date}, value={spread_nav.loc[invalid_date]!r}"
+        )
     spread_nav.name = "spread_nav"
     return spread_nav, micro_ret, hedge_ret, daily_drag
 
@@ -529,7 +554,10 @@ def log_wls_score_and_r2(
     if r2_window <= 0:
         raise ValueError("r2_window must be positive")
     weights = np.asarray(exp_weights(lookback, halflife), dtype=float)
-    y = np.log(pd.to_numeric(spread_nav, errors="coerce").replace(0.0, np.nan))
+    nav_values = pd.to_numeric(spread_nav, errors="coerce")
+    if (~np.isfinite(nav_values) | nav_values.le(0.0)).any():
+        raise ValueError("log-WLS NAV must contain only finite positive values")
+    y = np.log(nav_values)
     x = np.arange(lookback, dtype=float)
     w_sum = float(weights.sum())
     x_bar = float((weights * x).sum() / w_sum)
@@ -543,6 +571,9 @@ def log_wls_score_and_r2(
         valid = np.isfinite(windows).all(axis=1)
         if valid.any():
             valid_windows = windows[valid]
+            # A constant shift leaves slope/R2 unchanged and gives an exactly
+            # zero score for a flat window at the formal zero entry threshold.
+            valid_windows = valid_windows - valid_windows[:, -1:]
             y_bar = valid_windows @ weights / w_sum
             y_centered = valid_windows - y_bar[:, None]
             slope = y_centered @ (weights * x_centered) / denom
@@ -604,8 +635,7 @@ def _assert_official_index_covers_valid_signal_index(
             f"{label} official v2.0 output is stale: "
             f"official_last_date={official_idx.max().date()}, valid_signal_last_date={valid_idx.max().date()}"
         )
-    in_overlap = valid_idx[(valid_idx >= official_idx.min()) & (valid_idx <= official_idx.max())]
-    missing_internal = pd.DatetimeIndex(in_overlap.difference(official_idx)).sort_values()
+    missing_internal = pd.DatetimeIndex(valid_idx.difference(official_idx)).sort_values()
     if len(missing_internal):
         examples = ", ".join(str(pd.Timestamp(dt).date()) for dt in missing_internal[:5])
         raise RuntimeError(
@@ -724,6 +754,8 @@ def _overheat_feature_series(gross: pd.DataFrame) -> pd.Series:
     kind = str(OVERHEAT_KIND)
     if kind == "vol":
         spread_nav = pd.to_numeric(gross["spread_nav"], errors="coerce")
+        if (~np.isfinite(spread_nav) | spread_nav.le(0.0)).any():
+            raise ValueError("v2.3 spread_nav must be positive and finite for overheat defense")
         ret = spread_nav.pct_change(fill_method=None).fillna(0.0)
         return ret.rolling(int(OVERHEAT_FEATURE_WINDOW)).std(ddof=1).mul(math.sqrt(TRADING_DAYS))
     raise ValueError(f"unknown v2.3 overheat kind: {kind}")
@@ -735,13 +767,25 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
     if recovery_threshold >= trigger_threshold:
         raise ValueError("OVERHEAT_RECOVERY_THRESHOLD must be lower than OVERHEAT_TRIGGER_THRESHOLD")
 
-    out = gross.copy().sort_index()
+    out = v2_0.base_mod._normalise_dated_frame(gross, "v2.3 overheat gross")
+    allowed = {"cash", "long_microcap_short_zz1000"}
+    if (not out["holding"].isin(allowed).all() or not out["next_holding"].isin(allowed).all()):
+        raise ValueError("v2.3 gross holding and next_holding must be valid strategy states")
     feature = _overheat_feature_series(out).reindex(out.index)
     base_holding = out["holding"].fillna("cash").astype(str)
     base_next_holding = out["next_holding"].fillna(base_holding).astype(str)
     returns = pd.to_numeric(out["return"], errors="coerce")
     rebalance_base = v2_0.base_mod.freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
-    rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce").fillna(0.0)
+    from scripts.top100_data_contracts import validate_mapped_rebalance_costs
+    validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
+    rebalance_base = pd.to_numeric(rebalance_base.reindex(out.index), errors="coerce")
+    invalid_rebalance_cost = ~np.isfinite(rebalance_base) | rebalance_base.lt(0.0) | rebalance_base.ge(1.0)
+    if invalid_rebalance_cost.any():
+        position = int(np.flatnonzero(invalid_rebalance_cost.to_numpy())[0])
+        raise ValueError(
+            "v2.3 mapped rebalance cost is non-finite or outside [0, 1): "
+            f"date={out.index[position]}, value={rebalance_base.iloc[position]!r}"
+        )
     entry_cost_value = float(v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST)
     exit_cost_value = float(v2_0.base_mod.freq_mod.cost_mod.EXIT_COST)
 
@@ -800,14 +844,25 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
                 "v2.3 active return is non-finite: "
                 f"date={pd.Timestamp(dt).isoformat()}, value={out.at[dt, 'return']!r}"
             )
+        if current_active and float(raw_daily_return) <= -1.0:
+            raise ValueError(
+                "v2.3 active return is at or below -1 (ruin): "
+                f"date={pd.Timestamp(dt).isoformat()}, value={raw_daily_return!r}"
+            )
         gross_daily_return = float(raw_daily_return) if return_is_finite else 0.0
         realized_daily_return = gross_daily_return if current_active else 0.0
         entry_cost = entry_cost_value if (not current_active and desired_next_active) else 0.0
         exit_cost = exit_cost_value if (current_active and not desired_next_active) else 0.0
         rebalance_cost = float(rebalance_base.loc[dt]) if (current_active and desired_next_active) else 0.0
         total_cost = entry_cost + exit_cost + rebalance_cost
+        if not np.isfinite(total_cost) or not 0.0 <= total_cost < 1.0:
+            raise ValueError(f"v2.3 total_cost is non-finite or outside [0, 1): date={dt}, value={total_cost!r}")
         return_net = (1.0 + realized_daily_return) * (1.0 - total_cost) - 1.0
+        if not np.isfinite(return_net) or return_net <= -1.0:
+            raise ValueError(f"v2.3 return_net is non-finite or at or below -1: date={dt}, value={return_net!r}")
         nav_net *= 1.0 + return_net
+        if not np.isfinite(nav_net) or nav_net <= 0.0:
+            raise ValueError(f"v2.3 cumulative NAV is non-finite or non-positive: date={dt}, value={nav_net!r}")
 
         executed_holding.append("long_microcap_short_zz1000" if current_active else "cash")
         executed_next_holding.append("long_microcap_short_zz1000" if desired_next_active else "cash")
@@ -1140,6 +1195,8 @@ def build_v2_3_result(
         common_index = pd.DatetimeIndex(common_index)
         common_index = common_index[common_index >= FORMAL_START_DATE].sort_values()
     gross = build_spread_log_wls_gross(close_df, common_index)
+    if not gross.index.equals(common_index):
+        raise RuntimeError("v2.3 gross dependency changed the requested common session index")
     out = apply_overheat_defense(gross, turnover_df)
     if out.empty:
         raise ValueError(
@@ -1210,7 +1267,60 @@ def summary_matches_current_v2_3_base(summary: dict[str, object]) -> bool:
     return summary.get("base_fingerprint") == current_base_fingerprint()
 
 
+def realtime_signal_matches_current_v2_3(path: Path | None = None) -> bool:
+    """Validate the final realtime artifact independently of its summary."""
+    signal_path = REALTIME_SIGNAL_CSV if path is None else Path(path)
+    if not signal_path.exists():
+        return False
+    try:
+        from scripts.top100_data_contracts import read_single_csv_row, realtime_row_is_consistent
+        row = read_single_csv_row(signal_path)
+        if not realtime_row_is_consistent(row, "long_microcap_short_zz1000"):
+            return False
+        expected_flags = {
+            "r2_gate_enabled": R2_ENTRY_GATE > 0,
+            "overheat_enabled": True,
+            "target_vol_enabled": TARGET_VOL_ENABLED,
+            "cash_day_yield_enabled": CASH_DAY_YIELD_ENABLED,
+            "financing_enabled": FINANCING_ENABLED,
+        }
+        if "overheat_overlay_enabled" in row:
+            expected_flags["overheat_overlay_enabled"] = True
+        for field, expected in expected_flags.items():
+            text = str(row.get(field, "")).strip().lower()
+            if text not in ({"true", "1", "1.0"} if expected else {"false", "0", "0.0"}):
+                return False
+        expected_values = {
+            "lookback": float(LOOKBACK),
+            "halflife": float(HALFLIFE),
+            "r2_entry_gate": float(R2_ENTRY_GATE),
+            "momentum_gap_entry_threshold": float(MOMENTUM_GAP_ENTRY_THRESHOLD),
+            "momentum_gap_exit_buffer": float(MOMENTUM_GAP_EXIT_BUFFER),
+            "signal_spread_hedge_ratio": float(SIGNAL_SPREAD_HEDGE_RATIO),
+            "execution_hedge_ratio": float(EXECUTION_HEDGE_RATIO),
+            "overheat_feature_window": float(OVERHEAT_FEATURE_WINDOW),
+            "overheat_trigger_threshold": float(OVERHEAT_TRIGGER_THRESHOLD),
+            "overheat_recovery_threshold": float(OVERHEAT_RECOVERY_THRESHOLD),
+        }
+        return bool(
+            str(row.get("version", "")) == VERSION
+            and str(row.get("strategy_version", "")) == f"v{VERSION}"
+            and str(row.get("strategy_revision", "")) == STRATEGY_REVISION
+            and all(
+                math.isclose(float(row.get(field)), expected, rel_tol=0.0, abs_tol=1e-12)
+                for field, expected in expected_values.items()
+            )
+        )
+    except (OSError, ValueError, TypeError, KeyError, IndexError, pd.errors.EmptyDataError):
+        return False
+
+
 def incompatible_v2_3_outputs() -> list[Path]:
+    stale_realtime_output = (
+        [REALTIME_SIGNAL_CSV]
+        if REALTIME_SIGNAL_CSV.exists() and not realtime_signal_matches_current_v2_3()
+        else []
+    )
     outputs = [
         SUMMARY_JSON,
         LATEST_SIGNAL_CSV,
@@ -1236,16 +1346,27 @@ def incompatible_v2_3_outputs() -> list[Path]:
     except Exception:
         summary = None
     if summary_matches_current_v2_3_base(summary):
-        return []
+        return stale_realtime_output
     return outputs
 
 
 def _stale_outputs_to_remove_after_generate(stale_outputs: list[Path], regenerated_outputs: set[Path]) -> list[Path]:
     protected = set(regenerated_outputs)
-    # Close-confirmed generation does not own the realtime signal artifact; the
-    # realtime route refreshes it atomically when queried.
-    protected.add(REALTIME_SIGNAL_CSV)
+    # Preserve a current concurrent realtime writer, not a retired artifact.
+    if realtime_signal_matches_current_v2_3():
+        protected.add(REALTIME_SIGNAL_CSV)
     return [path for path in stale_outputs if path not in protected]
+
+
+def _remove_stale_outputs_after_generate(stale_outputs: list[Path], regenerated_outputs: set[Path]) -> None:
+    realtime_path = REALTIME_SIGNAL_CSV.resolve()
+    for path in _stale_outputs_to_remove_after_generate(stale_outputs, regenerated_outputs):
+        if path.resolve() != realtime_path:
+            path.unlink(missing_ok=True)
+            continue
+        with v2_3_realtime_output_lock():
+            if not realtime_signal_matches_current_v2_3():
+                path.unlink(missing_ok=True)
 
 
 def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
@@ -1439,8 +1560,13 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
         "overheat_feature_value",
         "actual_execution_scale",
     ]:
-        if col in latest and pd.notna(latest[col]):
-            row[col] = float(latest[col])
+        row[col] = _safe_float(latest.get(col), np.nan)
+    # v2.0 reference fields are presentation seeds, not v2.3 risk evidence.
+    row["overheat_metric"] = row["overheat_feature_value"]
+    for col in DISABLED_LEGACY_SIGNAL_NUMERIC_FIELDS:
+        row[col] = np.nan
+    row["blocked_until_signal_reset"] = False
+    row["signal_reset_seen"] = False
     row["overheat_kind"] = OVERHEAT_KIND
     row["overheat_enabled"] = True
     row["overheat_overlay_enabled"] = True
@@ -1756,7 +1882,7 @@ def v2_3_rewrite_audit_matches_approved_lineage_migration(
         }
     except Exception:
         return False
-    return all(report.get(key) == value for key, value in expected.items())
+    return report.get("approved") is True and all(report.get(key) == value for key, value in expected.items())
 
 
 def _write_v2_3_lineage_migration_diagnostics(report_path: Path, audit_path: Path) -> Path:
@@ -2010,8 +2136,7 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
         PERF_JSON,
         PERF_PNG,
     }
-    for path in _stale_outputs_to_remove_after_generate(stale_outputs, regenerated_outputs):
-        path.unlink(missing_ok=True)
+    _remove_stale_outputs_after_generate(stale_outputs, regenerated_outputs)
     return summary, signal_row, out
 
 
@@ -2032,6 +2157,8 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     common_index = build_v2_3_common_index(close_df, signal_official_index)
     gross = build_spread_log_wls_gross(close_df, common_index)
     is_snapshot = bool(realtime_base.meta.get("snapshot_row_appended", False))
+    if not gross.index.equals(common_index):
+        raise RuntimeError("v2.3 realtime gross dependency changed the requested common session index")
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
     out = apply_overheat_defense(gross, realtime_base.turnover_df)
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)

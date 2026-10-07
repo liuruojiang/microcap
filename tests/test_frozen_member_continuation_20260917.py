@@ -84,7 +84,8 @@ def seed_files(tmp_path, seed_date="2026-09-03", turnover_dates=None):
     turnover = tmp_path / "turnover.csv"
     pd.DataFrame({"as_of_date": seed_date, "rank": range(1, 101),
                   "symbol": [f"{i:06d}" for i in range(100)]}).to_csv(effective, index=False)
-    pd.DataFrame({"rebalance_date": turnover_dates or ["2026-09-03"]}).to_csv(turnover, index=False)
+    pd.DataFrame({"rebalance_date": turnover_dates or ["2026-09-03"],
+                  "two_side_cost_rate": 0.0, "execution_timing": "close"}).to_csv(turnover, index=False)
     return {"proxy_effective_members": effective, "proxy_turnover": turnover}
 
 

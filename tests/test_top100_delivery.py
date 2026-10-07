@@ -30,6 +30,10 @@ def change_csv_cell(path, field, value):
 
 @pytest.fixture
 def workspace(tmp_path):
+    contract_source = Path(__file__).resolve().parents[1] / "scripts/top100_data_contracts.py"
+    contract_target = tmp_path / "scripts/top100_data_contracts.py"
+    contract_target.parent.mkdir(parents=True, exist_ok=True)
+    contract_target.write_bytes(contract_source.read_bytes())
     daily = "date,return_net,nav_net\n2026-09-02,0.01,1.01\n2026-09-03,0.02,1.0302\n"
     for name in (*delivery.BASE_FILES.values(), delivery.BASE_PANEL):
         write(tmp_path, f"outputs/{name}", daily)
@@ -102,8 +106,8 @@ def workspace(tmp_path):
                 content = f"date,return_net,nav_net{identity_header}\n2026-09-02,0.01,1.01{identity}\n2026-09-03,0.02,1.0302{identity}\n"
             if not name.endswith("performance_nav.csv"):
                 lines = content.splitlines()
-                lines[0] += ",holding,next_holding"
-                lines[1:] = [line + f",{active_holding},{active_holding}" for line in lines[1:]]
+                lines[0] += ",version,holding,next_holding"
+                lines[1:] = [line + f",2.{version},{active_holding},{active_holding}" for line in lines[1:]]
                 if "current_execution_scale" not in lines[0]:
                     lines[0] += ",current_execution_scale,next_session_actionable_scale"
                     lines[1:] = [line + ",1.0,1.0" for line in lines[1:]]
@@ -111,9 +115,9 @@ def workspace(tmp_path):
             write(tmp_path, f"outputs/{name}", content)
         write(tmp_path, f"outputs/{prefix}_latest_signal.csv",
               f"date,version,member_rebalance_actionable,member_rebalance_required,member_rebalance_official,member_rebalance_signal_date,member_rebalance_execution_date,member_enter_count,member_exit_count,member_rebalance_label{identity_header if version in ('0', '3', '5') else ''},current_holding,next_holding"
-              f"{',current_execution_scale,next_session_actionable_scale' if version != '0' else ''}\n"
+              f"{',current_execution_scale,next_session_actionable_scale' if version != '0' else ''},signal_label,trade_state,signal_timing,official_close_confirmed_signal,strategy_version,member_rebalance_state\n"
               f"2026-09-03,2.{version},False,False,False,2026-09-03,,0,0,名单不变{identity if version in ('0', '3', '5') else ''},{active_holding},{active_holding}"
-              f"{',1.0,1.0' if version != '0' else ''}\n")
+              f"{',1.0,1.0' if version != '0' else ''},{active_holding},hold,close_confirmed,True,v2.{version},none\n")
         for suffix in ("performance_summary.json", "performance_summary.csv", "performance_yearly.csv"):
             write(tmp_path, f"outputs/{prefix}_{suffix}", "{}")
     return tmp_path
@@ -432,6 +436,7 @@ def test_member_action_contract_rejects_missed_or_far_future_execution(
         assert fields and len(rows) == 1
         rows[0].update(member_rebalance_actionable=actionable,
                        member_rebalance_required="True", member_rebalance_official="True",
+                       member_rebalance_state="rebalance",
                        member_rebalance_execution_date=execution, member_enter_count="1",
                        member_exit_count="1", member_rebalance_label="名单调仓（调入 1，调出 1）")
         with path.open("w", encoding="utf-8", newline="") as handle:

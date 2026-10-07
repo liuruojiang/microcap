@@ -1,0 +1,127 @@
+{
+  "scope": "local_second_adversarial_script_audit_v20_v23_v25",
+  "created_at_bj": "2026-10-07T16:50:09.242782+08:00",
+  "status": "PASS_WITH_HISTORICAL_AND_PRODUCTION_SCOPE_LIMITS",
+  "versions": [
+    "v2.0",
+    "v2.3",
+    "v2.5"
+  ],
+  "independent_agents": 3,
+  "findings_fixed": {
+    "group_count": 11,
+    "data_history_dates": 5,
+    "upstream_math_cost_contract": 2,
+    "native_entrypoint_and_csv_contract": 4
+  },
+  "full_suite": {
+    "passed": 1048,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "warnings": 2,
+    "warning_reason": "intentional_duplicate_ZIP_entries_in_existing_tamper_tests",
+    "elapsed_seconds": 211.14,
+    "process_exit_code": 0,
+    "xml": "final_verified_suite.xml",
+    "log": "final_verified_suite.log"
+  },
+  "new_cases": {
+    "test_doublecheck_data_adversarial": 35,
+    "test_doublecheck_math_adversarial": 68,
+    "test_doublecheck_contract_adversarial": 89
+  },
+  "baseline_cases": 856,
+  "independent_validation": {
+    "data_affected_suite_passed": 125,
+    "math_new_suite_passed": 68,
+    "contract_new_suite_passed": 89,
+    "native_member_fixture_additional_passed": 4
+  },
+  "final_python_source_files_syntax_and_raw_sha256_verified": 18,
+  "source_manifest": "final_source_manifest.json",
+  "math_evidence_matches_final_source": true,
+  "contract_evidence_matches_final_source": true,
+  "latest_completed_session": "2026-09-30",
+  "real_inputs_raw_sha256_verified_unchanged": 7,
+  "formal_artifacts_delivery_normalized_sha256_verified_unchanged": 28,
+  "parameter_check": {
+    "2.0": {
+      "unchanged": true,
+      "literal_parameters_checked": 13,
+      "changes": {}
+    },
+    "2.3": {
+      "unchanged": true,
+      "literal_parameters_checked": 37,
+      "changes": {}
+    },
+    "2.5": {
+      "unchanged": true,
+      "literal_parameters_checked": 33,
+      "changes": {}
+    }
+  },
+  "normal_real_history_changed": false,
+  "original_full_dependency_stack_parity": true,
+  "production_delivery_check": {
+    "ok": false,
+    "scope": "whole_workspace_delivery",
+    "errors": [
+      "Local core/authority differs from remote release: scripts/top100_delivery.py"
+    ]
+  },
+  "remote_main_checked_sha": "eefd27d81d2c9c9f1438975c4d5c221d1b81bf96",
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "sent_email": false,
+  "placed_orders": false,
+  "backup_manifests": [
+    ".codex_backups/20261007_161253/manifest.json",
+    ".codex_backups/20261007_161839/manifest.json",
+    ".codex_backups/20261007_162202/manifest.json",
+    ".codex_backups/20261007_163805/manifest.json"
+  ],
+  "reports": [
+    "report.md",
+    "data_review.md",
+    "math_report.md",
+    "contract_report.md"
+  ],
+  "uncertified": [
+    "complete_historical_PIT_universe_and_ST",
+    "corporate_action_entitlement",
+    "historical_nontrading_proxy_bars",
+    "actual_fills_and_futures_margin",
+    "self_financing_shared_cash_account",
+    "production_deployment_and_email_delivery"
+  ],
+  "performance_metrics": {
+    "Full": "N/A",
+    "10Y": "N/A",
+    "5Y": "N/A",
+    "3Y": "N/A",
+    "1Y": "N/A",
+    "reason": "script_correctness_and_unchanged_baseline_audit_no_new_performance_study"
+  },
+  "diagnostic_date_parse_correction": {
+    "actual_rerun": true,
+    "explicit_valid_execution_dates": 432,
+    "missing_execution_dates": 0,
+    "reason": "mixed_date_text_format_misparsed_by_single_format_inference",
+    "production_tests_and_official_inputs_changed": false,
+    "evidence": "data_execution_parse_fix.json"
+  },
+  "final_evidence_raw_sha256": {
+    "report.md": "9eddebf446d17bc1cad880c753b33a606f71fdb30ab6912c1246ce5ad9579932",
+    "data_review.md": "4e9105fb366eb260be07a5745b02108d1983e2481be1009288c0c991ad4820ba",
+    "math_report.md": "5d4d2c6d1d4e53f221a96d533d9e8e956bb8450461578038441dcfddecb609bb",
+    "contract_report.md": "6ed90b3457dd6dec3bcaf563ee1b60ae8c88ae1fb2d507cb03739b2b3d9b0220",
+    "data_real_checks.py": "55a7564f899d8dc8e037fd27ca79fc37ef435d75b5c4d883b9ae12a9c72d6559",
+    "data_real_checks.json": "d5b951cdab3d54b3c38af736cf1b1518667130e8964075a314f5139ff7465249",
+    "data_execution_parse_fix.json": "932e630bd5c6dc2a8e14e44e495eaee8953952537b8137ed3ce320d55adee56a",
+    "final_verified_suite.log": "2a23fb9309da09c9109f5c2d94fab969b597cb1796aaf40bb0f117954e3ce5f7",
+    "final_verified_suite.xml": "257a3afdb8e7a92e6e3522829312a5eef12eac80f97190107e8edfd90ecf9282"
+  }
+}

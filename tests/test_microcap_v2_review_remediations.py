@@ -1753,8 +1753,8 @@ def test_tracked_frozen_tail_authority_matches_post_rebalance_seed(tmp_path: Pat
             ["git", "show", f"HEAD:{path.relative_to(repo).as_posix()}"], cwd=repo
         )
 
-    # Validate the committed seed, not runtime files legitimately extended later.
-    # Live files remain covered by the separate rewrite and whole-delivery gates.
+    # Committed streams may include an approved append-only tail. The authority
+    # still identifies the frozen seed; never replace its hashes with tail hashes.
     authority = json.loads(tracked_bytes(authority_path))
     output_dir = authority_path.parent
     files = {
@@ -1777,11 +1777,32 @@ def test_tracked_frozen_tail_authority_matches_post_rebalance_seed(tmp_path: Pat
         files[label] = snapshot_path
     assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
     assert authority["seed_end_date"] == "2026-09-17"
-    assert authority["seed_file_sha256"] == {
-        label: v2_0.base_mod._file_sha256(path) for label, path in files.items()
-    }
-    assert len(pd.read_csv(files["proxy_index"])) == authority["seed_file_rows"]["proxy_index"]
-    assert len(pd.read_csv(files["costed_nav"])) == authority["seed_file_rows"]["costed_nav"]
+    for label in ("proxy_members", "proxy_turnover", "proxy_effective_members"):
+        assert v2_0.base_mod._file_sha256(files[label]) == authority["seed_file_sha256"][label]
+    tails = []
+    for label in ("proxy_index", "costed_nav"):
+        seed_rows = authority["seed_file_rows"][label]
+        frame = pd.read_csv(files[label])
+        assert len(frame) >= seed_rows
+        assert v2_0.base_mod._csv_frozen_prefix_sha256(files[label], seed_rows) == authority["seed_file_sha256"][label]
+        assert frame.iloc[seed_rows - 1]["date"] == authority["seed_end_date"]
+        tail_dates = frame.iloc[seed_rows:]["date"].tolist()
+        assert tail_dates == sorted(set(tail_dates))
+        assert all(day > authority["seed_end_date"] for day in tail_dates)
+        tails.append(tail_dates)
+    assert tails[0] == tails[1]
+    meta = json.loads(files["proxy_meta"].read_text(encoding="utf-8"))
+    assert meta["core_params"]["security_meta_cache_fingerprint"] == authority["security_meta_cache_fingerprint"]
+    if tails[0]:
+        assert meta["tail_extension_method"] == "no_new_rebalance_saved_target_replay"
+        assert meta["tail_extension_start"] == authority["seed_end_date"]
+        assert meta["tail_extension_end"] == meta["end_date"] == tails[0][-1]
+        assert meta["tail_extension_rows"] == len(tails[0])
+        assert meta["tail_extension_effective_member_count"] == v2_0.base_mod.TOP_N
+        assert sum(meta["tail_extension_return_source_counts"].values()) == v2_0.base_mod.TOP_N
+        assert meta["tail_extension_authority_sha256"] == hashlib.sha256(tracked_bytes(authority_path)).hexdigest()
+    else:
+        assert v2_0.base_mod._file_sha256(files["proxy_meta"]) == authority["seed_file_sha256"]["proxy_meta"]
 
     effective = pd.read_csv(files["proxy_effective_members"], dtype={"symbol": str})
     assert set(effective["as_of_date"].astype(str)) == {authority["seed_end_date"]}

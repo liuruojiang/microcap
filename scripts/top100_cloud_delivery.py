@@ -23,7 +23,7 @@ from scripts import top100_delivery as delivery
 
 ARTIFACT = "microcap-whole-delivery-state"
 REPOSITORY = "liuruojiang/codex-daily-automation-probe"
-SOURCE_FILES = [delivery.AUTHORITY] + [
+SOURCE_FILES = [delivery.AUTHORITY, "scripts/top100_data_contracts.py"] + [
     f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in delivery.COSTED
 ]
 
