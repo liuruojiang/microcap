@@ -1,0 +1,206 @@
+{
+  "status": "PASS",
+  "scope": "v2.0/v2.3/v2.5 local generation and real cloud SMTP delivery acceptance",
+  "verified_at_utc": "2026-10-07T15:54:53.739359+00:00",
+  "latest_completed_exchange_session": "2026-09-30",
+  "strategy_sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+  "automation_sha": "ff81e937effe74f672502177936f8c919d8f11af",
+  "strategy_sha_reachable_from_remote_main": true,
+  "local": {
+    "channel": "Codex report",
+    "smtp_used": false,
+    "automation_settings_preserved": true,
+    "gate_files": 17,
+    "gate_tests": 402,
+    "gate_failed": 0,
+    "gate_skipped": 0,
+    "elapsed_seconds": 47.526649099978385,
+    "whole_delivery_manifest": "complete",
+    "whole_delivery_check": true
+  },
+  "cloud": {
+    "run_id": 37644093633,
+    "url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/37644093633",
+    "conclusion": "success",
+    "publication_mode": "close_confirmed",
+    "validation_only": false,
+    "delivery_test_id": "microcap-20261007-de6ce1a9-01",
+    "send_gmail": "success",
+    "receipt_upload": "success",
+    "delivery_marker": "success",
+    "normal_daily_marker_used": false
+  },
+  "received": {
+    "unique_messages_for_test_id": 1,
+    "gmail_message_id": "1a11700f88c6592b",
+    "rfc_message_id": "<179138730033.3104.10206622529935796000@gmail.com>",
+    "inbox_label": true,
+    "received_at_utc": "2026-10-07T15:35:00+00:00",
+    "recipient_match": true,
+    "subject_match": true,
+    "body_matches_standard_mime": true,
+    "mime_adds_one_terminal_lf": true,
+    "local_cloud_core_body_equal": true,
+    "same_test_id_should_send": false,
+    "metadata_sha256": "6d817773e9d399ea421e56f9169d00430d3ed2630f31f676399bf8f6df30ce05",
+    "body_source_sha256": "f5ac7f4cc189ccddc2944bbe48a2438da0d42500f6930cb88ff5a288b3d7f03a",
+    "received_mime_body_sha256": "191b7f51f4b5d3bd7176d74f11a5ee0639156569e276a1a668a8d037c412e5a7"
+  },
+  "holiday": {
+    "date": "2026-10-07",
+    "run_id": 37644531206,
+    "external_schedule": true,
+    "validation_only": true,
+    "calendar_should_run_microcap": false,
+    "regression": "skipped",
+    "send": "skipped",
+    "smtp_sent": false
+  },
+  "regression": {
+    "local": {
+      "tests": 402,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "automation_full_python": {
+      "test_functions_passed": 698,
+      "subtests_passed": 137,
+      "xml_cases": 835,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final_workflow_specific": {
+      "tests": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "final_sending_specific": {
+      "tests": 135,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "cloud_automation": {
+      "passed": 285,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "cloud_strategy": {
+      "passed": 482,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "skip_reason": "cold checkout lacked optional real v2.3 artifacts; actual final streams subsequently generated and independently read back"
+    }
+  },
+  "actual_whole_cloud_artifact": {
+    "id": 11494840703,
+    "bytes": 66242091,
+    "sha256": "d89599e839fda041f113776040ac21cda4b09840daa91dd750f547daafa1f3e0",
+    "integrity_files_verified": 14982,
+    "source_and_base_inputs_match": true,
+    "whole_manifest_check": true,
+    "primary_outputs_unmodified": true
+  },
+  "versions": {
+    "v2.0": {
+      "date": "2026-09-30",
+      "version": "2.0",
+      "strategy_revision": "plain_mom16_fixed1_20260904",
+      "current_holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "trade_state": "hold",
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18"
+    },
+    "v2.3": {
+      "date": "2026-09-30",
+      "version": "2.3",
+      "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+      "current_holding": "cash",
+      "next_holding": "long_microcap_short_zz1000",
+      "trade_state": "open",
+      "current_execution_scale": "0.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18"
+    },
+    "v2.5": {
+      "date": "2026-09-30",
+      "version": "2.5",
+      "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "current_holding": "long_microcap_top100",
+      "next_holding": "long_microcap_top100",
+      "trade_state": "hold",
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18"
+    }
+  },
+  "historical_economic_parity": {
+    "v2.0": {
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "same_holdings": true,
+      "max_absolute_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      }
+    },
+    "v2.3": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "same_holdings": true,
+      "max_absolute_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      }
+    },
+    "v2.5": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "same_holdings": true,
+      "max_absolute_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      }
+    }
+  },
+  "non_economic_floating_tail_max_difference": 6.5503158452884236e-15,
+  "approved_recovery": {
+    "release_tag": "microcap-delivery-20261007-de6ce1a9",
+    "sha256": "13fc81b0331807cb19bc43d12d2b2abb9d3acfcaf61917ca847747a37f248af6",
+    "files": 14982
+  },
+  "limits": [
+    "Actual sent content is explicitly labeled historical delivery acceptance, dated 2026-09-30.",
+    "This receipt is not a current intraday signal or a trade.",
+    "No future trading-day quote/source/SMTP run is certified by this maintenance acceptance.",
+    "Evidence counts from overlapping suites are not summed."
+  ]
+}
