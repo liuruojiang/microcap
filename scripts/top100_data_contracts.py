@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import math
 import csv
-from datetime import date
+from datetime import date, time
 from pathlib import Path
 
 import numpy as np
@@ -104,6 +104,25 @@ def validate_mapped_rebalance_costs(index: pd.Index, turnover: pd.DataFrame, map
         raise ValueError("mapped rebalance costs differ from dated turnover events")
 
 
+def assert_intraday_publication_deadline(snapshot_time: object, now: object | None = None) -> None:
+    """Live publication ends at 15:00; archived rows only check their snapshot."""
+    values = [("snapshot", snapshot_time)]
+    if now is not None:
+        values.append(("current time", now))
+    for label, value in values:
+        try:
+            stamp = pd.Timestamp(value)
+        except (ValueError, TypeError) as exc:
+            raise RuntimeError(f"Realtime publication deadline requires a valid {label}.") from exc
+        if pd.isna(stamp) or stamp.tz is None:
+            raise RuntimeError(f"Realtime publication deadline requires a timezone-aware {label}.")
+        if stamp.tz_convert("Asia/Shanghai").time().replace(tzinfo=None) >= time(15, 0):
+            raise RuntimeError(
+                f"Realtime publication deadline: {label} must be strictly before 15:00:00 Beijing; "
+                "use a close-confirmed report after the close."
+            )
+
+
 def realtime_row_is_consistent(row: object, active_holding: str) -> bool:
     """Validate a dated snapshot; age alone does not invalidate an archived row."""
     try:
@@ -119,6 +138,10 @@ def realtime_row_is_consistent(row: object, active_holding: str) -> bool:
             return False
         snapshot = pd.Timestamp(row.get("snapshot_time"))
         if pd.isna(snapshot) or snapshot.tz is None or snapshot.tz_convert("Asia/Shanghai").date() != quote:
+            return False
+        try:
+            assert_intraday_publication_deadline(snapshot)
+        except RuntimeError:
             return False
         if latest_completed_session(snapshot.to_pydatetime()) != anchor:
             return False

@@ -8071,9 +8071,13 @@ def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) ->
     if not snapshot_text:
         raise RuntimeError("Realtime meta missing snapshot_time for independent calendar validation.")
     snapshot = _cn_timestamp(pd.Timestamp(snapshot_text))
+    from scripts.top100_data_contracts import assert_intraday_publication_deadline
+
+    now = _cn_timestamp()
+    assert_intraday_publication_deadline(snapshot, now)
     if snapshot.date() != quote_day.date() or quote_day.date() != _cn_local_day().date():
         raise RuntimeError("Realtime snapshot and quote date must both be today's Beijing session.")
-    if snapshot > _cn_timestamp() + pd.Timedelta(minutes=1):
+    if snapshot > now + pd.Timedelta(minutes=1):
         raise RuntimeError("Realtime snapshot_time is in the future.")
     if not is_trading_day(quote_day.date()):
         raise RuntimeError("Realtime quote date is not an official exchange trading session.")
@@ -8095,6 +8099,7 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 
 
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
+    "Realtime publication deadline",
     "synthetic last-close fallback quotes",
     "independent refresh proof",
     "independently refreshed latest completed trade date",
@@ -12674,6 +12679,14 @@ def _apply_selected_realtime_meta_to_signal_row(
 
 
 def _apply_realtime_meta_columns_to_signal_row(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:
+    publication_fields = {
+        "snapshot_time", "quote_trade_date", "latest_anchor_trade_date",
+        "expected_latest_completed_trade_date", "expected_latest_completed_trade_date_source",
+        "expected_latest_completed_trade_date_verified_on",
+    }
+    if publication_fields.issubset(meta):
+        # All three live versions use this helper just before writing their CSV.
+        realtime_core.base_mod.assert_realtime_anchor_precedes_quote_trade_date(meta)
     for col in MEMBER_REBALANCE_META_COLS:
         if col in meta and col not in signal_row.columns:
             signal_row[col] = _csv_safe_value(meta[col])

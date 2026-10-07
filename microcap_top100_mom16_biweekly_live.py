@@ -3193,6 +3193,12 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
             f"成员股报价交易日与对冲腿报价交易日不一致: "
             f"member={member_quote_date}, hedge={hedge_quote_date}，拒绝输出实盘信号。"
         )
+    from scripts.top100_data_contracts import assert_intraday_publication_deadline
+
+    snapshot_text = str(meta.get("snapshot_time") or "").strip()
+    if not snapshot_text:
+        raise RuntimeError("Realtime publication deadline requires snapshot_time.")
+    assert_intraday_publication_deadline(_cn_timestamp(pd.Timestamp(snapshot_text)), _cn_timestamp())
 
 
 def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
