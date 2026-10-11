@@ -1,0 +1,53 @@
+{
+  "original_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Documents\\Codex\\2026-08-28\\icim\\work\\microcap_official",
+  "original_branch": "",
+  "original_head": "8417c023b85af830390e554f1ac6c3df18749dd1",
+  "scope": "Historical working-copy evidence; archived rather than replacing current formal state.",
+  "files": [
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_latest_signal.csv",
+      "bytes": 651,
+      "sha256": "ec60950a8bdfe20617c0637b3c1daa4a33120a11d8d48199e4882f26777446c4"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv",
+      "bytes": 1313453,
+      "sha256": "389afa363593759bd11a417a915a7dcb7b7a1b58d1595210ba56773f58034993"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "bytes": 606114,
+      "sha256": "b9cd4bf7eacbf965ea6a6301a70613a4bc1b4e3f1d91f3edc588de806b206e35"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "bytes": 2499,
+      "sha256": "d94aad552b3148e583a187178050438382d54478f765406d19b9ca7735015581"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_rebalance_changes.csv",
+      "bytes": 39,
+      "sha256": "ada263e1ab5fe7c7e03f461f2e7043d52190177154162db89ecd10cbedf00116"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+      "bytes": 2594,
+      "sha256": "5c882aa8f3d16e6100714481976623184c8d60a350617dd608c1c612df7e4d70"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_target_members.csv",
+      "bytes": 7648,
+      "sha256": "143be947f433028a5fd85137f828d350c5e80903ec403a2a31822f3f060aa841"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "bytes": 1494322,
+      "sha256": "dcd023456771ad534ee37703dadcd15e50908960c9021da9620a1a23a8c5e733"
+    },
+    {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "bytes": 237252,
+      "sha256": "c8767b38790c90ee4a4eeee1d0711822b806bde50dd8f6731ccce3dfd61dc030"
+    }
+  ]
+}
