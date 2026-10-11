@@ -1,0 +1,63 @@
+{
+  "status": "contract_counterexamples_pass",
+  "input_sha256": {
+    "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    ".microcap_index_cache\\prices_raw\\000632.csv": "5f65956fd93ec17a6d04c74f284657cff336a7a8540349e455c93b99c007e411"
+  },
+  "real_recent_hedge_example": {
+    "date": "2021-03-01",
+    "old_base_stock_return": "0.026318444819882325",
+    "old_base_hedge_index_return": "0.026837828437727307",
+    "assumed_initial_stock": "1",
+    "assumed_initial_cash": "0",
+    "swap_short_notional": "0.8",
+    "daily_drag": "0.00024",
+    "cash_after_pnl_and_drag": "-0.0217102627501818456",
+    "equity_after": "1.0046081820697004794",
+    "required_reset_short_notional_as_share_initial_equity": "0.01778371709442146208"
+  },
+  "real_recent_limit_example": {
+    "symbol": "000632",
+    "last_traded_close_date": "2026-04-28",
+    "last_traded_close": "4.1",
+    "missing_raw_date": "2026-04-29",
+    "next_close_date": "2026-04-30",
+    "next_close": "3.9",
+    "conditional_ST_5pct_limit_down_exact": "3.90"
+  },
+  "real_late_pending_orders": {
+    "2026-09-22": {
+      "holding": "cash",
+      "next_holding": "long_microcap_short_zz1000",
+      "return_net": "-0.0030000000000000027",
+      "total_cost": "0.003"
+    },
+    "2026-09-23": {
+      "holding": "long_microcap_short_zz1000",
+      "next_holding": "cash",
+      "return_net": "0.0025471081941641494",
+      "total_cost": "0.003"
+    },
+    "2026-09-24": {
+      "holding": "cash",
+      "next_holding": "long_microcap_short_zz1000",
+      "return_net": "-0.0030000000000000027",
+      "total_cost": "0.003"
+    }
+  },
+  "synthetic": {
+    "frozen_quantity_T": "1",
+    "invalid_future_resized_quantity": "0.8333333333333333333333333333",
+    "old_held_stock_return_to_T1_close": "0.1",
+    "new_unheld_stock_return_to_T1_close": "0.2",
+    "equity_before_T1_close_trade": "110",
+    "split_raw_delta": "-50",
+    "split_economic_delta": "0",
+    "dividend_raw_delta": "-1",
+    "dividend_economic_delta": "0",
+    "blocked_sell_retains_member_capacity": true,
+    "buy_cost_with_fee": "120.360",
+    "cash_before_buy": "0"
+  }
+}

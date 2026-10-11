@@ -1,0 +1,120 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live_v2_3",
+  "version": "2.3",
+  "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+  "version_role": "spread_nav_log_wls_lb25_r2off_vol10_overheat",
+  "version_note": "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense. Uses exp half-life 2.5 weighted log slope on 25 trading days of always-on 1.0x hedged signal spread NAV, R2 entry filter OFF, executes with 0.8x CSI1000 hedge, exits when score falls below -8%, applies close-executed vol10 overheat defense at 26% annualized realized volatility with 20% recovery threshold, and has no target-vol, cash-day-yield, financing, peak-decay, static NAV defense, or CSI2000 volume filter.",
+  "core_params": {
+    "fixed_hedge_ratio": 0.8,
+    "signal_spread_hedge_ratio": 1.0,
+    "execution_hedge_ratio": 0.8,
+    "signal_model": {
+      "type": "spread_nav_log_wls_exp",
+      "lookback": 25,
+      "halflife": 2.5,
+      "weights_oldest_to_newest": [
+        0.00031232444845835227,
+        0.000412114580468577,
+        0.0005437884490731393,
+        0.0007175331603389306,
+        0.0009467906813090947,
+        0.001249297793833409,
+        0.001648458321874307,
+        0.0021751537962925583,
+        0.0028701326413557225,
+        0.003787162725236379,
+        0.004997191175333636,
+        0.006593833287497228,
+        0.008700615185170233,
+        0.01148053056542289,
+        0.015148650900945516,
+        0.019988764701334538,
+        0.02637533314998891,
+        0.034802460740680934,
+        0.045922122261691574,
+        0.06059460360378206,
+        0.07995505880533815,
+        0.10550133259995566,
+        0.1392098429627237,
+        0.18368848904676627,
+        0.24237841441512825
+      ],
+      "score_definition": "annualized weighted log slope of always-on 1.0x hedged signal spread NAV",
+      "nav_csv_momentum_gap_column_alias_note": "momentum_gap stores annualized_log_wls_score for v2.0 compatibility, not raw microcap minus hedge gap",
+      "r2_window": 25,
+      "r2_entry_gate": 0.0,
+      "legacy_momentum_gap_field": "same value as annualized_log_wls_score for v2.0 compatibility"
+    },
+    "momentum_gap_entry_threshold": 0.0,
+    "momentum_gap_exit_buffer": 0.08,
+    "signal_quality_derisk": {
+      "enabled": false,
+      "type": "removed_no_peak_decay"
+    },
+    "overheat_defense": {
+      "enabled": true,
+      "kind": "vol",
+      "feature_window": 10,
+      "feature_definition": "annualized rolling standard deviation of always-on 1.0x hedged spread NAV returns",
+      "trigger_threshold": 0.26,
+      "recovery_ratio": 0.7692307692307693,
+      "recovery_threshold": 0.2,
+      "execution": "close-executed risk-off; cash days have zero return before costs"
+    },
+    "target_volatility_scaling": {
+      "enabled": false
+    },
+    "cash_day_yield": {
+      "enabled": false
+    },
+    "financing": {
+      "enabled": false
+    },
+    "static_nav_defense": {
+      "enabled": false
+    },
+    "csi2000_volume_filter": {
+      "enabled": false
+    },
+    "signal_execution_mismatch_diagnostics": {}
+  },
+  "latest_trade_date": "2026-08-07",
+  "latest_nav_date": "2026-08-07",
+  "latest_signal": {
+    "holding": "cash",
+    "member_rebalance_state": "rebalance",
+    "member_rebalance_required": true,
+    "member_enter_count": 12,
+    "member_exit_count": 12,
+    "member_rebalance_label": "名单调仓（调入 12，调出 12）",
+    "member_rebalance_signal_date": "2026-08-06",
+    "member_rebalance_execution_date": "2026-08-07",
+    "member_rebalance_actionable": false,
+    "member_rebalance_official": true,
+    "microcap_series_source": "test",
+    "official_wind_series": true,
+    "proxy_warning": ""
+  },
+  "data_lineage": {
+    "source_used": "test",
+    "official_wind_series": true
+  },
+  "data_freshness_proof": {
+    "latest_date": "2026-08-07",
+    "row_count": 1
+  },
+  "historical_rewrite_audit": {
+    "status": "not_checked",
+    "reason": "no_previous_costed_nav"
+  },
+  "performance_snapshot": {
+    "source_label": "costed_v2_3"
+  },
+  "base_fingerprint": {},
+  "synthetic_basket_execution": true,
+  "execution_model": {
+    "synthetic_basket_execution": true,
+    "member_level_fill_engine": false,
+    "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation."
+  }
+}

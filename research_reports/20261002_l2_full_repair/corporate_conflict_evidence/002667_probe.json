@@ -1,0 +1,97 @@
+{
+  "queried_utc": "2026-10-03T01:21:02.319540+00:00",
+  "issuer_sources": {
+    "distribution": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-05-25/1201050530.PDF",
+      "sha256": "aedeeefccb6425f994f84ebe63941f490810ebc04e9326611d914c79d3ace09c"
+    },
+    "suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-05-26/1201060652.PDF",
+      "sha256": "b39ba172bfb4df76945afc470bd75983a6f06325d00b98e1c47304c37410dd54"
+    },
+    "resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-11-26/1201788818.PDF",
+      "sha256": "1604f22bc5eeb5032788d1cbfbf1e6d9f03a5996afe8aa6b80193b04cc9005ff"
+    }
+  },
+  "record_date": "2015-05-28",
+  "ex_bonus_credit_and_cash_payment_date": "2015-05-29",
+  "new_unrestricted_shares_legal_trade_start": "2015-05-29",
+  "actual_trade_unavailable_until": "2015-11-26",
+  "gross_cash_yuan_per_share": "0.07",
+  "new_shares_per_old_share": "1",
+  "vendor_query": "BaoStock sz.002667 daily adjustflag=3 (unadjusted), 2015-04-01..2015-11-30",
+  "vendor_rows": 164,
+  "last_actual_trade_before_ex": {
+    "date": "2015-04-03",
+    "code": "sz.002667",
+    "open": "42.9800",
+    "high": "47.6500",
+    "low": "42.9800",
+    "close": "47.6500",
+    "preclose": "43.3200",
+    "volume": "4627889",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_row": {
+    "date": "2015-05-29",
+    "code": "sz.002667",
+    "open": "23.7900",
+    "high": "23.7900",
+    "low": "23.7900",
+    "close": "23.7900",
+    "preclose": "23.7900",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2015-11-26",
+    "code": "sz.002667",
+    "open": "26.1700",
+    "high": "26.1700",
+    "low": "26.1700",
+    "close": "26.1700",
+    "preclose": "23.7900",
+    "volume": "59934",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "61fc17af49390bb0a3143761b40c2d6db1b73bf27d6ec844a69eea7eee6031a2",
+  "account_rights_events_sha256": "c8b1a21f4e895e4e4ba85d937a733cfd460de94a7675ddcd2797342404f435fc",
+  "account_record_entitlements": {
+    "prefunded": {
+      "eligible_shares": "1270.096339979890366039054777103774915442",
+      "new_shares_due": "1270.096339979890366039054777103774915442",
+      "gross_cash_due_yuan": "88.90674379859232562273383439726424408094",
+      "pre_ex_mark_yuan": "60520.09060004177594176096012899487472081130",
+      "correct_ex_mark_yuan": "60520.09060004177594176096012899487472081130",
+      "missing_bonus_mark_yuan": "30304.49867192018413369184698169606948244612",
+      "missing_bonus_false_return": "-0.4992654774396642182581322140608604407135362014690451206715634837",
+      "missing_cash_mark_yuan": "60431.18385624318361613822629459761047673036",
+      "missing_cash_false_return": "-0.0014690451206715634837355718782791185729275970619097586568730325",
+      "double_bonus_mark_yuan": "90735.68252816336774983007327629367995917648",
+      "double_bonus_false_return": "0.499265477439664218258132214060860440713536201469045120671563484",
+      "double_cash_mark_yuan": "60608.99734384036826738369396339213896489224",
+      "double_cash_false_return": "0.001469045120671563483735571878279118572927597061909758656873033"
+    },
+    "netted": {
+      "eligible_shares": "1398.726547765982870840613566435881386129",
+      "new_shares_due": "1398.726547765982870840613566435881386129",
+      "gross_cash_due_yuan": "97.91085834361880095884294965051169702903",
+      "pre_ex_mark_yuan": "66649.32000104908379555523644066974804904685",
+      "correct_ex_mark_yuan": "66649.32000104908379555523644066974804904685",
+      "missing_bonus_mark_yuan": "33373.61542969635129825703969516012987303794",
+      "missing_bonus_false_return": "-0.4992654774396642182581322140608604407135362014690451206715634837",
+      "missing_cash_mark_yuan": "66551.40914270546499459639349101923635201782",
+      "missing_cash_false_return": "-0.0014690451206715634837355718782791185729275970619097586568730325",
+      "double_bonus_mark_yuan": "99925.02457240181629285343318617936622505576",
+      "double_bonus_false_return": "0.499265477439664218258132214060860440713536201469045120671563484",
+      "double_cash_mark_yuan": "66747.23085939270259651407939032025974607588",
+      "double_cash_false_return": "0.001469045120671563483735571878279118572927597061909758656873033"
+    }
+  },
+  "invariant": "From ex date count original plus credited bonus (or one pending entitlement) exactly once, and cash paid/receivable exactly once; compare to ex reference (old true close minus 0.07)/2. Neither ex row nor legally tradable new shares are executable during suspension.",
+  "source_limit": "Paper account holds fractional shares; issuer allocates insufficient-one-share remainders by CSDC procedure, so these are diagnostic entitlements, not verified broker positions."
+}

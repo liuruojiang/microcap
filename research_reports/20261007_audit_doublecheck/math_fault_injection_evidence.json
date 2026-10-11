@@ -1,0 +1,21 @@
+{
+  "scope": "synthetic_dependency_contract_fault_injection_only",
+  "not_observed_in_normal_official_stream": true,
+  "dropped_session": {
+    "date": "2025-02-19",
+    "gross_rows": 241,
+    "accepted_costed_rows": 240,
+    "gross_return_removed": 0.002395290680910822,
+    "last_nav_without_row": 1.3985929892692712,
+    "last_nav_normal": 1.4019430260228554
+  },
+  "omitted_entry_fee": {
+    "date": "2025-01-29",
+    "entry_exit_cost": 0.003,
+    "rebalance_cost": 0.0,
+    "total_cost": 0.0,
+    "accepted_return_net": 0.0,
+    "normal_return_net": -0.0030000000000000027,
+    "last_nav_ratio_to_normal": 1.003009027081245
+  }
+}

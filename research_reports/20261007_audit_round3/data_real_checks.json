@@ -1,0 +1,133 @@
+{
+  "scope": "readonly_diagnostic_data_contract_no_strategy_or_delivery_certification",
+  "freshness_evidence": "baseline_and_freshness.json",
+  "latest_completed_session": "2026-09-30",
+  "formal_refresh_state": "BLOCKED: local core/authority differs from remote release; no guard bypass",
+  "source_sha256": {
+    "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db"
+  },
+  "artifacts": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "raw_sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "rows": 8738,
+      "latest_date": "2026-09-30",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0
+    },
+    "proxy_index": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "raw_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "rows": 4067,
+      "latest_date": "2026-09-30",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "raw_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "rows": 432,
+      "latest_date": "2026-09-17",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0
+    },
+    "base_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "raw_sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "rows": 4050,
+      "latest_date": "2026-09-30",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0,
+      "finite_positive_nav_and_return_chain_passed": true
+    },
+    "v20_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "raw_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0,
+      "finite_positive_nav_and_return_chain_passed": true
+    },
+    "v23_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "raw_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0,
+      "finite_positive_nav_and_return_chain_passed": true
+    },
+    "v25_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "raw_sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "missing_date_count": 0,
+      "duplicate_session_count": 0,
+      "nonmidnight_session_count": 0,
+      "finite_positive_nav_and_return_chain_passed": true
+    }
+  },
+  "real_aligned_close": {
+    "rows": 4067,
+    "latest_date": "2026-09-30",
+    "nonfinite_price_count": 0
+  },
+  "real_turnover": {
+    "raw_rows": 432,
+    "consumed_rows": 432,
+    "raw_missing_execution_dates": 0,
+    "nonempty_unparseable_execution_dates": 0,
+    "timestamp_text_rows": 1,
+    "execution_timing": {
+      "close": 432
+    },
+    "duplicate_rebalance_dates": 0
+  },
+  "cost_window_invariance": {
+    "base_costed_nav": {
+      "100": 0.0,
+      "500": 0.0,
+      "1500": 0.0
+    },
+    "v20_nav": {
+      "100": 0.0,
+      "500": 0.0,
+      "1500": 0.0
+    },
+    "v23_costed_nav": {
+      "100": 0.0,
+      "500": 0.0,
+      "1500": 0.0
+    },
+    "v25_costed_nav": {
+      "100": 0.0,
+      "500": 0.0,
+      "1500": 0.0
+    }
+  },
+  "security_meta_readonly": {
+    "files": 4975,
+    "counts": {
+      "readable_files": 4975,
+      "missing_policy": 3701,
+      "current_policy": 1274,
+      "nonempty_st_history": 520
+    },
+    "content_manifest_sha256": "affc8d2e9ed83b81f0847fdc1017e09517ad149c434cf234ea01c5e65f6656f3",
+    "all_bytes_unchanged_during_read": true,
+    "boundary": "Content/schema readback only; historical ST completeness is not certified."
+  },
+  "official_inputs_unchanged": true,
+  "source_unchanged_during_check": true
+}

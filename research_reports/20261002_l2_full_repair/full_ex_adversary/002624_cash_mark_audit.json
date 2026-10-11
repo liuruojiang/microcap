@@ -1,0 +1,42 @@
+{
+  "status": "PASS_theoretical_mark_only",
+  "raw_sha256": "8d42b731af3094c67a629d5b89e011cb296cbe652a28fa3083466baef95e00b1",
+  "rights_sha256_at_read": "243d2ef698ca3b41266fe89dc5088c60481ba4b6684b027c7050265dc964a6fb",
+  "bao_rows": 108,
+  "last_real": {
+    "date": "2014-04-04",
+    "preclose": "7.7400",
+    "close": "8.1000",
+    "volume": "4737208",
+    "tradestatus": "1"
+  },
+  "record": {
+    "date": "2014-05-22",
+    "preclose": "8.1000",
+    "close": "8.1000",
+    "volume": "0",
+    "tradestatus": "0"
+  },
+  "ex": {
+    "date": "2014-05-23",
+    "preclose": "8.0500",
+    "close": "8.0500",
+    "volume": "0",
+    "tradestatus": "0"
+  },
+  "next_real": {
+    "date": "2014-09-01",
+    "preclose": "8.0500",
+    "close": "8.8600",
+    "volume": "166315",
+    "tradestatus": "1"
+  },
+  "record_shares": "3194.393989378375519157612116878754009699",
+  "gross_cash_due": "159.719699468918775957880605843937700485",
+  "prior_stock_value": "25874.59131396484170517665814671790747856190",
+  "correct_paper_value": "25874.59131396484170517665814671790747856195",
+  "double_count_injection_value": "26034.31101343376048113453875256184517904690",
+  "double_count_excess": "159.71969946891877595788060584393770048500",
+  "omit_cash_injection_value": "25714.87161449592292921877754087396977807695",
+  "omit_cash_shortfall": "159.71969946891877595788060584393770048495"
+}

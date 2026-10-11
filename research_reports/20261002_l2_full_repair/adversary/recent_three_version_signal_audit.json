@@ -1,0 +1,77 @@
+{
+  "status": "three_version_recent_signal_comparison_readback_pass",
+  "old_stream_sha256": {
+    "v2.0": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "v2.3": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "v2.5": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+  },
+  "formal_scale_checks": {
+    "v2.0": {
+      "sessions": 241,
+      "target_vol_disabled": true,
+      "current_and_next_scale_only_0_or_1": true,
+      "scale_change_cost_zero": true
+    },
+    "v2.3": {
+      "sessions": 241,
+      "target_vol_disabled": true,
+      "current_and_next_scale_only_0_or_1": true,
+      "scale_change_cost_zero": true
+    },
+    "v2.5": {
+      "sessions": 241,
+      "target_vol_disabled": true,
+      "current_and_next_scale_only_0_or_1": true,
+      "scale_change_cost_zero": true
+    }
+  },
+  "branches": {
+    "prefunded": {
+      "clock_checks": 51,
+      "versions": {
+        "v2.0": {
+          "compared_sessions": 224,
+          "new_vs_old_count": 8,
+          "old_close_slice_vs_formal_count": 0,
+          "first_new_difference": "2025-12-05"
+        },
+        "v2.3": {
+          "compared_sessions": 217,
+          "new_vs_old_count": 19,
+          "old_close_slice_vs_formal_count": 0,
+          "first_new_difference": "2025-11-24"
+        },
+        "v2.5": {
+          "compared_sessions": 222,
+          "new_vs_old_count": 1,
+          "old_close_slice_vs_formal_count": 0,
+          "first_new_difference": "2026-07-16"
+        }
+      }
+    },
+    "netted": {
+      "clock_checks": 44,
+      "versions": {
+        "v2.0": {
+          "compared_sessions": 224,
+          "new_vs_old_count": 4,
+          "old_close_slice_vs_formal_count": 0,
+          "first_new_difference": "2026-03-05"
+        },
+        "v2.3": {
+          "compared_sessions": 217,
+          "new_vs_old_count": 8,
+          "old_close_slice_vs_formal_count": 0,
+          "first_new_difference": "2025-11-24"
+        },
+        "v2.5": {
+          "compared_sessions": 222,
+          "new_vs_old_count": 1,
+          "old_close_slice_vs_formal_count": 0,
+          "first_new_difference": "2026-07-16"
+        }
+      }
+    }
+  },
+  "scope": "Readback comparison and clock only. Rebuilt signal algorithms not independently reimplemented; always-invested stock proxy is not an integrated strategy cash account."
+}

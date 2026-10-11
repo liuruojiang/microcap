@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="25" failures="0" skipped="0" tests="29" time="7.159" timestamp="2026-10-07T16:18:56.552605+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-official_close_confirmed_signal-False]" time="4.506"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-official_close_confirmed_signal-False]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-official_close_confirmed_signal-False]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-signal_timing-intraday_hypothetical_if_now_close]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-signal_timing-intraday_hypothetical_if_now_close]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-signal_timing-intraday_hypothetical_if_now_close]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-strategy_version-v2.0]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-strategy_version-v2.0]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-member_rebalance_state-none]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-member_rebalance_state-none]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-member_rebalance_state-none]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-target_position_scale-9]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-target_position_scale-9]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-target_position_scale-9]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-position_transition-True]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-position_transition-False]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-position_transition-True]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-scale_trade_required-True]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-scale_trade_required-True]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-scale_trade_required-True]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_version]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_strategy_version]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[missing_version]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[two_rows]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[enabled_overheat]" time="0.000"><error message="failed on setup with &quot;ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 431. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.&quot;">@pytest.fixture(scope="module")
+    def authentic():
+        proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
+        assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
+        target = proof["latest_completed_session"]
+        for name, item in proof["artifacts"].items():
+            assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
+        report = delivery.inspect_outputs(ROOT, target)
+        assert report["ok"], report["errors"]
+        resolved = v20._resolve_base_paths()
+        close = v20.base_mod.load_close_df(
+            resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        )
+        base_gross = v20.base_mod.run_signal(close).sort_index()
+        turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+        for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+&gt;           turnover[field] = pd.to_datetime(turnover[field], errors="raise")
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_doublecheck_contract_adversarial.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+&gt;   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 431. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError</error></testcase><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_v23_realtime_identity_rejects_corresponding_faults[wrong_version]" time="0.009" /><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_v23_realtime_identity_rejects_corresponding_faults[wrong_strategy_version]" time="0.044" /><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_v23_realtime_identity_rejects_corresponding_faults[missing_version]" time="0.007" /><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_v23_realtime_identity_rejects_corresponding_faults[two_rows]" time="0.008" /></testsuite></testsuites>

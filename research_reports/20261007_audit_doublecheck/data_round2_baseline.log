@@ -1,0 +1,304 @@
+FFFFFF..FFFFFFFF.                                                        [100%]
+================================== FAILURES ===================================
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-nan-nan] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...195EA89A770>, execute_query=<function execute_query at 0x00000195EA89A8D0>, main=<function main at 0x00000195EA89AA30>)
+missing = nan, text = 'nan'
+
+    @pytest.mark.parametrize("missing,text", [(np.nan, "nan"), (None, "None"), (pd.NA, "<NA>")])
+    def test_freeze_distinguishes_missing_from_unparsed_text_with_same_display(base, missing, text):
+        previous = pd.DataFrame({"date": pd.bdate_range("2026-09-01", periods=3),
+                                 "diagnostic": pd.Series([1.0, missing, 2.0], dtype=object)})
+        candidate = previous.copy()
+        candidate.loc[1, "diagnostic"] = text
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_data_adversarial.py:48: Failed
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-None-None] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...195EA89A770>, execute_query=<function execute_query at 0x00000195EA89A8D0>, main=<function main at 0x00000195EA89AA30>)
+missing = None, text = 'None'
+
+    @pytest.mark.parametrize("missing,text", [(np.nan, "nan"), (None, "None"), (pd.NA, "<NA>")])
+    def test_freeze_distinguishes_missing_from_unparsed_text_with_same_display(base, missing, text):
+        previous = pd.DataFrame({"date": pd.bdate_range("2026-09-01", periods=3),
+                                 "diagnostic": pd.Series([1.0, missing, 2.0], dtype=object)})
+        candidate = previous.copy()
+        candidate.loc[1, "diagnostic"] = text
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_data_adversarial.py:48: Failed
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-missing2-<NA>] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...195EA89A770>, execute_query=<function execute_query at 0x00000195EA89A8D0>, main=<function main at 0x00000195EA89AA30>)
+missing = <NA>, text = '<NA>'
+
+    @pytest.mark.parametrize("missing,text", [(np.nan, "nan"), (None, "None"), (pd.NA, "<NA>")])
+    def test_freeze_distinguishes_missing_from_unparsed_text_with_same_display(base, missing, text):
+        previous = pd.DataFrame({"date": pd.bdate_range("2026-09-01", periods=3),
+                                 "diagnostic": pd.Series([1.0, missing, 2.0], dtype=object)})
+        candidate = previous.copy()
+        candidate.loc[1, "diagnostic"] = text
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_data_adversarial.py:48: Failed
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-nan-nan] _
+
+base = <module '_doublecheck_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_161253\\microcap_top100_mom16_biweekly_live.py'>
+missing = nan, text = 'nan'
+
+    @pytest.mark.parametrize("missing,text", [(np.nan, "nan"), (None, "None"), (pd.NA, "<NA>")])
+    def test_freeze_distinguishes_missing_from_unparsed_text_with_same_display(base, missing, text):
+        previous = pd.DataFrame({"date": pd.bdate_range("2026-09-01", periods=3),
+                                 "diagnostic": pd.Series([1.0, missing, 2.0], dtype=object)})
+        candidate = previous.copy()
+        candidate.loc[1, "diagnostic"] = text
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_data_adversarial.py:48: Failed
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-None-None] _
+
+base = <module '_doublecheck_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_161253\\microcap_top100_mom16_biweekly_live.py'>
+missing = None, text = 'None'
+
+    @pytest.mark.parametrize("missing,text", [(np.nan, "nan"), (None, "None"), (pd.NA, "<NA>")])
+    def test_freeze_distinguishes_missing_from_unparsed_text_with_same_display(base, missing, text):
+        previous = pd.DataFrame({"date": pd.bdate_range("2026-09-01", periods=3),
+                                 "diagnostic": pd.Series([1.0, missing, 2.0], dtype=object)})
+        candidate = previous.copy()
+        candidate.loc[1, "diagnostic"] = text
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_data_adversarial.py:48: Failed
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-missing2-<NA>] _
+
+base = <module '_doublecheck_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_161253\\microcap_top100_mom16_biweekly_live.py'>
+missing = <NA>, text = '<NA>'
+
+    @pytest.mark.parametrize("missing,text", [(np.nan, "nan"), (None, "None"), (pd.NA, "<NA>")])
+    def test_freeze_distinguishes_missing_from_unparsed_text_with_same_display(base, missing, text):
+        previous = pd.DataFrame({"date": pd.bdate_range("2026-09-01", periods=3),
+                                 "diagnostic": pd.Series([1.0, missing, 2.0], dtype=object)})
+        candidate = previous.copy()
+        candidate.loc[1, "diagnostic"] = text
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_data_adversarial.py:48: Failed
+_ test_daily_close_loader_rejects_two_observations_for_one_session[shared_v20] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...195EA89A770>, execute_query=<function execute_query at 0x00000195EA89A8D0>, main=<function main at 0x00000195EA89AA30>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_doublecheck/data_tmp_round2_baseline/test_daily_close_loader_reject0')
+
+    def test_daily_close_loader_rejects_two_observations_for_one_session(base, tmp_path):
+        panel, proxy, panel_path, proxy_path = _price_sources(tmp_path, base)
+        extra_panel = panel.iloc[[15]].copy()
+        extra_proxy = proxy.iloc[[15]].copy()
+        extra_panel["date"] += pd.Timedelta(hours=12)
+        extra_proxy["date"] += pd.Timedelta(hours=12)
+        pd.concat([panel, extra_panel]).to_csv(panel_path, index=False)
+        pd.concat([proxy, extra_proxy]).to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="date|session|daily"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_doublecheck_data_adversarial.py:74: Failed
+_ test_daily_close_loader_rejects_two_observations_for_one_session[mainline] __
+
+base = <module '_doublecheck_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_161253\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_doublecheck/data_tmp_round2_baseline/test_daily_close_loader_reject1')
+
+    def test_daily_close_loader_rejects_two_observations_for_one_session(base, tmp_path):
+        panel, proxy, panel_path, proxy_path = _price_sources(tmp_path, base)
+        extra_panel = panel.iloc[[15]].copy()
+        extra_proxy = proxy.iloc[[15]].copy()
+        extra_panel["date"] += pd.Timedelta(hours=12)
+        extra_proxy["date"] += pd.Timedelta(hours=12)
+        pd.concat([panel, extra_panel]).to_csv(panel_path, index=False)
+        pd.concat([proxy, extra_proxy]).to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="date|session|daily"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_doublecheck_data_adversarial.py:74: Failed
+_ test_explicit_execution_date_cannot_be_reassigned_to_another_session[close] _
+
+timing = 'close'
+
+    @pytest.mark.parametrize("timing", ["close", "next_open"])
+    def test_explicit_execution_date_cannot_be_reassigned_to_another_session(timing):
+        dates = pd.bdate_range("2026-09-07", periods=3)
+        event = pd.DataFrame({"rebalance_date": [dates[0]],
+                              "execution_date": [dates[0] + pd.Timedelta(hours=12)],
+                              "execution_timing": [timing], "two_side_cost_rate": [0.006]})
+>       with pytest.raises(ValueError, match="date|session|execution"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_doublecheck_data_adversarial.py:84: Failed
+_ test_explicit_execution_date_cannot_be_reassigned_to_another_session[next_open] _
+
+timing = 'next_open'
+
+    @pytest.mark.parametrize("timing", ["close", "next_open"])
+    def test_explicit_execution_date_cannot_be_reassigned_to_another_session(timing):
+        dates = pd.bdate_range("2026-09-07", periods=3)
+        event = pd.DataFrame({"rebalance_date": [dates[0]],
+                              "execution_date": [dates[0] + pd.Timedelta(hours=12)],
+                              "execution_timing": [timing], "two_side_cost_rate": [0.006]})
+>       with pytest.raises(ValueError, match="date|session|execution"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_doublecheck_data_adversarial.py:84: Failed
+_ test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed _
+
+    def test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed():
+        dates = pd.bdate_range("2026-09-21", periods=3)
+        event = pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-09-01")],
+                              "execution_timing": ["next_open"], "two_side_cost_rate": [0.006]})
+        try:
+            cost = v20.cost_mod.map_rebalance_apply_costs(dates, event)
+        except ValueError:
+            return
+>       assert cost.eq(0.0).all(), "An old next-open event must not be charged again at a trimmed window start"
+E       AssertionError: An old next-open event must not be charged again at a trimmed window start
+E       assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2026-09-21    False\n2026-09-22     True\n2026-09-23     True\nFreq: B, dtype: bool.all
+E        +      where 2026-09-21    False\n2026-09-22     True\n2026-09-23     True\nFreq: B, dtype: bool = eq(0.0)
+E        +        where eq = 2026-09-21    0.006\n2026-09-22    0.000\n2026-09-23    0.000\nFreq: B, dtype: float64.eq
+
+tests\test_doublecheck_data_adversarial.py:96: AssertionError
+________ test_explicit_execution_date_cannot_precede_rebalance_signal _________
+
+    def test_explicit_execution_date_cannot_precede_rebalance_signal():
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        event = pd.DataFrame({"rebalance_date": [dates[1]], "execution_date": [dates[0]],
+                              "execution_timing": ["next_open"], "two_side_cost_rate": [0.006]})
+>       with pytest.raises(ValueError, match="date|execution|rebalance"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_doublecheck_data_adversarial.py:103: Failed
+_ test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[obsolete_policy] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_doublecheck/data_tmp_round2_baseline/test_real_meta_refresh_cannot_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000195E94B8E90>
+mutation = 'obsolete_policy'
+
+    @pytest.mark.parametrize("mutation", ["obsolete_policy", "snapshot_drift"])
+    def test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift(tmp_path, monkeypatch, mutation):
+        namespace = v20.freq_mod.load_security_meta.__globals__
+        intervals = [{"start": "2020-01-02", "end": "2021-01-04"}]
+        payload = {"symbol": "000001", "meta_version": namespace["SECURITY_META_VERSION"],
+                   "st_notice_policy_version": namespace["ST_NOTICE_POLICY_VERSION"],
+                   "current_st_snapshot_name": None, "first_trade_date": "2019-01-02",
+                   "last_trade_date": "2026-09-30", "name_history_status": "ok",
+                   "notice_query_status": "ok", "st_intervals": intervals}
+        if mutation == "obsolete_policy":
+            payload["st_notice_policy_version"] = "superseded-policy"
+        else:
+            payload["current_st_snapshot_name"] = "ST旧名"
+        meta_path = tmp_path / "000001.json"
+        meta_path.write_text(json.dumps(payload), encoding="utf-8")
+        price_path = tmp_path / "prices.csv"
+        pd.DataFrame({"date": ["2019-01-02", "2026-09-30"]}).to_csv(price_path, index=False)
+    
+        def source_failure(*args, **kwargs):
+            raise RuntimeError("isolated history source outage")
+    
+        monkeypatch.setitem(namespace, "SECURITY_META_DIR", tmp_path)
+        monkeypatch.setitem(namespace, "resolve_security_meta_path", lambda symbol: meta_path)
+        monkeypatch.setitem(namespace, "resolve_cache_path", lambda *args: price_path)
+        monkeypatch.setitem(namespace, "load_security_master", lambda: pd.DataFrame())
+        monkeypatch.setitem(namespace, "load_current_st_name_map", lambda: {})
+        monkeypatch.setitem(namespace, "fetch_sz_name_change_history", source_failure)
+        monkeypatch.setitem(namespace, "fetch_cninfo_st_notices", source_failure)
+        original = meta_path.read_bytes()
+        try:
+            result = v20.freq_mod.load_security_meta("000001")
+        except namespace["SecurityMetaHistoryCorrectionRequired"]:
+            assert meta_path.read_bytes() == original
+            return
+>       assert result is None or result.get("st_intervals") == intervals
+E       AssertionError: assert ({'board': None, 'current_st_history_resolved': True, 'current_st_snapshot_name': None, 'delist_date': None, ...} is None or [] == [{'end': '202...'2020-01-02'}]
+E         
+E         Right contains one more item: {'end': '2021-01-04', 'start': '2020-01-02'}
+E         Use -v to get more diff)
+
+tests\test_doublecheck_data_adversarial.py:141: AssertionError
+_ test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[snapshot_drift] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_doublecheck/data_tmp_round2_baseline/test_real_meta_refresh_cannot_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000195E94B9220>
+mutation = 'snapshot_drift'
+
+    @pytest.mark.parametrize("mutation", ["obsolete_policy", "snapshot_drift"])
+    def test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift(tmp_path, monkeypatch, mutation):
+        namespace = v20.freq_mod.load_security_meta.__globals__
+        intervals = [{"start": "2020-01-02", "end": "2021-01-04"}]
+        payload = {"symbol": "000001", "meta_version": namespace["SECURITY_META_VERSION"],
+                   "st_notice_policy_version": namespace["ST_NOTICE_POLICY_VERSION"],
+                   "current_st_snapshot_name": None, "first_trade_date": "2019-01-02",
+                   "last_trade_date": "2026-09-30", "name_history_status": "ok",
+                   "notice_query_status": "ok", "st_intervals": intervals}
+        if mutation == "obsolete_policy":
+            payload["st_notice_policy_version"] = "superseded-policy"
+        else:
+            payload["current_st_snapshot_name"] = "ST旧名"
+        meta_path = tmp_path / "000001.json"
+        meta_path.write_text(json.dumps(payload), encoding="utf-8")
+        price_path = tmp_path / "prices.csv"
+        pd.DataFrame({"date": ["2019-01-02", "2026-09-30"]}).to_csv(price_path, index=False)
+    
+        def source_failure(*args, **kwargs):
+            raise RuntimeError("isolated history source outage")
+    
+        monkeypatch.setitem(namespace, "SECURITY_META_DIR", tmp_path)
+        monkeypatch.setitem(namespace, "resolve_security_meta_path", lambda symbol: meta_path)
+        monkeypatch.setitem(namespace, "resolve_cache_path", lambda *args: price_path)
+        monkeypatch.setitem(namespace, "load_security_master", lambda: pd.DataFrame())
+        monkeypatch.setitem(namespace, "load_current_st_name_map", lambda: {})
+        monkeypatch.setitem(namespace, "fetch_sz_name_change_history", source_failure)
+        monkeypatch.setitem(namespace, "fetch_cninfo_st_notices", source_failure)
+        original = meta_path.read_bytes()
+        try:
+            result = v20.freq_mod.load_security_meta("000001")
+        except namespace["SecurityMetaHistoryCorrectionRequired"]:
+            assert meta_path.read_bytes() == original
+            return
+>       assert result is None or result.get("st_intervals") == intervals
+E       AssertionError: assert ({'board': None, 'current_st_history_resolved': True, 'current_st_snapshot_name': None, 'delist_date': None, ...} is None or [] == [{'end': '202...'2020-01-02'}]
+E         
+E         Right contains one more item: {'end': '2021-01-04', 'start': '2020-01-02'}
+E         Use -v to get more diff)
+
+tests\test_doublecheck_data_adversarial.py:141: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-nan-nan]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-None-None]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-missing2-<NA>]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-nan-nan]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-None-None]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-missing2-<NA>]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_close_loader_rejects_two_observations_for_one_session[shared_v20]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_close_loader_rejects_two_observations_for_one_session[mainline]
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_cannot_be_reassigned_to_another_session[close]
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_cannot_be_reassigned_to_another_session[next_open]
+FAILED tests/test_doublecheck_data_adversarial.py::test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_cannot_precede_rebalance_signal
+FAILED tests/test_doublecheck_data_adversarial.py::test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[obsolete_policy]
+FAILED tests/test_doublecheck_data_adversarial.py::test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[snapshot_drift]
+14 failed, 3 passed in 8.39s

@@ -1,0 +1,30 @@
+{
+  "manifest_sha256": "992f5ddbfaa584befa593a221081eb70adefb4b910eba648cd369fa1d8c5896a",
+  "observed_sha256": {
+    "full_history.py": "e36305d5bdca7b7556bd526f254c4d94fd040c098e0da5fbd4552928cfb1501b",
+    "full_history_daily_account.csv": "fd0cfdc6a5fda6bebc2fdb5784120b220793057a86267b66e71f2d4de80e6cd1",
+    "full_history_daily_positions.csv": "2e8440271b143ba653c8ee21d08e0daf8b7ad4a34a5464102eb3f2a72d960550",
+    "full_history_settled_orders.csv": "2c073dba7409df72871e09dcbac9bc4f2aaaa624b7260d150dab2e763dc84df8",
+    "full_history_rights_events.csv": "1ff56fa4e10603ea0f5c4fc3a452bdff776f16c01770542a66c484eed6545f47"
+  },
+  "branches": {
+    "prefunded": {
+      "days": 2147,
+      "first": "2010-02-22",
+      "last": "2018-12-14"
+    },
+    "netted": {
+      "days": 2037,
+      "first": "2010-02-22",
+      "last": "2018-07-05"
+    }
+  },
+  "positions_rows": 396610,
+  "rights_rows": 3351,
+  "orders_rows": 51401,
+  "injections": {
+    "double_count_bonus": "caught",
+    "omit_cash_right": "caught"
+  },
+  "status": "PASS_readback_arithmetic_only"
+}

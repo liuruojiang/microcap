@@ -1,0 +1,39 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 24%]
+........................................................................ [ 30%]
+........................................................................ [ 36%]
+........................................................................ [ 42%]
+........................................................................ [ 48%]
+........................................................................ [ 54%]
+........................................................................ [ 60%]
+........................................................................ [ 66%]
+........................................................................ [ 72%]
+........................................................................ [ 78%]
+........................................................................ [ 84%]
+........................................................................ [ 90%]
+........................................................................ [ 96%]
+.....................................                                    [100%]
+============================== warnings summary ===============================
+tests/test_frozen_member_continuation_20260917.py::test_no_rebalance_extension_preserves_frozen_members_and_advances_effective
+  <embedded_top100_base>:1105: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+
+tests/test_full_rebalance_cache_bundle.py::test_full_cache_bundle_rejects_tampering_before_extracting
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: '.microcap_index_cache/prices_raw/000001.csv'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+tests/test_realtime_member_snapshot_fallback.py::test_restore_state_rejects_tampered_payload_before_extracting
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: 'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-wrong_version]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-missing_anchor]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-scale_conflict]
+tests/test_round3_state_contract.py::test_native_close_cli_preserves_legal_dated_realtime[0]
+tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+  D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+    return _generate_v2_0_outputs_unlocked()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1189 passed, 8 warnings in 341.72s (0:05:41)

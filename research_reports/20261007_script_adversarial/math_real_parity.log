@@ -1,0 +1,144 @@
+{
+  "result": "PASS",
+  "official_artifacts_unchanged": true,
+  "versions": {
+    "v2.3": {
+      "source_before_sha256": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+      "source_after_sha256": "dab988798bd1e262f2b8f738620b72794a38a79c55fa4d7c017b770c618a250a",
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "old_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        }
+      },
+      "official_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 9.98821251402271e-17,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 3.552713678800501e-15,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 9.985502008591496e-17,
+          "outside_1e12": 0
+        }
+      },
+      "wls_max_abs_score_change": 8.881784197001252e-16,
+      "zero_threshold_sign_changes": 0,
+      "scores_within_1e10_of_zero": 0,
+      "minimum_abs_score": 0.0005674432320621117,
+      "independent_weighted_lstsq_max_score_error": 1.715294573045867e-14,
+      "independent_weighted_lstsq_max_r2_error": 4.75175454539567e-14
+    },
+    "v2.5": {
+      "source_before_sha256": "b5b90ed35dc06427050c6ba0b56535a7b9ace62242d3d8e9f139f25b754d9acc",
+      "source_after_sha256": "087ec7caa89d3556d16a70558ff6e08212449a5a28140b0aac365a276ba5a18a",
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "old_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        }
+      },
+      "official_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 9.974659986866641e-17,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 1.4210854715202004e-14,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 9.974659986866641e-17,
+          "outside_1e12": 0
+        }
+      },
+      "wls_max_abs_score_change": 1.7763568394002505e-15,
+      "zero_threshold_sign_changes": 0,
+      "scores_within_1e10_of_zero": 0,
+      "minimum_abs_score": 0.000551671463022938,
+      "independent_weighted_lstsq_max_score_error": 6.52811138479592e-14,
+      "independent_weighted_lstsq_max_r2_error": 3.164135620181696e-14
+    }
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "scope": "isolated_diagnostic_only",
+  "source_root": "D:\\动量策略\\微盘股对冲策略",
+  "source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db"
+  },
+  "test_sha256": "a758f542d9fdc1800bcdd5a0a195d0a3c5cc4689d6ac61f89c0dbe503ca1d113",
+  "pandas_version": "2.3.3",
+  "probes": {
+    "mixed_daily_shared_v20": {
+      "status": "accepted",
+      "rows": 2,
+      "dates": [
+        "2026-09-01",
+        "2026-09-02"
+      ]
+    },
+    "same_null_warmup_shared_v20": {
+      "status": "accepted",
+      "previous_isna": [
+        true,
+        true
+      ],
+      "candidate_isna": [
+        true,
+        true
+      ]
+    },
+    "mixed_daily_mainline": {
+      "status": "accepted",
+      "rows": 2,
+      "dates": [
+        "2026-09-01",
+        "2026-09-02"
+      ]
+    },
+    "same_null_warmup_mainline": {
+      "status": "accepted",
+      "previous_isna": [
+        true,
+        true
+      ],
+      "candidate_isna": [
+        true,
+        true
+      ]
+    },
+    "actual_embedded_legal_mixed": {
+      "status": "accepted",
+      "raw_rows_read_back": 2,
+      "consumed_rows": 2,
+      "sum_mapped_cost": 0.003,
+      "gross_rows": 23,
+      "gross_latest_date": "2026-09-25",
+      "sep02_executed_holding": "long_microcap_short_zz1000",
+      "sep02_charged_rebalance_cost": 0.002,
+      "sep02_return_net": 0.005218470920731022,
+      "sep02_control_charged_rebalance_cost": 0.002,
+      "sep02_control_return_net": 0.005218470920731022
+    },
+    "actual_embedded_missing_date": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "turnover event has an invalid rebalance_date"
+    },
+    "actual_embedded_missing_date_infinite_rate": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "turnover event has an invalid rebalance_date"
+    },
+    "duplicate_mapper": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "duplicate rebalance event in turnover table"
+    },
+    "weekend_signal": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "rebalance signal date is not a session in the result window"
+    },
+    "mixed_timing_original_order": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "turnover stream requires one uniform close or next_open execution timing"
+    },
+    "mixed_timing_reverse_order": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "turnover stream requires one uniform close or next_open execution timing"
+    },
+    "migration_integer_approval_v2.0": {
+      "report_approved_raw_type": "int",
+      "accepted": false
+    },
+    "migration_integer_approval_v2.3": {
+      "report_approved_raw_type": "int",
+      "accepted": false
+    },
+    "migration_integer_approval_v2.5": {
+      "report_approved_raw_type": "int",
+      "accepted": false
+    }
+  },
+  "source_sha256_after": {
+    "microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db"
+  },
+  "source_unchanged_during_probe": true,
+  "fixture_files_read_back": {
+    "duplicate_events.csv": {
+      "bytes": 137,
+      "sha256": "86b2fe05bb03344ebe54a1cbda7eb5f0fe9a742ddaa8ec98c55ac89afebd8cc0"
+    },
+    "legal_mixed\\actual_costed_from_consumed_events.csv": {
+      "bytes": 8698,
+      "sha256": "49c722a2c21b132ce6a020eb668b115b4f0f7f86c96fb7e6da04ef5a55b118b4"
+    },
+    "legal_mixed\\consumed_turnover.csv": {
+      "bytes": 137,
+      "sha256": "492f83e0617e003867371ba672f6feb4f8fa86f1e626aa90a6171c088ca31233"
+    },
+    "legal_mixed\\control_costed_from_all_raw_events.csv": {
+      "bytes": 8698,
+      "sha256": "49c722a2c21b132ce6a020eb668b115b4f0f7f86c96fb7e6da04ef5a55b118b4"
+    },
+    "legal_mixed\\costed.csv": {
+      "bytes": 825,
+      "sha256": "52ffcc6ed0efff92b9b5d51b242e902e30a0ae16c1adc035769009910ceacfa9"
+    },
+    "legal_mixed\\mapped_costs.csv": {
+      "bytes": 383,
+      "sha256": "651f46a69701e7e600e2216d51fad8bc7d5822d4111d8647e980ae49bf1dbab1"
+    },
+    "legal_mixed\\panel.csv": {
+      "bytes": 735,
+      "sha256": "62887cf8c14cbd4c32ba7bda958bf36bd62c08f893486d9d4a74dc403f674e2c"
+    },
+    "legal_mixed\\proxy.csv": {
+      "bytes": 950,
+      "sha256": "19271eb83103d1895f23bbe7e4e1091ac0bf5c329a9339ad8565d1d6a52f122a"
+    },
+    "legal_mixed\\turnover.csv": {
+      "bytes": 155,
+      "sha256": "b52a573c7914cf1ba8e5282759d3f879836ce2d05b111e564f50d9af44c7b4fd"
+    },
+    "migration_v2.0\\audit.csv": {
+      "bytes": 88,
+      "sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d"
+    },
+    "migration_v2.0\\base_v20.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.0\\meta.json": {
+      "bytes": 25,
+      "sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c"
+    },
+    "migration_v2.0\\previous.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.0\\report.json": {
+      "bytes": 691,
+      "sha256": "5cb90d1c3363884dbcc066279d1f753ccfb1f9276d274d7b8486b18e91a29ede"
+    },
+    "migration_v2.3\\audit.csv": {
+      "bytes": 88,
+      "sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d"
+    },
+    "migration_v2.3\\base_v20.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.3\\meta.json": {
+      "bytes": 25,
+      "sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c"
+    },
+    "migration_v2.3\\previous.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.3\\report.json": {
+      "bytes": 809,
+      "sha256": "f92b5bb3e56752ba0cd6a7ed9f19666984a2ead24080a489f1303af91acedfab"
+    },
+    "migration_v2.5\\audit.csv": {
+      "bytes": 88,
+      "sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d"
+    },
+    "migration_v2.5\\base_v20.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.5\\meta.json": {
+      "bytes": 25,
+      "sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c"
+    },
+    "migration_v2.5\\previous.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.5\\report.json": {
+      "bytes": 809,
+      "sha256": "9653781f0a7053aa55b48896763f476c11d690adb22d079c80b478cc6fd02d97"
+    },
+    "missing_date\\costed.csv": {
+      "bytes": 825,
+      "sha256": "52ffcc6ed0efff92b9b5d51b242e902e30a0ae16c1adc035769009910ceacfa9"
+    },
+    "missing_date\\panel.csv": {
+      "bytes": 735,
+      "sha256": "62887cf8c14cbd4c32ba7bda958bf36bd62c08f893486d9d4a74dc403f674e2c"
+    },
+    "missing_date\\proxy.csv": {
+      "bytes": 950,
+      "sha256": "19271eb83103d1895f23bbe7e4e1091ac0bf5c329a9339ad8565d1d6a52f122a"
+    },
+    "missing_date\\turnover.csv": {
+      "bytes": 136,
+      "sha256": "7c214dbbb89b2ad230e30e222f9151406c132e353684e097a3af91ad671097c7"
+    },
+    "missing_date_infinite_rate\\costed.csv": {
+      "bytes": 825,
+      "sha256": "52ffcc6ed0efff92b9b5d51b242e902e30a0ae16c1adc035769009910ceacfa9"
+    },
+    "missing_date_infinite_rate\\panel.csv": {
+      "bytes": 735,
+      "sha256": "62887cf8c14cbd4c32ba7bda958bf36bd62c08f893486d9d4a74dc403f674e2c"
+    },
+    "missing_date_infinite_rate\\proxy.csv": {
+      "bytes": 950,
+      "sha256": "19271eb83103d1895f23bbe7e4e1091ac0bf5c329a9339ad8565d1d6a52f122a"
+    },
+    "missing_date_infinite_rate\\turnover.csv": {
+      "bytes": 134,
+      "sha256": "d0add8de066caa6a09749e731ebb9dd45bb9f6d6778f7843ef6ba040aea12a8b"
+    },
+    "mixed_timing_events.csv": {
+      "bytes": 141,
+      "sha256": "79796bb71b54623d7c9e0fc37c85da74a27a6829e7c1bfa0bf0a92adccc00118"
+    },
+    "weekend_signal.csv": {
+      "bytes": 106,
+      "sha256": "310eca870f5bdf1870e62ad72d232e2558660ed61a96269b68d7c052958ad16e"
+    }
+  }
+}

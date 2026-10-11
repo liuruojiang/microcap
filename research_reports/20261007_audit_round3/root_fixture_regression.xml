@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="289" time="73.122" timestamp="2026-10-07T20:38:57.986116+08:00" hostname="DESKTOP-95I7VVU"><properties><property name="hypothesis-statistics-tests/test_top100_cloud_delivery.py::test_manifest_rejects_any_changed_payload" value="dGVzdHMvdGVzdF90b3AxMDBfY2xvdWRfZGVsaXZlcnkucHk6OnRlc3RfbWFuaWZlc3RfcmVqZWN0c19hbnlfY2hhbmdlZF9wYXlsb2FkOgoKICAtIGR1cmluZyBnZW5lcmF0ZSBwaGFzZSAoMC4wMiBzZWNvbmRzKToKICAgIC0gVHlwaWNhbCBydW50aW1lczogfiAwLTEgbXMsIG9mIHdoaWNoIDwgMW1zIGluIGRhdGEgZ2VuZXJhdGlvbgogICAgLSAyMCBwYXNzaW5nLCAwIGZhaWxpbmcsIGFuZCAwIGludmFsaWQgdGVzdCBjYXNlcwoKICAtIFN0b3BwZWQgYmVjYXVzZSBzZXR0aW5ncy5tYXhfZXhhbXBsZXM9MjA=" /></properties><testcase classname="tests.test_top100_delivery" name="test_whole_delivery_requires_completed_manifest" time="0.181" /><testcase classname="tests.test_top100_delivery" name="test_old_v20_cannot_be_recertified_under_same_version_number" time="0.146" /><testcase classname="tests.test_top100_delivery" name="test_old_v25_cannot_be_recertified_under_same_version_number" time="0.145" /><testcase classname="tests.test_top100_delivery" name="test_stale_member_count_cannot_pass_whole_delivery" time="0.144" /><testcase classname="tests.test_top100_delivery" name="test_invalid_proxy_member_symbol_fails_closed" time="0.128" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[costed-0]" time="0.149" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[costed-3]" time="0.143" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[costed-5]" time="0.149" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[nav.csv-0]" time="0.147" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[nav.csv-3]" time="0.147" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[nav.csv-5]" time="0.152" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[performance_nav.csv-0]" time="0.145" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[performance_nav.csv-3]" time="0.145" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[performance_nav.csv-5]" time="0.147" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[latest_signal.csv-0]" time="0.173" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[latest_signal.csv-3]" time="0.151" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[latest_signal.csv-5]" time="0.154" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[summary.json-0]" time="0.151" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[summary.json-3]" time="0.152" /><testcase classname="tests.test_top100_delivery" name="test_any_stale_final_blocks_the_group[summary.json-5]" time="0.159" /><testcase classname="tests.test_top100_delivery" name="test_same_date_content_changes_invalidate_manifest[source]" time="0.160" /><testcase classname="tests.test_top100_delivery" name="test_same_date_content_changes_invalidate_manifest[base]" time="0.162" /><testcase classname="tests.test_top100_delivery" name="test_same_date_content_changes_invalidate_manifest[authority]" time="0.150" /><testcase classname="tests.test_top100_delivery" name="test_same_date_content_changes_invalidate_manifest[performance]" time="0.156" /><testcase classname="tests.test_top100_delivery" name="test_same_date_content_changes_invalidate_manifest[signal]" time="0.157" /><testcase classname="tests.test_top100_delivery" name="test_wrong_identity_or_unclean_audit_rejected[0]" time="0.156" /><testcase classname="tests.test_top100_delivery" name="test_wrong_identity_or_unclean_audit_rejected[3]" time="0.149" /><testcase classname="tests.test_top100_delivery" name="test_wrong_identity_or_unclean_audit_rejected[5]" time="0.157" /><testcase classname="tests.test_top100_delivery" name="test_base_success_cannot_mask_failed_child" time="0.160" /><testcase classname="tests.test_top100_delivery" name="test_shared_input_change_during_group_rejected" time="0.141" /><testcase classname="tests.test_top100_delivery" name="test_bad_date_streams_fail_closed[]" time="0.003" /><testcase classname="tests.test_top100_delivery" name="test_bad_date_streams_fail_closed[date\nnot-a-date\n]" time="0.004" /><testcase classname="tests.test_top100_delivery" name="test_bad_date_streams_fail_closed[date\n2026-09-03\n2026-09-03\n]" time="0.003" /><testcase classname="tests.test_top100_delivery" name="test_bad_date_streams_fail_closed[date\n2026-09-03\n2026-09-02\n]" time="0.003" /><testcase classname="tests.test_top100_delivery" name="test_newline_transport_does_not_invalidate_content" time="0.163" /><testcase classname="tests.test_top100_delivery" name="test_new_completed_session_invalidates_old_delivery" time="0.154" /><testcase classname="tests.test_top100_delivery" name="test_parallel_group_refresh_cannot_overwrite_success" time="0.155" /><testcase classname="tests.test_top100_delivery" name="test_independent_target_uses_exchange_sessions_not_market_prices[2026-09-04T14:30:00+08:00-2026-09-03]" time="0.006" /><testcase classname="tests.test_top100_delivery" name="test_independent_target_uses_exchange_sessions_not_market_prices[2026-09-04T15:29:59+08:00-2026-09-03]" time="0.003" /><testcase classname="tests.test_top100_delivery" name="test_independent_target_uses_exchange_sessions_not_market_prices[2026-09-04T15:30:00+08:00-2026-09-04]" time="0.002" /><testcase classname="tests.test_top100_delivery" name="test_independent_target_uses_exchange_sessions_not_market_prices[2026-10-08T14:30:00+08:00-2026-09-30]" time="0.002" /><testcase classname="tests.test_top100_delivery" name="test_independent_target_uses_exchange_sessions_not_market_prices[2026-10-08T15:30:00+08:00-2026-10-08]" time="0.002" /><testcase classname="tests.test_top100_delivery" name="test_independent_target_calendar_unknown_fails_closed" time="0.002" /><testcase classname="tests.test_top100_delivery" name="test_calendar_target_does_not_authorize_stale_real_streams" time="0.152" /><testcase classname="tests.test_top100_delivery" name="test_base_state_uses_completed_session_across_long_calendar_gap" time="0.129" /><testcase classname="tests.test_top100_delivery" name="test_base_state_rejects_calendar_age_independent_anchor_mismatch" time="0.131" /><testcase classname="tests.test_top100_delivery" name="test_only_recent_independent_today_close_can_be_reused[2026-09-03T15:36:00+08:00-True]" time="0.160" /><testcase classname="tests.test_top100_delivery" name="test_only_recent_independent_today_close_can_be_reused[2026-09-03T15:29:00+08:00-False]" time="0.148" /><testcase classname="tests.test_top100_delivery" name="test_only_recent_independent_today_close_can_be_reused[2026-09-03T15:34:30+08:00-False]" time="0.150" /><testcase classname="tests.test_top100_delivery" name="test_only_recent_independent_today_close_can_be_reused[2026-09-03T15:51:00+08:00-False]" time="0.146" /><testcase classname="tests.test_top100_delivery" name="test_only_recent_independent_today_close_can_be_reused[2026-09-04T15:36:00+08:00-False]" time="0.154" /><testcase classname="tests.test_top100_delivery" name="test_same_day_proof_cannot_hide_changed_input" time="0.160" /><testcase classname="tests.test_top100_delivery" name="test_final_stream_rejects_parameter_identity_drift[0-latest_signal-lookback-17]" time="0.155" /><testcase classname="tests.test_top100_delivery" name="test_final_stream_rejects_parameter_identity_drift[3-nav-execution_hedge_ratio-0.7]" time="0.152" /><testcase classname="tests.test_top100_delivery" name="test_final_stream_rejects_parameter_identity_drift[3-latest_signal-overheat_enabled-]" time="0.157" /><testcase classname="tests.test_top100_delivery" name="test_final_stream_rejects_parameter_identity_drift[5-latest_signal-overheat_enabled-True]" time="0.170" /><testcase classname="tests.test_top100_delivery" name="test_summary_rejects_parameter_identity_drift[0-core_params-fixed_hedge_ratio-0.7]" time="0.166" /><testcase classname="tests.test_top100_delivery" name="test_summary_rejects_parameter_identity_drift[3-signal_model-halflife-3.0]" time="0.188" /><testcase classname="tests.test_top100_delivery" name="test_summary_rejects_parameter_identity_drift[5-overheat_overlay-enabled-True]" time="0.158" /><testcase classname="tests.test_top100_delivery" name="test_member_action_contract_rejects_missed_or_far_future_execution[False-2026-09-04]" time="0.151" /><testcase classname="tests.test_top100_delivery" name="test_member_action_contract_rejects_missed_or_far_future_execution[True-2099-01-01]" time="0.140" /><testcase classname="tests.test_top100_delivery" name="test_release_identity_rejects_modified_delivery_guard" time="0.008" /><testcase classname="tests.test_top100_cloud_delivery" name="test_bundle_roundtrip_preserves_all_final_streams" time="1.426" /><testcase classname="tests.test_top100_cloud_delivery" name="test_same_session_metadata_damage_is_repaired_from_identical_bundle" time="2.598" /><testcase classname="tests.test_top100_cloud_delivery" name="test_restore_rejects_before_replacing_local_files[date]" time="1.315" /><testcase classname="tests.test_top100_cloud_delivery" name="test_restore_rejects_before_replacing_local_files[code]" time="1.230" /><testcase classname="tests.test_top100_cloud_delivery" name="test_restore_rejects_before_replacing_local_files[newer]" time="1.053" /><testcase classname="tests.test_top100_cloud_delivery" name="test_restore_rejects_before_replacing_local_files[lock]" time="1.040" /><testcase classname="tests.test_top100_cloud_delivery" name="test_pack_rejects_different_inputs_across_versions" time="1.095" /><testcase classname="tests.test_top100_cloud_delivery" name="test_pack_accepts_long_holiday_when_anchors_match_completed_session[2026-09-30-2026-10-08]" time="1.146" /><testcase classname="tests.test_top100_cloud_delivery" name="test_pack_accepts_long_holiday_when_anchors_match_completed_session[2027-01-29-2027-02-12]" time="1.147" /><testcase classname="tests.test_top100_cloud_delivery" name="test_pack_rejects_anchor_that_differs_from_completed_session" time="0.147" /><testcase classname="tests.test_top100_cloud_delivery" name="test_manifest_rejects_any_changed_payload" time="0.025" /><testcase classname="tests.test_top100_cloud_delivery" name="test_prior_day_proof_is_not_rewritten_during_transport" time="1.610" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_future_state_is_error_not_warning" time="0.043" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_transport_long_holiday_uses_exact_session_not_five_calendar_days" time="1.450" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_same_day_rollback" time="1.572" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_interrupted_restore" time="2.442" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_windows_case_aliases_rejected_before_any_extract" time="0.001" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_verify_release_fetches_remote_object_not_present_locally" time="0.136" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_invalid_whole_manifest_always_blocks[missing]" time="0.160" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_invalid_whole_manifest_always_blocks[json]" time="0.156" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_invalid_whole_manifest_always_blocks[incomplete]" time="0.156" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_invalid_whole_manifest_always_blocks[hash]" time="0.156" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_holiday_requires_full_independent_proof[None]" time="0.046" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_holiday_requires_full_independent_proof[expected_calendar_day]" time="0.048" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_holiday_requires_full_independent_proof[independent_completed_day]" time="0.058" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_holiday_requires_full_independent_proof[member_name_quote_day]" time="0.061" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_holiday_requires_full_independent_proof[member_name_count]" time="0.057" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_preflight_uses_external_calendar_and_independent_history[expected0]" time="0.104" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_preflight_uses_external_calendar_and_independent_history[expected1]" time="0.094" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_actionable_close_contract_requires_future_execution[]" time="0.144" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_actionable_close_contract_requires_future_execution[2026-09-02]" time="0.147" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_actionable_close_contract_requires_future_execution[2026-09-03]" time="0.143" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_real_core_next_session_member_contract_is_accepted" time="2.404" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_windows_long_backup_path_copy" time="0.008" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_frozen_core_still_blocks_long_calendar_age" time="0.061" /><testcase classname="tests.test_adversarial_microcap_delivery" name="test_security_metadata_content_changes_fingerprint" time="0.005" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[signal_label-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[signal_label-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[signal_label-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[trade_state-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[trade_state-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[trade_state-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[effective_trade_state-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[effective_trade_state-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[effective_trade_state-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[holding_trade_state-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[holding_trade_state-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[holding_trade_state-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[momentum_trade_state-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[momentum_trade_state-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[momentum_trade_state-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[scale_trade_state-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[scale_trade_state-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_cannot_contradict_any_valid_holding_transition[scale_trade_state-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_fields_are_required[signal_label-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_fields_are_required[signal_label-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_fields_are_required[signal_label-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_fields_are_required[trade_state-0]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_fields_are_required[trade_state-3]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_final_action_fields_are_required[trade_state-5]" time="0.001" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[1-2026-08-20]" time="0.186" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[1-2026-09-03]" time="0.131" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[0-2026-08-20]" time="0.129" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[0-2026-09-03]" time="0.128" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[101-2026-08-20]" time="0.126" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[101-2026-09-03]" time="0.150" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[1.5-2026-08-20]" time="0.133" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[1.5-2026-09-03]" time="0.142" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[nan-2026-08-20]" time="0.139" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[nan-2026-09-03]" time="0.131" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[-2026-08-20]" time="0.130" /><testcase classname="tests.test_script_delivery_adversarial" name="test_latest_two_member_snapshots_require_complete_unique_ranks[-2026-09-03]" time="0.130" /><testcase classname="tests.test_script_delivery_adversarial" name="test_full_delivery_rejects_trade_state_conflict" time="0.138" /><testcase classname="tests.test_script_signal_adversarial" name="test_current_summary_cannot_certify_retired_realtime_artifact" time="2.119" /><testcase classname="tests.test_script_signal_adversarial" name="test_retired_realtime_artifact_is_not_unconditionally_protected" time="0.005" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[version-2.0]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[strategy_version-v2.5]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[strategy_revision-retired_revision]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[lookback-17]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[halflife-3.0]" time="0.011" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[r2_entry_gate-0.08]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[momentum_gap_entry_threshold-0.1]" time="0.011" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[momentum_gap_exit_buffer-0.09]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[signal_spread_hedge_ratio-0.8]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[execution_hedge_ratio-1.0]" time="0.011" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[overheat_feature_window-60]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[overheat_trigger_threshold-0.23]" time="0.011" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[overheat_recovery_threshold-0.19]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[overheat_enabled-False]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[r2_gate_enabled-True]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[target_vol_enabled-True]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[cash_day_yield_enabled-True]" time="0.131" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_missing_or_contradictory_core_fields[financing_enabled-True]" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_malformed_realtime_identity_is_incompatible[]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_malformed_realtime_identity_is_incompatible[{broken]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_malformed_realtime_identity_is_incompatible[version\n2.3\n]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_realtime_identity_rejects_multiple_final_rows" time="0.004" /><testcase classname="tests.test_script_signal_adversarial" name="test_invalid_realtime_cleanup_keeps_concurrent_current_writer" time="0.010" /><testcase classname="tests.test_script_signal_adversarial" name="test_invalid_realtime_cleanup_removes_only_invalid_signal" time="0.007" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_signal_never_inherits_v20_risk_metric[0.21]" time="0.013" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_signal_never_inherits_v20_risk_metric[nan]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_signal_projection_uses_executed_and_next_holdings[cash-cash-hold-0.0]" time="0.017" /><testcase classname="tests.test_script_signal_adversarial" name="test_signal_projection_uses_executed_and_next_holdings[cash-long_microcap_short_zz1000-open-1.8]" time="0.013" /><testcase classname="tests.test_script_signal_adversarial" name="test_signal_projection_uses_executed_and_next_holdings[long_microcap_short_zz1000-cash-close-1.8]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_signal_projection_uses_executed_and_next_holdings[long_microcap_short_zz1000-long_microcap_short_zz1000-hold-0.0]" time="0.015" /><testcase classname="tests.test_script_signal_adversarial" name="test_constant_positive_nav_scores_exactly_zero[1.5]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_constant_positive_nav_scores_exactly_zero[2.0]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_constant_positive_nav_scores_exactly_zero[5.0]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_log_wls_rejects_invalid_nav[0.0]" time="0.001" /><testcase classname="tests.test_script_signal_adversarial" name="test_log_wls_rejects_invalid_nav[-1.0]" time="0.001" /><testcase classname="tests.test_script_signal_adversarial" name="test_log_wls_rejects_invalid_nav[nan]" time="0.001" /><testcase classname="tests.test_script_signal_adversarial" name="test_log_wls_rejects_invalid_nav[inf]" time="0.001" /><testcase classname="tests.test_script_signal_adversarial" name="test_log_wls_rejects_invalid_nav[-inf]" time="0.001" /><testcase classname="tests.test_script_signal_adversarial" name="test_log_wls_rejects_invalid_nav[not-a-number]" time="0.001" /><testcase classname="tests.test_script_signal_adversarial" name="test_spread_nav_fails_closed_when_positive_prices_imply_ruin" time="0.004" /><testcase classname="tests.test_script_signal_adversarial" name="test_spread_nav_fails_closed_on_derived_nonfinite_returns" time="0.004" /><testcase classname="tests.test_script_signal_adversarial" name="test_wls_matches_independent_weighted_regression_and_scale_invariance" time="0.008" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[False-False-0]" time="0.004"><failure message="ValueError: v2.0 missing/invalid final signal annualized_log_wls_score">signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+&gt;               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = False, next_active = False
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+&gt;       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+&gt;               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError</failure></testcase><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[False-False-3]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[False-False-5]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[False-True-0]" time="0.004"><failure message="ValueError: v2.0 missing/invalid final signal annualized_log_wls_score">signal = {'actionable_scale_delta': 1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+&gt;               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = False, next_active = True
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+&gt;       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': 1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+&gt;               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError</failure></testcase><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[False-True-3]" time="0.018" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[False-True-5]" time="0.013" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[True-False-0]" time="0.004"><failure message="ValueError: v2.0 missing/invalid final signal annualized_log_wls_score">signal = {'actionable_scale_delta': -1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+&gt;               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = True, next_active = False
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+&gt;       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': -1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+&gt;               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError</failure></testcase><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[True-False-3]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[True-False-5]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[True-True-0]" time="0.004"><failure message="ValueError: v2.0 missing/invalid final signal annualized_log_wls_score">signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+&gt;               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = True, next_active = True
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+&gt;       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -&gt; None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale &lt; 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+&gt;               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError</failure></testcase><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[True-True-3]" time="0.014" /><testcase classname="tests.test_script_signal_adversarial" name="test_delivery_action_gate_accepts_all_normal_native_transitions[True-True-5]" time="0.012" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_attack_rejects_account_ruin[-1.0]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_attack_rejects_account_ruin[-1.1]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_attack_rejects_cumulative_overflow" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_attack_rejects_net_cost_disagreement" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_attack_rejects_cash_gross_leakage" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_flat_tail_scores_zero_and_closes[levels0]" time="0.022" /><testcase classname="tests.test_script_signal_adversarial" name="test_independent_v25_flat_tail_scores_zero_and_closes[levels1]" time="0.025" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_active_ruin[-1.0]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_active_ruin[-1.1]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_invalid_mapped_cost[-0.01]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_invalid_mapped_cost[1.0]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_invalid_mapped_cost[2.0]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_invalid_mapped_cost[nan]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_invalid_mapped_cost[inf]" time="0.002" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav[overflow]" time="0.003" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav[underflow]" time="0.026" /><testcase classname="tests.test_script_signal_adversarial" name="test_v23_overheat_cash_diagnostic_return_is_not_realized_debt" time="0.012" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[nan-0]" time="0.222" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[nan-3]" time="0.356" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[inf-0]" time="0.150" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[inf-3]" time="0.227" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[-inf-0]" time="0.444" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[-inf-3]" time="0.704" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[-0]" time="0.294" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_nonfinite_return_cannot_be_certified[-3]" time="0.393" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_latest_signal_holding_must_match_final_nav[0]" time="0.182" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_latest_signal_holding_must_match_final_nav[3]" time="0.144" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_must_match_cumulative_returns[nan]" time="0.142" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_must_match_cumulative_returns[inf]" time="0.142" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_must_match_cumulative_returns[-1]" time="0.144" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_final_nav_must_match_cumulative_returns[999]" time="0.144" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_performance_cannot_certify_different_self_consistent_curve" time="0.379" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_warmup_diagnostic_nan_is_not_a_realized_return_failure" time="0.150" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_signal_scale_must_match_nav[0]" time="0.179" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_signal_scale_must_match_nav[inf]" time="0.498" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_signal_scale_must_match_nav[nan]" time="0.221" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_signal_scale_must_match_nav[-1]" time="0.601" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_signal_scale_must_match_nav[]" time="0.931" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_inactive_member_flags_still_require_explicit_bool[member_rebalance_required]" time="0.543" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_inactive_member_flags_still_require_explicit_bool[member_rebalance_official]" time="0.284" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_control_valid_final_signal_passes[v2.0]" time="0.037" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_control_valid_final_signal_passes[v2.3]" time="0.018" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_cannot_backfill_final_csv_holdings_from_stdout[v2.0]" time="0.023" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_cannot_backfill_final_csv_holdings_from_stdout[v2.3]" time="0.019" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_rejects_nonfinite_actionable_scale[v2.0]" time="0.018" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_rejects_nonfinite_actionable_scale[v2.3]" time="0.037" /><testcase classname="tests.test_adversarial_delivery_plain_20260904" name="test_digest_close_members_cannot_republish_historical_action" time="0.023" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_first_appended_return_uses_frozen_seed" time="0.003" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_already_executed_bridge_rebalance_is_not_replayed" time="0.003" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_new_close_rebalance_updates_subsequent_return_and_effective_members" time="0.004" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_final_close_rebalance_is_persisted_without_changing_earned_return" time="0.003" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_incomplete_duplicate_or_unpriced_seed_is_rejected[seed0]" time="0.001" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_incomplete_duplicate_or_unpriced_seed_is_rejected[seed1]" time="0.001" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_incomplete_duplicate_or_unpriced_seed_is_rejected[seed2]" time="0.001" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_incomplete_duplicate_or_unpriced_seed_is_rejected[seed3]" time="0.001" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_seed_covers_bridge_without_intervening_execution" time="0.010" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_missing_seed_refuses_implicit_reconstruction" time="0.005" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_future_or_execution_gap_seed_rejected[2026-09-18-rebalance_dates0]" time="0.012" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_future_or_execution_gap_seed_rejected[2026-08-20-rebalance_dates1]" time="0.010" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_panel_missing_bridge_date_rejected_before_candidate_refresh" time="0.010" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_no_rebalance_extension_preserves_frozen_members_and_advances_effective" time="0.058" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_static_refresh_uses_formal_executed_members_without_reranking" time="0.032" /><testcase classname="tests.test_frozen_member_continuation_20260917" name="test_historical_proxy_names_are_not_current_st_admission_filter" time="0.016" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_holiday_realtime_passes_but_historical_rule_is_unchanged" time="0.002" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_missing_or_future_completed_session_is_not_relaxed[2026-09-29]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_missing_or_future_completed_session_is_not_relaxed[2026-10-01]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_missing_or_future_completed_session_is_not_relaxed[2026-10-08]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_missing_or_future_completed_session_is_not_relaxed[2026-10-09]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_calendar_unavailability_is_not_treated_as_holiday" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_final_guard_accepts_holiday_and_ignores_local_truncated_calendar" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_forged_matching_local_proof_cannot_hide_a_missing_session" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_final_guard_keeps_same_day_snapshot_and_proof_requirements[update0]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_final_guard_keeps_same_day_snapshot_and_proof_requirements[update1]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_final_guard_keeps_same_day_snapshot_and_proof_requirements[update2]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_final_guard_keeps_same_day_snapshot_and_proof_requirements[update3]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_final_guard_keeps_same_day_snapshot_and_proof_requirements[update4]" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_fake_weekend_quote_is_rejected" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_three_versions_share_the_guarded_realtime_core" time="0.000" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_cached_context_receives_realtime_freshness_not_historical_age" time="0.001" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_all_realtime_fallback_entrypoints_replace_historical_age[generic]" time="0.003" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_all_realtime_fallback_entrypoints_replace_historical_age[legacy]" time="0.006" /><testcase classname="tests.test_realtime_exchange_calendar" name="test_all_realtime_fallback_entrypoints_replace_historical_age[production]" time="0.007" /><testcase classname="tests.test_v25_realtime_artifact_invalidation" name="test_retired_realtime_signal_is_incompatible_even_when_summary_is_current" time="2.357" /><testcase classname="tests.test_v25_realtime_artifact_invalidation" name="test_current_realtime_signal_survives_close_confirmed_cleanup" time="0.007" /><testcase classname="tests.test_v25_realtime_artifact_invalidation" name="test_any_core_identity_change_invalidates_realtime_signal" time="0.009" /><testcase classname="tests.test_round3_delivery_boundary" name="test_authentic_three_version_final_delivery_semantics_remain_valid" time="5.441" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-0]" time="1.841" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-3]" time="1.831" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-5]" time="2.184" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-0]" time="1.995" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-3]" time="1.892" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-5]" time="1.972" /><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-0]" time="0.725" /><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-3]" time="1.098" /><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-5]" time="1.532" /><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-0]" time="0.736" /><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-3]" time="1.099" /><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-5]" time="1.635" /></testsuite></testsuites>

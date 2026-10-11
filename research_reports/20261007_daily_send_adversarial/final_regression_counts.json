@@ -1,0 +1,26 @@
+{
+  "20261007-verified-all.xml": {
+    "tests": 835,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "20261007-holiday-final.xml": {
+    "tests": 66,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "20261007-sending-final.xml": {
+    "tests": 135,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "published_local_gate.xml": {
+    "tests": 402,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

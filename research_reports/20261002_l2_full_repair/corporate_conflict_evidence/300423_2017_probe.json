@@ -1,0 +1,66 @@
+{
+  "queried_utc": "2026-10-03T02:02:05.115048+00:00",
+  "issuer_url": "https://static.cninfo.com.cn/finalpage/2017-05-19/1203543718.PDF",
+  "issuer_pdf_sha256": "aad834fa11a91d266fc32c0423546f648ed5548df15ff43c4488cee0ca8f330e",
+  "live_pdf_sha256_matched": true,
+  "issuer_notice_number_note": "PDF header labels notice 2016-037 despite 2017-05-19 publication; implementation body, fiscal year, dates and ratio are consistent.",
+  "candidate_source_status": "cninfo=1;sina=0; single_source_only",
+  "event_scope": "300423 only; record=2017-05-25; ex=pay=2017-05-26; gross cash 0.05/share",
+  "vendor_query": "BaoStock sz.300423 daily adjustflag=3, 2017-02-23..2017-08-02",
+  "vendor_rows": 110,
+  "last_actual_trade_before_ex": {
+    "date": "2017-02-24",
+    "code": "sz.300423",
+    "open": "32.5100",
+    "high": "34.4500",
+    "low": "32.4000",
+    "close": "34.0000",
+    "preclose": "32.5100",
+    "volume": "2759157",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_reference": {
+    "date": "2017-05-26",
+    "code": "sz.300423",
+    "open": "33.9500",
+    "high": "33.9500",
+    "low": "33.9500",
+    "close": "33.9500",
+    "preclose": "33.9500",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2017-07-31",
+    "code": "sz.300423",
+    "open": "30.5600",
+    "high": "31.8800",
+    "low": "30.5600",
+    "close": "30.5600",
+    "preclose": "33.9500",
+    "volume": "3336699",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "88524d95d5cedeafd42f1abcd161b833a62f095cf5c89bec0b562fc087278dc6",
+  "account_rights_events_sha256": "9ac623ce7d8d6406505b73ae3fd2be8df98adb7640e2f2999724097a568ae267",
+  "account_record_entitlements": {
+    "prefunded": {
+      "record_shares": "3920.781787293934418452737535709744080465",
+      "gross_cash_due_yuan": "196.0390893646967209226368767854872040232",
+      "correct_ex_mark_yuan": "133306.58076799377022739307621413129873580995",
+      "missing_cash_false_return": "-0.001470588235294117647058823529411764705881977865919780749372908154",
+      "double_cash_false_return": "0.001470588235294117647058823529411764705881977865919780749372908154"
+    },
+    "netted": {
+      "record_shares": "4762.627984149165667358622527239885832852",
+      "gross_cash_due_yuan": "238.1313992074582833679311263619942916426",
+      "correct_ex_mark_yuan": "161929.35146107163269019316592615611831696800",
+      "missing_cash_false_return": "-0.001470588235294117647058823529411764705882352941176470588235294118",
+      "double_cash_false_return": "0.001470588235294117647058823529411764705882352941176470588235294118"
+    }
+  },
+  "assessment": "Use zero-volume 33.95 only for suspended valuation with 0.05/share gross cash once; never as fill. Exact issuer-documented event only."
+}

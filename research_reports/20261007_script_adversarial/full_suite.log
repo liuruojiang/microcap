@@ -1,0 +1,23 @@
+.......................sssssss.......................................... [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 25%]
+........................................................................ [ 33%]
+........................................................................ [ 42%]
+........................................................................ [ 50%]
+........................................................................ [ 58%]
+........................................................................ [ 67%]
+........................................................................ [ 75%]
+........................................................................ [ 84%]
+........................................................................ [ 92%]
+...............................................................          [100%]
+============================== warnings summary ===============================
+tests/test_full_rebalance_cache_bundle.py::test_full_cache_bundle_rejects_tampering_before_extracting
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: '.microcap_index_cache/prices_raw/000001.csv'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+tests/test_realtime_member_snapshot_fallback.py::test_restore_state_rejects_tampered_payload_before_extracting
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: 'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+848 passed, 7 skipped, 2 warnings in 59.74s

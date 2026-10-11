@@ -1,0 +1,30 @@
+[
+  {
+    "test": "test_digest_control_valid_final_signal_passes[v2.0]",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  },
+  {
+    "test": "test_digest_control_valid_final_signal_passes[v2.3]",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  },
+  {
+    "test": "test_digest_cannot_backfill_final_csv_holdings_from_stdout[v2.0]",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  },
+  {
+    "test": "test_digest_cannot_backfill_final_csv_holdings_from_stdout[v2.3]",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  },
+  {
+    "test": "test_digest_rejects_nonfinite_actionable_scale[v2.0]",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  },
+  {
+    "test": "test_digest_rejects_nonfinite_actionable_scale[v2.3]",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  },
+  {
+    "test": "test_digest_close_members_cannot_republish_historical_action",
+    "reason": "Separate digest source unavailable; set MICROCAP_DIGEST_SOURCE"
+  }
+]

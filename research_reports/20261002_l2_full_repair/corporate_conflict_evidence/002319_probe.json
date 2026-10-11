@@ -1,0 +1,74 @@
+{
+  "query_utc": "2026-10-03T00:54:50.947208+00:00",
+  "sources": {
+    "distribution": {
+      "url": "https://static.cninfo.com.cn/finalpage/2014-06-14/64135847.PDF",
+      "sha256": "47e4c62a2a734602db9b7135ffeb4ee723c22491a467ca8c6b2e3db4079473f2"
+    },
+    "suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2014-06-21/64159039.PDF",
+      "sha256": "21fe0e008445d9c391aaae8ef54581ed48fb259a96a91fc0375c17e9f46737f1"
+    },
+    "resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2014-07-10/1200043606.PDF",
+      "sha256": "fba4d5429d2e0a0f146f383fb4d754a626fda00bbea9bfc3b1e1ba0b4e7fe377"
+    }
+  },
+  "record_date": "2014-06-19",
+  "ex_date": "2014-06-20",
+  "cash_payment_date": "2014-06-20",
+  "gross_cash_yuan_per_share": "0.03",
+  "vendor_query": "BaoStock sz.002319 daily adjustflag=3 (unadjusted), 2014-06-10..2014-07-15",
+  "vendor_rows": 26,
+  "last_actual_trade_before_ex": {
+    "date": "2014-06-18",
+    "code": "sz.002319",
+    "open": "7.3900",
+    "high": "8.2000",
+    "low": "7.3900",
+    "close": "8.1900",
+    "preclose": "7.4500",
+    "volume": "34456059",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "record_date_zero_volume_row": {
+    "date": "2014-06-19",
+    "code": "sz.002319",
+    "open": "8.1900",
+    "high": "8.1900",
+    "low": "8.1900",
+    "close": "8.1900",
+    "preclose": "8.1900",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_row": {
+    "date": "2014-06-20",
+    "code": "sz.002319",
+    "open": "8.1600",
+    "high": "8.1600",
+    "low": "8.1600",
+    "close": "8.1600",
+    "preclose": "8.1600",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "next_actual_trade_after_ex": {
+    "date": "2014-07-10",
+    "code": "sz.002319",
+    "open": "7.8500",
+    "high": "8.7200",
+    "low": "7.5100",
+    "close": "8.3200",
+    "preclose": "8.1600",
+    "volume": "39037711",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "6a618976e80afd5d738001206372dc12d4a3ffd132bcd273b8c62aba0b440875",
+  "assessment": "8.16 = last true close 8.19 - gross dividend 0.03 and equals resumed first true trade preclose; eligible only as explicitly flagged suspended ex-reference mark with dividend cash/receivable credited, never as traded close or fill price.",
+  "source_limit": "BaoStock is a vendor; this does not prove an exchange-issued ex-reference quote or executable price on suspension day."
+}

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="46" time="81.498" timestamp="2026-10-07T20:36:36.033885+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[0-wrong_version]" time="8.379" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[0-missing_anchor]" time="3.519" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[0-scale_conflict]" time="5.451" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[3-missing_anchor]" time="2.269" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[3-scale_conflict]" time="2.264" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[5-missing_anchor]" time="2.186" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[5-scale_conflict]" time="5.569" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_preserves_legal_dated_realtime[0]" time="3.451" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_preserves_legal_dated_realtime[3]" time="2.248" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_preserves_legal_dated_realtime[5]" time="2.101" /><testcase classname="tests.test_round3_state_contract" name="test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer" time="3.327"><failure message="AssertionError: assert (True and b'signal_labe...0/100\r\r\r\n' == b'signal_labe...100/100\r\r\n'&#10;  &#10;  At index 2452 diff: b'\r' != b'\n'&#10;  Use -v to get more diff)">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_new_green_tmp/test_native_v20_cleanup_preser0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002403F84B4D0&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002403F885A90&gt;
+
+    def test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer(
+        tmp_path, real_context, monkeypatch, capsys
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, "0", "concurrent_valid_replacement")
+
+tests\test_round3_state_contract.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_new_green_tmp/test_native_v20_cleanup_preser0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002403F84B4D0&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002403F885A90&gt;
+version = '0', attack = 'concurrent_valid_replacement'
+
+    def native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack):
+        module = {"0": v20, "3": v23, "5": v25}[version]
+        output_dir = tmp_path / f"state_native_v2{version}"
+        output_dir.mkdir()
+        prefix = v20.DEFAULT_OUTPUT_PREFIX if version == "0" else f"state_v2{version}"
+        costed_name = delivery.COSTED[version] if version == "0" else f"{prefix}_costed_nav.csv"
+        realtime = output_dir / f"{prefix}_realtime_signal.csv"
+        real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
+        shutil.copy2(real_realtime, realtime)
+        legal_bytes = realtime.read_bytes()
+        replacement_events = []
+        if attack in {"wrong_version", "concurrent_valid_replacement"}:
+            mutate(realtime, "version", "9.9")
+        elif attack == "missing_anchor":
+            mutate(realtime, "latest_anchor_trade_date", "__DROP__")
+        elif attack == "scale_conflict":
+            mutate(realtime, "current_execution_scale", "9.0")
+        elif attack != "legal_dated_artifact":
+            raise AssertionError(attack)
+        shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / costed_name)
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+                     output_dir / f"{prefix}_summary.json")
+        corrupted = realtime.read_bytes()
+        old_v20_prefix = v20.OUTPUT_PREFIX
+        old_v20_args = v20._V2_RUNTIME_ARGS
+        old_overlay_args = v20.overlay_mod._V2_RUNTIME_ARGS
+        old_overlay_ns_args = v20._overlay_ns.get("_V2_RUNTIME_ARGS")
+        old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
+        try:
+            with monkeypatch.context() as isolated:
+                isolated.setattr(module, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
+                    copy.deepcopy(real_context["reference"]), real_context["base_gross"].copy(),
+                    real_context["turnover"].copy()))
+                if version == "0":
+                    isolated.setattr(v20.overlay_mod, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(v20, "_V2_RUNTIME_ARGS", v20.parse_v2_args(["信号"]))
+                    if attack == "concurrent_valid_replacement":
+                        original_lock = v20._v2_realtime_output_lock
+    
+                        @contextmanager
+                        def cleanup_after_writer(*args, **kwargs):
+                            # Deterministically exercise the real race boundary:
+                            # cleanup already selected this malformed file, then a
+                            # realtime writer commits valid bytes under its native
+                            # lock before cleanup obtains the same lock.
+                            assert read_csv(realtime)[1][0]["version"] == "9.9"
+                            with original_lock(*args, **kwargs):
+                                v20._overlay_ns["_atomic_write_text"](
+                                    realtime, legal_bytes.decode("utf-8"), encoding="utf-8")
+                            replacement_events.append("native_atomic_writer_before_cleanup_lock")
+                            with original_lock(*args, **kwargs):
+                                yield
+    
+                        isolated.setitem(v20._overlay_ns, "_v2_realtime_output_lock", cleanup_after_writer)
+                    v20.main()
+                else:
+                    isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(module, "_load_official_v2_0_out", lambda: real_context["official"].copy())
+                    if version == "5":
+                        isolated.setattr(v25, "stale_v2_5_legacy_retest_outputs", lambda: [])
+                    module.main([f"--v2{version}-output-prefix", prefix, "信号"])
+                stdout = capsys.readouterr().out
+                costed = pd.read_csv(output_dir / costed_name, encoding="utf-8-sig")
+                formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+                assert costed["date"].tolist() == formal["date"].tolist()
+                pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
+                                              formal[["holding", "next_holding", "return_net"]],
+                                              check_exact=False, atol=1e-12, rtol=0)
+                retained = realtime.exists()
+                record("native_close_cli_realtime_cleanup", version=version, attack=attack,
+                       retained=retained, bytes_unchanged=retained and realtime.read_bytes() == corrupted,
+                       economics_match_formal=True, native_output_dir=str(output_dir),
+                       stdout_contains_signal=f"strategy_version: v2.{version}" in stdout,
+                       concurrent_replacement_events=replacement_events)
+                if attack == "legal_dated_artifact":
+                    assert retained and realtime.read_bytes() == corrupted
+                elif attack == "concurrent_valid_replacement":
+                    assert replacement_events == ["native_atomic_writer_before_cleanup_lock"]
+&gt;                   assert retained and realtime.read_bytes() == legal_bytes
+E                   AssertionError: assert (True and b'signal_labe...0/100\r\r\r\n' == b'signal_labe...100/100\r\r\n'
+E                     
+E                     At index 2452 diff: b'\r' != b'\n'
+E                     Use -v to get more diff)
+
+tests\test_round3_state_contract.py:197: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_accepts_equivalent_utc_snapshot[3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_accepts_equivalent_utc_snapshot[5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.007" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_rejects_post_close_snapshot[3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.007" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_rejects_post_close_snapshot[5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.007" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[snapshot_time-__DROP__-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[snapshot_time-__DROP__-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[quote_trade_date-2099-01-01-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.005" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[quote_trade_date-2099-01-01-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.005" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[latest_anchor_trade_date-2099-01-01-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[latest_anchor_trade_date-2099-01-01-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.007" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[official_close_confirmed_signal-True-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[official_close_confirmed_signal-True-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.045" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[trade_state-close-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[trade_state-close-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[date-2026-01-05-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.005" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[date-2026-01-05-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.005" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[member_rebalance_actionable-True-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[member_rebalance_actionable-True-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.007" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_member_action_cannot_be_relabelled_with_execution_date[3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_member_action_cannot_be_relabelled_with_execution_date[5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.006" /><testcase classname="tests.test_round3_state_contract" name="test_native_delivery_check_accepts_authentic_copy" time="4.717" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_accepts_naive_midnight_serialization[2026-09-30 00:00:00]" time="3.011" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_accepts_naive_midnight_serialization[2026-09-30T00:00:00]" time="3.027" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30 12:00:00-0]" time="1.348" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30 12:00:00-3]" time="2.336" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30 12:00:00-5]" time="3.066" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30T00:00:00+08:00-0]" time="1.494" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30T00:00:00+08:00-3]" time="2.384" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30T00:00:00+08:00-5]" time="3.200" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[momentum_gap--999.0-0]" time="1.552" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[momentum_gap--999.0-3]" time="2.299" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[momentum_gap--999.0-5]" time="3.107" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[microcap_mom-__DROP__-0]" time="1.596" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[microcap_mom-__DROP__-3]" time="2.330" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[microcap_mom-__DROP__-5]" time="2.948" /></testsuite></testsuites>

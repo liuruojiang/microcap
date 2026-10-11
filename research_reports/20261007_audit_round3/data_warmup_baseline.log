@@ -1,0 +1,619 @@
+FFFFFF                                                                   [100%]
+================================== FAILURES ===================================
+_ test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-nan-None] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22196FA6770>, execute_query=<function execute_query at 0x0000022196FA68D0>, main=<function main at 0x0000022196FA6A30>)
+before = nan, after = None
+
+    @pytest.mark.parametrize("before,after", [(np.nan, None), (None, pd.NA), (pd.NA, np.nan)])
+    def test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation(base, before, after):
+        dates = pd.bdate_range("2026-09-01", periods=2)
+        previous = pd.DataFrame({"date": dates, "warmup": pd.Series([before, before], dtype=object)})
+        candidate = pd.DataFrame({"date": dates, "warmup": pd.Series([after, after], dtype=object)})
+        assert previous["warmup"].isna().all() and candidate["warmup"].isna().all()
+>       base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+
+tests\test_round3_data_boundary.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+previous =         date warmup
+0 2026-09-01    NaN
+1 2026-09-02    NaN
+candidate =         date warmup
+0 2026-09-01   None
+1 2026-09-02   None
+key_columns = ['warmup'], allowed_tail_rows = 0
+label = 'round3 diagnostic unchanged all-warmup nulls', audit_path = None
+atol = 1e-09, rtol = 1e-07, numeric_tolerance = None
+column_allowed_tail_rows = None
+
+>   ???
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.
+
+<embedded_top100_base>:5073: RuntimeError
+_ test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-None-after1] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22196FA6770>, execute_query=<function execute_query at 0x0000022196FA68D0>, main=<function main at 0x0000022196FA6A30>)
+before = None, after = <NA>
+
+    @pytest.mark.parametrize("before,after", [(np.nan, None), (None, pd.NA), (pd.NA, np.nan)])
+    def test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation(base, before, after):
+        dates = pd.bdate_range("2026-09-01", periods=2)
+        previous = pd.DataFrame({"date": dates, "warmup": pd.Series([before, before], dtype=object)})
+        candidate = pd.DataFrame({"date": dates, "warmup": pd.Series([after, after], dtype=object)})
+        assert previous["warmup"].isna().all() and candidate["warmup"].isna().all()
+>       base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+
+tests\test_round3_data_boundary.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+previous =         date warmup
+0 2026-09-01   None
+1 2026-09-02   None
+candidate =         date warmup
+0 2026-09-01   <NA>
+1 2026-09-02   <NA>
+key_columns = ['warmup'], allowed_tail_rows = 0
+label = 'round3 diagnostic unchanged all-warmup nulls', audit_path = None
+atol = 1e-09, rtol = 1e-07, numeric_tolerance = None
+column_allowed_tail_rows = None
+
+>   ???
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.
+
+<embedded_top100_base>:5073: RuntimeError
+_ test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-before2-nan] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22196FA6770>, execute_query=<function execute_query at 0x0000022196FA68D0>, main=<function main at 0x0000022196FA6A30>)
+before = <NA>, after = nan
+
+    @pytest.mark.parametrize("before,after", [(np.nan, None), (None, pd.NA), (pd.NA, np.nan)])
+    def test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation(base, before, after):
+        dates = pd.bdate_range("2026-09-01", periods=2)
+        previous = pd.DataFrame({"date": dates, "warmup": pd.Series([before, before], dtype=object)})
+        candidate = pd.DataFrame({"date": dates, "warmup": pd.Series([after, after], dtype=object)})
+        assert previous["warmup"].isna().all() and candidate["warmup"].isna().all()
+>       base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+
+tests\test_round3_data_boundary.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+previous =         date warmup
+0 2026-09-01   <NA>
+1 2026-09-02   <NA>
+candidate =         date warmup
+0 2026-09-01    NaN
+1 2026-09-02    NaN
+key_columns = ['warmup'], allowed_tail_rows = 0
+label = 'round3 diagnostic unchanged all-warmup nulls', audit_path = None
+atol = 1e-09, rtol = 1e-07, numeric_tolerance = None
+column_allowed_tail_rows = None
+
+>   ???
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.
+
+<embedded_top100_base>:5073: RuntimeError
+_ test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-nan-None] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+before = nan, after = None
+
+    @pytest.mark.parametrize("before,after", [(np.nan, None), (None, pd.NA), (pd.NA, np.nan)])
+    def test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation(base, before, after):
+        dates = pd.bdate_range("2026-09-01", periods=2)
+        previous = pd.DataFrame({"date": dates, "warmup": pd.Series([before, before], dtype=object)})
+        candidate = pd.DataFrame({"date": dates, "warmup": pd.Series([after, after], dtype=object)})
+        assert previous["warmup"].isna().all() and candidate["warmup"].isna().all()
+>       base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+
+tests\test_round3_data_boundary.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+previous =         date warmup
+0 2026-09-01    NaN
+1 2026-09-02    NaN
+candidate =         date warmup
+0 2026-09-01   None
+1 2026-09-02   None
+key_columns = ['warmup'], allowed_tail_rows = 0
+label = 'round3 diagnostic unchanged all-warmup nulls', audit_path = None
+atol = 1e-10, rtol = 0.0, numeric_tolerance = None
+column_allowed_tail_rows = None
+
+    def assert_no_historical_rewrite(
+        previous: pd.DataFrame,
+        candidate: pd.DataFrame,
+        key_columns: list[str],
+        allowed_tail_rows: int,
+        label: str,
+        audit_path: Path | None = None,
+        atol: float = 1e-10,
+        rtol: float = 0.0,
+        numeric_tolerance: float | None = None,
+        column_allowed_tail_rows: dict[str, int] | None = None,
+    ) -> None:
+        if numeric_tolerance is not None:
+            atol = float(numeric_tolerance)
+            rtol = 0.0
+        prev = _normalise_dated_frame(previous, f"{label} previous")
+        cand = _normalise_dated_frame(candidate, f"{label} candidate")
+        tail_rows = max(0, int(allowed_tail_rows))
+        frozen_prev = prev.index[:-tail_rows] if tail_rows > 0 else prev.index
+        changes: list[dict[str, object]] = []
+    
+        missing_key_columns = sorted({col for col in key_columns if col not in prev.columns or col not in cand.columns})
+        for col in missing_key_columns:
+            changes.append(
+                {
+                    "date": "",
+                    "column": col,
+                    "change_type": "missing_key_column",
+                    "previous": "present" if col in prev.columns else "missing",
+                    "candidate": "present" if col in cand.columns else "missing",
+                }
+            )
+        if missing_key_columns:
+            diff_df = pd.DataFrame(changes)
+            if audit_path is not None:
+                audit_path.parent.mkdir(parents=True, exist_ok=True)
+                _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+            raise RuntimeError(
+                f"{label} historical rewrite audit missing key columns: {missing_key_columns}. "
+                "Refusing to publish query/chart output until the schema lineage is audited."
+            )
+    
+        missing_dates = pd.DatetimeIndex(prev.index.difference(cand.index)).sort_values()
+        if len(prev.index):
+            historical_added_index = cand.index[cand.index <= prev.index.max()]
+            added_dates = pd.DatetimeIndex(historical_added_index.difference(prev.index)).sort_values()
+        else:
+            added_dates = pd.DatetimeIndex([])
+        for dt in missing_dates:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": "__date__",
+                    "change_type": "date_removed",
+                    "previous": "present",
+                    "candidate": "missing",
+                }
+            )
+        for dt in added_dates:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": "__date__",
+                    "change_type": "date_added",
+                    "previous": "missing",
+                    "candidate": "present",
+                }
+            )
+        if missing_dates.size or added_dates.size:
+            diff_df = pd.DataFrame(changes)
+            if audit_path is not None:
+                audit_path.parent.mkdir(parents=True, exist_ok=True)
+                _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+            examples = ", ".join(f"{row['date']}:{row['change_type']}" for row in changes[:5])
+            if missing_dates.size:
+                raise RuntimeError(
+                    f"{label} historical date set changed: candidate removed previously published dates; "
+                    f"examples: {examples}. "
+                    "Refusing to publish query/chart output until the data lineage is audited."
+                )
+            raise RuntimeError(
+                f"{label} historical date set changed: candidate inserted dates into published history; "
+                f"examples: {examples}. "
+                "Refusing to publish query/chart output until the data lineage is audited."
+            )
+    
+        for col in key_columns:
+            col_tail_rows = tail_rows
+            if column_allowed_tail_rows is not None and col in column_allowed_tail_rows:
+                col_tail_rows = max(0, int(column_allowed_tail_rows[col]))
+            col_frozen_prev = prev.index[:-col_tail_rows] if col_tail_rows > 0 else prev.index
+            if len(col_frozen_prev) == 0:
+                continue
+            frozen_common = col_frozen_prev.intersection(cand.index).sort_values()
+            left = prev.loc[frozen_common, col]
+            right = cand.loc[frozen_common, col]
+            left_num = pd.to_numeric(left, errors="coerce")
+            right_num = pd.to_numeric(right, errors="coerce")
+            bool_like = (
+                pd.api.types.is_bool_dtype(left)
+                or pd.api.types.is_bool_dtype(right)
+                or pd.api.types.is_bool_dtype(left_num)
+                or pd.api.types.is_bool_dtype(right_num)
+            )
+            numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+            if bool_like:
+                changed = left.astype("boolean").ne(right.astype("boolean"))
+                changed = changed | (left.isna() ^ right.isna())
+            elif numeric_like:
+                changed = pd.Series(
+                    ~np.isclose(left_num.to_numpy(dtype=float, na_value=np.nan),
+                                right_num.to_numpy(dtype=float, na_value=np.nan),
+                                atol=float(atol), rtol=float(rtol), equal_nan=True),
+                    index=frozen_common,
+                )
+                unparsed = left_num.isna() & right_num.isna() & ~(left.isna() & right.isna())
+                changed |= unparsed & left.astype(str).ne(right.astype(str))
+            else:
+                changed = left.astype(str).ne(right.astype(str))
+            changed = changed | (left.isna() ^ right.isna())
+            for dt in frozen_common[changed.fillna(False)]:
+                changes.append(
+                    {
+                        "date": str(pd.Timestamp(dt).date()),
+                        "column": col,
+                        "change_type": "value_changed",
+                        "previous": prev.at[dt, col],
+                        "candidate": cand.at[dt, col],
+                    }
+                )
+        if not changes:
+            clear_rewrite_audit_after_clean_result(audit_path)
+            return
+        diff_df = pd.DataFrame(changes)
+        if audit_path is not None:
+            audit_path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+        examples = ", ".join(f"{row['date']}:{row['column']}" for row in changes[:5])
+>       raise RuntimeError(
+            f"{label} historical rewrite detected on frozen dates; examples: {examples}. "
+            "Refusing to publish query/chart output until the data lineage is audited."
+        )
+E       RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3875: RuntimeError
+_ test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-None-after1] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+before = None, after = <NA>
+
+    @pytest.mark.parametrize("before,after", [(np.nan, None), (None, pd.NA), (pd.NA, np.nan)])
+    def test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation(base, before, after):
+        dates = pd.bdate_range("2026-09-01", periods=2)
+        previous = pd.DataFrame({"date": dates, "warmup": pd.Series([before, before], dtype=object)})
+        candidate = pd.DataFrame({"date": dates, "warmup": pd.Series([after, after], dtype=object)})
+        assert previous["warmup"].isna().all() and candidate["warmup"].isna().all()
+>       base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+
+tests\test_round3_data_boundary.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+previous =         date warmup
+0 2026-09-01   None
+1 2026-09-02   None
+candidate =         date warmup
+0 2026-09-01   <NA>
+1 2026-09-02   <NA>
+key_columns = ['warmup'], allowed_tail_rows = 0
+label = 'round3 diagnostic unchanged all-warmup nulls', audit_path = None
+atol = 1e-10, rtol = 0.0, numeric_tolerance = None
+column_allowed_tail_rows = None
+
+    def assert_no_historical_rewrite(
+        previous: pd.DataFrame,
+        candidate: pd.DataFrame,
+        key_columns: list[str],
+        allowed_tail_rows: int,
+        label: str,
+        audit_path: Path | None = None,
+        atol: float = 1e-10,
+        rtol: float = 0.0,
+        numeric_tolerance: float | None = None,
+        column_allowed_tail_rows: dict[str, int] | None = None,
+    ) -> None:
+        if numeric_tolerance is not None:
+            atol = float(numeric_tolerance)
+            rtol = 0.0
+        prev = _normalise_dated_frame(previous, f"{label} previous")
+        cand = _normalise_dated_frame(candidate, f"{label} candidate")
+        tail_rows = max(0, int(allowed_tail_rows))
+        frozen_prev = prev.index[:-tail_rows] if tail_rows > 0 else prev.index
+        changes: list[dict[str, object]] = []
+    
+        missing_key_columns = sorted({col for col in key_columns if col not in prev.columns or col not in cand.columns})
+        for col in missing_key_columns:
+            changes.append(
+                {
+                    "date": "",
+                    "column": col,
+                    "change_type": "missing_key_column",
+                    "previous": "present" if col in prev.columns else "missing",
+                    "candidate": "present" if col in cand.columns else "missing",
+                }
+            )
+        if missing_key_columns:
+            diff_df = pd.DataFrame(changes)
+            if audit_path is not None:
+                audit_path.parent.mkdir(parents=True, exist_ok=True)
+                _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+            raise RuntimeError(
+                f"{label} historical rewrite audit missing key columns: {missing_key_columns}. "
+                "Refusing to publish query/chart output until the schema lineage is audited."
+            )
+    
+        missing_dates = pd.DatetimeIndex(prev.index.difference(cand.index)).sort_values()
+        if len(prev.index):
+            historical_added_index = cand.index[cand.index <= prev.index.max()]
+            added_dates = pd.DatetimeIndex(historical_added_index.difference(prev.index)).sort_values()
+        else:
+            added_dates = pd.DatetimeIndex([])
+        for dt in missing_dates:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": "__date__",
+                    "change_type": "date_removed",
+                    "previous": "present",
+                    "candidate": "missing",
+                }
+            )
+        for dt in added_dates:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": "__date__",
+                    "change_type": "date_added",
+                    "previous": "missing",
+                    "candidate": "present",
+                }
+            )
+        if missing_dates.size or added_dates.size:
+            diff_df = pd.DataFrame(changes)
+            if audit_path is not None:
+                audit_path.parent.mkdir(parents=True, exist_ok=True)
+                _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+            examples = ", ".join(f"{row['date']}:{row['change_type']}" for row in changes[:5])
+            if missing_dates.size:
+                raise RuntimeError(
+                    f"{label} historical date set changed: candidate removed previously published dates; "
+                    f"examples: {examples}. "
+                    "Refusing to publish query/chart output until the data lineage is audited."
+                )
+            raise RuntimeError(
+                f"{label} historical date set changed: candidate inserted dates into published history; "
+                f"examples: {examples}. "
+                "Refusing to publish query/chart output until the data lineage is audited."
+            )
+    
+        for col in key_columns:
+            col_tail_rows = tail_rows
+            if column_allowed_tail_rows is not None and col in column_allowed_tail_rows:
+                col_tail_rows = max(0, int(column_allowed_tail_rows[col]))
+            col_frozen_prev = prev.index[:-col_tail_rows] if col_tail_rows > 0 else prev.index
+            if len(col_frozen_prev) == 0:
+                continue
+            frozen_common = col_frozen_prev.intersection(cand.index).sort_values()
+            left = prev.loc[frozen_common, col]
+            right = cand.loc[frozen_common, col]
+            left_num = pd.to_numeric(left, errors="coerce")
+            right_num = pd.to_numeric(right, errors="coerce")
+            bool_like = (
+                pd.api.types.is_bool_dtype(left)
+                or pd.api.types.is_bool_dtype(right)
+                or pd.api.types.is_bool_dtype(left_num)
+                or pd.api.types.is_bool_dtype(right_num)
+            )
+            numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+            if bool_like:
+                changed = left.astype("boolean").ne(right.astype("boolean"))
+                changed = changed | (left.isna() ^ right.isna())
+            elif numeric_like:
+                changed = pd.Series(
+                    ~np.isclose(left_num.to_numpy(dtype=float, na_value=np.nan),
+                                right_num.to_numpy(dtype=float, na_value=np.nan),
+                                atol=float(atol), rtol=float(rtol), equal_nan=True),
+                    index=frozen_common,
+                )
+                unparsed = left_num.isna() & right_num.isna() & ~(left.isna() & right.isna())
+                changed |= unparsed & left.astype(str).ne(right.astype(str))
+            else:
+                changed = left.astype(str).ne(right.astype(str))
+            changed = changed | (left.isna() ^ right.isna())
+            for dt in frozen_common[changed.fillna(False)]:
+                changes.append(
+                    {
+                        "date": str(pd.Timestamp(dt).date()),
+                        "column": col,
+                        "change_type": "value_changed",
+                        "previous": prev.at[dt, col],
+                        "candidate": cand.at[dt, col],
+                    }
+                )
+        if not changes:
+            clear_rewrite_audit_after_clean_result(audit_path)
+            return
+        diff_df = pd.DataFrame(changes)
+        if audit_path is not None:
+            audit_path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+        examples = ", ".join(f"{row['date']}:{row['column']}" for row in changes[:5])
+>       raise RuntimeError(
+            f"{label} historical rewrite detected on frozen dates; examples: {examples}. "
+            "Refusing to publish query/chart output until the data lineage is audited."
+        )
+E       RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3875: RuntimeError
+_ test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-before2-nan] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+before = <NA>, after = nan
+
+    @pytest.mark.parametrize("before,after", [(np.nan, None), (None, pd.NA), (pd.NA, np.nan)])
+    def test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation(base, before, after):
+        dates = pd.bdate_range("2026-09-01", periods=2)
+        previous = pd.DataFrame({"date": dates, "warmup": pd.Series([before, before], dtype=object)})
+        candidate = pd.DataFrame({"date": dates, "warmup": pd.Series([after, after], dtype=object)})
+        assert previous["warmup"].isna().all() and candidate["warmup"].isna().all()
+>       base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+
+tests\test_round3_data_boundary.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+previous =         date warmup
+0 2026-09-01   <NA>
+1 2026-09-02   <NA>
+candidate =         date warmup
+0 2026-09-01    NaN
+1 2026-09-02    NaN
+key_columns = ['warmup'], allowed_tail_rows = 0
+label = 'round3 diagnostic unchanged all-warmup nulls', audit_path = None
+atol = 1e-10, rtol = 0.0, numeric_tolerance = None
+column_allowed_tail_rows = None
+
+    def assert_no_historical_rewrite(
+        previous: pd.DataFrame,
+        candidate: pd.DataFrame,
+        key_columns: list[str],
+        allowed_tail_rows: int,
+        label: str,
+        audit_path: Path | None = None,
+        atol: float = 1e-10,
+        rtol: float = 0.0,
+        numeric_tolerance: float | None = None,
+        column_allowed_tail_rows: dict[str, int] | None = None,
+    ) -> None:
+        if numeric_tolerance is not None:
+            atol = float(numeric_tolerance)
+            rtol = 0.0
+        prev = _normalise_dated_frame(previous, f"{label} previous")
+        cand = _normalise_dated_frame(candidate, f"{label} candidate")
+        tail_rows = max(0, int(allowed_tail_rows))
+        frozen_prev = prev.index[:-tail_rows] if tail_rows > 0 else prev.index
+        changes: list[dict[str, object]] = []
+    
+        missing_key_columns = sorted({col for col in key_columns if col not in prev.columns or col not in cand.columns})
+        for col in missing_key_columns:
+            changes.append(
+                {
+                    "date": "",
+                    "column": col,
+                    "change_type": "missing_key_column",
+                    "previous": "present" if col in prev.columns else "missing",
+                    "candidate": "present" if col in cand.columns else "missing",
+                }
+            )
+        if missing_key_columns:
+            diff_df = pd.DataFrame(changes)
+            if audit_path is not None:
+                audit_path.parent.mkdir(parents=True, exist_ok=True)
+                _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+            raise RuntimeError(
+                f"{label} historical rewrite audit missing key columns: {missing_key_columns}. "
+                "Refusing to publish query/chart output until the schema lineage is audited."
+            )
+    
+        missing_dates = pd.DatetimeIndex(prev.index.difference(cand.index)).sort_values()
+        if len(prev.index):
+            historical_added_index = cand.index[cand.index <= prev.index.max()]
+            added_dates = pd.DatetimeIndex(historical_added_index.difference(prev.index)).sort_values()
+        else:
+            added_dates = pd.DatetimeIndex([])
+        for dt in missing_dates:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": "__date__",
+                    "change_type": "date_removed",
+                    "previous": "present",
+                    "candidate": "missing",
+                }
+            )
+        for dt in added_dates:
+            changes.append(
+                {
+                    "date": str(pd.Timestamp(dt).date()),
+                    "column": "__date__",
+                    "change_type": "date_added",
+                    "previous": "missing",
+                    "candidate": "present",
+                }
+            )
+        if missing_dates.size or added_dates.size:
+            diff_df = pd.DataFrame(changes)
+            if audit_path is not None:
+                audit_path.parent.mkdir(parents=True, exist_ok=True)
+                _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+            examples = ", ".join(f"{row['date']}:{row['change_type']}" for row in changes[:5])
+            if missing_dates.size:
+                raise RuntimeError(
+                    f"{label} historical date set changed: candidate removed previously published dates; "
+                    f"examples: {examples}. "
+                    "Refusing to publish query/chart output until the data lineage is audited."
+                )
+            raise RuntimeError(
+                f"{label} historical date set changed: candidate inserted dates into published history; "
+                f"examples: {examples}. "
+                "Refusing to publish query/chart output until the data lineage is audited."
+            )
+    
+        for col in key_columns:
+            col_tail_rows = tail_rows
+            if column_allowed_tail_rows is not None and col in column_allowed_tail_rows:
+                col_tail_rows = max(0, int(column_allowed_tail_rows[col]))
+            col_frozen_prev = prev.index[:-col_tail_rows] if col_tail_rows > 0 else prev.index
+            if len(col_frozen_prev) == 0:
+                continue
+            frozen_common = col_frozen_prev.intersection(cand.index).sort_values()
+            left = prev.loc[frozen_common, col]
+            right = cand.loc[frozen_common, col]
+            left_num = pd.to_numeric(left, errors="coerce")
+            right_num = pd.to_numeric(right, errors="coerce")
+            bool_like = (
+                pd.api.types.is_bool_dtype(left)
+                or pd.api.types.is_bool_dtype(right)
+                or pd.api.types.is_bool_dtype(left_num)
+                or pd.api.types.is_bool_dtype(right_num)
+            )
+            numeric_like = (left_num.notna().any() or right_num.notna().any()) and not bool_like
+            if bool_like:
+                changed = left.astype("boolean").ne(right.astype("boolean"))
+                changed = changed | (left.isna() ^ right.isna())
+            elif numeric_like:
+                changed = pd.Series(
+                    ~np.isclose(left_num.to_numpy(dtype=float, na_value=np.nan),
+                                right_num.to_numpy(dtype=float, na_value=np.nan),
+                                atol=float(atol), rtol=float(rtol), equal_nan=True),
+                    index=frozen_common,
+                )
+                unparsed = left_num.isna() & right_num.isna() & ~(left.isna() & right.isna())
+                changed |= unparsed & left.astype(str).ne(right.astype(str))
+            else:
+                changed = left.astype(str).ne(right.astype(str))
+            changed = changed | (left.isna() ^ right.isna())
+            for dt in frozen_common[changed.fillna(False)]:
+                changes.append(
+                    {
+                        "date": str(pd.Timestamp(dt).date()),
+                        "column": col,
+                        "change_type": "value_changed",
+                        "previous": prev.at[dt, col],
+                        "candidate": cand.at[dt, col],
+                    }
+                )
+        if not changes:
+            clear_rewrite_audit_after_clean_result(audit_path)
+            return
+        diff_df = pd.DataFrame(changes)
+        if audit_path is not None:
+            audit_path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_to_csv(diff_df, audit_path, index=False, encoding="utf-8-sig")
+        examples = ", ".join(f"{row['date']}:{row['column']}" for row in changes[:5])
+>       raise RuntimeError(
+            f"{label} historical rewrite detected on frozen dates; examples: {examples}. "
+            "Refusing to publish query/chart output until the data lineage is audited."
+        )
+E       RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3875: RuntimeError
+=========================== short test summary info ===========================
+FAILED tests/test_round3_data_boundary.py::test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-nan-None]
+FAILED tests/test_round3_data_boundary.py::test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-None-after1]
+FAILED tests/test_round3_data_boundary.py::test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-before2-nan]
+FAILED tests/test_round3_data_boundary.py::test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-nan-None]
+FAILED tests/test_round3_data_boundary.py::test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-None-after1]
+FAILED tests/test_round3_data_boundary.py::test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-before2-nan]
+6 failed, 30 deselected in 7.60s

@@ -1,0 +1,52 @@
+{
+  "scope": "math_second_round_diagnostic_only",
+  "result": "PASS",
+  "tests": {
+    "tests": 68,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "resolved_dependency_contract_findings": 2,
+  "known_normal_history_changes": 0,
+  "official_artifacts_unchanged": true,
+  "production_sources_stable_during_audit": true,
+  "source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "a8429df05baa894122ab982b0345443ca183f41ee115f142f779edb2dd1c48e5",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267"
+  },
+  "test_sha256": "eb734af9e49069cf95728ab458b4f4842fc270ebee2bb2cb1a94da4f77aea1ea",
+  "report_links_verified": 9,
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "last_date": "2026-09-30"
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30"
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30"
+    }
+  },
+  "final_identity_patch_actual_real_rerun": true,
+  "final_identity_patch_actual_real_rerun_log": "math_real_final_identity.log",
+  "source_identity_changes": {
+    "microcap_top100_mom16_biweekly_live_v2_3.py": {
+      "old": "786ed8b429e8071aa6bd00bd8e8d0309f51a908d9443c48f5b586a5a70035aff",
+      "new": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5.py": {
+      "old": "66fca5f9e1e15b234abedbff384de2dd8ec7c694cc83c29e72d7904b2f3a8e8e",
+      "new": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267"
+    }
+  },
+  "synthetic_suite_scope": "68 mathematical diagnostics passed before final identity-only patch; mathematical code unchanged; final full suite owned by main agent"
+}

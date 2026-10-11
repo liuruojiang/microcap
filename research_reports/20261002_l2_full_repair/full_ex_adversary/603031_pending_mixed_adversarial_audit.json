@@ -1,0 +1,67 @@
+{
+  "manifest_sha256": "7714070a038e12d12addb14feff28b2ddb905374404ec8323d22215096cc968a",
+  "code_sha256": "21fe00ccebf44652a49ddf819e035d7d5ea470fd19714476501f01c24da97262",
+  "issuer_pdf_sha256": "0705aaf7dc9595ef0ea1bb178bad26916caae0e1eb32f3b33508c787b18150d4",
+  "original_row_sha256": "8fd4e986607b9bd4a34da2929d4b190be7480c81dd492fdc9608b17899c5d294",
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "market": {
+    "2018-06-06": {
+      "date": "2018-06-06",
+      "close": "23.0000",
+      "preclose": "22.9000",
+      "volume": "2446100",
+      "tradestatus": "1"
+    },
+    "2018-06-07": {
+      "date": "2018-06-07",
+      "close": "15.8700",
+      "preclose": "16.3200",
+      "volume": "1829300",
+      "tradestatus": "1"
+    },
+    "2018-06-08": {
+      "date": "2018-06-08",
+      "close": "15.3500",
+      "preclose": "15.8700",
+      "volume": "3264020",
+      "tradestatus": "1"
+    }
+  },
+  "reference": "16.32",
+  "branches": {
+    "prefunded": {
+      "status": "PASS_PAPER_PENDING_AND_LISTING_CLOCK",
+      "record_shares": "3958.734431454845232167538637784319286957",
+      "bonus_pending_6_7": "1583.493772581938092867015455113727714783",
+      "gross_cash_6_7": "593.8101647182267848251307956676478930436",
+      "ex_equity_piece": "88548.97176278197815312350424995965381065740",
+      "booked_ex_orders": 0,
+      "next_session_net_booked_shares": "988.702799374266421475941476350453807309",
+      "next_session_after_release_shares": "6530.931003411049746510495569248500809049",
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": "1583.493772581938092867015455113727714783"
+    },
+    "netted": {
+      "status": "PASS_PAPER_PENDING_AND_LISTING_CLOCK",
+      "record_shares": "4766.889620174327520697982136533588105681",
+      "bonus_pending_6_7": "1906.755848069731008279192854613435242272",
+      "gross_cash_6_7": "715.0334430261491281046973204800382158522",
+      "ex_equity_piece": "106625.78702405935798297246442998329874786631",
+      "booked_ex_orders": 0,
+      "next_session_net_booked_shares": "1159.681926142610594973108248262979565254",
+      "next_session_after_release_shares": "7833.327394386669123950283239410002913207",
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": "1906.755848069731008279192854613435242272"
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2018-06-21",
+      "reason": "missing_or_invalid_payment_date:2018-06-21:603088"
+    },
+    "netted": {
+      "date": "2018-06-21",
+      "reason": "missing_or_invalid_payment_date:2018-06-21:603088"
+    }
+  },
+  "status": "PASS_FOR_BRANCHES_REACHING_2018_06_08",
+  "limitations": "Issuer's 6/8 unrestricted-share listing establishes conservative paper tradability, not actual broker credit. Gross cash and fractional shares remain model approximations."
+}

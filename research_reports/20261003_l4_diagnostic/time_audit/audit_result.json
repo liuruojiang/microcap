@@ -1,0 +1,179 @@
+{
+  "scope": "frozen-old-input v2.3 diagnostic only; independent stdlib readback, no formal refresh",
+  "source": "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+  "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+  "current_source_sha256": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+  "rows": 3988,
+  "first_date": "2010-05-05",
+  "last_date": "2026-09-30",
+  "effective_parameters": {
+    "vol_window": 10,
+    "annualization_days": 244,
+    "trigger": 0.26,
+    "recovery": 0.2,
+    "r2_entry_gate": 0.0
+  },
+  "feature": {
+    "first_finite_date": "2010-05-18",
+    "max_abs_error": 2.8380076066980564e-15,
+    "mismatch_count": 0,
+    "mismatch_examples": []
+  },
+  "state_mismatch_count": {
+    "holding": 0,
+    "next_holding": 0,
+    "overheat_risk_off": 0,
+    "overheat_exit_triggered": 0,
+    "overheat_reentry_triggered": 0,
+    "overheat_block_entry_triggered": 0
+  },
+  "state_mismatch_examples": {
+    "holding": [],
+    "next_holding": [],
+    "overheat_risk_off": [],
+    "overheat_exit_triggered": [],
+    "overheat_reentry_triggered": [],
+    "overheat_block_entry_triggered": []
+  },
+  "events": {
+    "overheat_exit_triggered": {
+      "count": 5,
+      "first": [
+        "2020-09-10",
+        "2022-01-19",
+        "2022-04-27",
+        "2024-12-17",
+        "2026-09-07"
+      ],
+      "last": [
+        "2020-09-10",
+        "2022-01-19",
+        "2022-04-27",
+        "2024-12-17",
+        "2026-09-07"
+      ]
+    },
+    "overheat_reentry_triggered": {
+      "count": 8,
+      "first": [
+        "2020-09-24",
+        "2022-02-22",
+        "2024-03-19",
+        "2024-05-27",
+        "2025-01-17"
+      ],
+      "last": [
+        "2024-05-27",
+        "2025-01-17",
+        "2025-04-21",
+        "2026-08-21",
+        "2026-09-30"
+      ]
+    },
+    "overheat_block_entry_triggered": {
+      "count": 7,
+      "first": [
+        "2024-02-26",
+        "2024-04-29",
+        "2024-06-20",
+        "2025-04-03",
+        "2025-09-08"
+      ],
+      "last": [
+        "2024-06-20",
+        "2025-04-03",
+        "2025-09-08",
+        "2026-03-25",
+        "2026-07-06"
+      ]
+    }
+  },
+  "ablation": {
+    "first_next_state_difference": "2020-09-10",
+    "next_state_difference_days": 145,
+    "current_state_difference_days": 145
+  },
+  "first_exit_clock": {
+    "date": "2020-09-10",
+    "feature": 0.26535435428884224,
+    "holding_on_event_day": "long_microcap_short_zz1000",
+    "next_holding_on_event_day": "cash",
+    "exit_cost_on_event_day": 0.003,
+    "return_net_on_event_day": -0.044505951790714926,
+    "holding_next_session": "cash",
+    "market_return_while_cash_next_session": 0.0
+  },
+  "timing_mutants": {
+    "tomorrow_feature_mismatch_count": 30,
+    "tomorrow_first": [
+      "2020-09-09",
+      "2020-09-10",
+      "2020-09-23",
+      "2020-09-24",
+      "2022-01-18"
+    ],
+    "extra_lag_mismatch_count": 37,
+    "extra_lag_first": [
+      "2020-09-10",
+      "2020-09-11",
+      "2020-09-24",
+      "2020-09-25",
+      "2022-01-19"
+    ]
+  },
+  "holiday": {
+    "phantom_date": "2018-06-18",
+    "feature_changed_count_fixed_stored_spread_nav": 10,
+    "first_feature_change": [
+      "2018-06-19",
+      "2018-06-20",
+      "2018-06-21",
+      "2018-06-22",
+      "2018-06-25"
+    ],
+    "last_feature_change": [
+      "2018-06-26",
+      "2018-06-27",
+      "2018-06-28",
+      "2018-06-29",
+      "2018-07-02"
+    ],
+    "fixed_base_next_state_difference_count": 0,
+    "fixed_base_next_first_differences": [],
+    "close_rebuild_old_nav_max_abs_error": 2.0463630789890885e-12,
+    "close_rebuild_old_wls_max_abs_error_after_25_rows": 2.7755575615628914e-14,
+    "close_rebuild_removed_holiday_score_changed_count": 23,
+    "close_rebuild_removed_holiday_first_score_changes": [
+      "2018-06-19",
+      "2018-06-20",
+      "2018-06-21",
+      "2018-06-22",
+      "2018-06-25"
+    ],
+    "close_rebuild_removed_holiday_last_score_changes": [
+      "2018-07-13",
+      "2018-07-16",
+      "2018-07-17",
+      "2018-07-18",
+      "2018-07-19"
+    ],
+    "close_rebuild_removed_holiday_base_next_signal_difference_count": 0,
+    "close_rebuild_removed_holiday_first_base_next_signal_differences": [],
+    "close_rebuild_removed_holiday_overheat_state_difference_count": 0,
+    "close_rebuild_removed_holiday_first_overheat_state_differences": [],
+    "qualification": "Calendar-only counterfactual rebuilds v2.3 WLS from frozen old close data, not PIT members/corporate actions or T+1 account; formal corrected result requires upstream rebuild."
+  },
+  "cash": {
+    "nonzero_base_pre_cost_return_cash_days": 0,
+    "positive_market_pnl_cash_days": 0
+  },
+  "boundary_injections": {
+    "exact_trigger_current_active_exits": true,
+    "just_below_trigger_does_not_exit": true,
+    "exact_trigger_cash_blocks": true,
+    "exact_recovery_reenters": true,
+    "just_above_recovery_stays_off": true,
+    "missing_feature_does_not_trigger": true
+  },
+  "disabled_module_mutant_rejected": true
+}

@@ -1,0 +1,20 @@
+{
+  "source": "preserved production source",
+  "smtp_sent": false,
+  "fixture": {
+    "name": "microcap-v2-close_confirmed-digest-delivered-2026-09-30-smtp-accepted",
+    "expired": false,
+    "workflow_run": {
+      "id": 999,
+      "head_sha": "0000000000000000000000000000000000000000"
+    }
+  },
+  "observed_output": {
+    "should_send": "false",
+    "delivery_date": "2026-09-30",
+    "marker_name": "microcap-v2-close_confirmed-digest-delivered-2026-09-30",
+    "subject_prefix": "",
+    "validation_only": "false",
+    "recover_marker": "true"
+  }
+}

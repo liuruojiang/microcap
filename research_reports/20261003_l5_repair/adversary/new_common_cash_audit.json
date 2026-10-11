@@ -1,0 +1,60 @@
+{
+  "label": "independent_partial_common_cash_account_audit",
+  "source_manifest_sha256": "99814976edfb6649b13c7a327e4da0db0fc6d76d4934fdb8b2c8156224bf2c22",
+  "signal_binding_sha256": "b3afff5cddaba76cef436080043a930a4589356bf0dcd19633af6373e4d1791d",
+  "cases": [
+    {
+      "key": "prefunded_on",
+      "signal_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "days": 72,
+      "last_verified_date": "2026-01-20",
+      "first_block_date": "2026-01-21",
+      "blocked_cash_before_orders": "-3440.199498691279457299413565",
+      "cash_dividend_paid_on_block_date": "0",
+      "checked_orders": 811,
+      "rejected_orders": 37,
+      "cash_target_residuals": [],
+      "daily_sha256": "dd6d3d670f1b4663c9d3f4a000476f08795d48782394aab55ffb9a626309b9f5"
+    },
+    {
+      "key": "prefunded_off",
+      "signal_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "days": 72,
+      "last_verified_date": "2026-01-20",
+      "first_block_date": "2026-01-21",
+      "blocked_cash_before_orders": "-3440.199498691279457299413565",
+      "cash_dividend_paid_on_block_date": "0",
+      "checked_orders": 811,
+      "rejected_orders": 37,
+      "cash_target_residuals": [],
+      "daily_sha256": "dd6d3d670f1b4663c9d3f4a000476f08795d48782394aab55ffb9a626309b9f5"
+    },
+    {
+      "key": "netted_on",
+      "signal_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "days": 11,
+      "last_verified_date": "2025-10-23",
+      "first_block_date": "2025-10-24",
+      "blocked_cash_before_orders": "-5417.847901022709423342127018",
+      "cash_dividend_paid_on_block_date": "61.68665257987353838054885165",
+      "checked_orders": 209,
+      "rejected_orders": 2,
+      "cash_target_residuals": [],
+      "daily_sha256": "01de23e6b49c3c84e1ca0239dcebadd08ead7c8b4b557a38e9f3edd3b634620c"
+    },
+    {
+      "key": "netted_off",
+      "signal_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "days": 11,
+      "last_verified_date": "2025-10-23",
+      "first_block_date": "2025-10-24",
+      "blocked_cash_before_orders": "-5417.847901022709423342127018",
+      "cash_dividend_paid_on_block_date": "61.68665257987353838054885165",
+      "checked_orders": 209,
+      "rejected_orders": 2,
+      "cash_target_residuals": [],
+      "daily_sha256": "01de23e6b49c3c84e1ca0239dcebadd08ead7c8b4b557a38e9f3edd3b634620c"
+    }
+  ],
+  "limits": "No authenticated PIT universe, actual futures initial/maintenance margin, financing or real close fills; blocked cases have no post-block NAV."
+}

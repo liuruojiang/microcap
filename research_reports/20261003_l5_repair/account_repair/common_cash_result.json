@@ -1,0 +1,273 @@
+{
+  "label": "research_only_frozen_old_pool_common_cash_variation_no_credit_not_broker_executable",
+  "source_L5_result_sha256": "1780228a571b2a9bd2633f9e40a2457df31844c4b9e330cadd329339aed0bd82",
+  "official_binding_sha256": "b3afff5cddaba76cef436080043a930a4589356bf0dcd19633af6373e4d1791d",
+  "copied_L2_account_sha256": "4d900bd52cf2fdd16c786b921a515f5e1bfc78989d362e51bcabe420496a53b9",
+  "replay_source_sha256": "2b25dc60f43ce9e4b48be3ffbdaaf458dc672c7e634efbc8ce36ebfc9a576ef7",
+  "cases": {
+    "prefunded_on": {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "last_settled": "2026-01-20",
+      "settled_days": 72,
+      "first_block": {
+        "date": "2026-01-21",
+        "reason": "unfunded_variation_before_stock_orders:2026-01-21:cash=-3440.199498691279457299413770049722081852"
+      },
+      "model": "research_only_zero_upfront_swap_daily_variation_to_common_cash_before_stock_orders_no_credit",
+      "target_scale_source": "frozen_official_v2_3_ON_or_base_before_overheat_OFF_binding_T_close",
+      "target_scale_values": [
+        "0.0",
+        "1.0"
+      ],
+      "strategy_stock_funding_contract": "prefunded",
+      "first_negative_stock_cash": null,
+      "min_stock_cash": "3666.47448852009479379579572546719188064",
+      "first_swap_margin_debt": null,
+      "max_swap_margin_debt": "0",
+      "cumulative_shadow_financing_3pct": "0",
+      "first_old_pool_ST_contamination": "2026-04-27:600543",
+      "first_actual_600543_held_after_ST": null,
+      "result_label": "old_L1_pool_conditional_diagnostic_not_certified",
+      "hedge_notional_policy": "0.8_x_actual_stock_plus_pending_rights_value_at_each_close",
+      "financing_rate_applied": 0,
+      "shadow_financing_annual": 0.03,
+      "stock_fee_each_booked_side": "0.003",
+      "source_signal_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "detail_sha256": {
+        "daily": "dd6d3d670f1b4663c9d3f4a000476f08795d48782394aab55ffb9a626309b9f5",
+        "holdings": "05a7d263b6108330352617babb327ac174f61325079caae7609329c5ef73cd55",
+        "orders": "45ad8b794c1201d1d2f0d323da23340805eddac076043f9d5361f7e22ea22218",
+        "rights": "afbf6a30b72d8b197e36bc3236c482b4157eca65e4c43d55cd772b4cf4b2d445"
+      },
+      "source_queries": [
+        {
+          "symbol": "002513",
+          "rows": 239,
+          "code": "sz.002513",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "300935",
+          "rows": 239,
+          "code": "sz.300935",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "001211",
+          "rows": 202,
+          "code": "sz.001211",
+          "start_date": "2025-12-03",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "001336",
+          "rows": 202,
+          "code": "sz.001336",
+          "start_date": "2025-12-03",
+          "end_date": "2026-09-30"
+        }
+      ],
+      "new_query_response": {
+        "path": "research_reports\\20261003_l5_repair\\account_repair\\prefunded_on\\new_queried_baostock_bars.csv",
+        "rows": 882,
+        "sha256": "591c5136fa8a312e1fee6507ab1a390998d32e3c793cbbbfa2908e3eddad4b29"
+      },
+      "input_signal_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "signal_binding": "frozen_official_v2_3_ON_or_base_before_overheat_OFF"
+    },
+    "prefunded_off": {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "last_settled": "2026-01-20",
+      "settled_days": 72,
+      "first_block": {
+        "date": "2026-01-21",
+        "reason": "unfunded_variation_before_stock_orders:2026-01-21:cash=-3440.199498691279457299413770049722081852"
+      },
+      "model": "research_only_zero_upfront_swap_daily_variation_to_common_cash_before_stock_orders_no_credit",
+      "target_scale_source": "frozen_official_v2_3_ON_or_base_before_overheat_OFF_binding_T_close",
+      "target_scale_values": [
+        "0.0",
+        "1.0"
+      ],
+      "strategy_stock_funding_contract": "prefunded",
+      "first_negative_stock_cash": null,
+      "min_stock_cash": "3666.47448852009479379579572546719188064",
+      "first_swap_margin_debt": null,
+      "max_swap_margin_debt": "0",
+      "cumulative_shadow_financing_3pct": "0",
+      "first_old_pool_ST_contamination": "2026-04-27:600543",
+      "first_actual_600543_held_after_ST": null,
+      "result_label": "old_L1_pool_conditional_diagnostic_not_certified",
+      "hedge_notional_policy": "0.8_x_actual_stock_plus_pending_rights_value_at_each_close",
+      "financing_rate_applied": 0,
+      "shadow_financing_annual": 0.03,
+      "stock_fee_each_booked_side": "0.003",
+      "source_signal_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "detail_sha256": {
+        "daily": "dd6d3d670f1b4663c9d3f4a000476f08795d48782394aab55ffb9a626309b9f5",
+        "holdings": "05a7d263b6108330352617babb327ac174f61325079caae7609329c5ef73cd55",
+        "orders": "45ad8b794c1201d1d2f0d323da23340805eddac076043f9d5361f7e22ea22218",
+        "rights": "afbf6a30b72d8b197e36bc3236c482b4157eca65e4c43d55cd772b4cf4b2d445"
+      },
+      "source_queries": [
+        {
+          "symbol": "002513",
+          "rows": 239,
+          "code": "sz.002513",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "300935",
+          "rows": 239,
+          "code": "sz.300935",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "001211",
+          "rows": 202,
+          "code": "sz.001211",
+          "start_date": "2025-12-03",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "001336",
+          "rows": 202,
+          "code": "sz.001336",
+          "start_date": "2025-12-03",
+          "end_date": "2026-09-30"
+        }
+      ],
+      "new_query_response": {
+        "path": "research_reports\\20261003_l5_repair\\account_repair\\prefunded_off\\new_queried_baostock_bars.csv",
+        "rows": 882,
+        "sha256": "591c5136fa8a312e1fee6507ab1a390998d32e3c793cbbbfa2908e3eddad4b29"
+      },
+      "input_signal_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "signal_binding": "frozen_official_v2_3_ON_or_base_before_overheat_OFF"
+    },
+    "netted_on": {
+      "branch": "netted",
+      "version": "v2.3",
+      "last_settled": "2025-10-23",
+      "settled_days": 11,
+      "first_block": {
+        "date": "2025-10-24",
+        "reason": "unfunded_variation_before_stock_orders:2025-10-24:cash=-5417.847901022709423342126629961322354213"
+      },
+      "model": "research_only_zero_upfront_swap_daily_variation_to_common_cash_before_stock_orders_no_credit",
+      "target_scale_source": "frozen_official_v2_3_ON_or_base_before_overheat_OFF_binding_T_close",
+      "target_scale_values": [
+        "0.0",
+        "1.0"
+      ],
+      "strategy_stock_funding_contract": "netted",
+      "first_negative_stock_cash": null,
+      "min_stock_cash": "4096.03932508028309156127579065349405419",
+      "first_swap_margin_debt": null,
+      "max_swap_margin_debt": "0",
+      "cumulative_shadow_financing_3pct": "0",
+      "first_old_pool_ST_contamination": "2026-04-27:600543",
+      "first_actual_600543_held_after_ST": null,
+      "result_label": "old_L1_pool_conditional_diagnostic_not_certified",
+      "hedge_notional_policy": "0.8_x_actual_stock_plus_pending_rights_value_at_each_close",
+      "financing_rate_applied": 0,
+      "shadow_financing_annual": 0.03,
+      "stock_fee_each_booked_side": "0.003",
+      "source_signal_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "detail_sha256": {
+        "daily": "01de23e6b49c3c84e1ca0239dcebadd08ead7c8b4b557a38e9f3edd3b634620c",
+        "holdings": "7a5e653d8fb6e77655787c50fd073c3de712917129dd3e0ebe0dbe0e6e785818",
+        "orders": "fccfcacc1a2c6f168eaf50dc4bc1074795ea74e18a97d978bd29c84be4e26242",
+        "rights": "db19ed4ffa6a3503a14215420c76b1680541b1cf1bb1252768f989c128d38169"
+      },
+      "source_queries": [
+        {
+          "symbol": "002513",
+          "rows": 239,
+          "code": "sz.002513",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "300935",
+          "rows": 239,
+          "code": "sz.300935",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        }
+      ],
+      "new_query_response": {
+        "path": "research_reports\\20261003_l5_repair\\account_repair\\netted_on\\new_queried_baostock_bars.csv",
+        "rows": 478,
+        "sha256": "4a2de31132736676c6ab0c752c4bb3ad3bea5c1d117ba04873b66489d2df21b5"
+      },
+      "input_signal_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "signal_binding": "frozen_official_v2_3_ON_or_base_before_overheat_OFF"
+    },
+    "netted_off": {
+      "branch": "netted",
+      "version": "v2.3",
+      "last_settled": "2025-10-23",
+      "settled_days": 11,
+      "first_block": {
+        "date": "2025-10-24",
+        "reason": "unfunded_variation_before_stock_orders:2025-10-24:cash=-5417.847901022709423342126629961322354213"
+      },
+      "model": "research_only_zero_upfront_swap_daily_variation_to_common_cash_before_stock_orders_no_credit",
+      "target_scale_source": "frozen_official_v2_3_ON_or_base_before_overheat_OFF_binding_T_close",
+      "target_scale_values": [
+        "0.0",
+        "1.0"
+      ],
+      "strategy_stock_funding_contract": "netted",
+      "first_negative_stock_cash": null,
+      "min_stock_cash": "4096.03932508028309156127579065349405419",
+      "first_swap_margin_debt": null,
+      "max_swap_margin_debt": "0",
+      "cumulative_shadow_financing_3pct": "0",
+      "first_old_pool_ST_contamination": "2026-04-27:600543",
+      "first_actual_600543_held_after_ST": null,
+      "result_label": "old_L1_pool_conditional_diagnostic_not_certified",
+      "hedge_notional_policy": "0.8_x_actual_stock_plus_pending_rights_value_at_each_close",
+      "financing_rate_applied": 0,
+      "shadow_financing_annual": 0.03,
+      "stock_fee_each_booked_side": "0.003",
+      "source_signal_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "detail_sha256": {
+        "daily": "01de23e6b49c3c84e1ca0239dcebadd08ead7c8b4b557a38e9f3edd3b634620c",
+        "holdings": "7a5e653d8fb6e77655787c50fd073c3de712917129dd3e0ebe0dbe0e6e785818",
+        "orders": "fccfcacc1a2c6f168eaf50dc4bc1074795ea74e18a97d978bd29c84be4e26242",
+        "rights": "db19ed4ffa6a3503a14215420c76b1680541b1cf1bb1252768f989c128d38169"
+      },
+      "source_queries": [
+        {
+          "symbol": "002513",
+          "rows": 239,
+          "code": "sz.002513",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        },
+        {
+          "symbol": "300935",
+          "rows": 239,
+          "code": "sz.300935",
+          "start_date": "2025-10-13",
+          "end_date": "2026-09-30"
+        }
+      ],
+      "new_query_response": {
+        "path": "research_reports\\20261003_l5_repair\\account_repair\\netted_off\\new_queried_baostock_bars.csv",
+        "rows": 478,
+        "sha256": "4a2de31132736676c6ab0c752c4bb3ad3bea5c1d117ba04873b66489d2df21b5"
+      },
+      "input_signal_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "signal_binding": "frozen_official_v2_3_ON_or_base_before_overheat_OFF"
+    }
+  }
+}

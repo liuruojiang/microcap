@@ -1,0 +1,3282 @@
+{
+  "core": {
+    "source_and_input_sha_match": {
+      "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_0.py": true,
+      "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py": true,
+      "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": true,
+      "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": true,
+      "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": true,
+      "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": true,
+      "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": true,
+      "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": true
+    },
+    "candidate_count": 14,
+    "cases": {
+      "entry_m0p01": {
+        "rows": 3988,
+        "sha256": "a8247025c862ada7b0a5ffb21d96a0d871ac08a0752a4f6671e996655b9f55fe",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7711166694643907e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.22620726323159,
+            "annual_vol_pct": 10.650675306865601,
+            "sharpe_repo": 2.180726253879845,
+            "max_drawdown_pct": -12.646564631912527,
+            "final_nav": 30.372109577429725,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.419335771332214,
+            "annual_vol_pct": 11.628783346505337,
+            "sharpe_repo": 1.669937016856375,
+            "max_drawdown_pct": -12.646564631912616,
+            "final_nav": 5.85156233087274,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.073221208765915,
+            "annual_vol_pct": 13.164535914326315,
+            "sharpe_repo": 1.7526801824936697,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.8045401085970045,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.303784026314606,
+            "annual_vol_pct": 12.943763908184522,
+            "sharpe_repo": 1.3368432975954685,
+            "max_drawdown_pct": -9.267787042303555,
+            "final_nav": 1.6077986953202321,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "entry_p0p01": {
+        "rows": 3988,
+        "sha256": "89d0c043ece79e81cd69a40888377d0342cfb4224089fd5e33f08011d2e671e5",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 4.192202140984591e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.15570773364579,
+            "annual_vol_pct": 10.641301181949423,
+            "sharpe_repo": 2.176022211731423,
+            "max_drawdown_pct": -12.77136103233476,
+            "final_nav": 30.08934943960817,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.232517196044707,
+            "annual_vol_pct": 11.623709153295977,
+            "sharpe_repo": 1.6545938084308662,
+            "max_drawdown_pct": -12.77136103233465,
+            "final_nav": 5.76106935237041,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.145728537197186,
+            "annual_vol_pct": 13.163169518600442,
+            "sharpe_repo": 1.7583704672716336,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.8127568630704967,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.48129560415861,
+            "annual_vol_pct": 12.941630621965297,
+            "sharpe_repo": 1.3507799839757693,
+            "max_drawdown_pct": -9.112029721836334,
+            "final_nav": 1.615048763399685,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.672568893257935,
+            "annual_vol_pct": 11.896875220031616,
+            "sharpe_repo": 0.5608673512875765,
+            "max_drawdown_pct": -9.11202972183629,
+            "final_nav": 1.0661610521729001,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "exit_0p00": {
+        "rows": 3988,
+        "sha256": "e09b06247942a538eeec5a66bcbede72ad1b10aafedc0e1f2c8bfee38d5c9dcd",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.6020852139652106e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.2434497875801753e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 21.443201343491136,
+            "annual_vol_pct": 10.580303936783395,
+            "sharpe_repo": 2.026709390544244,
+            "max_drawdown_pct": -13.563192392575285,
+            "final_nav": 23.934139993972394,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 17.613844468177664,
+            "annual_vol_pct": 11.564600271625142,
+            "sharpe_repo": 1.5230828610129243,
+            "max_drawdown_pct": -13.563192392575385,
+            "final_nav": 5.028148035645813,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 21.542578059476302,
+            "annual_vol_pct": 13.102437059203446,
+            "sharpe_repo": 1.644165735132787,
+            "max_drawdown_pct": -11.715521446343391,
+            "final_nav": 2.6355073894532453,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 15.98396553640895,
+            "annual_vol_pct": 12.920949700049336,
+            "sharpe_repo": 1.2370581038906079,
+            "max_drawdown_pct": -9.267787042303489,
+            "final_nav": 1.5545700765774717,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "exit_0p07": {
+        "rows": 3988,
+        "sha256": "48c482fadf7de0b69c599db694bb87c7ac6fa42887b18de727dcd43574f640dc",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 4.689582056016661e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.349940188124087,
+            "annual_vol_pct": 10.639645534059644,
+            "sharpe_repo": 2.1946163632403195,
+            "max_drawdown_pct": -12.924336369644685,
+            "final_nav": 30.874418990310556,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.51148400351148,
+            "annual_vol_pct": 11.622848664409348,
+            "sharpe_repo": 1.678717891531888,
+            "max_drawdown_pct": -12.924336369644706,
+            "final_nav": 5.896667138151798,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.11283074236585,
+            "annual_vol_pct": 13.165167272302009,
+            "sharpe_repo": 1.755604791364298,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.8090264039579265,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.33174264707593,
+            "annual_vol_pct": 12.943265865406566,
+            "sharpe_repo": 1.3390548279934846,
+            "max_drawdown_pct": -9.267787042303555,
+            "final_nav": 1.6089391667814708,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "exit_0p09": {
+        "rows": 3988,
+        "sha256": "56caf6489b40c5effc7da96bafffbd769e00e7ab0039a59b9f57f865d6543967",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7000623958883807e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.279731768103407,
+            "annual_vol_pct": 10.690754759463267,
+            "sharpe_repo": 2.1775573653952356,
+            "max_drawdown_pct": -13.869835601430003,
+            "final_nav": 30.58845002475734,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 18.976498168397637,
+            "annual_vol_pct": 11.695723488502884,
+            "sharpe_repo": 1.6225159723596314,
+            "max_drawdown_pct": -13.869835601430115,
+            "final_nav": 5.639101133877359,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 22.64965680034068,
+            "annual_vol_pct": 13.255964035928763,
+            "sharpe_repo": 1.708638974800429,
+            "max_drawdown_pct": -12.679119831221897,
+            "final_nav": 2.7569227263359326,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.565185796507564,
+            "annual_vol_pct": 13.057758103521092,
+            "sharpe_repo": 1.3451915449230922,
+            "max_drawdown_pct": -11.525013934517169,
+            "final_nav": 1.618482612172038,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 3.7839418808003566,
+            "annual_vol_pct": 12.15247932660704,
+            "sharpe_repo": 0.31137200723441427,
+            "max_drawdown_pct": -11.525013934517169,
+            "final_nav": 1.0375235122511126,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "formal": {
+        "rows": 3988,
+        "sha256": "7f5f8a0be05ee75e3ae44df40b028d70898e2a25169b21f7d8fd1af367663d2f",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.4868995751603507e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": {
+          "return_net": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "nav_net": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "total_cost": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "rebalance_cost": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "entry_exit_cost": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "annualized_log_wls_score": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "overheat_feature_value": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          }
+        },
+        "official_baseline_state_parity": {
+          "holding": 0,
+          "next_holding": 0,
+          "base_holding": 0,
+          "base_next_holding": 0,
+          "overheat_risk_off": 0,
+          "overheat_exit_triggered": 0,
+          "overheat_block_entry_triggered": 0,
+          "overheat_reentry_triggered": 0
+        },
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.26336256871926,
+            "annual_vol_pct": 10.644117468023705,
+            "sharpe_repo": 2.1855604880916983,
+            "max_drawdown_pct": -12.924336369644651,
+            "final_nav": 30.522134350999657,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.39181311677478,
+            "annual_vol_pct": 11.62812505636058,
+            "sharpe_repo": 1.6676646512472333,
+            "max_drawdown_pct": -12.924336369644706,
+            "final_nav": 5.838150839450348,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.095283390976174,
+            "annual_vol_pct": 13.163762307469284,
+            "sharpe_repo": 1.7544591623225845,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.807038231354907,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.400966077785096,
+            "annual_vol_pct": 12.942534719438406,
+            "sharpe_repo": 1.3444789954204694,
+            "max_drawdown_pct": -9.267787042303521,
+            "final_nav": 1.6117651987226724,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "halflife_2p25": {
+        "rows": 3988,
+        "sha256": "8b19617f246e290a354a41bb9cd0dfc312e7767942410ac223760d89dab2eeba",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.732189474663471e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.7763568394002505e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 21.397936841384514,
+            "annual_vol_pct": 10.565746379304972,
+            "sharpe_repo": 2.025217724636704,
+            "max_drawdown_pct": -15.968047917221007,
+            "final_nav": 23.78875277353615,
+            "peak_date": "2020-09-09",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 17.571944228132686,
+            "annual_vol_pct": 11.52179163619685,
+            "sharpe_repo": 1.525105190492135,
+            "max_drawdown_pct": -15.968047917221018,
+            "final_nav": 5.010344298864148,
+            "peak_date": "2020-09-09",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 21.69222070581025,
+            "annual_vol_pct": 13.159599148504764,
+            "sharpe_repo": 1.6483952482910538,
+            "max_drawdown_pct": -11.715521446343391,
+            "final_nav": 2.6516645336427946,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 15.62462623009071,
+            "annual_vol_pct": 12.975963313046602,
+            "sharpe_repo": 1.204120715598897,
+            "max_drawdown_pct": -10.18381721354874,
+            "final_nav": 1.5402833018887185,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 3.2445694852683227,
+            "annual_vol_pct": 12.075512342109542,
+            "sharpe_repo": 0.2686900061336453,
+            "max_drawdown_pct": -10.183817213548696,
+            "final_nav": 1.0321755133724868,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "halflife_2p75": {
+        "rows": 3988,
+        "sha256": "b3c79d36e415c1f35a3b15e4911f5ff187d6e8936e9164ad6f193e1ba3c94ad2",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.6194324487249787e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.9895196601282805e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 24.157981360590774,
+            "annual_vol_pct": 10.895429909118286,
+            "sharpe_repo": 2.2172582047793434,
+            "max_drawdown_pct": -16.02533494623074,
+            "final_nav": 34.35154013565106,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 20.50139073152004,
+            "annual_vol_pct": 11.938329723066005,
+            "sharpe_repo": 1.7172746277822581,
+            "max_drawdown_pct": -16.025334946230764,
+            "final_nav": 6.401316652361181,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 24.071803127331904,
+            "annual_vol_pct": 13.613458328856254,
+            "sharpe_repo": 1.7682357080645148,
+            "max_drawdown_pct": -16.025334946230796,
+            "final_nav": 2.9194041446821144,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 20.236394563920967,
+            "annual_vol_pct": 13.652122342786303,
+            "sharpe_repo": 1.48228927750664,
+            "max_drawdown_pct": -16.025334946230775,
+            "final_nav": 1.7303730311411547,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": -1.537566425895065,
+            "annual_vol_pct": 12.578973178456701,
+            "sharpe_repo": -0.12223306338933677,
+            "max_drawdown_pct": -16.025334946230764,
+            "final_nav": 0.9847493998158215,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "halflife_3p00": {
+        "rows": 3988,
+        "sha256": "00182fd29c91d15469e52b48ed06fd02944fb40bd472cd111fc3f8d43c855d93",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.2638141361497333e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.5579538487363607e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 24.378264859431976,
+            "annual_vol_pct": 10.943729419592986,
+            "sharpe_repo": 2.227601206567353,
+            "max_drawdown_pct": -15.735998587444112,
+            "final_nav": 35.361351815725186,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 20.738556597306633,
+            "annual_vol_pct": 12.013693473701538,
+            "sharpe_repo": 1.726243194293593,
+            "max_drawdown_pct": -15.735998587444112,
+            "final_nav": 6.527847780418977,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 25.1073807856923,
+            "annual_vol_pct": 13.727421224622152,
+            "sharpe_repo": 1.828994708828379,
+            "max_drawdown_pct": -15.735998587444156,
+            "final_nav": 3.0424612476270054,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 20.921180239279735,
+            "annual_vol_pct": 13.815295286908528,
+            "sharpe_repo": 1.5143491184806448,
+            "max_drawdown_pct": -15.735998587444133,
+            "final_nav": 1.7598610737243892,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": -1.530337423939443,
+            "annual_vol_pct": 12.616007547240033,
+            "sharpe_repo": -0.12130124512126109,
+            "max_drawdown_pct": -15.735998587444112,
+            "final_nav": 0.9848211063794601,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "lookback_24": {
+        "rows": 3988,
+        "sha256": "9b421b3e173421c35dee791d65c3c81c03d5ccdea48272ac33d365e48b3850c2",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.268496584496461e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.12217288939211,
+            "annual_vol_pct": 10.661923852966495,
+            "sharpe_repo": 2.1686679822758976,
+            "max_drawdown_pct": -12.924336369644628,
+            "final_nav": 29.95571671515476,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.21499174450838,
+            "annual_vol_pct": 11.650663406626375,
+            "sharpe_repo": 1.6492615977198137,
+            "max_drawdown_pct": -12.92433636964454,
+            "final_nav": 5.752645136364906,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 22.583509158925462,
+            "annual_vol_pct": 13.212524967412756,
+            "sharpe_repo": 1.7092500649667806,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.749545029535546,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 16.490788971866756,
+            "annual_vol_pct": 13.022507069044147,
+            "sharpe_repo": 1.2663298153292672,
+            "max_drawdown_pct": -11.373131529043867,
+            "final_nav": 1.5748697422764828,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 3.9971246388866177,
+            "annual_vol_pct": 12.150441165589323,
+            "sharpe_repo": 0.32896950690207705,
+            "max_drawdown_pct": -11.373131529043846,
+            "final_nav": 1.0396372044682534,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "lookback_26": {
+        "rows": 3988,
+        "sha256": "28ecd10a48e69db9445e78ac7946d0cb7f00523e9fe53495cb19b7b057db7442",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.339550858072471e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.552482869765544,
+            "annual_vol_pct": 10.674501355640126,
+            "sharpe_repo": 2.2064246455241707,
+            "max_drawdown_pct": -12.843139353631416,
+            "final_nav": 31.713533724656145,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.373441494822032,
+            "annual_vol_pct": 11.628448920374822,
+            "sharpe_repo": 1.66603831925312,
+            "max_drawdown_pct": -12.843139353631495,
+            "final_nav": 5.829213942447764,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.03423673134022,
+            "annual_vol_pct": 13.164559692420784,
+            "sharpe_repo": 1.7497156965000273,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.8001301986561806,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.303784026314606,
+            "annual_vol_pct": 12.943763908184522,
+            "sharpe_repo": 1.3368432975954685,
+            "max_drawdown_pct": -9.267787042303555,
+            "final_nav": 1.6077986953202321,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "lookback_27": {
+        "rows": 3988,
+        "sha256": "c4ff3f77c9f7092ba8b8e568b9279ad4efc1e2106e1b2e97b5998f6631ec72c7",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.694822225952521e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.95990214834336,
+            "annual_vol_pct": 10.691717865850388,
+            "sharpe_repo": 2.2409777782176503,
+            "max_drawdown_pct": -12.843139353631406,
+            "final_nav": 33.46669335422124,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 20.020787315260513,
+            "annual_vol_pct": 11.655008837582688,
+            "sharpe_repo": 1.7177839668985555,
+            "max_drawdown_pct": -12.843139353631482,
+            "final_nav": 6.151650814851976,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 24.543645340930944,
+            "annual_vol_pct": 13.212902747605956,
+            "sharpe_repo": 1.85755135035547,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.974969848416326,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 19.65281139205315,
+            "annual_vol_pct": 13.028607192182934,
+            "sharpe_repo": 1.508435330205111,
+            "max_drawdown_pct": -9.26778704230351,
+            "final_nav": 1.705503382261703,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "lookback_40": {
+        "rows": 3988,
+        "sha256": "6dc91a4cb07f8409609c02edc9637226a4286e046558cef0db110740d25357c2",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.6194324487249787e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 4.973799150320701e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.736119755406126,
+            "annual_vol_pct": 10.750215123967529,
+            "sharpe_repo": 2.2079669552367016,
+            "max_drawdown_pct": -11.71552144634338,
+            "final_nav": 32.49278526335139,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.508785316079937,
+            "annual_vol_pct": 11.73846270939221,
+            "sharpe_repo": 1.6619540223500062,
+            "max_drawdown_pct": -11.715521446343423,
+            "final_nav": 5.8953417492199955,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.391871856605718,
+            "annual_vol_pct": 13.316706466388025,
+            "sharpe_repo": 1.756580871978208,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.840794123721651,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 18.812903701221796,
+            "annual_vol_pct": 13.148267706326552,
+            "sharpe_repo": 1.4308275524516123,
+            "max_drawdown_pct": -11.525013934517192,
+            "final_nav": 1.6701286307069754,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 3.7839418808003566,
+            "annual_vol_pct": 12.15247932660704,
+            "sharpe_repo": 0.31137200723441427,
+            "max_drawdown_pct": -11.525013934517169,
+            "final_nav": 1.0375235122511126,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "r2_on_0p08": {
+        "rows": 3988,
+        "sha256": "eea13a29257ec08197a9568830da4ecae212735ac2a231583a494edd032b0217",
+        "recorded_hash_match": null,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 8.881784197001252e-14
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 21.563196476989365,
+            "annual_vol_pct": 10.351309277971742,
+            "sharpe_repo": 2.083137108353747,
+            "max_drawdown_pct": -15.947504217985875,
+            "final_nav": 24.323605395218845,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 17.2172736638204,
+            "annual_vol_pct": 11.27616470873844,
+            "sharpe_repo": 1.5268731974514267,
+            "max_drawdown_pct": -15.947504217985998,
+            "final_nav": 4.861898433513902,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 21.234476738334674,
+            "annual_vol_pct": 12.79147153095784,
+            "sharpe_repo": 1.660049564035156,
+            "max_drawdown_pct": -10.78738264719764,
+            "final_nav": 2.6024888107323285,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 15.016872442037865,
+            "annual_vol_pct": 12.594502876300412,
+            "sharpe_repo": 1.1923354648872824,
+            "max_drawdown_pct": -10.78738264719764,
+            "final_nav": 1.5163188205453566,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 5.500787487023828,
+            "annual_vol_pct": 11.495246547386946,
+            "sharpe_repo": 0.4785271428801364,
+            "max_drawdown_pct": -10.787382647197708,
+            "final_nav": 1.0545449124987591,
+            "peak_date": "2026-02-24",
+            "trough_date": "2026-08-27"
+          }
+        }
+      }
+    },
+    "metric_mismatches": [],
+    "all_daily_parity_pass": true,
+    "all_metric_parity_pass": true
+  },
+  "hedge": {
+    "source_and_input_sha_match": {
+      "panel": true,
+      "proxy_index": true,
+      "proxy_turnover": true,
+      "base_costed_nav": true,
+      "v2_0_costed_nav": true,
+      "v2_3_costed_nav": true
+    },
+    "candidate_count": 8,
+    "cases": {
+      "execution_off_s1_e0": {
+        "rows": 3988,
+        "sha256": "9b8404f721859579db588a08c1effb62cf8a8776878e741dc29483c6f93c90e1",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.0928757898653885e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.3732127374387346e-12
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 26.361446869237536,
+            "annual_vol_pct": 23.257960182774895,
+            "sharpe_repo": 1.133437612846251,
+            "max_drawdown_pct": -43.860621266527325,
+            "final_nav": 45.7947310318578,
+            "peak_date": "2015-06-12",
+            "trough_date": "2015-09-15"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 20.030759163155288,
+            "annual_vol_pct": 19.53497611705863,
+            "sharpe_repo": 1.0253792501780292,
+            "max_drawdown_pct": -22.124564826519922,
+            "final_nav": 6.156740724864213,
+            "peak_date": "2022-03-03",
+            "trough_date": "2022-07-12"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 26.92301247349034,
+            "annual_vol_pct": 20.056629997435707,
+            "sharpe_repo": 1.3423497604997707,
+            "max_drawdown_pct": -22.124564826519855,
+            "final_nav": 3.268188448395357,
+            "peak_date": "2022-03-03",
+            "trough_date": "2022-07-12"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 29.27960881752918,
+            "annual_vol_pct": 19.79718905250524,
+            "sharpe_repo": 1.4789780882465222,
+            "max_drawdown_pct": -17.955590708109337,
+            "final_nav": 2.147076636889141,
+            "peak_date": "2024-01-02",
+            "trough_date": "2024-07-24"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 10.039927970221129,
+            "annual_vol_pct": 13.985755888824333,
+            "sharpe_repo": 0.7178680973721115,
+            "max_drawdown_pct": -11.443573211234936,
+            "final_nav": 1.0995366785865448,
+            "peak_date": "2025-11-17",
+            "trough_date": "2026-01-19"
+          }
+        }
+      },
+      "execution_s1_e07": {
+        "rows": 3988,
+        "sha256": "8a6241c9be78c0ff139e7140db82e81f192647054d0a2b36759227278c722706",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.992397996059992e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 9.166001291305292e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.850619857090116,
+            "annual_vol_pct": 11.585793463651124,
+            "sharpe_repo": 2.0586091001810316,
+            "max_drawdown_pct": -16.017906840066452,
+            "final_nav": 32.98771961120767,
+            "peak_date": "2015-06-25",
+            "trough_date": "2015-07-09"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.59304477943926,
+            "annual_vol_pct": 12.079803127599034,
+            "sharpe_repo": 1.6219672268229715,
+            "max_drawdown_pct": -11.871302226499903,
+            "final_nav": 5.93685023792095,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.692447556666394,
+            "annual_vol_pct": 13.486930819495557,
+            "sharpe_repo": 1.7566967513779053,
+            "max_drawdown_pct": -11.871302226499925,
+            "final_nav": 2.8753338064878466,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 18.931045230253616,
+            "annual_vol_pct": 13.332445530233134,
+            "sharpe_repo": 1.4199229381680127,
+            "max_drawdown_pct": -9.624817996505897,
+            "final_nav": 1.675074722275629,
+            "peak_date": "2024-01-09",
+            "trough_date": "2024-07-24"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.951557014517729,
+            "annual_vol_pct": 11.74402568834886,
+            "sharpe_repo": 0.5919228379595852,
+            "max_drawdown_pct": -8.77191282382549,
+            "final_nav": 1.0689265712605105,
+            "peak_date": "2025-11-17",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "execution_s1_e09": {
+        "rows": 3988,
+        "sha256": "5fcc3b79aef39ec22f61adc71858df8b3aed98f19d6ce8e65e0113283d1e3354",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.213575239247035e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 9.094947017729282e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 22.62158459995809,
+            "annual_vol_pct": 10.082439925261728,
+            "sharpe_repo": 2.243661729466824,
+            "max_drawdown_pct": -15.343616900441681,
+            "final_nav": 28.025994845386624,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.156494088319832,
+            "annual_vol_pct": 11.412514338590473,
+            "sharpe_repo": 1.6785515899457606,
+            "max_drawdown_pct": -15.343616900441702,
+            "final_nav": 5.7246063705094326,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 22.465749314653394,
+            "annual_vol_pct": 13.053321554431365,
+            "sharpe_repo": 1.7210753003343182,
+            "max_drawdown_pct": -11.571811387644516,
+            "final_nav": 2.736449856828569,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 15.860792392358448,
+            "annual_vol_pct": 12.741749248751361,
+            "sharpe_repo": 1.244789242255159,
+            "max_drawdown_pct": -9.980024329709746,
+            "final_nav": 1.549663037154205,
+            "peak_date": "2026-02-06",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 5.942775018230151,
+            "annual_vol_pct": 12.175116683244143,
+            "sharpe_repo": 0.4881082598911617,
+            "max_drawdown_pct": -9.980024329709792,
+            "final_nav": 1.0589265605494214,
+            "peak_date": "2026-02-06",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "formal_s1_e08": {
+        "rows": 3988,
+        "sha256": "845a0a70f12540b4e48f66656a9f46a2d27c350e73dbb94f64023534977949e4",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7755575615628914e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.4868995751603507e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.337607967779377e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": {
+          "return_net": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "nav_net": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "total_cost": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "rebalance_cost": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "entry_exit_cost": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "annualized_log_wls_score": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          },
+          "overheat_feature_value": {
+            "count": 0,
+            "max_abs": 0.0,
+            "first_index": null
+          }
+        },
+        "official_baseline_state_parity": {
+          "holding": 0,
+          "next_holding": 0,
+          "base_holding": 0,
+          "base_next_holding": 0,
+          "overheat_risk_off": 0,
+          "overheat_exit_triggered": 0,
+          "overheat_block_entry_triggered": 0,
+          "overheat_reentry_triggered": 0
+        },
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 23.26336256871926,
+            "annual_vol_pct": 10.644117468023705,
+            "sharpe_repo": 2.1855604880916983,
+            "max_drawdown_pct": -12.924336369644651,
+            "final_nav": 30.522134350999657,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 19.39181311677478,
+            "annual_vol_pct": 11.62812505636058,
+            "sharpe_repo": 1.6676646512472333,
+            "max_drawdown_pct": -12.924336369644706,
+            "final_nav": 5.838150839450348,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-12-06"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 23.095283390976174,
+            "annual_vol_pct": 13.163762307469284,
+            "sharpe_repo": 1.7544591623225845,
+            "max_drawdown_pct": -11.715521446343402,
+            "final_nav": 2.807038231354907,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 17.400966077785096,
+            "annual_vol_pct": 12.942534719438406,
+            "sharpe_repo": 1.3444789954204694,
+            "max_drawdown_pct": -9.267787042303521,
+            "final_nav": 1.6117651987226724,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 6.453901766375525,
+            "annual_vol_pct": 11.899134758797073,
+            "sharpe_repo": 0.5423841226442228,
+            "max_drawdown_pct": -9.267787042303532,
+            "final_nav": 1.0639934341725903,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-08-27"
+          }
+        }
+      },
+      "hedge_off_s0_e0": {
+        "rows": 3988,
+        "sha256": "4f94dd171e566074c585fd3a1e232a19600d3858770aa8144700dc75d583dc59",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.1102230246251565e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 8.43769498715119e-14
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.0394463068053028e-14
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 6.128522879524989,
+            "annual_vol_pct": 14.118764852574204,
+            "sharpe_repo": 0.43406933563367667,
+            "max_drawdown_pct": -35.14524821302161,
+            "final_nav": 2.6436681536146724,
+            "peak_date": "2017-10-13",
+            "trough_date": "2019-12-03"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 2.20459723533466,
+            "annual_vol_pct": 13.974838353217523,
+            "sharpe_repo": 0.15775475748720058,
+            "max_drawdown_pct": -35.145248213021574,
+            "final_nav": 1.2424455515109283,
+            "peak_date": "2017-10-13",
+            "trough_date": "2019-12-03"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 4.614485096956855,
+            "annual_vol_pct": 13.33493554305324,
+            "sharpe_repo": 0.34604479954616246,
+            "max_drawdown_pct": -25.32428716753029,
+            "final_nav": 1.2511712441249567,
+            "peak_date": "2023-03-09",
+            "trough_date": "2025-04-28"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 1.4782535565263988,
+            "annual_vol_pct": 13.631898335015643,
+            "sharpe_repo": 0.10844077033125132,
+            "max_drawdown_pct": -18.330214624961116,
+            "final_nav": 1.044629390416396,
+            "peak_date": null,
+            "trough_date": "2025-04-28"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 8.377928241310784,
+            "annual_vol_pct": 14.632613355247964,
+            "sharpe_repo": 0.5725517402744775,
+            "max_drawdown_pct": -13.62718961191165,
+            "final_nav": 1.0830648076204346,
+            "peak_date": "2025-11-17",
+            "trough_date": "2026-01-07"
+          }
+        }
+      },
+      "signal_off_s0_e08": {
+        "rows": 3988,
+        "sha256": "5f9c80472c4a4fce4b8b8ae431b7e522805ecf28d46d074e0441a0912464bb9b",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 3.059347480210972e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 7.993605777301127e-15
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 1.0394463068053028e-14
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 3.6780625189248184,
+            "annual_vol_pct": 7.962934307239666,
+            "sharpe_repo": 0.46189788550444677,
+            "max_drawdown_pct": -20.838458058183885,
+            "final_nav": 1.804639099404137,
+            "peak_date": "2017-10-13",
+            "trough_date": "2020-05-15"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 2.046547955282141,
+            "annual_vol_pct": 9.337717943823368,
+            "sharpe_repo": 0.2191700335771947,
+            "max_drawdown_pct": -20.838458058184017,
+            "final_nav": 1.2234508690772716,
+            "peak_date": "2017-10-13",
+            "trough_date": "2020-05-15"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 4.475027153639011,
+            "annual_vol_pct": 10.271541700007065,
+            "sharpe_repo": 0.43567239313606965,
+            "max_drawdown_pct": -11.603451808636034,
+            "final_nav": 1.2429083424800886,
+            "peak_date": "2025-08-11",
+            "trough_date": "2025-10-09"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 1.1800978163864828,
+            "annual_vol_pct": 10.6121826278704,
+            "sharpe_repo": 0.11120217751315677,
+            "max_drawdown_pct": -11.60345180863599,
+            "final_nav": 1.0355235868372241,
+            "peak_date": "2025-08-11",
+            "trough_date": "2025-10-09"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 7.568029965862033,
+            "annual_vol_pct": 12.111653067574736,
+            "sharpe_repo": 0.624855246731194,
+            "max_drawdown_pct": -10.658145796173212,
+            "final_nav": 1.0750372589415405,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-01-07"
+          }
+        }
+      },
+      "signal_s08_e08": {
+        "rows": 3988,
+        "sha256": "e83451203438b979284ad8edadfed82eddaae4baa23401152b4c2f380eda5026",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.2892928872031426e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.6645352591003757e-13
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.4980018054066022e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 22.800934377636107,
+            "annual_vol_pct": 10.631482909358866,
+            "sharpe_repo": 2.144661715776687,
+            "max_drawdown_pct": -14.730843340123268,
+            "final_nav": 28.70354341241846,
+            "peak_date": "2011-11-23",
+            "trough_date": "2012-08-13"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 18.616293998954923,
+            "annual_vol_pct": 11.683269547546772,
+            "sharpe_repo": 1.593414747746185,
+            "max_drawdown_pct": -11.091785953210763,
+            "final_nav": 5.471431124765512,
+            "peak_date": "2021-04-16",
+            "trough_date": "2021-11-09"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 22.06877662503399,
+            "annual_vol_pct": 13.165636319231359,
+            "sharpe_repo": 1.6762407900328833,
+            "max_drawdown_pct": -9.343298230767017,
+            "final_nav": 2.6926720701185114,
+            "peak_date": "2022-04-22",
+            "trough_date": "2022-07-15"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 18.20852266223627,
+            "annual_vol_pct": 13.004835082591379,
+            "sharpe_repo": 1.4001348380504024,
+            "max_drawdown_pct": -8.260264838556552,
+            "final_nav": 1.6449773535112167,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-01-14"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": 8.429883767497582,
+            "annual_vol_pct": 12.470328217458594,
+            "sharpe_repo": 0.6759953403388095,
+            "max_drawdown_pct": -8.260264838556552,
+            "final_nav": 1.0835797635149245,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-01-14"
+          }
+        }
+      },
+      "signal_s12_e08": {
+        "rows": 3988,
+        "sha256": "9571355553f89c2dc676b2b3f02c6021ba27116e6f29e41d6a5ef938b968379f",
+        "recorded_hash_match": true,
+        "state_cost_return_nav_parity": {
+          "held": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "next": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "risk_off": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "exit": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "reentry": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "block": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": null
+          },
+          "entry_exit_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "rebalance_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "total_cost": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 0.0
+          },
+          "return_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 2.7647155398380363e-16
+          },
+          "nav_net": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 4.618527782440651e-14
+          },
+          "feature": {
+            "mismatch_count": 0,
+            "first_mismatch_date": null,
+            "max_abs_delta": 6.217248937900877e-15
+          }
+        },
+        "base_holding_lag_mismatch": 0,
+        "first_base_lag_mismatch_date": null,
+        "gross_from_legs_mismatch": 0,
+        "first_gross_mismatch_date": null,
+        "blocked_cash_nonzero_return": 0,
+        "frozen_market_mismatches": {
+          "microcap_close": 0,
+          "hedge_close": 0,
+          "microcap_ret": 0,
+          "hedge_ret": 0
+        },
+        "parameter_mismatches": {},
+        "official_baseline_numeric_parity": null,
+        "official_baseline_state_parity": null,
+        "metrics": {
+          "full": {
+            "start_date": "2010-05-05",
+            "end_date": "2026-09-30",
+            "days": 3988,
+            "annual_pct": 17.261762193915754,
+            "annual_vol_pct": 10.309415984115686,
+            "sharpe_repo": 1.674368579220389,
+            "max_drawdown_pct": -17.88534973503848,
+            "final_nav": 13.499280117989613,
+            "peak_date": "2020-09-09",
+            "trough_date": "2021-09-27"
+          },
+          "last_10y": {
+            "start_date": "2016-09-30",
+            "end_date": "2026-09-30",
+            "days": 2429,
+            "annual_pct": 15.105854447767953,
+            "annual_vol_pct": 11.218970864321932,
+            "sharpe_repo": 1.346456339931046,
+            "max_drawdown_pct": -17.885349735038492,
+            "final_nav": 4.057137613279714,
+            "peak_date": "2020-09-09",
+            "trough_date": "2021-09-27"
+          },
+          "last_5y": {
+            "start_date": "2021-09-30",
+            "end_date": "2026-09-30",
+            "days": 1212,
+            "annual_pct": 17.147055442440372,
+            "annual_vol_pct": 12.718224227827047,
+            "sharpe_repo": 1.3482271687680418,
+            "max_drawdown_pct": -17.244715386281882,
+            "final_nav": 2.1948426783881594,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-04-28"
+          },
+          "last_3y": {
+            "start_date": "2023-10-09",
+            "end_date": "2026-09-30",
+            "days": 726,
+            "annual_pct": 7.719341110922717,
+            "annual_vol_pct": 12.970839006526388,
+            "sharpe_repo": 0.5951304389051985,
+            "max_drawdown_pct": -17.244715386281896,
+            "final_nav": 1.2476332999664956,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-04-28"
+          },
+          "last_1y": {
+            "start_date": "2025-09-30",
+            "end_date": "2026-09-30",
+            "days": 242,
+            "annual_pct": -4.412713906059329,
+            "annual_vol_pct": 11.294504835236463,
+            "sharpe_repo": -0.39069564982544397,
+            "max_drawdown_pct": -17.244715386281918,
+            "final_nav": 0.9562265238204601,
+            "peak_date": "2025-11-18",
+            "trough_date": "2026-04-28"
+          }
+        }
+      }
+    },
+    "metric_mismatches": [],
+    "all_daily_parity_pass": true,
+    "all_metric_parity_pass": true,
+    "joint_hedge_off": {
+      "signal_ratio_zero_all_rows": true,
+      "execution_ratio_zero_all_rows": true,
+      "futures_drag_max_abs": 0.0,
+      "gross_minus_microcap_only_max_abs": 0.0,
+      "spread_return_minus_microcap_max_abs": 5.342948306008566e-16,
+      "retained_entry_exit_cost_sum": 0.639,
+      "retained_rebalance_cost_sum": 0.0857399999999976,
+      "fee_component_decomposition_available": false
+    }
+  }
+}

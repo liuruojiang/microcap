@@ -1,0 +1,48 @@
+{
+  "scope": "independent_double_check_after_root_receipt_and_test_namespace_fix",
+  "external_smtp_submitted": false,
+  "current_source_sha256": {
+    "scripts/check_microcap_delivery.py": "20116871bbf062fb2089dae49cd75a4d9ca4505d2099c73556bf031b059d3a75",
+    ".github/workflows/microcap-realtime-digest.yml": "3a6c1ca6f05daf0c4bc1de103caeabcf3c2904b3aa426a94ab771cceda7c1156",
+    "tests/test_microcap_delivery_acceptance.py": "7d8488c680099b78f63d00431e21a93c9267ce2f06a851a2baa0e46d86f4aaaa"
+  },
+  "actual_run_passed": 26,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "pre_fix_independent_result": {
+    "passed": 18,
+    "confirmed_contract_defects": 8
+  },
+  "fixed_contract_defects": [
+    "schema_version is exact integer 1",
+    "sender is a valid bare address string",
+    "recipients is a nonempty list of valid address strings",
+    "acceptance chronology cannot be future or before signal"
+  ],
+  "rejection_controls_verified": [
+    "metadata-only old receipt",
+    "altered body bytes",
+    "metadata raw-byte whitespace change",
+    "metadata/subject/body SHA mismatch",
+    "wrong workflow",
+    "SMTP step skipped",
+    "ambiguous duplicate metadata",
+    "empty Message-ID",
+    "wrong test namespace",
+    "wrong publication mode",
+    "future signal day",
+    "naive acceptance time"
+  ],
+  "workflow_controls_verified": [
+    "ordinary manual holiday exits",
+    "validation-only blocks all seven delivery side effects",
+    "test namespace cannot affect official daily markers",
+    "unknown send intent blocks blind retry"
+  ],
+  "limits": [
+    "Receipts prove SMTP acceptance, not inbox delivery",
+    "Prior accepted run head need not equal current production head",
+    "All faults use fixtures; root owns actual sending and Gmail reconciliation"
+  ]
+}

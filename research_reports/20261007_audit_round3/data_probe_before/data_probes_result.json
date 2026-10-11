@@ -1,0 +1,255 @@
+{
+  "scope": "isolated_diagnostic_only",
+  "source_root": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436",
+  "source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "a8429df05baa894122ab982b0345443ca183f41ee115f142f779edb2dd1c48e5",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267"
+  },
+  "test_sha256": "0df96ac5988067d33174d492be76ffe3cc84be5927f48ceae681424ad90d5e1b",
+  "pandas_version": "2.3.3",
+  "probes": {
+    "mixed_daily_shared_v20": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "round3 mixed daily fixture contains invalid dates/NaT"
+    },
+    "same_null_warmup_shared_v20": {
+      "status": "rejected",
+      "exception_type": "RuntimeError",
+      "exception": "round3 all-null fixture historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited."
+    },
+    "mixed_daily_mainline": {
+      "status": "rejected",
+      "exception_type": "ValueError",
+      "exception": "round3 mixed daily fixture contains invalid dates/NaT"
+    },
+    "same_null_warmup_mainline": {
+      "status": "rejected",
+      "exception_type": "RuntimeError",
+      "exception": "round3 all-null fixture historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited."
+    },
+    "actual_embedded_legal_mixed": {
+      "status": "accepted",
+      "raw_rows_read_back": 2,
+      "consumed_rows": 1,
+      "sum_mapped_cost": 0.001,
+      "gross_rows": 23,
+      "gross_latest_date": "2026-09-25"
+    },
+    "actual_embedded_missing_date": {
+      "status": "accepted",
+      "raw_rows_read_back": 2,
+      "consumed_rows": 1,
+      "sum_mapped_cost": 0.001,
+      "gross_rows": 23,
+      "gross_latest_date": "2026-09-25"
+    },
+    "actual_embedded_missing_date_infinite_rate": {
+      "status": "accepted",
+      "raw_rows_read_back": 2,
+      "consumed_rows": 1,
+      "sum_mapped_cost": 0.001,
+      "gross_rows": 23,
+      "gross_latest_date": "2026-09-25"
+    },
+    "duplicate_mapper": {
+      "status": "accepted",
+      "mapped_costs": [
+        0.012,
+        0.0,
+        0.0
+      ]
+    },
+    "weekend_signal": {
+      "status": "accepted",
+      "mapped_costs": [
+        0.0,
+        0.006,
+        0.0
+      ]
+    },
+    "mixed_timing_original_order": {
+      "status": "accepted",
+      "entry_exit_costs": [
+        0.003,
+        0.0,
+        0.003
+      ]
+    },
+    "mixed_timing_reverse_order": {
+      "status": "accepted",
+      "entry_exit_costs": [
+        0.0,
+        0.003,
+        0.0
+      ]
+    },
+    "migration_integer_approval_v2.0": {
+      "report_approved_raw_type": "int",
+      "accepted": true
+    },
+    "migration_integer_approval_v2.3": {
+      "report_approved_raw_type": "int",
+      "accepted": true
+    },
+    "migration_integer_approval_v2.5": {
+      "report_approved_raw_type": "int",
+      "accepted": true
+    }
+  },
+  "source_sha256_after": {
+    "microcap_top100_mom16_biweekly_live.py": "a8429df05baa894122ab982b0345443ca183f41ee115f142f779edb2dd1c48e5",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267"
+  },
+  "source_unchanged_during_probe": true,
+  "fixture_files_read_back": {
+    "duplicate_events.csv": {
+      "bytes": 137,
+      "sha256": "86b2fe05bb03344ebe54a1cbda7eb5f0fe9a742ddaa8ec98c55ac89afebd8cc0"
+    },
+    "legal_mixed\\consumed_turnover.csv": {
+      "bytes": 102,
+      "sha256": "7546d694710161018f57d9f3cb80b43fb5ca21fd9cc831529cca87140a2a95bb"
+    },
+    "legal_mixed\\costed.csv": {
+      "bytes": 825,
+      "sha256": "52ffcc6ed0efff92b9b5d51b242e902e30a0ae16c1adc035769009910ceacfa9"
+    },
+    "legal_mixed\\mapped_costs.csv": {
+      "bytes": 381,
+      "sha256": "14d568bdb4c6dce6ddc02b15e3823e971475fd8d17d37ee5fb9b226954b810dd"
+    },
+    "legal_mixed\\panel.csv": {
+      "bytes": 735,
+      "sha256": "62887cf8c14cbd4c32ba7bda958bf36bd62c08f893486d9d4a74dc403f674e2c"
+    },
+    "legal_mixed\\proxy.csv": {
+      "bytes": 950,
+      "sha256": "1c4947af9425e32667dc1f3ab9fb745df8a40f5e156a00a16472b723308a97d2"
+    },
+    "legal_mixed\\turnover.csv": {
+      "bytes": 155,
+      "sha256": "b52a573c7914cf1ba8e5282759d3f879836ce2d05b111e564f50d9af44c7b4fd"
+    },
+    "migration_v2.0\\audit.csv": {
+      "bytes": 88,
+      "sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d"
+    },
+    "migration_v2.0\\base_v20.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.0\\meta.json": {
+      "bytes": 25,
+      "sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c"
+    },
+    "migration_v2.0\\previous.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.0\\report.json": {
+      "bytes": 691,
+      "sha256": "5cb90d1c3363884dbcc066279d1f753ccfb1f9276d274d7b8486b18e91a29ede"
+    },
+    "migration_v2.3\\audit.csv": {
+      "bytes": 88,
+      "sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d"
+    },
+    "migration_v2.3\\base_v20.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.3\\meta.json": {
+      "bytes": 25,
+      "sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c"
+    },
+    "migration_v2.3\\previous.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.3\\report.json": {
+      "bytes": 809,
+      "sha256": "f92b5bb3e56752ba0cd6a7ed9f19666984a2ead24080a489f1303af91acedfab"
+    },
+    "migration_v2.5\\audit.csv": {
+      "bytes": 88,
+      "sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d"
+    },
+    "migration_v2.5\\base_v20.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.5\\meta.json": {
+      "bytes": 25,
+      "sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c"
+    },
+    "migration_v2.5\\previous.csv": {
+      "bytes": 33,
+      "sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+    },
+    "migration_v2.5\\report.json": {
+      "bytes": 809,
+      "sha256": "9653781f0a7053aa55b48896763f476c11d690adb22d079c80b478cc6fd02d97"
+    },
+    "missing_date\\consumed_turnover.csv": {
+      "bytes": 102,
+      "sha256": "7546d694710161018f57d9f3cb80b43fb5ca21fd9cc831529cca87140a2a95bb"
+    },
+    "missing_date\\costed.csv": {
+      "bytes": 825,
+      "sha256": "52ffcc6ed0efff92b9b5d51b242e902e30a0ae16c1adc035769009910ceacfa9"
+    },
+    "missing_date\\mapped_costs.csv": {
+      "bytes": 381,
+      "sha256": "14d568bdb4c6dce6ddc02b15e3823e971475fd8d17d37ee5fb9b226954b810dd"
+    },
+    "missing_date\\panel.csv": {
+      "bytes": 735,
+      "sha256": "62887cf8c14cbd4c32ba7bda958bf36bd62c08f893486d9d4a74dc403f674e2c"
+    },
+    "missing_date\\proxy.csv": {
+      "bytes": 950,
+      "sha256": "1c4947af9425e32667dc1f3ab9fb745df8a40f5e156a00a16472b723308a97d2"
+    },
+    "missing_date\\turnover.csv": {
+      "bytes": 136,
+      "sha256": "7c214dbbb89b2ad230e30e222f9151406c132e353684e097a3af91ad671097c7"
+    },
+    "missing_date_infinite_rate\\consumed_turnover.csv": {
+      "bytes": 102,
+      "sha256": "7546d694710161018f57d9f3cb80b43fb5ca21fd9cc831529cca87140a2a95bb"
+    },
+    "missing_date_infinite_rate\\costed.csv": {
+      "bytes": 825,
+      "sha256": "52ffcc6ed0efff92b9b5d51b242e902e30a0ae16c1adc035769009910ceacfa9"
+    },
+    "missing_date_infinite_rate\\mapped_costs.csv": {
+      "bytes": 381,
+      "sha256": "14d568bdb4c6dce6ddc02b15e3823e971475fd8d17d37ee5fb9b226954b810dd"
+    },
+    "missing_date_infinite_rate\\panel.csv": {
+      "bytes": 735,
+      "sha256": "62887cf8c14cbd4c32ba7bda958bf36bd62c08f893486d9d4a74dc403f674e2c"
+    },
+    "missing_date_infinite_rate\\proxy.csv": {
+      "bytes": 950,
+      "sha256": "1c4947af9425e32667dc1f3ab9fb745df8a40f5e156a00a16472b723308a97d2"
+    },
+    "missing_date_infinite_rate\\turnover.csv": {
+      "bytes": 134,
+      "sha256": "d0add8de066caa6a09749e731ebb9dd45bb9f6d6778f7843ef6ba040aea12a8b"
+    },
+    "mixed_timing_events.csv": {
+      "bytes": 141,
+      "sha256": "79796bb71b54623d7c9e0fc37c85da74a27a6829e7c1bfa0bf0a92adccc00118"
+    },
+    "weekend_signal.csv": {
+      "bytes": 106,
+      "sha256": "310eca870f5bdf1870e62ad72d232e2558660ed61a96269b68d7c052958ad16e"
+    }
+  }
+}

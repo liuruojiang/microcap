@@ -1,0 +1,107 @@
+{
+  "created_utc": "2026-10-03T02:23:01.097040+00:00",
+  "scope": "frozen Top100 output dates 2010-2026; read-only lineage audit, no performance certification",
+  "sina_calendar_source_url": "https://finance.sina.com.cn/realstock/company/klc_td_sh.txt",
+  "akshare_function": "tool_trade_date_hist_sina; decodes Sina calendar; includes an unrelated 1992 date correction",
+  "baostock_calendar_source": "query_trade_dates; frozen source file starts 2010-02-22",
+  "sina_days_2010_01_01_to_2026_09_30": 4067,
+  "baostock_days_2010_02_22_to_2026_09_30": 4037,
+  "calendar_source_disagreement_from_2010_02_22": [],
+  "nav_scan": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv": {
+      "rows": 4040,
+      "start": "2010-01-28",
+      "end": "2026-09-15",
+      "nontrading_dates": [
+        "2018-06-18"
+      ]
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4033,
+      "start": "2010-03-01",
+      "end": "2026-09-30",
+      "nontrading_dates": [
+        "2018-06-18"
+      ]
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "nontrading_dates": [
+        "2018-06-18"
+      ]
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "nontrading_dates": [
+        "2018-06-18"
+      ]
+    }
+  },
+  "all_suspected_nontrading_output_dates": [
+    "2018-06-18"
+  ],
+  "first_difference": "2018-06-18",
+  "first_difference_weekday": "Monday",
+  "first_difference_in_sina_calendar": false,
+  "first_difference_in_baostock_calendar": false,
+  "exchange_holiday_sources": [
+    "https://www.sse.com.cn/disclosure/announcement/general/c/c_20180606_4567900.shtml",
+    "https://www.szse.cn/disclosure/notice/general/t20171222_502255.html"
+  ],
+  "sse_notice_2018_06_18": "Closed 2018-06-16 through 2018-06-18; 2018-06-19 opens",
+  "index_real_trades_on_surrounding_days": [
+    {
+      "date": "2018-06-15",
+      "code": "sh.000001",
+      "close": "3021.9000",
+      "preclose": "3044.1590",
+      "volume": "14453257216",
+      "amount": "162196017152.0000"
+    },
+    {
+      "date": "2018-06-19",
+      "code": "sh.000001",
+      "close": "2907.8220",
+      "preclose": "3021.9000",
+      "volume": "23055006720",
+      "amount": "241203642368.0000"
+    },
+    {
+      "date": "2018-06-20",
+      "code": "sh.000001",
+      "close": "2915.7310",
+      "preclose": "2907.8220",
+      "volume": "14430141952",
+      "amount": "153334280192.0000"
+    }
+  ],
+  "legacy_actions_on_first_difference": {
+    "proxy_turnover_rebalances": [],
+    "proxy_ranked_members": 0,
+    "old_account_rights_phases": {},
+    "normalized_events_ex_on_date": 0,
+    "normalized_events_record_on_date": 0
+  },
+  "interpretation": "2018-06-18 is a synthetic zero-return row in frozen base and three formal NAV streams. It has no real market session or frozen proxy rebalance/rights event. Even with zero reported daily return, it changes rolling signal fields and date alignment; do not claim formal performance parity from deleting the row without a full lineage rebuild.",
+  "input_sha256": {
+    "research_reports\\20261002_l2_full_repair\\data\\trade_calendar_evidence\\baostock_trade_calendar_20100222_20260930.csv": "80cfc76c2a0f3ce46251f887103e68d494fb9c154735ee2a7b6df6268b230442",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "research_reports\\20261002_l2_full_repair\\engine\\full_history_rights_events.csv": "79a0e08eb824badf15a6e1ce20dd1e09df38694f61615483038af3cff8df33f0",
+    "research_reports\\20261002_l2_full_repair\\data\\event_candidates_2010_20260930.csv": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv": "8a40502538f8542e0f2965bf5d1bd0a7c8167a968f76d3e44f8063d1a3b03965",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_5_nav.csv": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+  },
+  "output_sha256": {
+    "sina_trade_calendar_encoded_raw.txt": "d5112e08726ecc435092fb63547a34fc514b071b1a4a84f9e2c29fb9023726a9",
+    "sina_trade_dates_20100101_20260930.csv": "72e1663c9fbc4dafc64896333f34b7dae7a54f6db5688e31c2c93bc1c9a9d150",
+    "sh000001_20180615_20_baostock_real_trades.csv": "6cd7b39489af70a3d142be007353f168ec543209282777d442a621f78edc5966",
+    "nontrading_nav_rows.csv": "c4ced8e64758f58672a7cde5e4c47417387cfac41e5688a7e755c0ff51dbd821"
+  }
+}

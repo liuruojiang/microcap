@@ -1,0 +1,76 @@
+{
+  "status": "observed_engine_rights_arithmetic_pass",
+  "engine_result_sha256": "64895f09ba77f4a519c8783c17f1997b5d050bd79887a2f79f12f7fa2843647c",
+  "daily_sha256": "3f7098464333f9e1f89ac8a4a0c99489b58e4b7951feb449de10d9e4c8145d25",
+  "source_sha256": "54af732ea8434fb466f25e1f4423d5816f5688d9bca030a2f467c895271c5c6d",
+  "event_count": 6,
+  "events": [
+    {
+      "branch": "prefunded",
+      "symbol": "002049",
+      "record_date": "2010-04-07",
+      "ex_date": "2010-04-08",
+      "record_shares": "883.4854333060292826281894750056789061246",
+      "gross_cash_due": "97.18339766366322108910084225062467967371",
+      "bonus_shares_due": "0E-37",
+      "source_match": true,
+      "settlement_observed": true
+    },
+    {
+      "branch": "prefunded",
+      "symbol": "300013",
+      "record_date": "2010-04-29",
+      "ex_date": "2010-04-30",
+      "record_shares": "391.5896827076667835250669497573021207548",
+      "gross_cash_due": "58.73845240615001752876004246359531811322",
+      "bonus_shares_due": "195.7948413538333917625334748786510603774",
+      "source_match": true,
+      "settlement_observed": true
+    },
+    {
+      "branch": "prefunded",
+      "symbol": "600113",
+      "record_date": "2010-04-30",
+      "ex_date": "2010-05-04",
+      "record_shares": "984.6143873842979618675551699658913406634",
+      "gross_cash_due": "49.23071936921489809337775849829456703317",
+      "bonus_shares_due": "590.768632430578777120533101979534804398",
+      "source_match": true,
+      "settlement_observed": false
+    },
+    {
+      "branch": "netted",
+      "symbol": "002049",
+      "record_date": "2010-04-07",
+      "ex_date": "2010-04-08",
+      "record_shares": "883.6928401015315440409184453750401490016",
+      "gross_cash_due": "97.20621241116846984450102899125441639018",
+      "bonus_shares_due": "0E-37",
+      "source_match": true,
+      "settlement_observed": true
+    },
+    {
+      "branch": "netted",
+      "symbol": "300013",
+      "record_date": "2010-04-29",
+      "ex_date": "2010-04-30",
+      "record_shares": "393.5405358953569503857782579765070143525",
+      "gross_cash_due": "59.03108038430354255786673869647605215288",
+      "bonus_shares_due": "196.7702679476784751928891289882535071762",
+      "source_match": true,
+      "settlement_observed": true
+    },
+    {
+      "branch": "netted",
+      "symbol": "600113",
+      "record_date": "2010-04-30",
+      "ex_date": "2010-05-04",
+      "record_shares": "989.5196190619880522045700231425752500798",
+      "gross_cash_due": "49.47598095309940261022850115712876250399",
+      "bonus_shares_due": "593.7117714371928313227420138855451500479",
+      "source_match": true,
+      "settlement_observed": false
+    }
+  ],
+  "limits": "Only events actually emitted by the engine are checked; no proof that source inventory is complete or that all held events were emitted."
+}

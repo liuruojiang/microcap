@@ -1,0 +1,1195 @@
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 1 minute ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  * Run actions/setup-python@v6
+  * Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  * Post Run actions/checkout@v6
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 2 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  * Check out automation repository
+  * Set up Python
+  * Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  * Check out microcap repository
+  * Check out isolated v2.3 close-confirmed workspace
+  * Check out isolated v2.5 close-confirmed workspace
+  * Record microcap strategy SHA
+  * Install runtime dependencies
+  * Resolve independent completed session
+  * Restore persistent full rebalance cache
+  * Bootstrap full rebalance cache on cold start
+  * Validate full rebalance cache
+  * Restore explicitly approved whole state
+  * Restore verified production state bundle
+  * Validate and restore cached production state
+  * Restore durable verified production state bundle
+  * Restore verified production state
+  * Restore approved release fallback
+  * Validate recovered full rebalance cache
+  * Resolve same-day static refresh mode
+  * Clear stale signal outputs
+  * Refresh Top100 realtime state
+  * Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  * Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out microcap repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 3 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  * Check out microcap repository
+  * Check out isolated v2.3 close-confirmed workspace
+  * Check out isolated v2.5 close-confirmed workspace
+  * Record microcap strategy SHA
+  * Install runtime dependencies
+  * Resolve independent completed session
+  * Restore persistent full rebalance cache
+  * Bootstrap full rebalance cache on cold start
+  * Validate full rebalance cache
+  * Restore explicitly approved whole state
+  * Restore verified production state bundle
+  * Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  * Restore approved release fallback
+  * Validate recovered full rebalance cache
+  * Resolve same-day static refresh mode
+  * Clear stale signal outputs
+  * Refresh Top100 realtime state
+  * Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  * Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 3 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  * Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  * Check out isolated v2.5 close-confirmed workspace
+  * Record microcap strategy SHA
+  * Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  * Restore approved release fallback
+  * Validate recovered full rebalance cache
+  * Resolve same-day static refresh mode
+  * Clear stale signal outputs
+  * Refresh Top100 realtime state
+  * Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  * Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 4 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  * Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  * Restore approved release fallback
+  * Validate recovered full rebalance cache
+  * Resolve same-day static refresh mode
+  * Clear stale signal outputs
+  * Refresh Top100 realtime state
+  * Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  * Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 4 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  * Restore approved release fallback
+  * Validate recovered full rebalance cache
+  * Resolve same-day static refresh mode
+  * Clear stale signal outputs
+  * Refresh Top100 realtime state
+  * Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  * Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 5 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  ✓ Restore approved release fallback
+  ✓ Validate recovered full rebalance cache
+  ✓ Resolve same-day static refresh mode
+  ✓ Clear stale signal outputs
+  * Refresh Top100 realtime state
+  * Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  * Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 5 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  ✓ Restore approved release fallback
+  ✓ Validate recovered full rebalance cache
+  ✓ Resolve same-day static refresh mode
+  ✓ Clear stale signal outputs
+  ✓ Refresh Top100 realtime state
+  - Record refresh failure for digest
+  * Pack validated production state
+  * Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  ✓ Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 6 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  ✓ Restore approved release fallback
+  ✓ Validate recovered full rebalance cache
+  ✓ Resolve same-day static refresh mode
+  ✓ Clear stale signal outputs
+  ✓ Refresh Top100 realtime state
+  - Record refresh failure for digest
+  ✓ Pack validated production state
+  ✓ Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  ✓ Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 6 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  ✓ Restore approved release fallback
+  ✓ Validate recovered full rebalance cache
+  ✓ Resolve same-day static refresh mode
+  ✓ Clear stale signal outputs
+  ✓ Refresh Top100 realtime state
+  - Record refresh failure for digest
+  ✓ Pack validated production state
+  ✓ Stage validated state bundle for same-day recovery
+  * Preserve validated state bundle for long-gap recovery
+  * Persist validated state bundle for same-day recovery
+  ✓ Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  * Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 7 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* send (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  ✓ Restore approved release fallback
+  ✓ Validate recovered full rebalance cache
+  ✓ Resolve same-day static refresh mode
+  ✓ Clear stale signal outputs
+  ✓ Refresh Top100 realtime state
+  - Record refresh failure for digest
+  ✓ Pack validated production state
+  ✓ Stage validated state bundle for same-day recovery
+  ✓ Preserve validated state bundle for long-gap recovery
+  - Persist validated state bundle for same-day recovery
+  ✓ Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  ✓ Run v2.0 selected signal
+  * Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+✓ main Microcap Post-Close Digest · 37644093633
+Triggered via workflow_dispatch about 7 minutes ago
+
+JOBS
+✓ check-trading-day in 20s (ID 112870221650)
+  ✓ Set up job
+  ✓ Run actions/setup-python@v6
+  ✓ Check A-share trading day
+  ✓ Post Run actions/setup-python@v6
+  ✓ Complete job
+✓ regression / automation-tests in 15s (ID 112870394940)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Run python -m pip install 'pytest>=8,<9' 'PyYAML>=6,<7' 'hypothesis>=6,<7'
+  ✓ Check delivery contracts and all automation regressions
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ regression / strategy-tests (microcap) in 54s (ID 112870394942)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run actions/setup-python@v6
+  ✓ Resolve exact published strategy pin
+  ✓ Run actions/checkout@v6
+  ✓ Install Microcap regression dependencies
+  - Install ICIM regression dependencies
+  ✓ Test Microcap state and cloud transport invariants
+  - Test ICIM source failover and persistent ledger invariants
+  ✓ Preserve tests and actual tested strategy SHA
+  ✓ Run actions/upload-artifact@v7
+  ✓ Post Run actions/checkout@v6
+  ✓ Post Run actions/setup-python@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ send in 6m10s (ID 112870843242)
+  ✓ Set up job
+  ✓ Record workflow start time
+  ✓ Check out automation repository
+  ✓ Set up Python
+  ✓ Resolve publication mode
+  ✓ Check delivery marker
+  - Recover delivery marker from accepted SMTP receipt
+  - Mark recovered digest delivered
+  ✓ Check out microcap repository
+  ✓ Check out isolated v2.3 close-confirmed workspace
+  ✓ Check out isolated v2.5 close-confirmed workspace
+  ✓ Record microcap strategy SHA
+  ✓ Install runtime dependencies
+  ✓ Resolve independent completed session
+  ✓ Restore persistent full rebalance cache
+  - Bootstrap full rebalance cache on cold start
+  ✓ Validate full rebalance cache
+  - Restore explicitly approved whole state
+  ✓ Restore verified production state bundle
+  - Validate and restore cached production state
+  ✓ Restore durable verified production state bundle
+  - Restore verified production state
+  ✓ Restore approved release fallback
+  ✓ Validate recovered full rebalance cache
+  ✓ Resolve same-day static refresh mode
+  ✓ Clear stale signal outputs
+  ✓ Refresh Top100 realtime state
+  - Record refresh failure for digest
+  ✓ Pack validated production state
+  ✓ Stage validated state bundle for same-day recovery
+  ✓ Preserve validated state bundle for long-gap recovery
+  - Persist validated state bundle for same-day recovery
+  ✓ Restore state into isolated v2.3 workspace
+  * Restore state into isolated v2.5 workspace
+  * Save refreshed full rebalance cache
+  ✓ Run v2.0 selected signal
+  ✓ Run v2.3 selected signal
+  * Run v2.5 selected signal
+  * Verify and pack all three final deliveries
+  * Build Markdown digest
+  * Persist normal-send intent before SMTP
+  * Send Gmail
+  * Preserve accepted SMTP receipt
+  * Prepare delivery marker
+  * Preserve verified whole delivery for the next trading day
+  * Mark digest delivered
+  * Upload signal outputs
+  * Add signal result to job summary
+  * Fail job when signal publication failed
+  * Post Check out isolated v2.5 close-confirmed workspace
+  * Post Check out isolated v2.3 close-confirmed workspace
+  * Post Check out microcap repository
+  * Post Set up Python
+  * Post Check out automation repository
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+check-trading-day: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / automation-tests: .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+regression / strategy-tests (microcap): .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache/restore@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+send: .github#2
+
+- attempt=1; elapsed_seconds=61; pid=2866
+send: .github#112
+
+- attempt=1; elapsed_seconds=1; pid=2866
+send: .github#111
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+send: .github#1
+

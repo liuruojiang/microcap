@@ -1,0 +1,172 @@
+{
+  "run_id": "20261003_v23_hedge_axes",
+  "created_at": "2026-10-03T12:01:20+08:00",
+  "phase": "complete",
+  "project": "microcap_top100",
+  "strategy": "v2.3",
+  "subsystem": "hedge",
+  "repo_root": "D:\\动量策略\\微盘股对冲策略",
+  "entrypoint": "microcap_top100_mom16_biweekly_live_v2_3.py",
+  "git_branch": "main",
+  "git_commit": "7dc9d934f7f24fade5236247db71ec4fd7f18471",
+  "git_status_before": "M microcap_top100_mom16_biweekly_live_v2_0.py\n M microcap_top100_mom16_biweekly_live_v2_3.py\n M microcap_top100_mom16_biweekly_live_v2_5.py\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json\n M outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv\n M outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv\n M research_reports/20260926_l1_repair/L1_REPAIR_DECISION.md\n M research_reports/20260926_l1_repair/REPAIR_STATUS.md\n M research_reports/20260926_l1_repair/data_recovery/INITIAL_TWO_DATE_CLOSEOUT.md\n M scripts/run_microcap_v2_5_bias_overheat_scan.py\n M scripts/run_microcap_v2_5_env_breadth_cooldown_scan.py\n M scripts/run_microcap_v2_5_pool_rebalance_frequency_scan.py\n M tests/test_v2_5_scan_integrity.py\n?? research_reports/20260926_l1_repair/data_recovery/conditional_two_date_rank.csv\n?? research_reports/20260926_l1_repair/data_recovery/conditional_two_date_rank.py\n?? research_reports/20260926_l1_repair/data_recovery/conditional_two_date_rank_summary.json\n?? research_reports/20260926_l1_repair/shadow_rank_gate/\n?? research_reports/20260926_l1_repair/st_timing/000019_first_target_probe/\n?? research_reports/20260926_l1_repair/st_timing/600137_2008_2010_window/\n?? research_reports/20260926_l1_repair/st_timing/600603_initial_probe/\n?? research_reports/20260926_l1_repair/st_timing/600633_full_chain/\n?? research_reports/20260926_l1_repair/st_timing/600792_event_chain/\n?? research_reports/20260926_l1_repair/st_timing/initial_old100_screen/\n?? research_reports/20260926_l1_repair/st_timing/sse_yearbook_event_chain/\n?? research_reports/20260926_l1_repair/st_timing/st_600137_window.py\n?? research_reports/20260926_l1_repair/szse_old_member_names/\n?? research_reports/20260926_l2_diagnostic/\n?? research_reports/20260926_l2_repair/\n?? research_reports/20261002_l2_full_repair/\n?? research_reports/20261002_l3_diagnostic/\n?? research_reports/20261003_l3_recheck/\n?? research_reports/20261003_l4_diagnostic/\n?? research_reports/20261003_l5_diagnostic/\n?? research_reports/20261003_l5_repair/\n?? research_reports/20261003_l6_diagnostic/\n?? tests/test_top100_2026_st_limit_boundary.py\n?? tests/test_top100_l2_metric_contract.py",
+  "git_status_after": "M microcap_top100_mom16_biweekly_live_v2_0.py\n M microcap_top100_mom16_biweekly_live_v2_3.py\n M microcap_top100_mom16_biweekly_live_v2_5.py\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json\n M outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv\n M outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv\n M research_reports/20260926_l1_repair/L1_REPAIR_DECISION.md\n M research_reports/20260926_l1_repair/REPAIR_STATUS.md\n M research_reports/20260926_l1_repair/data_recovery/INITIAL_TWO_DATE_CLOSEOUT.md\n M scripts/run_microcap_v2_5_bias_overheat_scan.py\n M scripts/run_microcap_v2_5_env_breadth_cooldown_scan.py\n M scripts/run_microcap_v2_5_pool_rebalance_frequency_scan.py\n M tests/test_v2_5_scan_integrity.py\n?? research_reports/20260926_l1_repair/data_recovery/conditional_two_date_rank.csv\n?? research_reports/20260926_l1_repair/data_recovery/conditional_two_date_rank.py\n?? research_reports/20260926_l1_repair/data_recovery/conditional_two_date_rank_summary.json\n?? research_reports/20260926_l1_repair/shadow_rank_gate/\n?? research_reports/20260926_l1_repair/st_timing/000019_first_target_probe/\n?? research_reports/20260926_l1_repair/st_timing/600137_2008_2010_window/\n?? research_reports/20260926_l1_repair/st_timing/600603_initial_probe/\n?? research_reports/20260926_l1_repair/st_timing/600633_full_chain/\n?? research_reports/20260926_l1_repair/st_timing/600792_event_chain/\n?? research_reports/20260926_l1_repair/st_timing/initial_old100_screen/\n?? research_reports/20260926_l1_repair/st_timing/sse_yearbook_event_chain/\n?? research_reports/20260926_l1_repair/st_timing/st_600137_window.py\n?? research_reports/20260926_l1_repair/szse_old_member_names/\n?? research_reports/20260926_l2_diagnostic/\n?? research_reports/20260926_l2_repair/\n?? research_reports/20261002_l2_full_repair/\n?? research_reports/20261002_l3_diagnostic/\n?? research_reports/20261003_l3_recheck/\n?? research_reports/20261003_l4_diagnostic/\n?? research_reports/20261003_l5_diagnostic/\n?? research_reports/20261003_l5_repair/\n?? research_reports/20261003_l6_diagnostic/\n?? tests/test_top100_2026_st_limit_boundary.py\n?? tests/test_top100_l2_metric_contract.py",
+  "scan_type": "single_parameter_axes_with_joint_ratio_off_control",
+  "parameter_group": "signal_and_execution_hedge_ratio",
+  "baseline": {
+    "candidate": "formal_s1_e08",
+    "signal_hedge_ratio": 1.0,
+    "execution_hedge_ratio": 0.8
+  },
+  "candidate_grid": [
+    "formal_s1_e08",
+    "signal_off_s0_e08",
+    "signal_s08_e08",
+    "signal_s12_e08",
+    "execution_off_s1_e0",
+    "execution_s1_e07",
+    "execution_s1_e09",
+    "hedge_off_s0_e0"
+  ],
+  "data_snapshot": {
+    "inputs": {
+      "panel": {
+        "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+        "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+        "rows": 8738,
+        "first": "1990-12-19",
+        "last": "2026-09-30"
+      },
+      "proxy_index": {
+        "path": "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+        "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+        "rows": 4067,
+        "first": "2010-01-05",
+        "last": "2026-09-30"
+      },
+      "proxy_turnover": {
+        "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+        "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+        "rows": 432,
+        "first": "2010-01-14",
+        "last": "2026-09-17"
+      },
+      "base_costed_nav": {
+        "path": "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+        "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+        "rows": 4050,
+        "first": "2010-01-28",
+        "last": "2026-09-30"
+      },
+      "v2_0_costed_nav": {
+        "path": "outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+        "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+        "rows": 4033,
+        "first": "2010-03-01",
+        "last": "2026-09-30"
+      },
+      "v2_3_costed_nav": {
+        "path": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+        "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+        "rows": 3988,
+        "first": "2010-05-05",
+        "last": "2026-09-30"
+      }
+    },
+    "period": [
+      "2010-05-05",
+      "2026-09-30"
+    ],
+    "input_note": "frozen_old_PIT_proxy_diagnostic_only"
+  },
+  "cost_model": {
+    "entry_exit_each_side": 0.003,
+    "member_rebalance": "official_turnover_event_map",
+    "hedge_drag_per_notional_day": 0.0003,
+    "cash_yield": false,
+    "financing": false,
+    "timing": "T_close_signal_T_plus_1_state"
+  },
+  "outputs": {
+    "record": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\record.md",
+    "scan_summary": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\scan_summary.csv",
+    "window_metrics": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\window_metrics.csv",
+    "scan_meta": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\scan_meta.json",
+    "command_log": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\command_log.txt"
+  },
+  "decision": "keep_default",
+  "stability_label": "data_sensitive",
+  "baseline_parity": {
+    "return_net": 9.98821251402271e-17,
+    "nav_net": 3.552713678800501e-15,
+    "total_cost": 0.0,
+    "rebalance_cost": 0.0,
+    "entry_exit_cost": 0.0,
+    "holding": 0,
+    "next_holding": 0,
+    "overheat_risk_off": 0,
+    "overheat_exit_triggered": 0,
+    "overheat_block_entry_triggered": 0,
+    "overheat_reentry_triggered": 0
+  },
+  "daily_outputs": {
+    "formal_s1_e08": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\formal_s1_e08.csv.gz",
+      "sha256": "845a0a70f12540b4e48f66656a9f46a2d27c350e73dbb94f64023534977949e4",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "signal_off_s0_e08": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\signal_off_s0_e08.csv.gz",
+      "sha256": "5f9c80472c4a4fce4b8b8ae431b7e522805ecf28d46d074e0441a0912464bb9b",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "signal_s08_e08": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\signal_s08_e08.csv.gz",
+      "sha256": "e83451203438b979284ad8edadfed82eddaae4baa23401152b4c2f380eda5026",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "signal_s12_e08": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\signal_s12_e08.csv.gz",
+      "sha256": "9571355553f89c2dc676b2b3f02c6021ba27116e6f29e41d6a5ef938b968379f",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "execution_off_s1_e0": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\execution_off_s1_e0.csv.gz",
+      "sha256": "9b8404f721859579db588a08c1effb62cf8a8776878e741dc29483c6f93c90e1",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "execution_s1_e07": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\execution_s1_e07.csv.gz",
+      "sha256": "8a6241c9be78c0ff139e7140db82e81f192647054d0a2b36759227278c722706",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "execution_s1_e09": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\execution_s1_e09.csv.gz",
+      "sha256": "5fcc3b79aef39ec22f61adc71858df8b3aed98f19d6ce8e65e0113283d1e3354",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "hedge_off_s0_e0": {
+      "path": "research_reports\\20261003_l6_diagnostic\\20261003_v23_hedge_axes\\daily_outputs\\hedge_off_s0_e0.csv.gz",
+      "sha256": "4f94dd171e566074c585fd3a1e232a19600d3858770aa8144700dc75d583dc59",
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    }
+  },
+  "formal_claim": "none_research_only_L1_L2_L5_open",
+  "finalized_at": "2026-10-03T12:15:37+08:00"
+}

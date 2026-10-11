@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "scope": "local_close_confirmed_digest_preview_only",
+  "date": "2026-09-30",
+  "strategy_sha": "501b269b9f51a83f05f3b71488143b4da285cd0b",
+  "metadata_subject": "[验收不发送][收盘确认][下个交易日需操作] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-30",
+  "final_csv_readbacks": {
+    "v2.0": {
+      "date": "2026-09-30",
+      "version": "2.0",
+      "strategy_revision": "plain_mom16_fixed1_20260904",
+      "current_holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "trade_state": "hold",
+      "signal_timing": "close_confirmed",
+      "official_close_confirmed_signal": "True",
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18"
+    },
+    "v2.3": {
+      "date": "2026-09-30",
+      "version": "2.3",
+      "strategy_version": "v2.3",
+      "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+      "current_holding": "cash",
+      "next_holding": "long_microcap_short_zz1000",
+      "trade_state": "open",
+      "signal_timing": "close_confirmed",
+      "official_close_confirmed_signal": "True",
+      "current_execution_scale": "0.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18"
+    },
+    "v2.5": {
+      "date": "2026-09-30",
+      "version": "2.5",
+      "strategy_version": "v2.5",
+      "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "current_holding": "long_microcap_top100",
+      "next_holding": "long_microcap_top100",
+      "trade_state": "hold",
+      "signal_timing": "close_confirmed",
+      "official_close_confirmed_signal": "True",
+      "current_execution_scale": "1.0",
+      "next_session_actionable_scale": "1.0",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18"
+    }
+  },
+  "sent_email": false,
+  "realtime_signal_generated": false,
+  "used_real_official_signal_commands": true
+}

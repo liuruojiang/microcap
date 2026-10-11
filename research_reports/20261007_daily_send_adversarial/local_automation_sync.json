@@ -1,0 +1,57 @@
+{
+  "status": "ok",
+  "automation_id": "ic-im",
+  "prompt_exact_match": true,
+  "settings": [
+    {
+      "key": "id",
+      "unchanged": true
+    },
+    {
+      "key": "kind",
+      "unchanged": true
+    },
+    {
+      "key": "name",
+      "unchanged": true
+    },
+    {
+      "key": "status",
+      "unchanged": true
+    },
+    {
+      "key": "rrule",
+      "unchanged": true
+    },
+    {
+      "key": "model",
+      "unchanged": true
+    },
+    {
+      "key": "reasoning_effort",
+      "unchanged": true
+    },
+    {
+      "key": "execution_environment",
+      "unchanged": true
+    },
+    {
+      "key": "target",
+      "unchanged": true
+    },
+    {
+      "key": "cwds",
+      "unchanged": true
+    }
+  ],
+  "gate_files": 17,
+  "digest_source": "D:\\动量策略\\codex-daily-automation-probe-l7-sync\\scripts\\build_microcap_realtime_digest.py",
+  "gate_result": {
+    "tests": 402,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 49.43575159998727
+  },
+  "local_report_channel": "Codex task only"
+}

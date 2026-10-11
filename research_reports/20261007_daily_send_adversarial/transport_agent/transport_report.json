@@ -1,0 +1,83 @@
+{
+  "scope": "independent_cloud_smtp_and_idempotence",
+  "official_calendar": {
+    "checked_at_beijing": "2026-10-07T22:39:16+08:00",
+    "trading_day": false,
+    "latest_completed_session": "2026-09-30"
+  },
+  "external_smtp_submitted": false,
+  "inbox_verified_by_this_agent": false,
+  "source_snapshot_manifest": "baseline_source_hashes.json",
+  "baseline_controls": {
+    "existing_tests_passed": 34,
+    "independent_fault_matrix_passed": 31,
+    "independent_fault_matrix_known_defects_xfailed": 1
+  },
+  "modified_source_files": [
+    "scripts/mail_utils.py",
+    "scripts/send_report.py"
+  ],
+  "added_test_file": "tests/test_microcap_smtp_receipt.py",
+  "post_change_testing": {
+    "total_passed": 40,
+    "failed": 0,
+    "errors": 0,
+    "skips": 0,
+    "class_counts": {
+      "tests.test_microcap_smtp_receipt": 30,
+      "tests.test_microcap_adversarial_delivery": 9,
+      "tests.test_ai_hot_html_email.AiHotHtmlEmailTests": 1
+    }
+  },
+  "verified_backup": "D:\\动量策略\\codex-daily-automation-probe-l7-sync\\.codex_backups\\20261007_224155",
+  "findings": [
+    {
+      "id": "T1",
+      "severity": "P1",
+      "status": "confirmed_before_root_workflow_fix",
+      "issue": "Ordinary manual workflow dispatch with external_schedule=false bypassed confirmed holiday, even without validation or correction",
+      "evidence": "test_transport_matrix.py:test_normal_manual_holiday_dispatch_must_not_run_send_job",
+      "owner": "root workflow fix"
+    },
+    {
+      "id": "T2",
+      "severity": "P2",
+      "status": "confirmed_before_root_gate_fix",
+      "issue": "Name-only smtp-accepted artifact with no verified SMTP or metadata evidence suppressed resend and requested marker recovery",
+      "evidence": "unverified_receipt_reproduction.json",
+      "owner": "root receipt provenance fix"
+    },
+    {
+      "id": "T3",
+      "severity": "P2",
+      "status": "fixed_and_isolated_tests_passed",
+      "issue": "SMTP acceptance previously had no explicit transport-generated Message-ID or atomic accepted receipt with exact content hashes",
+      "fix": "mail_utils standard Date/Message-ID plus send_report --receipt written only after all-recipient acceptance"
+    }
+  ],
+  "transport_receipt_contract": {
+    "schema_version": 1,
+    "status": "smtp_accepted",
+    "fields": [
+      "message_id",
+      "accepted_at",
+      "metadata_sha256",
+      "subject_sha256",
+      "body_sha256",
+      "sender",
+      "recipients"
+    ],
+    "accepted_at_timezone": "UTC",
+    "metadata_hash_basis": "raw metadata file bytes",
+    "addresses_basis": "configured parsed sender and recipient addresses",
+    "publish": "adjacent temporary file, fsync, atomic replace",
+    "preexisting_receipt": "refuse before SMTP",
+    "partial_refusal_or_unknown_status": "fail with no receipt and no retry"
+  },
+  "limits": [
+    "All agent transport tests are hermetic fixture diagnostics, not actual delivery proof",
+    "SMTP accepted receipt does not prove inbox delivery",
+    "QUIT timeout after DATA acceptance remains deliberately uncertain with no automatic retry",
+    "Official holiday normally skips production sends; root owns explicit test namespace and any external acceptance send"
+  ]
+}

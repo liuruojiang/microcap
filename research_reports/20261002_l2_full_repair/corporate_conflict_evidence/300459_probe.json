@@ -1,0 +1,86 @@
+{
+  "queried_utc": "2026-10-03T01:39:56.686295+00:00",
+  "issuer_sources": {
+    "distribution": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-07-07/1201247517.PDF",
+      "sha256": "26d6cac21df0023a3600a36a9f51cb272e12f0d90192764821122b750006250f"
+    },
+    "suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-07-08/1201258846.PDF",
+      "sha256": "ccb8fe0bc09a32b2901a2b634eeec06c40a6116c72afc65794f57464c8c91e4d"
+    },
+    "resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-07-20/1201316997.PDF",
+      "sha256": "f5c168dcdf29f0f88ca4c8901a6f3430a95cc9080581cdce71178a60730f6150"
+    }
+  },
+  "candidate_source_status": "cninfo=1;sina=0; single_source_only",
+  "event_scope": "exact symbol, record date, ex date, cash date, gross ratio only; no blanket single-source admission",
+  "record_date": "2015-07-13",
+  "ex_and_cash_payment_date": "2015-07-14",
+  "gross_cash_yuan_per_share": "0.10",
+  "suspension_start": "2015-07-08 afternoon after morning trading",
+  "vendor_query": "BaoStock sz.300459 daily adjustflag=3 (unadjusted), 2015-07-06..2015-07-22",
+  "vendor_rows": 13,
+  "last_actual_trade_before_ex": {
+    "date": "2015-07-08",
+    "code": "sz.300459",
+    "open": "33.2100",
+    "high": "33.2100",
+    "low": "33.2100",
+    "close": "33.2100",
+    "preclose": "36.9000",
+    "volume": "116700",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_row": {
+    "date": "2015-07-14",
+    "code": "sz.300459",
+    "open": "33.1100",
+    "high": "33.1100",
+    "low": "33.1100",
+    "close": "33.1100",
+    "preclose": "33.1100",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2015-07-20",
+    "code": "sz.300459",
+    "open": "36.4200",
+    "high": "36.4200",
+    "low": "36.4200",
+    "close": "36.4200",
+    "preclose": "33.1100",
+    "volume": "16801",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "0b47495db25823bc4c5f02e5c348ff8c8795b416cb3cf18e30258a508a388a78",
+  "account_rights_events_sha256": "00f94324ae3341333330bf7bba482cab97c101154656a1936a40b668a4894d5d",
+  "account_record_entitlements": {
+    "prefunded": {
+      "eligible_shares": "2277.493795658698114581488738573761129608",
+      "gross_cash_due_yuan": "227.7493795658698114581488738573761129608",
+      "pre_ex_mark_yuan": "75635.56895382536438525124100803460711428168",
+      "correct_ex_mark_yuan": "75635.56895382536438525124100803460711428168",
+      "missing_cash_mark_yuan": "75407.81957425949457379309213417723100132088",
+      "missing_cash_false_return": "-0.0030111412225233363444745558566696778078891900030111412225233363",
+      "double_cash_mark_yuan": "75863.31833339123419670938988189198322724248",
+      "double_cash_false_return": "0.003011141222523336344474555856669677807889190003011141222523336"
+    },
+    "netted": {
+      "eligible_shares": "2653.325347630319497534537776232689557784",
+      "gross_cash_due_yuan": "265.3325347630319497534537776232689557784",
+      "pre_ex_mark_yuan": "88116.93479480291051312199954868762021400664",
+      "correct_ex_mark_yuan": "88116.93479480291051312199954868762021400664",
+      "missing_cash_mark_yuan": "87851.60226003987856336854577106435125822824",
+      "missing_cash_false_return": "-0.0030111412225233363444745558566696778078891900030111412225233363",
+      "double_cash_mark_yuan": "88382.26732956594246287545332631088916978504",
+      "double_cash_false_return": "0.003011141222523336344474555856669677807889190003011141222523336"
+    }
+  },
+  "assessment": "33.11 = last partial-session traded close 33.21 minus gross dividend 0.10 and is resumed first true trade preclose. Admit only this issuer-documented event; value ex-date suspended position at reference plus cash/receivable exactly once, never as a fill."
+}

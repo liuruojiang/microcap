@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="31" skipped="0" tests="48" time="4.830" timestamp="2026-10-07T20:16:15.560264+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_data_boundary" name="test_daily_parser_preserves_legal_mixed_midnight_text[shared_v20-date_then_midnight]" time="0.003"><failure message="ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT">tests\test_round3_data_boundary.py:52: in test_daily_parser_preserves_legal_mixed_midnight_text
+    parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_top100_base&gt;:4909: in _normalise_dated_frame
+    ???
+E   ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_parser_preserves_legal_mixed_midnight_text[shared_v20-midnight_then_date]" time="0.002"><failure message="ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT">tests\test_round3_data_boundary.py:52: in test_daily_parser_preserves_legal_mixed_midnight_text
+    parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_top100_base&gt;:4909: in _normalise_dated_frame
+    ???
+E   ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_parser_preserves_legal_mixed_midnight_text[mainline-date_then_midnight]" time="0.002"><failure message="ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT">tests\test_round3_data_boundary.py:52: in test_daily_parser_preserves_legal_mixed_midnight_text
+    parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: in _normalise_dated_frame
+    raise ValueError(f"{label} contains invalid dates/NaT")
+E   ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_parser_preserves_legal_mixed_midnight_text[mainline-midnight_then_date]" time="0.002"><failure message="ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT">tests\test_round3_data_boundary.py:52: in test_daily_parser_preserves_legal_mixed_midnight_text
+    parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: in _normalise_dated_frame
+    raise ValueError(f"{label} contains invalid dates/NaT")
+E   ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_close_loader_preserves_every_legal_mixed_format_row[shared_v20-panel]" time="0.010"><failure message="ValueError: hedge panel contains invalid dates/NaT">tests\test_round3_data_boundary.py:68: in test_daily_close_loader_preserves_every_legal_mixed_format_row
+    parsed = base.load_close_df(panel_path, proxy_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_top100_base&gt;:2184: in load_close_df
+    ???
+&lt;embedded_top100_base&gt;:4909: in _normalise_dated_frame
+    ???
+E   ValueError: hedge panel contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_close_loader_preserves_every_legal_mixed_format_row[shared_v20-proxy]" time="0.010"><failure message="ValueError: microcap proxy contains invalid dates/NaT">tests\test_round3_data_boundary.py:68: in test_daily_close_loader_preserves_every_legal_mixed_format_row
+    parsed = base.load_close_df(panel_path, proxy_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_top100_base&gt;:2187: in load_close_df
+    ???
+&lt;embedded_top100_base&gt;:4909: in _normalise_dated_frame
+    ???
+E   ValueError: microcap proxy contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_close_loader_preserves_every_legal_mixed_format_row[mainline-panel]" time="0.007"><failure message="ValueError: hedge panel contains invalid dates/NaT">tests\test_round3_data_boundary.py:68: in test_daily_close_loader_preserves_every_legal_mixed_format_row
+    parsed = base.load_close_df(panel_path, proxy_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:1344: in load_close_df
+    panel = _normalise_dated_frame(panel, "hedge panel").reset_index()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: in _normalise_dated_frame
+    raise ValueError(f"{label} contains invalid dates/NaT")
+E   ValueError: hedge panel contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_daily_close_loader_preserves_every_legal_mixed_format_row[mainline-proxy]" time="0.010"><failure message="ValueError: microcap proxy contains invalid dates/NaT">tests\test_round3_data_boundary.py:68: in test_daily_close_loader_preserves_every_legal_mixed_format_row
+    parsed = base.load_close_df(panel_path, proxy_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:1347: in load_close_df
+    proxy = _normalise_dated_frame(proxy, "microcap proxy").reset_index()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: in _normalise_dated_frame
+    raise ValueError(f"{label} contains invalid dates/NaT")
+E   ValueError: microcap proxy contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_accepts_same_daily_rows_with_legal_date_text_variations[shared_v20]" time="0.003"><failure message="ValueError: round3 diagnostic unchanged daily values candidate contains invalid dates/NaT">tests\test_round3_data_boundary.py:77: in test_freeze_accepts_same_daily_rows_with_legal_date_text_variations
+    base.assert_no_historical_rewrite(previous, candidate, ["nav_net"], 0, "round3 diagnostic unchanged daily values")
+&lt;embedded_top100_base&gt;:4951: in assert_no_historical_rewrite
+    ???
+&lt;embedded_top100_base&gt;:4909: in _normalise_dated_frame
+    ???
+E   ValueError: round3 diagnostic unchanged daily values candidate contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_accepts_same_daily_rows_with_legal_date_text_variations[mainline]" time="0.002"><failure message="ValueError: round3 diagnostic unchanged daily values candidate contains invalid dates/NaT">tests\test_round3_data_boundary.py:77: in test_freeze_accepts_same_daily_rows_with_legal_date_text_variations
+    base.assert_no_historical_rewrite(previous, candidate, ["nav_net"], 0, "round3 diagnostic unchanged daily values")
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3753: in assert_no_historical_rewrite
+    cand = _normalise_dated_frame(candidate, f"{label} candidate")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: in _normalise_dated_frame
+    raise ValueError(f"{label} contains invalid dates/NaT")
+E   ValueError: round3 diagnostic unchanged daily values candidate contains invalid dates/NaT</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-nan-None]" time="0.005"><failure message="RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.">tests\test_round3_data_boundary.py:86: in test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation
+    base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+&lt;embedded_top100_base&gt;:5073: in assert_no_historical_rewrite
+    ???
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-None-after1]" time="0.004"><failure message="RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.">tests\test_round3_data_boundary.py:86: in test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation
+    base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+&lt;embedded_top100_base&gt;:5073: in assert_no_historical_rewrite
+    ???
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[shared_v20-before2-nan]" time="0.004"><failure message="RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.">tests\test_round3_data_boundary.py:86: in test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation
+    base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+&lt;embedded_top100_base&gt;:5073: in assert_no_historical_rewrite
+    ???
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-nan-None]" time="0.004"><failure message="RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.">tests\test_round3_data_boundary.py:86: in test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation
+    base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3875: in assert_no_historical_rewrite
+    raise RuntimeError(
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-None-after1]" time="0.005"><failure message="RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.">tests\test_round3_data_boundary.py:86: in test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation
+    base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3875: in assert_no_historical_rewrite
+    raise RuntimeError(
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation[mainline-before2-nan]" time="0.005"><failure message="RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.">tests\test_round3_data_boundary.py:86: in test_freeze_preserves_true_missing_when_all_warmup_cells_change_null_representation
+    base.assert_no_historical_rewrite(previous, candidate, ["warmup"], 0, "round3 diagnostic unchanged all-warmup nulls")
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3875: in assert_no_historical_rewrite
+    raise RuntimeError(
+E   RuntimeError: round3 diagnostic unchanged all-warmup nulls historical rewrite detected on frozen dates; examples: 2026-09-01:warmup, 2026-09-02:warmup. Refusing to publish query/chart output until the data lineage is audited.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_turnover_loader_preserves_legal_mixed_rebalance_text[False]" time="0.005"><failure message="ValueError: unconverted data remains when parsing with format &quot;%Y-%m-%d&quot;: &quot; 00:00:00&quot;, at position 1. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.">tests\test_round3_data_boundary.py:97: in test_turnover_loader_preserves_legal_mixed_rebalance_text
+    event = v20.cost_mod.load_turnover_table(path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_cost&gt;:72: in load_turnover_table
+    ???
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:587: in pandas._libs.tslibs.strptime._parse_with_format
+    ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 1. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_turnover_loader_preserves_legal_mixed_rebalance_text[True]" time="0.005"><failure message="ValueError: time data &quot;2026-09-02&quot; doesn't match format &quot;%Y-%m-%d %H:%M:%S&quot;, at position 1. You might want to try:&#10;    - passing `format` if your strings have a consistent format;&#10;    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;&#10;    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.">tests\test_round3_data_boundary.py:97: in test_turnover_loader_preserves_legal_mixed_rebalance_text
+    event = v20.cost_mod.load_turnover_table(path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_cost&gt;:72: in load_turnover_table
+    ???
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:583: in pandas._libs.tslibs.strptime._parse_with_format
+    ???
+E   ValueError: time data "2026-09-02" doesn't match format "%Y-%m-%d %H:%M:%S", at position 1. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_embedded_loader_does_not_silently_drop_legal_midnight_event" time="0.045"><failure message="AssertionError: A valid midnight event disappeared before the cost mapper&#10;assert 1 == 2&#10; +  where 1 = len(  rebalance_date execution_date execution_timing  two_side_cost_rate\n0     2026-09-01     2026-09-01            close               0.001)">tests\test_round3_data_boundary.py:131: in test_actual_embedded_loader_does_not_silently_drop_legal_midnight_event
+    assert len(consumed) == 2, "A valid midnight event disappeared before the cost mapper"
+E   AssertionError: A valid midnight event disappeared before the cost mapper
+E   assert 1 == 2
+E    +  where 1 = len(  rebalance_date execution_date execution_timing  two_side_cost_rate\n0     2026-09-01     2026-09-01            close               0.001)</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_embedded_loader_never_discards_bad_event_before_validation[None-0.002]" time="0.033"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:144: in test_actual_embedded_loader_never_discards_bad_event_before_validation
+    with pytest.raises(ValueError, match="date|cost|event|turnover"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_embedded_loader_never_discards_bad_event_before_validation[NaT-0.002]" time="0.033"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:144: in test_actual_embedded_loader_never_discards_bad_event_before_validation
+    with pytest.raises(ValueError, match="date|cost|event|turnover"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_embedded_loader_never_discards_bad_event_before_validation[invalid-date-0.002]" time="0.038"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:144: in test_actual_embedded_loader_never_discards_bad_event_before_validation
+    with pytest.raises(ValueError, match="date|cost|event|turnover"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_embedded_loader_never_discards_bad_event_before_validation[None-inf]" time="0.035"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:144: in test_actual_embedded_loader_never_discards_bad_event_before_validation
+    with pytest.raises(ValueError, match="date|cost|event|turnover"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_repeated_identical_turnover_event_is_not_double_charged[mapper]" time="0.009"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:154: in test_repeated_identical_turnover_event_is_not_double_charged
+    with pytest.raises(ValueError, match="duplicate|repeat|event|rebalance"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_repeated_identical_turnover_event_is_not_double_charged[loader]" time="0.007"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:154: in test_repeated_identical_turnover_event_is_not_double_charged
+    with pytest.raises(ValueError, match="duplicate|repeat|event|rebalance"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_repeated_identical_turnover_event_is_not_double_charged[embedded]" time="0.037"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:154: in test_repeated_identical_turnover_event_is_not_double_charged
+    with pytest.raises(ValueError, match="duplicate|repeat|event|rebalance"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_explicit_execution_cannot_hide_non_session_signal_inside_window" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:172: in test_explicit_execution_cannot_hide_non_session_signal_inside_window
+    with pytest.raises(ValueError, match="date|session|rebalance"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_strategy_cost_consumer_rejects_mixed_execution_timing_in_one_stream" time="0.005"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:183: in test_strategy_cost_consumer_rejects_mixed_execution_timing_in_one_stream
+    with pytest.raises(ValueError, match="timing|mixed|event|stream"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_legal_uniform_timing_preserves_entry_exit_cost_semantics[close]" time="0.004" /><testcase classname="tests.test_round3_data_boundary" name="test_legal_uniform_timing_preserves_entry_exit_cost_semantics[next_open]" time="0.004" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_requires_actual_boolean_approval[2.0]" time="0.042"><failure message="AssertionError: assert True is False&#10; +  where True = &lt;function v2_0_rewrite_audit_matches_approved_lineage_migration at 0x0000028C3DD29BC0&gt;(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require0/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require0/audit.csv'))">tests\test_round3_data_boundary.py:240: in test_lineage_migration_requires_actual_boolean_approval
+    assert verifier(report_path, previous, candidate, audit_path) is False
+E   AssertionError: assert True is False
+E    +  where True = &lt;function v2_0_rewrite_audit_matches_approved_lineage_migration at 0x0000028C3DD29BC0&gt;(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require0/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require0/audit.csv'))</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_requires_actual_boolean_approval[2.3]" time="0.016"><failure message="AssertionError: assert True is False&#10; +  where True = &lt;function v2_3_rewrite_audit_matches_approved_lineage_migration at 0x0000028C3EE178A0&gt;(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require1/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require1/audit.csv'))">tests\test_round3_data_boundary.py:240: in test_lineage_migration_requires_actual_boolean_approval
+    assert verifier(report_path, previous, candidate, audit_path) is False
+E   AssertionError: assert True is False
+E    +  where True = &lt;function v2_3_rewrite_audit_matches_approved_lineage_migration at 0x0000028C3EE178A0&gt;(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require1/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require1/audit.csv'))</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_requires_actual_boolean_approval[2.5]" time="0.016"><failure message="AssertionError: assert True is False&#10; +  where True = &lt;function v2_5_rewrite_audit_matches_approved_lineage_migration at 0x0000028C3EEF8510&gt;(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require2/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require2/audit.csv'))">tests\test_round3_data_boundary.py:240: in test_lineage_migration_requires_actual_boolean_approval
+    assert verifier(report_path, previous, candidate, audit_path) is False
+E   AssertionError: assert True is False
+E    +  where True = &lt;function v2_5_rewrite_audit_matches_approved_lineage_migration at 0x0000028C3EEF8510&gt;(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require2/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_full_baseline_tmp_01/test_lineage_migration_require2/audit.csv'))</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_preserves_exact_boolean_approved_control[2.0]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_preserves_exact_boolean_approved_control[2.3]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_preserves_exact_boolean_approved_control[2.5]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.0-previous_costed_nav_sha256]" time="0.010" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.0-candidate_frame_sha256]" time="0.010" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.0-base_proxy_meta_sha256]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.0-rewrite_audit_sha256]" time="0.012" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.3-previous_costed_nav_sha256]" time="0.012" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.3-candidate_frame_sha256]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.3-base_proxy_meta_sha256]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.3-rewrite_audit_sha256]" time="0.012" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.5-previous_costed_nav_sha256]" time="0.013" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.5-candidate_frame_sha256]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.5-base_proxy_meta_sha256]" time="0.011" /><testcase classname="tests.test_round3_data_boundary" name="test_lineage_migration_still_rejects_each_changed_exact_hash[2.5-rewrite_audit_sha256]" time="0.011" /></testsuite></testsuites>

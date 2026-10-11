@@ -1,0 +1,26 @@
+{
+  "count": 51,
+  "kind_counts": {
+    "ratio_precision_difference_le_0p000031": 49,
+    "distinct_rows_same_source": 2
+  },
+  "old_path_overlap_count": 3,
+  "earliest_all": {
+    "symbol": "300062",
+    "ex_date": "2012-07-30",
+    "kind": "ratio_precision_difference_le_0p000031",
+    "old_held_at_record_snapshot": "False",
+    "old_held_at_ex_snapshot": "False",
+    "cninfo_rows": "[{\"source\": \"cninfo_distribution_events.csv\", \"record\": \"2012-07-27\", \"bonus\": 0.0, \"cash\": 1.292446, \"announcement\": \"2012-07-24\"}]",
+    "sina_rows": "[{\"source\": \"sina_held_2010_2014_distribution_and_rights.csv\", \"record\": \"2012-07-27\", \"bonus\": 0.0, \"cash\": 1.29245, \"announcement\": \"2012-07-24\"}]"
+  },
+  "earliest_old_path": {
+    "symbol": "002034",
+    "ex_date": "2013-06-27",
+    "kind": "ratio_precision_difference_le_0p000031",
+    "old_held_at_record_snapshot": "True",
+    "old_held_at_ex_snapshot": "True",
+    "cninfo_rows": "[{\"source\": \"cninfo_distribution_events.csv\", \"record\": \"2013-06-26\", \"bonus\": 0.0, \"cash\": 2.859022, \"announcement\": \"2013-06-20\"}]",
+    "sina_rows": "[{\"source\": \"sina_held_2010_2014_distribution_and_rights.csv\", \"record\": \"2013-06-26\", \"bonus\": 0.0, \"cash\": 2.85902, \"announcement\": \"2013-06-20\"}]"
+  }
+}

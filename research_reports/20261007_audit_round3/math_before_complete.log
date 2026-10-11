@@ -1,0 +1,158 @@
+FFFFFFFFFFFFFFFFFFFFFF...                                                [100%]
+================================== FAILURES ===================================
+_ test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build[entry_exit_cost] _
+tests\test_round3_math_ledger.py:141: in test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build
+    _expect_block(f"v25_erase_{component}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_erase_entry_exit_cost: actual execution builder accepted the corrupted upstream result
+_ test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build[rebalance_cost] _
+tests\test_round3_math_ledger.py:141: in test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build
+    _expect_block(f"v25_erase_{component}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_erase_rebalance_cost: actual execution builder accepted the corrupted upstream result
+__ test_v23_mapped_fee_event_contract_is_checked_in_actual_build[erase_fee] ___
+tests\test_round3_math_ledger.py:163: in test_v23_mapped_fee_event_contract_is_checked_in_actual_build
+    _expect_block(f"v23_{attack}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_erase_fee: actual execution builder accepted the corrupted upstream result
+__ test_v23_mapped_fee_event_contract_is_checked_in_actual_build[shift_fee] ___
+tests\test_round3_math_ledger.py:163: in test_v23_mapped_fee_event_contract_is_checked_in_actual_build
+    _expect_block(f"v23_{attack}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_shift_fee: actual execution builder accepted the corrupted upstream result
+___ test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch ____
+tests\test_round3_math_ledger.py:181: in test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch
+    _expect_block("v20_erase_mapped_rebalance_fee",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v20_erase_mapped_rebalance_fee: actual execution builder accepted the corrupted upstream result
+_ test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[ENTRY_COST] _
+tests\test_round3_math_ledger.py:195: in test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants
+    _expect_block(f"v23_cost_constant_{constant}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_cost_constant_ENTRY_COST: actual execution builder accepted the corrupted upstream result
+_ test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[EXIT_COST] _
+tests\test_round3_math_ledger.py:195: in test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants
+    _expect_block(f"v23_cost_constant_{constant}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_cost_constant_EXIT_COST: actual execution builder accepted the corrupted upstream result
+_______ test_v25_cost_dependency_cannot_change_execution_state[holding] _______
+tests\test_round3_math_ledger.py:216: in test_v25_cost_dependency_cannot_change_execution_state
+    _expect_block(f"v25_cost_changes_{column}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_cost_changes_holding: actual execution builder accepted the corrupted upstream result
+____ test_v25_cost_dependency_cannot_change_execution_state[next_holding] _____
+tests\test_round3_math_ledger.py:216: in test_v25_cost_dependency_cannot_change_execution_state
+    _expect_block(f"v25_cost_changes_{column}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_cost_changes_next_holding: actual execution builder accepted the corrupted upstream result
+______ test_v25_cost_dependency_cannot_change_execution_state[signal_on] ______
+tests\test_round3_math_ledger.py:216: in test_v25_cost_dependency_cannot_change_execution_state
+    _expect_block(f"v25_cost_changes_{column}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_cost_changes_signal_on: actual execution builder accepted the corrupted upstream result
+___ test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[nan] ___
+tests\test_round3_math_ledger.py:234: in test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build
+    _expect_block("v23_bad_spread_nav_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_spread_nav_nan: actual execution builder accepted the corrupted upstream result
+___ test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[0.0] ___
+tests\test_round3_math_ledger.py:234: in test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build
+    _expect_block("v23_bad_spread_nav_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_spread_nav_0.0: actual execution builder accepted the corrupted upstream result
+__ test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[-1.0] ___
+tests\test_round3_math_ledger.py:234: in test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build
+    _expect_block("v23_bad_spread_nav_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_spread_nav_-1.0: actual execution builder accepted the corrupted upstream result
+___ test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[inf] ___
+tests\test_round3_math_ledger.py:234: in test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build
+    _expect_block("v23_bad_spread_nav_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_spread_nav_inf: actual execution builder accepted the corrupted upstream result
+_ test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[damaged] _
+tests\test_round3_math_ledger.py:234: in test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build
+    _expect_block("v23_bad_spread_nav_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_spread_nav_damaged: actual execution builder accepted the corrupted upstream result
+___ test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[nan] ___
+tests\test_round3_math_ledger.py:252: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_nan: actual execution builder accepted the corrupted upstream result
+_ test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[damaged] _
+tests\test_round3_math_ledger.py:252: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_damaged: actual execution builder accepted the corrupted upstream result
+_ test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[long_microcap_top100] _
+tests\test_round3_math_ledger.py:252: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_long_microcap_top100: actual execution builder accepted the corrupted upstream result
+___ test_actual_gross_dependency_cannot_omit_a_non_event_active_session[23] ___
+tests\test_round3_math_ledger.py:272: in test_actual_gross_dependency_cannot_omit_a_non_event_active_session
+    _expect_block(f"v{version}_gross_missing_active_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_gross_missing_active_session: actual execution builder accepted the corrupted upstream result
+___ test_actual_gross_dependency_cannot_omit_a_non_event_active_session[25] ___
+tests\test_round3_math_ledger.py:272: in test_actual_gross_dependency_cannot_omit_a_non_event_active_session
+    _expect_block(f"v{version}_gross_missing_active_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_gross_missing_active_session: actual execution builder accepted the corrupted upstream result
+_ test_official_common_index_cannot_silently_drop_leading_valid_sessions[23] __
+tests\test_round3_math_ledger.py:283: in test_official_common_index_cannot_silently_drop_leading_valid_sessions
+    _expect_block(f"v{version}_missing_leading_official_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_missing_leading_official_session: actual execution builder accepted the corrupted upstream result
+_ test_official_common_index_cannot_silently_drop_leading_valid_sessions[25] __
+tests\test_round3_math_ledger.py:283: in test_official_common_index_cannot_silently_drop_leading_valid_sessions
+    _expect_block(f"v{version}_missing_leading_official_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_missing_leading_official_session: actual execution builder accepted the corrupted upstream result
+=========================== short test summary info ===========================
+FAILED tests/test_round3_math_ledger.py::test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build[entry_exit_cost]
+FAILED tests/test_round3_math_ledger.py::test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build[rebalance_cost]
+FAILED tests/test_round3_math_ledger.py::test_v23_mapped_fee_event_contract_is_checked_in_actual_build[erase_fee]
+FAILED tests/test_round3_math_ledger.py::test_v23_mapped_fee_event_contract_is_checked_in_actual_build[shift_fee]
+FAILED tests/test_round3_math_ledger.py::test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch
+FAILED tests/test_round3_math_ledger.py::test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[ENTRY_COST]
+FAILED tests/test_round3_math_ledger.py::test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[EXIT_COST]
+FAILED tests/test_round3_math_ledger.py::test_v25_cost_dependency_cannot_change_execution_state[holding]
+FAILED tests/test_round3_math_ledger.py::test_v25_cost_dependency_cannot_change_execution_state[next_holding]
+FAILED tests/test_round3_math_ledger.py::test_v25_cost_dependency_cannot_change_execution_state[signal_on]
+FAILED tests/test_round3_math_ledger.py::test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[nan]
+FAILED tests/test_round3_math_ledger.py::test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[0.0]
+FAILED tests/test_round3_math_ledger.py::test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[-1.0]
+FAILED tests/test_round3_math_ledger.py::test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[inf]
+FAILED tests/test_round3_math_ledger.py::test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[damaged]
+FAILED tests/test_round3_math_ledger.py::test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[nan]
+FAILED tests/test_round3_math_ledger.py::test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[damaged]
+FAILED tests/test_round3_math_ledger.py::test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[long_microcap_top100]
+FAILED tests/test_round3_math_ledger.py::test_actual_gross_dependency_cannot_omit_a_non_event_active_session[23]
+FAILED tests/test_round3_math_ledger.py::test_actual_gross_dependency_cannot_omit_a_non_event_active_session[25]
+FAILED tests/test_round3_math_ledger.py::test_official_common_index_cannot_silently_drop_leading_valid_sessions[23]
+FAILED tests/test_round3_math_ledger.py::test_official_common_index_cannot_silently_drop_leading_valid_sessions[25]
+22 failed, 3 passed in 12.20s

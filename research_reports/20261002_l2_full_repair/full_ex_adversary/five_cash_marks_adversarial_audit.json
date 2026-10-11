@@ -1,0 +1,113 @@
+{
+  "status": "PASS_five_marks_and_adversarial_mutations_until_first_block",
+  "manifest_sha256": "14b2598931b96b42805d2ac47fd6701e9f73458dbcbdc0b1cda926ab288ed72f",
+  "code_sha256": "70aa61c219999600885f3e90c6edc33ea2d9bb533cda97b8ec1bcc56e4490091",
+  "input_file_count": 548,
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "five_cash_marks": [
+    {
+      "symbol": "000560",
+      "record_date": "2014-08-21",
+      "ex_date": "2014-08-22",
+      "cash_pay_date": "2014-08-22",
+      "last_true_trade": "2014-04-04",
+      "raw_anchor": "8.53",
+      "cash_per_share_gross": "0.1",
+      "theoretical_mark": "8.43",
+      "resume_true_trade": "2014-09-30",
+      "resume_preclose": "8.4300",
+      "status": "two_source_match",
+      "issuer_sha256": "",
+      "cninfo_original_row_sha256": ""
+    },
+    {
+      "symbol": "002112",
+      "record_date": "2014-07-10",
+      "ex_date": "2014-07-11",
+      "cash_pay_date": "2014-07-11",
+      "last_true_trade": "2014-07-10",
+      "raw_anchor": "8.26",
+      "cash_per_share_gross": "0.01",
+      "theoretical_mark": "8.25",
+      "resume_true_trade": "2014-08-05",
+      "resume_preclose": "8.2500",
+      "status": "two_source_match",
+      "issuer_sha256": "",
+      "cninfo_original_row_sha256": ""
+    },
+    {
+      "symbol": "002319",
+      "record_date": "2014-06-19",
+      "ex_date": "2014-06-20",
+      "cash_pay_date": "2014-06-20",
+      "last_true_trade": "2014-06-18",
+      "raw_anchor": "8.19",
+      "cash_per_share_gross": "0.03",
+      "theoretical_mark": "8.16",
+      "resume_true_trade": "2014-07-10",
+      "resume_preclose": "8.1600",
+      "status": "two_source_match",
+      "issuer_sha256": "",
+      "cninfo_original_row_sha256": ""
+    },
+    {
+      "symbol": "002624",
+      "record_date": "2014-05-22",
+      "ex_date": "2014-05-23",
+      "cash_pay_date": "2014-05-23",
+      "last_true_trade": "2014-04-04",
+      "raw_anchor": "8.1",
+      "cash_per_share_gross": "0.05",
+      "theoretical_mark": "8.05",
+      "resume_true_trade": "2014-09-01",
+      "resume_preclose": "8.0500",
+      "status": "two_source_match",
+      "issuer_sha256": "",
+      "cninfo_original_row_sha256": ""
+    },
+    {
+      "symbol": "600758",
+      "record_date": "2014-06-16",
+      "ex_date": "2014-06-17",
+      "cash_pay_date": "2014-06-17",
+      "last_true_trade": "2014-01-28",
+      "raw_anchor": "7.23",
+      "cash_per_share_gross": "0.03",
+      "theoretical_mark": "7.20",
+      "resume_true_trade": "2014-07-14",
+      "resume_preclose": "7.2000",
+      "status": "two_source_match",
+      "issuer_sha256": "",
+      "cninfo_original_row_sha256": ""
+    }
+  ],
+  "bonus_double_credit_injection": {
+    "netted": {
+      "bonus_shares": "720.025331170858418416522383309162673631",
+      "double_credit_share_error": "720.025331170858418416522383309162673631",
+      "double_credit_value_error_at_ex_close": "4543.35983968811662020825623868081647061161"
+    },
+    "prefunded": {
+      "bonus_shares": "691.8632662963622991973381784456578842466",
+      "double_credit_share_error": "691.8632662963622991973381784456578842470",
+      "double_credit_value_error_at_ex_close": "4365.657210330046107935203905992101249598570"
+    }
+  },
+  "cash_double_credit_injection": {
+    "symbol": "002624",
+    "branch": "netted",
+    "date": "2014-05-23",
+    "error": "159.719699468918775957880605843937700485"
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2015-07-09",
+      "reason": "unverified_missing_raw_close:2015-07-09:002088"
+    },
+    "netted": {
+      "date": "2015-07-09",
+      "reason": "unverified_missing_raw_close:2015-07-09:002088"
+    }
+  },
+  "limitations": "Gross fractional paper model; five zero-volume marks are valuations and not fills. The source does not prove investor-specific net cash."
+}

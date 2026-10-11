@@ -1,0 +1,127 @@
+..........F...................................                           [100%]
+================================== FAILURES ===================================
+_____ test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer ______
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_new_green_tmp/test_native_v20_cleanup_preser0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002403F84B4D0>
+capsys = <_pytest.capture.CaptureFixture object at 0x000002403F885A90>
+
+    def test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer(
+        tmp_path, real_context, monkeypatch, capsys
+    ):
+>       native_generation(tmp_path, real_context, monkeypatch, capsys, "0", "concurrent_valid_replacement")
+
+tests\test_round3_state_contract.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_new_green_tmp/test_native_v20_cleanup_preser0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002403F84B4D0>
+capsys = <_pytest.capture.CaptureFixture object at 0x000002403F885A90>
+version = '0', attack = 'concurrent_valid_replacement'
+
+    def native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack):
+        module = {"0": v20, "3": v23, "5": v25}[version]
+        output_dir = tmp_path / f"state_native_v2{version}"
+        output_dir.mkdir()
+        prefix = v20.DEFAULT_OUTPUT_PREFIX if version == "0" else f"state_v2{version}"
+        costed_name = delivery.COSTED[version] if version == "0" else f"{prefix}_costed_nav.csv"
+        realtime = output_dir / f"{prefix}_realtime_signal.csv"
+        real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
+        shutil.copy2(real_realtime, realtime)
+        legal_bytes = realtime.read_bytes()
+        replacement_events = []
+        if attack in {"wrong_version", "concurrent_valid_replacement"}:
+            mutate(realtime, "version", "9.9")
+        elif attack == "missing_anchor":
+            mutate(realtime, "latest_anchor_trade_date", "__DROP__")
+        elif attack == "scale_conflict":
+            mutate(realtime, "current_execution_scale", "9.0")
+        elif attack != "legal_dated_artifact":
+            raise AssertionError(attack)
+        shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / costed_name)
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+                     output_dir / f"{prefix}_summary.json")
+        corrupted = realtime.read_bytes()
+        old_v20_prefix = v20.OUTPUT_PREFIX
+        old_v20_args = v20._V2_RUNTIME_ARGS
+        old_overlay_args = v20.overlay_mod._V2_RUNTIME_ARGS
+        old_overlay_ns_args = v20._overlay_ns.get("_V2_RUNTIME_ARGS")
+        old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
+        try:
+            with monkeypatch.context() as isolated:
+                isolated.setattr(module, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
+                    copy.deepcopy(real_context["reference"]), real_context["base_gross"].copy(),
+                    real_context["turnover"].copy()))
+                if version == "0":
+                    isolated.setattr(v20.overlay_mod, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(v20, "_V2_RUNTIME_ARGS", v20.parse_v2_args(["信号"]))
+                    if attack == "concurrent_valid_replacement":
+                        original_lock = v20._v2_realtime_output_lock
+    
+                        @contextmanager
+                        def cleanup_after_writer(*args, **kwargs):
+                            # Deterministically exercise the real race boundary:
+                            # cleanup already selected this malformed file, then a
+                            # realtime writer commits valid bytes under its native
+                            # lock before cleanup obtains the same lock.
+                            assert read_csv(realtime)[1][0]["version"] == "9.9"
+                            with original_lock(*args, **kwargs):
+                                v20._overlay_ns["_atomic_write_text"](
+                                    realtime, legal_bytes.decode("utf-8"), encoding="utf-8")
+                            replacement_events.append("native_atomic_writer_before_cleanup_lock")
+                            with original_lock(*args, **kwargs):
+                                yield
+    
+                        isolated.setitem(v20._overlay_ns, "_v2_realtime_output_lock", cleanup_after_writer)
+                    v20.main()
+                else:
+                    isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(module, "_load_official_v2_0_out", lambda: real_context["official"].copy())
+                    if version == "5":
+                        isolated.setattr(v25, "stale_v2_5_legacy_retest_outputs", lambda: [])
+                    module.main([f"--v2{version}-output-prefix", prefix, "信号"])
+                stdout = capsys.readouterr().out
+                costed = pd.read_csv(output_dir / costed_name, encoding="utf-8-sig")
+                formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+                assert costed["date"].tolist() == formal["date"].tolist()
+                pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
+                                              formal[["holding", "next_holding", "return_net"]],
+                                              check_exact=False, atol=1e-12, rtol=0)
+                retained = realtime.exists()
+                record("native_close_cli_realtime_cleanup", version=version, attack=attack,
+                       retained=retained, bytes_unchanged=retained and realtime.read_bytes() == corrupted,
+                       economics_match_formal=True, native_output_dir=str(output_dir),
+                       stdout_contains_signal=f"strategy_version: v2.{version}" in stdout,
+                       concurrent_replacement_events=replacement_events)
+                if attack == "legal_dated_artifact":
+                    assert retained and realtime.read_bytes() == corrupted
+                elif attack == "concurrent_valid_replacement":
+                    assert replacement_events == ["native_atomic_writer_before_cleanup_lock"]
+>                   assert retained and realtime.read_bytes() == legal_bytes
+E                   AssertionError: assert (True and b'signal_labe...0/100\r\r\r\n' == b'signal_labe...100/100\r\r\n'
+E                     
+E                     At index 2452 diff: b'\r' != b'\n'
+E                     Use -v to get more diff)
+
+tests\test_round3_state_contract.py:197: AssertionError
+============================== warnings summary ===============================
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-wrong_version]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-missing_anchor]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-scale_conflict]
+tests/test_round3_state_contract.py::test_native_close_cli_preserves_legal_dated_realtime[0]
+tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+  D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+    return _generate_v2_0_outputs_unlocked()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+1 failed, 45 passed, 5 warnings in 81.71s (0:01:21)

@@ -1,0 +1,55 @@
+{
+  "validator_sha256": "112097de07c73e3a6269d0074986501cd6476b30e800a76c947ceeb5b4dcca78",
+  "originals_pass": true,
+  "checks": [
+    {
+      "version": "0",
+      "field": "lookback",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "0",
+      "field": "fixed_hedge_ratio",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "3",
+      "field": "lookback",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "3",
+      "field": "halflife",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "3",
+      "field": "execution_hedge_ratio",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "3",
+      "field": "overheat_feature_window",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "3",
+      "field": "overheat_enabled",
+      "before_accepted": true,
+      "after_accepted": false
+    },
+    {
+      "version": "5",
+      "field": "overheat_enabled",
+      "before_accepted": true,
+      "after_accepted": false
+    }
+  ],
+  "all_eight_rejected": true
+}

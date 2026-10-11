@@ -1,0 +1,33 @@
+{
+  "status": "complete",
+  "strategy_sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+  "automation_sha": "ff81e937effe74f672502177936f8c919d8f11af",
+  "run_id": 37644093633,
+  "run_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/37644093633",
+  "test_id": "microcap-20261007-de6ce1a9-01",
+  "normal_holiday_delivery": false,
+  "local_whole_check": true,
+  "expected_date": "2026-09-30",
+  "release_url": "https://github.com/liuruojiang/microcap/releases/tag/microcap-delivery-20261007-de6ce1a9",
+  "bundle": {
+    "ok": true,
+    "expected_date": "2026-09-30",
+    "release_sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+    "bundle": "research_reports\\20261007_daily_send_adversarial\\microcap-approved-state-20260930-de6ce1a9.zip",
+    "scope": "whole_workspace_delivery",
+    "files": 14982
+  },
+  "local_preview_status": "OK",
+  "inbox_verified": true,
+  "gmail_message_id": "1a11700f88c6592b",
+  "actual_smtp_run_status": "completed/success",
+  "smtp_message_id": "<179138730033.3104.10206622529935796000@gmail.com>",
+  "finished_at_utc": "2026-10-07T15:58:11.938036+00:00",
+  "actual_smtp_messages": 1,
+  "same_id_should_send": false,
+  "content_doublecheck": "PASS",
+  "transport_doublecheck": "PASS",
+  "whole_cloud_artifact_verified": true,
+  "local_handover_check": true,
+  "final_record_commit": "e4bffcd6b0d70d68ee3d21f78a701f373104aa1a"
+}

@@ -1,0 +1,6 @@
+{
+  "sender_sha256": "8dfa3a47bf4302e191caaac08e80ad3829539fdba5a36eb6326880217949b07f",
+  "failed_test_calls_sender": false,
+  "exception_type": "ValueError",
+  "smtp_network_invoked": false
+}

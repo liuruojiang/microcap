@@ -1,0 +1,277 @@
+{
+  "scope": "old frozen-input arithmetic only; source/remote authority mismatch, formal historical metrics N/A",
+  "previous_snapshot": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261002_l3_diagnostic\\current_refresh\\executor\\summary.json",
+  "latest_common_close": "2026-09-30",
+  "source_sha_changed_since_previous": true,
+  "previous_source_sha256": "4e20dea7fb79ccf1658e549ec881ff931d26fb9c1156badc5bf9f7aa5ea5bfb3",
+  "current_source_sha256": "8d16e11add9f92f972b5379a175539ca65d4c828e1aa4ff720868ecee04007b2",
+  "file_state": {
+    "source": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_0.py",
+      "sha256": "8d16e11add9f92f972b5379a175539ca65d4c828e1aa4ff720868ecee04007b2"
+    },
+    "proxy": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "rows": 4067,
+      "first_date": "2010-01-05",
+      "last_date": "2026-09-30"
+    },
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "rows": 8738,
+      "first_date": "1990-12-19",
+      "last_date": "2026-09-30"
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "rows": 432,
+      "first_date": "2010-01-14",
+      "last_date": "2026-09-17"
+    },
+    "base": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "rows": 4050,
+      "first_date": "2010-01-28",
+      "last_date": "2026-09-30"
+    },
+    "official": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "last_date": "2026-09-30"
+    }
+  },
+  "previous_vs_current_file_sha_match": {
+    "source": false,
+    "proxy": true,
+    "panel": true,
+    "turnover": true,
+    "base": true,
+    "official": true
+  },
+  "previous_vs_current_file_rows_match": {
+    "proxy": true,
+    "panel": true,
+    "turnover": true,
+    "base": true,
+    "official": true
+  },
+  "previous_vs_current_replay_common_rows": 4033,
+  "previous_vs_current_replay_diffs": {
+    "microcap_close": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "hedge_close": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "microcap_ret": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "hedge_ret": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "microcap_mom": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "hedge_mom": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "momentum_gap": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "holding": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": null
+    },
+    "next_holding": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": null
+    },
+    "current_execution_scale": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "entry_exit_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "rebalance_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "total_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "base_pre_cost_return": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "return_net": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "nav_net": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": 0.0
+    },
+    "strategy_revision": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "max_abs": null
+    }
+  },
+  "replay_field_parity": {
+    "microcap_close": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "hedge_close": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "microcap_ret": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.974659986866641e-17
+    },
+    "hedge_ret": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.993633524885137e-17
+    },
+    "microcap_mom": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.8879238130678e-17
+    },
+    "hedge_mom": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.974659986866641e-17
+    },
+    "momentum_gap": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.974659986866641e-17
+    },
+    "holding": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": null
+    },
+    "next_holding": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": null
+    },
+    "current_execution_scale": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "entry_exit_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "rebalance_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "total_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "base_pre_cost_return": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.985502008591496e-17
+    },
+    "return_net": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.98821251402271e-17
+    },
+    "nav_net": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 3.552713678800501e-15
+    },
+    "strategy_revision": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": null
+    }
+  },
+  "delivery_check": {
+    "exit_code": 1,
+    "ok": false
+  }
+}

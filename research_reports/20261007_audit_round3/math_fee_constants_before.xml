@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="5.883" timestamp="2026-10-07T20:16:03.113309+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_math_ledger" name="test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[ENTRY_COST]" time="3.678"><failure message="Failed: v23_cost_constant_ENTRY_COST: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:195: in test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants
+    _expect_block(f"v23_cost_constant_{constant}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_cost_constant_ENTRY_COST: actual execution builder accepted the corrupted upstream result</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[EXIT_COST]" time="0.333"><failure message="Failed: v23_cost_constant_EXIT_COST: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:195: in test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants
+    _expect_block(f"v23_cost_constant_{constant}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_cost_constant_EXIT_COST: actual execution builder accepted the corrupted upstream result</failure></testcase></testsuite></testsuites>

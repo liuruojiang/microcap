@@ -1,0 +1,183 @@
+{
+  "scope": "frozen saved-v2.0 arithmetic diagnostic, not PIT/execution certification",
+  "cutoff": "2026-09-24",
+  "files": {
+    "strategy": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "sha256_full_file": "96cdd20f32b1bebcc02bc8b51f9c927866bb972a5e91bd0bcbf0e9a64b79c4cb",
+      "read_rows": 4030,
+      "read_first_date": "2010-03-01",
+      "read_last_date": "2026-09-24"
+    },
+    "base": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256_full_file": "1c83bda412ac3247703af3f2a0dcf9e1341fe018896f0c4f1fffd713d1d90ffa",
+      "read_rows": 4047,
+      "read_first_date": "2010-01-28",
+      "read_last_date": "2026-09-24"
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256_full_file": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "read_rows": 432,
+      "read_first_date": "2010-01-14",
+      "read_last_date": "2026-09-17"
+    },
+    "proxy": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256_full_file": "d5cae749dbf2c1a474953be30632de26876fd8a2bbf156a13e35eb66bda7b13e",
+      "read_rows": 4064,
+      "read_first_date": "2010-01-05",
+      "read_last_date": "2026-09-24"
+    },
+    "replay_returns": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20260926_l1_repair\\full_replay\\all_daily_returns.csv",
+      "sha256_full_file": "7dd88df8b2084b918448d62a9ce5a4521d50b42719cb5921d93a05076616a82f",
+      "read_rows": 4064,
+      "read_first_date": "2010-01-05",
+      "read_last_date": "2026-09-24"
+    }
+  },
+  "findings": {
+    "strategy_state_carry": {
+      "transitions": 4029,
+      "mismatches": 0,
+      "first_mismatch": null
+    },
+    "strategy_signal_equals_next": 0,
+    "strategy_raw_return_from_current_holding": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 1.8214596497756474e-16
+    },
+    "strategy_overlay_gross_from_raw": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 1.8214596497756474e-16
+    },
+    "fault_injection_future_signal_as_current_holding": {
+      "count": 231,
+      "first_date": "2010-03-01",
+      "actual": 0.0,
+      "expected": 0.00848622520285274,
+      "max_abs_difference": 0.0521915214758636
+    },
+    "strategy_entry_exit_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "strategy_rebalance_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "strategy_total_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "strategy_net_from_gross_and_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 3.217912047936977e-16
+    },
+    "strategy_nav_compound": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 1.7763568394002505e-13
+    },
+    "strategy_return_alias_net": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "fault_injection_missing_fee": {
+      "count": 526,
+      "first_date": "2010-03-01",
+      "actual": -0.003,
+      "expected": 0.0,
+      "max_abs_difference": 0.003024823336138959
+    },
+    "fault_injection_fee_one_day_late": {
+      "count": 932,
+      "first_date": "2010-03-01",
+      "actual": -0.003,
+      "expected": 0.0,
+      "max_abs_difference": 0.0030749234264410494
+    },
+    "base_state_carry": {
+      "transitions": 4046,
+      "mismatches": 0,
+      "first_mismatch": null
+    },
+    "base_raw_return_from_current_holding": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 1.8214596497756474e-16
+    },
+    "base_entry_exit_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "base_rebalance_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "base_net_from_gross_and_fee": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 3.217912047936977e-16
+    },
+    "strategy_base_microcap_close": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "strategy_base_hedge_close": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 0.0
+    },
+    "signal_microcap_mom_from_prior_16_close": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 9.8879238130678e-17
+    },
+    "signal_hedge_mom_from_prior_16_close": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 9.974659986866641e-17
+    },
+    "signal_next_holding_from_momentum_gap": {
+      "rows": 4030,
+      "mismatches": 0,
+      "first_mismatch": null
+    },
+    "proxy_raw_replay_parity": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 3.3881317890172014e-21
+    },
+    "proxy_turnover_date_contract": {
+      "count": 432,
+      "date_mismatch": 0,
+      "return_start_not_after_execution": 0,
+      "return_start_not_next_proxy_day": 1,
+      "first_return_start_mismatch": "2026-09-17",
+      "first": "2010-01-14",
+      "last": "2026-09-17"
+    },
+    "proxy_turnover_fee_formula": {
+      "count": 0,
+      "first_date": null,
+      "max_abs_difference": 1.0018028073766061e-16
+    },
+    "fault_injection_same_day_member_return": {
+      "detected": true,
+      "first_date": "2010-01-14"
+    }
+  }
+}

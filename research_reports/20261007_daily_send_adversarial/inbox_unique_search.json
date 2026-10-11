@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "emails": [
+      {
+        "id": "1a11700f88c6592b",
+        "thread_id": "1a11700f88c6592b",
+        "from_": "liuruojiang@gmail.com",
+        "to": [
+          "liuruojiang@gmail.com"
+        ],
+        "cc": [],
+        "bcc": [],
+        "subject": "[发送验收测试][收盘确认] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-30 - microcap-20261007-de6ce1a9-01",
+        "snippet": "## 邮件发送验收测试本邮件仅用于核对日报收发链路，数据截至 2026-09-30。下文为历史收盘日报样本，不作为今日交易指令。 验收编号：microcap-20261007-de6ce1a9-01 ## 历史收盘日报样本**信号类型：收盘确认** **v2.0：微盘 Top100＋空头中证1000 → 微盘 Top100＋空头中证1000，下一交易日可执行仓位 1.00；v2.3：空仓 → 微盘",
+        "labels": [
+          "UNREAD",
+          "SENT",
+          "INBOX"
+        ],
+        "has_attachment": false,
+        "attachments": [],
+        "inline_images": [],
+        "email_ts": "2026-10-07T15:35:00+00:00",
+        "display_url": "https://mail.google.com/mail/u/?authuser=liuruojiang%40gmail.com#all/1a11700f88c6592b",
+        "display_title": "[发送验收测试][收盘确认] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-30 - microcap-20261007-de6ce1a9-01"
+      }
+    ],
+    "next_page_token": null
+  },
+  "isError": false
+}

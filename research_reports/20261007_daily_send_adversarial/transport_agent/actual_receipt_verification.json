@@ -1,0 +1,70 @@
+{
+  "scope": "independent_actual_receipt_gmail_and_deduplication_readback",
+  "checked_at_utc": "2026-10-07T15:49:27.110661+00:00",
+  "external_smtp_submitted_by_this_agent": false,
+  "hashes": {
+    "metadata_sha256": "6d817773e9d399ea421e56f9169d00430d3ed2630f31f676399bf8f6df30ce05",
+    "metadata_subject_sha256": "7fb578bfb7f42d783b1608ebb5f489f964a4a8e426708912d775fefef49778cb",
+    "metadata_body_sha256": "f5ac7f4cc189ccddc2944bbe48a2438da0d42500f6930cb88ff5a288b3d7f03a",
+    "gmail_body_exact_sha256": "191b7f51f4b5d3bd7176d74f11a5ee0639156569e276a1a668a8d037c412e5a7",
+    "gmail_body_lf_sha256": "191b7f51f4b5d3bd7176d74f11a5ee0639156569e276a1a668a8d037c412e5a7",
+    "expected_mime_body_sha256": "191b7f51f4b5d3bd7176d74f11a5ee0639156569e276a1a668a8d037c412e5a7",
+    "gate_source_sha256": "20116871bbf062fb2089dae49cd75a4d9ca4505d2099c73556bf031b059d3a75"
+  },
+  "inbox": {
+    "gmail_message_id": "1a11700f88c6592b",
+    "rfc_message_id": "<179138730033.3104.10206622529935796000@gmail.com>",
+    "inbox_label_confirmed": true,
+    "subject_exact_match": true,
+    "body_mime_exact_match": true,
+    "body_comparison_normalization": "SMTP CRLF to LF; compare exactly to EmailMessage.set_content canonical MIME text, including mandatory terminal LF",
+    "original_metadata_body_characters": 945,
+    "delivered_mime_body_characters": 946,
+    "sender_and_recipients_match": true,
+    "recipients_count": 1,
+    "message_date_utc": "2026-10-07T15:35:00+00:00",
+    "received_at_utc": "2026-10-07T15:35:00+00:00",
+    "accepted_at_utc": "2026-10-07T15:35:02+00:00",
+    "receipt_within_smtp_step": true
+  },
+  "workflow": {
+    "run_id": 37644093633,
+    "head_sha": "ff81e937effe74f672502177936f8c919d8f11af",
+    "receipt_artifact_id": 11494785698,
+    "receipt_artifact_name": "microcap-v2-close_confirmed-delivery-test-microcap-20261007-de6ce1a9-01-smtp-accepted",
+    "send_gmail": "success",
+    "receipt_upload": "success",
+    "delivery_marker": "success"
+  },
+  "live_receipt_verifier": {
+    "status": "ok",
+    "artifact_id": 11494785698,
+    "scope": "actual GitHub run, jobs and downloadable artifact"
+  },
+  "same_id_live_deduplication": {
+    "should_send": "false",
+    "delivery_date": "2026-10-07",
+    "marker_name": "microcap-v2-close_confirmed-delivery-test-microcap-20261007-de6ce1a9-01",
+    "subject_prefix": "发送验收测试",
+    "validation_only": "false",
+    "delivery_test_id": "microcap-20261007-de6ce1a9-01",
+    "recover_marker": "false"
+  },
+  "actual_holiday_run": {
+    "run_id": 37644531206,
+    "head_sha": "ff81e937effe74f672502177936f8c919d8f11af",
+    "calendar": "success",
+    "send": "skipped",
+    "regression": "skipped",
+    "smtp_submitted": false
+  },
+  "input_file_sha256": {
+    "inbox_message.json": "b2e3491b22dd9b007c8cec3d310802b7662837908ffda2ee6114c81b5e9da5e8",
+    "cloud_run.json": "676a04525df7aa1b64e8f1b6efee8cdd369340c3fb6ab082b5a275916ade668e",
+    "cloud_artifacts.json": "8b906bdac1546ee98422c2dda4ea451d46c7776e2b0d0c99136eef9ae9dc1273",
+    "holiday_run.json": "788623173f05f159d79e943a7e03946bfe13e50e0136582fe4d328bbc9c23156",
+    "cloud_artifacts_readback\\microcap-v2-close_confirmed-delivery-test-microcap-20261007-de6ce1a9-01-smtp-accepted\\metadata.json": "6d817773e9d399ea421e56f9169d00430d3ed2630f31f676399bf8f6df30ce05",
+    "cloud_artifacts_readback\\microcap-v2-close_confirmed-delivery-test-microcap-20261007-de6ce1a9-01-smtp-accepted\\smtp-accepted.json": "3902eead6b216b1c79b65149d4bbbfb9d010bcfd9737cc4db0e6df1b8a3b0d68"
+  },
+  "status": "PASS"
+}

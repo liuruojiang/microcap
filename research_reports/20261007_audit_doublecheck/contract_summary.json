@@ -1,0 +1,202 @@
+{
+  "scope": "independent_doublecheck_contract_diagnostic_only",
+  "status": "PASS_WITH_EXPLICIT_SCOPE_LIMITS",
+  "created_at_local": "2026-10-07T16:44:04",
+  "latest_completed_session": "2026-09-30",
+  "source_raw_sha256": {
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+    "scripts/top100_delivery.py": "bc82ffcb7a960293a665d1e71c8d7c43cb252c4b5be146204ad1236eb1d5e0df"
+  },
+  "test_file": "tests/test_doublecheck_contract_adversarial.py",
+  "test_raw_sha256": "4b24e3a6840f9145df36771efeb3f6875d2d901060a64bd56fc926a3c9b7c36a",
+  "evidence_suites": {
+    "contract_before2_suite.xml": {
+      "tests": 29,
+      "passed": 4,
+      "failed": 25,
+      "errors": 0,
+      "skipped": 0,
+      "failure_names": [
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-official_close_confirmed_signal-False]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-official_close_confirmed_signal-False]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-official_close_confirmed_signal-False]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-signal_timing-intraday_hypothetical_if_now_close]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-signal_timing-intraday_hypothetical_if_now_close]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-signal_timing-intraday_hypothetical_if_now_close]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-strategy_version-v2.0]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-strategy_version-v2.0]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-member_rebalance_state-none]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-member_rebalance_state-none]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-member_rebalance_state-none]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-target_position_scale-9]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-target_position_scale-9]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-target_position_scale-9]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-position_transition-True]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-position_transition-False]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-position_transition-True]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-scale_trade_required-True]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-scale_trade_required-True]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-scale_trade_required-True]",
+        "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_version]",
+        "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_strategy_version]",
+        "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[missing_version]",
+        "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[two_rows]",
+        "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[enabled_overheat]"
+      ],
+      "xml_raw_sha256": "551513bd2f8aa7cfabb6a0b128af4c20e096ce246cacf8ed14fa9772820de23e"
+    },
+    "contract_v23_before_suite.xml": {
+      "tests": 1,
+      "passed": 0,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failure_names": [
+        "test_native_v23_signal_cli_rejects_disabled_overheat_alias"
+      ],
+      "xml_raw_sha256": "4e5a49ffded55a41c52b76e5dd24080550de4839e28272a0c2e1f24a87d58500"
+    },
+    "contract_duplicate_before_suite.xml": {
+      "tests": 5,
+      "passed": 0,
+      "failed": 5,
+      "errors": 0,
+      "skipped": 0,
+      "failure_names": [
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-version-__DUP_VERSION__]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-version-__DUP_VERSION__]",
+        "test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-version-__DUP_VERSION__]",
+        "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[duplicated_version_header]",
+        "test_native_v23_signal_cli_rejects_duplicate_version_header"
+      ],
+      "xml_raw_sha256": "90b9c2261c59f19533512fd3564fe10ab1c102f074aa6cf7ac8e6ac0098a3eb7"
+    },
+    "contract_final_suite.xml": {
+      "tests": 89,
+      "passed": 89,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "failure_names": [],
+      "xml_raw_sha256": "ecb0dcdd9c5347469e72ff95f50a18fc024d78fdb98b2cb95c2303a48e98ad1e"
+    },
+    "contract_fixture_verification_suite.xml": {
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "failure_names": [],
+      "xml_raw_sha256": "f300d8abea51f544b300bd82cd3e4d679ecfd7e66fc8a7083b88c4a3c6e5b89b"
+    }
+  },
+  "final_test_groups": {
+    "test_final_file_corruption_cannot_be_recertified_by_delivery_cli": 61,
+    "test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file": 6,
+    "test_native_v23_signal_cli_rejects_disabled_overheat_alias": 1,
+    "test_native_v23_signal_cli_rejects_duplicate_version_header": 1,
+    "test_native_signal_cli_cleanup_keeps_current_concurrent_writer": 2,
+    "test_native_final_signal_accepts_all_four_fixed_one_transitions": 12,
+    "test_native_v25_cli_does_not_reclaim_a_live_aged_generation_lock": 1,
+    "test_member_rank_header_cannot_have_two_incompatible_meanings": 1,
+    "test_v23_realtime_identity_rejects_corresponding_faults": 4
+  },
+  "reproduced_red_testcases": 31,
+  "findings_fixed_by_parent": [
+    {
+      "id": "C1",
+      "input": "Final CSV official_close_confirmed_signal=False or intraday timing; wrong strategy_version; contradictory member state and scale/action aliases",
+      "before_failure_count": 20,
+      "source": "scripts/top100_delivery.py:190,200,230,235,356",
+      "final_behavior": "native isolated final-artifact delivery CLI rejects corrupt copies"
+    },
+    {
+      "id": "C2",
+      "input": "Native v2.5 realtime CSV wrong/missing version, wrong strategy_version, second row, enabled overheat",
+      "before_failure_count": 5,
+      "source": "microcap_top100_mom16_biweekly_live_v2_5.py:1453",
+      "final_behavior": "native signal generation cleans incompatible realtime artifact"
+    },
+    {
+      "id": "C3",
+      "input": "Native v2.3 realtime overheat_enabled=True but overheat_overlay_enabled=False",
+      "before_failure_count": 1,
+      "source": "microcap_top100_mom16_biweekly_live_v2_3.py:1282",
+      "final_behavior": "native signal generation cleans contradictory native alias"
+    },
+    {
+      "id": "C4",
+      "input": "Duplicate version CSV header creates Pandas/DictReader conflicting identities",
+      "before_failure_count": 5,
+      "source": "scripts/top100_delivery.py:103,124; v2.3.py:1266; v2.5.py:1459",
+      "final_behavior": "same-file-handle unique-header check rejects both parser meanings"
+    }
+  ],
+  "real_input_readback": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "rows": 8738,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "unchanged": true
+    },
+    "proxy_index": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "rows": 4067,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "unchanged": true
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "rows": 432,
+      "latest_date": "2026-09-17",
+      "raw_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "unchanged": true
+    },
+    "base_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "rows": 4050,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "unchanged": true
+    },
+    "v20_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "unchanged": true
+    },
+    "v23_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+      "unchanged": true
+    },
+    "v25_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+      "unchanged": true
+    }
+  },
+  "fixture_audit": [
+    "contract_fixture_audit.json",
+    "contract_fixture_final_verification.json"
+  ],
+  "fixture_correction_judgment": "Reasonable: true v2.3/v2.5 generator already calls the same real v2.0 member-contract augmenter, which sets state from member-set differences. Three-version bad-state rejection remains unchanged.",
+  "scope_limits": [
+    "Final CSV CLI probes use isolated copies and explicitly mock remote release, target-date and base-state gates; this proves final-artifact contract only, not complete formal delivery.",
+    "Native v2.3/v2.5 CLI uses genuine reconstructed frozen price/signal/cost context while replacing only write-capable upstream loader. No official refresh or output/authority write.",
+    "Writer race is a deterministic before-lock handoff using native lock, not an exhaustive multi-process race proof.",
+    "Live PID aged-lock test exercises native v2.5 CLI rejection; no directory deleted.",
+    "Realtime identity/cleanup proof does not certify quote freshness, anchor publication, fills, history PIT accuracy, deployed email or actual trading.",
+    "All-repository final acceptance and remote production deployment are owned by parent agent."
+  ],
+  "report": "contract_report.md"
+}

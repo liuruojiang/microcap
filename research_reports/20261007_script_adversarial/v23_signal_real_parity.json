@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "caliber": "diagnostic_read_only_actual_code_and_existing_costed_proxy_data",
+  "freshness_proof": "research_reports\\20261007_script_adversarial\\pre_delivery_check.json",
+  "latest_completed_date": "2026-09-30",
+  "base_price_rows": 4050,
+  "v20_rows": 4033,
+  "v23_rows": 3988,
+  "old_new_executed_holdings_costs_returns_nav_exact": true,
+  "old_recompute_matches_formal_file": true,
+  "score_max_absolute_change": 8.881784197001252e-16,
+  "real_score_sign_changes": 0,
+  "prefix_tests": {
+    "2010-09-29": {
+      "rows": 100,
+      "causal_parity": true
+    },
+    "2012-05-28": {
+      "rows": 500,
+      "causal_parity": true
+    },
+    "2016-07-06": {
+      "rows": 1500,
+      "causal_parity": true
+    },
+    "2022-09-01": {
+      "rows": 3000,
+      "causal_parity": true
+    }
+  },
+  "official_file_writes": false,
+  "inputs": {
+    "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5"
+  },
+  "sources": {
+    ".codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live_v2_3.py": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "dab988798bd1e262f2b8f738620b72794a38a79c55fa4d7c017b770c618a250a"
+  },
+  "signal": {
+    "overheat_metric_matches_native_feature": true,
+    "latest_native_overheat_feature": 0.19739660028848105
+  },
+  "limitations": [
+    "PIT universe and corporate-action history were not recertified by this script audit",
+    "No live quotes, production deployment, actual fills or SMTP delivery were tested"
+  ]
+}

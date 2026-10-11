@@ -1,0 +1,88 @@
+{
+  "scope": "round3_independent_data_boundary_diagnostic_only",
+  "verified_status": "PASS",
+  "formal_delivery_status": "BLOCKED",
+  "formal_blocker": "BLOCKED: local core/authority differs from remote release; no guard bypass",
+  "versions": [
+    "v2.0",
+    "v2.3",
+    "v2.5"
+  ],
+  "excluded_version": "v2.6",
+  "distinct_finding_groups": 7,
+  "baseline": {
+    "tests": 57,
+    "failures": 40,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 17
+  },
+  "current": {
+    "tests": 57,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 57
+  },
+  "affected_data_st_regression": {
+    "tests": 125,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 125
+  },
+  "combined_current_passed": 182,
+  "probe_count": 14,
+  "source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+    "scripts/top100_delivery.py": "4027af3fa1681eb3a3c0632fe20fea9606d41a6f41b0a4adba98d8a5aa8fbe7f",
+    "scripts/top100_cloud_delivery.py": "2741d0b8a009cffa8069781d6f8a7072425e5f3017e1825bb6d035e519c08962",
+    "scripts/top100_data_contracts.py": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288"
+  },
+  "old_source_root": ".codex_backups/20261007_200436",
+  "old_source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "a8429df05baa894122ab982b0345443ca183f41ee115f142f779edb2dd1c48e5",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267"
+  },
+  "test_sha256": "a758f542d9fdc1800bcdd5a0a195d0a3c5cc4689d6ac61f89c0dbe503ca1d113",
+  "official_input_sha256": {
+    "panel": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+    "proxy_index": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+    "turnover": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "base_costed_nav": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+    "v20_nav": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "v23_costed_nav": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "v25_costed_nav": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+  },
+  "official_inputs_unchanged": true,
+  "real_turnover_rows": 432,
+  "security_meta_files_unchanged": 4975,
+  "security_meta_content_manifest_sha256": "affc8d2e9ed83b81f0847fdc1017e09517ad149c434cf234ea01c5e65f6656f3",
+  "boundaries": [
+    "No formal performance/signal/holding publication",
+    "No full historical PIT/ST certification",
+    "No migration run or clean second-run certification",
+    "No deployment, email, orders or deletion"
+  ],
+  "evidence_sha256": {
+    "data_findings.json": "71fd723972d3fb82e8fd62164dd984e762dffb7a03294d6a03a345a18a17cead",
+    "data_review.md": "cbcfc1a2122ba9b31405d86757ba64703019fceaa5f98af33ac93364acb1f756",
+    "data_final_baseline.log": "3ab384086e61d398dc0bbe88d6ae563a59a73fb0bc36a302b15576587f6af7af",
+    "data_final_baseline.xml": "507031022bb47faf98dec550d762e8d344a3c1ffd0fe3e958b514849ec195d4a",
+    "data_final_current.log": "052951ce9f5a47f50ed2f4fb4ee10509295952bbba2d4e2c10b39b6b8ff71980",
+    "data_final_current.xml": "b097d683dbcbddc97d935f609239b83724574cf05dbbefa313e8afef2938e1b8",
+    "data_st_regression.log": "398142f73970087acd317a5e5defb817c67a24790f3479c729c0388298359bb1",
+    "data_st_regression.xml": "6d57ba8fb2dcebd2c818ee973a74e821e2daa9f4c0a0e05f26d3a2141ff16f6d",
+    "data_probes.py": "21ef7b0d8f32a9581309c71618dd2278d5ab6b557372f9658a55c23400df7be0",
+    "data_real_checks.py": "4c4a2bf9f9d922c8e72f8df6790b957956cf1de2391ac36fb9f5f2d6a9beafff",
+    "data_real_checks.json": "5334d92fad039a4c08dda0840f546f6c23173547b1115614e4646914090864f6",
+    "data_finalize.py": "16636ed289145b95b654ed2f0c3407a6de9c91463cf7e4872a567caa34e7e064",
+    "data_probe_before_active/data_probes_result.json": "a9d8068e30fef93a016456c89b052028069c411e20793df2568ce3b4ce696dab",
+    "data_probe_after/data_probes_result.json": "7238b8137a24cfed1f56fa466d44f2898569ae4348dee8ce187d5f8a1412acff"
+  }
+}

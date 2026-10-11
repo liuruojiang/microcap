@@ -1,0 +1,149 @@
+FFFFFFFFF.                                                               [100%]
+================================== FAILURES ===================================
+_________________ test_v23_overheat_rejects_active_ruin[-1.0] _________________
+
+invalid = -1.0
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E582BBA80>
+
+    @pytest.mark.parametrize("invalid", [-1., -1.1])
+    def test_v23_overheat_rejects_active_ruin(invalid, monkeypatch):
+        gross = _v23_gross_diagnostic([invalid])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+>       with pytest.raises(ValueError, match="(return|NAV).*(below|non-positive|ruin)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:334: Failed
+_________________ test_v23_overheat_rejects_active_ruin[-1.1] _________________
+
+invalid = -1.1
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E582BBE10>
+
+    @pytest.mark.parametrize("invalid", [-1., -1.1])
+    def test_v23_overheat_rejects_active_ruin(invalid, monkeypatch):
+        gross = _v23_gross_diagnostic([invalid])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+>       with pytest.raises(ValueError, match="(return|NAV).*(below|non-positive|ruin)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:334: Failed
+____________ test_v23_overheat_rejects_invalid_mapped_cost[-0.01] _____________
+
+rate = -0.01
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E5950C3B0>
+
+    @pytest.mark.parametrize("rate", [-.01, 1., 2., np.nan, np.inf])
+    def test_v23_overheat_rejects_invalid_mapped_cost(rate, monkeypatch):
+        gross = _v23_gross_diagnostic([.01])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+        monkeypatch.setattr(v20.base_mod.freq_mod.cost_mod, "map_rebalance_apply_costs",
+                            lambda *_: pd.Series(rate, index=gross.index))
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:344: Failed
+_____________ test_v23_overheat_rejects_invalid_mapped_cost[1.0] ______________
+
+rate = 1.0
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E597869C0>
+
+    @pytest.mark.parametrize("rate", [-.01, 1., 2., np.nan, np.inf])
+    def test_v23_overheat_rejects_invalid_mapped_cost(rate, monkeypatch):
+        gross = _v23_gross_diagnostic([.01])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+        monkeypatch.setattr(v20.base_mod.freq_mod.cost_mod, "map_rebalance_apply_costs",
+                            lambda *_: pd.Series(rate, index=gross.index))
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:344: Failed
+_____________ test_v23_overheat_rejects_invalid_mapped_cost[2.0] ______________
+
+rate = 2.0
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E59786AD0>
+
+    @pytest.mark.parametrize("rate", [-.01, 1., 2., np.nan, np.inf])
+    def test_v23_overheat_rejects_invalid_mapped_cost(rate, monkeypatch):
+        gross = _v23_gross_diagnostic([.01])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+        monkeypatch.setattr(v20.base_mod.freq_mod.cost_mod, "map_rebalance_apply_costs",
+                            lambda *_: pd.Series(rate, index=gross.index))
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:344: Failed
+_____________ test_v23_overheat_rejects_invalid_mapped_cost[nan] ______________
+
+rate = nan
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E59515F50>
+
+    @pytest.mark.parametrize("rate", [-.01, 1., 2., np.nan, np.inf])
+    def test_v23_overheat_rejects_invalid_mapped_cost(rate, monkeypatch):
+        gross = _v23_gross_diagnostic([.01])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+        monkeypatch.setattr(v20.base_mod.freq_mod.cost_mod, "map_rebalance_apply_costs",
+                            lambda *_: pd.Series(rate, index=gross.index))
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:344: Failed
+_____________ test_v23_overheat_rejects_invalid_mapped_cost[inf] ______________
+
+rate = inf
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E59516850>
+
+    @pytest.mark.parametrize("rate", [-.01, 1., 2., np.nan, np.inf])
+    def test_v23_overheat_rejects_invalid_mapped_cost(rate, monkeypatch):
+        gross = _v23_gross_diagnostic([.01])
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+        monkeypatch.setattr(v20.base_mod.freq_mod.cost_mod, "map_rebalance_apply_costs",
+                            lambda *_: pd.Series(rate, index=gross.index))
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:344: Failed
+_ test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav[overflow] _
+
+returns = [1e+308, 1e+308]
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E594E6030>
+
+    @pytest.mark.parametrize("returns", [[1e308, 1e308], [-.9] * 400], ids=["overflow", "underflow"])
+    def test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav(returns, monkeypatch):
+        gross = _v23_gross_diagnostic(returns)
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+>       with pytest.raises(ValueError, match="(NAV|nav).*(non-finite|non-positive)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:352: Failed
+_ test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav[underflow] _
+
+returns = [-0.9, -0.9, -0.9, -0.9, -0.9, -0.9, ...]
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000015E594E6F30>
+
+    @pytest.mark.parametrize("returns", [[1e308, 1e308], [-.9] * 400], ids=["overflow", "underflow"])
+    def test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav(returns, monkeypatch):
+        gross = _v23_gross_diagnostic(returns)
+        _patch_v23_diagnostic_feature(gross, monkeypatch)
+>       with pytest.raises(ValueError, match="(NAV|nav).*(non-finite|non-positive)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:352: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_active_ruin[-1.0]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_active_ruin[-1.1]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_invalid_mapped_cost[-0.01]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_invalid_mapped_cost[1.0]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_invalid_mapped_cost[2.0]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_invalid_mapped_cost[nan]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_invalid_mapped_cost[inf]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav[overflow]
+FAILED tests/test_script_signal_adversarial.py::test_v23_overheat_rejects_nonfinite_or_nonpositive_cumulative_nav[underflow]
+9 failed, 1 passed, 63 deselected in 2.23s

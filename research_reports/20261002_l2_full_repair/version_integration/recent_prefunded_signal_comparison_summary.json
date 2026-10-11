@@ -1,0 +1,36 @@
+{
+  "branch": "prefunded",
+  "new_signal_sha256": "981cb31501177ca836e3a22d09703dc4876b18781ad27df852397a941aa755ba",
+  "start": "2025-10-09",
+  "end": "2026-09-30",
+  "versions": {
+    "v2.0": {
+      "compared_sessions": 224,
+      "new_vs_old_count": 8,
+      "sliced_old_vs_old_count": 0,
+      "first_new_difference": "2025-12-05",
+      "difference_categories": {
+        "new_stock_proxy_path": 8
+      }
+    },
+    "v2.3": {
+      "compared_sessions": 217,
+      "new_vs_old_count": 19,
+      "sliced_old_vs_old_count": 0,
+      "first_new_difference": "2025-11-24",
+      "difference_categories": {
+        "new_stock_proxy_path": 19
+      }
+    },
+    "v2.5": {
+      "compared_sessions": 222,
+      "new_vs_old_count": 1,
+      "sliced_old_vs_old_count": 0,
+      "first_new_difference": "2026-07-16",
+      "difference_categories": {
+        "new_stock_proxy_path": 1
+      }
+    }
+  },
+  "comparison_output_sha256": "3359ea8733ca3f01b9d888fb48e5f79f77a12ef55504c4bc5f32c7c0134f6bd1"
+}

@@ -1,0 +1,59 @@
+{
+  "scope": "native_windows_single_signal_csv_empty_record_compatibility_no_smtp",
+  "before_builder_sha256": "59a117c2279ac4f40c457d312afa52ecec2bbbc33acdc2a53c77c4f9536a8a53",
+  "after_builder_sha256": "d0e7ee6316f0e638fc2274c513e966ae1a44ea838df4f9333a1cd5670221b340",
+  "versions": [
+    {
+      "version": "v2.0",
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "sha256": "9148edf40c08cb181b59887d54ec64743995edc1a8235e9765f8bcdfdb1f8165",
+      "pandas_data_rows": 1,
+      "raw_csv_records": 4,
+      "completely_empty_records": 2,
+      "nonempty_records_including_header": 2,
+      "signal_data_rows": 1,
+      "crcrlf_separators": 2,
+      "before_note": "final signal CSV must contain exactly one signal row",
+      "after_note": "",
+      "after_identity_version": "2.0",
+      "after_signal_date": "2026-09-30"
+    },
+    {
+      "version": "v2.3",
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "sha256": "92a4124a3333010485fad0eba185e14a48f45f357c9fdc53172d1a2452d7bc86",
+      "pandas_data_rows": 1,
+      "raw_csv_records": 4,
+      "completely_empty_records": 2,
+      "nonempty_records_including_header": 2,
+      "signal_data_rows": 1,
+      "crcrlf_separators": 2,
+      "before_note": "final signal CSV must contain exactly one signal row",
+      "after_note": "",
+      "after_identity_version": "2.3",
+      "after_signal_date": "2026-09-30"
+    },
+    {
+      "version": "v2.5",
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "sha256": "9f2be1a7c840c52d3684602740aa5692eb889be908636b0916ab82460473a42d",
+      "pandas_data_rows": 1,
+      "raw_csv_records": 4,
+      "completely_empty_records": 2,
+      "nonempty_records_including_header": 2,
+      "signal_data_rows": 1,
+      "crcrlf_separators": 2,
+      "before_note": "final signal CSV must contain exactly one signal row",
+      "after_note": "",
+      "after_identity_version": "2.5",
+      "after_signal_date": "2026-09-30"
+    }
+  ],
+  "primary_csv_modified": false,
+  "signals_reexecuted_by_agent": false,
+  "native_full_log_digest_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\native_windows_preview\\metadata.json",
+  "digest_status": "OK",
+  "signal_date": "2026-09-30",
+  "sent_mail": false,
+  "note": "All three native files contain one nonempty signal data row, not multiple signals."
+}

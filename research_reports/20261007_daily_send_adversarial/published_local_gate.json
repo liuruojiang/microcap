@@ -1,0 +1,25 @@
+{
+  "exit_code": 0,
+  "timeout": false,
+  "elapsed_seconds": 47.526649099978385,
+  "files": [
+    "tests/test_adversarial_delivery_plain_20260904.py",
+    "tests/test_adversarial_delivery_state_consistency.py",
+    "tests/test_adversarial_microcap_delivery.py",
+    "tests/test_adversarial_v20_plain_20260904.py",
+    "tests/test_adversarial_v23_plain_20260904.py",
+    "tests/test_exchange_calendar_provider.py",
+    "tests/test_index_history_preflight.py",
+    "tests/test_realtime_exchange_calendar.py",
+    "tests/test_realtime_preflight.py",
+    "tests/test_realtime_state_guard_20260915.py",
+    "tests/test_script_delivery_adversarial.py",
+    "tests/test_top100_cloud_delivery.py",
+    "tests/test_top100_delivery.py",
+    "tests/test_v23_identity_adversarial.py",
+    "tests/test_v25_plain_promotion.py",
+    "tests/test_v25_realtime_artifact_invalidation.py",
+    "tests/test_realtime_publication_deadline.py"
+  ],
+  "digest_source": "D:\\\u52a8\u91cf\u7b56\u7565\\codex-daily-automation-probe-l7-sync\\scripts\\build_microcap_realtime_digest.py"
+}

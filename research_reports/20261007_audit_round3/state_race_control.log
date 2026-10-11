@@ -1,0 +1,8 @@
+.                                                                        [100%]
+============================== warnings summary ===============================
+tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+  D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+    return _generate_v2_0_outputs_unlocked()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 45 deselected, 1 warning in 12.10s

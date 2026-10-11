@@ -1,0 +1,154 @@
+FFFFFFFFFFFFFFFFFFFFFFFFF....                                            [100%]
+================================== FAILURES ===================================
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-official_close_confirmed_signal-False] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted official_close_confirmed_signal passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-official_close_confirmed_signal-False] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted official_close_confirmed_signal passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-official_close_confirmed_signal-False] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted official_close_confirmed_signal passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-signal_timing-intraday_hypothetical_if_now_close] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted signal_timing passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-signal_timing-intraday_hypothetical_if_now_close] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted signal_timing passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-signal_timing-intraday_hypothetical_if_now_close] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted signal_timing passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-strategy_version-v2.0] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted strategy_version passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-strategy_version-v2.0] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted strategy_version passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-member_rebalance_state-none] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted member_rebalance_state passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-member_rebalance_state-none] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted member_rebalance_state passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-member_rebalance_state-none] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted member_rebalance_state passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-target_position_scale-9] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted target_position_scale passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-target_position_scale-9] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted target_position_scale passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-target_position_scale-9] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted target_position_scale passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-position_transition-True] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted position_transition passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-position_transition-False] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted position_transition passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-position_transition-True] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted position_transition passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-scale_trade_required-True] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted scale_trade_required passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-scale_trade_required-True] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted scale_trade_required passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-scale_trade_required-True] _
+tests\test_doublecheck_contract_adversarial.py:141: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted scale_trade_required passed native delivery CLI: []
+E   assert 0 == 1
+_ test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_version] _
+tests\test_doublecheck_contract_adversarial.py:213: in test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file
+    assert not retained, f"Native v2.5 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.5 信号 CLI kept wrong_version realtime artifact
+E   assert not True
+_ test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_strategy_version] _
+tests\test_doublecheck_contract_adversarial.py:213: in test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file
+    assert not retained, f"Native v2.5 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.5 信号 CLI kept wrong_strategy_version realtime artifact
+E   assert not True
+_ test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[missing_version] _
+tests\test_doublecheck_contract_adversarial.py:213: in test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file
+    assert not retained, f"Native v2.5 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.5 信号 CLI kept missing_version realtime artifact
+E   assert not True
+_ test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[two_rows] _
+tests\test_doublecheck_contract_adversarial.py:213: in test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file
+    assert not retained, f"Native v2.5 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.5 信号 CLI kept two_rows realtime artifact
+E   assert not True
+_ test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[enabled_overheat] _
+tests\test_doublecheck_contract_adversarial.py:213: in test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file
+    assert not retained, f"Native v2.5 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.5 信号 CLI kept enabled_overheat realtime artifact
+E   assert not True
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-official_close_confirmed_signal-False]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-official_close_confirmed_signal-False]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-official_close_confirmed_signal-False]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-signal_timing-intraday_hypothetical_if_now_close]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-signal_timing-intraday_hypothetical_if_now_close]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-signal_timing-intraday_hypothetical_if_now_close]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-strategy_version-v2.0]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-strategy_version-v2.0]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-member_rebalance_state-none]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-member_rebalance_state-none]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-member_rebalance_state-none]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-target_position_scale-9]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-target_position_scale-9]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-target_position_scale-9]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-position_transition-True]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-position_transition-False]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-position_transition-True]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-scale_trade_required-True]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-scale_trade_required-True]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-scale_trade_required-True]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_version]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[wrong_strategy_version]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[missing_version]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[two_rows]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[enabled_overheat]
+25 failed, 4 passed in 63.68s (0:01:03)

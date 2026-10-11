@@ -1,0 +1,50 @@
+{
+  "0": {
+    "rows": 4033,
+    "latest_date": "2026-09-30",
+    "max_absolute_difference": {
+      "return_net": 0.0,
+      "nav_net": 0.0,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 0.0,
+      "total_cost": 0.0,
+      "current_execution_scale": 0.0
+    },
+    "labels_equal": {
+      "holding": true,
+      "next_holding": true
+    }
+  },
+  "3": {
+    "rows": 3988,
+    "latest_date": "2026-09-30",
+    "max_absolute_difference": {
+      "return_net": 0.0,
+      "nav_net": 0.0,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 0.0,
+      "total_cost": 0.0,
+      "current_execution_scale": 0.0
+    },
+    "labels_equal": {
+      "holding": true,
+      "next_holding": true
+    }
+  },
+  "5": {
+    "rows": 3988,
+    "latest_date": "2026-09-30",
+    "max_absolute_difference": {
+      "return_net": 0.0,
+      "nav_net": 0.0,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 0.0,
+      "total_cost": 0.0,
+      "current_execution_scale": 0.0
+    },
+    "labels_equal": {
+      "holding": true,
+      "next_holding": true
+    }
+  }
+}

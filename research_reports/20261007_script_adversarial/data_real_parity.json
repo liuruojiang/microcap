@@ -1,0 +1,52 @@
+{
+  "caliber": "script correctness and unchanged official-path parity; not PIT historical certification",
+  "cutoff": "2026-09-30",
+  "close_rows": 4067,
+  "base_rows": 4050,
+  "formal_v20_rows": 4033,
+  "old_new_close_exact": true,
+  "old_new_base_gross_exact": true,
+  "old_new_base_costed_exact": true,
+  "old_new_formal_v20_exact": true,
+  "formal_v20_published_frozen_key_parity": true,
+  "formal_v20_max_abs_nav_delta": 3.552713678800501e-15,
+  "cost_timing_counts": {
+    "close": 432
+  },
+  "formal_stream_validations": {
+    "2.0": {
+      "path": "outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "finite_positive_consistent_nav": true
+    },
+    "2.3": {
+      "path": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+      "finite_positive_consistent_nav": true
+    },
+    "2.5": {
+      "path": "outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+      "finite_positive_consistent_nav": true
+    }
+  },
+  "inputs": {
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054"
+    },
+    "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973"
+    },
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+    }
+  },
+  "before_source_sha256": "9e12b731fcce474234ffd5136288d20ce6ba19872f606ccf47e58816d07bd550",
+  "after_source_sha256": "3b5f31eefe74da5714d08762c2573edbaedbb551e6b05e33b724f1da71be244c"
+}

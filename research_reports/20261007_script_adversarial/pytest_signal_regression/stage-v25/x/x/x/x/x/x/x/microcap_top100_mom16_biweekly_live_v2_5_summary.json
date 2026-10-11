@@ -1,0 +1,126 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live_v2_5",
+  "version": "2.5",
+  "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+  "version_role": "microcap_only_log_wls_threshold_no_target_vol",
+  "version_note": "Formal simplified v2.5 microcap-only log-WLS without threshold or target-vol overlays. Uses exp half-life 3.0 weighted log slope on 20 trading days of unhedged microcap Top100 NAV, enters when score is above 0 and exits when score is at or below 0, removes the hedge leg, applies no R2 gate, no single-trade stop-loss, no equity drawdown stop, no momentum-decay exit, no overheat exit, no cash-day yield, no financing, and no target-volatility scaling.",
+  "core_params": {
+    "fixed_hedge_ratio": 0.0,
+    "lookback": 20,
+    "signal_spread_hedge_ratio": 0.0,
+    "execution_hedge_ratio": 0.0,
+    "hedge_removed": true,
+    "signal_model": {
+      "type": "microcap_only_log_wls_exp",
+      "lookback": 20,
+      "halflife": 3.0,
+      "weights_oldest_to_newest": [
+        0.0025838709016604627,
+        0.0032554733392128623,
+        0.004101639387445837,
+        0.005167741803320925,
+        0.0065109466784257245,
+        0.008203278774891675,
+        0.01033548360664185,
+        0.013021893356851449,
+        0.016406557549783353,
+        0.020670967213283698,
+        0.026043786713702898,
+        0.032813115099566706,
+        0.041341934426567396,
+        0.052087573427405796,
+        0.06562623019913341,
+        0.0826838688531348,
+        0.10417514685481159,
+        0.13125246039826682,
+        0.1653677377062696,
+        0.20835029370962319
+      ],
+      "score_definition": "annualized weighted log slope of unhedged microcap Top100 NAV",
+      "nav_csv_momentum_gap_column_alias_note": "momentum_gap stores annualized microcap-only log-WLS score for v2.0 compatibility, not raw microcap minus hedge gap",
+      "r2_gate": null,
+      "legacy_momentum_gap_field": "same value as annualized_log_wls_score for v2.0 compatibility"
+    },
+    "entry_threshold": 0.0,
+    "exit_threshold": 0.0,
+    "signal_quality_derisk": {
+      "enabled": false,
+      "type": "removed_no_peak_decay"
+    },
+    "single_trade_stop_loss": {
+      "enabled": false
+    },
+    "equity_drawdown_overlay": {
+      "enabled": false
+    },
+    "momentum_decay_overlay": {
+      "enabled": false
+    },
+    "overheat_overlay": {
+      "enabled": false
+    },
+    "target_volatility_scaling": {
+      "enabled": false
+    },
+    "cash_day_yield": {
+      "enabled": false
+    },
+    "financing": {
+      "enabled": false
+    },
+    "parameter_replacement": {
+      "replaced_original_v2_5": true,
+      "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "selected_from_run": "quant_param_scan_runs/20260904_v25_halflife_seven_lines_old_snapshot/daily_outputs/lb20_h3.csv.gz",
+      "comparison_run": "quant_param_scan_runs/20260905_microcap_top100_v2_5_simplified_momentum_microcap_only_log_wls_ensemble_lookback_20_plus_distant_50_50",
+      "selected_params": {
+        "lookback": 20,
+        "halflife": 3.0,
+        "entry_threshold": 0.0,
+        "exit_threshold": 0.0,
+        "target_vol_enabled": false
+      }
+    }
+  },
+  "latest_trade_date": "2026-08-07",
+  "latest_nav_date": "2026-08-07",
+  "latest_signal": {
+    "holding": "cash",
+    "member_rebalance_state": "rebalance",
+    "member_rebalance_required": true,
+    "member_enter_count": 12,
+    "member_exit_count": 12,
+    "member_rebalance_label": "名单调仓（调入 12，调出 12）",
+    "member_rebalance_signal_date": "2026-08-06",
+    "member_rebalance_execution_date": "2026-08-07",
+    "member_rebalance_actionable": false,
+    "member_rebalance_official": true,
+    "microcap_series_source": "test",
+    "official_wind_series": true,
+    "proxy_warning": ""
+  },
+  "data_lineage": {
+    "source_used": "test",
+    "official_wind_series": true,
+    "v2_5_common_index_gap": {},
+    "v2_5_rebalance_timing_note": "The biweekly file/output name is inherited from the embedded Top100 member proxy; the v2.5 close-confirmed overlay evaluates its microcap-only log-WLS threshold daily."
+  },
+  "data_freshness_proof": {
+    "latest_date": "2026-08-07",
+    "row_count": 1
+  },
+  "historical_rewrite_audit": {
+    "status": "not_checked",
+    "reason": "no_previous_costed_nav"
+  },
+  "performance_snapshot": {
+    "source_label": "costed_v2_5"
+  },
+  "base_fingerprint": {},
+  "synthetic_basket_execution": true,
+  "execution_model": {
+    "synthetic_basket_execution": true,
+    "member_level_fill_engine": false,
+    "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation."
+  }
+}

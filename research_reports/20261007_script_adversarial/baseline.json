@@ -1,0 +1,98 @@
+{
+  "scope": [
+    "v2.0",
+    "v2.3",
+    "v2.5"
+  ],
+  "head": "eefd27d81d2c9c9f1438975c4d5c221d1b81bf96",
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135",
+  "backup_files": 42,
+  "backup_verified": true,
+  "streams_before_refresh": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8738,
+      "first_date": "1990-12-19",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": {
+      "rows": 43200,
+      "first_date": "2010-01-14",
+      "latest_date": "2026-09-17"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 432,
+      "first_date": "2010-01-14",
+      "latest_date": "2026-09-17"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "first_date": "2026-09-30",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "first_date": "2026-09-30",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "first_date": "2026-09-30",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4050,
+      "first_date": "2010-01-28",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4067,
+      "first_date": "2010-01-05",
+      "latest_date": "2026-09-30"
+    }
+  }
+}

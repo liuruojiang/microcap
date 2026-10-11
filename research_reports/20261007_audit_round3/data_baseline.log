@@ -1,0 +1,648 @@
+FFFFFFFFFFFFFFFFFFFFFF..FFF...                                           [100%]
+================================== FAILURES ===================================
+_ test_daily_parser_preserves_legal_mixed_midnight_text[shared_v20-date_then_midnight] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22C4A58A560>, execute_query=<function execute_query at 0x0000022C4A58A6C0>, main=<function main at 0x0000022C4A58A820>)
+reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["date_then_midnight", "midnight_then_date"])
+    def test_daily_parser_preserves_legal_mixed_midnight_text(base, reverse):
+        dates = ["2026-09-01", "2026-09-02 00:00:00"]
+        if reverse:
+            dates = ["2026-09-01 00:00:00", "2026-09-02"]
+        frame = pd.DataFrame({"date": dates, "value": [1.0, 2.0]})
+>       parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                   date  value
+0           2026-09-01    1.0
+1  2026-09-02 00:00:00    2.0
+label = 'round3 diagnostic mixed legal date labels'
+
+>   ???
+E   ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT
+
+<embedded_top100_base>:4909: ValueError
+_ test_daily_parser_preserves_legal_mixed_midnight_text[shared_v20-midnight_then_date] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22C4A58A560>, execute_query=<function execute_query at 0x0000022C4A58A6C0>, main=<function main at 0x0000022C4A58A820>)
+reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["date_then_midnight", "midnight_then_date"])
+    def test_daily_parser_preserves_legal_mixed_midnight_text(base, reverse):
+        dates = ["2026-09-01", "2026-09-02 00:00:00"]
+        if reverse:
+            dates = ["2026-09-01 00:00:00", "2026-09-02"]
+        frame = pd.DataFrame({"date": dates, "value": [1.0, 2.0]})
+>       parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                   date  value
+0  2026-09-01 00:00:00    1.0
+1           2026-09-02    2.0
+label = 'round3 diagnostic mixed legal date labels'
+
+>   ???
+E   ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT
+
+<embedded_top100_base>:4909: ValueError
+_ test_daily_parser_preserves_legal_mixed_midnight_text[mainline-date_then_midnight] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["date_then_midnight", "midnight_then_date"])
+    def test_daily_parser_preserves_legal_mixed_midnight_text(base, reverse):
+        dates = ["2026-09-01", "2026-09-02 00:00:00"]
+        if reverse:
+            dates = ["2026-09-01 00:00:00", "2026-09-02"]
+        frame = pd.DataFrame({"date": dates, "value": [1.0, 2.0]})
+>       parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                   date  value
+0           2026-09-01    1.0
+1  2026-09-02 00:00:00    2.0
+label = 'round3 diagnostic mixed legal date labels'
+
+    def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+        out = frame.copy()
+        if "date" in out.columns:
+            out["date"] = pd.to_datetime(out["date"], errors="coerce")
+            if out["date"].isna().any():
+>               raise ValueError(f"{label} contains invalid dates/NaT")
+E               ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: ValueError
+_ test_daily_parser_preserves_legal_mixed_midnight_text[mainline-midnight_then_date] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True], ids=["date_then_midnight", "midnight_then_date"])
+    def test_daily_parser_preserves_legal_mixed_midnight_text(base, reverse):
+        dates = ["2026-09-01", "2026-09-02 00:00:00"]
+        if reverse:
+            dates = ["2026-09-01 00:00:00", "2026-09-02"]
+        frame = pd.DataFrame({"date": dates, "value": [1.0, 2.0]})
+>       parsed = base._normalise_dated_frame(frame, "round3 diagnostic mixed legal date labels")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                   date  value
+0  2026-09-01 00:00:00    1.0
+1           2026-09-02    2.0
+label = 'round3 diagnostic mixed legal date labels'
+
+    def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+        out = frame.copy()
+        if "date" in out.columns:
+            out["date"] = pd.to_datetime(out["date"], errors="coerce")
+            if out["date"].isna().any():
+>               raise ValueError(f"{label} contains invalid dates/NaT")
+E               ValueError: round3 diagnostic mixed legal date labels contains invalid dates/NaT
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: ValueError
+_ test_daily_close_loader_preserves_every_legal_mixed_format_row[shared_v20-panel] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22C4A58A560>, execute_query=<function execute_query at 0x0000022C4A58A6C0>, main=<function main at 0x0000022C4A58A820>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_daily_close_loader_preser0')
+mixed_source = 'panel'
+
+    @pytest.mark.parametrize("mixed_source", ["panel", "proxy"])
+    def test_daily_close_loader_preserves_every_legal_mixed_format_row(base, tmp_path, mixed_source):
+        dates = pd.bdate_range("2026-08-03", periods=40)
+        panel = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), base.HEDGE_COLUMN: np.arange(40) + 100.0})
+        proxy = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), "close": np.arange(40) + 200.0,
+                              "holding_effective": True})
+        changed = panel if mixed_source == "panel" else proxy
+        changed.loc[39, "date"] += " 00:00:00"
+        panel_path, proxy_path = tmp_path / "panel.csv", tmp_path / "proxy.csv"
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       parsed = base.load_close_df(panel_path, proxy_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<embedded_top100_base>:2184: in load_close_df
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                    date  1.000852
+0            2026-08-03     100.0
+1            2026-08-04     101.0
+2            202...6-09-22     136.0
+37           2026-09-23     137.0
+38           2026-09-24     138.0
+39  2026-09-25 00:00:00     139.0
+label = 'hedge panel'
+
+>   ???
+E   ValueError: hedge panel contains invalid dates/NaT
+
+<embedded_top100_base>:4909: ValueError
+_ test_daily_close_loader_preserves_every_legal_mixed_format_row[shared_v20-proxy] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22C4A58A560>, execute_query=<function execute_query at 0x0000022C4A58A6C0>, main=<function main at 0x0000022C4A58A820>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_daily_close_loader_preser1')
+mixed_source = 'proxy'
+
+    @pytest.mark.parametrize("mixed_source", ["panel", "proxy"])
+    def test_daily_close_loader_preserves_every_legal_mixed_format_row(base, tmp_path, mixed_source):
+        dates = pd.bdate_range("2026-08-03", periods=40)
+        panel = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), base.HEDGE_COLUMN: np.arange(40) + 100.0})
+        proxy = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), "close": np.arange(40) + 200.0,
+                              "holding_effective": True})
+        changed = panel if mixed_source == "panel" else proxy
+        changed.loc[39, "date"] += " 00:00:00"
+        panel_path, proxy_path = tmp_path / "panel.csv", tmp_path / "proxy.csv"
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       parsed = base.load_close_df(panel_path, proxy_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<embedded_top100_base>:2187: in load_close_df
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                    date  close  holding_effective
+0            2026-08-03  200.0               True
+1            2026-...               True
+38           2026-09-24  238.0               True
+39  2026-09-25 00:00:00  239.0               True
+label = 'microcap proxy'
+
+>   ???
+E   ValueError: microcap proxy contains invalid dates/NaT
+
+<embedded_top100_base>:4909: ValueError
+_ test_daily_close_loader_preserves_every_legal_mixed_format_row[mainline-panel] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_daily_close_loader_preser2')
+mixed_source = 'panel'
+
+    @pytest.mark.parametrize("mixed_source", ["panel", "proxy"])
+    def test_daily_close_loader_preserves_every_legal_mixed_format_row(base, tmp_path, mixed_source):
+        dates = pd.bdate_range("2026-08-03", periods=40)
+        panel = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), base.HEDGE_COLUMN: np.arange(40) + 100.0})
+        proxy = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), "close": np.arange(40) + 200.0,
+                              "holding_effective": True})
+        changed = panel if mixed_source == "panel" else proxy
+        changed.loc[39, "date"] += " 00:00:00"
+        panel_path, proxy_path = tmp_path / "panel.csv", tmp_path / "proxy.csv"
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       parsed = base.load_close_df(panel_path, proxy_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:1344: in load_close_df
+    panel = _normalise_dated_frame(panel, "hedge panel").reset_index()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                    date  1.000852
+0            2026-08-03     100.0
+1            2026-08-04     101.0
+2            202...6-09-22     136.0
+37           2026-09-23     137.0
+38           2026-09-24     138.0
+39  2026-09-25 00:00:00     139.0
+label = 'hedge panel'
+
+    def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+        out = frame.copy()
+        if "date" in out.columns:
+            out["date"] = pd.to_datetime(out["date"], errors="coerce")
+            if out["date"].isna().any():
+>               raise ValueError(f"{label} contains invalid dates/NaT")
+E               ValueError: hedge panel contains invalid dates/NaT
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: ValueError
+_ test_daily_close_loader_preserves_every_legal_mixed_format_row[mainline-proxy] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_daily_close_loader_preser3')
+mixed_source = 'proxy'
+
+    @pytest.mark.parametrize("mixed_source", ["panel", "proxy"])
+    def test_daily_close_loader_preserves_every_legal_mixed_format_row(base, tmp_path, mixed_source):
+        dates = pd.bdate_range("2026-08-03", periods=40)
+        panel = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), base.HEDGE_COLUMN: np.arange(40) + 100.0})
+        proxy = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), "close": np.arange(40) + 200.0,
+                              "holding_effective": True})
+        changed = panel if mixed_source == "panel" else proxy
+        changed.loc[39, "date"] += " 00:00:00"
+        panel_path, proxy_path = tmp_path / "panel.csv", tmp_path / "proxy.csv"
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       parsed = base.load_close_df(panel_path, proxy_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:1347: in load_close_df
+    proxy = _normalise_dated_frame(proxy, "microcap proxy").reset_index()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                    date  close  holding_effective
+0            2026-08-03  200.0               True
+1            2026-...               True
+38           2026-09-24  238.0               True
+39  2026-09-25 00:00:00  239.0               True
+label = 'microcap proxy'
+
+    def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+        out = frame.copy()
+        if "date" in out.columns:
+            out["date"] = pd.to_datetime(out["date"], errors="coerce")
+            if out["date"].isna().any():
+>               raise ValueError(f"{label} contains invalid dates/NaT")
+E               ValueError: microcap proxy contains invalid dates/NaT
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: ValueError
+_ test_freeze_accepts_same_daily_rows_with_legal_date_text_variations[shared_v20] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...22C4A58A560>, execute_query=<function execute_query at 0x0000022C4A58A6C0>, main=<function main at 0x0000022C4A58A820>)
+
+    def test_freeze_accepts_same_daily_rows_with_legal_date_text_variations(base):
+        previous = pd.DataFrame({"date": ["2026-09-01", "2026-09-02"], "nav_net": [1.0, 1.01]})
+        candidate = previous.copy()
+        candidate.loc[1, "date"] += " 00:00:00"
+>       base.assert_no_historical_rewrite(previous, candidate, ["nav_net"], 0, "round3 diagnostic unchanged daily values")
+
+tests\test_round3_data_boundary.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<embedded_top100_base>:4951: in assert_no_historical_rewrite
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                   date  nav_net
+0           2026-09-01     1.00
+1  2026-09-02 00:00:00     1.01
+label = 'round3 diagnostic unchanged daily values candidate'
+
+>   ???
+E   ValueError: round3 diagnostic unchanged daily values candidate contains invalid dates/NaT
+
+<embedded_top100_base>:4909: ValueError
+_ test_freeze_accepts_same_daily_rows_with_legal_date_text_variations[mainline] _
+
+base = <module '_round3_data_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436\\microcap_top100_mom16_biweekly_live.py'>
+
+    def test_freeze_accepts_same_daily_rows_with_legal_date_text_variations(base):
+        previous = pd.DataFrame({"date": ["2026-09-01", "2026-09-02"], "nav_net": [1.0, 1.01]})
+        candidate = previous.copy()
+        candidate.loc[1, "date"] += " 00:00:00"
+>       base.assert_no_historical_rewrite(previous, candidate, ["nav_net"], 0, "round3 diagnostic unchanged daily values")
+
+tests\test_round3_data_boundary.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3753: in assert_no_historical_rewrite
+    cand = _normalise_dated_frame(candidate, f"{label} candidate")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                   date  nav_net
+0           2026-09-01     1.00
+1  2026-09-02 00:00:00     1.01
+label = 'round3 diagnostic unchanged daily values candidate'
+
+    def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+        out = frame.copy()
+        if "date" in out.columns:
+            out["date"] = pd.to_datetime(out["date"], errors="coerce")
+            if out["date"].isna().any():
+>               raise ValueError(f"{label} contains invalid dates/NaT")
+E               ValueError: round3 diagnostic unchanged daily values candidate contains invalid dates/NaT
+
+.codex_backups\20261007_200436\microcap_top100_mom16_biweekly_live.py:3709: ValueError
+______ test_turnover_loader_preserves_legal_mixed_rebalance_text[False] _______
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_turnover_loader_preserves0')
+reverse = False
+
+    @pytest.mark.parametrize("reverse", [False, True])
+    def test_turnover_loader_preserves_legal_mixed_rebalance_text(tmp_path, reverse):
+        dates = ["2026-09-01", "2026-09-02 00:00:00"]
+        if reverse:
+            dates = ["2026-09-01 00:00:00", "2026-09-02"]
+        path = tmp_path / "turnover.csv"
+        pd.DataFrame({"rebalance_date": dates, "execution_date": dates,
+                      "execution_timing": "close", "two_side_cost_rate": [0.001, 0.002]}).to_csv(path, index=False)
+>       event = v20.cost_mod.load_turnover_table(path)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<embedded_cost>:72: in load_turnover_table
+    ???
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   ValueError: unconverted data remains when parsing with format "%Y-%m-%d": " 00:00:00", at position 1. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:587: ValueError
+_______ test_turnover_loader_preserves_legal_mixed_rebalance_text[True] _______
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_turnover_loader_preserves1')
+reverse = True
+
+    @pytest.mark.parametrize("reverse", [False, True])
+    def test_turnover_loader_preserves_legal_mixed_rebalance_text(tmp_path, reverse):
+        dates = ["2026-09-01", "2026-09-02 00:00:00"]
+        if reverse:
+            dates = ["2026-09-01 00:00:00", "2026-09-02"]
+        path = tmp_path / "turnover.csv"
+        pd.DataFrame({"rebalance_date": dates, "execution_date": dates,
+                      "execution_timing": "close", "two_side_cost_rate": [0.001, 0.002]}).to_csv(path, index=False)
+>       event = v20.cost_mod.load_turnover_table(path)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_round3_data_boundary.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<embedded_cost>:72: in load_turnover_table
+    ???
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:1072: in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:435: in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\tools\datetimes.py:469: in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/tslibs/strptime.pyx:501: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+pandas/_libs/tslibs/strptime.pyx:451: in pandas._libs.tslibs.strptime.array_strptime
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   ValueError: time data "2026-09-02" doesn't match format "%Y-%m-%d %H:%M:%S", at position 1. You might want to try:
+E       - passing `format` if your strings have a consistent format;
+E       - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+E       - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+
+pandas/_libs/tslibs/strptime.pyx:583: ValueError
+___ test_actual_embedded_loader_does_not_silently_drop_legal_midnight_event ___
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_actual_embedded_loader_do0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C48C24180>
+
+    def test_actual_embedded_loader_does_not_silently_drop_legal_midnight_event(tmp_path, monkeypatch):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01", "2026-09-02 00:00:00"],
+                               "execution_date": ["2026-09-01", "2026-09-02 00:00:00"],
+                               "execution_timing": "close", "two_side_cost_rate": [0.001, 0.002]})
+        loader, dates = _embedded_inputs(tmp_path, monkeypatch, events)
+        _, gross, consumed = loader()
+>       assert len(consumed) == 2, "A valid midnight event disappeared before the cost mapper"
+E       AssertionError: A valid midnight event disappeared before the cost mapper
+E       assert 1 == 2
+E        +  where 1 = len(  rebalance_date execution_date execution_timing  two_side_cost_rate\n0     2026-09-01     2026-09-01            close               0.001)
+
+tests\test_round3_data_boundary.py:122: AssertionError
+_ test_actual_embedded_loader_never_discards_bad_event_before_validation[None-0.002] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_actual_embedded_loader_ne0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C4847AFD0>
+rebalance_date = None, cost = 0.002
+
+    @pytest.mark.parametrize("rebalance_date,cost", [(None, 0.002), ("NaT", 0.002),
+                                                      ("invalid-date", 0.002), (None, np.inf)])
+    def test_actual_embedded_loader_never_discards_bad_event_before_validation(tmp_path, monkeypatch, rebalance_date, cost):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01", rebalance_date],
+                               "execution_date": ["2026-09-01", "2026-09-02"],
+                               "execution_timing": "close", "two_side_cost_rate": [0.001, cost]})
+        loader, _ = _embedded_inputs(tmp_path, monkeypatch, events)
+>       with pytest.raises(ValueError, match="date|cost|event|turnover"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:135: Failed
+_ test_actual_embedded_loader_never_discards_bad_event_before_validation[NaT-0.002] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_actual_embedded_loader_ne1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C482BD370>
+rebalance_date = 'NaT', cost = 0.002
+
+    @pytest.mark.parametrize("rebalance_date,cost", [(None, 0.002), ("NaT", 0.002),
+                                                      ("invalid-date", 0.002), (None, np.inf)])
+    def test_actual_embedded_loader_never_discards_bad_event_before_validation(tmp_path, monkeypatch, rebalance_date, cost):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01", rebalance_date],
+                               "execution_date": ["2026-09-01", "2026-09-02"],
+                               "execution_timing": "close", "two_side_cost_rate": [0.001, cost]})
+        loader, _ = _embedded_inputs(tmp_path, monkeypatch, events)
+>       with pytest.raises(ValueError, match="date|cost|event|turnover"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:135: Failed
+_ test_actual_embedded_loader_never_discards_bad_event_before_validation[invalid-date-0.002] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_actual_embedded_loader_ne2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C482D6030>
+rebalance_date = 'invalid-date', cost = 0.002
+
+    @pytest.mark.parametrize("rebalance_date,cost", [(None, 0.002), ("NaT", 0.002),
+                                                      ("invalid-date", 0.002), (None, np.inf)])
+    def test_actual_embedded_loader_never_discards_bad_event_before_validation(tmp_path, monkeypatch, rebalance_date, cost):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01", rebalance_date],
+                               "execution_date": ["2026-09-01", "2026-09-02"],
+                               "execution_timing": "close", "two_side_cost_rate": [0.001, cost]})
+        loader, _ = _embedded_inputs(tmp_path, monkeypatch, events)
+>       with pytest.raises(ValueError, match="date|cost|event|turnover"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:135: Failed
+_ test_actual_embedded_loader_never_discards_bad_event_before_validation[None-inf] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_actual_embedded_loader_ne3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C482D6250>
+rebalance_date = None, cost = inf
+
+    @pytest.mark.parametrize("rebalance_date,cost", [(None, 0.002), ("NaT", 0.002),
+                                                      ("invalid-date", 0.002), (None, np.inf)])
+    def test_actual_embedded_loader_never_discards_bad_event_before_validation(tmp_path, monkeypatch, rebalance_date, cost):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01", rebalance_date],
+                               "execution_date": ["2026-09-01", "2026-09-02"],
+                               "execution_timing": "close", "two_side_cost_rate": [0.001, cost]})
+        loader, _ = _embedded_inputs(tmp_path, monkeypatch, events)
+>       with pytest.raises(ValueError, match="date|cost|event|turnover"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:135: Failed
+____ test_repeated_identical_turnover_event_is_not_double_charged[mapper] _____
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_repeated_identical_turnov0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C4B789950>
+route = 'mapper'
+
+    @pytest.mark.parametrize("route", ["mapper", "loader", "embedded"])
+    def test_repeated_identical_turnover_event_is_not_double_charged(tmp_path, monkeypatch, route):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01"] * 2,
+                               "execution_date": ["2026-09-01"] * 2,
+                               "execution_timing": "close", "two_side_cost_rate": [0.006] * 2})
+>       with pytest.raises(ValueError, match="duplicate|repeat|event|rebalance"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:145: Failed
+____ test_repeated_identical_turnover_event_is_not_double_charged[loader] _____
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_repeated_identical_turnov1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C4B789F50>
+route = 'loader'
+
+    @pytest.mark.parametrize("route", ["mapper", "loader", "embedded"])
+    def test_repeated_identical_turnover_event_is_not_double_charged(tmp_path, monkeypatch, route):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01"] * 2,
+                               "execution_date": ["2026-09-01"] * 2,
+                               "execution_timing": "close", "two_side_cost_rate": [0.006] * 2})
+>       with pytest.raises(ValueError, match="duplicate|repeat|event|rebalance"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:145: Failed
+___ test_repeated_identical_turnover_event_is_not_double_charged[embedded] ____
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_repeated_identical_turnov2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022C4B795B80>
+route = 'embedded'
+
+    @pytest.mark.parametrize("route", ["mapper", "loader", "embedded"])
+    def test_repeated_identical_turnover_event_is_not_double_charged(tmp_path, monkeypatch, route):
+        events = pd.DataFrame({"rebalance_date": ["2026-09-01"] * 2,
+                               "execution_date": ["2026-09-01"] * 2,
+                               "execution_timing": "close", "two_side_cost_rate": [0.006] * 2})
+>       with pytest.raises(ValueError, match="duplicate|repeat|event|rebalance"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:145: Failed
+____ test_explicit_execution_cannot_hide_non_session_signal_inside_window _____
+
+    def test_explicit_execution_cannot_hide_non_session_signal_inside_window():
+        dates = pd.to_datetime(["2026-09-04", "2026-09-07", "2026-09-08"])
+        events = pd.DataFrame({"rebalance_date": ["2026-09-05"], "execution_date": ["2026-09-07"],
+                               "execution_timing": ["next_open"], "two_side_cost_rate": [0.006]})
+>       with pytest.raises(ValueError, match="date|session|rebalance"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:163: Failed
+__ test_strategy_cost_consumer_rejects_mixed_execution_timing_in_one_stream ___
+
+    def test_strategy_cost_consumer_rejects_mixed_execution_timing_in_one_stream():
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        gross = pd.DataFrame({"holding": ["cash", "microcap", "microcap"],
+                              "next_holding": ["microcap", "microcap", "cash"], "return": 0.0}, index=dates)
+        events = pd.DataFrame({"rebalance_date": [dates[0], dates[1]],
+                               "execution_date": [dates[0], dates[2]],
+                               "execution_timing": ["close", "next_open"], "two_side_cost_rate": [0.006, 0.006]})
+>       with pytest.raises(ValueError, match="timing|mixed|event|stream"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_round3_data_boundary.py:174: Failed
+________ test_lineage_migration_requires_actual_boolean_approval[2.0] _________
+
+migration_case = (<function v2_0_rewrite_audit_matches_approved_lineage_migration at 0x0000022C4A5BD9B0>, WindowsPath('D:/动量策略/微盘股对冲策略/...:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require0/audit.csv'))
+
+    def test_lineage_migration_requires_actual_boolean_approval(migration_case):
+        verifier, report_path, report, previous, candidate, audit_path = migration_case
+        report["approved"] = 1
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+>       assert verifier(report_path, previous, candidate, audit_path) is False
+E       AssertionError: assert True is False
+E        +  where True = <function v2_0_rewrite_audit_matches_approved_lineage_migration at 0x0000022C4A5BD9B0>(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require0/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require0/audit.csv'))
+
+tests\test_round3_data_boundary.py:231: AssertionError
+________ test_lineage_migration_requires_actual_boolean_approval[2.3] _________
+
+migration_case = (<function v2_3_rewrite_audit_matches_approved_lineage_migration at 0x0000022C4A627690>, WindowsPath('D:/动量策略/微盘股对冲策略/...:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require1/audit.csv'))
+
+    def test_lineage_migration_requires_actual_boolean_approval(migration_case):
+        verifier, report_path, report, previous, candidate, audit_path = migration_case
+        report["approved"] = 1
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+>       assert verifier(report_path, previous, candidate, audit_path) is False
+E       AssertionError: assert True is False
+E        +  where True = <function v2_3_rewrite_audit_matches_approved_lineage_migration at 0x0000022C4A627690>(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require1/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require1/audit.csv'))
+
+tests\test_round3_data_boundary.py:231: AssertionError
+________ test_lineage_migration_requires_actual_boolean_approval[2.5] _________
+
+migration_case = (<function v2_5_rewrite_audit_matches_approved_lineage_migration at 0x0000022C4A6CC300>, WindowsPath('D:/动量策略/微盘股对冲策略/...:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require2/audit.csv'))
+
+    def test_lineage_migration_requires_actual_boolean_approval(migration_case):
+        verifier, report_path, report, previous, candidate, audit_path = migration_case
+        report["approved"] = 1
+        report_path.write_text(json.dumps(report), encoding="utf-8")
+>       assert verifier(report_path, previous, candidate, audit_path) is False
+E       AssertionError: assert True is False
+E        +  where True = <function v2_5_rewrite_audit_matches_approved_lineage_migration at 0x0000022C4A6CC300>(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require2/report.json'),         date  return_net\n0 2026-09-01         0.0,         date  return_net\n0 2026-09-01        0.01\n1 2026-09-02        0.02, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_baseline_tmp_01/test_lineage_migration_require2/audit.csv'))
+
+tests\test_round3_data_boundary.py:231: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_round3_data_boundary.py::test_daily_parser_preserves_legal_mixed_midnight_text[shared_v20-date_then_midnight]
+FAILED tests/test_round3_data_boundary.py::test_daily_parser_preserves_legal_mixed_midnight_text[shared_v20-midnight_then_date]
+FAILED tests/test_round3_data_boundary.py::test_daily_parser_preserves_legal_mixed_midnight_text[mainline-date_then_midnight]
+FAILED tests/test_round3_data_boundary.py::test_daily_parser_preserves_legal_mixed_midnight_text[mainline-midnight_then_date]
+FAILED tests/test_round3_data_boundary.py::test_daily_close_loader_preserves_every_legal_mixed_format_row[shared_v20-panel]
+FAILED tests/test_round3_data_boundary.py::test_daily_close_loader_preserves_every_legal_mixed_format_row[shared_v20-proxy]
+FAILED tests/test_round3_data_boundary.py::test_daily_close_loader_preserves_every_legal_mixed_format_row[mainline-panel]
+FAILED tests/test_round3_data_boundary.py::test_daily_close_loader_preserves_every_legal_mixed_format_row[mainline-proxy]
+FAILED tests/test_round3_data_boundary.py::test_freeze_accepts_same_daily_rows_with_legal_date_text_variations[shared_v20]
+FAILED tests/test_round3_data_boundary.py::test_freeze_accepts_same_daily_rows_with_legal_date_text_variations[mainline]
+FAILED tests/test_round3_data_boundary.py::test_turnover_loader_preserves_legal_mixed_rebalance_text[False]
+FAILED tests/test_round3_data_boundary.py::test_turnover_loader_preserves_legal_mixed_rebalance_text[True]
+FAILED tests/test_round3_data_boundary.py::test_actual_embedded_loader_does_not_silently_drop_legal_midnight_event
+FAILED tests/test_round3_data_boundary.py::test_actual_embedded_loader_never_discards_bad_event_before_validation[None-0.002]
+FAILED tests/test_round3_data_boundary.py::test_actual_embedded_loader_never_discards_bad_event_before_validation[NaT-0.002]
+FAILED tests/test_round3_data_boundary.py::test_actual_embedded_loader_never_discards_bad_event_before_validation[invalid-date-0.002]
+FAILED tests/test_round3_data_boundary.py::test_actual_embedded_loader_never_discards_bad_event_before_validation[None-inf]
+FAILED tests/test_round3_data_boundary.py::test_repeated_identical_turnover_event_is_not_double_charged[mapper]
+FAILED tests/test_round3_data_boundary.py::test_repeated_identical_turnover_event_is_not_double_charged[loader]
+FAILED tests/test_round3_data_boundary.py::test_repeated_identical_turnover_event_is_not_double_charged[embedded]
+FAILED tests/test_round3_data_boundary.py::test_explicit_execution_cannot_hide_non_session_signal_inside_window
+FAILED tests/test_round3_data_boundary.py::test_strategy_cost_consumer_rejects_mixed_execution_timing_in_one_stream
+FAILED tests/test_round3_data_boundary.py::test_lineage_migration_requires_actual_boolean_approval[2.0]
+FAILED tests/test_round3_data_boundary.py::test_lineage_migration_requires_actual_boolean_approval[2.3]
+FAILED tests/test_round3_data_boundary.py::test_lineage_migration_requires_actual_boolean_approval[2.5]
+25 failed, 5 passed in 10.19s

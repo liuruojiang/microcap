@@ -1,0 +1,104 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_realtime_preservation_requires_internal_time_and_state_consistency[member_rebalance_actionable-True-3-microcap_top100_mom16_biweekly_live_v2_3] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_member_old_red_tmp/test_realtime_preservation_req0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = <module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'>
+field = 'member_rebalance_actionable', value = 'True'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+        ("member_rebalance_actionable", "True"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        if field == "member_rebalance_actionable":
+            # This genuine intraday row is after an earlier member rebalance. The
+            # native realtime generator marks only the immediate execution session
+            # actionable, requiring member signal date == latest completed anchor.
+            # A close-confirmed next-session plan has a separate contract.
+            _, original = read_csv(path)
+            assert original[0]["member_rebalance_actionable"] == "False"
+            assert original[0]["member_rebalance_required"] == "True"
+            assert original[0]["member_rebalance_signal_date"] != original[0]["latest_anchor_trade_date"]
+            assert original[0]["member_rebalance_execution_date"] == ""
+            record("realtime_member_original", version=version,
+                   timing=original[0]["signal_timing"],
+                   member_signal_date=original[0]["member_rebalance_signal_date"],
+                   latest_anchor=original[0]["latest_anchor_trade_date"],
+                   quote_date=original[0]["quote_trade_date"],
+                   execution_date=original[0]["member_rebalance_execution_date"],
+                   member_actionable=original[0]["member_rebalance_actionable"])
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+>       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent member_rebalance_actionable
+E       assert not True
+
+tests\test_round3_state_contract.py:243: AssertionError
+_ test_realtime_preservation_requires_internal_time_and_state_consistency[member_rebalance_actionable-True-5-microcap_top100_mom16_biweekly_live_v2_5] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_member_old_red_tmp/test_realtime_preservation_req1')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = <module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'>
+field = 'member_rebalance_actionable', value = 'True'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+        ("member_rebalance_actionable", "True"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        if field == "member_rebalance_actionable":
+            # This genuine intraday row is after an earlier member rebalance. The
+            # native realtime generator marks only the immediate execution session
+            # actionable, requiring member signal date == latest completed anchor.
+            # A close-confirmed next-session plan has a separate contract.
+            _, original = read_csv(path)
+            assert original[0]["member_rebalance_actionable"] == "False"
+            assert original[0]["member_rebalance_required"] == "True"
+            assert original[0]["member_rebalance_signal_date"] != original[0]["latest_anchor_trade_date"]
+            assert original[0]["member_rebalance_execution_date"] == ""
+            record("realtime_member_original", version=version,
+                   timing=original[0]["signal_timing"],
+                   member_signal_date=original[0]["member_rebalance_signal_date"],
+                   latest_anchor=original[0]["latest_anchor_trade_date"],
+                   quote_date=original[0]["quote_trade_date"],
+                   execution_date=original[0]["member_rebalance_execution_date"],
+                   member_actionable=original[0]["member_rebalance_actionable"])
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+>       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent member_rebalance_actionable
+E       assert not True
+
+tests\test_round3_state_contract.py:243: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_round3_state_contract.py::test_realtime_preservation_requires_internal_time_and_state_consistency[member_rebalance_actionable-True-3-microcap_top100_mom16_biweekly_live_v2_3]
+FAILED tests/test_round3_state_contract.py::test_realtime_preservation_requires_internal_time_and_state_consistency[member_rebalance_actionable-True-5-microcap_top100_mom16_biweekly_live_v2_5]
+2 failed, 39 deselected in 7.08s

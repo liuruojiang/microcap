@@ -1,0 +1,111 @@
+{
+  "status": "PASS_through_current_first_block_only",
+  "ledger_sha256": {
+    "full_history_rights_events.csv": "713c848e98bdb3a55fbe3001cb048e88e1f7eb0234ae734be7e1c57e149a6082",
+    "full_history_daily_positions.csv": "d2fbf43efa26aee0cb6866cc5c32edab55c0998facabe369a327252f511d41d6",
+    "full_history_settled_orders.csv": "d32400270d24ee27990d8b57e61eb6eec68c204ba1eefa47b1cfdb67249d7309"
+  },
+  "cases": {
+    "002624": {
+      "last_true_trade": {
+        "date": "2014-04-04",
+        "preclose": "7.7400",
+        "close": "8.1000",
+        "volume": "4737208",
+        "tradestatus": "1"
+      },
+      "record_bar": {
+        "date": "2014-05-22",
+        "preclose": "8.1000",
+        "close": "8.1000",
+        "volume": "0",
+        "tradestatus": "0"
+      },
+      "ex_bar": {
+        "date": "2014-05-23",
+        "preclose": "8.0500",
+        "close": "8.0500",
+        "volume": "0",
+        "tradestatus": "0"
+      },
+      "next_true_trade": {
+        "date": "2014-09-01",
+        "preclose": "8.0500",
+        "close": "8.8600",
+        "volume": "166315",
+        "tradestatus": "1"
+      },
+      "accounts": [
+        {
+          "branch": "netted",
+          "record_shares": "3194.393989378375519157612116878754009699",
+          "cash_gross": "159.719699468918775957880605843937700485",
+          "old_stock_value": "25874.5913139648417051766581467179074785619000",
+          "paper_stock_plus_cash": "25874.5913139648417051766581467179074785619500",
+          "double_count_excess": "159.7196994689187759578806058439377004850000",
+          "omit_cash_shortfall": "159.7196994689187759578806058439377004849500",
+          "record_basis": "verified_suspension_last_true_close",
+          "ex_basis": "issuer_verified_suspension_ex_theoretical_mark",
+          "ex_orders": 0
+        }
+      ]
+    },
+    "600758": {
+      "last_true_trade": {
+        "date": "2014-01-28",
+        "preclose": "6.5700",
+        "close": "7.2300",
+        "volume": "6879633",
+        "tradestatus": "1"
+      },
+      "record_bar": {
+        "date": "2014-06-16",
+        "preclose": "7.2300",
+        "close": "7.2300",
+        "volume": "0",
+        "tradestatus": "0"
+      },
+      "ex_bar": {
+        "date": "2014-06-17",
+        "preclose": "7.2000",
+        "close": "7.2000",
+        "volume": "0",
+        "tradestatus": "0"
+      },
+      "next_true_trade": {
+        "date": "2014-07-14",
+        "preclose": "7.2000",
+        "close": "7.9200",
+        "volume": "442158",
+        "tradestatus": "1"
+      },
+      "accounts": [
+        {
+          "branch": "netted",
+          "record_shares": "3383.402697984294700045233710265192640614",
+          "cash_gross": "101.5020809395288410013570113079557792184",
+          "old_stock_value": "24462.0015064264506813270397252173427916392200",
+          "paper_stock_plus_cash": "24462.0015064264506813270397252173427916392000",
+          "double_count_excess": "101.5020809395288410013570113079557792184000",
+          "omit_cash_shortfall": "101.5020809395288410013570113079557792184200",
+          "record_basis": "verified_suspension_last_true_close",
+          "ex_basis": "issuer_verified_suspension_ex_theoretical_mark",
+          "ex_orders": 0
+        },
+        {
+          "branch": "prefunded",
+          "record_shares": "3263.293872274254285618506364168808381931",
+          "cash_gross": "97.89881616822762856855519092506425145793",
+          "old_stock_value": "23593.6146965428584850218010129404846013611300",
+          "paper_stock_plus_cash": "23593.6146965428584850218010129404846013611300",
+          "double_count_excess": "97.8988161682276285685551909250642514579300",
+          "omit_cash_shortfall": "97.8988161682276285685551909250642514579300",
+          "record_basis": "verified_suspension_last_true_close",
+          "ex_basis": "issuer_verified_suspension_ex_theoretical_mark",
+          "ex_orders": 0
+        }
+      ]
+    }
+  },
+  "limitation": "Gross fractional paper model; zero-volume ex marks are not fills or account-specific net cash."
+}

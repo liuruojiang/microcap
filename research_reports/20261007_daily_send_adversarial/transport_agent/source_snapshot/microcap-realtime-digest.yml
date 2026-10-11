@@ -1,0 +1,831 @@
+name: Microcap Post-Close Digest
+
+on:
+  workflow_dispatch:
+    inputs:
+      validation_only:
+        description: "Validate refresh, all signals and artifacts without sending email or writing delivery markers"
+        required: false
+        type: boolean
+        default: false
+      approved_state_url:
+        description: "Optional explicitly approved whole-state release asset; used only for this manual run"
+        required: false
+        type: string
+        default: ""
+      approved_state_sha256:
+        description: "Exact approved whole-state ZIP SHA-256 (required with approved_state_url)"
+        required: false
+        type: string
+        default: ""
+      approved_state_date:
+        description: "Approved seed session date YYYY-MM-DD (required with approved_state_url)"
+        required: false
+        type: string
+        default: ""
+      correction:
+        description: "Bypass the daily delivery marker and label this email as a corrected edition"
+        required: false
+        type: boolean
+        default: false
+      external_schedule:
+        description: "Apply the trading-day and same-day guards used by an external scheduler"
+        required: false
+        type: boolean
+        default: false
+      publication_mode:
+        description: "Use close_confirmed for the normal post-close digest; realtime remains manual-only"
+        required: true
+        type: choice
+        options:
+          - realtime
+          - close_confirmed
+        default: close_confirmed
+
+permissions:
+  contents: read
+  actions: write
+  checks: write
+
+concurrency:
+  group: microcap-realtime-digest
+  cancel-in-progress: false
+
+jobs:
+  regression:
+    uses: ./.github/workflows/delivery-regression.yml
+    with:
+      family: microcap
+
+  check-trading-day:
+    runs-on: ubuntu-latest
+    outputs:
+      SHOULD_RUN_MICROCAP: ${{ steps.calendar.outputs.SHOULD_RUN_MICROCAP }}
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Check A-share trading day
+        id: calendar
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "pandas<3" "akshare==1.18.46"
+          python - <<'PY' | tee calendar.env
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          import akshare as ak
+          import pandas as pd
+
+          today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
+          should_run = False
+          try:
+              trade_dates = ak.tool_trade_date_hist_sina()
+              dates = set(pd.to_datetime(trade_dates["trade_date"]).dt.date)
+              if not dates or not min(dates) <= today <= max(dates):
+                  raise ValueError("Trading calendar does not cover today's date")
+              should_run = today in dates
+          except Exception as exc:
+              print(f"A_SHARE_CALENDAR_ERROR={type(exc).__name__}: {exc}")
+              raise RuntimeError("Trading calendar unavailable; not a confirmed holiday") from exc
+          print(f"A_SHARE_TODAY={today.isoformat()}")
+          if should_run:
+              print("SHOULD_RUN_MICROCAP=true")
+          else:
+              print("SHOULD_RUN_MICROCAP=false")
+          PY
+          cat calendar.env >> "$GITHUB_OUTPUT"
+
+  send:
+    needs: [check-trading-day, regression]
+    if: always() && needs.regression.result == 'success' && needs.check-trading-day.result == 'success' && ((github.event_name == 'workflow_dispatch' && inputs.external_schedule != true) || needs.check-trading-day.outputs.SHOULD_RUN_MICROCAP == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      TZ: Asia/Shanghai
+      PLANNED_BJ: "16:00 Asia/Shanghai"
+      GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Record workflow start time
+        run: echo "STARTED_BJ=$(date '+%Y-%m-%d %H:%M:%S %Z')" >> "$GITHUB_ENV"
+
+      - name: Check out automation repository
+        uses: actions/checkout@v6
+        with:
+          path: automation
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Resolve publication mode
+        id: publication_mode
+        shell: bash
+        env:
+          REQUESTED_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.publication_mode || 'close_confirmed' }}
+        run: python automation/scripts/resolve_cn_publication_mode.py --requested "${REQUESTED_MODE}"
+
+      - name: Check delivery marker
+        id: delivery_gate
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          VALIDATION_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.validation_only && 'true' || 'false' }}
+          CORRECTION: ${{ github.event_name == 'workflow_dispatch' && inputs.correction && 'true' || 'false' }}
+        run: |
+          args=()
+          if [[ "${VALIDATION_ONLY}" == "true" ]]; then
+            args+=(--validation-only)
+          fi
+          if [[ "${CORRECTION}" == "true" ]]; then
+            args+=(--correction)
+          fi
+          python automation/scripts/check_microcap_delivery.py --publication-mode "${{ steps.publication_mode.outputs.mode }}" "${args[@]}"
+
+      - name: Recover delivery marker from accepted SMTP receipt
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.recover_marker == 'true'
+        shell: bash
+        run: |
+          mkdir -p delivery-marker
+          printf '%s\n' "${GITHUB_RUN_URL}" > delivery-marker/run-url.txt
+
+      - name: Mark recovered digest delivered
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.recover_marker == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.delivery_gate.outputs.marker_name }}
+          path: delivery-marker/run-url.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Check out microcap repository
+        if: steps.delivery_gate.outputs.should_send == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: liuruojiang/microcap
+          ref: 501b269b9f51a83f05f3b71488143b4da285cd0b
+          path: microcap
+
+      - name: Check out isolated v2.3 close-confirmed workspace
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.publication_mode.outputs.mode == 'close_confirmed'
+        uses: actions/checkout@v6
+        with:
+          repository: liuruojiang/microcap
+          ref: 501b269b9f51a83f05f3b71488143b4da285cd0b
+          path: microcap-v23
+
+      - name: Check out isolated v2.5 close-confirmed workspace
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.publication_mode.outputs.mode == 'close_confirmed'
+        uses: actions/checkout@v6
+        with:
+          repository: liuruojiang/microcap
+          ref: 501b269b9f51a83f05f3b71488143b4da285cd0b
+          path: microcap-v25
+
+      - name: Record microcap strategy SHA
+        id: microcap_sha
+        if: steps.delivery_gate.outputs.should_send == 'true'
+        working-directory: microcap
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+
+      - name: Install runtime dependencies
+        if: steps.delivery_gate.outputs.should_send == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy "pandas<3" requests "akshare==1.18.46" matplotlib
+
+      - name: Resolve independent completed session
+        id: market_target
+        if: steps.delivery_gate.outputs.should_send == 'true'
+        working-directory: microcap
+        shell: bash
+        run: |
+          python -c 'from scripts.exchange_calendar import latest_completed_session; print("date=" + latest_completed_session().isoformat())' >> "${GITHUB_OUTPUT}"
+
+      - name: Restore persistent full rebalance cache
+        continue-on-error: true
+        id: full_cache_restore
+        if: steps.delivery_gate.outputs.should_send == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: microcap/.microcap_index_cache
+          key: microcap-full-rebalance-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            microcap-full-rebalance-v1-${{ runner.os }}-
+
+      - name: Bootstrap full rebalance cache on cold start
+        continue-on-error: true
+        timeout-minutes: 3
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.full_cache_restore.outputs.cache-matched-key == ''
+        shell: bash
+        env:
+          CACHE_URL: https://github.com/liuruojiang/microcap/releases/download/microcap-full-rebalance-cache-v1-20260903/microcap-full-rebalance-cache-v1-20260903.zip
+          CACHE_SHA256: ecee736f9bb35ac4b43a63e4fd7c83b0a4e9d8c94903f2631b5763a4e1d46686
+        run: |
+          cache_bundle="${RUNNER_TEMP}/microcap-full-rebalance-cache-v1.zip"
+          curl --fail --location --connect-timeout 10 --max-time 90 --retry 1 --retry-max-time 120 --retry-all-errors --output "${cache_bundle}" "${CACHE_URL}"
+          echo "${CACHE_SHA256}  ${cache_bundle}" | sha256sum --check --strict
+          python microcap/scripts/full_rebalance_cache_bundle.py restore \
+            --root microcap \
+            --bundle "${cache_bundle}" \
+            --min-symbols 4500
+
+      - name: Validate full rebalance cache
+        id: full_cache
+        if: always() && steps.delivery_gate.outputs.should_send == 'true'
+        shell: bash
+        run: |
+          set +e
+          python microcap/scripts/full_rebalance_cache_bundle.py validate \
+            --root microcap \
+            --min-symbols 4500 2>&1 | tee microcap/full_rebalance_cache_result.txt
+          status=${PIPESTATUS[0]}
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          exit 0
+
+      - name: Restore explicitly approved whole state
+        id: approved_state
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && inputs.approved_state_url != ''
+        shell: bash
+        env:
+          APPROVED_STATE_URL: ${{ inputs.approved_state_url }}
+          APPROVED_STATE_SHA256: ${{ inputs.approved_state_sha256 }}
+          APPROVED_STATE_DATE: ${{ inputs.approved_state_date }}
+        run: |
+          python automation/scripts/restore_approved_microcap_state.py \
+            --root microcap \
+            --bundle "${RUNNER_TEMP}/microcap-approved-whole-state.zip" \
+            --url "${APPROVED_STATE_URL}" \
+            --sha256 "${APPROVED_STATE_SHA256}" \
+            --seed-date "${APPROVED_STATE_DATE}"
+
+      # A verified bundle contains the refreshed proxy state as well as its
+      # audited raw-cache anchors.  Keep it separately from the raw cache so
+      # a cancellation after refresh can resume the same trade-day delivery.
+      - name: Restore verified production state bundle
+        continue-on-error: true
+        id: verified_state_cache
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && inputs.approved_state_url == ''
+        uses: actions/cache/restore@v4
+        with:
+          path: microcap/.realtime_state_bundle
+          key: microcap-verified-state-v2-${{ steps.microcap_sha.outputs.sha }}-${{ runner.os }}-${{ steps.market_target.outputs.date }}
+          # Reuse the most recent formally validated state across adjacent
+          # trading days. restore_state revalidates anchors, while refresh
+          # still establishes today's independent close before publication.
+          restore-keys: |
+            microcap-verified-state-v2-${{ steps.microcap_sha.outputs.sha }}-${{ runner.os }}-
+
+      - name: Validate and restore cached production state
+        id: cached_state_restore
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.verified_state_cache.outputs.cache-matched-key != '' && inputs.approved_state_url == ''
+        shell: bash
+        run: |
+          set +e
+          # Recovery accepts a verified older anchor across weekends/holidays;
+          # refresh must still reach the independent completed session today.
+          python microcap/scripts/realtime_state_bundle.py restore \
+            --root microcap \
+            --bundle microcap/.realtime_state_bundle/microcap-top100-state.zip \
+            2>&1 | tee microcap/cached_state_restore_result.txt
+          status=${PIPESTATUS[0]}
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          exit 0
+
+      # GitHub's cache is deliberately evictable.  A successful formal state
+      # pack is also retained as an artifact so a cache miss after a holiday
+      # resumes incrementally instead of triggering a historical rebuild.
+      - name: Restore durable verified production state bundle
+        continue-on-error: true
+        id: durable_state_artifact
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.cached_state_restore.outputs.validated != 'true' && inputs.approved_state_url == ''
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python automation/scripts/restore_microcap_verified_state.py \
+            --bundle microcap/.realtime_state_bundle/microcap-top100-state.zip \
+            --artifact-name "microcap-verified-state-recovery-v2-${{ steps.microcap_sha.outputs.sha }}" \
+            --require-success
+
+      - name: Restore verified production state
+        id: verified_state_restore
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.durable_state_artifact.outputs.restored == 'true' && inputs.approved_state_url == ''
+        shell: bash
+        run: |
+          set +e
+          python microcap/scripts/realtime_state_bundle.py restore \
+            --root microcap \
+            --bundle microcap/.realtime_state_bundle/microcap-top100-state.zip \
+            2>&1 | tee microcap/realtime_state_restore_result.txt
+          status=${PIPESTATUS[0]}
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          exit 0
+
+      - name: Restore approved release fallback
+        id: approved_release_fallback
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && inputs.approved_state_url == '' && steps.cached_state_restore.outputs.validated != 'true' && steps.verified_state_restore.outputs.validated != 'true'
+        shell: bash
+        run: |
+          python automation/scripts/restore_approved_microcap_state.py \
+            --root microcap \
+            --bundle "${RUNNER_TEMP}/microcap-approved-release-state.zip" \
+            --config automation/config/microcap_approved_state.json
+
+      # A complete approved release can repair a failed legacy raw-cache bootstrap.
+      # Revalidate the restored files before permitting refresh or publication.
+      - name: Validate recovered full rebalance cache
+        id: recovered_full_cache
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && (steps.approved_state.outputs.restored == 'true' || (inputs.approved_state_url == '' && (steps.cached_state_restore.outputs.validated == 'true' || steps.verified_state_restore.outputs.validated == 'true' || steps.approved_release_fallback.outputs.restored == 'true')))
+        shell: bash
+        run: |
+          set +e
+          python microcap/scripts/full_rebalance_cache_bundle.py validate \
+            --root microcap \
+            --min-symbols 4500 2>&1 | tee microcap/recovered_full_rebalance_cache_result.txt
+          status=${PIPESTATUS[0]}
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          exit 0
+
+      - name: Resolve same-day static refresh mode
+        id: refresh_mode
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.recovered_full_cache.outputs.validated == 'true' && (steps.approved_state.outputs.restored == 'true' || (inputs.approved_state_url == '' && (steps.cached_state_restore.outputs.validated == 'true' || steps.verified_state_restore.outputs.validated == 'true' || steps.approved_release_fallback.outputs.restored == 'true')))
+        shell: bash
+        env:
+          EXPECTED_DATE: ${{ steps.market_target.outputs.date }}
+        run: |
+          python -c 'import json, os; from pathlib import Path; expected=os.environ["EXPECTED_DATE"]; path=Path("microcap/.microcap_index_cache/realtime/top100_realtime_refresh_proof.json"); proof=json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}; reusable=proof.get("version")==1 and proof.get("source")=="independent_close_history_refresh" and proof.get("target_end_date")==expected and proof.get("verified_on")==expected; print(f"force_static_inputs={str(not reusable).lower()}"); print(f"same_day_validated_state={str(reusable).lower()}")' >> "${GITHUB_OUTPUT}"
+
+      - name: Clear stale signal outputs
+        if: always() && steps.delivery_gate.outputs.should_send == 'true'
+        shell: bash
+        run: |
+          for root in microcap microcap-v23 microcap-v25; do
+            [[ -d "${root}" ]] || continue
+            mkdir -p "${root}/outputs"
+            rm -f "${root}"/realtime_state_refresh_result.txt "${root}"/realtime_signal_result.txt "${root}"/realtime_signal_v2_0_result.txt "${root}"/realtime_signal_v2_3_result.txt "${root}"/realtime_signal_v2_5_result.txt "${root}"/outputs/*_realtime_signal.csv "${root}"/outputs/*_latest_signal.csv
+          done
+
+      - name: Refresh Top100 realtime state
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.recovered_full_cache.outputs.validated == 'true' && (steps.approved_state.outputs.restored == 'true' || (inputs.approved_state_url == '' && (steps.cached_state_restore.outputs.validated == 'true' || steps.verified_state_restore.outputs.validated == 'true' || steps.approved_release_fallback.outputs.restored == 'true')))
+        id: refresh_state
+        working-directory: microcap
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          status=1
+          : > realtime_state_refresh_result.txt
+          # A prior full-cache refresh has already established the frozen state.
+          # Four workers only parallelize independent public-price tail requests;
+          # the workflow-level concurrency group still serializes publications.
+          # A close-confirmed digest ends when a verified state is available,
+          # not after an arbitrary number of whole-refresh attempts. Each
+          # attempt preserves successfully refreshed cache legs for the next
+          # attempt; source-level request timeouts and final integrity gates
+          # remain in force. GitHub's job runtime limit is the outer guard.
+          progress_check_id=""
+          publish_progress_check() {
+            local summary="$1"
+            PROGRESS_SUMMARY="${summary}" python -c 'import json, os; print(json.dumps({"name": "Microcap refresh progress", "head_sha": os.environ["GITHUB_SHA"], "status": "in_progress", "output": {"title": "Microcap Top100 refresh", "summary": os.environ["PROGRESS_SUMMARY"]}}))' > progress_check_payload.json
+            if [[ -z "${progress_check_id}" ]]; then
+              progress_check_id=$(curl --silent --show-error --fail-with-body \
+                --request POST \
+                --header "Accept: application/vnd.github+json" \
+                --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+                --header "X-GitHub-Api-Version: 2022-11-28" \
+                --data @progress_check_payload.json \
+                "https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs" \
+                | python -c "import json, sys; print(json.load(sys.stdin)['id'])") || true
+            elif [[ -n "${progress_check_id}" ]]; then
+              curl --silent --show-error --fail-with-body \
+                --request PATCH \
+                --header "Accept: application/vnd.github+json" \
+                --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+                --header "X-GitHub-Api-Version: 2022-11-28" \
+                --data @progress_check_payload.json \
+                "https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/${progress_check_id}" >/dev/null || true
+            fi
+          }
+          attempt=0
+          while true; do
+            attempt=$((attempt + 1))
+            echo "refresh_attempt=${attempt}" | tee -a realtime_state_refresh_result.txt
+            attempt_log="realtime_state_refresh_attempt_${attempt}.log"
+            : > "${attempt_log}"
+            started_epoch=$(date +%s)
+            static_refresh_args=()
+            if [[ "${{ steps.refresh_mode.outputs.force_static_inputs }}" == "true" ]]; then
+              static_refresh_args+=(--force-refresh-static-inputs)
+            fi
+            # Create the check in this shell so its ID remains available to the
+            # completion update below; IDs assigned in the heartbeat subshell
+            # do not propagate back to this process.
+            publish_progress_check "attempt=${attempt}; elapsed_seconds=0; initializing refresh"
+            python -u scripts/realtime_state_bundle.py refresh \
+              --root . \
+              --max-workers 4 \
+              "${static_refresh_args[@]}" > "${attempt_log}" 2>&1 &
+            refresh_pid=$!
+            (
+              while kill -0 "${refresh_pid}" 2>/dev/null; do
+                elapsed_seconds=$(( $(date +%s) - started_epoch ))
+                echo "::notice title=Microcap refresh heartbeat::attempt=${attempt}; elapsed_seconds=${elapsed_seconds}; pid=${refresh_pid}"
+                tail -n 8 "${attempt_log}" || true
+                progress_line=$(grep -E 'price-cache refresh progress [0-9]+/[0-9]+ \([0-9.]+%\)|\[realtime-state\] phase=' "${attempt_log}" | tail -n 1 || true)
+                publish_progress_check "attempt=${attempt}; elapsed_seconds=${elapsed_seconds}; ${progress_line:-initializing refresh}"
+                sleep 60
+              done
+            ) &
+            heartbeat_pid=$!
+            wait "${refresh_pid}"
+            status=$?
+            kill "${heartbeat_pid}" 2>/dev/null || true
+            wait "${heartbeat_pid}" 2>/dev/null || true
+            cat "${attempt_log}" | tee -a realtime_state_refresh_result.txt
+            if [[ "${status}" -eq 0 ]]; then
+              break
+            fi
+            sleep $(( attempt < 6 ? attempt * 20 : 120 ))
+          done
+          # Close the progress check once the refreshed state has passed validation.
+          if [[ -n "${progress_check_id}" ]]; then
+            completed_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            elapsed_seconds=$(( $(date +%s) - started_epoch ))
+            PROGRESS_COMPLETED_AT="${completed_at}" \
+            PROGRESS_SUMMARY="result=success; attempt=${attempt}; elapsed_seconds=${elapsed_seconds}; state refresh validated" \
+              python -c 'import json, os; print(json.dumps({"name": "Microcap refresh progress", "head_sha": os.environ["GITHUB_SHA"], "status": "completed", "conclusion": "success", "completed_at": os.environ["PROGRESS_COMPLETED_AT"], "output": {"title": "Microcap Top100 refresh complete", "summary": os.environ["PROGRESS_SUMMARY"]}}))' > progress_check_payload.json
+            curl --silent --show-error --fail-with-body \
+              --request PATCH \
+              --header "Accept: application/vnd.github+json" \
+              --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+              --header "X-GitHub-Api-Version: 2022-11-28" \
+              --data @progress_check_payload.json \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/${progress_check_id}" >/dev/null || true
+          fi
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          echo "REFRESH_STATE_EXIT_CODE=${status}" >> "${GITHUB_ENV}"
+          exit 0
+
+      - name: Record refresh failure for digest
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && (steps.recovered_full_cache.outcome != 'success' || steps.recovered_full_cache.outputs.validated != 'true' || steps.refresh_state.outcome != 'success' || steps.refresh_state.outputs.validated != 'true')
+        shell: bash
+        run: |
+          cache_exit="${{ steps.recovered_full_cache.outputs.exit_code }}"
+          refresh_exit="${{ steps.refresh_state.outputs.exit_code }}"
+          for item in "microcap:v2_0" "microcap-v23:v2_3" "microcap-v25:v2_5"; do
+            root="${item%%:*}"
+            version="${item##*:}"
+            [[ -d "${root}" ]] || root=microcap
+            cat > "${root}/realtime_signal_${version}_result.txt" <<EOF
+          preflight_failed
+          full_cache_exit_code: ${cache_exit:-not_run}
+          refresh_exit_code: ${refresh_exit:-not_run}
+          reason: Top100 full-cache validation or state refresh failed, so the ${version} signal was not run.
+          refresh_log: microcap/realtime_state_refresh_result.txt
+          EOF
+          done
+
+      - name: Pack validated production state
+        id: state_bundle
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.refresh_state.outcome == 'success' && steps.refresh_state.outputs.validated == 'true'
+        shell: bash
+        env:
+          EXPECTED_DATE: ${{ steps.market_target.outputs.date }}
+        run: |
+          # Calendar days since the previous close are irrelevant across a
+          # holiday. The refreshed daily anchors must instead equal the
+          # independently resolved latest completed exchange session.
+          python microcap/scripts/realtime_state_bundle.py validate \
+            --root microcap > "${RUNNER_TEMP}/microcap-refreshed-state-validation.json"
+          python automation/scripts/check_microcap_refresh_target.py \
+            --report "${RUNNER_TEMP}/microcap-refreshed-state-validation.json" \
+            --expected-date "${EXPECTED_DATE}"
+          python microcap/scripts/realtime_state_bundle.py pack \
+            --root microcap \
+            --bundle "${RUNNER_TEMP}/microcap-top100-state.zip"
+
+      - name: Stage validated state bundle for same-day recovery
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success'
+        shell: bash
+        run: |
+          mkdir -p microcap/.realtime_state_bundle
+          cp "${RUNNER_TEMP}/microcap-top100-state.zip" microcap/.realtime_state_bundle/microcap-top100-state.zip
+
+      - name: Preserve validated state bundle for long-gap recovery
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.validation_only == true && 'microcap-verified-state-validation' || format('microcap-verified-state-recovery-v2-{0}', steps.microcap_sha.outputs.sha) }}
+          path: microcap/.realtime_state_bundle/microcap-top100-state.zip
+          if-no-files-found: error
+          retention-days: 90
+
+      # Save immediately after the formal pack, before isolated signals and
+      # Gmail.  A later interruption therefore never discards a completed
+      # refresh and the next run can continue instead of rebuilding globally.
+      - name: Persist validated state bundle for same-day recovery
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: microcap/.realtime_state_bundle
+          key: microcap-verified-state-v2-${{ steps.microcap_sha.outputs.sha }}-${{ runner.os }}-${{ steps.market_target.outputs.date }}
+
+      - name: Restore state into isolated v2.3 workspace
+        id: restore_v23
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.publication_mode.outputs.mode == 'close_confirmed' && steps.state_bundle.outcome == 'success'
+        shell: bash
+        run: |
+          python microcap/scripts/realtime_state_bundle.py restore \
+            --root microcap-v23 \
+            --bundle "${RUNNER_TEMP}/microcap-top100-state.zip"
+
+      - name: Restore state into isolated v2.5 workspace
+        id: restore_v25
+        if: steps.delivery_gate.outputs.should_send == 'true' && steps.publication_mode.outputs.mode == 'close_confirmed' && steps.state_bundle.outcome == 'success'
+        shell: bash
+        run: |
+          python microcap/scripts/realtime_state_bundle.py restore \
+            --root microcap-v25 \
+            --bundle "${RUNNER_TEMP}/microcap-top100-state.zip"
+
+      - name: Save refreshed full rebalance cache
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: microcap/.microcap_index_cache
+          key: microcap-full-rebalance-v1-${{ runner.os }}-${{ github.run_id }}
+
+      - name: Run v2.0 selected signal
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success'
+        id: signals_v20
+        working-directory: microcap
+        shell: bash
+        env:
+          TOP100_REALTIME_REQUIRE_STATE: "1"
+        run: |
+          set +e
+          query=$(python -c 'print("\u4fe1\u53f7" if "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" else "\u5b9e\u65f6\u4fe1\u53f7")')
+          timeout --foreground 25m python -u microcap_top100_mom16_biweekly_live_v2_0.py "${query}" 2>&1 | tee realtime_signal_v2_0_result.txt
+          status=${PIPESTATUS[0]}
+          if [[ "${status}" -eq 0 && "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" ]]; then
+            # Cold runners have no previous costed NAV. Re-run the same frozen inputs
+            # to require a clean historical-rewrite audit before whole-delivery packing.
+            timeout --foreground 25m python -u microcap_top100_mom16_biweekly_live_v2_0.py "${query}" 2>&1 | tee -a realtime_signal_v2_0_result.txt
+            status=${PIPESTATUS[0]}
+          fi
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          echo "SIGNAL_V2_0_EXIT_CODE=${status}" >> "${GITHUB_ENV}"
+          exit 0
+
+      - name: Run v2.3 selected signal
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.restore_v23.outcome == 'success')
+        id: signals_v23
+        working-directory: ${{ steps.publication_mode.outputs.mode == 'close_confirmed' && 'microcap-v23' || 'microcap' }}
+        shell: bash
+        env:
+          TOP100_REALTIME_REQUIRE_STATE: "1"
+        run: |
+          set +e
+          query=$(python -c 'print("\u4fe1\u53f7" if "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" else "\u5b9e\u65f6\u4fe1\u53f7")')
+          timeout --foreground 25m python -u microcap_top100_mom16_biweekly_live_v2_3.py "${query}" 2>&1 | tee realtime_signal_v2_3_result.txt
+          status=${PIPESTATUS[0]}
+          if [[ "${status}" -eq 0 && "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" ]]; then
+            # Cold runners have no previous costed NAV. Re-run the same frozen inputs
+            # to require a clean historical-rewrite audit before whole-delivery packing.
+            timeout --foreground 25m python -u microcap_top100_mom16_biweekly_live_v2_3.py "${query}" 2>&1 | tee -a realtime_signal_v2_3_result.txt
+            status=${PIPESTATUS[0]}
+          fi
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          echo "SIGNAL_V2_3_EXIT_CODE=${status}" >> "${GITHUB_ENV}"
+          exit 0
+
+      - name: Run v2.5 selected signal
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && steps.state_bundle.outcome == 'success' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.restore_v25.outcome == 'success')
+        id: signals_v25
+        working-directory: ${{ steps.publication_mode.outputs.mode == 'close_confirmed' && 'microcap-v25' || 'microcap' }}
+        shell: bash
+        env:
+          TOP100_REALTIME_REQUIRE_STATE: "1"
+        run: |
+          set +e
+          query=$(python -c 'print("\u4fe1\u53f7" if "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" else "\u5b9e\u65f6\u4fe1\u53f7")')
+          timeout --foreground 25m python -u microcap_top100_mom16_biweekly_live_v2_5.py "${query}" 2>&1 | tee realtime_signal_v2_5_result.txt
+          status=${PIPESTATUS[0]}
+          if [[ "${status}" -eq 0 && "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" ]]; then
+            # Cold runners have no previous costed NAV. Re-run the same frozen inputs
+            # to require a clean historical-rewrite audit before whole-delivery packing.
+            timeout --foreground 25m python -u microcap_top100_mom16_biweekly_live_v2_5.py "${query}" 2>&1 | tee -a realtime_signal_v2_5_result.txt
+            status=${PIPESTATUS[0]}
+          fi
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          echo "SIGNAL_V2_5_EXIT_CODE=${status}" >> "${GITHUB_ENV}"
+          exit 0
+
+      - name: Verify and pack all three final deliveries
+        id: whole_delivery
+        if: always() && steps.publication_mode.outputs.mode == 'close_confirmed' && steps.signals_v20.outputs.validated == 'true' && steps.signals_v23.outputs.validated == 'true' && steps.signals_v25.outputs.validated == 'true'
+        shell: bash
+        run: |
+          set +e
+          python microcap/scripts/top100_cloud_delivery.py pack \
+            --root microcap --v23-root microcap-v23 --v25-root microcap-v25 \
+            --expected-date "${{ steps.market_target.outputs.date }}" \
+            --bundle "${RUNNER_TEMP}/microcap-whole-delivery-state.zip" 2>&1 | tee microcap/whole_delivery_result.txt
+          status=${PIPESTATUS[0]}
+          echo "exit_code=${status}" >> "${GITHUB_OUTPUT}"
+          if [[ "${status}" -eq 0 ]]; then echo "validated=true" >> "${GITHUB_OUTPUT}"; fi
+          if [[ "${status}" != "0" ]]; then
+            for version in 0 3 5; do
+              echo "SIGNAL_V2_${version}_EXIT_CODE=whole_delivery_failed" >> "${GITHUB_ENV}"
+            done
+          fi
+          exit 0
+
+      - name: Build Markdown digest
+        id: digest
+        if: always() && steps.delivery_gate.outputs.should_send == 'true'
+        shell: bash
+        run: |
+          signal_suffix=realtime_signal
+          v23_root=microcap
+          v25_root=microcap
+          if [[ "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" ]]; then
+            signal_suffix=latest_signal
+            v23_root=microcap-v23
+            v25_root=microcap-v25
+          fi
+          python automation/scripts/build_microcap_realtime_digest.py \
+            --result v2.0=microcap/realtime_signal_v2_0_result.txt \
+            --result v2.3=${v23_root}/realtime_signal_v2_3_result.txt \
+            --result v2.5=${v25_root}/realtime_signal_v2_5_result.txt \
+            --signal-csv v2.0=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_${signal_suffix}.csv \
+            --signal-csv v2.3=${v23_root}/outputs/microcap_top100_mom16_biweekly_live_v2_3_${signal_suffix}.csv \
+            --signal-csv v2.5=${v25_root}/outputs/microcap_top100_mom16_biweekly_live_v2_5_${signal_suffix}.csv \
+            --out-dir artifacts \
+            --publication-mode "${{ steps.publication_mode.outputs.mode }}" \
+            --expected-signal-date "${{ (github.event_name == 'schedule' || inputs.external_schedule == true) && steps.delivery_gate.outputs.delivery_date || '' }}" \
+            --planned "${PLANNED_BJ}" \
+            --started "${STARTED_BJ}" \
+            --strategy-sha "${{ steps.microcap_sha.outputs.sha }}" \
+            --subject-prefix "${{ steps.delivery_gate.outputs.subject_prefix }}" \
+            --exit-code "v2.0=${SIGNAL_V2_0_EXIT_CODE:-unknown}" \
+            --exit-code "v2.3=${SIGNAL_V2_3_EXIT_CODE:-unknown}" \
+            --exit-code "v2.5=${SIGNAL_V2_5_EXIT_CODE:-unknown}"
+          digest_status=$(python -c 'import json; print(json.load(open("artifacts/metadata.json", encoding="utf-8"))["status"])')
+          echo "status=${digest_status}" >> "${GITHUB_OUTPUT}"
+
+      - name: Persist normal-send intent before SMTP
+        id: send_intent
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.should_send == 'true' && steps.digest.outputs.status == 'OK' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.whole_delivery.outputs.validated == 'true')
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.delivery_gate.outputs.marker_name }}-send-intent
+          path: artifacts/metadata.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Send Gmail
+        id: send_gmail
+        if: inputs.validation_only != true && always() && steps.delivery_gate.outputs.should_send == 'true' && steps.digest.outcome == 'success' && (steps.digest.outputs.status != 'OK' || (steps.send_intent.outcome == 'success' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.whole_delivery.outputs.validated == 'true')))
+        env:
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_USE_SSL: ${{ secrets.MAIL_USE_SSL }}
+        run: python automation/scripts/send_report.py artifacts/metadata.json
+
+      # Persist SMTP acceptance before the delivery marker. If a runner stops
+      # after acceptance, a later run can reconcile the marker without sending
+      # a duplicate digest or rebuilding the production state.
+      - name: Preserve accepted SMTP receipt
+        id: smtp_receipt
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.should_send == 'true' && steps.send_gmail.outcome == 'success' && steps.digest.outputs.status == 'OK' && steps.signals_v20.outputs.validated == 'true' && steps.signals_v23.outputs.validated == 'true' && steps.signals_v25.outputs.validated == 'true' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.whole_delivery.outputs.validated == 'true')
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.delivery_gate.outputs.marker_name }}-smtp-accepted
+          path: artifacts/metadata.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Prepare delivery marker
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.should_send == 'true' && steps.send_gmail.outcome == 'success' && steps.smtp_receipt.outcome == 'success' && steps.digest.outputs.status == 'OK' && steps.signals_v20.outputs.validated == 'true' && steps.signals_v23.outputs.validated == 'true' && steps.signals_v25.outputs.validated == 'true' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.whole_delivery.outputs.validated == 'true')
+        shell: bash
+        run: |
+          mkdir -p delivery-marker
+          printf '%s\n' "${GITHUB_RUN_URL}" > delivery-marker/run-url.txt
+
+      - name: Preserve verified whole delivery for the next trading day
+        if: steps.whole_delivery.outputs.validated == 'true' && steps.digest.outputs.status == 'OK' && (inputs.validation_only == true || steps.send_gmail.outcome == 'success')
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.validation_only == true && 'microcap-whole-delivery-validation-state' || 'microcap-whole-delivery-state' }}
+          path: ${{ runner.temp }}/microcap-whole-delivery-state.zip
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Mark digest delivered
+        if: inputs.validation_only != true && steps.delivery_gate.outputs.should_send == 'true' && steps.send_gmail.outcome == 'success' && steps.smtp_receipt.outcome == 'success' && steps.digest.outputs.status == 'OK' && steps.signals_v20.outputs.validated == 'true' && steps.signals_v23.outputs.validated == 'true' && steps.signals_v25.outputs.validated == 'true' && (steps.publication_mode.outputs.mode != 'close_confirmed' || steps.whole_delivery.outputs.validated == 'true')
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.delivery_gate.outputs.marker_name }}
+          path: delivery-marker/run-url.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload signal outputs
+        if: always() && steps.delivery_gate.outputs.should_send == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: microcap-realtime-digest
+          path: |
+            artifacts/
+            microcap/full_rebalance_cache_result.txt
+            microcap/recovered_full_rebalance_cache_result.txt
+            microcap/realtime_state_refresh_result.txt
+            microcap/whole_delivery_result.txt
+            microcap/realtime_signal_v2_0_result.txt
+            microcap/realtime_signal_v2_3_result.txt
+            microcap/realtime_signal_v2_5_result.txt
+            microcap/outputs/*_realtime_signal.csv
+            microcap/outputs/*_latest_signal.csv
+            microcap-v23/realtime_signal_v2_3_result.txt
+            microcap-v23/outputs/*_latest_signal.csv
+            microcap-v25/realtime_signal_v2_5_result.txt
+            microcap-v25/outputs/*_latest_signal.csv
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Add signal result to job summary
+        if: always() && steps.delivery_gate.outputs.should_send == 'true'
+        shell: bash
+        run: |
+          v23_root=microcap
+          v25_root=microcap
+          if [[ "${{ steps.publication_mode.outputs.mode }}" == "close_confirmed" ]]; then
+            v23_root=microcap-v23
+            v25_root=microcap-v25
+          fi
+          {
+            echo "## Microcap signal digest"
+            echo
+            echo "- Validation only (no email or delivery markers): ${{ inputs.validation_only == true }}"
+            echo "- Publication mode: ${{ steps.publication_mode.outputs.mode }}"
+            echo "- Publication mode basis: ${{ steps.publication_mode.outputs.basis }}"
+            echo "- Resolved at: ${{ steps.publication_mode.outputs.beijing_time }}"
+            echo "- Digest status: ${{ steps.digest.outputs.status }}"
+            echo "- Planned: ${PLANNED_BJ}"
+            echo "- Started: ${STARTED_BJ}"
+            echo "- Refresh state exit code: ${{ steps.refresh_state.outputs.exit_code }}"
+            echo "- v2.0 script exit code: ${{ steps.signals_v20.outputs.exit_code }}"
+            echo "- v2.3 script exit code: ${{ steps.signals_v23.outputs.exit_code }}"
+            echo "- v2.5 script exit code: ${{ steps.signals_v25.outputs.exit_code }}"
+            echo "- Artifact: microcap-realtime-digest"
+            echo
+            echo "### Refresh"
+            echo '```text'
+            if [[ -f microcap/realtime_state_refresh_result.txt ]]; then
+              cat microcap/realtime_state_refresh_result.txt
+            else
+              echo "Refresh did not run because an earlier preflight failed."
+            fi
+            echo '```'
+            echo
+            echo "### v2.0"
+            echo '```text'
+            cat microcap/realtime_signal_v2_0_result.txt
+            echo '```'
+            echo
+            echo "### v2.3"
+            echo '```text'
+            cat "${v23_root}/realtime_signal_v2_3_result.txt"
+            echo '```'
+            echo
+            echo "### v2.5"
+            echo '```text'
+            cat "${v25_root}/realtime_signal_v2_5_result.txt"
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Fail job when signal publication failed
+        if: always() && steps.delivery_gate.outputs.should_send == 'true' && (steps.digest.outputs.status != 'OK' || steps.signals_v20.outputs.validated != 'true' || steps.signals_v23.outputs.validated != 'true' || steps.signals_v25.outputs.validated != 'true' || (steps.publication_mode.outputs.mode == 'close_confirmed' && steps.whole_delivery.outputs.validated != 'true'))
+        run: exit 1

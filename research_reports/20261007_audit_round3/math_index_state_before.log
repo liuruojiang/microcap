@@ -1,0 +1,39 @@
+FFFFF                                                                    [100%]
+================================== FAILURES ===================================
+___ test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[nan] ___
+tests\test_round3_math_ledger.py:238: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_nan: actual execution builder accepted the corrupted upstream result
+_ test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[damaged] _
+tests\test_round3_math_ledger.py:238: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_damaged: actual execution builder accepted the corrupted upstream result
+_ test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[long_microcap_top100] _
+tests\test_round3_math_ledger.py:238: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_long_microcap_top100: actual execution builder accepted the corrupted upstream result
+___ test_actual_gross_dependency_cannot_omit_a_non_event_active_session[23] ___
+tests\test_round3_math_ledger.py:258: in test_actual_gross_dependency_cannot_omit_a_non_event_active_session
+    _expect_block(f"v{version}_gross_missing_active_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_gross_missing_active_session: actual execution builder accepted the corrupted upstream result
+___ test_actual_gross_dependency_cannot_omit_a_non_event_active_session[25] ___
+tests\test_round3_math_ledger.py:258: in test_actual_gross_dependency_cannot_omit_a_non_event_active_session
+    _expect_block(f"v{version}_gross_missing_active_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_gross_missing_active_session: actual execution builder accepted the corrupted upstream result
+=========================== short test summary info ===========================
+FAILED tests/test_round3_math_ledger.py::test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[nan]
+FAILED tests/test_round3_math_ledger.py::test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[damaged]
+FAILED tests/test_round3_math_ledger.py::test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[long_microcap_top100]
+FAILED tests/test_round3_math_ledger.py::test_actual_gross_dependency_cannot_omit_a_non_event_active_session[23]
+FAILED tests/test_round3_math_ledger.py::test_actual_gross_dependency_cannot_omit_a_non_event_active_session[25]
+5 failed, 18 deselected in 7.58s

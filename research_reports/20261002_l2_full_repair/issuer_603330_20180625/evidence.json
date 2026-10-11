@@ -1,0 +1,44 @@
+{
+  "folder": "issuer_603330_20180625",
+  "symbol": "603330",
+  "issuer_url": "https://static.cninfo.com.cn/finalpage/2018-06-19/1205064922.PDF",
+  "notice": "2018-06-19",
+  "record": "2018-06-25",
+  "ex": "2018-06-26",
+  "cash_pay": "2018-06-26",
+  "new_shares_first_tradable": "2018-06-27",
+  "cash_per_share_gross": "0.258",
+  "bonus_per_old_share": "0.3",
+  "pre_ex_true_close": "28.10",
+  "ex_preclose": "21.42",
+  "ex_true_close": "21.62",
+  "formula": "(28.10 - 0.258) / 1.3 = 21.416923..., exchange preclose 21.42",
+  "boundary": "On ex date 06-26 the new shares are pending for valuation; issuer states first unrestricted-share listing 06-27. Actual CSDC account posting timestamp not observed.",
+  "rights_record_rows": [
+    {
+      "branch": "prefunded",
+      "date": "2018-06-25",
+      "phase": "record",
+      "symbol": "603330",
+      "record_shares": "3296.748976403703383687689330874237865022",
+      "cash_due": "850.5612359121554729914238473655533691757",
+      "bonus_due": "989.0246929211110151063067992622713595066",
+      "amount": "",
+      "shares": ""
+    },
+    {
+      "branch": "netted",
+      "date": "2018-06-25",
+      "phase": "record",
+      "symbol": "603330",
+      "record_shares": "3872.565990093859932876650938446784548975",
+      "cash_due": "999.1220254442158626821759421192704136356",
+      "bonus_due": "1161.769797028157979862995281534035364692",
+      "amount": "",
+      "shares": ""
+    }
+  ],
+  "rights_record_status": "two_branch_record_observed",
+  "frozen_event_candidates_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "record_source_sha256_at_seal": "5aab72cca70a8c1bfddbae526861ee2dafee36c91cb8ed37be8c74082f0d8618"
+}

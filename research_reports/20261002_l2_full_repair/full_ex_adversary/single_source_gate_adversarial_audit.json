@@ -1,0 +1,48 @@
+{
+  "status": "PASS_exact_event_single_source_gate_only",
+  "source_hashes": {
+    "issuer_pdf": "319387b47ec4ba41ee70ad868fc783190f9b0352b5d26f042ec8db2051b50533",
+    "normalized_cninfo_file": "54af732ea8434fb466f25e1f4423d5816f5688d9bca030a2f467c895271c5c6d",
+    "candidate_file": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "baostock_window": "59f677b7cfe30cf6bc987e6aee12af357cfc93c1d0276ea2409e025a231c9f76"
+  },
+  "raw_cninfo_row": {
+    "symbol": "300141",
+    "实施方案公告日期": "2015-04-29",
+    "分红类型": "年度分红",
+    "送股比例": "",
+    "转增比例": "",
+    "派息比例": "1.0",
+    "股权登记日": "2015-05-06",
+    "除权日": "2015-05-07",
+    "派息日": "2015-05-07",
+    "股份到账日": "",
+    "实施方案分红说明": "10派1元(含税)",
+    "报告时间": "2014年报"
+  },
+  "raw_cninfo_row_sha256": "00f5425c54fb72b8d82e047fa5619d24e13e567b4c06c130add840e7f905e1d1",
+  "fixed_event": {
+    "symbol": "300141",
+    "announcement_date": "2015-04-29",
+    "record_date": "2015-05-06",
+    "ex_date": "2015-05-07",
+    "cash_pay_date": "2015-05-07",
+    "cash_per_10_gross": "1.0",
+    "source_status": "single_source_only"
+  },
+  "mark_path": {
+    "last_true_trade_close": "13.91",
+    "zero_volume_ex_reference": "13.81",
+    "first_real_trade_preclose": "13.81"
+  },
+  "mutations_rejected": {
+    "official_row_cash_1p1": "issuer_cash_terms_mismatch",
+    "raw_cninfo_row_cash_1p1": "raw_official_line_mismatch",
+    "official_row_wrong_record_date": "issuer_identity_or_clock_mismatch",
+    "official_row_late_announcement": "issuer_identity_or_clock_mismatch",
+    "official_row_mixed_bonus": "mixed_action",
+    "second_right_same_ex_date": "concurrent_right_during_halt",
+    "second_right_later_halt": "concurrent_right_during_halt"
+  },
+  "admission_boundary": "Historical gross-paper valuation of this exact event only. The 2015-05-20 resume preclose is retrospective corroboration, unavailable on 2015-05-07; it cannot justify an ex-ante signal or a suspended fill. CNInfo normalized/API history retrieved in 2026 is not a preserved 2015 PIT source. Investor-specific tax and self-distributed cash are unverified."
+}

@@ -1,0 +1,69 @@
+{
+  "status": "PASS_through_current_first_block_only",
+  "ledger_sha256": {
+    "full_history_rights_events.csv": "f5983d7655f16ec0a3561847accc45c0f3fc39948a410c0046ac9160a06dfdd0",
+    "full_history_daily_positions.csv": "a1fb4099b86655ee2c89c4dd6c430e401455858773914d95ad93a58ace54598b",
+    "full_history_settled_orders.csv": "1bf038a0a1d5c8e61d173e8ac32f5fa709e2d15ad392ec6f07a6eb85e784a4a8"
+  },
+  "cases": {
+    "300141": {
+      "last_true_trade": {
+        "date": "2015-01-22",
+        "preclose": "13.7200",
+        "close": "13.9100",
+        "volume": "3082283",
+        "tradestatus": "1"
+      },
+      "record_bar": {
+        "date": "2015-05-06",
+        "preclose": "13.9100",
+        "close": "13.9100",
+        "volume": "0",
+        "tradestatus": "0"
+      },
+      "ex_bar": {
+        "date": "2015-05-07",
+        "preclose": "13.8100",
+        "close": "13.8100",
+        "volume": "0",
+        "tradestatus": "0"
+      },
+      "next_true_trade": {
+        "date": "2015-05-20",
+        "preclose": "13.8100",
+        "close": "15.1900",
+        "volume": "132744",
+        "tradestatus": "1"
+      },
+      "accounts": [
+        {
+          "branch": "netted",
+          "record_shares": "3184.282548136255571084253515215754499987",
+          "cash_gross": "318.4282548136255571084253515215754499987",
+          "old_stock_value": "44293.3702445753149937819663966511450948191700",
+          "paper_stock_plus_cash": "44293.3702445753149937819663966511450948191700",
+          "double_count_excess": "318.4282548136255571084253515215754499987000",
+          "omit_cash_shortfall": "318.4282548136255571084253515215754499987000",
+          "record_basis": "verified_suspension_last_true_close",
+          "ex_basis": "verified_suspension_cash_theoretical_mark",
+          "ex_booked_orders": 0,
+          "ex_blocked_attempts": 0
+        },
+        {
+          "branch": "prefunded",
+          "record_shares": "2961.988149356412646440517975073143236380",
+          "cash_gross": "296.198814935641264644051797507314323638",
+          "old_stock_value": "41201.2551575476999119876050332674224180458000",
+          "paper_stock_plus_cash": "41201.2551575476999119876050332674224180458000",
+          "double_count_excess": "296.1988149356412646440517975073143236380000",
+          "omit_cash_shortfall": "296.1988149356412646440517975073143236380000",
+          "record_basis": "verified_suspension_last_true_close",
+          "ex_basis": "verified_suspension_cash_theoretical_mark",
+          "ex_booked_orders": 0,
+          "ex_blocked_attempts": 0
+        }
+      ]
+    }
+  },
+  "limitation": "Gross fractional paper model; zero-volume ex marks are not fills or account-specific net cash."
+}

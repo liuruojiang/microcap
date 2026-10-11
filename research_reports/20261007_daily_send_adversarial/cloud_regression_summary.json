@@ -1,0 +1,40 @@
+{
+  "automation-regression-37644093633\\automation-tests.xml": {
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "285",
+        "time": "2.706",
+        "timestamp": "2026-10-07T15:28:14.839220+00:00",
+        "hostname": "runnervmmprz5"
+      }
+    ],
+    "skips": []
+  },
+  "strategy-regression-microcap-37644093633\\regression.xml": {
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "1",
+        "tests": "483",
+        "time": "11.788",
+        "timestamp": "2026-10-07T15:28:45.146382+00:00",
+        "hostname": "runnervmmprz5"
+      }
+    ],
+    "skips": [
+      {
+        "name": "test_real_v23_written_nav_and_signal_identity_when_available",
+        "reason": "real local v2.3 artifacts unavailable; synthetic identity tests still run"
+      }
+    ]
+  },
+  "strategy-regression-microcap-37644093633\\tested-sha.txt": {
+    "sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "status": "PASS_300423_exact_event_account",
+  "manifest_sha256": "ef796fc7100303f0bdb18618bfd693dfbd3bfabe8bb2f97499015205dc2e255a",
+  "issuer_pdf_sha256": "6aaca9ae25b55c8153cf299bea517ee1f30745445f2dad6fc0b30564e8950188",
+  "cninfo_original_row_sha256": "c44581f6f32cd6b7b9172904f92e36913bb88e8389d0e5ac7b20bb00d904a83a",
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "source_mutations_rejected": {
+    "wrong_cash_1p1": true,
+    "wrong_bonus_3": true,
+    "wrong_credit_day": true,
+    "late_announcement": true
+  },
+  "last_true_trade": {
+    "date": "2016-03-18",
+    "close": "34.3600",
+    "preclose": "32.7000",
+    "volume": "1381261",
+    "tradestatus": "1"
+  },
+  "ex_zero_volume_reference": {
+    "date": "2016-05-20",
+    "close": "28.5500",
+    "preclose": "28.5500",
+    "volume": "0",
+    "tradestatus": "0"
+  },
+  "first_true_resume": {
+    "date": "2016-09-30",
+    "close": "31.4100",
+    "preclose": "28.5500",
+    "volume": "567531",
+    "tradestatus": "1"
+  },
+  "theoretical_mark": "28.55",
+  "accounts": {
+    "prefunded": {
+      "record_shares": "2638.704967164500878361454318573095328262",
+      "bonus_due": "527.7409934329001756722908637146190656524",
+      "gross_cash_due": "263.8704967164500878361454318573095328262",
+      "ex_shares": "3166.445960597401054033745182287714393914",
+      "ex_mark": "28.55",
+      "correct_equity_piece": "90665.902671772250180499570386171555479082320",
+      "mutation_errors": {
+        "missing_bonus": "-15067.005362509300015443904159052374324376020",
+        "double_bonus": "15067.005362509300015443904159052374324376020",
+        "missing_cash": "-263.870496716450087836145431857309532826200",
+        "double_cash": "263.870496716450087836145431857309532826200",
+        "stale_price": "18397.051031070900123936059509091620628642664"
+      },
+      "halt_booked_orders": 0,
+      "halt_blocked_attempts": 5
+    },
+    "netted": {
+      "record_shares": "3107.853891491101839578022845047828539502",
+      "bonus_due": "621.5707782982203679156045690095657079004",
+      "gross_cash_due": "310.7853891491101839578022845047828539502",
+      "ex_shares": "3729.424669789322207493627414057394247402",
+      "ex_mark": "28.55",
+      "correct_equity_piece": "106785.859711634259207900864955843388617288720",
+      "mutation_errors": {
+        "missing_bonus": "-17745.845720414191503990510445223100960556420",
+        "double_bonus": "17745.845720414191503990510445223100960556420",
+        "missing_cash": "-310.785389149110183957802284504782853950200",
+        "double_cash": "310.785389149110183957802284504782853950200",
+        "stale_price": "21667.957331475962025537975275673460577407944"
+      },
+      "halt_booked_orders": 0,
+      "halt_blocked_attempts": 5
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2016-06-03",
+      "reason": "unverified_missing_raw_close:2016-06-03:002735"
+    },
+    "netted": {
+      "date": "2016-06-03",
+      "reason": "unverified_missing_raw_close:2016-06-03:002735"
+    }
+  },
+  "limitations": "Gross fractional paper shares/cash; legal new-share trading date 2016-05-20 does not create a zero-volume fill. Resume preclose is retrospective validation."
+}

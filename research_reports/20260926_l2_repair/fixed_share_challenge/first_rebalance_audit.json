@@ -1,0 +1,134 @@
+{
+  "audit": "INDEPENDENT_ARITHMETIC_PARITY_ONLY",
+  "halt_carried_mark_count": 9,
+  "halt_carried_rows": [
+    [
+      "2010-01-06",
+      "600982",
+      "9.24"
+    ],
+    [
+      "2010-01-07",
+      "600241",
+      "12.74"
+    ],
+    [
+      "2010-01-11",
+      "000815",
+      "9.8"
+    ],
+    [
+      "2010-01-14",
+      "600455",
+      "19.82"
+    ],
+    [
+      "2010-01-15",
+      "600455",
+      "19.82"
+    ],
+    [
+      "2010-01-15",
+      "000049",
+      "11.49"
+    ],
+    [
+      "2010-01-15",
+      "600148",
+      "12.29"
+    ],
+    [
+      "2010-01-15",
+      "600992",
+      "10.49"
+    ],
+    [
+      "2010-01-15",
+      "300025",
+      "51.65"
+    ]
+  ],
+  "frozen_order_count": 109,
+  "blocked_order_reasons": {
+    "000049": "suspended_or_zero_volume",
+    "300025": "suspended_or_zero_volume",
+    "600455": "suspended_or_zero_volume",
+    "600180": "at_side_close_limit_diagnostic_ST",
+    "600992": "suspended_or_zero_volume",
+    "600148": "suspended_or_zero_volume"
+  },
+  "equity_T_2010_01_14": "1039425.185839226519640309569984807314499",
+  "old_equity_T1_2010_01_15_before_trade": "1044342.632642224812349675429514151156739",
+  "scenarios": {
+    "prefunded": {
+      "old_equity_after_full_T1_old_hold": "1044342.632642224812349675429514151156739",
+      "booked_sell": 49,
+      "booked_buy": 29,
+      "members_after": 91,
+      "cash_after": "96053.96996689435665565454722362190917057",
+      "fee": "314.3623252508539066696741381780474839992",
+      "new_members": 0,
+      "fully_exited_members": 7,
+      "not_owned_target_symbols": [
+        "000019",
+        "000526",
+        "000663",
+        "000838",
+        "000967",
+        "002234",
+        "002245",
+        "600180",
+        "600613",
+        "600794",
+        "600979"
+      ],
+      "retained_outside_target_symbols": [
+        "300025",
+        "600455"
+      ],
+      "event_reasons": {
+        "sell:False:blocked_trade": 3,
+        "sell:True:": 49,
+        "buy:True:": 29,
+        "buy:False:insufficient_prefunded_cash": 25,
+        "buy:False:blocked_trade": 3
+      }
+    },
+    "netted": {
+      "old_equity_after_full_T1_old_hold": "1044342.632642224812349675429514151156739",
+      "booked_sell": 49,
+      "booked_buy": 52,
+      "members_after": 99,
+      "cash_after": "5634.99988815864804431836237427407781675",
+      "fee": "584.8078987665140520674892473984298310194",
+      "new_members": 8,
+      "fully_exited_members": 7,
+      "not_owned_target_symbols": [
+        "002245",
+        "600180",
+        "600794"
+      ],
+      "retained_outside_target_symbols": [
+        "300025",
+        "600455"
+      ],
+      "event_reasons": {
+        "sell:False:blocked_trade": 3,
+        "sell:True:": 49,
+        "buy:True:": 52,
+        "buy:False:blocked_trade": 3,
+        "buy:False:insufficient_netted_cash": 2
+      }
+    }
+  },
+  "fault_injections_rejected": [
+    "future_sized_buy_quantity",
+    "omitted_booked_buy_fee"
+  ],
+  "limitations": [
+    "Old L1 targets and rights incomplete",
+    "BaoStock ST diagnostic only",
+    "No closing auction fill",
+    "netted same-close proceeds theoretical"
+  ]
+}

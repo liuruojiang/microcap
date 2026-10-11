@@ -1,0 +1,2 @@
+signal
+next_holding: long_microcap_top100

@@ -1,0 +1,15 @@
+init_quant_param_scan_run.py
+run_id=20261003_v23_core_one_axis
+project=microcap_top100
+strategy=v2.3
+subsystem=core_parameters
+parameter_group=L6_CORE_ONE_AXIS
+repo=D:\动量策略\微盘股对冲策略
+
+Normalized original core_executor 14-candidate / 70-window real-run outputs; no strategy rerun.
+python -X utf8 research_reports/20261003_l6_diagnostic/core_executor/standardized/20261003_v23_core_one_axis/normalize_existing.py
+
+finalize_quant_param_scan_run.py
+finalized_at=2026-10-03T12:11:08+08:00
+decision=keep_default
+stability_label=diagnostic_mixed

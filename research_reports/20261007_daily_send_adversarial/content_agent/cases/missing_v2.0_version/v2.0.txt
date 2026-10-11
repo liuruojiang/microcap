@@ -1,0 +1,2 @@
+signal
+version: 2.0

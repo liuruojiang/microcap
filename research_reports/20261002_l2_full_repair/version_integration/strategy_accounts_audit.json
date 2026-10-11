@@ -1,0 +1,113 @@
+{
+  "accounts": [
+    {
+      "branch": "prefunded",
+      "version": "v2.0",
+      "sessions": 241,
+      "first_actual_600543_held_after_ST": "2026-04-29",
+      "max_swap_debt": "31129.98305247498149049176527402297649004",
+      "booked_orders": 3047,
+      "rejected_orders": 371,
+      "stock_fees": "68191.40409975142031415387165481018518017901",
+      "swap_drag": "27294.414795346938244890803840720943976496275",
+      "end_equity": "997486.7289148120195726831048141381950223",
+      "input_sha256": {
+        "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+        "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+        "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+      },
+      "manifest_sha256": "85600926baedf564aed44c1f0647a78d3630c5175c634a381a076e9a6828860a"
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "sessions": 241,
+      "first_actual_600543_held_after_ST": "2026-04-29",
+      "max_swap_debt": "9906.015725538965569279314430797051779013",
+      "booked_orders": 2024,
+      "rejected_orders": 269,
+      "stock_fees": "42417.09148541790937436415027760565817080186",
+      "swap_drag": "16420.158890890436948409629931307055442520013",
+      "end_equity": "932409.6866505375305596069879114128786906",
+      "input_sha256": {
+        "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+        "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+        "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+      },
+      "manifest_sha256": "895f91e1ffabc4339f0e82bc16b71a3cf617e27dd4fb4e770e6262d878e7ab39"
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.5",
+      "sessions": 241,
+      "first_actual_600543_held_after_ST": "2026-04-27",
+      "max_swap_debt": "0.0000",
+      "booked_orders": 2379,
+      "rejected_orders": 206,
+      "stock_fees": "46641.99031652037246099412053139885610531165",
+      "swap_drag": "0E-40",
+      "end_equity": "1158956.763561968835746221240344949811124",
+      "input_sha256": {
+        "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+        "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+        "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+      },
+      "manifest_sha256": "d24b38a3feacc347c9ce3be16cfb9a0e8b834c50d14e0f0a33e7414f1697055c"
+    },
+    {
+      "branch": "netted",
+      "version": "v2.0",
+      "sessions": 241,
+      "first_actual_600543_held_after_ST": "2026-04-29",
+      "max_swap_debt": "40495.94231023440118672519198074576057173",
+      "booked_orders": 2899,
+      "rejected_orders": 109,
+      "stock_fees": "56821.35096168001080342329294495380311308058",
+      "swap_drag": "29248.430404572503208912351993621771259386752",
+      "end_equity": "1004804.006307827150610351743793913878164",
+      "input_sha256": {
+        "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+        "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+        "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+      },
+      "manifest_sha256": "f3366b7554bb47e72344133a2f93fb9ce0f291581be640facb840e787326951e"
+    },
+    {
+      "branch": "netted",
+      "version": "v2.3",
+      "sessions": 241,
+      "first_actual_600543_held_after_ST": "2026-04-29",
+      "max_swap_debt": "6009.223506790550760760630558254521881546",
+      "booked_orders": 2051,
+      "rejected_orders": 95,
+      "stock_fees": "43040.302487286314120905218942788725499237529",
+      "swap_drag": "15381.8650779182744496393158475808957278505184",
+      "end_equity": "975020.9126275349216346789978473797816317",
+      "input_sha256": {
+        "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+        "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+        "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+      },
+      "manifest_sha256": "421555b0c4aebf8f9e3a3d4c3d9d26a303943c7a756d57e0cc71b728df98d52e"
+    },
+    {
+      "branch": "netted",
+      "version": "v2.5",
+      "sessions": 241,
+      "first_actual_600543_held_after_ST": "2026-04-27",
+      "max_swap_debt": "0.0000",
+      "booked_orders": 2622,
+      "rejected_orders": 43,
+      "stock_fees": "52061.61482950275797478371790610043642426830",
+      "swap_drag": "0E-40",
+      "end_equity": "1172654.134910428646770280712742083631676",
+      "input_sha256": {
+        "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+        "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+        "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+      },
+      "manifest_sha256": "55eba8d6376d07c8f03e2d438695ef42f811aea81c69f9437dc94b3b93786197"
+    }
+  ],
+  "label": "old_L1_pool_conditional_diagnostic_not_certified"
+}

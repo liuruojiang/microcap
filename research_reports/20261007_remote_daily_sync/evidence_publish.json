@@ -1,0 +1,16 @@
+{
+  "primary_head_and_remote_main_sha": "4c082e82e5d645278f313c142880218bd0e739df",
+  "strategy_pin_sha": "501b269b9f51a83f05f3b71488143b4da285cd0b",
+  "strategy_pin_reachable_from_remote_main": true,
+  "published_paths": [
+    "README.md",
+    "docs/microcap_audit_daily_sync_20261007.md",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+    "research_reports/20261007_remote_daily_sync/cloud_readback_comparison.json",
+    "research_reports/20261007_remote_daily_sync/cloud_workflow_acceptance.json",
+    "research_reports/20261007_remote_daily_sync/final_acceptance.json",
+    "research_reports/20261007_remote_daily_sync/local_automation_sync.json",
+    "research_reports/20261007_remote_daily_sync/local_final_check.json",
+    "research_reports/20261007_remote_daily_sync/local_historical_parity.json"
+  ]
+}

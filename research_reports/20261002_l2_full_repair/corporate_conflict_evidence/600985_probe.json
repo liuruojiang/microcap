@@ -1,0 +1,68 @@
+{
+  "queried_utc": "2026-10-03T01:34:57.609861+00:00",
+  "issuer_url": "https://static.cninfo.com.cn/finalpage/2015-07-03/1201230308.PDF",
+  "issuer_pdf_sha256": "8dd86ad3ca9344131809e1a38c1e0dd181b9426c0448a8de4d50f08980946f7c",
+  "record_date": "2015-07-09",
+  "ex_and_cash_payment_date": "2015-07-10",
+  "new_unrestricted_shares_first_listing_date": "2015-07-13",
+  "actual_share_credit_date": null,
+  "share_credit_date_status": "not stated in issuer implementation notice; cannot infer from listing date",
+  "bonus_new_shares_per_old_share": "0.5",
+  "gross_cash_per_old_share": "0.17",
+  "vendor_query": "BaoStock sh.600985 daily adjustflag=3 (unadjusted), 2015-07-08..2015-07-15",
+  "vendor_rows": 6,
+  "record_date_traded_bar": {
+    "date": "2015-07-09",
+    "code": "sh.600985",
+    "open": "12.0800",
+    "high": "14.7600",
+    "low": "12.0800",
+    "close": "14.7600",
+    "preclose": "13.4200",
+    "volume": "5766024",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_traded_bar": {
+    "date": "2015-07-10",
+    "code": "sh.600985",
+    "open": "10.5000",
+    "high": "10.7000",
+    "low": "10.1800",
+    "close": "10.7000",
+    "preclose": "9.7300",
+    "volume": "2950679",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "first_listing_date_traded_bar": {
+    "date": "2015-07-13",
+    "code": "sh.600985",
+    "open": "11.0000",
+    "high": "11.7700",
+    "low": "10.8800",
+    "close": "11.7700",
+    "preclose": "10.7000",
+    "volume": "6839410",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "5a53ccccc35165a01dd2d36b5a92708033b3c894d4b68aa1b29046288b33a53e",
+  "stopped_account_prior_positions_sha256": "661f9cf22e36270bfbd75413e1eb7856aaff56cb70b75014184cee73e85d2286",
+  "stopped_account_settled_orders_sha256": "bb5ce406827a43b2e419efb5bbed7572a67e090b4aab1f9499e764211fa3053d",
+  "provisional_record_entitlements_from_last_settled_no_record_day_orders": {
+    "prefunded": {
+      "last_settled_shares_2015_07_08": "3517.107653175536607407806056001884421795",
+      "conditional_2015_07_09_bonus_due_0p5": "1758.5538265877683037039030280009422108975",
+      "conditional_2015_07_09_gross_cash_due": "597.90830103984122325932702952032035170515"
+    },
+    "netted": {
+      "last_settled_shares_2015_07_08": "4097.500025819487384368967555841504154766",
+      "conditional_2015_07_09_bonus_due_0p5": "2048.7500129097436921844837779207520773830",
+      "conditional_2015_07_09_gross_cash_due": "696.57500438931285534272448449305570631022"
+    }
+  },
+  "entitlement_limit": "No 2015-07-09 record event exists in the stopped account output yet; shares above are conditional on no other record-day state mutation and must be replaced with rerun ledger record shares.",
+  "valuation_counterexample": "At 2015-07-10 true traded close 10.70, per old share equity is 1.5*10.70+0.17=16.22 vs 14.76 at record close; omitting pending 0.5 share would value 10.87 instead of 16.22. The 07-10 trading move is real; 9.73 is adjusted preclose, not actual close.",
+  "execution_boundary": "Existing shares can trade on 07-10; newly entitled shares must not be sold before 07-13 listed session. Pending economic right must be marked on 07-10, and actual CSDC credit timestamp remains unknown."
+}

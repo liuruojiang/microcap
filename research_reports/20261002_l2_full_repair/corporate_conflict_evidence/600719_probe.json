@@ -1,0 +1,75 @@
+{
+  "queried_utc": "2026-10-03T01:42:08.714230+00:00",
+  "issuer_url": "https://static.cninfo.com.cn/finalpage/2015-11-24/1201785739.PDF",
+  "issuer_pdf_sha256": "91c32510cbabeb5c1a599c4b900d6c817da1b1503a83f1e40b2e786f7ee75248",
+  "live_pdf_sha256_matched": true,
+  "record_date": "2015-11-27",
+  "ex_date": "2015-11-30",
+  "new_unrestricted_shares_first_listing_date": "2015-12-01",
+  "actual_csdc_share_credit_date": null,
+  "paper_release_date": "2015-12-01",
+  "paper_release_status": "conservative first-tradable date; not a claim about actual CSDC credit timestamp",
+  "bonus_new_shares_per_old_share": "1",
+  "gross_cash_per_old_share": "0",
+  "candidate_source_status": "two_source_match; normalized share_credit_date blank",
+  "vendor_query": "BaoStock sh.600719 daily adjustflag=3, 2015-11-24..2015-12-04",
+  "record_traded_bar": {
+    "date": "2015-11-27",
+    "code": "sh.600719",
+    "open": "16.1900",
+    "high": "16.2700",
+    "low": "14.8800",
+    "close": "15.2200",
+    "preclose": "16.1900",
+    "volume": "19477951",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_traded_bar": {
+    "date": "2015-11-30",
+    "code": "sh.600719",
+    "open": "7.5900",
+    "high": "7.9100",
+    "low": "6.9800",
+    "close": "7.6400",
+    "preclose": "7.6100",
+    "volume": "22075752",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "release_traded_bar": {
+    "date": "2015-12-01",
+    "code": "sh.600719",
+    "open": "7.4000",
+    "high": "8.3000",
+    "low": "7.3000",
+    "close": "7.9900",
+    "preclose": "7.6400",
+    "volume": "61429214",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_rows": 9,
+  "vendor_csv_sha256": "db06ca729f1248219e416e67a69da87345636f7bcc8135fe1ed1a5d8c83fa8e8",
+  "stopped_account_positions_sha256": "2ba8fca4a1cb6f2ea35bb485d194ebc2cf9eebfd400c30fe7d2da7a279957cff",
+  "stopped_account_orders_sha256": "bb5ce406827a43b2e419efb5bbed7572a67e090b4aab1f9499e764211fa3053d",
+  "conditional_record_entitlements": {
+    "prefunded": {
+      "last_settled_shares_2015_11_26": "6424.666364964036431644089672845663859446",
+      "conditional_record_shares_if_unchanged": "6424.666364964036431644089672845663859446",
+      "conditional_bonus_due": "6424.666364964036431644089672845663859446",
+      "correct_2015_11_30_ex_close_mark": "98168.90205665047667552169023",
+      "omitting_pending_bonus_mark": "49084.45102832523833776084510"
+    },
+    "netted": {
+      "last_settled_shares_2015_11_26": "7353.744417556670567303824010698262028975",
+      "conditional_record_shares_if_unchanged": "7353.744417556670567303824010698262028975",
+      "conditional_bonus_due": "7353.744417556670567303824010698262028975",
+      "correct_2015_11_30_ex_close_mark": "112365.2147002659262684024309",
+      "omitting_pending_bonus_mark": "56182.60735013296313420121544"
+    }
+  },
+  "entitlement_limit": "Engine stopped at 2015-11-26; no 2015-11-27 record line. No recorded 600719 execution order on record day. Replace conditional shares with rerun ledger rights record.",
+  "valuation_counterexample": "2015-11-30 true traded close 7.64: one old share plus one pending new share = 15.28; omitting pending new share yields 7.64 (false -50% mark versus correct ex-date mark). Counting new share twice yields 22.92 (false +50%).",
+  "execution_boundary": "Original share is traded on ex date. Pending new share earns value on ex date but is paper-tradable only from the issuer-stated 2015-12-01 listing date; actual CSDC credit time unknown."
+}

@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "expected_date": "2026-09-30",
+  "release_sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+  "bundle": "research_reports\\20261007_daily_send_adversarial\\microcap-approved-state-20260930-de6ce1a9.zip",
+  "scope": "whole_workspace_delivery",
+  "files": 14982
+}

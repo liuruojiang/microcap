@@ -1,0 +1,92 @@
+........................................................................ [ 58%]
+..................F..F.............................                      [100%]
+================================== FAILURES ===================================
+_ test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[shared_v20-inserted_date] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...1F46C769010>, execute_query=<function execute_query at 0x000001F46C769170>, main=<function main at 0x000001F46C7692D0>)
+mutation = 'inserted_date'
+
+    @pytest.mark.parametrize("mutation", ["removed_date", "inserted_date", "missing_key"])
+    def test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns(base, mutation):
+        previous = _performance()
+        if mutation == "removed_date":
+            candidate = previous.drop(index=1)
+        elif mutation == "inserted_date":
+            candidate = pd.concat([previous, pd.DataFrame({"date": [pd.Timestamp("2026-09-02 12:00")],
+                                                           "return_net": [0.0], "nav_net": [1.0]})])
+        else:
+            candidate = previous.drop(columns="nav_net")
+        with pytest.raises(RuntimeError, match="historical|schema"):
+>           base.assert_no_historical_rewrite(previous, candidate, ["nav_net"], 0, "diagnostic")
+
+tests\test_script_data_adversarial.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<embedded_top100_base>:4951: in assert_no_historical_rewrite
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                  date  return_net  nav_net
+0 2026-09-01 00:00:00        0.00   1.0000
+1 2026-09-02 00:00:00        0.02   1.0200
+2 2026-09-03 00:00:00       -0.01   1.0098
+0 2026-09-02 12:00:00        0.00   1.0000
+label = 'diagnostic candidate'
+
+>   ???
+E   ValueError: diagnostic candidate requires timezone-naive daily session dates
+
+<embedded_top100_base>:4918: ValueError
+_ test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-inserted_date] _
+
+base = <module 'microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live.py'>
+mutation = 'inserted_date'
+
+    @pytest.mark.parametrize("mutation", ["removed_date", "inserted_date", "missing_key"])
+    def test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns(base, mutation):
+        previous = _performance()
+        if mutation == "removed_date":
+            candidate = previous.drop(index=1)
+        elif mutation == "inserted_date":
+            candidate = pd.concat([previous, pd.DataFrame({"date": [pd.Timestamp("2026-09-02 12:00")],
+                                                           "return_net": [0.0], "nav_net": [1.0]})])
+        else:
+            candidate = previous.drop(columns="nav_net")
+        with pytest.raises(RuntimeError, match="historical|schema"):
+>           base.assert_no_historical_rewrite(previous, candidate, ["nav_net"], 0, "diagnostic")
+
+tests\test_script_data_adversarial.py:137: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+microcap_top100_mom16_biweekly_live.py:3753: in assert_no_historical_rewrite
+    cand = _normalise_dated_frame(candidate, f"{label} candidate")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+frame =                  date  return_net  nav_net
+0 2026-09-01 00:00:00        0.00   1.0000
+1 2026-09-02 00:00:00        0.02   1.0200
+2 2026-09-03 00:00:00       -0.01   1.0098
+0 2026-09-02 12:00:00        0.00   1.0000
+label = 'diagnostic candidate'
+
+    def _normalise_dated_frame(frame: pd.DataFrame, label: str) -> pd.DataFrame:
+        out = frame.copy()
+        if "date" in out.columns:
+            out["date"] = pd.to_datetime(out["date"], errors="coerce")
+            if out["date"].isna().any():
+                raise ValueError(f"{label} contains invalid dates/NaT")
+            out = out.set_index("date")
+        elif isinstance(out.index, pd.DatetimeIndex):
+            out.index = pd.to_datetime(out.index)
+            if out.index.hasnans:
+                raise ValueError(f"{label} contains invalid dates/NaT")
+        else:
+            raise ValueError(f"{label} requires a date column or DatetimeIndex.")
+        if out.index.tz is not None or not out.index.equals(out.index.normalize()):
+>           raise ValueError(f"{label} requires timezone-naive daily session dates")
+E           ValueError: diagnostic candidate requires timezone-naive daily session dates
+
+microcap_top100_mom16_biweekly_live.py:3718: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_script_data_adversarial.py::test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[shared_v20-inserted_date]
+FAILED tests/test_script_data_adversarial.py::test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-inserted_date]
+2 failed, 121 passed in 5.04s

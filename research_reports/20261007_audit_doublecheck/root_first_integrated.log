@@ -1,0 +1,56 @@
+........................................................................ [ 23%]
+........................................................................ [ 46%]
+........................................................................ [ 69%]
+........................................................................ [ 92%]
+.......................FF                                                [100%]
+================================== FAILURES ===================================
+_ test_formal_score_equality_boundary_preserves_each_version_state_machine[v23] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018FBA26E970>
+module = <module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'>
+
+    @pytest.mark.parametrize("module", [v23, v25], ids=["v23", "v25"])
+    def test_formal_score_equality_boundary_preserves_each_version_state_machine(monkeypatch: pytest.MonkeyPatch, module) -> None:
+>       prices = _prices(60)
+                 ^^^^^^^^^^^
+
+tests\test_doublecheck_math_adversarial.py:383: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+periods = 60
+
+    def _prices(periods: int = 260) -> pd.DataFrame:
+        """A diagnostic path with entry, cooling, and re-entry phases."""
+        t = np.arange(periods, dtype=float)
+        micro_return = 0.002 + 0.0008 * np.sin(t / 5)
+>       micro_return[65:110] += 0.035 * np.where(np.arange(45) % 2 == 0, 1.0, -1.0)
+E       ValueError: operands could not be broadcast together with shapes (0,) (45,) (0,)
+
+tests\test_doublecheck_math_adversarial.py:97: ValueError
+_ test_formal_score_equality_boundary_preserves_each_version_state_machine[v25] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018FBB752E40>
+module = <module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'>
+
+    @pytest.mark.parametrize("module", [v23, v25], ids=["v23", "v25"])
+    def test_formal_score_equality_boundary_preserves_each_version_state_machine(monkeypatch: pytest.MonkeyPatch, module) -> None:
+>       prices = _prices(60)
+                 ^^^^^^^^^^^
+
+tests\test_doublecheck_math_adversarial.py:383: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+periods = 60
+
+    def _prices(periods: int = 260) -> pd.DataFrame:
+        """A diagnostic path with entry, cooling, and re-entry phases."""
+        t = np.arange(periods, dtype=float)
+        micro_return = 0.002 + 0.0008 * np.sin(t / 5)
+>       micro_return[65:110] += 0.035 * np.where(np.arange(45) % 2 == 0, 1.0, -1.0)
+E       ValueError: operands could not be broadcast together with shapes (0,) (45,) (0,)
+
+tests\test_doublecheck_math_adversarial.py:97: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_math_adversarial.py::test_formal_score_equality_boundary_preserves_each_version_state_machine[v23]
+FAILED tests/test_doublecheck_math_adversarial.py::test_formal_score_equality_boundary_preserves_each_version_state_machine[v25]
+2 failed, 311 passed in 14.89s

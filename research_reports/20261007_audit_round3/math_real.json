@@ -1,0 +1,232 @@
+{
+  "scope": "round3_math_diagnostic_only",
+  "latest_completed_session": "2026-09-30",
+  "formal_refresh": "BLOCKED: local core/authority differs from remote release; no guard bypass",
+  "loaded_source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+    "scripts/top100_data_contracts.py": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288"
+  },
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30",
+      "same_round_frozen_entire_stack": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "independent_price_state_fee_ledger": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 4.336808689942018e-19,
+        "current_execution_scale": 0.0
+      },
+      "official_saved_csv": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 9.98821251402271e-17,
+        "nav_net": 3.552713678800501e-15,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 9.985502008591496e-17,
+        "current_execution_scale": 0.0
+      },
+      "cash_with_legal_trade_fee_days": 116,
+      "cash_pre_cost_zero": true,
+      "costed_not_above_same_state_no_cost": true
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "same_round_frozen_entire_stack": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "independent_price_state_fee_ledger": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 4.336808689942018e-19,
+        "current_execution_scale": 0.0
+      },
+      "official_saved_csv": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 9.98821251402271e-17,
+        "nav_net": 3.552713678800501e-15,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 9.985502008591496e-17,
+        "current_execution_scale": 0.0
+      },
+      "cash_with_legal_trade_fee_days": 94,
+      "cash_pre_cost_zero": true,
+      "costed_not_above_same_state_no_cost": true
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "same_round_frozen_entire_stack": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "independent_price_state_fee_ledger": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "official_saved_csv": {
+        "holding": 0,
+        "next_holding": 0,
+        "signal_on": 0.0,
+        "return_net": 9.974659986866641e-17,
+        "nav_net": 1.4210854715202004e-14,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "overlay_pre_cost_return": 9.974659986866641e-17,
+        "current_execution_scale": 0.0
+      },
+      "cash_with_legal_trade_fee_days": 126,
+      "cash_pre_cost_zero": true,
+      "costed_not_above_same_state_no_cost": true
+    }
+  },
+  "warm_start_observation": {
+    "scope": "definition_note_not_a_parameter_or_history_change",
+    "formal_rule_uses_gross_start_as_feature_start": true,
+    "first_rows": [
+      {
+        "date": "2010-05-05",
+        "full_history_vol10": 0.07430774800604442,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-06",
+        "full_history_vol10": 0.07311953112591062,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-07",
+        "full_history_vol10": 0.0737675888715692,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-10",
+        "full_history_vol10": 0.06852943197155147,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-11",
+        "full_history_vol10": 0.06786910254629655,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-12",
+        "full_history_vol10": 0.06795905773515273,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-13",
+        "full_history_vol10": 0.04739117302624493,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-14",
+        "full_history_vol10": 0.0464087117260232,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-17",
+        "full_history_vol10": 0.039919631938160255,
+        "formal_truncated_vol10": null,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      },
+      {
+        "date": "2010-05-18",
+        "full_history_vol10": 0.039372458740831104,
+        "formal_truncated_vol10": 0.040266163437634714,
+        "full_history_is_hot": false,
+        "formal_next_active": false
+      }
+    ],
+    "reason_not_promoted_to_repair": "Changing warm-start volatility changes approved semantics; current diagnostic checks preserve normal paths."
+  },
+  "official_artifacts_unchanged": true,
+  "sources_after": {
+    "microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+    "scripts/top100_data_contracts.py": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288"
+  },
+  "test_sha256": "098f3d801c82e8bb2a65c9a4bb3cdb47031add9c64692d0d2ef60162ed0ff297"
+}

@@ -1,0 +1,110 @@
+{
+  "label": "diagnostic_frozen_old_proxy_not_formal_performance",
+  "input_sha256": {
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "4e20dea7fb79ccf1658e549ec881ff931d26fb9c1156badc5bf9f7aa5ea5bfb3",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "96cdd20f32b1bebcc02bc8b51f9c927866bb972a5e91bd0bcbf0e9a64b79c4cb",
+    "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "d5cae749dbf2c1a474953be30632de26876fd8a2bbf156a13e35eb66bda7b13e",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "6058eea855c5cdce4f69213717e9de920e839fc1754c6971d5f94ebf7841be66",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+  },
+  "nav_first": "2010-03-01",
+  "nav_last": "2026-09-29",
+  "nav_rows": 4032,
+  "turnover_first": "2010-01-14",
+  "turnover_last": "2026-09-17",
+  "turnover_rows": 432,
+  "checks": {
+    "microcap_close_max_abs": 0.0,
+    "hedge_close_max_abs": 0.0,
+    "microcap_mom16_max_abs": 9.8879238130678e-17,
+    "hedge_mom16_max_abs": 9.974659986866641e-17,
+    "microcap_daily_return_max_abs": 9.974659986866641e-17,
+    "hedge_daily_return_max_abs": 9.993633524885137e-17,
+    "signal_mismatch": 0,
+    "holding_lag_mismatch": 0,
+    "gross_return_max_abs": 9.985502008591496e-17,
+    "entry_exit_cost_max_abs": 0.0,
+    "rebalance_cost_max_abs": 0.0,
+    "net_return_max_abs": 9.98821251402271e-17
+  },
+  "windows": {
+    "last_5y": {
+      "start": "2021-09-29",
+      "end": "2026-09-29",
+      "signal_switches": 70,
+      "member_rebalances": 129,
+      "member_rebalances_close_timing": 129,
+      "member_entries": 1469,
+      "member_exits": 1469,
+      "switches_charged_on_signal_date": 70,
+      "active_member_rebalance_cost_days": 90
+    },
+    "last_3y": {
+      "start": "2023-09-29",
+      "end": "2026-09-29",
+      "signal_switches": 48,
+      "member_rebalances": 77,
+      "member_rebalances_close_timing": 77,
+      "member_entries": 875,
+      "member_exits": 875,
+      "switches_charged_on_signal_date": 48,
+      "active_member_rebalance_cost_days": 49
+    },
+    "last_1y": {
+      "start": "2025-09-29",
+      "end": "2026-09-29",
+      "signal_switches": 17,
+      "member_rebalances": 25,
+      "member_rebalances_close_timing": 25,
+      "member_entries": 315,
+      "member_exits": 315,
+      "switches_charged_on_signal_date": 17,
+      "active_member_rebalance_cost_days": 14
+    }
+  },
+  "disabled_module_injections_rejected": {
+    "overheat_flag": true,
+    "scale_change_cost": true
+  },
+  "september_2026_switch_example": [
+    {
+      "date": "2026-09-22",
+      "signal_switch": true,
+      "signal_from": "cash",
+      "signal_to": "long_microcap_short_zz1000",
+      "momentum_gap": 0.0031020137394360825,
+      "entry_exit_cost": 0.003,
+      "member_rebalance": false,
+      "execution_timing": "",
+      "rebalance_entry_count": 0,
+      "rebalance_exit_count": 0,
+      "rebalance_cost": 0.0
+    },
+    {
+      "date": "2026-09-23",
+      "signal_switch": true,
+      "signal_from": "long_microcap_short_zz1000",
+      "signal_to": "cash",
+      "momentum_gap": -0.008695818861721216,
+      "entry_exit_cost": 0.003,
+      "member_rebalance": false,
+      "execution_timing": "",
+      "rebalance_entry_count": 0,
+      "rebalance_exit_count": 0,
+      "rebalance_cost": 0.0
+    },
+    {
+      "date": "2026-09-24",
+      "signal_switch": true,
+      "signal_from": "cash",
+      "signal_to": "long_microcap_short_zz1000",
+      "momentum_gap": 0.003084706134703352,
+      "entry_exit_cost": 0.003,
+      "member_rebalance": false,
+      "execution_timing": "",
+      "rebalance_entry_count": 0,
+      "rebalance_exit_count": 0,
+      "rebalance_cost": 0.0
+    }
+  ]
+}

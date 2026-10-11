@@ -1,0 +1,71 @@
+{
+  "scope": "round3_independent_data_boundary_diagnostic_only",
+  "versions": ["v2.0", "v2.3", "v2.5"],
+  "excluded": ["v2.6"],
+  "old_source_root": ".codex_backups/20261007_200436",
+  "baseline_tests": 57,
+  "baseline_failed": 40,
+  "baseline_passed": 17,
+  "baseline_errors": 0,
+  "baseline_skipped": 0,
+  "group_count": 7,
+  "no_production_or_official_artifact_mutation_by_this_agent": true,
+  "findings": [
+    {
+      "id": "D3-1",
+      "kind": "legal_input_false_rejection",
+      "functions": ["shared/mainline._normalise_dated_frame", "cost_mod.load_turnover_table", "overlay_mod._candidate_frame_sha256"],
+      "input": "YYYY-MM-DD and YYYY-MM-DD 00:00:00 in the same date column, both row orders",
+      "observed": "Single-format inference rejects valid timezone-naive midnight dates, including aligned-close and unchanged-freeze consumers. Candidate hashing drops valid intermediate mixed-format dates and yields the same hash for 2026-09-02 versus 2026-09-03 midnight text; the old verifier rejects such frames before acceptance, so no old end-to-end migration bypass is claimed.",
+      "narrow_fix": "Parse dates per element or with format=mixed; preserve NaT, timezone, midnight and duplicate-session rejection. Canonical candidate hashing must validate and retain every date."
+    },
+    {
+      "id": "D3-2",
+      "kind": "silent_event_loss_before_cost_validation",
+      "functions": ["embedded_context._load_embedded_base_context", "base_mod.rebuild_costed_nav_from_proxy_turnover"],
+      "input": "Two event rows: valid first row; second row has legal mixed midnight label or missing/NaT/invalid rebalance date, including an infinite-cost variant.",
+      "observed": "The real embedded loader reads 2 CSV rows and returns 1 after errors=coerce/dropna; costs become 0.001 instead of 0.003, or the malformed/infinite-cost event disappears entirely.",
+      "narrow_fix": "All turnover consumers must validate raw events before filtering; use one fail-closed turnover loader and never drop parse failures."
+    },
+    {
+      "id": "D3-3",
+      "kind": "duplicate_event_double_charge",
+      "functions": ["cost_mod.map_rebalance_apply_costs", "cost_mod.load_turnover_table", "embedded_context._load_embedded_base_context"],
+      "input": "One rebalance event repeated twice with rate 0.006",
+      "observed": "All three routes accept duplicate events; mapper charges 0.012.",
+      "narrow_fix": "Reject duplicate canonical rebalance-event identities before summing."
+    },
+    {
+      "id": "D3-4",
+      "kind": "non_session_signal_hidden_by_explicit_execution_date",
+      "functions": ["cost_mod.map_rebalance_apply_costs"],
+      "input": "Result sessions 2026-09-04/07/08; rebalance_date Saturday 2026-09-05, execution_date Monday 2026-09-07",
+      "observed": "Valid explicit execution session hides an impossible inside-window signal date; mapper accepts the event.",
+      "narrow_fix": "Require rebalance_date to be present when it lies within the supplied session window; retain valid explicit pre-window events."
+    },
+    {
+      "id": "D3-5",
+      "kind": "row_order_changes_strategy_cost_semantics",
+      "functions": ["cost_mod.apply_cost_model"],
+      "input": "One stream contains close and next_open events; identical signals and event records are supplied in reversed row order.",
+      "observed": "Entry/exit costs change from [0.003,0,0.003] to [0,0.003,0] because the first event controls the whole signal stream.",
+      "narrow_fix": "Reject mixed timing streams for a strategy-wide timing model; preserve both legal uniform timing modes."
+    },
+    {
+      "id": "D3-6",
+      "kind": "genuine_warmup_null_false_rewrite",
+      "functions": ["shared/mainline.assert_no_historical_rewrite"],
+      "input": "All cells are genuinely missing on both sides; np.nan/None/pd.NA representation changes.",
+      "observed": "All 6 representation/namespace variants incorrectly report a historical rewrite.",
+      "narrow_fix": "Mask both-genuinely-missing cells before the final changed decision while preserving the raw isna XOR and missing-to-literal-string rejection."
+    },
+    {
+      "id": "D3-7",
+      "kind": "migration_approval_type_validation",
+      "functions": ["v2_0_rewrite_audit_matches_approved_lineage_migration", "v2_3_rewrite_audit_matches_approved_lineage_migration", "v2_5_rewrite_audit_matches_approved_lineage_migration"],
+      "input": "All exact hashes and other evidence match, but JSON approved is integer 1.",
+      "observed": "All 3 verifiers accept integer 1 via equality to True; genuine boolean approved controls pass and 12 tampered-hash controls remain rejected.",
+      "narrow_fix": "Require report.approved is True before evaluating the unchanged exact-hash evidence. No arbitrary-hash bypass was demonstrated."
+    }
+  ]
+}

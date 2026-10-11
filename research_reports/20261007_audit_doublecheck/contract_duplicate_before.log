@@ -1,0 +1,38 @@
+FFFFF                                                                    [100%]
+================================== FAILURES ===================================
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-version-__DUP_VERSION__] _
+tests\test_doublecheck_contract_adversarial.py:167: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.0 corrupted version passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-version-__DUP_VERSION__] _
+tests\test_doublecheck_contract_adversarial.py:167: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.3 corrupted version passed native delivery CLI: []
+E   assert 0 == 1
+_ test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-version-__DUP_VERSION__] _
+tests\test_doublecheck_contract_adversarial.py:167: in test_final_file_corruption_cannot_be_recertified_by_delivery_cli
+    assert status == 1, f"v2.{version} corrupted {field} passed native delivery CLI: {output['errors']}"
+E   AssertionError: v2.5 corrupted version passed native delivery CLI: []
+E   assert 0 == 1
+_ test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[duplicated_version_header] _
+tests\test_doublecheck_contract_adversarial.py:209: in test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file
+    assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, "5", v25, attack)
+tests\test_doublecheck_contract_adversarial.py:278: in assert_native_cli_cleanup
+    assert not retained, f"Native v2.{version} 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.5 信号 CLI kept duplicated_version_header realtime artifact
+E   assert not True
+_________ test_native_v23_signal_cli_rejects_duplicate_version_header _________
+tests\test_doublecheck_contract_adversarial.py:292: in test_native_v23_signal_cli_rejects_duplicate_version_header
+    assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, "3", v23,
+tests\test_doublecheck_contract_adversarial.py:278: in assert_native_cli_cleanup
+    assert not retained, f"Native v2.{version} 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.3 信号 CLI kept duplicated_version_header realtime artifact
+E   assert not True
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[0-version-__DUP_VERSION__]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[3-version-__DUP_VERSION__]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_final_file_corruption_cannot_be_recertified_by_delivery_cli[5-version-__DUP_VERSION__]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v25_signal_cli_does_not_preserve_corrupt_realtime_file[duplicated_version_header]
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v23_signal_cli_rejects_duplicate_version_header
+5 failed, 83 deselected in 18.17s

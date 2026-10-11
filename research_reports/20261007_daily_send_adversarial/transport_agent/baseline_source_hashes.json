@@ -1,0 +1,7 @@
+{
+  "scripts/send_report.py": "caf2cabbe3ee987ef485b1e6c9c0981401437590856dc87b5d35a5e4635368f0",
+  "scripts/mail_utils.py": "361365190253c9a1f18ed6ce83e56123276ec0bdcedfa68753942fdfe0be9bd3",
+  "scripts/check_mail_transport.py": "48f75b33beb7897b4c115f425ea42bd07dbeabb82667afb8f57992242e09b0e0",
+  "scripts/check_microcap_delivery.py": "c1131ef5c2420bd0cc2cfb55aa7417a2f10af72b3b20bc40717f5c6307543dbe",
+  ".github/workflows/microcap-realtime-digest.yml": "7491dcd306792bf0fc08c419e884a3868438005df4dc88049a856b97d73070a9"
+}

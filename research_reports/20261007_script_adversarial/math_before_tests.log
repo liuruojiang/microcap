@@ -1,0 +1,658 @@
+...FFFFF..FFFFFFFFFFFFFFFFFF.                                            [100%]
+================================== FAILURES ===================================
+_______ test_v25_constant_nav_has_exact_zero_score[1.5000000000000002] ________
+
+level = np.float64(1.5000000000000002)
+
+    @pytest.mark.parametrize("level", [1.5, np.nextafter(1.5, np.inf), 2.0])
+    def test_v25_constant_nav_has_exact_zero_score(level: float) -> None:
+        nav = pd.Series(level, index=pd.bdate_range("2025-01-02", periods=80))
+        actual = v25.log_wls_score_and_r2(nav).dropna()
+>       assert actual.annualized_log_wls_score.eq(0.0).all()
+E       assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2025-01-29    False\n2025-01-30    False\n2025-01-31    False\n2025-02-03    False\n2025-02-04    False\n              ... ...04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: bool.all
+E        +      where 2025-01-29    False\n2025-01-30    False\n2025-01-31    False\n2025-02-03    False\n2025-02-04    False\n              ... ...04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: bool = eq(0.0)
+E        +        where eq = 2025-01-29    1.490069e-30\n2025-01-30    1.490069e-30\n2025-01-31    1.490069e-30\n2025-02-03    1.490069e-30\n2025-02-04...25-04-22    1.490069e-30\n2025-04-23    1.490069e-30\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: float64.eq
+E        +          where 2025-01-29    1.490069e-30\n2025-01-30    1.490069e-30\n2025-01-31    1.490069e-30\n2025-02-03    1.490069e-30\n2025-02-04...25-04-22    1.490069e-30\n2025-04-23    1.490069e-30\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: float64 =             annualized_log_wls_score  log_wls_r2\n2025-01-29              1.490069e-30         0.0\n2025-01-30          ...025-04-22              1.490069e-30         0.0\n2025-04-23              1.490069e-30         0.0\n\n[61 rows x 2 columns].annualized_log_wls_score
+
+tests\test_script_math_adversarial.py:56: AssertionError
+_______________ test_v25_constant_nav_has_exact_zero_score[2.0] _______________
+
+level = 2.0
+
+    @pytest.mark.parametrize("level", [1.5, np.nextafter(1.5, np.inf), 2.0])
+    def test_v25_constant_nav_has_exact_zero_score(level: float) -> None:
+        nav = pd.Series(level, index=pd.bdate_range("2025-01-02", periods=80))
+        actual = v25.log_wls_score_and_r2(nav).dropna()
+>       assert actual.annualized_log_wls_score.eq(0.0).all()
+E       assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2025-01-29    False\n2025-01-30    False\n2025-01-31    False\n2025-02-03    False\n2025-02-04    False\n              ... ...04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: bool.all
+E        +      where 2025-01-29    False\n2025-01-30    False\n2025-01-31    False\n2025-02-03    False\n2025-02-04    False\n              ... ...04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: bool = eq(0.0)
+E        +        where eq = 2025-01-29    2.980138e-30\n2025-01-30    2.980138e-30\n2025-01-31    2.980138e-30\n2025-02-03    2.980138e-30\n2025-02-04...25-04-22    2.980138e-30\n2025-04-23    2.980138e-30\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: float64.eq
+E        +          where 2025-01-29    2.980138e-30\n2025-01-30    2.980138e-30\n2025-01-31    2.980138e-30\n2025-02-03    2.980138e-30\n2025-02-04...25-04-22    2.980138e-30\n2025-04-23    2.980138e-30\nFreq: B, Name: annualized_log_wls_score, Length: 61, dtype: float64 =             annualized_log_wls_score  log_wls_r2\n2025-01-29              2.980138e-30         0.0\n2025-01-30          ...025-04-22              2.980138e-30         0.0\n2025-04-23              2.980138e-30         0.0\n\n[61 rows x 2 columns].annualized_log_wls_score
+
+tests\test_script_math_adversarial.py:56: AssertionError
+________ test_v25_flat_price_window_exits_the_zero_threshold_strategy _________
+
+    def test_v25_flat_price_window_exits_the_zero_threshold_strategy() -> None:
+        prices = pd.DataFrame(
+            {"microcap": np.r_[np.linspace(100.0, 150.0, 25), np.full(55, 150.0)]},
+            index=pd.bdate_range("2025-01-02", periods=80),
+        )
+        gross = v25.build_microcap_log_wls_gross(prices)
+>       assert gross.iloc[-1].annualized_log_wls_score == 0.0
+E       assert np.float64(1.490069103414721e-30) == 0.0
+E        +  where np.float64(1.490069103414721e-30) = return_raw                                                                   0.0\nreturn                               ...rget_vol_execution_scale                                                   1.0\nName: 2025-04-23 00:00:00, dtype: object.annualized_log_wls_score
+
+tests\test_script_math_adversarial.py:66: AssertionError
+_ test_v25_numeric_string_prices_match_numeric_prices_without_mutation[False] _
+
+left = array(['100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '103.56...24',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914',
+       '114.1853746238446'], dtype=object)
+right = array([None, '100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '...547', '111.2949029617824',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914'],
+      dtype=object)
+op = <built-in function truediv>, is_cmp = False
+
+    def _na_arithmetic_op(left: np.ndarray, right, op, is_cmp: bool = False):
+        """
+        Return the result of evaluating op on the passed in values.
+    
+        If native types are not compatible, try coercion to object dtype.
+    
+        Parameters
+        ----------
+        left : np.ndarray
+        right : np.ndarray or scalar
+            Excludes DataFrame, Series, Index, ExtensionArray.
+        is_cmp : bool, default False
+            If this a comparison operation.
+    
+        Returns
+        -------
+        array-like
+    
+        Raises
+        ------
+        TypeError : invalid operation
+        """
+        if isinstance(right, str):
+            # can never use numexpr
+            func = op
+        else:
+            func = partial(expressions.evaluate, op)
+    
+        try:
+>           result = func(left, right)
+                     ^^^^^^^^^^^^^^^^^
+
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\computation\expressions.py:242: in evaluate
+    return _evaluate(op, op_str, a, b)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+op = <built-in function truediv>, op_str = '/'
+a = array(['100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '103.56...24',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914',
+       '114.1853746238446'], dtype=object)
+b = array([None, '100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '...547', '111.2949029617824',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914'],
+      dtype=object)
+
+    def _evaluate_standard(op, op_str, a, b):
+        """
+        Standard evaluation.
+        """
+        if _TEST_MODE:
+            _store_test_result(False)
+>       return op(a, b)
+               ^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'str' and 'NoneType'
+
+C:\Python314\Lib\site-packages\pandas\core\computation\expressions.py:73: TypeError
+
+During handling of the above exception, another exception occurred:
+
+include_hedge = False
+
+    @pytest.mark.parametrize("include_hedge", [False, True])
+    def test_v25_numeric_string_prices_match_numeric_prices_without_mutation(include_hedge: bool) -> None:
+        numeric = _prices()
+        if not include_hedge:
+            numeric = numeric[["microcap"]]
+        text = numeric.astype(str)
+        saved = text.copy(deep=True)
+>       actual = v25.build_microcap_log_wls_gross(text)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_script_math_adversarial.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+microcap_top100_mom16_biweekly_live_v2_5.py:684: in build_microcap_log_wls_gross
+    nav, micro_ret, hedge_ret = microcap_nav(close_df)
+                                ^^^^^^^^^^^^^^^^^^^^^^
+microcap_top100_mom16_biweekly_live_v2_5.py:508: in microcap_nav
+    micro_ret = close_df["microcap"].pct_change(fill_method=None)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\generic.py:12226: in pct_change
+    rs = data / shifted - 1  # type: ignore[operator]
+         ^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\ops\common.py:76: in new_method
+    return method(self, other)
+           ^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\arraylike.py:210: in __truediv__
+    return self._arith_method(other, operator.truediv)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\series.py:6154: in _arith_method
+    return base.IndexOpsMixin._arith_method(self, other, op)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\base.py:1391: in _arith_method
+    result = ops.arithmetic_op(lvalues, rvalues, op)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:283: in arithmetic_op
+    res_values = _na_arithmetic_op(left, right, op)  # type: ignore[arg-type]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:227: in _na_arithmetic_op
+    result = _masked_arith_op(left, right, op)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = array(['100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '103.56...24',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914',
+       '114.1853746238446'], dtype=object)
+y = array([None, '100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '...547', '111.2949029617824',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914'],
+      dtype=object)
+op = <built-in function truediv>
+
+    def _masked_arith_op(x: np.ndarray, y, op):
+        """
+        If the given arithmetic operation fails, attempt it again on
+        only the non-null elements of the input array(s).
+    
+        Parameters
+        ----------
+        x : np.ndarray
+        y : np.ndarray, Series, Index
+        op : binary operator
+        """
+        # For Series `x` is 1D so ravel() is a no-op; calling it anyway makes
+        # the logic valid for both Series and DataFrame ops.
+        xrav = x.ravel()
+    
+        if isinstance(y, np.ndarray):
+            dtype = find_common_type([x.dtype, y.dtype])
+            result = np.empty(x.size, dtype=dtype)
+    
+            if len(x) != len(y):
+                raise ValueError(x.shape, y.shape)
+            ymask = notna(y)
+    
+            # NB: ravel() is only safe since y is ndarray; for e.g. PeriodIndex
+            #  we would get int64 dtype, see GH#19956
+            yrav = y.ravel()
+            mask = notna(xrav) & ymask.ravel()
+    
+            # See GH#5284, GH#5035, GH#19448 for historical reference
+            if mask.any():
+>               result[mask] = op(xrav[mask], yrav[mask])
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:163: TypeError
+_ test_v25_numeric_string_prices_match_numeric_prices_without_mutation[True] __
+
+left = array(['100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '103.56...24',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914',
+       '114.1853746238446'], dtype=object)
+right = array([None, '100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '...547', '111.2949029617824',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914'],
+      dtype=object)
+op = <built-in function truediv>, is_cmp = False
+
+    def _na_arithmetic_op(left: np.ndarray, right, op, is_cmp: bool = False):
+        """
+        Return the result of evaluating op on the passed in values.
+    
+        If native types are not compatible, try coercion to object dtype.
+    
+        Parameters
+        ----------
+        left : np.ndarray
+        right : np.ndarray or scalar
+            Excludes DataFrame, Series, Index, ExtensionArray.
+        is_cmp : bool, default False
+            If this a comparison operation.
+    
+        Returns
+        -------
+        array-like
+    
+        Raises
+        ------
+        TypeError : invalid operation
+        """
+        if isinstance(right, str):
+            # can never use numexpr
+            func = op
+        else:
+            func = partial(expressions.evaluate, op)
+    
+        try:
+>           result = func(left, right)
+                     ^^^^^^^^^^^^^^^^^
+
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Python314\Lib\site-packages\pandas\core\computation\expressions.py:242: in evaluate
+    return _evaluate(op, op_str, a, b)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+op = <built-in function truediv>, op_str = '/'
+a = array(['100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '103.56...24',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914',
+       '114.1853746238446'], dtype=object)
+b = array([None, '100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '...547', '111.2949029617824',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914'],
+      dtype=object)
+
+    def _evaluate_standard(op, op_str, a, b):
+        """
+        Standard evaluation.
+        """
+        if _TEST_MODE:
+            _store_test_result(False)
+>       return op(a, b)
+               ^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'str' and 'NoneType'
+
+C:\Python314\Lib\site-packages\pandas\core\computation\expressions.py:73: TypeError
+
+During handling of the above exception, another exception occurred:
+
+include_hedge = True
+
+    @pytest.mark.parametrize("include_hedge", [False, True])
+    def test_v25_numeric_string_prices_match_numeric_prices_without_mutation(include_hedge: bool) -> None:
+        numeric = _prices()
+        if not include_hedge:
+            numeric = numeric[["microcap"]]
+        text = numeric.astype(str)
+        saved = text.copy(deep=True)
+>       actual = v25.build_microcap_log_wls_gross(text)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_script_math_adversarial.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+microcap_top100_mom16_biweekly_live_v2_5.py:684: in build_microcap_log_wls_gross
+    nav, micro_ret, hedge_ret = microcap_nav(close_df)
+                                ^^^^^^^^^^^^^^^^^^^^^^
+microcap_top100_mom16_biweekly_live_v2_5.py:508: in microcap_nav
+    micro_ret = close_df["microcap"].pct_change(fill_method=None)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\generic.py:12226: in pct_change
+    rs = data / shifted - 1  # type: ignore[operator]
+         ^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\ops\common.py:76: in new_method
+    return method(self, other)
+           ^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\arraylike.py:210: in __truediv__
+    return self._arith_method(other, operator.truediv)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\series.py:6154: in _arith_method
+    return base.IndexOpsMixin._arith_method(self, other, op)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\base.py:1391: in _arith_method
+    result = ops.arithmetic_op(lvalues, rvalues, op)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:283: in arithmetic_op
+    res_values = _na_arithmetic_op(left, right, op)  # type: ignore[arg-type]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:227: in _na_arithmetic_op
+    result = _masked_arith_op(left, right, op)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = array(['100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '103.56...24',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914',
+       '114.1853746238446'], dtype=object)
+y = array([None, '100.0', '100.71733854132529', '101.43613459866476',
+       '102.15265380336204', '102.86310192396219', '...547', '111.2949029617824',
+       '111.97149752769238', '112.6808083849709', '113.41983896047914'],
+      dtype=object)
+op = <built-in function truediv>
+
+    def _masked_arith_op(x: np.ndarray, y, op):
+        """
+        If the given arithmetic operation fails, attempt it again on
+        only the non-null elements of the input array(s).
+    
+        Parameters
+        ----------
+        x : np.ndarray
+        y : np.ndarray, Series, Index
+        op : binary operator
+        """
+        # For Series `x` is 1D so ravel() is a no-op; calling it anyway makes
+        # the logic valid for both Series and DataFrame ops.
+        xrav = x.ravel()
+    
+        if isinstance(y, np.ndarray):
+            dtype = find_common_type([x.dtype, y.dtype])
+            result = np.empty(x.size, dtype=dtype)
+    
+            if len(x) != len(y):
+                raise ValueError(x.shape, y.shape)
+            ymask = notna(y)
+    
+            # NB: ravel() is only safe since y is ndarray; for e.g. PeriodIndex
+            #  we would get int64 dtype, see GH#19956
+            yrav = y.ravel()
+            mask = notna(xrav) & ymask.ravel()
+    
+            # See GH#5284, GH#5035, GH#19448 for historical reference
+            if mask.any():
+>               result[mask] = op(xrav[mask], yrav[mask])
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: unsupported operand type(s) for /: 'str' and 'str'
+
+C:\Python314\Lib\site-packages\pandas\core\ops\array_ops.py:163: TypeError
+___ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[nan-return_net] ____
+
+column = 'return_net', bad_value = nan
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+___ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[nan-total_cost] ____
+
+column = 'total_cost', bad_value = nan
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[nan-overlay_pre_cost_return] _
+
+column = 'overlay_pre_cost_return', bad_value = nan
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+___ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[inf-return_net] ____
+
+column = 'return_net', bad_value = inf
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+___ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[inf-total_cost] ____
+
+column = 'total_cost', bad_value = inf
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[inf-overlay_pre_cost_return] _
+
+column = 'overlay_pre_cost_return', bad_value = inf
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+___ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[-inf-return_net] ___
+
+column = 'return_net', bad_value = -inf
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+___ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[-inf-total_cost] ___
+
+column = 'total_cost', bad_value = -inf
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[-inf-overlay_pre_cost_return] _
+
+column = 'overlay_pre_cost_return', bad_value = -inf
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[not-a-number-return_net] _
+
+column = 'return_net', bad_value = 'not-a-number'
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[not-a-number-total_cost] _
+
+column = 'total_cost', bad_value = 'not-a-number'
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_costed_inputs[not-a-number-overlay_pre_cost_return] _
+
+column = 'overlay_pre_cost_return', bad_value = 'not-a-number'
+
+    @pytest.mark.parametrize("column", ["return_net", "total_cost", "overlay_pre_cost_return"])
+    @pytest.mark.parametrize("bad_value", [np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_no_target_vol_rejects_nonfinite_costed_inputs(column: str, bad_value: object) -> None:
+        frame = _costed_frame()
+        frame[column] = frame[column].astype(object)
+        frame.loc[frame.index[1], column] = bad_value
+>       with pytest.raises(ValueError, match=rf"{column}.*non-finite.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:149: Failed
+_______ test_v25_no_target_vol_rejects_costs_outside_valid_range[-0.01] _______
+
+bad_cost = -0.01
+
+    @pytest.mark.parametrize("bad_cost", [-0.01, 1.0, 1.01])
+    def test_v25_no_target_vol_rejects_costs_outside_valid_range(bad_cost: float) -> None:
+        frame = _costed_frame()
+        frame.iloc[1, frame.columns.get_loc("total_cost")] = bad_cost
+>       with pytest.raises(ValueError, match="total_cost.*outside.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:157: Failed
+________ test_v25_no_target_vol_rejects_costs_outside_valid_range[1.0] ________
+
+bad_cost = 1.0
+
+    @pytest.mark.parametrize("bad_cost", [-0.01, 1.0, 1.01])
+    def test_v25_no_target_vol_rejects_costs_outside_valid_range(bad_cost: float) -> None:
+        frame = _costed_frame()
+        frame.iloc[1, frame.columns.get_loc("total_cost")] = bad_cost
+>       with pytest.raises(ValueError, match="total_cost.*outside.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:157: Failed
+_______ test_v25_no_target_vol_rejects_costs_outside_valid_range[1.01] ________
+
+bad_cost = 1.01
+
+    @pytest.mark.parametrize("bad_cost", [-0.01, 1.0, 1.01])
+    def test_v25_no_target_vol_rejects_costs_outside_valid_range(bad_cost: float) -> None:
+        frame = _costed_frame()
+        frame.iloc[1, frame.columns.get_loc("total_cost")] = bad_cost
+>       with pytest.raises(ValueError, match="total_cost.*outside.*2025-01-03"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:157: Failed
+____________ test_v25_apply_cost_rejects_corrupt_gross_return[nan] ____________
+
+bad_return = nan
+
+    @pytest.mark.parametrize("bad_return", [np.nan, np.inf, -np.inf])
+    def test_v25_apply_cost_rejects_corrupt_gross_return(bad_return: float) -> None:
+        gross = v25.build_microcap_log_wls_gross(_prices())
+        gross.loc[gross.index[-1], "return"] = bad_return
+>       with pytest.raises(ValueError, match="return.*non-finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:165: Failed
+____________ test_v25_apply_cost_rejects_corrupt_gross_return[inf] ____________
+
+bad_return = inf
+
+    @pytest.mark.parametrize("bad_return", [np.nan, np.inf, -np.inf])
+    def test_v25_apply_cost_rejects_corrupt_gross_return(bad_return: float) -> None:
+        gross = v25.build_microcap_log_wls_gross(_prices())
+        gross.loc[gross.index[-1], "return"] = bad_return
+>       with pytest.raises(ValueError, match="return.*non-finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:165: Failed
+___________ test_v25_apply_cost_rejects_corrupt_gross_return[-inf] ____________
+
+bad_return = -inf
+
+    @pytest.mark.parametrize("bad_return", [np.nan, np.inf, -np.inf])
+    def test_v25_apply_cost_rejects_corrupt_gross_return(bad_return: float) -> None:
+        gross = v25.build_microcap_log_wls_gross(_prices())
+        gross.loc[gross.index[-1], "return"] = bad_return
+>       with pytest.raises(ValueError, match="return.*non-finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:165: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_script_math_adversarial.py::test_v25_constant_nav_has_exact_zero_score[1.5000000000000002]
+FAILED tests/test_script_math_adversarial.py::test_v25_constant_nav_has_exact_zero_score[2.0]
+FAILED tests/test_script_math_adversarial.py::test_v25_flat_price_window_exits_the_zero_threshold_strategy
+FAILED tests/test_script_math_adversarial.py::test_v25_numeric_string_prices_match_numeric_prices_without_mutation[False]
+FAILED tests/test_script_math_adversarial.py::test_v25_numeric_string_prices_match_numeric_prices_without_mutation[True]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[nan-return_net]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[nan-total_cost]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[nan-overlay_pre_cost_return]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[inf-return_net]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[inf-total_cost]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[inf-overlay_pre_cost_return]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[-inf-return_net]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[-inf-total_cost]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[-inf-overlay_pre_cost_return]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[not-a-number-return_net]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[not-a-number-total_cost]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_costed_inputs[not-a-number-overlay_pre_cost_return]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_costs_outside_valid_range[-0.01]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_costs_outside_valid_range[1.0]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_costs_outside_valid_range[1.01]
+FAILED tests/test_script_math_adversarial.py::test_v25_apply_cost_rejects_corrupt_gross_return[nan]
+FAILED tests/test_script_math_adversarial.py::test_v25_apply_cost_rejects_corrupt_gross_return[inf]
+FAILED tests/test_script_math_adversarial.py::test_v25_apply_cost_rejects_corrupt_gross_return[-inf]
+23 failed, 6 passed in 3.90s

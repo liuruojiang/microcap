@@ -1,0 +1,78 @@
+{
+  "status": "PASS_600985_paper_pending_and_listing_clock_until_current_first_block",
+  "manifest_sha256": "fa54626415aa04e795bc763bcbef695a4605a6d5ef4d814c42f7582d61b0e416",
+  "code_sha256": "b4051b09642ab54cf777627556d0b57045dbe7aa0f2b72c5ad224ef300bc9376",
+  "issuer_pdf_sha256": "8dd86ad3ca9344131809e1a38c1e0dd181b9426c0448a8de4d50f08980946f7c",
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "true_trade_bars": {
+    "2015-07-09": {
+      "date": "2015-07-09",
+      "close": "14.7600",
+      "preclose": "13.4200",
+      "volume": "5766024",
+      "tradestatus": "1"
+    },
+    "2015-07-10": {
+      "date": "2015-07-10",
+      "close": "10.7000",
+      "preclose": "9.7300",
+      "volume": "2950679",
+      "tradestatus": "1"
+    },
+    "2015-07-13": {
+      "date": "2015-07-13",
+      "close": "11.7700",
+      "preclose": "10.7000",
+      "volume": "6839410",
+      "tradestatus": "1"
+    }
+  },
+  "ex_reference": "9.73",
+  "accounts": {
+    "prefunded": {
+      "record_shares": "3517.107653175536607407806056001884421795",
+      "bonus_pending_7_10": "1758.553826587768303703903028000942210898",
+      "gross_cash_paid_7_10": "597.9083010398412232593270295203203517052",
+      "record_equity_piece": "51912.50896087092032533921738658781406569420",
+      "ex_equity_piece_with_pending_and_cash": "57047.48613450720377215461422835056532152030",
+      "paper_release_equity_piece_7_13": "62692.44391785394002704414294823358981850181",
+      "booked_ex_orders": 0,
+      "blocked_ex_buy_orders": 1,
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": {
+        "execution_date": "2015-07-10",
+        "side": "sell",
+        "from_bonus": "1758.553826587768303703903028000942210898",
+        "booked": "True"
+      },
+      "state_check_needed": "Early bonus credit has the same arithmetic equity and is caught only by entitlement/tradability state, not NAV summation."
+    },
+    "netted": {
+      "record_shares": "4097.500025819487384368967555841504154766",
+      "bonus_pending_7_10": "2048.750012909743692184483777920752077383",
+      "gross_cash_paid_7_10": "696.5750043893128553427244844930557063102",
+      "record_equity_piece": "60479.10038109563379328596112422060132434616",
+      "ex_equity_piece_with_pending_and_cash": "66461.45041879208537446465375574919739030450",
+      "paper_release_equity_piece_7_13": "73037.93796023236262637684668287481155870393",
+      "booked_ex_orders": 0,
+      "blocked_ex_buy_orders": 1,
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": {
+        "execution_date": "2015-07-10",
+        "side": "sell",
+        "from_bonus": "2048.750012909743692184483777920752077383",
+        "booked": "True"
+      },
+      "state_check_needed": "Early bonus credit has the same arithmetic equity and is caught only by entitlement/tradability state, not NAV summation."
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2015-11-27",
+      "reason": "missing_or_invalid_payment_date:2015-11-27:600719"
+    },
+    "netted": {
+      "date": "2015-11-27",
+      "reason": "missing_or_invalid_payment_date:2015-11-27:600719"
+    }
+  },
+  "limitations": "Issuer establishes listing eligibility on 2015-07-13, not actual broker credit. 2015-07-10 is a real-trade close for existing stock but newly converted shares remain paper pending. Fractional shares and gross cash are paper approximations."
+}

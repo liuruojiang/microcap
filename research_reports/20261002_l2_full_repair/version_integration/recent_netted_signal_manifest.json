@@ -1,0 +1,61 @@
+{
+  "branch": "netted",
+  "source_ledger": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261002_l2_full_repair\\engine\\recent_netted_daily.csv",
+  "source_ledger_sha256": "588544162893875e0474f8106803afdb8ee0a9fbe8c45c2489ec85e99cdf0ba1",
+  "hedge_source": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+  "hedge_source_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+  "start": "2025-10-09",
+  "end": "2026-09-30",
+  "sessions": 241,
+  "stock_proxy_kind": "separate_recent_seed_fixed_shares_paper_account",
+  "gross_step_note": "fee_removed_current_step_of_fee_paid_holdings_path",
+  "signal_fill_contract": "T_close_decide_T_plus_1_close_fill_T_plus_2_return",
+  "scale_source": "formal_v2_0_apply_v2_0_execution__v2_3_apply_overheat_defense__v2_5_apply_no_target_vol",
+  "cost_input_for_scale_only": "empty_turnover_or_zero_cost; formal target-vol disabled in all three versions",
+  "versions": {
+    "v2.0": {
+      "first_signal": "2025-11-03",
+      "last_signal": "2026-09-30",
+      "signal_rows": 224,
+      "signal_switches": 16,
+      "filled_switches": 17,
+      "latest_signal_active": true,
+      "latest_held_through_close": true,
+      "scale_values": [
+        0.0,
+        1.0
+      ],
+      "scale_change_cost_max": 0.0
+    },
+    "v2.3": {
+      "first_signal": "2025-11-12",
+      "last_signal": "2026-09-30",
+      "signal_rows": 217,
+      "signal_switches": 14,
+      "filled_switches": 14,
+      "latest_signal_active": true,
+      "latest_held_through_close": false,
+      "scale_values": [
+        0.0,
+        1.0
+      ],
+      "scale_change_cost_max": 0.0
+    },
+    "v2.5": {
+      "first_signal": "2025-11-05",
+      "last_signal": "2026-09-30",
+      "signal_rows": 222,
+      "signal_switches": 12,
+      "filled_switches": 13,
+      "latest_signal_active": true,
+      "latest_held_through_close": true,
+      "scale_values": [
+        0.0,
+        1.0
+      ],
+      "scale_change_cost_max": 0.0
+    }
+  },
+  "output": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261002_l2_full_repair\\version_integration\\recent_netted_rebuilt_signals.csv",
+  "output_sha256": "8a896b31e317c87226d04d63fb4cc100d9780010567e41f23fee7b9239792a2a"
+}

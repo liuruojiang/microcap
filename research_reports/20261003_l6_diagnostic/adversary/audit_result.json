@@ -1,0 +1,4226 @@
+{
+  "official_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+  "turnover_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+  "official_rows": 3988,
+  "start": "2010-05-05",
+  "end": "2026-09-30",
+  "official_independent_parity": {
+    "held": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": null
+    },
+    "next": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": null
+    },
+    "risk_off": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": null
+    },
+    "exit": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": null
+    },
+    "reentry": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": null
+    },
+    "block": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": null
+    },
+    "entry_exit_cost": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": 0.0
+    },
+    "rebalance_cost": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": 0.0
+    },
+    "total_cost": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": 0.0
+    },
+    "return_net": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": 2.7755575615628914e-16
+    },
+    "nav_net": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": 2.4868995751603507e-13
+    },
+    "feature": {
+      "mismatch_count": 0,
+      "first_mismatch_date": null,
+      "max_abs_delta": 3.337607967779377e-15
+    }
+  },
+  "gross_from_legs_max_abs_delta": 2.8232624571522535e-16,
+  "source_hashes_match": {
+    "microcap_top100_mom16_biweekly_live_v2_3.py": true,
+    "microcap_top100_mom16_biweekly_live_v2_0.py": true
+  },
+  "snapshot_hashes_match": {
+    "source_panel_seed_not_directly_used": true,
+    "panel_shadow_used": true,
+    "proxy_index": true,
+    "proxy_turnover": true,
+    "base_costed_nav": true,
+    "v2_0_costed_nav": true,
+    "v2_3_official_frozen": true
+  },
+  "summary_hashes_match": {
+    "scan_summary.csv": true,
+    "window_metrics.csv": true
+  },
+  "candidates": {
+    "formal_baseline.csv.gz": {
+      "sha256": "b345f56061a1e9a7d9f53742cf0d8234a446ca6d3911fe5a7e45495b4f12c788",
+      "window": 10,
+      "trigger": 0.26,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.4868995751603507e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.26336256871926,
+          "annual_vol_pct": 10.644117468023705,
+          "sharpe_repo": 2.1855604880916983,
+          "max_drawdown_pct": -12.924336369644651,
+          "final_nav": 30.522134350999657,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.39181311677478,
+          "annual_vol_pct": 11.62812505636058,
+          "sharpe_repo": 1.6676646512472333,
+          "max_drawdown_pct": -12.924336369644706,
+          "final_nav": 5.838150839450348,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.095283390976174,
+          "annual_vol_pct": 13.163762307469284,
+          "sharpe_repo": 1.7544591623225845,
+          "max_drawdown_pct": -11.715521446343402,
+          "final_nav": 2.807038231354907,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 17.400966077785096,
+          "annual_vol_pct": 12.942534719438406,
+          "sharpe_repo": 1.3444789954204694,
+          "max_drawdown_pct": -9.267787042303521,
+          "final_nav": 1.6117651987226724,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 6.453901766375525,
+          "annual_vol_pct": 11.899134758797073,
+          "sharpe_repo": 0.5423841226442228,
+          "max_drawdown_pct": -9.267787042303532,
+          "final_nav": 1.0639934341725903,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        }
+      },
+      "holding_days": 2663,
+      "sum_daily_cost_rates": 0.733319999999996,
+      "exit_count": 5,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 201,
+      "cash_day_with_nonzero_gross_count": 145,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "legacy_w10_t270_r210.csv.gz": {
+      "sha256": "e62985314578085729f592f5555b7559455742a3a0c9a31d2896f656cfb9c52d",
+      "window": 10,
+      "trigger": 0.27,
+      "recovery": 0.21,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.9184653865522705e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.05029456810075,
+          "annual_vol_pct": 10.778222115644393,
+          "sharpe_repo": 2.138598956375529,
+          "max_drawdown_pct": -13.180325205458022,
+          "final_nav": 29.671164102871582,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.053167565944527,
+          "annual_vol_pct": 11.82894959574142,
+          "sharpe_repo": 1.6107235398825204,
+          "max_drawdown_pct": -13.180325205457976,
+          "final_nav": 5.6753806802169136,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.16768107508409,
+          "annual_vol_pct": 13.484875859803406,
+          "sharpe_repo": 1.6438921133240059,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.7035264618449535,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.58148104383972,
+          "annual_vol_pct": 13.45138280645849,
+          "sharpe_repo": 1.23269713474204,
+          "max_drawdown_pct": -11.38527596552571,
+          "final_nav": 1.5785206687177142,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 9.059317095609387,
+          "annual_vol_pct": 12.515348667609977,
+          "sharpe_repo": 0.7238565489633635,
+          "max_drawdown_pct": -8.628955111715953,
+          "final_nav": 1.0898182157706577,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-19"
+        }
+      },
+      "holding_days": 2694,
+      "sum_daily_cost_rates": 0.7420799999999957,
+      "exit_count": 3,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 147,
+      "cash_day_with_nonzero_gross_count": 114,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "overheat_off.csv.gz": {
+      "sha256": "129c77c0e6b1066ac25713bf9d8018d1b1af59bdebc5cafa9cb7b2a27a8622c2",
+      "window": 10,
+      "trigger": Infinity,
+      "recovery": 0.2,
+      "disabled": true,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.8474111129762605e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.81191774185105,
+          "annual_vol_pct": 11.774690765618512,
+          "sharpe_repo": 2.0222966543954275,
+          "max_drawdown_pct": -16.293496200671097,
+          "final_nav": 32.81964069606029,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-07-09"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 20.265403721519036,
+          "annual_vol_pct": 13.298732449659504,
+          "sharpe_repo": 1.5238597962799008,
+          "max_drawdown_pct": -16.293496200671164,
+          "final_nav": 6.277608593053286,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-07-09"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 24.673456008564255,
+          "annual_vol_pct": 15.994445796529543,
+          "sharpe_repo": 1.5426265043780305,
+          "max_drawdown_pct": -16.293496200671164,
+          "final_nav": 2.990403975469748,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-07-09"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 19.134646254958774,
+          "annual_vol_pct": 16.962969857909844,
+          "sharpe_repo": 1.1280245390541845,
+          "max_drawdown_pct": -16.29349620067112,
+          "final_nav": 1.6836214492252204,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-07-09"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 20.341712393290145,
+          "annual_vol_pct": 17.316099120482047,
+          "sharpe_repo": 1.1747283410516696,
+          "max_drawdown_pct": -16.293496200671164,
+          "final_nav": 1.2015920267752616,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-07-09"
+        }
+      },
+      "holding_days": 2808,
+      "sum_daily_cost_rates": 0.7537199999999955,
+      "exit_count": 0,
+      "block_count": 0,
+      "reentry_count": 0,
+      "risk_off_days": 0,
+      "cash_day_with_nonzero_gross_count": 0,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t255_r195.csv.gz": {
+      "sha256": "c56ae562ba7a931d6e92d874acc2cbbd57c8551be959eec85c2ce6a001808160",
+      "window": 10,
+      "trigger": 0.255,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7000623958883807e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.162712015236476,
+          "annual_vol_pct": 10.578483245677878,
+          "sharpe_repo": 2.1896061540486174,
+          "max_drawdown_pct": -12.924336369644651,
+          "final_nav": 30.117331306399567,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.23179450089487,
+          "annual_vol_pct": 11.529191513481313,
+          "sharpe_repo": 1.6680956750876028,
+          "max_drawdown_pct": -12.924336369644706,
+          "final_nav": 5.760721744634545,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.76486064765011,
+          "annual_vol_pct": 12.988410910086923,
+          "sharpe_repo": 1.7527056085029389,
+          "max_drawdown_pct": -12.18707207011317,
+          "final_nav": 2.76980958904261,
+          "peak_date": "2022-04-06",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 17.348166501548825,
+          "annual_vol_pct": 12.83173377990857,
+          "sharpe_repo": 1.3519736926518775,
+          "max_drawdown_pct": -9.902101664146057,
+          "final_nav": 1.6096093692580165,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 7.791118747128678,
+          "annual_vol_pct": 11.611628309989579,
+          "sharpe_repo": 0.670975554774339,
+          "max_drawdown_pct": -9.215029212540738,
+          "final_nav": 1.077248519314962,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        }
+      },
+      "holding_days": 2643,
+      "sum_daily_cost_rates": 0.734879999999996,
+      "exit_count": 7,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 221,
+      "cash_day_with_nonzero_gross_count": 165,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t255_r200.csv.gz": {
+      "sha256": "cc12874a352520b123a063a21ac3275c95dbfb0b179819f26f1ca9d23496f038",
+      "window": 10,
+      "trigger": 0.255,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.2382096176443156e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.145494637516517,
+          "annual_vol_pct": 10.592501748189251,
+          "sharpe_repo": 2.185082918817847,
+          "max_drawdown_pct": -12.924336369644651,
+          "final_nav": 30.048592205489264,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.20442997078411,
+          "annual_vol_pct": 11.550284691394735,
+          "sharpe_repo": 1.6626802268425394,
+          "max_drawdown_pct": -12.924336369644706,
+          "final_nav": 5.7475736064647975,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.70840013208051,
+          "annual_vol_pct": 13.025970700078329,
+          "sharpe_repo": 1.743317304709119,
+          "max_drawdown_pct": -12.187072070113148,
+          "final_nav": 2.763487839651651,
+          "peak_date": "2022-04-06",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 17.771514696160473,
+          "annual_vol_pct": 12.855938714109449,
+          "sharpe_repo": 1.3823583863740854,
+          "max_drawdown_pct": -9.21502921254076,
+          "final_nav": 1.6269488167773474,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 7.4650769297162745,
+          "annual_vol_pct": 11.616411334342292,
+          "sharpe_repo": 0.6426319381138667,
+          "max_drawdown_pct": -9.215029212540738,
+          "final_nav": 1.074016773757017,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        }
+      },
+      "holding_days": 2648,
+      "sum_daily_cost_rates": 0.738299999999996,
+      "exit_count": 7,
+      "block_count": 7,
+      "reentry_count": 9,
+      "risk_off_days": 216,
+      "cash_day_with_nonzero_gross_count": 160,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t255_r205.csv.gz": {
+      "sha256": "dedc221cadca905de42b0a7e2d3bdb8213ce8c0d9a7ca3dd629e9537969dd809",
+      "window": 10,
+      "trigger": 0.255,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.8829382497642655e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.098191994884875,
+          "annual_vol_pct": 10.626068718305325,
+          "sharpe_repo": 2.17372883680811,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 29.86049734866446,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.129261906665953,
+          "annual_vol_pct": 11.600739659333904,
+          "sharpe_repo": 1.6489691578652599,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.7115955803661045,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.894597849648225,
+          "annual_vol_pct": 13.099364146948247,
+          "sharpe_repo": 1.747764058836548,
+          "max_drawdown_pct": -12.187072070113148,
+          "final_nav": 2.784379723288422,
+          "peak_date": "2022-04-06",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.070002643931595,
+          "annual_vol_pct": 12.980251767640356,
+          "sharpe_repo": 1.3921149579686842,
+          "max_drawdown_pct": -11.346416722944719,
+          "final_nav": 1.6392485001251058,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-19"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 7.380790709777507,
+          "annual_vol_pct": 11.946065327398726,
+          "sharpe_repo": 0.6178428216736268,
+          "max_drawdown_pct": -11.34641672294473,
+          "final_nav": 1.0731813107528736,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-19"
+        }
+      },
+      "holding_days": 2658,
+      "sum_daily_cost_rates": 0.7523399999999958,
+      "exit_count": 8,
+      "block_count": 7,
+      "reentry_count": 10,
+      "risk_off_days": 196,
+      "cash_day_with_nonzero_gross_count": 150,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t260_r195.csv.gz": {
+      "sha256": "88612fd42d56f291064dd3b9cb9f8d318289655109b0d3f3843514d23e65e5dc",
+      "window": 10,
+      "trigger": 0.26,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.2737367544323206e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.2805964259434,
+          "annual_vol_pct": 10.630166545447667,
+          "sharpe_repo": 2.190050017223224,
+          "max_drawdown_pct": -12.924336369644651,
+          "final_nav": 30.59195672599828,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.41922066249948,
+          "annual_vol_pct": 11.60717212916984,
+          "sharpe_repo": 1.673036330158082,
+          "max_drawdown_pct": -12.924336369644706,
+          "final_nav": 5.851506181921562,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.15192191903912,
+          "annual_vol_pct": 13.1265925090565,
+          "sharpe_repo": 1.7637419538289003,
+          "max_drawdown_pct": -11.715521446343358,
+          "final_nav": 2.8134596065369686,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.97894987834234,
+          "annual_vol_pct": 12.918456911364892,
+          "sharpe_repo": 1.3143171815981574,
+          "max_drawdown_pct": -9.902101664146057,
+          "final_nav": 1.5945875728572867,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 6.776875746334143,
+          "annual_vol_pct": 11.894560942187303,
+          "sharpe_repo": 0.5697457669326915,
+          "max_drawdown_pct": -9.267787042303532,
+          "final_nav": 1.067195019230281,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        }
+      },
+      "holding_days": 2658,
+      "sum_daily_cost_rates": 0.729899999999996,
+      "exit_count": 5,
+      "block_count": 7,
+      "reentry_count": 7,
+      "risk_off_days": 206,
+      "cash_day_with_nonzero_gross_count": 150,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t260_r205.csv.gz": {
+      "sha256": "ded4fe92116bf592466183b8b0febed30adc6d208768ba7f8e0c64a8a6066871",
+      "window": 10,
+      "trigger": 0.26,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.8829382497642655e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.448228087948575,
+          "annual_vol_pct": 10.667878940959561,
+          "sharpe_repo": 2.1980215765215125,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 31.2789783080304,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.685938849491325,
+          "annual_vol_pct": 11.664093924159607,
+          "sharpe_repo": 1.6877383684913776,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.9829169010979015,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 24.04821093306715,
+          "annual_vol_pct": 13.210637314986853,
+          "sharpe_repo": 1.8203672055840616,
+          "max_drawdown_pct": -11.715521446343402,
+          "final_nav": 2.9166477687604053,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.92214057907995,
+          "annual_vol_pct": 13.023912547885738,
+          "sharpe_repo": 1.4528768148210356,
+          "max_drawdown_pct": -8.65749843490936,
+          "final_nav": 1.6747015833664274,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 9.722585363567116,
+          "annual_vol_pct": 12.094766999526103,
+          "sharpe_repo": 0.8038671074811169,
+          "max_drawdown_pct": -8.628955111715953,
+          "final_nav": 1.0963916942549772,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-19"
+        }
+      },
+      "holding_days": 2670,
+      "sum_daily_cost_rates": 0.7413599999999958,
+      "exit_count": 6,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 184,
+      "cash_day_with_nonzero_gross_count": 138,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t265_r195.csv.gz": {
+      "sha256": "db4e81dcfa7ef451c3be91495fd5c05323cff762f67d61910e8aa154ebd12f79",
+      "window": 10,
+      "trigger": 0.265,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.481659405224491e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.15446297982242,
+          "annual_vol_pct": 10.637341488696373,
+          "sharpe_repo": 2.176715206936545,
+          "max_drawdown_pct": -13.180325205458022,
+          "final_nav": 30.084379245278623,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.218683546550185,
+          "annual_vol_pct": 11.617777798236412,
+          "sharpe_repo": 1.654247815745589,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 5.754418807196333,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.737807536441835,
+          "annual_vol_pct": 13.145722654111536,
+          "sharpe_repo": 1.729673456128349,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.766779077011403,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.97894987834234,
+          "annual_vol_pct": 12.918456911364892,
+          "sharpe_repo": 1.3143171815981574,
+          "max_drawdown_pct": -9.902101664146057,
+          "final_nav": 1.5945875728572867,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 6.776875746334143,
+          "annual_vol_pct": 11.894560942187303,
+          "sharpe_repo": 0.5697457669326915,
+          "max_drawdown_pct": -9.267787042303532,
+          "final_nav": 1.067195019230281,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        }
+      },
+      "holding_days": 2659,
+      "sum_daily_cost_rates": 0.729899999999996,
+      "exit_count": 4,
+      "block_count": 7,
+      "reentry_count": 7,
+      "risk_off_days": 196,
+      "cash_day_with_nonzero_gross_count": 149,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t265_r200.csv.gz": {
+      "sha256": "c937f8e3bd6a30bda309d02b73aff7c83191fbef97c68305b58153455595bea2",
+      "window": 10,
+      "trigger": 0.265,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.4158453015843406e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.137246755266048,
+          "annual_vol_pct": 10.651282523997379,
+          "sharpe_repo": 2.1722498396918635,
+          "max_drawdown_pct": -13.180325205457999,
+          "final_nav": 30.01571535339098,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.19132202549505,
+          "annual_vol_pct": 11.63871042422869,
+          "sharpe_repo": 1.648921686851478,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 5.741285054705312,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.68135946280885,
+          "annual_vol_pct": 13.182834228457718,
+          "sharpe_repo": 1.7205222389770107,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.7604642443910703,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 17.400966077785096,
+          "annual_vol_pct": 12.942534719438406,
+          "sharpe_repo": 1.3444789954204694,
+          "max_drawdown_pct": -9.267787042303521,
+          "final_nav": 1.6117651987226724,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 6.453901766375525,
+          "annual_vol_pct": 11.899134758797073,
+          "sharpe_repo": 0.5423841226442228,
+          "max_drawdown_pct": -9.267787042303532,
+          "final_nav": 1.0639934341725903,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-27"
+        }
+      },
+      "holding_days": 2664,
+      "sum_daily_cost_rates": 0.733319999999996,
+      "exit_count": 4,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 191,
+      "cash_day_with_nonzero_gross_count": 144,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w10_t265_r205.csv.gz": {
+      "sha256": "1256b89cbeef5fc12c83d3855aad68476deaa8fec21cfeb1e12a7853cdbd7c81",
+      "window": 10,
+      "trigger": 0.265,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.0250467969162855e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 3.337607967779377e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.32192313098307,
+          "annual_vol_pct": 10.675034004257428,
+          "sharpe_repo": 2.184716519093222,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 30.760001861009577,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.484953841689357,
+          "annual_vol_pct": 11.674661361781732,
+          "sharpe_repo": 1.6689952057603539,
+          "max_drawdown_pct": -13.180325205457954,
+          "final_nav": 5.883649178042021,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.631082661885117,
+          "annual_vol_pct": 13.229722370021868,
+          "sharpe_repo": 1.7862115319541703,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.8682551556342295,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.92214057907995,
+          "annual_vol_pct": 13.023912547885738,
+          "sharpe_repo": 1.4528768148210356,
+          "max_drawdown_pct": -8.65749843490936,
+          "final_nav": 1.6747015833664274,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 9.722585363567116,
+          "annual_vol_pct": 12.094766999526103,
+          "sharpe_repo": 0.8038671074811169,
+          "max_drawdown_pct": -8.628955111715953,
+          "final_nav": 1.0963916942549772,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-08-19"
+        }
+      },
+      "holding_days": 2671,
+      "sum_daily_cost_rates": 0.7413599999999958,
+      "exit_count": 5,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 177,
+      "cash_day_with_nonzero_gross_count": 137,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t255_r195.csv.gz": {
+      "sha256": "67e6a33450d47dd1f2879018f5d1513aa9c7c123ed4604d62b215665983d1e98",
+      "window": 11,
+      "trigger": 0.255,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.3803181647963356e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.693175864812854,
+          "annual_vol_pct": 10.635724432785635,
+          "sharpe_repo": 2.133674674275969,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 28.294631874653536,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.486414714671252,
+          "annual_vol_pct": 11.614636277835693,
+          "sharpe_repo": 1.5916481818676516,
+          "max_drawdown_pct": -13.180325205458054,
+          "final_nav": 5.412083143705083,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.23158842213386,
+          "annual_vol_pct": 13.141232523229334,
+          "sharpe_repo": 1.6156466590636354,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 2.6021808468864287,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 15.891350099544477,
+          "annual_vol_pct": 12.961515781671782,
+          "sharpe_repo": 1.2260410253880665,
+          "max_drawdown_pct": -9.455725072459709,
+          "final_nav": 1.5508794513195912,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 4.897293649533774,
+          "annual_vol_pct": 12.196838797119264,
+          "sharpe_repo": 0.40152155251002014,
+          "max_drawdown_pct": -9.455725072459797,
+          "final_nav": 1.0485619268673638,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2661,
+      "sum_daily_cost_rates": 0.729899999999996,
+      "exit_count": 4,
+      "block_count": 7,
+      "reentry_count": 6,
+      "risk_off_days": 189,
+      "cash_day_with_nonzero_gross_count": 147,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t255_r200.csv.gz": {
+      "sha256": "59ef9d00b82c7cc9e2c82cfe6b7ce5f6f21785bab8d594849aa222690da8f4c7",
+      "window": 11,
+      "trigger": 0.255,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.3803181647963356e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.70615096459494,
+          "annual_vol_pct": 10.637608465601883,
+          "sharpe_repo": 2.134516516378497,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 28.34357729560399,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.506987885383918,
+          "annual_vol_pct": 11.617490302558602,
+          "sharpe_repo": 1.5930280467983686,
+          "max_drawdown_pct": -13.180325205458054,
+          "final_nav": 5.421445226550368,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.2737785867396,
+          "annual_vol_pct": 13.146262056933361,
+          "sharpe_repo": 1.6182378302370577,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 2.6066822250101747,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 15.958688536133536,
+          "annual_vol_pct": 12.970116846204984,
+          "sharpe_repo": 1.230419796935214,
+          "max_drawdown_pct": -9.455725072459732,
+          "final_nav": 1.5535622375076015,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 4.897293649533774,
+          "annual_vol_pct": 12.196838797119264,
+          "sharpe_repo": 0.40152155251002014,
+          "max_drawdown_pct": -9.455725072459797,
+          "final_nav": 1.0485619268673638,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2664,
+      "sum_daily_cost_rates": 0.729899999999996,
+      "exit_count": 4,
+      "block_count": 7,
+      "reentry_count": 6,
+      "risk_off_days": 185,
+      "cash_day_with_nonzero_gross_count": 144,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t255_r205.csv.gz": {
+      "sha256": "e7081f71c3dd4c55df5bc7bc6220daaadc724fafb0d792a52b78aee474636f18",
+      "window": 11,
+      "trigger": 0.255,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.8066438062523957e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.708964562944022,
+          "annual_vol_pct": 10.637915867652453,
+          "sharpe_repo": 2.134719323358907,
+          "max_drawdown_pct": -13.180325205457999,
+          "final_nav": 28.354201395729405,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.51144927916255,
+          "annual_vol_pct": 11.617957057662705,
+          "sharpe_repo": 1.5933480548504175,
+          "max_drawdown_pct": -13.180325205457954,
+          "final_nav": 5.423477361602015,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.282928702962177,
+          "annual_vol_pct": 13.147083068617214,
+          "sharpe_repo": 1.6188327549071064,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.607659294794447,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.031696150271802,
+          "annual_vol_pct": 12.970984602597005,
+          "sharpe_repo": 1.2359660150288045,
+          "max_drawdown_pct": -9.286001293812273,
+          "final_nav": 1.556474364790357,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 5.095548491379565,
+          "annual_vol_pct": 12.200257306820927,
+          "sharpe_repo": 0.4176591003970664,
+          "max_drawdown_pct": -9.286001293812319,
+          "final_nav": 1.050527439237044,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2667,
+      "sum_daily_cost_rates": 0.7303199999999959,
+      "exit_count": 4,
+      "block_count": 7,
+      "reentry_count": 6,
+      "risk_off_days": 181,
+      "cash_day_with_nonzero_gross_count": 141,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t260_r195.csv.gz": {
+      "sha256": "5ff7d9a20a6f36183ffa3ceebda0fa106d09b462aff64513e57beb8fae809383",
+      "window": 11,
+      "trigger": 0.26,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.3092638912203256e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.681613376170272,
+          "annual_vol_pct": 10.646626126376987,
+          "sharpe_repo": 2.1304038581740596,
+          "max_drawdown_pct": -13.180325205457965,
+          "final_nav": 28.251082060192836,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.46808254071657,
+          "annual_vol_pct": 11.631009569397142,
+          "sharpe_repo": 1.5878314286069153,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 5.403753110722195,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 20.96739057985633,
+          "annual_vol_pct": 13.135944865063983,
+          "sharpe_repo": 1.5961844233695477,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 2.574133851327151,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 15.47002870453882,
+          "annual_vol_pct": 12.952026122239813,
+          "sharpe_repo": 1.194409936988574,
+          "max_drawdown_pct": -9.455725072459774,
+          "final_nav": 1.5341636611253056,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 4.897293649533774,
+          "annual_vol_pct": 12.196838797119264,
+          "sharpe_repo": 0.40152155251002014,
+          "max_drawdown_pct": -9.455725072459797,
+          "final_nav": 1.0485619268673638,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2672,
+      "sum_daily_cost_rates": 0.7252799999999958,
+      "exit_count": 3,
+      "block_count": 7,
+      "reentry_count": 5,
+      "risk_off_days": 178,
+      "cash_day_with_nonzero_gross_count": 136,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t260_r200.csv.gz": {
+      "sha256": "99b0ec20fd0a6d573e88f4fdcc6882094db40ea774c82e4da639d98cc1bb7279",
+      "window": 11,
+      "trigger": 0.26,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.3092638912203256e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.694587253191244,
+          "annual_vol_pct": 10.648508264991326,
+          "sharpe_repo": 2.131245681407163,
+          "max_drawdown_pct": -13.180325205457965,
+          "final_nav": 28.299952146570607,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.48865252835592,
+          "annual_vol_pct": 11.633859662863715,
+          "sharpe_repo": 1.5892105512819013,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 5.413100783874058,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.00948880018747,
+          "annual_vol_pct": 13.140978849956955,
+          "sharpe_repo": 1.5987765477802507,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 2.578586712403206,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 15.537122333176189,
+          "annual_vol_pct": 12.9606403474324,
+          "sharpe_repo": 1.1987928000991255,
+          "max_drawdown_pct": -9.455725072459742,
+          "final_nav": 1.5368175315320058,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 4.897293649533774,
+          "annual_vol_pct": 12.196838797119264,
+          "sharpe_repo": 0.40152155251002014,
+          "max_drawdown_pct": -9.455725072459797,
+          "final_nav": 1.0485619268673638,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2675,
+      "sum_daily_cost_rates": 0.7252799999999958,
+      "exit_count": 3,
+      "block_count": 7,
+      "reentry_count": 5,
+      "risk_off_days": 174,
+      "cash_day_with_nonzero_gross_count": 133,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t260_r205.csv.gz": {
+      "sha256": "d70e17a71ccf3b9195fd13bac1282555eeaf37bd6dfe09c5cf3388afe3b37481",
+      "window": 11,
+      "trigger": 0.26,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.8829382497642655e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.69740058638949,
+          "annual_vol_pct": 10.648815359868102,
+          "sharpe_repo": 2.131448411804431,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 28.31055989456284,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.49311323186935,
+          "annual_vol_pct": 11.634325779690846,
+          "sharpe_repo": 1.5895302901137054,
+          "max_drawdown_pct": -13.180325205457999,
+          "final_nav": 5.415129791155563,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.018618975724657,
+          "annual_vol_pct": 13.14180071559033,
+          "sharpe_repo": 1.5993713061551702,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.579553251070112,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 15.60986452914641,
+          "annual_vol_pct": 12.96151604741575,
+          "sharpe_repo": 1.2043239750691574,
+          "max_drawdown_pct": -9.286001293812262,
+          "final_nav": 1.5396982711342837,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 5.095548491379565,
+          "annual_vol_pct": 12.200257306820927,
+          "sharpe_repo": 0.4176591003970664,
+          "max_drawdown_pct": -9.286001293812319,
+          "final_nav": 1.050527439237044,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2678,
+      "sum_daily_cost_rates": 0.7256999999999958,
+      "exit_count": 3,
+      "block_count": 7,
+      "reentry_count": 5,
+      "risk_off_days": 170,
+      "cash_day_with_nonzero_gross_count": 130,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t265_r195.csv.gz": {
+      "sha256": "183f168cb917d8bbf6a644d87d33f561201e94dd96cb07340dbd97602eda156b",
+      "window": 11,
+      "trigger": 0.265,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.1316282072803006e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.874781608988638,
+          "annual_vol_pct": 10.674208898688487,
+          "sharpe_repo": 2.142995497474216,
+          "max_drawdown_pct": -13.180325205457965,
+          "final_nav": 28.986968455789523,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.77449369594966,
+          "annual_vol_pct": 11.672758101684504,
+          "sharpe_repo": 1.608402532837573,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 5.544510494487922,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.59524652784277,
+          "annual_vol_pct": 13.209588949224308,
+          "sharpe_repo": 1.634815936427067,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 2.6411850912619768,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.4722886284423,
+          "annual_vol_pct": 13.077779420691568,
+          "sharpe_repo": 1.259563118367019,
+          "max_drawdown_pct": -9.455725072459698,
+          "final_nav": 1.5741256761884963,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 7.351863547062232,
+          "annual_vol_pct": 12.396140862064826,
+          "sharpe_repo": 0.5930767993739652,
+          "max_drawdown_pct": -9.455725072459797,
+          "final_nav": 1.0728945773023684,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2678,
+      "sum_daily_cost_rates": 0.7252799999999958,
+      "exit_count": 2,
+      "block_count": 7,
+      "reentry_count": 4,
+      "risk_off_days": 155,
+      "cash_day_with_nonzero_gross_count": 130,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t265_r200.csv.gz": {
+      "sha256": "763d028a69c7a9b3fb171374ebd72b223a9e5cd7c67033759539828996bdd236",
+      "window": 11,
+      "trigger": 0.265,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.9895196601282805e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.887775914016938,
+          "annual_vol_pct": 10.676085510480691,
+          "sharpe_repo": 2.143835949192057,
+          "max_drawdown_pct": -13.180325205457965,
+          "final_nav": 29.03711151400039,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.795116886726436,
+          "annual_vol_pct": 11.675596366832803,
+          "sharpe_repo": 1.6097778902427853,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 5.5541016565613095,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.63756325018429,
+          "annual_vol_pct": 13.214589067589719,
+          "sharpe_repo": 1.6373996300235223,
+          "max_drawdown_pct": -13.18032520545801,
+          "final_nav": 2.6457539408116872,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.53996461819871,
+          "annual_vol_pct": 13.086294500426998,
+          "sharpe_repo": 1.2639150538495845,
+          "max_drawdown_pct": -9.455725072459787,
+          "final_nav": 1.5768486748191632,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 7.351863547062232,
+          "annual_vol_pct": 12.396140862064826,
+          "sharpe_repo": 0.5930767993739652,
+          "max_drawdown_pct": -9.455725072459797,
+          "final_nav": 1.0728945773023684,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2681,
+      "sum_daily_cost_rates": 0.7252799999999958,
+      "exit_count": 2,
+      "block_count": 7,
+      "reentry_count": 4,
+      "risk_off_days": 151,
+      "cash_day_with_nonzero_gross_count": 127,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w11_t265_r205.csv.gz": {
+      "sha256": "45e1038c74295a8d6dcb217c28a39d5014b3d0217b8b311218421afcd3495acc",
+      "window": 11,
+      "trigger": 0.265,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.1316282072803006e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.55351295663786e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.890593676946636,
+          "annual_vol_pct": 10.676391668789915,
+          "sharpe_repo": 2.1440383967799024,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 29.047995573442137,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.799589127603223,
+          "annual_vol_pct": 11.676060464142942,
+          "sharpe_repo": 1.6100969316951175,
+          "max_drawdown_pct": -13.180325205457999,
+          "final_nav": 5.556183515583212,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.64674081398863,
+          "annual_vol_pct": 13.21540510093889,
+          "sharpe_repo": 1.6379929823302,
+          "max_drawdown_pct": -13.180325205457988,
+          "final_nav": 2.6467456559534073,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.61333820387774,
+          "annual_vol_pct": 13.087144361517577,
+          "sharpe_repo": 1.2694395159824816,
+          "max_drawdown_pct": -9.286001293812319,
+          "final_nav": 1.5798044521519625,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 7.554757501604836,
+          "annual_vol_pct": 12.39935756533645,
+          "sharpe_repo": 0.6092862038856641,
+          "max_drawdown_pct": -9.286001293812319,
+          "final_nav": 1.0749057008316678,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-09-23"
+        }
+      },
+      "holding_days": 2684,
+      "sum_daily_cost_rates": 0.7256999999999958,
+      "exit_count": 2,
+      "block_count": 7,
+      "reentry_count": 4,
+      "risk_off_days": 147,
+      "cash_day_with_nonzero_gross_count": 124,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t255_r195.csv.gz": {
+      "sha256": "98d38334f48f611d4a670af561ba5c11dfddb377fec1d33cccac51f7230aa2ed",
+      "window": 9,
+      "trigger": 0.255,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.7053025658242404e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.413431879642754,
+          "annual_vol_pct": 10.610024113240842,
+          "sharpe_repo": 2.2067274899426312,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 31.135189190931378,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.630555586461185,
+          "annual_vol_pct": 11.577056460031647,
+          "sharpe_repo": 1.6956430725058003,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.955413498320039,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.933197146910466,
+          "annual_vol_pct": 13.056365896900113,
+          "sharpe_repo": 1.8330672819603477,
+          "max_drawdown_pct": -11.715521446343391,
+          "final_nav": 2.9032399712476744,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.657540501635815,
+          "annual_vol_pct": 12.936414204518892,
+          "sharpe_repo": 1.4422497769991351,
+          "max_drawdown_pct": -9.259417974194605,
+          "final_nav": 1.6636389964013523,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 12.571770733904476,
+          "annual_vol_pct": 11.789007882158256,
+          "sharpe_repo": 1.0663976866900624,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.1246255458037333,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2652,
+      "sum_daily_cost_rates": 0.7357799999999959,
+      "exit_count": 7,
+      "block_count": 8,
+      "reentry_count": 8,
+      "risk_off_days": 205,
+      "cash_day_with_nonzero_gross_count": 156,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t255_r200.csv.gz": {
+      "sha256": "246cbb20bbb70f6f3b77efc301cd6e716dc0a9f406bc7d78ae0a254c172f055e",
+      "window": 9,
+      "trigger": 0.255,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.0250467969162855e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.36815334151259,
+          "annual_vol_pct": 10.615224302125013,
+          "sharpe_repo": 2.2013810237466793,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 30.94901272755797,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.558503164544593,
+          "annual_vol_pct": 11.584818168157799,
+          "sharpe_repo": 1.6882874535142365,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.919802414788669,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.78364671657294,
+          "annual_vol_pct": 13.070299702082924,
+          "sharpe_repo": 1.8196711061478337,
+          "max_drawdown_pct": -11.715521446343358,
+          "final_nav": 2.8858797121897886,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.49424983475254,
+          "annual_vol_pct": 12.938520240776905,
+          "sharpe_repo": 1.4293945127099046,
+          "max_drawdown_pct": -9.259417974194605,
+          "final_nav": 1.6568362941412134,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 12.107662812518427,
+          "annual_vol_pct": 11.795159517054877,
+          "sharpe_repo": 1.0264941983202258,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.1200268962416602,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2656,
+      "sum_daily_cost_rates": 0.7391999999999959,
+      "exit_count": 7,
+      "block_count": 8,
+      "reentry_count": 9,
+      "risk_off_days": 200,
+      "cash_day_with_nonzero_gross_count": 152,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t255_r205.csv.gz": {
+      "sha256": "32a3cde96a5586b0b3d0eb2ecceabaea955f2a9504476498fb2d705e5d47eed3",
+      "window": 9,
+      "trigger": 0.255,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.8118839761882555e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.023839989531638,
+          "annual_vol_pct": 10.674251907685495,
+          "sharpe_repo": 2.1569511557952272,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 29.56707580532054,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.011147491811343,
+          "annual_vol_pct": 11.673049884440916,
+          "sharpe_repo": 1.6286358475304235,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.655471090188356,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.65052138708281,
+          "annual_vol_pct": 13.227713442420994,
+          "sharpe_repo": 1.7123534982579132,
+          "max_drawdown_pct": -11.715521446343358,
+          "final_nav": 2.7570192615344444,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.68897265746574,
+          "annual_vol_pct": 13.200840806926232,
+          "sharpe_repo": 1.2642355817751663,
+          "max_drawdown_pct": -10.257450442950445,
+          "final_nav": 1.58285515396293,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 8.261931836251879,
+          "annual_vol_pct": 12.028605205471377,
+          "sharpe_repo": 0.6868570125232661,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.0819151048580897,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2663,
+      "sum_daily_cost_rates": 0.7511999999999959,
+      "exit_count": 8,
+      "block_count": 8,
+      "reentry_count": 11,
+      "risk_off_days": 191,
+      "cash_day_with_nonzero_gross_count": 145,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t260_r195.csv.gz": {
+      "sha256": "9f59d739ef04144c2b8a5efb22db36f7b50d9f452f5e3d3de95eddc206945b69",
+      "window": 9,
+      "trigger": 0.26,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.7053025658242404e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.413431879642754,
+          "annual_vol_pct": 10.610024113240842,
+          "sharpe_repo": 2.2067274899426312,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 31.135189190931378,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.630555586461185,
+          "annual_vol_pct": 11.577056460031647,
+          "sharpe_repo": 1.6956430725058003,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.955413498320039,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.933197146910466,
+          "annual_vol_pct": 13.056365896900113,
+          "sharpe_repo": 1.8330672819603477,
+          "max_drawdown_pct": -11.715521446343391,
+          "final_nav": 2.9032399712476744,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.657540501635815,
+          "annual_vol_pct": 12.936414204518892,
+          "sharpe_repo": 1.4422497769991351,
+          "max_drawdown_pct": -9.259417974194605,
+          "final_nav": 1.6636389964013523,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 12.571770733904476,
+          "annual_vol_pct": 11.789007882158256,
+          "sharpe_repo": 1.0663976866900624,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.1246255458037333,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2652,
+      "sum_daily_cost_rates": 0.7357799999999959,
+      "exit_count": 7,
+      "block_count": 8,
+      "reentry_count": 8,
+      "risk_off_days": 205,
+      "cash_day_with_nonzero_gross_count": 156,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t260_r200.csv.gz": {
+      "sha256": "5a0079c7bff6ddb5d9e700a337d2b0da3c26b7668fa4d5570851706e29446780",
+      "window": 9,
+      "trigger": 0.26,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.0250467969162855e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.36815334151259,
+          "annual_vol_pct": 10.615224302125013,
+          "sharpe_repo": 2.2013810237466793,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 30.94901272755797,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.558503164544593,
+          "annual_vol_pct": 11.584818168157799,
+          "sharpe_repo": 1.6882874535142365,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.919802414788669,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 23.78364671657294,
+          "annual_vol_pct": 13.070299702082924,
+          "sharpe_repo": 1.8196711061478337,
+          "max_drawdown_pct": -11.715521446343358,
+          "final_nav": 2.8858797121897886,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 18.49424983475254,
+          "annual_vol_pct": 12.938520240776905,
+          "sharpe_repo": 1.4293945127099046,
+          "max_drawdown_pct": -9.259417974194605,
+          "final_nav": 1.6568362941412134,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 12.107662812518427,
+          "annual_vol_pct": 11.795159517054877,
+          "sharpe_repo": 1.0264941983202258,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.1200268962416602,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2656,
+      "sum_daily_cost_rates": 0.7391999999999959,
+      "exit_count": 7,
+      "block_count": 8,
+      "reentry_count": 9,
+      "risk_off_days": 200,
+      "cash_day_with_nonzero_gross_count": 152,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t260_r205.csv.gz": {
+      "sha256": "8c1154e8e9e9d7b781b104453f967f9e508bc003d2673119feb82b6cb6211b76",
+      "window": 9,
+      "trigger": 0.26,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.0658141036401503e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.821345431667428,
+          "annual_vol_pct": 10.699362833660485,
+          "sharpe_repo": 2.1329630358801235,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 28.78161958199298,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.689700143901568,
+          "annual_vol_pct": 11.710435826512652,
+          "sharpe_repo": 1.5959867267781551,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.505232189565048,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 21.987500562091313,
+          "annual_vol_pct": 13.294307804710229,
+          "sharpe_repo": 1.6539033761728497,
+          "max_drawdown_pct": -12.64148207702166,
+          "final_nav": 2.6837784056897593,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 15.637818033324692,
+          "annual_vol_pct": 13.310695167767458,
+          "sharpe_repo": 1.1748310539927682,
+          "max_drawdown_pct": -12.641482077021692,
+          "final_nav": 1.5408062398433091,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 8.261931836251879,
+          "annual_vol_pct": 12.028605205471377,
+          "sharpe_repo": 0.6868570125232661,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.0819151048580897,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2667,
+      "sum_daily_cost_rates": 0.7511999999999959,
+      "exit_count": 7,
+      "block_count": 8,
+      "reentry_count": 11,
+      "risk_off_days": 182,
+      "cash_day_with_nonzero_gross_count": 141,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t265_r195.csv.gz": {
+      "sha256": "97b2573da0192a5d1f9f5fad79311f27f0e2ad40d7563d0417791bf80291badc",
+      "window": 9,
+      "trigger": 0.265,
+      "recovery": 0.195,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.7053025658242404e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.578687920569163,
+          "annual_vol_pct": 10.614532718110086,
+          "sharpe_repo": 2.221359012850388,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 31.82364969959764,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.893673988832596,
+          "annual_vol_pct": 11.58407261258293,
+          "sharpe_repo": 1.7173298764739746,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 6.087099449583363,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 24.48008837613913,
+          "annual_vol_pct": 13.068305479264392,
+          "sharpe_repo": 1.8732412105748466,
+          "max_drawdown_pct": -11.715521446343391,
+          "final_nav": 2.9674363393868983,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 19.532958192062022,
+          "annual_vol_pct": 12.957522636582075,
+          "sharpe_repo": 1.5074608580590843,
+          "max_drawdown_pct": -9.259417974194605,
+          "final_nav": 1.7004253394255056,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 15.081754287421688,
+          "annual_vol_pct": 11.86213346223259,
+          "sharpe_repo": 1.2714200472823822,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.149493237166554,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2654,
+      "sum_daily_cost_rates": 0.7426799999999959,
+      "exit_count": 8,
+      "block_count": 7,
+      "reentry_count": 8,
+      "risk_off_days": 203,
+      "cash_day_with_nonzero_gross_count": 154,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t265_r200.csv.gz": {
+      "sha256": "0004ca956dd544acf5eab2f1005565dca487146729cfea763e16b2c1f04d2d87",
+      "window": 9,
+      "trigger": 0.265,
+      "recovery": 0.2,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.0250467969162855e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 23.533348752474858,
+          "annual_vol_pct": 10.619732576058318,
+          "sharpe_repo": 2.216002011720114,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 31.633356507018263,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 19.82146309303743,
+          "annual_vol_pct": 11.59183425839766,
+          "sharpe_repo": 1.7099505264818504,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 6.050700934681918,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 24.329878011090322,
+          "annual_vol_pct": 13.082243072269872,
+          "sharpe_repo": 1.8597634883166023,
+          "max_drawdown_pct": -11.715521446343358,
+          "final_nav": 2.949692210723844,
+          "peak_date": "2022-04-22",
+          "trough_date": "2022-07-15"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 19.36846281844149,
+          "annual_vol_pct": 12.959657398357837,
+          "sharpe_repo": 1.4945196638373892,
+          "max_drawdown_pct": -9.259417974194605,
+          "final_nav": 1.6934722159866291,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 14.607298272173885,
+          "annual_vol_pct": 11.868564079506301,
+          "sharpe_repo": 1.2307553107790532,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.1447929023827443,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2658,
+      "sum_daily_cost_rates": 0.746099999999996,
+      "exit_count": 8,
+      "block_count": 7,
+      "reentry_count": 9,
+      "risk_off_days": 198,
+      "cash_day_with_nonzero_gross_count": 150,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    },
+    "w9_t265_r205.csv.gz": {
+      "sha256": "d705866ce2ce20e66086eb6fa3dba56021f5f3e093d8669275ecff545457ccda",
+      "window": 9,
+      "trigger": 0.265,
+      "recovery": 0.205,
+      "disabled": false,
+      "parity": {
+        "held": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "next": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "risk_off": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "exit": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "reentry": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "block": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": null
+        },
+        "entry_exit_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "rebalance_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "total_cost": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 0.0
+        },
+        "return_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 2.7755575615628914e-16
+        },
+        "nav_net": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 1.0658141036401503e-13
+        },
+        "feature": {
+          "mismatch_count": 0,
+          "first_mismatch_date": null,
+          "max_abs_delta": 4.551914400963142e-15
+        }
+      },
+      "frozen_column_mismatches": {},
+      "metrics": {
+        "full": {
+          "start_date": "2010-05-05",
+          "end_date": "2026-09-30",
+          "days": 3988,
+          "annual_pct": 22.985808642666107,
+          "annual_vol_pct": 10.703858091206346,
+          "sharpe_repo": 2.147432117168097,
+          "max_drawdown_pct": -12.924336369644685,
+          "final_nav": 29.418038019541104,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_10y": {
+          "start_date": "2016-09-30",
+          "end_date": "2026-09-30",
+          "days": 2429,
+          "annual_pct": 18.950749205545648,
+          "annual_vol_pct": 11.717431919778921,
+          "sharpe_repo": 1.61731250800416,
+          "max_drawdown_pct": -12.924336369644607,
+          "final_nav": 5.626963743220028,
+          "peak_date": "2021-04-16",
+          "trough_date": "2021-12-06"
+        },
+        "last_5y": {
+          "start_date": "2021-09-30",
+          "end_date": "2026-09-30",
+          "days": 1212,
+          "annual_pct": 22.525805840005297,
+          "annual_vol_pct": 13.306245499173889,
+          "sharpe_repo": 1.6928746611058545,
+          "max_drawdown_pct": -12.64148207702166,
+          "final_nav": 2.743122045293109,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_3y": {
+          "start_date": "2023-10-09",
+          "end_date": "2026-09-30",
+          "days": 726,
+          "annual_pct": 16.490957169368613,
+          "annual_vol_pct": 13.331786052223421,
+          "sharpe_repo": 1.236965332684612,
+          "max_drawdown_pct": -12.641482077021692,
+          "final_nav": 1.574876508089749,
+          "peak_date": "2024-01-09",
+          "trough_date": "2024-07-24"
+        },
+        "last_1y": {
+          "start_date": "2025-09-30",
+          "end_date": "2026-09-30",
+          "days": 242,
+          "annual_pct": 10.675820030507289,
+          "annual_vol_pct": 12.103202797781016,
+          "sharpe_repo": 0.8820656985491954,
+          "max_drawdown_pct": -7.5885227693966435,
+          "final_nav": 1.1058383840409018,
+          "peak_date": "2025-11-18",
+          "trough_date": "2026-01-28"
+        }
+      },
+      "holding_days": 2669,
+      "sum_daily_cost_rates": 0.7580999999999959,
+      "exit_count": 8,
+      "block_count": 7,
+      "reentry_count": 11,
+      "risk_off_days": 180,
+      "cash_day_with_nonzero_gross_count": 139,
+      "cash_day_net_minus_fee_max_abs": 2.6020852139652106e-18,
+      "meta_hash_match": true,
+      "meta_parameter_match": true
+    }
+  },
+  "metric_mismatches": [],
+  "event_mismatches": [],
+  "grid_missing": [],
+  "grid_unique_parameter_count": 28,
+  "formal_tuple_files": [
+    "formal_baseline.csv.gz"
+  ],
+  "daily_file_count_matches_manifest": true,
+  "injections": {
+    "one_day_lookahead_rejected_days": 100,
+    "first_lookahead_rejected_date": "2010-08-02",
+    "cash_gross_leak_date": "2020-09-11",
+    "cash_gross_leak_return_delta": 0.0052099000543402,
+    "cash_return_mutation_rejected": true,
+    "one_day_state_mutation_rejected": true,
+    "wrong_N_minus_1_full_annual_pct": 23.26982898034826,
+    "correct_N_full_annual_pct": 23.26336256871926
+  },
+  "all_candidate_parity_pass": true
+}

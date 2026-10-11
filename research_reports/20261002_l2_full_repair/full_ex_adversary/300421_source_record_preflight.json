@@ -1,0 +1,54 @@
+{
+  "status": "PASS_issuer_source_and_record_entitlement_preflight_only",
+  "source_hashes": {
+    "issuer_pdf": "2905f38ea61be6a73047812798c73b6575f8686250d9366eb42f80d2bfbca600",
+    "cninfo_normalized_file": "54af732ea8434fb466f25e1f4423d5816f5688d9bca030a2f467c895271c5c6d",
+    "candidate_file": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "cninfo_original_row": "e33242a5a6ea03cd864a06623276b1aca3bb50be40fd2f05facb43117d30e0ba"
+  },
+  "last_true_trade": {
+    "date": "2015-05-25",
+    "close": "46.5300",
+    "preclose": "42.3000",
+    "volume": "5180177",
+    "tradestatus": "1"
+  },
+  "zero_volume_ex_reference": {
+    "date": "2015-05-28",
+    "close": "46.3100",
+    "preclose": "46.3100",
+    "volume": "0",
+    "tradestatus": "0"
+  },
+  "first_true_resume": {
+    "date": "2015-07-14",
+    "close": "41.6800",
+    "preclose": "46.3100",
+    "volume": "235400",
+    "tradestatus": "1"
+  },
+  "accounts_record_date": {
+    "prefunded": {
+      "record_shares": "1984.775848090370052148194469073408812702",
+      "gross_cash_due": "436.6506865798814114726027831961499387944",
+      "record_mark": "46.53",
+      "double_count_error_if_old_mark_plus_cash": "436.6506865798814114726027831961499387944",
+      "omit_cash_error_if_new_mark_only": "436.6506865798814114726027831961499387944"
+    },
+    "netted": {
+      "record_shares": "2244.248343633552106567581085449464670742",
+      "gross_cash_due": "493.7346355993814634448678387988822275632",
+      "record_mark": "46.53",
+      "double_count_error_if_old_mark_plus_cash": "493.7346355993814634448678387988822275632",
+      "omit_cash_error_if_new_mark_only": "493.7346355993814634448678387988822275632"
+    }
+  },
+  "wrong_line_mutations_rejected": {
+    "candidate_cash_per_10_2p3": true,
+    "raw_cninfo_cash_per_10_2p3": true,
+    "record_date_early": true,
+    "added_bonus": true,
+    "concurrent_right_same_halt": true
+  },
+  "limitations": "Ex-date settlement cannot pass until the full-history executor writes verified rows and an input/code/detail-hash-consistent manifest. Resume preclose is hindsight corroboration, not ex-date tradable knowledge."
+}

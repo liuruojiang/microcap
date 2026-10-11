@@ -1,0 +1,14 @@
+{
+  "0": {
+    "path": "outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+    "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+  },
+  "3": {
+    "path": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+    "sha256": "fdd89d2c206803cf90e56887e6c0fbe52706b5b87a41c431da040b96412e27f2"
+  },
+  "5": {
+    "path": "outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+    "sha256": "1f6be27ea362765af160a4de59c706e0574e9f66ae0a101b007180468b64c4f0"
+  }
+}

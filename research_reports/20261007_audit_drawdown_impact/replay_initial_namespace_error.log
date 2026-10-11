@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "D:\动量策略\微盘股对冲策略\research_reports\20261007_audit_drawdown_impact\replay.py", line 198, in <module>
+    main()
+    ~~~~^^
+  File "D:\动量策略\微盘股对冲策略\research_reports\20261007_audit_drawdown_impact\replay.py", line 148, in main
+    result = (module.build_v2_3_result if version == 23 else module.build_v2_5_result)(close, events, common)
+  File "D:\动量策略\微盘股对冲策略\.codex_backups\20261007_143135\microcap_top100_mom16_biweekly_live_v2_5.py", line 1232, in build_v2_5_result
+    costed = apply_cost(gross, turnover_df)
+  File "D:\动量策略\微盘股对冲策略\.codex_backups\20261007_143135\microcap_top100_mom16_biweekly_live_v2_5.py", line 750, in apply_cost
+    _ensure_v2_0_contract_validated()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\动量策略\微盘股对冲策略\.codex_backups\20261007_143135\microcap_top100_mom16_biweekly_live_v2_5.py", line 220, in _ensure_v2_0_contract_validated
+    validate_v2_0_contract()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\动量策略\微盘股对冲策略\.codex_backups\20261007_143135\microcap_top100_mom16_biweekly_live_v2_5.py", line 129, in validate_v2_0_contract
+    raise RuntimeError(f"v2_0 module version mismatch: expected suffix _v2_0, got {module_name!r}")
+RuntimeError: v2_0 module version mismatch: expected suffix _v2_0, got 'impact_before_any_audit_v20'

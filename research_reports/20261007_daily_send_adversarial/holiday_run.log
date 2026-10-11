@@ -1,0 +1,203 @@
+check-trading-day	Set up job	﻿2026-10-07T15:35:18.3714398Z Current runner version: '2.337.0'
+check-trading-day	Set up job	2026-10-07T15:35:18.3732521Z ##[group]Runner Image Provisioner
+check-trading-day	Set up job	2026-10-07T15:35:18.3733092Z Hosted Compute Agent
+check-trading-day	Set up job	2026-10-07T15:35:18.3733550Z Version: 20260901.588
+check-trading-day	Set up job	2026-10-07T15:35:18.3733938Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+check-trading-day	Set up job	2026-10-07T15:35:18.3734402Z Build Date: 2026-09-01T19:56:44Z
+check-trading-day	Set up job	2026-10-07T15:35:18.3734891Z Worker ID: {85594581-7e60-4e61-95cd-b6604ed3b639}
+check-trading-day	Set up job	2026-10-07T15:35:18.3735324Z Azure Region: centralus
+check-trading-day	Set up job	2026-10-07T15:35:18.3735715Z ##[endgroup]
+check-trading-day	Set up job	2026-10-07T15:35:18.3736480Z ##[group]Operating System
+check-trading-day	Set up job	2026-10-07T15:35:18.3736864Z Ubuntu
+check-trading-day	Set up job	2026-10-07T15:35:18.3737241Z 24.04.5
+check-trading-day	Set up job	2026-10-07T15:35:18.3737559Z LTS
+check-trading-day	Set up job	2026-10-07T15:35:18.3737903Z ##[endgroup]
+check-trading-day	Set up job	2026-10-07T15:35:18.3738252Z ##[group]Runner Image
+check-trading-day	Set up job	2026-10-07T15:35:18.3738712Z Image: ubuntu-24.04
+check-trading-day	Set up job	2026-10-07T15:35:18.3739135Z Version: 20260927.320.1
+check-trading-day	Set up job	2026-10-07T15:35:18.3739758Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+check-trading-day	Set up job	2026-10-07T15:35:18.3740808Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+check-trading-day	Set up job	2026-10-07T15:35:18.3741415Z ##[endgroup]
+check-trading-day	Set up job	2026-10-07T15:35:18.3742347Z ##[group]GITHUB_TOKEN Permissions
+check-trading-day	Set up job	2026-10-07T15:35:18.3744122Z Actions: write
+check-trading-day	Set up job	2026-10-07T15:35:18.3744550Z Checks: write
+check-trading-day	Set up job	2026-10-07T15:35:18.3744922Z Contents: read
+check-trading-day	Set up job	2026-10-07T15:35:18.3745287Z Metadata: read
+check-trading-day	Set up job	2026-10-07T15:35:18.3745879Z ##[endgroup]
+check-trading-day	Set up job	2026-10-07T15:35:18.3747230Z Secret source: Actions
+check-trading-day	Set up job	2026-10-07T15:35:18.3747859Z Cache mode: write
+check-trading-day	Set up job	2026-10-07T15:35:18.3748426Z Prepare workflow directory
+check-trading-day	Set up job	2026-10-07T15:35:18.3999054Z Prepare all required actions
+check-trading-day	Set up job	2026-10-07T15:35:18.4045728Z Getting action download info
+check-trading-day	Set up job	2026-10-07T15:35:18.6902686Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+check-trading-day	Set up job	2026-10-07T15:35:18.8601422Z Complete job name: check-trading-day
+check-trading-day	Run actions/setup-python@v6	﻿2026-10-07T15:35:18.9129081Z ##[group]Run actions/setup-python@v6
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9129559Z with:
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9129820Z   python-version: 3.11
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9130093Z   check-latest: false
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9132551Z   token: ***
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9132806Z   update-environment: true
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9133094Z   allow-prereleases: false
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9133372Z   freethreaded: false
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9133703Z env:
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9133932Z   TZ: Asia/Shanghai
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:18.9134184Z ##[endgroup]
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:19.0044669Z ##[group]Installed versions
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:19.0080159Z Successfully set up CPython (3.11.16)
+check-trading-day	Run actions/setup-python@v6	2026-10-07T15:35:19.0080815Z ##[endgroup]
+check-trading-day	Check A-share trading day	﻿2026-10-07T15:35:19.0255449Z ##[group]Run python -m pip install --upgrade pip
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0256422Z [36;1mpython -m pip install --upgrade pip[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0257059Z [36;1mpython -m pip install "pandas<3" "akshare==1.18.46"[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0257683Z [36;1mpython - <<'PY' | tee calendar.env[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0258215Z [36;1mfrom datetime import datetime[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0258721Z [36;1mfrom zoneinfo import ZoneInfo[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0259213Z [36;1m[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0259572Z [36;1mimport akshare as ak[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0260025Z [36;1mimport pandas as pd[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0260456Z [36;1m[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0260932Z [36;1mtoday = datetime.now(ZoneInfo("Asia/Shanghai")).date()[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0261660Z [36;1mshould_run = False[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0262094Z [36;1mtry:[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0262537Z [36;1m    trade_dates = ak.tool_trade_date_hist_sina()[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0263217Z [36;1m    dates = set(pd.to_datetime(trade_dates["trade_date"]).dt.date)[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0263997Z [36;1m    if not dates or not min(dates) <= today <= max(dates):[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0264865Z [36;1m        raise ValueError("Trading calendar does not cover today's date")[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0265677Z [36;1m    should_run = today in dates[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0266457Z [36;1mexcept Exception as exc:[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0267155Z [36;1m    print(f"A_SHARE_CALENDAR_ERROR={type(exc).__name__}: {exc}")[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0268337Z [36;1m    raise RuntimeError("Trading calendar unavailable; not a confirmed holiday") from exc[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0269178Z [36;1mprint(f"A_SHARE_TODAY={today.isoformat()}")[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0269719Z [36;1mif should_run:[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0270174Z [36;1m    print("SHOULD_RUN_MICROCAP=true")[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0270678Z [36;1melse:[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0271095Z [36;1m    print("SHOULD_RUN_MICROCAP=false")[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0271780Z [36;1mPY[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0272187Z [36;1mcat calendar.env >> "$GITHUB_OUTPUT"[0m
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0520157Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0520580Z env:
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0520826Z   TZ: Asia/Shanghai
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0521150Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0521760Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0522233Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0522651Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0523082Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0523506Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.0523873Z ##[endgroup]
+check-trading-day	Check A-share trading day	2026-10-07T15:35:19.5890481Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages (26.2.1)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.1664543Z Collecting pandas<3
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.2580461Z   Downloading pandas-2.3.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.3263550Z Collecting akshare==1.18.46
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.3424648Z   Downloading akshare-1.18.46-py3-none-any.whl.metadata (13 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.3734626Z Collecting beautifulsoup4>=4.9.1 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.3867774Z   Downloading beautifulsoup4-4.15.0-py3-none-any.whl.metadata (3.8 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.5444059Z Collecting lxml>=4.2.1 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.5596865Z   Downloading lxml-6.1.3-cp311-cp311-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.5870033Z Collecting requests>=2.22.0 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.5999955Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.6464048Z Collecting curl_cffi>=0.13.0 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.6594257Z   Downloading curl_cffi-0.16.3-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (17 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.6821729Z Collecting html5lib>=1.0.1 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.6948946Z   Downloading html5lib-1.1-py2.py3-none-any.whl.metadata (16 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.7291983Z Collecting xlrd>=1.2.0 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.7419053Z   Downloading xlrd-2.0.2-py2.py3-none-any.whl.metadata (3.5 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.7817882Z Collecting urllib3>=1.25.8 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.7958201Z   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.8238791Z Collecting tqdm>=4.43.0 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.8364771Z   Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.8624033Z Collecting openpyxl>=3.0.3 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.8751130Z   Downloading openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.8994702Z Collecting jsonpath>=0.82 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.9130466Z   Downloading jsonpath-0.82.2.tar.gz (10 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:20.9200121Z   Installing build dependencies: started
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.5219509Z   Installing build dependencies: finished with status 'done'
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.5232405Z   Getting requirements to build wheel: started
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.7432154Z   Getting requirements to build wheel: finished with status 'done'
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.7437975Z   Preparing metadata (pyproject.toml): started
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.8676388Z   Preparing metadata (pyproject.toml): finished with status 'done'
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.8932748Z Collecting tabulate>=0.8.6 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.9072535Z   Downloading tabulate-0.10.0-py3-none-any.whl.metadata (40 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.9383118Z Collecting decorator>=4.4.2 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.9513156Z   Downloading decorator-5.3.1-py3-none-any.whl.metadata (3.9 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:21.9887665Z Collecting py-mini-racer>=0.6.0 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.0024040Z   Downloading py_mini_racer-0.6.0-py2.py3-none-manylinux1_x86_64.whl.metadata (8.7 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.0239099Z Collecting akracer>=0.0.13 (from akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.0365825Z   Downloading akracer-0.0.14-py3-none-any.whl.metadata (3.3 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.1594464Z Collecting numpy>=1.23.2 (from pandas<3)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.1724915Z   Downloading numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.1937885Z Collecting python-dateutil>=2.8.2 (from pandas<3)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.2067402Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.2382778Z Collecting pytz>=2020.1 (from pandas<3)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.2510601Z   Downloading pytz-2026.5-py2.py3-none-any.whl.metadata (22 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.2738742Z Collecting tzdata>=2022.7 (from pandas<3)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.2864330Z   Downloading tzdata-2026.5-py2.py3-none-any.whl.metadata (1.4 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.3098805Z Collecting soupsieve>=1.6.1 (from beautifulsoup4>=4.9.1->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.3231813Z   Downloading soupsieve-2.10-py3-none-any.whl.metadata (4.4 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.3611992Z Collecting typing-extensions>=4.0.0 (from beautifulsoup4>=4.9.1->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.3743196Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.4391454Z Collecting cffi>=2.0.0 (from curl_cffi>=0.13.0->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.4520234Z   Downloading cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.4754788Z Collecting certifi>=2024.2.2 (from curl_cffi>=0.13.0->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.4882261Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.5204316Z Collecting pycparser (from cffi>=2.0.0->curl_cffi>=0.13.0->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.5341815Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.5554582Z Collecting six>=1.9 (from html5lib>=1.0.1->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.5682898Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.5872874Z Collecting webencodings (from html5lib>=1.0.1->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.5998633Z   Downloading webencodings-0.6.1-py3-none-any.whl.metadata (3.4 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.6198506Z Collecting et-xmlfile (from openpyxl>=3.0.3->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.6329424Z   Downloading et_xmlfile-2.0.0-py3-none-any.whl.metadata (2.7 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.7268265Z Collecting charset_normalizer<4,>=2 (from requests>=2.22.0->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.7405219Z   Downloading charset_normalizer-3.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.7645070Z Collecting idna<4,>=2.5 (from requests>=2.22.0->akshare==1.18.46)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.7776676Z   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.7988007Z Downloading akshare-1.18.46-py3-none-any.whl (1.1 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.8843567Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 15.3 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:22.8925902Z Downloading pandas-2.3.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.8 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.0638029Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.8/12.8 MB 74.3 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.0802326Z Downloading akracer-0.0.14-py3-none-any.whl (10.1 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.1677692Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.1/10.1 MB 114.7 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.1805809Z Downloading beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.1952451Z Downloading curl_cffi-0.16.3-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (13.5 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.3179798Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 110.1 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.3308978Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.3452761Z Downloading cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (217 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.3606963Z Downloading decorator-5.3.1-py3-none-any.whl (10 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.3743873Z Downloading html5lib-1.1-py2.py3-none-any.whl (112 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.3887293Z Downloading lxml-6.1.3-cp311-cp311-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.4163853Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 189.1 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.4419595Z Downloading numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.9 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.5530511Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 152.4 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.5661176Z Downloading openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.5853451Z Downloading py_mini_racer-0.6.0-py2.py3-none-manylinux1_x86_64.whl (5.4 MB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.6212343Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 150.9 MB/s  0:00:00
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.6337703Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.6577060Z Downloading pytz-2026.5-py2.py3-none-any.whl (506 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.6729597Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.6883248Z Downloading charset_normalizer-3.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (269 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.7202854Z Downloading idna-3.20-py3-none-any.whl (69 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.7354460Z Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.7494304Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.7639108Z Downloading soupsieve-2.10-py3-none-any.whl (38 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:23.7782774Z Downloading tabulate-0.10.0-py3-none-any.whl (39 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.0122000Z Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.0315712Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.0456871Z Downloading tzdata-2026.5-py2.py3-none-any.whl (347 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.0603795Z Downloading xlrd-2.0.2-py2.py3-none-any.whl (96 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.0750898Z Downloading et_xmlfile-2.0.0-py3-none-any.whl (18 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.0897942Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.1038695Z Downloading webencodings-0.6.1-py3-none-any.whl (8.7 kB)
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.1987136Z Building wheels for collected packages: jsonpath
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.1993141Z   Building wheel for jsonpath (pyproject.toml): started
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.3229161Z   Building wheel for jsonpath (pyproject.toml): finished with status 'done'
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.3233329Z   Created wheel for jsonpath: filename=jsonpath-0.82.2-py3-none-any.whl size=5667 sha256=f58c2fb460f72467f74dfaf7d0f7910f81dcfd973aac6569e99f745dc62ea144
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.3234441Z   Stored in directory: /home/runner/.cache/pip/wheels/7d/b8/16/48bbd715040679311fa68cb564ad24a97d9a67fea5d4c848c8
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.3244773Z Successfully built jsonpath
+check-trading-day	Check A-share trading day	2026-10-07T15:35:24.3706110Z Installing collected packages: pytz, py-mini-racer, jsonpath, xlrd, webencodings, urllib3, tzdata, typing-extensions, tqdm, tabulate, soupsieve, six, pycparser, numpy, lxml, idna, et-xmlfile, decorator, charset_normalizer, certifi, akracer, requests, python-dateutil, openpyxl, html5lib, cffi, beautifulsoup4, pandas, curl_cffi, akshare
+check-trading-day	Check A-share trading day	2026-10-07T15:35:29.5276531Z 
+check-trading-day	Check A-share trading day	2026-10-07T15:35:29.5293923Z Successfully installed akracer-0.0.14 akshare-1.18.46 beautifulsoup4-4.15.0 certifi-2026.7.22 cffi-2.1.1 charset_normalizer-3.5.2 curl_cffi-0.16.3 decorator-5.3.1 et-xmlfile-2.0.0 html5lib-1.1 idna-3.20 jsonpath-0.82.2 lxml-6.1.3 numpy-2.4.6 openpyxl-3.1.5 pandas-2.3.3 py-mini-racer-0.6.0 pycparser-3.0 python-dateutil-2.9.0.post0 pytz-2026.5 requests-2.34.2 six-1.17.0 soupsieve-2.10 tabulate-0.10.0 tqdm-4.70.1 typing-extensions-4.16.0 tzdata-2026.5 urllib3-2.8.0 webencodings-0.6.1 xlrd-2.0.2
+check-trading-day	Check A-share trading day	2026-10-07T15:35:31.2358034Z A_SHARE_TODAY=2026-10-07
+check-trading-day	Check A-share trading day	2026-10-07T15:35:31.2358312Z SHOULD_RUN_MICROCAP=false
+check-trading-day	Post Run actions/setup-python@v6	﻿2026-10-07T15:35:31.3258117Z Post job cleanup.
+check-trading-day	Complete job	﻿2026-10-07T15:35:31.4171270Z Evaluate and set job outputs
+check-trading-day	Complete job	2026-10-07T15:35:31.4178679Z Set output 'SHOULD_RUN_MICROCAP'
+check-trading-day	Complete job	2026-10-07T15:35:31.4180023Z Cleaning up orphan processes

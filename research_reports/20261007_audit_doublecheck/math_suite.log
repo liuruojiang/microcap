@@ -1,0 +1,45 @@
+.............................................FF                          [100%]
+================================== FAILURES ===================================
+_______________ test_v25_cost_model_cannot_drop_a_gross_session _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CDA8BB4D60>
+
+    def test_v25_cost_model_cannot_drop_a_gross_session(monkeypatch: pytest.MonkeyPatch) -> None:
+        prices = _prices()
+        gross = v25.build_microcap_log_wls_gross(prices)
+        cost_module = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = cost_module.apply_cost_model
+        monkeypatch.setattr(cost_module, "apply_cost_model", lambda frame, events: original(frame, events).drop(index=frame.index[15]))
+>       with pytest.raises(RuntimeError, match="index|session|aligned"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_doublecheck_math_adversarial.py:254: Failed
+____ test_v25_cost_model_component_contradiction_cannot_hide_an_entry_fee _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001CDA8BB50F0>
+
+    def test_v25_cost_model_component_contradiction_cannot_hide_an_entry_fee(monkeypatch: pytest.MonkeyPatch) -> None:
+        prices = _prices()
+        gross = v25.build_microcap_log_wls_gross(prices)
+        cost_module = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = cost_module.apply_cost_model
+    
+        def omit_total(frame: pd.DataFrame, events: pd.DataFrame) -> pd.DataFrame:
+            out = original(frame, events)
+            date = out.index[out.entry_exit_cost.gt(0)][0]
+            out.at[date, "total_cost"] = 0.0
+            out.at[date, "return_net"] = out.at[date, "return"]
+            out["nav_net"] = (1 + out.return_net).cumprod()
+            return out
+    
+        monkeypatch.setattr(cost_module, "apply_cost_model", omit_total)
+>       with pytest.raises((RuntimeError, ValueError), match="cost|fee"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (<class 'RuntimeError'>, <class 'ValueError'>)
+
+tests\test_doublecheck_math_adversarial.py:273: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_math_adversarial.py::test_v25_cost_model_cannot_drop_a_gross_session
+FAILED tests/test_doublecheck_math_adversarial.py::test_v25_cost_model_component_contradiction_cannot_hide_an_entry_fee
+2 failed, 45 passed in 3.98s

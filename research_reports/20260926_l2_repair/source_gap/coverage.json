@@ -1,0 +1,111 @@
+{
+  "scope": "old contaminated members; raw close availability only; no corrected account",
+  "source_sha256": {
+    "research_reports\\20260926_l1_repair\\corporate_actions\\initial_2010_01_04_executed_seed.csv": "9882d37149ace8e0ab4e5a9d760a5a712261a6728543cc2c97524a7d39243bf5",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "research_reports\\20260926_l1_repair\\full_replay\\members_by_rebalance.csv": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c",
+    "research_reports\\20260926_l1_repair\\full_replay\\all_daily_returns.csv": "7dd88df8b2084b918448d62a9ce5a4521d50b42719cb5921d93a05076616a82f",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "research_reports\\20260926_l2_repair\\clock\\next_close_first_rebalance_orders.csv": "f02d0ec69343c1064e8c4c33ef650eeb51d708a39dcce45fdbf5d3054054313f",
+    "research_reports\\20260926_l1_repair\\corporate_actions\\rights_event_ledger_2010_2014.csv": "7b671a0bdf3b8a06ab46704dd0ec8177ad331b60f3bc57f722998b9024a3d63b",
+    "research_reports\\20260926_l1_repair\\corporate_actions\\cninfo_distribution_events.csv": "54af732ea8434fb466f25e1f4423d5816f5688d9bca030a2f467c895271c5c6d",
+    "research_reports\\20260926_l1_repair\\st_timing\\initial_old100_screen\\baostock_responses\\600982.json": "90aa84859306202f16820bb42040c595a8510e54a2c498da652330b7f2c78237",
+    ".microcap_index_cache\\share_change\\600982.csv": "679ddb32ee0b79654c0d48e64af97b39e3a9c78a8f11232c0d147ef4bf692128"
+  },
+  "old_target_dates": 432,
+  "old_effective_dates": 432,
+  "old_return_dates": 4064,
+  "old_seed_unique": 100,
+  "old_target_first_date": "2010-01-14",
+  "first_target_t_plus_one_close": "2010-01-15",
+  "raw_symbols_scanned": 1187,
+  "missing_raw_files": [],
+  "initial_seed_signal_close": {
+    "date": "2010-01-04",
+    "basket_size": 100,
+    "raw_close_count": 100,
+    "missing_raw_close": []
+  },
+  "initial_seed_t_plus_one_close": {
+    "date": "2010-01-05",
+    "basket_size": 100,
+    "raw_close_count": 100,
+    "missing_raw_close": []
+  },
+  "initial_seed_2010_01_06_close": {
+    "date": "2010-01-06",
+    "basket_size": 100,
+    "raw_close_count": 99,
+    "missing_raw_close": [
+      "600982"
+    ]
+  },
+  "held_600982_2010_01_06": {
+    "in_old_seed": true,
+    "prior_real_close": "9.24",
+    "missing_real_close_on_day": true,
+    "next_real_close": "8.91",
+    "baostock_day": {
+      "date": "2010-01-06",
+      "code": "sh.600982",
+      "open": "9.2400",
+      "high": "9.2400",
+      "low": "9.2400",
+      "close": "9.2400",
+      "volume": "0",
+      "tradestatus": "0",
+      "isST": "0"
+    },
+    "cninfo_distribution_rows_for_symbol": 22,
+    "cninfo_ex_event_on_day": [],
+    "cninfo_ex_dates_2009_2010": [
+      "2009-05-25",
+      "2010-07-02"
+    ],
+    "share_change_on_day": []
+  },
+  "first_target_and_seed_union_t_plus_one_close": {
+    "date": "2010-01-15",
+    "basket_size": 110,
+    "raw_close_count": 105,
+    "missing_raw_close": [
+      "000049",
+      "300025",
+      "600148",
+      "600455",
+      "600992"
+    ]
+  },
+  "first_order_symbols_t_plus_one_close": {
+    "date": "2010-01-15",
+    "basket_size": 20,
+    "raw_close_count": 18,
+    "missing_raw_close": [
+      "300025",
+      "600455"
+    ]
+  },
+  "first_order_rows": 20,
+  "old_effective_next_close_dates_scanned": 432,
+  "old_effective_next_close_dates_with_missing_raw": 272,
+  "first_old_effective_next_close_missing": {
+    "date": "2010-01-15",
+    "basket_size": 100,
+    "raw_close_count": 96,
+    "missing_raw_close": [
+      "000049",
+      "600148",
+      "600455",
+      "600992"
+    ]
+  },
+  "rights_event_ledger_rows": 300,
+  "rights_event_ledger_min_ex_date": "2010-04-08",
+  "rights_event_ledger_max_ex_date": "2014-09-18",
+  "rights_event_ledger_status_counts": {
+    "candidate_complete": 291,
+    "unresolved": 9
+  },
+  "no_local_full_history_independent_daily_st_trade_status": true,
+  "no_local_full_history_contract_settlement_margin_ledger": true
+}

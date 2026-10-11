@@ -1,0 +1,78 @@
+{
+  "queried_utc": "2026-10-03T01:53:33.821118+00:00",
+  "issuer_url": "https://static.cninfo.com.cn/finalpage/2016-06-30/1202437128.PDF",
+  "issuer_pdf_sha256": "afe4005e2a3182d819343fb0b990504335fa6126458b5bc0561ab67d4850464a",
+  "live_pdf_sha256_matched": true,
+  "record_date": "2016-07-05",
+  "ex_and_cash_payment_date": "2016-07-06",
+  "new_unrestricted_shares_first_listing_date": "2016-07-07",
+  "actual_csdc_share_credit_date": null,
+  "paper_release_date": "2016-07-07",
+  "paper_release_status": "conservative first-tradable date, not proven actual CSDC credit timestamp",
+  "bonus_new_shares_per_old_share": "0.3",
+  "gross_cash_per_old_share": "0.06",
+  "candidate_source_status": "two_source_match; normalized share_credit_date blank",
+  "vendor_query": "BaoStock sh.600513 daily adjustflag=3, 2016-07-01..2016-07-11",
+  "record_traded_bar": {
+    "date": "2016-07-05",
+    "code": "sh.600513",
+    "open": "19.9100",
+    "high": "20.0600",
+    "low": "19.4700",
+    "close": "19.7700",
+    "preclose": "19.8400",
+    "volume": "4973965",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_traded_bar": {
+    "date": "2016-07-06",
+    "code": "sh.600513",
+    "open": "15.1600",
+    "high": "15.6500",
+    "low": "15.0800",
+    "close": "15.6100",
+    "preclose": "15.1600",
+    "volume": "4510726",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "release_traded_bar": {
+    "date": "2016-07-07",
+    "code": "sh.600513",
+    "open": "15.3800",
+    "high": "15.6700",
+    "low": "15.2600",
+    "close": "15.4400",
+    "preclose": "15.6100",
+    "volume": "8047508",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "theoretical_ex_reference_unrounded": "15.16153846153846153846153846153846153846153846153846153846153846",
+  "vendor_rows": 7,
+  "vendor_csv_sha256": "01ce150773b1c83f5a8eb3a8dbd6a4e77841ebd5f6cd54c95006ff2d2052f137",
+  "stopped_account_positions_sha256": "d37cf60f3f35cb789c6721331929fdd59726b11a419fed77f6bdf5ce56a3bcbe",
+  "stopped_account_orders_sha256": "bb5ce406827a43b2e419efb5bbed7572a67e090b4aab1f9499e764211fa3053d",
+  "conditional_record_entitlements": {
+    "prefunded": {
+      "last_settled_shares_2016_07_04": "5524.248038006063358372285265658734383539",
+      "conditional_record_shares_if_unchanged": "5524.248038006063358372285265658734383539",
+      "conditional_bonus_due": "1657.2744114018190075116855796976203150617",
+      "conditional_gross_cash_due": "331.45488228036380150233711593952406301234",
+      "correct_ex_close_mark": "112435.020317537407532951122011952220908169267",
+      "omitting_pending_bonus_mark": "86564.96675555501282569371011287236779005613"
+    },
+    "netted": {
+      "last_settled_shares_2016_07_04": "6597.693960288951774328447897713939659265",
+      "conditional_record_shares_if_unchanged": "6597.693960288951774328447897713939659265",
+      "conditional_bonus_due": "1979.3081880866855322985343693141818977795",
+      "conditional_gross_cash_due": "395.86163761733710645970687386283637955590",
+      "correct_ex_close_mark": "134282.865173761035462906900062171813885020545",
+      "omitting_pending_bonus_mark": "103385.86435772787430372677855717743446068255"
+    }
+  },
+  "entitlement_limit": "Engine stopped at 2016-07-04; no 2016-07-05 record line. No 600513 order recorded on 07-05. Replace with rerun record rows.",
+  "valuation_counterexample": "At 07-06 true close 15.61, one old share plus pending 0.3 share plus 0.06 cash = 20.353; omitting pending bonus gives 15.67. Both differ from 07-05 true close 19.77 because 07-06 truly traded; preserve that real move.",
+  "execution_boundary": "Existing shares trade on 07-06; pending new shares economically valued then but no paper sale before 07-07 listed session. Actual CSDC credit time is unknown."
+}

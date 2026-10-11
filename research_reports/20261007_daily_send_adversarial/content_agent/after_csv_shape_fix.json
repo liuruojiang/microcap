@@ -1,0 +1,632 @@
+{
+  "scope": "independent_real_artifact_content_fault_injection_no_smtp",
+  "calendar": {
+    "verified_at": "2026-10-07T23:05:34.714966+08:00",
+    "trading_day": false,
+    "latest_completed_session": "2026-09-30",
+    "next_open_probe": "2026-10-08T14:15:00+08:00",
+    "next_open_is_trading_day": true,
+    "next_open_completed_session": "2026-09-30"
+  },
+  "freshness": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "rows": 8738,
+      "first_date": "1990-12-19",
+      "latest_date": "2026-09-30",
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "date_column": "date"
+    },
+    "proxy": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "rows": 4067,
+      "first_date": "2010-01-05",
+      "latest_date": "2026-09-30",
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "date_column": "date"
+    },
+    "turnover_events": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "rows": 432,
+      "first_date": "2010-01-14",
+      "latest_date": "2026-09-17",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "date_column": "rebalance_date"
+    },
+    "base_costed": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "rows": 4050,
+      "first_date": "2010-01-28",
+      "latest_date": "2026-09-30",
+      "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "date_column": "date"
+    },
+    "v2.0_costed": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "date_column": "date"
+    },
+    "v2.3_costed": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "sha256": "fdd89d2c206803cf90e56887e6c0fbe52706b5b87a41c431da040b96412e27f2",
+      "date_column": "date"
+    },
+    "v2.5_costed": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "sha256": "1f6be27ea362765af160a4de59c706e0574e9f66ae0a101b007180468b64c4f0",
+      "date_column": "date"
+    }
+  },
+  "builder_path": "D:\\动量策略\\codex-daily-automation-probe-l7-sync\\scripts\\build_microcap_realtime_digest.py",
+  "builder_sha256": "59a117c2279ac4f40c457d312afa52ecec2bbbc33acdc2a53c77c4f9536a8a53",
+  "local_cloud_metadata_exact_equal": true,
+  "cases": [
+    {
+      "name": "real_local_close",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][下个交易日需操作] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\real_local_close\\artifacts\\metadata.json"
+    },
+    {
+      "name": "real_cloud_close",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][下个交易日需操作] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\real_cloud_close\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.0_version",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.0_version\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.0_strategy_revision",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.0_strategy_revision\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.0_current_holding",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.0_current_holding\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.0_next_holding",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.0_next_holding\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.0_next_session_actionable_scale",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.0_next_session_actionable_scale\\artifacts\\metadata.json"
+    },
+    {
+      "name": "wrong_revision_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\wrong_revision_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "invalid_scale_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\invalid_scale_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "html_holding_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\html_holding_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "historical_member_false_v2.0",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][下个交易日无需操作] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\historical_member_false_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "historical_member_true_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\historical_member_true_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "member_yes_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\member_yes_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "stale_close_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\stale_close_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "holiday_first_session_v2.0",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][无需操作] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\holiday_first_session_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "old_anchor_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\old_anchor_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_expected_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_expected_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "future_anchor_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\future_anchor_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "naive_snapshot_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\naive_snapshot_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "stale_snapshot_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\stale_snapshot_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "close_as_realtime_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\close_as_realtime_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "utc_before_deadline_v2.0",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][无需操作] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\utc_before_deadline_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "snapshot_deadline_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\snapshot_deadline_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "delayed_publication_deadline_v2.0",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\delayed_publication_deadline_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.3_version",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.3_version\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.3_strategy_revision",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.3_strategy_revision\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.3_current_holding",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.3_current_holding\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.3_next_holding",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.3_next_holding\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.3_next_session_actionable_scale",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.3_next_session_actionable_scale\\artifacts\\metadata.json"
+    },
+    {
+      "name": "wrong_revision_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\wrong_revision_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "invalid_scale_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\invalid_scale_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "html_holding_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\html_holding_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "historical_member_false_v2.3",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][下个交易日需操作] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\historical_member_false_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "historical_member_true_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\historical_member_true_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "member_yes_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\member_yes_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "stale_close_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.3 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\stale_close_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "holiday_first_session_v2.3",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][需操作] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\holiday_first_session_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "old_anchor_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\old_anchor_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_expected_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_expected_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "future_anchor_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\future_anchor_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "naive_snapshot_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\naive_snapshot_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "stale_snapshot_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\stale_snapshot_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "close_as_realtime_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\close_as_realtime_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "utc_before_deadline_v2.3",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][需操作] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\utc_before_deadline_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "snapshot_deadline_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\snapshot_deadline_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "delayed_publication_deadline_v2.3",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.3 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\delayed_publication_deadline_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.5_version",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.5_version\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.5_strategy_revision",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.5_strategy_revision\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.5_current_holding",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.5_current_holding\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.5_next_holding",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.5_next_holding\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_v2.5_next_session_actionable_scale",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_v2.5_next_session_actionable_scale\\artifacts\\metadata.json"
+    },
+    {
+      "name": "wrong_revision_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\wrong_revision_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "invalid_scale_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\invalid_scale_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "html_holding_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\html_holding_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "historical_member_false_v2.5",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][下个交易日无需操作] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\historical_member_false_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "historical_member_true_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\historical_member_true_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "member_yes_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\member_yes_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "stale_close_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\stale_close_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "holiday_first_session_v2.5",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][无需操作] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\holiday_first_session_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "old_anchor_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\old_anchor_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_expected_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\missing_expected_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "future_anchor_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\future_anchor_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "naive_snapshot_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\naive_snapshot_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "stale_snapshot_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\stale_snapshot_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "close_as_realtime_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\close_as_realtime_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "utc_before_deadline_v2.5",
+      "expected_status": "OK",
+      "actual_status": "OK",
+      "passed": true,
+      "subject": "[验收不发送][无需操作] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\utc_before_deadline_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "snapshot_deadline_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\snapshot_deadline_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "delayed_publication_deadline_v2.5",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][异常] 微盘股 v2.5 日报 - 2026-10-08",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\delayed_publication_deadline_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "mixed_close_dates",
+      "expected_status": "FAILED",
+      "actual_status": "FAILED",
+      "passed": true,
+      "subject": "[验收不发送][收盘确认][异常] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-09-30",
+      "metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\cases\\mixed_close_dates\\artifacts\\metadata.json"
+    }
+  ],
+  "passed": 69,
+  "failed": 0,
+  "header_injection_refused_before_transport": true,
+  "production_mail_utils_header_refused_without_smtp_construction": true,
+  "sent_mail": false,
+  "notes": "Realtime cases are explicit mutated diagnostic inputs, not published quote snapshots or performance."
+}

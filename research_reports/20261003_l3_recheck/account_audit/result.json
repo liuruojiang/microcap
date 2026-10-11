@@ -1,0 +1,239 @@
+{
+  "scope": "frozen old proportion model, diagnostic only",
+  "sources": {
+    "proxy": {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "rows": 4067,
+      "first": "2010-01-05",
+      "last": "2026-09-30"
+    },
+    "hedge": {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "rows": 8738,
+      "first": "1990-12-19",
+      "last": "2026-09-30"
+    },
+    "rebalance": {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "rows": 432,
+      "first": "2010-01-14",
+      "last": "2026-09-17"
+    },
+    "base": {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "rows": 4050,
+      "first": "2010-01-28",
+      "last": "2026-09-30"
+    },
+    "v2": {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "rows": 4033,
+      "first": "2010-03-01",
+      "last": "2026-09-30"
+    }
+  },
+  "replay": {
+    "rows": 4033,
+    "first": "2010-03-01",
+    "last": "2026-09-30",
+    "first_differences": {},
+    "max_abs_error": {
+      "microcap_close": 2.9103830456733704e-11,
+      "hedge_close": 0.0,
+      "microcap_ret": 2.220446049250313e-16,
+      "hedge_ret": 0.0,
+      "microcap_mom": 2.220446049250313e-16,
+      "hedge_mom": 0.0,
+      "momentum_gap": 2.220446049250313e-16,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 1.0018028073766061e-16,
+      "total_cost": 1.0018028073766061e-16,
+      "base_pre_cost_return": 2.220446049250313e-16,
+      "return_net": 2.220446049250313e-16,
+      "nav_net": 1.9184653865522705e-13
+    },
+    "pass": true,
+    "off_module_residual_counts": {
+      "overheat_enabled": 0,
+      "target_vol_enabled": 0,
+      "peak_decay_enabled": 0,
+      "net_drawdown_stop_enabled": 0,
+      "signal_quality_derisk_enabled": 0,
+      "overheat_triggered": 0,
+      "signal_quality_derisk_triggered": 0,
+      "blocked_until_signal_reset": 0
+    },
+    "zero_module_residual_counts": {
+      "signal_quality_scale_cost": 0,
+      "target_vol_trade_cost": 0,
+      "scale_change_cost": 0,
+      "financing_cost": 0,
+      "idle_cash_yield": 0,
+      "target_vol_costed_turnover": 0,
+      "signal_quality_scale_turnover": 0,
+      "target_vol_turnover": 0
+    },
+    "cost_days": 526,
+    "sum_cost_rates_not_cash_spent": 0.88461
+  },
+  "same_window_v2_vs_base": {
+    "common_days": 4033,
+    "difference_days": 1,
+    "first_difference": "2010-03-01"
+  },
+  "conditional_metrics_not_formal": {
+    "full": {
+      "first": "2010-03-01",
+      "last": "2026-09-30",
+      "N": 4033,
+      "terminal_nav": 31.762459935243587,
+      "annualized_244_over_N": 0.23272756772458902,
+      "mdd_including_initial_1": -0.1480405504714276,
+      "trough": "2026-07-22"
+    },
+    "10Y": {
+      "first": "2016-09-30",
+      "last": "2026-09-30",
+      "N": 2429,
+      "terminal_nav": 5.93471772557671,
+      "annualized_244_over_N": 0.1958872885464069,
+      "mdd_including_initial_1": -0.14804055047142783,
+      "trough": "2026-07-22"
+    },
+    "5Y": {
+      "first": "2021-09-30",
+      "last": "2026-09-30",
+      "N": 1212,
+      "terminal_nav": 3.223326091396603,
+      "annualized_244_over_N": 0.2657031980354685,
+      "mdd_including_initial_1": -0.1480405504714285,
+      "trough": "2026-07-22"
+    },
+    "3Y": {
+      "first": "2023-10-09",
+      "last": "2026-09-30",
+      "N": 726,
+      "terminal_nav": 1.6915341482337063,
+      "annualized_244_over_N": 0.1932253257479326,
+      "mdd_including_initial_1": -0.14804055047142828,
+      "trough": "2026-07-22"
+    },
+    "1Y": {
+      "first": "2025-09-30",
+      "last": "2026-09-30",
+      "N": 242,
+      "terminal_nav": 1.1462463794952287,
+      "annualized_244_over_N": 0.1475401184112417,
+      "mdd_including_initial_1": -0.1480405504714275,
+      "trough": "2026-07-22"
+    }
+  },
+  "calendar_counterexample": {
+    "holiday": "2018-06-18",
+    "published_as_return_day": true,
+    "published_net": 0.0,
+    "published_cost": 0.0,
+    "clean_calendar_signal_difference_count": 1,
+    "first_clean_calendar_signal_difference": "2018-06-29",
+    "clean_calendar_signal_difference_dates": [
+      "2018-06-29"
+    ],
+    "first_clean_calendar_net_difference": "2018-06-29",
+    "local_event_trace": {
+      "2018-06-28": {
+        "old": {
+          "gap": 0.0011511503817087654,
+          "held": false,
+          "next": true,
+          "gross": 0.0,
+          "cost": 0.003,
+          "net": -0.0030000000000000027
+        },
+        "remove_holiday_old_formula_only": {
+          "micro_mom": -0.13340521002491768,
+          "hedge_mom": -0.138143125377983,
+          "gap": 0.004737915353065336,
+          "held": false,
+          "next": true,
+          "gross": 0.0,
+          "cost": 0.003,
+          "net": -0.0030000000000000027
+        }
+      },
+      "2018-06-29": {
+        "old": {
+          "gap": 0.008653489976276463,
+          "held": true,
+          "next": true,
+          "gross": 0.0030639399826111373,
+          "cost": 0.0,
+          "net": 0.003063939982611119
+        },
+        "remove_holiday_old_formula_only": {
+          "micro_mom": -0.1138215839829233,
+          "hedge_mom": -0.11263877528095223,
+          "gap": -0.001182808701971072,
+          "held": true,
+          "next": false,
+          "gross": 0.003063939982611137,
+          "cost": 0.003,
+          "net": 5.474816266337612e-05
+        }
+      },
+      "2018-07-02": {
+        "old": {
+          "gap": 0.013208150049573208,
+          "held": true,
+          "next": true,
+          "gross": -0.0014307920901644154,
+          "cost": 0.0,
+          "net": -0.00143079209016439
+        },
+        "remove_holiday_old_formula_only": {
+          "micro_mom": -0.10768163026420552,
+          "hedge_mom": -0.11741897853026673,
+          "gap": 0.009737348266061208,
+          "held": false,
+          "next": true,
+          "gross": 0.0,
+          "cost": 0.003,
+          "net": -0.0030000000000000027
+        }
+      }
+    }
+  },
+  "fault_injections": {
+    "wrong_signal_hedge_weight_0p8": {
+      "changed_days": 378,
+      "first": "2010-04-22"
+    },
+    "omit_first_fee": {
+      "date": "2010-03-01",
+      "fee": 0.003,
+      "one_day_net_error": 0.0030000000000000027
+    },
+    "premature_same_signal_holding": {
+      "date": "2026-09-22",
+      "actual_holding": "cash",
+      "actual_next_holding": "long_microcap_short_zz1000",
+      "actual_net": -0.0030000000000000027,
+      "mutated_net_if_new_long_earns_whole_day": 0.011768813583139082,
+      "abs_error": 0.014768813583139084
+    },
+    "N_minus_1_denominator": {
+      "correct": 0.23272756772458902,
+      "mutated": 0.23279153829885457
+    },
+    "holiday_row_denominator_only": {
+      "old_N": 4033,
+      "clean_N": 4032,
+      "old_annualized": 0.23272756772458902,
+      "clean_same_returns_annualized": 0.23279153829885457
+    }
+  }
+}

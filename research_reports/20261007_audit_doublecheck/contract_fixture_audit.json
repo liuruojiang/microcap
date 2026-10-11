@@ -1,0 +1,46 @@
+{
+  "scope": "diagnostic_fixture_audit_only",
+  "results": {
+    "proxy_index": {
+      "tracked_name": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "seed_rows": 4059,
+      "tracked_rows": 4067,
+      "seed_end_date": "2026-09-17",
+      "prefix_sha256": "9b04ba7b633be63c44b05399460005331150a8605116a79019004d07b3a9a148",
+      "authority_seed_matches": true,
+      "valid_append_only_tail_dates": [
+        "2026-09-18",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-28",
+        "2026-09-29",
+        "2026-09-30"
+      ],
+      "frozen_economic_cell_byte_mutation_detected": true,
+      "mutated_prefix_sha256": "08455bd2c6d5673e1ff1a96513e81801068004b5495fc561bfe13074843274c3"
+    },
+    "costed_nav": {
+      "tracked_name": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "seed_rows": 4042,
+      "tracked_rows": 4050,
+      "seed_end_date": "2026-09-17",
+      "prefix_sha256": "3f2b68c82ac5f5e8d8611918476a5739cd15e4be8426aa9285bce7bdd48e1bce",
+      "authority_seed_matches": true,
+      "valid_append_only_tail_dates": [
+        "2026-09-18",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-28",
+        "2026-09-29",
+        "2026-09-30"
+      ],
+      "frozen_economic_cell_byte_mutation_detected": true,
+      "mutated_prefix_sha256": "0d40aca29c672d995bf09b1baefe54ee216ba49119c162b7d6bc95c2b6ab44e6"
+    }
+  },
+  "fixture_judgment": "Native required-field fixture additions preserve corrupt-field rejection. Frozen seed fixture uses independent seed-prefix hashes because the committed artifact has an append-only tail. A frozen numeric-cell byte rewrite still fails exact hash equality. No production data or authority was changed."
+}

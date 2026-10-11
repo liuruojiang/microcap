@@ -1,0 +1,28 @@
+{
+  "helper_raw_sha256": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288",
+  "exact_source_snapshot": "state_helper_iter_source.py",
+  "rows": [
+    {
+      "scope": "diagnostic_only",
+      "version": "3",
+      "input_raw_sha256": "0a9ca9d9cfd7e23996d893199fdc38561f7ace49bd11f8448e32c31d9c1b1af3",
+      "original_accepts": true,
+      "after_close_accepts": false,
+      "two_field_member_attack_accepts": false,
+      "member_signal_date": "2026-09-17",
+      "anchor": "2026-09-29",
+      "quote_and_injected_execution_date": "2026-09-30"
+    },
+    {
+      "scope": "diagnostic_only",
+      "version": "5",
+      "input_raw_sha256": "f2b87532b29c5037cfc3f6379589cf4cc4e83e51f47f2303c4471d5f633efab2",
+      "original_accepts": true,
+      "after_close_accepts": false,
+      "two_field_member_attack_accepts": false,
+      "member_signal_date": "2026-09-17",
+      "anchor": "2026-09-28",
+      "quote_and_injected_execution_date": "2026-09-29"
+    }
+  ]
+}

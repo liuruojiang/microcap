@@ -1,0 +1,66 @@
+{
+  "scope": "diagnostic_only",
+  "boundary": "exact old source function compiled with current unchanged version constants and CSV/pandas/math imports; no native CLI replay or production write",
+  "results": [
+    {
+      "version": "3",
+      "attack": "authentic_control",
+      "before_accepted": true,
+      "after_accepted": true,
+      "old_source_sha256": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+      "current_source_sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+      "input_copy_sha256": "0a9ca9d9cfd7e23996d893199fdc38561f7ace49bd11f8448e32c31d9c1b1af3",
+      "diagnostic_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_audit_round3\\state_frozen_matcher_probe_tmp\\v2_3_authentic_control.csv"
+    },
+    {
+      "version": "3",
+      "attack": "member_two_field",
+      "before_accepted": true,
+      "after_accepted": false,
+      "old_source_sha256": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+      "current_source_sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+      "input_copy_sha256": "02cc5026488df8ba3a3b6b65659f2817e615a25635862436d6bc39601d5150f1",
+      "diagnostic_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_audit_round3\\state_frozen_matcher_probe_tmp\\v2_3_member_two_field.csv"
+    },
+    {
+      "version": "3",
+      "attack": "post_close_snapshot",
+      "before_accepted": true,
+      "after_accepted": false,
+      "old_source_sha256": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+      "current_source_sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+      "input_copy_sha256": "d7b0d9f67aa8cd7fff43f391e48f7895016879c51482128aa5c5d094e1b89612",
+      "diagnostic_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_audit_round3\\state_frozen_matcher_probe_tmp\\v2_3_post_close_snapshot.csv"
+    },
+    {
+      "version": "5",
+      "attack": "authentic_control",
+      "before_accepted": true,
+      "after_accepted": true,
+      "old_source_sha256": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+      "current_source_sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+      "input_copy_sha256": "f2b87532b29c5037cfc3f6379589cf4cc4e83e51f47f2303c4471d5f633efab2",
+      "diagnostic_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_audit_round3\\state_frozen_matcher_probe_tmp\\v2_5_authentic_control.csv"
+    },
+    {
+      "version": "5",
+      "attack": "member_two_field",
+      "before_accepted": true,
+      "after_accepted": false,
+      "old_source_sha256": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+      "current_source_sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+      "input_copy_sha256": "95b2a3328eaa8eb28ff5ed1f606b5653162c2e49b5066ea669f78f21a3eea0ae",
+      "diagnostic_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_audit_round3\\state_frozen_matcher_probe_tmp\\v2_5_member_two_field.csv"
+    },
+    {
+      "version": "5",
+      "attack": "post_close_snapshot",
+      "before_accepted": true,
+      "after_accepted": false,
+      "old_source_sha256": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+      "current_source_sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+      "input_copy_sha256": "0695127012f5a1278761b99cc544030c17ff57f769a982246df0f30f0dddc712",
+      "diagnostic_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_audit_round3\\state_frozen_matcher_probe_tmp\\v2_5_post_close_snapshot.csv"
+    }
+  ]
+}

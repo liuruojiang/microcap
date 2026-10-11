@@ -1,0 +1,11 @@
+........................................................................ [ 25%]
+........................................................................ [ 51%]
+........................................................................ [ 77%]
+.............................................................            [100%]
+============================== warnings summary ===============================
+tests/test_full_rebalance_cache_bundle.py::test_full_cache_bundle_rejects_tampering_before_extracting
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: '.microcap_index_cache/prices_raw/000001.csv'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+277 passed, 1 warning in 13.34s

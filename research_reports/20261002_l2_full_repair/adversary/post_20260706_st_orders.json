@@ -1,0 +1,58 @@
+{
+  "status": "old_orders_post_rule_change_scanned",
+  "window": {
+    "first_rule_date": "2026-07-06",
+    "last_rebalance": "2026-09-17",
+    "rebalance_dates": [
+      "2026-07-09",
+      "2026-07-23",
+      "2026-08-06",
+      "2026-08-20",
+      "2026-09-03",
+      "2026-09-17"
+    ]
+  },
+  "old_candidate_order_count": 177,
+  "mainboard_cached_ST_candidate_order_count": 2,
+  "cases": [
+    {
+      "signal_date": "2026-09-17",
+      "symbol": "000856",
+      "side": "sell",
+      "st_cached": true,
+      "previous_true_raw_close": "8.59",
+      "raw_close": "8.65",
+      "old_5pct_side_limit": "8.16",
+      "corrected_10pct_side_limit": "7.73",
+      "old_limit_block": false,
+      "corrected_limit_block": false,
+      "in_5_to_10pct_direction_band": false,
+      "classification_changed": false
+    },
+    {
+      "signal_date": "2026-09-17",
+      "symbol": "000995",
+      "side": "sell",
+      "st_cached": true,
+      "previous_true_raw_close": "10.73",
+      "raw_close": "10.78",
+      "old_5pct_side_limit": "10.19",
+      "corrected_10pct_side_limit": "9.66",
+      "old_limit_block": false,
+      "corrected_limit_block": false,
+      "in_5_to_10pct_direction_band": false,
+      "classification_changed": false
+    }
+  ],
+  "classification_changed_count": 0,
+  "side_5_to_10pct_band_count": 0,
+  "source_sha256": {
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "research_reports\\20260926_l1_repair\\full_replay\\members_by_rebalance.csv": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c",
+    ".microcap_index_cache\\security_meta\\000856.json": "a1445f6edebab20f5d9084f39e603d3ab092ba81f8f48200052f31f99502b266",
+    ".microcap_index_cache\\prices_raw\\000856.csv": "9ae61390efda1695d8275cc0a004e43d16ab77e1ad59cb481e57b57f4f8d9ba4",
+    ".microcap_index_cache\\security_meta\\000995.json": "3b12d2baeeb1c8b38b95f4a1451a3dc32114f57ee9d799b0dd6a2c5617f41279",
+    ".microcap_index_cache\\prices_raw\\000995.csv": "64ab87b05a29204f1bfcfe74d4c4975278e2a27130ce6eb72494d55d7584e975"
+  },
+  "scope": "Old same-close target minus prior effective candidate orders, not new T+1 fixed-share executed orders."
+}

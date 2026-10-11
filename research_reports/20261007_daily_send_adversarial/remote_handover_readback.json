@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "strategy_local_remote_head": "e4bffcd6b0d70d68ee3d21f78a701f373104aa1a",
+  "pinned_strategy_sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+  "pinned_sha_reachable_from_remote_main": true,
+  "automation_local_remote_head": "ff81e937effe74f672502177936f8c919d8f11af",
+  "tracked_worktrees_clean": true,
+  "approved_state_sha256": "13fc81b0331807cb19bc43d12d2b2abb9d3acfcaf61917ca847747a37f248af6",
+  "original_untracked_research_preserved": true
+}

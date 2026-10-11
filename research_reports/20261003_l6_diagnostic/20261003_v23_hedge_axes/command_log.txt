@@ -1,0 +1,19 @@
+init_quant_param_scan_run.py
+run_id=20261003_v23_hedge_axes
+project=microcap_top100
+strategy=v2.3
+subsystem=hedge
+parameter_group=SIGNAL_SPREAD_HEDGE_RATIO,EXECUTION_HEDGE_RATIO
+repo=D:\动量策略\微盘股对冲策略
+python -X utf8 research_reports/20261003_l6_diagnostic/20261003_v23_hedge_axes/run_scan.py
+
+finalize_quant_param_scan_run.py
+finalized_at=2026-10-03T12:05:11+08:00
+decision=keep_default
+stability_label=data_sensitive
+python -X utf8 research_reports/20261003_l6_diagnostic/20261003_v23_hedge_axes/run_scan.py
+
+finalize_quant_param_scan_run.py
+finalized_at=2026-10-03T12:15:37+08:00
+decision=keep_default
+stability_label=data_sensitive

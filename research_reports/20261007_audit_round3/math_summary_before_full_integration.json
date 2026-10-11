@@ -1,0 +1,93 @@
+{
+  "scope": "round3_math_diagnostic_only",
+  "result": "PASS",
+  "new_suite_before": {
+    "tests": 25,
+    "failures": 22,
+    "errors": 0,
+    "skipped": 0
+  },
+  "new_cases_after": {
+    "tests": 25,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_mathematical_suite": {
+    "tests": 141,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "additional_defense_regression": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unique_passed_tests": 170,
+  "resolved_failure_cases": 22,
+  "finding_groups": 6,
+  "latest_fault_reasons_read_back": true,
+  "official_artifacts_unchanged": true,
+  "latest_completed_session": "2026-09-30",
+  "formal_refresh": "BLOCKED: local core/authority differs from remote release; no guard bypass",
+  "same_round_frozen_stack_normal_changes": 0,
+  "source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+    "scripts/top100_data_contracts.py": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288"
+  },
+  "final_real_source_matches_current": true,
+  "final_real_log": "math_real_final.log",
+  "final_shared_helper_only_realtime_date_guard_math_unchanged": true,
+  "full_repository_suite_owner": "main agent",
+  "test_sha256": "098f3d801c82e8bb2a65c9a4bb3cdb47031add9c64692d0d2ef60162ed0ff297",
+  "report_links_verified": 11,
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "latest_date": "2026-09-30",
+      "cash_with_legal_trade_fee_days": 116
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "cash_with_legal_trade_fee_days": 94
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "latest_date": "2026-09-30",
+      "cash_with_legal_trade_fee_days": 126
+    }
+  },
+  "artifact_sha256": {
+    "math_after_probe.log": "97eaf2010f7be55015dcc5ed405af8b480754a4542571c518e4fbb9a8088fc01",
+    "math_after_probe.xml": "e6a633277515e0722c682fcb1d4dab5ded7a00345dd71955f6cc36c41d8a2a4d",
+    "math_before_complete.log": "5b68f12f36aecd2437cf4184f8753b20e2f31cc67c89b02b9886ecc9ed47a8c9",
+    "math_before_complete.xml": "9c78da096592b5ea42f981d66c338d8c59979cf3942d19e8dbee2c304792637b",
+    "math_before_suite.log": "7798322968185097ccfd671559a5e6be87ab96397fea3cd57845f48689fec42d",
+    "math_before_suite.xml": "39e365959c068cd06465d85ba7755e3a6b0060340ec809a81403baca968b37ed",
+    "math_defense_regression.log": "e28a0320e891e30a14aab6e67069446d373e7f206b127ff467f18e9c0c0f62b0",
+    "math_defense_regression.xml": "d05f354b2dbadd780c2178710ccc8a99c6af93842b81a9918b65f1fbde81b733",
+    "math_faults.jsonl": "b16a838ede34ccce5b5fc30633ea8fac6a3a71d500e41a2e70e7f2a7ce5641e1",
+    "math_fee_constants_before.log": "557adff7c84da6d32f92a76f6ef1508a58d5c486eac7b06c807f7e23a6b1916d",
+    "math_fee_constants_before.xml": "d01dc5dc6d46eaff068acdffeb1dc67b2cd08df7b9e706784cbbdaaad6d7de88",
+    "math_final_suite.log": "913e5139234448a63e85441e1a4679157dc6dbe30b817c2c34914b32adcd16af",
+    "math_final_suite.xml": "3575a63c79aec1461353e8be43e94abccb8f8f7a51ccf31ef4f06cd9ab372711",
+    "math_index_state_before.log": "31f180bf58b498695ca93d172ddd7f7f541832128cb46cbe96243997fde02991",
+    "math_index_state_before.xml": "41bdfbeead06844a79811e0434a84e8cfa843619b0ac48fdb0c15ff1e985444c",
+    "math_real.json": "8a727020ef9c1286e5bd6b142521b48614abfed3e749450db0437b60f4f2e370",
+    "math_real_after_probe.log": "4817bb673386fdfb058a02362a4f8b03597f30dcc06d1ce349a83b14c9fa8605",
+    "math_real_before.log": "4817bb673386fdfb058a02362a4f8b03597f30dcc06d1ce349a83b14c9fa8605",
+    "math_real_final.log": "4817bb673386fdfb058a02362a4f8b03597f30dcc06d1ce349a83b14c9fa8605",
+    "math_report.md": "2d69583c2f7f1de1088f3cdbd089f60ef28c3006806ff9fcf9f26b381f909012",
+    "math_v20_before.log": "8b4263fb62ac2f05edee61b5dbf9b7e9d1eaa0af53d96c68addea8a6d52519d1",
+    "math_v20_before.xml": "b1cd5235540a848eb70d22eb9393e4df4d2cb3bae91cf6cad7fe11efbe018f21"
+  }
+}

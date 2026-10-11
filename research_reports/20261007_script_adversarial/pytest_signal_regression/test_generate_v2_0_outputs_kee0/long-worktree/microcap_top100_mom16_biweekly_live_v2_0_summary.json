@@ -1,0 +1,109 @@
+{
+  "strategy": "microcap_top100_mom16_biweekly_live_v2_0",
+  "version": "2.0",
+  "version_role": "plain_relative_momentum_fixed_one",
+  "version_note": "Plain 16-day relative momentum with fixed 1.0 execution. Zero exit buffer, overheat OFF, target-vol OFF; 0.8 hedge and original base costs retained.",
+  "strategy_revision": "plain_mom16_fixed1_20260904",
+  "core_params": {
+    "fixed_hedge_ratio": 0.8,
+    "momentum_gap_entry_threshold": 0.0,
+    "momentum_gap_exit_buffer": 0.0,
+    "signal_quality_derisk": {
+      "enabled": false,
+      "type": "removed_no_peak_decay"
+    },
+    "overheat_defense": {
+      "enabled": false,
+      "kind": "volatility",
+      "window": 60,
+      "threshold": 0.23,
+      "metric": "microcap_minus_0p8x_hedge_realized_vol",
+      "require_positive_trade_return": true,
+      "require_signal_reset": true,
+      "timing": "applied_to_base_state_before_target_vol_scaling"
+    },
+    "target_volatility_scaling": {
+      "enabled": false,
+      "target_vol": 0.0,
+      "vol_window": 0,
+      "max_leverage": 1.0,
+      "min_leverage": 0.0,
+      "scale_change_cost": 0.001,
+      "scale_change_cost_model": "microcap_long_plus_hedge_leg_net_turnover",
+      "scale_rebalance_threshold": 0.1,
+      "scale_trade_required_epsilon": 1e-06,
+      "base_trade_cost_model": "embedded_lineage_total_cost scaled by transition timing: entry uses next actionable scale, exit and active rebalance use current execution scale",
+      "entry_exit_overlay_cost_model": "target-vol scale-change cost is skipped on holding transition days to avoid double-counting v1.4 entry/exit cost",
+      "target_vol_scale_next_session_semantics": "actionable scale after rebalance threshold; raw model target is raw_next_target_scale",
+      "idle_cash_yield": 0.02,
+      "idle_credit_on_cash_day": false,
+      "idle_cash_return": "credited only on active holding days when execution_scale < 1.0",
+      "volatility_return_source_priority": [
+        "constructed_microcap_minus_hedge",
+        "return_raw",
+        "base_gross_return",
+        "return_net_fallback_warning"
+      ],
+      "pnl_return_source": "embedded_lineage_overlay_pre_cost_return_explicit_or_return_net_cost_reversal_fallback",
+      "financing_rate": 0.03,
+      "trading_days": 244,
+      "timing": "current execution scale uses T-1 realized volatility; next-session target scale uses T close realized volatility"
+    }
+  },
+  "latest_trade_date": "2026-08-07",
+  "latest_nav_date": "2026-08-07",
+  "latest_signal": {
+    "holding": "cash",
+    "member_rebalance_state": "rebalance",
+    "member_rebalance_required": true,
+    "member_enter_count": 12,
+    "member_exit_count": 12,
+    "member_rebalance_label": "名单调仓（调入 12，调出 12）",
+    "member_rebalance_signal_date": "2026-08-06",
+    "member_rebalance_execution_date": "2026-08-07",
+    "member_rebalance_actionable": false,
+    "member_rebalance_official": true,
+    "microcap_series_source": "test",
+    "official_wind_series": true,
+    "proxy_warning": ""
+  },
+  "data_lineage": {
+    "source_used": "test",
+    "official_wind_series": true
+  },
+  "data_freshness_proof": {
+    "latest_date": "2026-08-07",
+    "row_count": 1
+  },
+  "historical_rewrite_audit": {
+    "status": "not_checked",
+    "reason": "no_previous_costed_nav"
+  },
+  "microcap_series_source": "test",
+  "official_wind_series": true,
+  "proxy_warning": "",
+  "performance_source_label": "costed_v2_0_official_wind",
+  "st_filter_backtest_bias_note": "Public/local proxy applies historical ST masks from available CNInfo/name-change/current-name evidence; unresolved current-ST symbols are not excluded from the whole historical sample solely because they are current ST.",
+  "proxy_construction": {
+    "weighting": "equal_weight_available_returns",
+    "constituents": 100,
+    "missing_return_policy": "fill_missing_member_return_with_zero_then_average_all_members",
+    "missing_return_risk_note": "Suspension-like missing returns are treated as 0 in the public/local proxy; unexpected price-data outages must be audited because they can be indistinguishable from flat suspended returns in this proxy path.",
+    "liquidity_slippage_model": "not_included_beyond_configured_cost_model",
+    "tradeability_note": "The local proxy includes configured OHLC price-limit/suspension checks where available, but does not model stock-level market impact, queue priority, or capacity limits."
+  },
+  "performance_snapshot": {
+    "source_label": "costed_v2_0_official_wind"
+  },
+  "base_fingerprint": {},
+  "live_microcap_tail_overlay": {
+    "applied": false,
+    "reason": "close_confirmed_signal_uses_official_base_series"
+  },
+  "synthetic_basket_execution": true,
+  "execution_model": {
+    "synthetic_basket_execution": true,
+    "member_level_fill_engine": false,
+    "note": "Strategy-level basket entry/exit and configured aggregate costs; no member-level fill simulation."
+  }
+}

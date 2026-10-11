@@ -1,0 +1,8 @@
+{
+  "subject": "[验收不发送][异常] 微盘股 v2.0 日报 - 2026-10-08",
+  "body": "## 今日结论\n\n**信号类型：盘中实时**\n\n**v2.0：持仓与下一交易日可执行仓位不可用。**\n\n**存在异常版本，请勿执行异常版本信号。**\n\n| 版本 | 当前 → 下一持仓 | 今日操作 | 下一交易日仓位 | 核心动量 |\n|---|---|---|---:|---|\n| v2.0 | 不可用 → 不可用 | 异常 | 不可用 | 不可用 |\n\n## 需要关注\n\n- **v2.0：**运行失败：publication contract invalid: final CSV snapshot must be timezone-aware and match quote session\n\n数据时间：未记录｜策略代码：501b269b9f51a83f05f3b71488143b4da285cd0b",
+  "attachment": null,
+  "status": "FAILED",
+  "publication_mode": "realtime",
+  "signal_date": "2026-10-08"
+}

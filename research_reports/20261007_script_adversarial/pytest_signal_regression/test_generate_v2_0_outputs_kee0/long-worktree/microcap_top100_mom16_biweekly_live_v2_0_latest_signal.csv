@@ -1,0 +1,2 @@
+date,holding,member_rebalance_state,member_rebalance_required,member_enter_count,member_exit_count,member_rebalance_label,member_rebalance_signal_date,member_rebalance_execution_date,member_rebalance_actionable,member_rebalance_official,microcap_series_source,official_wind_series,proxy_warning
+2026-08-07,cash,rebalance,True,12,12,名单调仓（调入 12，调出 12）,2026-08-06,2026-08-07,False,True,test,True,

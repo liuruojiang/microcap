@@ -1,0 +1,83 @@
+{
+  "status": "PASS_002667_account_and_source",
+  "manifest_sha256": "14b2598931b96b42805d2ac47fd6701e9f73458dbcbdc0b1cda926ab288ed72f",
+  "code_sha256": "70aa61c219999600885f3e90c6edc33ea2d9bb533cda97b8ec1bcc56e4490091",
+  "source_sha256": {
+    "issuer_pdf": "aedeeefccb6425f994f84ebe63941f490810ebc04e9326611d914c79d3ace09c",
+    "candidate_file": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c"
+  },
+  "last_true_trade": {
+    "date": "2015-04-03",
+    "close": "47.6500",
+    "preclose": "43.3200",
+    "volume": "4627889",
+    "tradestatus": "1"
+  },
+  "ex_zero_volume": {
+    "date": "2015-05-29",
+    "close": "23.7900",
+    "preclose": "23.7900",
+    "volume": "0",
+    "tradestatus": "0"
+  },
+  "first_true_resume": {
+    "date": "2015-11-26",
+    "close": "26.1700",
+    "preclose": "23.7900",
+    "volume": "59934",
+    "tradestatus": "1"
+  },
+  "theoretical_mark": "23.79",
+  "accounts": {
+    "prefunded": {
+      "record_shares": "1270.096339979890366039054777103774915442",
+      "bonus_due": "1270.096339979890366039054777103774915442",
+      "gross_cash_due": "88.90674379859232562273383439726424408094",
+      "old_equity_piece": "60520.09060004177594176096012899487472081130",
+      "ex_shares": "2540.192679959780732078109554207549830884",
+      "ex_stock_mark": "23.79",
+      "ex_equity_piece_with_cash": "60520.09060004177594176096012899487472081130",
+      "halt_booked_orders": 0,
+      "halt_blocked_attempts": 6,
+      "mutant_errors": {
+        "missing_bonus": "-30215.59192812159180806911314729880523836518",
+        "double_bonus": "30215.59192812159180806911314729880523836518",
+        "missing_cash": "-88.90674379859232562273383439726424408094",
+        "double_cash": "88.90674379859232562273383439726424408094",
+        "stale_price": "60608.99734384036826738369396339213896489224",
+        "premature_record_credit": "60520.09060004177594176096012899487472081130"
+      }
+    },
+    "netted": {
+      "record_shares": "1398.726547765982870840613566435881386129",
+      "bonus_due": "1398.726547765982870840613566435881386129",
+      "gross_cash_due": "97.91085834361880095884294965051169702903",
+      "old_equity_piece": "66649.32000104908379555523644066974804904685",
+      "ex_shares": "2797.453095531965741681227132871762772258",
+      "ex_stock_mark": "23.79",
+      "ex_equity_piece_with_cash": "66649.32000104908379555523644066974804904685",
+      "halt_booked_orders": 0,
+      "halt_blocked_attempts": 6,
+      "mutant_errors": {
+        "missing_bonus": "-33275.70457135273249729819674550961817600891",
+        "double_bonus": "33275.70457135273249729819674550961817600891",
+        "missing_cash": "-97.91085834361880095884294965051169702903",
+        "double_cash": "97.91085834361880095884294965051169702903",
+        "stale_price": "66747.23085939270259651407939032025974607588",
+        "premature_record_credit": "66649.32000104908379555523644066974804904685"
+      }
+    }
+  },
+  "formula_cash_omission_mutant_mark_rejected": "23.83",
+  "first_blocks": {
+    "prefunded": {
+      "date": "2015-07-09",
+      "reason": "unverified_missing_raw_close:2015-07-09:002088"
+    },
+    "netted": {
+      "date": "2015-07-09",
+      "reason": "unverified_missing_raw_close:2015-07-09:002088"
+    }
+  },
+  "limitations": "Fractional shares, gross cash, zero-volume reference. First post-halt true trade is 2015-11-26; reference is not a 2015-05-29 fill."
+}

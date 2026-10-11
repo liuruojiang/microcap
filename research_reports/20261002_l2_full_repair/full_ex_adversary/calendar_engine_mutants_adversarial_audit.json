@@ -1,0 +1,32 @@
+{
+  "status": "PASS_PINNED_TRADE_CALENDAR_AND_HOLIDAY_MUTANTS",
+  "manifest_sha256": "992f5ddbfaa584befa593a221081eb70adefb4b910eba648cd369fa1d8c5896a",
+  "code_sha256": "e36305d5bdca7b7556bd526f254c4d94fd040c098e0da5fbd4552928cfb1501b",
+  "proxy_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+  "trade_calendar_sha256": "80cfc76c2a0f3ce46251f887103e68d494fb9c154735ee2a7b6df6268b230442",
+  "first_date_sequence_difference": {
+    "index_after_2010_02_22_zero_based": 2024,
+    "proxy": "2018-06-18",
+    "filtered": "2018-06-19",
+    "previous": "2018-06-15"
+  },
+  "previous_market_day_2018_06_19": "2018-06-15",
+  "actual_nontrading_account_right_order_rows": 0,
+  "mutants_rejected": {
+    "holiday_execution_order": {
+      "branch": "netted",
+      "signal_date": "2018-06-15",
+      "execution_date": "2018-06-18",
+      "symbol": "600768",
+      "side": "sell",
+      "booked": "True"
+    },
+    "holiday_corporate_cash_credit": {
+      "branch": "netted",
+      "date": "2018-06-18",
+      "phase": "cash_paid",
+      "symbol": "600768"
+    }
+  },
+  "limitations": "Calendar gate prevents historical replay on the holiday. This check does not certify the frozen proxy's own performance path or a broker fill."
+}

@@ -1,0 +1,27 @@
+{
+  "helper_raw_sha256": "474a8ad5c9a70db2fbe179fa443fee66c34e3dc5cd9503e2d7db3b72fbdd18c7",
+  "rows": [
+    {
+      "scope": "diagnostic_only",
+      "version": "3",
+      "input_raw_sha256": "0a9ca9d9cfd7e23996d893199fdc38561f7ace49bd11f8448e32c31d9c1b1af3",
+      "input_quote_date": "2026-09-30",
+      "input_anchor": "2026-09-29",
+      "injected_snapshot_time": "2026-09-30T16:00:00+08:00",
+      "helper_original_accepts": true,
+      "helper_accepts": true,
+      "independent_latest_completed_at_attack": "2026-09-30"
+    },
+    {
+      "scope": "diagnostic_only",
+      "version": "5",
+      "input_raw_sha256": "f2b87532b29c5037cfc3f6379589cf4cc4e83e51f47f2303c4471d5f633efab2",
+      "input_quote_date": "2026-09-29",
+      "input_anchor": "2026-09-28",
+      "injected_snapshot_time": "2026-09-29T16:00:00+08:00",
+      "helper_original_accepts": true,
+      "helper_accepts": true,
+      "independent_latest_completed_at_attack": "2026-09-29"
+    }
+  ]
+}

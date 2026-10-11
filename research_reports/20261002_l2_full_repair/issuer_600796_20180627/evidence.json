@@ -1,0 +1,49 @@
+{
+  "folder": "issuer_600796_20180627",
+  "symbol": "600796",
+  "issuer_url": "https://static.cninfo.com.cn/finalpage/2018-06-21/1205077482.PDF",
+  "suspension_url": "https://static.cninfo.com.cn/finalpage/2018-05-03/1204888142.PDF",
+  "resumption_url": "https://static.cninfo.com.cn/finalpage/2018-10-31/1205562485.PDF",
+  "notice": "2018-06-21",
+  "record": "2018-06-26",
+  "ex": "2018-06-27",
+  "cash_pay": "2018-06-27",
+  "new_shares_first_tradable": null,
+  "cash_per_share_gross": "0.03",
+  "bonus_per_old_share": "0",
+  "last_true_trade": "2018-04-27",
+  "last_true_close": "6.11",
+  "ex_zero_volume_reference": "6.08",
+  "first_true_trade": "2018-10-31",
+  "first_true_preclose": "6.08",
+  "first_true_close": "5.47",
+  "formula": "6.11 - 0.03 = 6.08",
+  "boundary": "Issuer suspends 05-02 through 10-30; 06-27 BaoStock 6.08 is zero-volume ex-dividend reference for valuation only, not an executable quote.",
+  "rights_record_rows": [
+    {
+      "branch": "prefunded",
+      "date": "2018-06-26",
+      "phase": "record",
+      "symbol": "600796",
+      "record_shares": "16936.65208406295424033214107176600099558",
+      "cash_due": "508.0995625218886272099642321529800298674",
+      "bonus_due": "0E-36",
+      "amount": "",
+      "shares": ""
+    },
+    {
+      "branch": "netted",
+      "date": "2018-06-26",
+      "phase": "record",
+      "symbol": "600796",
+      "record_shares": "20310.69135678740757456318164158637505361",
+      "cash_due": "609.3207407036222272368954492475912516083",
+      "bonus_due": "0E-36",
+      "amount": "",
+      "shares": ""
+    }
+  ],
+  "rights_record_status": "two_branch_record_observed",
+  "frozen_event_candidates_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "record_source_sha256_at_seal": "5aab72cca70a8c1bfddbae526861ee2dafee36c91cb8ed37be8c74082f0d8618"
+}

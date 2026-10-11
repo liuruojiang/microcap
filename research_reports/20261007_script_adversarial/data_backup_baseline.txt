@@ -1,0 +1,1223 @@
+.F.FFFFFFFFFFFFFFFFFFFFFFFFF..FFFFFF..FF......FF...FFF..FFFFFFFF..FFFFF. [ 87%]
+FFF..FFFFF                                                               [100%]
+================================== FAILURES ===================================
+_ test_history_selector_never_uses_future_rows[shared_v20-2026-09-30 16:00-2026-09-30] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+clock = '2026-09-30 16:00', expected = '2026-09-30'
+
+    @pytest.mark.parametrize(
+        "clock,expected",
+        [("2026-09-30 14:00", "2026-09-29"), ("2026-09-30 16:00", "2026-09-30")],
+    )
+    def test_history_selector_never_uses_future_rows(base, clock, expected):
+        history = pd.DataFrame({"date": ["2026-09-29", "2026-09-30", "2026-10-08"]})
+>       assert base.latest_closed_history_date(history, pd.Timestamp(clock)) == pd.Timestamp(expected)
+E       AssertionError: assert Timestamp('2026-10-08 00:00:00') == Timestamp('2026-09-30 00:00:00')
+E        +  where Timestamp('2026-10-08 00:00:00') = <function latest_closed_history_date at 0x0000025CD9773A00>(         date\n0  2026-09-29\n1  2026-09-30\n2  2026-10-08, Timestamp('2026-09-30 16:00:00'))
+E        +    where <function latest_closed_history_date at 0x0000025CD9773A00> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>).latest_closed_history_date
+E        +    and   Timestamp('2026-09-30 16:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2026-09-30 16:00')
+E        +      where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+E        +  and   Timestamp('2026-09-30 00:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2026-09-30')
+E        +    where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+
+tests\test_script_data_adversarial.py:52: AssertionError
+_ test_history_selector_never_uses_future_rows[mainline-2026-09-30 16:00-2026-09-30] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+clock = '2026-09-30 16:00', expected = '2026-09-30'
+
+    @pytest.mark.parametrize(
+        "clock,expected",
+        [("2026-09-30 14:00", "2026-09-29"), ("2026-09-30 16:00", "2026-09-30")],
+    )
+    def test_history_selector_never_uses_future_rows(base, clock, expected):
+        history = pd.DataFrame({"date": ["2026-09-29", "2026-09-30", "2026-10-08"]})
+>       assert base.latest_closed_history_date(history, pd.Timestamp(clock)) == pd.Timestamp(expected)
+E       AssertionError: assert Timestamp('2026-10-08 00:00:00') == Timestamp('2026-09-30 00:00:00')
+E        +  where Timestamp('2026-10-08 00:00:00') = <function latest_closed_history_date at 0x0000025CD972AAE0>(         date\n0  2026-09-29\n1  2026-09-30\n2  2026-10-08, Timestamp('2026-09-30 16:00:00'))
+E        +    where <function latest_closed_history_date at 0x0000025CD972AAE0> = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>.latest_closed_history_date
+E        +    and   Timestamp('2026-09-30 16:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2026-09-30 16:00')
+E        +      where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+E        +  and   Timestamp('2026-09-30 00:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2026-09-30')
+E        +    where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+
+tests\test_script_data_adversarial.py:52: AssertionError
+____ test_only_future_history_cannot_establish_a_close_anchor[shared_v20] _____
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+
+    def test_only_future_history_cannot_establish_a_close_anchor(base):
+>       with pytest.raises(RuntimeError, match="close-confirmed"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:56: Failed
+_____ test_only_future_history_cannot_establish_a_close_anchor[mainline] ______
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+
+    def test_only_future_history_cannot_establish_a_close_anchor(base):
+>       with pytest.raises(RuntimeError, match="close-confirmed"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:56: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net-nan] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'return_net', value = nan
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net-inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'return_net', value = inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net--inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'return_net', value = -inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net--1.0] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'return_net', value = -1.0
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net--1.1] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'return_net', value = -1.1
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net-nan] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'nav_net', value = nan
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net-inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'nav_net', value = inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net--inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'nav_net', value = -inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net-0.0] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'nav_net', value = 0.0
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net--1.0] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'nav_net', value = -1.0
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net-nan] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'return_net', value = nan
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net-inf] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'return_net', value = inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net--inf] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'return_net', value = -inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net--1.0] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'return_net', value = -1.0
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net--1.1] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'return_net', value = -1.1
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net-nan] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'nav_net', value = nan
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net-inf] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'nav_net', value = inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net--inf] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'nav_net', value = -inf
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net-0.0] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'nav_net', value = 0.0
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+_ test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net--1.0] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'nav_net', value = -1.0
+
+    @pytest.mark.parametrize("column,value", [
+        ("return_net", np.nan), ("return_net", np.inf), ("return_net", -np.inf),
+        ("return_net", -1.0), ("return_net", -1.1),
+        ("nav_net", np.nan), ("nav_net", np.inf), ("nav_net", -np.inf),
+        ("nav_net", 0.0), ("nav_net", -1.0),
+    ])
+    def test_partial_bad_performance_rows_are_not_reported_as_valid(base, column, value):
+        frame = _performance()
+        frame.loc[1, column] = value
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:76: Failed
+____ test_performance_rejects_conflicting_nav_and_daily_return[shared_v20] ____
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+
+    def test_performance_rejects_conflicting_nav_and_daily_return(base):
+        frame = _performance()
+        frame.loc[1, "nav_net"] = 1.4
+>       with pytest.raises(ValueError, match="NAV|nav|inconsistent"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:83: Failed
+_____ test_performance_rejects_conflicting_nav_and_daily_return[mainline] _____
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+
+    def test_performance_rejects_conflicting_nav_and_daily_return(base):
+        frame = _performance()
+        frame.loc[1, "nav_net"] = 1.4
+>       with pytest.raises(ValueError, match="NAV|nav|inconsistent"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:83: Failed
+________ test_invalid_dates_are_not_silently_removed[shared_v20-date] _________
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'date'
+
+    @pytest.mark.parametrize("column", ["date", "index"])
+    def test_invalid_dates_are_not_silently_removed(base, column):
+        frame = _performance()
+        frame.loc[1, "date"] = pd.NaT
+        if column == "index":
+            frame = frame.set_index("date")
+>       with pytest.raises(ValueError, match="date|NaT"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:101: Failed
+________ test_invalid_dates_are_not_silently_removed[shared_v20-index] ________
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+column = 'index'
+
+    @pytest.mark.parametrize("column", ["date", "index"])
+    def test_invalid_dates_are_not_silently_removed(base, column):
+        frame = _performance()
+        frame.loc[1, "date"] = pd.NaT
+        if column == "index":
+            frame = frame.set_index("date")
+>       with pytest.raises(ValueError, match="date|NaT"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:101: Failed
+_________ test_invalid_dates_are_not_silently_removed[mainline-date] __________
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'date'
+
+    @pytest.mark.parametrize("column", ["date", "index"])
+    def test_invalid_dates_are_not_silently_removed(base, column):
+        frame = _performance()
+        frame.loc[1, "date"] = pd.NaT
+        if column == "index":
+            frame = frame.set_index("date")
+>       with pytest.raises(ValueError, match="date|NaT"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:101: Failed
+_________ test_invalid_dates_are_not_silently_removed[mainline-index] _________
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+column = 'index'
+
+    @pytest.mark.parametrize("column", ["date", "index"])
+    def test_invalid_dates_are_not_silently_removed(base, column):
+        frame = _performance()
+        frame.loc[1, "date"] = pd.NaT
+        if column == "index":
+            frame = frame.set_index("date")
+>       with pytest.raises(ValueError, match="date|NaT"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:101: Failed
+_ test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20-1.0-inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+before = 1.0, after = inf
+
+    @pytest.mark.parametrize("before,after", [(1.0, np.inf), (1.0, -np.inf),
+                                             (np.inf, 1.0), (-np.inf, 1.0),
+                                             (np.inf, -np.inf), (-np.inf, np.inf)])
+    def test_historical_numeric_rewrite_detects_infinities_in_either_direction(base, before, after):
+        previous = _performance()
+        previous.loc[1, "nav_net"] = before
+        candidate = previous.copy()
+        candidate.loc[1, "nav_net"] = after
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:113: Failed
+_ test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20-1.0--inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+before = 1.0, after = -inf
+
+    @pytest.mark.parametrize("before,after", [(1.0, np.inf), (1.0, -np.inf),
+                                             (np.inf, 1.0), (-np.inf, 1.0),
+                                             (np.inf, -np.inf), (-np.inf, np.inf)])
+    def test_historical_numeric_rewrite_detects_infinities_in_either_direction(base, before, after):
+        previous = _performance()
+        previous.loc[1, "nav_net"] = before
+        candidate = previous.copy()
+        candidate.loc[1, "nav_net"] = after
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:113: Failed
+_ test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20-inf--inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+before = inf, after = -inf
+
+    @pytest.mark.parametrize("before,after", [(1.0, np.inf), (1.0, -np.inf),
+                                             (np.inf, 1.0), (-np.inf, 1.0),
+                                             (np.inf, -np.inf), (-np.inf, np.inf)])
+    def test_historical_numeric_rewrite_detects_infinities_in_either_direction(base, before, after):
+        previous = _performance()
+        previous.loc[1, "nav_net"] = before
+        candidate = previous.copy()
+        candidate.loc[1, "nav_net"] = after
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:113: Failed
+_ test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20--inf-inf] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+before = -inf, after = inf
+
+    @pytest.mark.parametrize("before,after", [(1.0, np.inf), (1.0, -np.inf),
+                                             (np.inf, 1.0), (-np.inf, 1.0),
+                                             (np.inf, -np.inf), (-np.inf, np.inf)])
+    def test_historical_numeric_rewrite_detects_infinities_in_either_direction(base, before, after):
+        previous = _performance()
+        previous.loc[1, "nav_net"] = before
+        candidate = previous.copy()
+        candidate.loc[1, "nav_net"] = after
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:113: Failed
+_ test_historical_rewrite_compares_unparsed_cells_in_mixed_numeric_column[shared_v20] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+
+    def test_historical_rewrite_compares_unparsed_cells_in_mixed_numeric_column(base):
+        previous = _performance().astype({"nav_net": object})
+        previous.loc[1, "nav_net"] = "corrupt_before"
+        candidate = previous.copy()
+        candidate.loc[1, "nav_net"] = "corrupt_after"
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:122: Failed
+_ test_historical_rewrite_compares_unparsed_cells_in_mixed_numeric_column[mainline] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+
+    def test_historical_rewrite_compares_unparsed_cells_in_mixed_numeric_column(base):
+        previous = _performance().astype({"nav_net": object})
+        previous.loc[1, "nav_net"] = "corrupt_before"
+        candidate = previous.copy()
+        candidate.loc[1, "nav_net"] = "corrupt_after"
+>       with pytest.raises(RuntimeError, match="historical rewrite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:122: Failed
+_ test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-removed_date] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+mutation = 'removed_date'
+
+    @pytest.mark.parametrize("mutation", ["removed_date", "inserted_date", "missing_key"])
+    def test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns(base, mutation):
+        previous = _performance()
+        if mutation == "removed_date":
+            candidate = previous.drop(index=1)
+        elif mutation == "inserted_date":
+            candidate = pd.concat([previous, pd.DataFrame({"date": [pd.Timestamp("2026-09-02 12:00")],
+                                                           "return_net": [0.0], "nav_net": [1.0]})])
+        else:
+            candidate = previous.drop(columns="nav_net")
+>       with pytest.raises(RuntimeError, match="historical|schema"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:136: Failed
+_ test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-inserted_date] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+mutation = 'inserted_date'
+
+    @pytest.mark.parametrize("mutation", ["removed_date", "inserted_date", "missing_key"])
+    def test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns(base, mutation):
+        previous = _performance()
+        if mutation == "removed_date":
+            candidate = previous.drop(index=1)
+        elif mutation == "inserted_date":
+            candidate = pd.concat([previous, pd.DataFrame({"date": [pd.Timestamp("2026-09-02 12:00")],
+                                                           "return_net": [0.0], "nav_net": [1.0]})])
+        else:
+            candidate = previous.drop(columns="nav_net")
+>       with pytest.raises(RuntimeError, match="historical|schema"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:136: Failed
+_ test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-missing_key] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+mutation = 'missing_key'
+
+    @pytest.mark.parametrize("mutation", ["removed_date", "inserted_date", "missing_key"])
+    def test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns(base, mutation):
+        previous = _performance()
+        if mutation == "removed_date":
+            candidate = previous.drop(index=1)
+        elif mutation == "inserted_date":
+            candidate = pd.concat([previous, pd.DataFrame({"date": [pd.Timestamp("2026-09-02 12:00")],
+                                                           "return_net": [0.0], "nav_net": [1.0]})])
+        else:
+            candidate = previous.drop(columns="nav_net")
+>       with pytest.raises(RuntimeError, match="historical|schema"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'RuntimeError'>
+
+tests\test_script_data_adversarial.py:136: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-hedge_missing_date] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does0')
+mutation = 'hedge_missing_date'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-hedge_nan] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does1')
+mutation = 'hedge_nan'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-proxy_missing_date] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does2')
+mutation = 'proxy_missing_date'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-proxy_nan] _
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does3')
+mutation = 'proxy_nan'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-hedge_missing_date] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does4')
+mutation = 'hedge_missing_date'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-hedge_nan] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does5')
+mutation = 'hedge_nan'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-proxy_missing_date] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does6')
+mutation = 'proxy_missing_date'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+_ test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-proxy_nan] _
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_aligned_close_loader_does7')
+mutation = 'proxy_nan'
+
+    @pytest.mark.parametrize("mutation", ["hedge_missing_date", "hedge_nan", "proxy_missing_date", "proxy_nan"])
+    def test_aligned_close_loader_does_not_compress_an_internal_session_gap(base, tmp_path, mutation):
+        panel, proxy, panel_path, proxy_path = _close_sources(tmp_path)
+        if mutation == "hedge_missing_date":
+            panel = panel.drop(index=15)
+        elif mutation == "proxy_missing_date":
+            proxy = proxy.drop(index=15)
+        elif mutation == "hedge_nan":
+            panel.loc[15, base.HEDGE_COLUMN] = np.nan
+        else:
+            proxy.loc[15, "close"] = np.nan
+        panel.to_csv(panel_path, index=False)
+        proxy.to_csv(proxy_path, index=False)
+>       with pytest.raises(ValueError, match="aligned|missing|NaN"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:169: Failed
+______ test_realtime_proxy_cache_requires_its_metadata_file[shared_v20] _______
+
+base = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>)
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_realtime_proxy_cache_requ0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CD839FAF0>
+
+    def test_realtime_proxy_cache_requires_its_metadata_file(base, tmp_path, monkeypatch):
+        runtime = base
+        namespace = runtime.reusable_cached_proxy_end_for_realtime.__globals__
+        paths = {"proxy_meta": tmp_path / "missing.json", "proxy_turnover": tmp_path / "turnover.csv"}
+        args = SimpleNamespace(index_csv=tmp_path / "index.csv", costed_nav_csv=tmp_path / "costed.csv",
+                               max_stale_anchor_days=5, allow_stale_realtime=False)
+        for path in (args.index_csv, args.costed_nav_csv, paths["proxy_turnover"]):
+            path.write_text("seed\n", encoding="utf-8")
+        monkeypatch.setitem(namespace, "read_csv_last_date", lambda path: pd.Timestamp("2026-09-30"))
+        monkeypatch.setitem(namespace, "assess_realtime_anchor_freshness", lambda *a, **k: {"is_stale": False})
+        monkeypatch.setitem(namespace, "assess_history_anchor_freshness", lambda *a, **k: {"is_stale": False})
+>       assert runtime.reusable_cached_proxy_end_for_realtime(args, paths, pd.Timestamp("2026-09-30")) is None
+E       AssertionError: assert Timestamp('2026-09-30 00:00:00') is None
+E        +  where Timestamp('2026-09-30 00:00:00') = <function reusable_cached_proxy_end_for_realtime at 0x0000025CD82A5220>(namespace(index_csv=WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/t...ta_locked_before_tmp/test_realtime_proxy_cache_requ0/costed.csv'), max_stale_anchor_days=5, allow_stale_realtime=False), {'proxy_meta': WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_r...冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_realtime_proxy_cache_requ0/turnover.csv')}, Timestamp('2026-09-30 00:00:00'))
+E        +    where <function reusable_cached_proxy_end_for_realtime at 0x0000025CD82A5220> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...25CD830A820>, execute_query=<function execute_query at 0x0000025CD830A980>, main=<function main at 0x0000025CD830AAE0>).reusable_cached_proxy_end_for_realtime
+E        +    and   Timestamp('2026-09-30 00:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2026-09-30')
+E        +      where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+
+tests\test_script_data_adversarial.py:193: AssertionError
+_______ test_realtime_proxy_cache_requires_its_metadata_file[mainline] ________
+
+base = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_realtime_proxy_cache_requ1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CD839E890>
+
+    def test_realtime_proxy_cache_requires_its_metadata_file(base, tmp_path, monkeypatch):
+        runtime = base
+        namespace = runtime.reusable_cached_proxy_end_for_realtime.__globals__
+        paths = {"proxy_meta": tmp_path / "missing.json", "proxy_turnover": tmp_path / "turnover.csv"}
+        args = SimpleNamespace(index_csv=tmp_path / "index.csv", costed_nav_csv=tmp_path / "costed.csv",
+                               max_stale_anchor_days=5, allow_stale_realtime=False)
+        for path in (args.index_csv, args.costed_nav_csv, paths["proxy_turnover"]):
+            path.write_text("seed\n", encoding="utf-8")
+        monkeypatch.setitem(namespace, "read_csv_last_date", lambda path: pd.Timestamp("2026-09-30"))
+        monkeypatch.setitem(namespace, "assess_realtime_anchor_freshness", lambda *a, **k: {"is_stale": False})
+        monkeypatch.setitem(namespace, "assess_history_anchor_freshness", lambda *a, **k: {"is_stale": False})
+>       assert runtime.reusable_cached_proxy_end_for_realtime(args, paths, pd.Timestamp("2026-09-30")) is None
+E       AssertionError: assert Timestamp('2026-09-30 00:00:00') is None
+E        +  where Timestamp('2026-09-30 00:00:00') = <function reusable_cached_proxy_end_for_realtime at 0x0000025CD9655640>(namespace(index_csv=WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/t...ta_locked_before_tmp/test_realtime_proxy_cache_requ1/costed.csv'), max_stale_anchor_days=5, allow_stale_realtime=False), {'proxy_meta': WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_r...冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_realtime_proxy_cache_requ1/turnover.csv')}, Timestamp('2026-09-30 00:00:00'))
+E        +    where <function reusable_cached_proxy_end_for_realtime at 0x0000025CD9655640> = <module '_data_adversarial_baseline_microcap_top100_mom16_biweekly_live' from 'D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_143135\\microcap_top100_mom16_biweekly_live.py'>.reusable_cached_proxy_end_for_realtime
+E        +    and   Timestamp('2026-09-30 00:00:00') = <class 'pandas._libs.tslibs.timestamps.Timestamp'>('2026-09-30')
+E        +      where <class 'pandas._libs.tslibs.timestamps.Timestamp'> = pd.Timestamp
+
+tests\test_script_data_adversarial.py:193: AssertionError
+_ test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy[wrong_symbol] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_non_st_security_metadata_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CD9901010>
+mutation = 'wrong_symbol'
+
+    @pytest.mark.parametrize("mutation", ["wrong_symbol", "obsolete_policy", "removed_current_st"])
+    def test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy(tmp_path, monkeypatch, mutation):
+        runtime = v20.freq_mod
+        namespace = runtime.load_security_meta.__globals__
+        payload = {"symbol": "000001", "meta_version": namespace["SECURITY_META_VERSION"],
+                   "st_notice_policy_version": namespace["ST_NOTICE_POLICY_VERSION"],
+                   "current_st_snapshot_name": None, "st_intervals": []}
+        if mutation == "wrong_symbol":
+            payload["symbol"] = "000002"
+        elif mutation == "obsolete_policy":
+            payload["st_notice_policy_version"] = "superseded-policy"
+        else:
+            payload["current_st_snapshot_name"] = "ST旧名"
+        path = tmp_path / "000001.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        fresh = {"symbol": "000001", "fresh": True}
+        monkeypatch.setitem(namespace, "load_current_st_name_map", lambda: {})
+        monkeypatch.setitem(namespace, "resolve_security_meta_path", lambda symbol: path)
+        monkeypatch.setitem(namespace, "build_security_meta", lambda symbol: fresh)
+>       assert runtime.load_security_meta("000001") is fresh
+E       AssertionError: assert {'current_st_snapshot_name': None, 'meta_version': 2, 'st_intervals': [], 'st_notice_policy_version': 'cninfo-category-plus-entry-exit-keyword-v3', ...} is {'fresh': True, 'symbol': '000001'}
+E        +  where {'current_st_snapshot_name': None, 'meta_version': 2, 'st_intervals': [], 'st_notice_policy_version': 'cninfo-category-plus-entry-exit-keyword-v3', ...} = <function load_security_meta at 0x0000025CD83047D0>('000001')
+E        +    where <function load_security_meta at 0x0000025CD83047D0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\... 0x0000025CD8305F30>, summarize=<function summarize at 0x0000025CD8306090>, main=<function main at 0x0000025CD83061F0>).load_security_meta
+
+tests\test_script_data_adversarial.py:215: AssertionError
+_ test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy[obsolete_policy] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_non_st_security_metadata_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CD9900E50>
+mutation = 'obsolete_policy'
+
+    @pytest.mark.parametrize("mutation", ["wrong_symbol", "obsolete_policy", "removed_current_st"])
+    def test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy(tmp_path, monkeypatch, mutation):
+        runtime = v20.freq_mod
+        namespace = runtime.load_security_meta.__globals__
+        payload = {"symbol": "000001", "meta_version": namespace["SECURITY_META_VERSION"],
+                   "st_notice_policy_version": namespace["ST_NOTICE_POLICY_VERSION"],
+                   "current_st_snapshot_name": None, "st_intervals": []}
+        if mutation == "wrong_symbol":
+            payload["symbol"] = "000002"
+        elif mutation == "obsolete_policy":
+            payload["st_notice_policy_version"] = "superseded-policy"
+        else:
+            payload["current_st_snapshot_name"] = "ST旧名"
+        path = tmp_path / "000001.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        fresh = {"symbol": "000001", "fresh": True}
+        monkeypatch.setitem(namespace, "load_current_st_name_map", lambda: {})
+        monkeypatch.setitem(namespace, "resolve_security_meta_path", lambda symbol: path)
+        monkeypatch.setitem(namespace, "build_security_meta", lambda symbol: fresh)
+>       assert runtime.load_security_meta("000001") is fresh
+E       AssertionError: assert {'current_st_snapshot_name': None, 'meta_version': 2, 'st_intervals': [], 'st_notice_policy_version': 'superseded-policy', ...} is {'fresh': True, 'symbol': '000001'}
+E        +  where {'current_st_snapshot_name': None, 'meta_version': 2, 'st_intervals': [], 'st_notice_policy_version': 'superseded-policy', ...} = <function load_security_meta at 0x0000025CD83047D0>('000001')
+E        +    where <function load_security_meta at 0x0000025CD83047D0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\... 0x0000025CD8305F30>, summarize=<function summarize at 0x0000025CD8306090>, main=<function main at 0x0000025CD83061F0>).load_security_meta
+
+tests\test_script_data_adversarial.py:215: AssertionError
+_ test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy[removed_current_st] _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/data_locked_before_tmp/test_non_st_security_metadata_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CD9900F30>
+mutation = 'removed_current_st'
+
+    @pytest.mark.parametrize("mutation", ["wrong_symbol", "obsolete_policy", "removed_current_st"])
+    def test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy(tmp_path, monkeypatch, mutation):
+        runtime = v20.freq_mod
+        namespace = runtime.load_security_meta.__globals__
+        payload = {"symbol": "000001", "meta_version": namespace["SECURITY_META_VERSION"],
+                   "st_notice_policy_version": namespace["ST_NOTICE_POLICY_VERSION"],
+                   "current_st_snapshot_name": None, "st_intervals": []}
+        if mutation == "wrong_symbol":
+            payload["symbol"] = "000002"
+        elif mutation == "obsolete_policy":
+            payload["st_notice_policy_version"] = "superseded-policy"
+        else:
+            payload["current_st_snapshot_name"] = "ST旧名"
+        path = tmp_path / "000001.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        fresh = {"symbol": "000001", "fresh": True}
+        monkeypatch.setitem(namespace, "load_current_st_name_map", lambda: {})
+        monkeypatch.setitem(namespace, "resolve_security_meta_path", lambda symbol: path)
+        monkeypatch.setitem(namespace, "build_security_meta", lambda symbol: fresh)
+>       assert runtime.load_security_meta("000001") is fresh
+E       AssertionError: assert {'current_st_snapshot_name': 'ST旧名', 'meta_version': 2, 'st_intervals': [], 'st_notice_policy_version': 'cninfo-category-plus-entry-exit-keyword-v3', ...} is {'fresh': True, 'symbol': '000001'}
+E        +  where {'current_st_snapshot_name': 'ST旧名', 'meta_version': 2, 'st_intervals': [], 'st_notice_policy_version': 'cninfo-category-plus-entry-exit-keyword-v3', ...} = <function load_security_meta at 0x0000025CD83047D0>('000001')
+E        +    where <function load_security_meta at 0x0000025CD83047D0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\... 0x0000025CD8305F30>, summarize=<function summarize at 0x0000025CD8306090>, main=<function main at 0x0000025CD83061F0>).load_security_meta
+
+tests\test_script_data_adversarial.py:215: AssertionError
+_ test_explicit_rebalance_execution_date_is_charged_on_that_session[next_open] _
+
+timing = 'next_open'
+
+    @pytest.mark.parametrize("timing", ["close", "next_open"])
+    def test_explicit_rebalance_execution_date_is_charged_on_that_session(timing):
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [dates[0]], "execution_date": [dates[1]],
+                                 "execution_timing": [timing], "two_side_cost_rate": [0.006]})
+        actual = v20.cost_mod.map_rebalance_apply_costs(dates, turnover)
+>       assert actual.tolist() == pytest.approx([0.0, 0.006, 0.0])
+E       assert [0.0, 0.0, 0.006] == approx([0.0 ±....0 ± 1.0e-12])
+E         
+E         comparison failed. Mismatched elements: 2 / 3:
+E         Max absolute difference: 0.006
+E         Max relative difference: inf
+E         Index | Obtained | Expected       
+E         1     | 0.0      | 0.006 ± 6.0e-09
+E         2     | 0.006    | 0.0 ± 1.0e-12
+
+tests\test_script_data_adversarial.py:224: AssertionError
+______ test_cost_paid_before_a_result_window_is_not_charged_again[close] ______
+
+timing = 'close'
+
+    @pytest.mark.parametrize("timing", ["close", "next_open"])
+    def test_cost_paid_before_a_result_window_is_not_charged_again(timing):
+        dates = pd.bdate_range("2026-09-02", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-09-01")],
+                                 "execution_date": [pd.Timestamp("2026-09-01")],
+                                 "execution_timing": [timing], "two_side_cost_rate": [0.006]})
+>       assert v20.cost_mod.map_rebalance_apply_costs(dates, turnover).eq(0.0).all()
+E       AssertionError: assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2026-09-02    False\n2026-09-03     True\n2026-09-04     True\nFreq: B, dtype: bool.all
+E        +      where 2026-09-02    False\n2026-09-03     True\n2026-09-04     True\nFreq: B, dtype: bool = eq(0.0)
+E        +        where eq = 2026-09-02    0.006\n2026-09-03    0.000\n2026-09-04    0.000\nFreq: B, dtype: float64.eq
+E        +          where 2026-09-02    0.006\n2026-09-03    0.000\n2026-09-04    0.000\nFreq: B, dtype: float64 = <function map_rebalance_apply_costs at 0x0000025CD831E1F0>(DatetimeIndex(['2026-09-02', '2026-09-03', '2026-09-04'], dtype='datetime64[ns]', freq='B'),   rebalance_date execution_date execution_timing  two_side_cost_rate\n0     2026-09-01     2026-09-01            close               0.006)
+E        +            where <function map_rebalance_apply_costs at 0x0000025CD831E1F0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...d_position_payload=<function build_position_payload at 0x0000025CD831E770>, main=<function main at 0x0000025CD831E8D0>).map_rebalance_apply_costs
+E        +              where namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...d_position_payload=<function build_position_payload at 0x0000025CD831E770>, main=<function main at 0x0000025CD831E8D0>) = v20.cost_mod
+
+tests\test_script_data_adversarial.py:233: AssertionError
+____ test_cost_paid_before_a_result_window_is_not_charged_again[next_open] ____
+
+timing = 'next_open'
+
+    @pytest.mark.parametrize("timing", ["close", "next_open"])
+    def test_cost_paid_before_a_result_window_is_not_charged_again(timing):
+        dates = pd.bdate_range("2026-09-02", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-09-01")],
+                                 "execution_date": [pd.Timestamp("2026-09-01")],
+                                 "execution_timing": [timing], "two_side_cost_rate": [0.006]})
+>       assert v20.cost_mod.map_rebalance_apply_costs(dates, turnover).eq(0.0).all()
+E       AssertionError: assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2026-09-02    False\n2026-09-03     True\n2026-09-04     True\nFreq: B, dtype: bool.all
+E        +      where 2026-09-02    False\n2026-09-03     True\n2026-09-04     True\nFreq: B, dtype: bool = eq(0.0)
+E        +        where eq = 2026-09-02    0.006\n2026-09-03    0.000\n2026-09-04    0.000\nFreq: B, dtype: float64.eq
+E        +          where 2026-09-02    0.006\n2026-09-03    0.000\n2026-09-04    0.000\nFreq: B, dtype: float64 = <function map_rebalance_apply_costs at 0x0000025CD831E1F0>(DatetimeIndex(['2026-09-02', '2026-09-03', '2026-09-04'], dtype='datetime64[ns]', freq='B'),   rebalance_date execution_date execution_timing  two_side_cost_rate\n0     2026-09-01     2026-09-01        next_open               0.006)
+E        +            where <function map_rebalance_apply_costs at 0x0000025CD831E1F0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...d_position_payload=<function build_position_payload at 0x0000025CD831E770>, main=<function main at 0x0000025CD831E8D0>).map_rebalance_apply_costs
+E        +              where namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...d_position_payload=<function build_position_payload at 0x0000025CD831E770>, main=<function main at 0x0000025CD831E8D0>) = v20.cost_mod
+
+tests\test_script_data_adversarial.py:233: AssertionError
+_______ test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[nan] _______
+
+cost = nan
+
+    @pytest.mark.parametrize("cost", [np.nan, np.inf, -np.inf, -0.001, 1.0])
+    def test_nonfinite_or_invalid_cost_cannot_enter_costed_returns(cost):
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [dates[0]], "execution_timing": ["close"],
+                                 "two_side_cost_rate": [cost]})
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:250: Failed
+_______ test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[inf] _______
+
+cost = inf
+
+    @pytest.mark.parametrize("cost", [np.nan, np.inf, -np.inf, -0.001, 1.0])
+    def test_nonfinite_or_invalid_cost_cannot_enter_costed_returns(cost):
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [dates[0]], "execution_timing": ["close"],
+                                 "two_side_cost_rate": [cost]})
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:250: Failed
+______ test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[-inf] _______
+
+cost = -inf
+
+    @pytest.mark.parametrize("cost", [np.nan, np.inf, -np.inf, -0.001, 1.0])
+    def test_nonfinite_or_invalid_cost_cannot_enter_costed_returns(cost):
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [dates[0]], "execution_timing": ["close"],
+                                 "two_side_cost_rate": [cost]})
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:250: Failed
+_____ test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[-0.001] ______
+
+cost = -0.001
+
+    @pytest.mark.parametrize("cost", [np.nan, np.inf, -np.inf, -0.001, 1.0])
+    def test_nonfinite_or_invalid_cost_cannot_enter_costed_returns(cost):
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [dates[0]], "execution_timing": ["close"],
+                                 "two_side_cost_rate": [cost]})
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:250: Failed
+_______ test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[1.0] _______
+
+cost = 1.0
+
+    @pytest.mark.parametrize("cost", [np.nan, np.inf, -np.inf, -0.001, 1.0])
+    def test_nonfinite_or_invalid_cost_cannot_enter_costed_returns(cost):
+        dates = pd.bdate_range("2026-09-01", periods=3)
+        turnover = pd.DataFrame({"rebalance_date": [dates[0]], "execution_timing": ["close"],
+                                 "two_side_cost_rate": [cost]})
+>       with pytest.raises(ValueError, match="cost"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_data_adversarial.py:250: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_script_data_adversarial.py::test_history_selector_never_uses_future_rows[shared_v20-2026-09-30 16:00-2026-09-30]
+FAILED tests/test_script_data_adversarial.py::test_history_selector_never_uses_future_rows[mainline-2026-09-30 16:00-2026-09-30]
+FAILED tests/test_script_data_adversarial.py::test_only_future_history_cannot_establish_a_close_anchor[shared_v20]
+FAILED tests/test_script_data_adversarial.py::test_only_future_history_cannot_establish_a_close_anchor[mainline]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net-nan]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net-inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net--inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net--1.0]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-return_net--1.1]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net-nan]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net-inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net--inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net-0.0]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[shared_v20-nav_net--1.0]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net-nan]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net-inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net--inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net--1.0]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-return_net--1.1]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net-nan]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net-inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net--inf]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net-0.0]
+FAILED tests/test_script_data_adversarial.py::test_partial_bad_performance_rows_are_not_reported_as_valid[mainline-nav_net--1.0]
+FAILED tests/test_script_data_adversarial.py::test_performance_rejects_conflicting_nav_and_daily_return[shared_v20]
+FAILED tests/test_script_data_adversarial.py::test_performance_rejects_conflicting_nav_and_daily_return[mainline]
+FAILED tests/test_script_data_adversarial.py::test_invalid_dates_are_not_silently_removed[shared_v20-date]
+FAILED tests/test_script_data_adversarial.py::test_invalid_dates_are_not_silently_removed[shared_v20-index]
+FAILED tests/test_script_data_adversarial.py::test_invalid_dates_are_not_silently_removed[mainline-date]
+FAILED tests/test_script_data_adversarial.py::test_invalid_dates_are_not_silently_removed[mainline-index]
+FAILED tests/test_script_data_adversarial.py::test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20-1.0-inf]
+FAILED tests/test_script_data_adversarial.py::test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20-1.0--inf]
+FAILED tests/test_script_data_adversarial.py::test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20-inf--inf]
+FAILED tests/test_script_data_adversarial.py::test_historical_numeric_rewrite_detects_infinities_in_either_direction[shared_v20--inf-inf]
+FAILED tests/test_script_data_adversarial.py::test_historical_rewrite_compares_unparsed_cells_in_mixed_numeric_column[shared_v20]
+FAILED tests/test_script_data_adversarial.py::test_historical_rewrite_compares_unparsed_cells_in_mixed_numeric_column[mainline]
+FAILED tests/test_script_data_adversarial.py::test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-removed_date]
+FAILED tests/test_script_data_adversarial.py::test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-inserted_date]
+FAILED tests/test_script_data_adversarial.py::test_frozen_lineage_cannot_lose_dates_insert_dates_or_lose_key_columns[mainline-missing_key]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-hedge_missing_date]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-hedge_nan]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-proxy_missing_date]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[shared_v20-proxy_nan]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-hedge_missing_date]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-hedge_nan]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-proxy_missing_date]
+FAILED tests/test_script_data_adversarial.py::test_aligned_close_loader_does_not_compress_an_internal_session_gap[mainline-proxy_nan]
+FAILED tests/test_script_data_adversarial.py::test_realtime_proxy_cache_requires_its_metadata_file[shared_v20]
+FAILED tests/test_script_data_adversarial.py::test_realtime_proxy_cache_requires_its_metadata_file[mainline]
+FAILED tests/test_script_data_adversarial.py::test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy[wrong_symbol]
+FAILED tests/test_script_data_adversarial.py::test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy[obsolete_policy]
+FAILED tests/test_script_data_adversarial.py::test_non_st_security_metadata_cache_requires_matching_identity_and_explicit_policy[removed_current_st]
+FAILED tests/test_script_data_adversarial.py::test_explicit_rebalance_execution_date_is_charged_on_that_session[next_open]
+FAILED tests/test_script_data_adversarial.py::test_cost_paid_before_a_result_window_is_not_charged_again[close]
+FAILED tests/test_script_data_adversarial.py::test_cost_paid_before_a_result_window_is_not_charged_again[next_open]
+FAILED tests/test_script_data_adversarial.py::test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[nan]
+FAILED tests/test_script_data_adversarial.py::test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[inf]
+FAILED tests/test_script_data_adversarial.py::test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[-inf]
+FAILED tests/test_script_data_adversarial.py::test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[-0.001]
+FAILED tests/test_script_data_adversarial.py::test_nonfinite_or_invalid_cost_cannot_enter_costed_returns[1.0]
+60 failed, 22 passed in 38.01s

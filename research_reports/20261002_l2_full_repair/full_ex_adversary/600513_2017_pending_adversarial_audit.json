@@ -1,0 +1,62 @@
+{
+  "manifest_sha256": "c44ffc81a5dc32344e884ab06706d5db007a1061eda24af71902c528d8317f56",
+  "code_sha256": "bc420a20eed059ac89ed65931b594780ae94a85bd9932358d6b71ba0bef0402c",
+  "issuer_pdf_sha256": "5ed5f2220804d8d71ac39061e9e73f3f4680c25b6c998122c018a777201d9338",
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "market": {
+    "2017-05-18": {
+      "date": "2017-05-18",
+      "close": "13.3900",
+      "preclose": "13.4300",
+      "volume": "1726977",
+      "tradestatus": "1"
+    },
+    "2017-05-19": {
+      "date": "2017-05-19",
+      "close": "10.2900",
+      "preclose": "10.2300",
+      "volume": "1169116",
+      "tradestatus": "1"
+    },
+    "2017-05-22": {
+      "date": "2017-05-22",
+      "close": "9.9500",
+      "preclose": "10.2900",
+      "volume": "2191597",
+      "tradestatus": "1"
+    }
+  },
+  "reference": "10.23",
+  "branches": {
+    "prefunded": {
+      "status": "PASS_PAPER_PENDING_AND_LISTING_CLOCK",
+      "record_shares": "8360.102600347521283259663406951542460337",
+      "bonus_pending_5_19": "2508.030780104256384977899022085462738101",
+      "gross_cash_5_19": "718.968823629886830360331052997832651589",
+      "ex_equity_with_pending": "112552.06130847867903652484844778861614351602",
+      "booked_ex_orders": 0,
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": "2508.030780104256384977899022085462738101"
+    },
+    "netted": {
+      "status": "PASS_PAPER_PENDING_AND_LISTING_CLOCK",
+      "record_shares": "10080.61661817057780420862753752950942698",
+      "bonus_pending_5_19": "3024.184985451173341262588261258852828094",
+      "gross_cash_5_19": "866.9330291626696911619419682275378107203",
+      "ex_equity_with_pending": "135715.34153043048897806075253775978541543176",
+      "booked_ex_orders": 0,
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": "3024.184985451173341262588261258852828094"
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2018-06-06",
+      "reason": "missing_or_invalid_payment_date:2018-06-06:603031"
+    },
+    "netted": {
+      "date": "2018-05-21",
+      "reason": "unverified_missing_raw_close:2018-05-21:603033"
+    }
+  },
+  "status": "PASS_FOR_BRANCHES_REACHING_2017_05_22",
+  "limitations": "Issuer lists newly unrestricted shares 5/22; this is paper tradability, not actual broker credit. Gross cash and fractional shares are approximations."
+}

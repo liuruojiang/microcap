@@ -1,0 +1,685 @@
+........................................................................ [ 24%]
+........................................................................ [ 49%]
+...................................F..F..F..F........................... [ 74%]
+........................................................................ [ 99%]
+.                                                                        [100%]
+================================== FAILURES ===================================
+_ test_delivery_action_gate_accepts_all_normal_native_transitions[False-False-0] _
+
+signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+>               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = False, next_active = False
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+>       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+>               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError
+_ test_delivery_action_gate_accepts_all_normal_native_transitions[False-True-0] _
+
+signal = {'actionable_scale_delta': 1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+>               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = False, next_active = True
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+>       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': 1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 0.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 0.0, 'execution_scale': 0.0, 'holding': 'cash', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+>               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError
+_ test_delivery_action_gate_accepts_all_normal_native_transitions[True-False-0] _
+
+signal = {'actionable_scale_delta': -1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+>               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = True, next_active = False
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+>       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': -1.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+>               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError
+_ test_delivery_action_gate_accepts_all_normal_native_transitions[True-True-0] _
+
+signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+>               actual, expected = float(signal[key]), float(nav[key])
+                                         ^^^^^^^^^^^
+E               KeyError: 'annualized_log_wls_score'
+
+scripts\top100_delivery.py:260: KeyError
+
+The above exception was the direct cause of the following exception:
+
+version = '0', current = True, next_active = True
+
+    @pytest.mark.parametrize("version", ["0", "3", "5"])
+    @pytest.mark.parametrize("current,next_active", [(False, False), (False, True), (True, False), (True, True)])
+    def test_delivery_action_gate_accepts_all_normal_native_transitions(version, current, next_active):
+        module = {"0": v20.overlay_mod, "3": v23, "5": v25}[version]
+        label = "long_microcap_top100" if version == "5" else ACTIVE
+        net = _net(label if current else "cash", label if next_active else "cash")
+        if version == "5":
+            net["microcap_nav"] = [1., 1.02]
+        signal = module._build_signal_row(net, {"latest_signal": {}}).iloc[0].to_dict()
+        latest = net.iloc[-1].to_dict()
+>       delivery.validate_final_signal(signal, latest, version)
+
+tests\test_script_signal_adversarial.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+signal = {'actionable_scale_delta': 0.0, 'base_version': 'embedded_v2_base', 'blocked_until_signal_reset': False, 'current_execution_scale': 1.0, ...}
+nav = {'annualized_log_wls_score': 0.2, 'current_execution_scale': 1.0, 'execution_scale': 1.0, 'holding': 'long_microcap_short_zz1000', ...}
+version = '0'
+
+    def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
+        """Latest signal is a projection of the same-version final costed NAV."""
+        active_holdings = {"0": "long_microcap_short_zz1000", "3": "long_microcap_short_zz1000",
+                           "5": "long_microcap_top100"}
+        if version not in active_holdings:
+            raise ValueError(f"Unsupported final signal version: {version}")
+        if str(signal.get("version", "")) != f"2.{version}":
+            raise ValueError(f"v2.{version} final version identity mismatch")
+        if (version in {"3", "5"} or "strategy_version" in signal) and signal.get("strategy_version") != f"v2.{version}":
+            raise ValueError(f"v2.{version} final strategy_version identity mismatch")
+        if (signal.get("signal_timing") != "close_confirmed"
+                or str(signal.get("official_close_confirmed_signal")) != "True"):
+            raise ValueError(f"v2.{version} final signal is not an official close-confirmed signal")
+        allowed_holdings = {"cash", active_holdings[version]}
+        for signal_key, nav_key in (("current_holding", "holding"), ("next_holding", "next_holding")):
+            holding = signal.get(signal_key)
+            if holding not in allowed_holdings or holding != nav.get(nav_key):
+                raise ValueError(f"v2.{version} final signal/NAV {signal_key} mismatch")
+        for key, holding_key in (("current_execution_scale", "current_holding"),
+                                 ("next_session_actionable_scale", "next_holding")):
+            try:
+                scale, nav_scale = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} missing/invalid final signal/NAV {key}") from exc
+            if (not math.isfinite(scale) or not math.isfinite(nav_scale) or scale < 0 or
+                    not math.isclose(scale, nav_scale, rel_tol=0., abs_tol=1e-12) or
+                    scale != (0.0 if signal[holding_key] == "cash" else 1.0) or
+                    nav_scale != (0.0 if signal[holding_key] == "cash" else 1.0)):
+                raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
+        if signal.get("signal_label") != signal["next_holding"]:
+            raise ValueError(f"v2.{version} final signal_label/next_holding mismatch")
+        current, nxt = signal["current_holding"], signal["next_holding"]
+        action = "hold" if current == nxt else ("open" if current == "cash" else "close")
+        if signal.get("trade_state") != action:
+            raise ValueError(f"v2.{version} final trade_state/holding transition mismatch")
+        for key in ("effective_trade_state", "holding_trade_state", "momentum_trade_state"):
+            if key in signal and signal[key] != action:
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        if "scale_trade_state" in signal and signal["scale_trade_state"] != "hold_scale":
+            raise ValueError(f"v2.{version} final scale_trade_state/fixed-scale contract mismatch")
+        for key, expected in (("position_transition", current != nxt), ("scale_trade_required", False)):
+            if key in signal and str(signal[key]) != str(expected):
+                raise ValueError(f"v2.{version} final {key}/holding transition mismatch")
+        current_scale = float(signal["current_execution_scale"])
+        next_scale = float(signal["next_session_actionable_scale"])
+        aliases = {key: next_scale for key in ("target_position_scale", "next_session_target_scale",
+                                              "raw_next_target_scale", "target_vol_scale_next_session")}
+        aliases["execution_scale"] = current_scale
+        aliases.update({key: next_scale - current_scale for key in (
+            "raw_scale_delta", "actionable_scale_delta", "scale_delta", "position_scale_delta")})
+        for key, expected in aliases.items():
+            if key not in signal:
+                continue
+            try:
+                actual = float(signal[key])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch") from exc
+            if not math.isfinite(actual) or not math.isclose(actual, expected, rel_tol=0., abs_tol=1e-12):
+                raise ValueError(f"v2.{version} final {key}/execution scale mismatch")
+        for key in ("microcap_mom", "hedge_mom", "momentum_gap", "annualized_log_wls_score"):
+            if key not in nav:
+                continue
+            try:
+                actual, expected = float(signal[key]), float(nav[key])
+            except (KeyError, TypeError, ValueError) as exc:
+>               raise ValueError(f"v2.{version} missing/invalid final signal {key}") from exc
+E               ValueError: v2.0 missing/invalid final signal annualized_log_wls_score
+
+scripts\top100_delivery.py:262: ValueError
+============================== warnings summary ===============================
+tests/test_frozen_member_continuation_20260917.py::test_no_rebalance_extension_preserves_frozen_members_and_advances_effective
+  <embedded_top100_base>:1105: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_script_signal_adversarial.py::test_delivery_action_gate_accepts_all_normal_native_transitions[False-False-0]
+FAILED tests/test_script_signal_adversarial.py::test_delivery_action_gate_accepts_all_normal_native_transitions[False-True-0]
+FAILED tests/test_script_signal_adversarial.py::test_delivery_action_gate_accepts_all_normal_native_transitions[True-False-0]
+FAILED tests/test_script_signal_adversarial.py::test_delivery_action_gate_accepts_all_normal_native_transitions[True-True-0]
+4 failed, 285 passed, 1 warning in 73.18s (0:01:13)

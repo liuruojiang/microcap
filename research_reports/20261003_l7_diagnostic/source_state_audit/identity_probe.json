@@ -1,0 +1,77 @@
+{
+  "source": "scripts\\top100_delivery.py",
+  "versions": {
+    "0": {
+      "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "sha256": "9148edf40c08cb181b59887d54ec64743995edc1a8235e9765f8bcdfdb1f8165",
+      "date": "2026-09-30",
+      "original_accepted": true,
+      "mutations": [
+        {
+          "field": "lookback",
+          "original": "16",
+          "mutated": "17",
+          "accepted": true
+        },
+        {
+          "field": "fixed_hedge_ratio",
+          "original": "0.8",
+          "mutated": "0.7",
+          "accepted": true
+        }
+      ]
+    },
+    "3": {
+      "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "sha256": "b92d9c80a9b3f0a9905389384e9f5c359f6ebac2eefc86fc07ce3ace3a50fd53",
+      "date": "2026-09-30",
+      "original_accepted": true,
+      "mutations": [
+        {
+          "field": "lookback",
+          "original": "25",
+          "mutated": "26",
+          "accepted": true
+        },
+        {
+          "field": "halflife",
+          "original": "2.5",
+          "mutated": "3.0",
+          "accepted": true
+        },
+        {
+          "field": "execution_hedge_ratio",
+          "original": "0.8",
+          "mutated": "0.7",
+          "accepted": true
+        },
+        {
+          "field": "overheat_feature_window",
+          "original": "10",
+          "mutated": "9",
+          "accepted": true
+        },
+        {
+          "field": "overheat_enabled",
+          "original": "True",
+          "mutated": "False",
+          "accepted": true
+        }
+      ]
+    },
+    "5": {
+      "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "sha256": "397ec78a094a96a0ecc41227d2651c8ae97d92717921fda306bd52e694319404",
+      "date": "2026-09-30",
+      "original_accepted": true,
+      "mutations": [
+        {
+          "field": "overheat_enabled",
+          "original": "False",
+          "mutated": "True",
+          "accepted": true
+        }
+      ]
+    }
+  }
+}

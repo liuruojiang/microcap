@@ -1,0 +1,20 @@
+.............................................................................................................................................. [ 20%]
+.............................................................. [ 29%]
+................................................................. [ 38%]
+.............................................................. [ 47%]
+........................................................................ [ 57%]
+........................................................................ [ 68%]
+............................................ [ 74%]
+........................................................................................................................................ [ 93%]
+...........................................                              [100%]
+============================== warnings summary ===============================
+tests/test_adversarial_delivery.py::test_ledger_duplicate_zip_members_rejected[latest.json]
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: 'latest.json'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+tests/test_adversarial_delivery.py::test_ledger_duplicate_zip_members_rejected[journal/duplicate.json]
+  C:\Python314\Lib\zipfile\__init__.py:1721: UserWarning: Duplicate name: 'journal/duplicate.json'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+698 passed, 2 warnings, 137 subtests passed in 121.91s (0:02:01)

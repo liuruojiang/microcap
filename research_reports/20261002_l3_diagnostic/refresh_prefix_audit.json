@@ -1,0 +1,116 @@
+{
+  "status": "economic_prefix_pass_with_other_change",
+  "streams": [
+    {
+      "name": "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "old_rows": 8737,
+      "new_rows": 8738,
+      "old_last_date": "2026-09-29",
+      "new_last_date": "2026-09-30",
+      "header_identical": true,
+      "old_rows_prefix_identical": true,
+      "first_mismatch_row_1based": null,
+      "first_mismatch_date": null,
+      "first_mismatch_fields": null,
+      "economic_prefix_identical": true,
+      "first_economic_mismatch": null,
+      "added_dates": [
+        "2026-09-30"
+      ]
+    },
+    {
+      "name": "wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "old_rows": 4066,
+      "new_rows": 4067,
+      "old_last_date": "2026-09-29",
+      "new_last_date": "2026-09-30",
+      "header_identical": true,
+      "old_rows_prefix_identical": true,
+      "first_mismatch_row_1based": null,
+      "first_mismatch_date": null,
+      "first_mismatch_fields": null,
+      "economic_prefix_identical": true,
+      "first_economic_mismatch": null,
+      "added_dates": [
+        "2026-09-30"
+      ]
+    },
+    {
+      "name": "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "old_rows": 4049,
+      "new_rows": 4050,
+      "old_last_date": "2026-09-29",
+      "new_last_date": "2026-09-30",
+      "header_identical": true,
+      "old_rows_prefix_identical": true,
+      "first_mismatch_row_1based": null,
+      "first_mismatch_date": null,
+      "first_mismatch_fields": null,
+      "economic_prefix_identical": true,
+      "first_economic_mismatch": null,
+      "added_dates": [
+        "2026-09-30"
+      ]
+    },
+    {
+      "name": "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "old_rows": 4032,
+      "new_rows": 4033,
+      "old_last_date": "2026-09-29",
+      "new_last_date": "2026-09-30",
+      "header_identical": true,
+      "old_rows_prefix_identical": true,
+      "first_mismatch_row_1based": null,
+      "first_mismatch_date": null,
+      "first_mismatch_fields": null,
+      "economic_prefix_identical": true,
+      "first_economic_mismatch": null,
+      "added_dates": [
+        "2026-09-30"
+      ]
+    },
+    {
+      "name": "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "old_rows": 3987,
+      "new_rows": 3988,
+      "old_last_date": "2026-09-29",
+      "new_last_date": "2026-09-30",
+      "header_identical": true,
+      "old_rows_prefix_identical": false,
+      "first_mismatch_row_1based": 3987,
+      "first_mismatch_date": "2026-09-29",
+      "first_mismatch_fields": {
+        "momentum_gap": {
+          "old": "1.874878454986093",
+          "new": "1.8748784549860933"
+        },
+        "annualized_log_wls_score": {
+          "old": "1.874878454986093",
+          "new": "1.8748784549860933"
+        }
+      },
+      "economic_prefix_identical": true,
+      "first_economic_mismatch": null,
+      "added_dates": [
+        "2026-09-30"
+      ]
+    },
+    {
+      "name": "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "old_rows": 3987,
+      "new_rows": 3988,
+      "old_last_date": "2026-09-29",
+      "new_last_date": "2026-09-30",
+      "header_identical": true,
+      "old_rows_prefix_identical": true,
+      "first_mismatch_row_1based": null,
+      "first_mismatch_date": null,
+      "first_mismatch_fields": null,
+      "economic_prefix_identical": true,
+      "first_economic_mismatch": null,
+      "added_dates": [
+        "2026-09-30"
+      ]
+    }
+  ]
+}

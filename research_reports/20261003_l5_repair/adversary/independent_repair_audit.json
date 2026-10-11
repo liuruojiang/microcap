@@ -1,0 +1,110 @@
+{
+  "label": "independent_adversarial_repair_audit_diagnostic",
+  "signal_binding": {
+    "official_path": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+    "official_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "branches": [
+      {
+        "path": "research_reports\\20261003_l5_repair\\signal_audit\\prefunded\\recent_prefunded_rebuilt_signals.csv",
+        "sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+        "rows": 241,
+        "first_date": "2025-10-09",
+        "last_date": "2026-09-30",
+        "errors": []
+      },
+      {
+        "path": "research_reports\\20261003_l5_repair\\signal_audit\\netted\\recent_netted_rebuilt_signals.csv",
+        "sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+        "rows": 241,
+        "first_date": "2025-10-09",
+        "last_date": "2026-09-30",
+        "errors": []
+      }
+    ],
+    "byte_identical_branches": true
+  },
+  "cases": [
+    {
+      "branch": "prefunded",
+      "mode": "on",
+      "input_sha256": {
+        "daily": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+        "orders": "0c415d9de5d0317dd217f8acb2f1bad47b87813bf92240f31d88a5b83eafaa72",
+        "rights": "07ba318e8708ca0c13c9013139ca0ef2037e65e187038fb96914adde9f7a28d4"
+      },
+      "checked_orders": 205,
+      "last_verified_date": "2025-11-13",
+      "first_divergence": {
+        "date": "2025-11-14",
+        "kind": "old_cash_rejection_now_affordable",
+        "order_index": 105,
+        "symbol": "002207",
+        "cost": "246.1222384492999073914332969",
+        "budget": "9143.906665491558196891569284"
+      }
+    },
+    {
+      "branch": "prefunded",
+      "mode": "off",
+      "input_sha256": {
+        "daily": "ec10beea5fdeb1345bd254a1cf8670a1a2a88c4c2eee5f23c277c9b5239977fa",
+        "orders": "4defaa610dbc3af4c9a085f50ccbdbbde84fc5335c22a91e4540174cc53fb81c",
+        "rights": "3e18f368171d7bad43054fd60870b3b716cb355dede712e2b0abb977d9afce45"
+      },
+      "checked_orders": 205,
+      "last_verified_date": "2025-11-13",
+      "first_divergence": {
+        "date": "2025-11-14",
+        "kind": "old_cash_rejection_now_affordable",
+        "order_index": 105,
+        "symbol": "002207",
+        "cost": "246.1222384492999073914332969",
+        "budget": "9143.906665491558196891569284"
+      }
+    },
+    {
+      "branch": "netted",
+      "mode": "on",
+      "input_sha256": {
+        "daily": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+        "orders": "9bd2e34c89d1c3c00fa774212f507be2edc36bb752f1231428f87639ae8cc7c6",
+        "rights": "9291a1e821f35c5b57c885c92254f1fe3bdf394b1f21feaf6ecaef90babbff0e"
+      },
+      "checked_orders": 407,
+      "last_verified_date": "2025-11-28",
+      "first_divergence": {
+        "date": "2025-12-01",
+        "kind": "old_cash_rejection_now_affordable",
+        "order_index": 96,
+        "symbol": "002963",
+        "cost": "10240.89641527551462399705370",
+        "budget": "39379.43095805839011265867139"
+      }
+    },
+    {
+      "branch": "netted",
+      "mode": "off",
+      "input_sha256": {
+        "daily": "563b13350e79669482d32e3aef410564a6de28e8a862de9505c3e7475ffe36d3",
+        "orders": "782d8e81d1c12a52ab5a84c4f6888cf24a65c9c69538a545b88c6e1ac222e62d",
+        "rights": "32857bb31b51a0fc37ed1d16a5ba47099a3c55e9ef4c08cb641a7ee6fa940d9b"
+      },
+      "checked_orders": 407,
+      "last_verified_date": "2025-11-28",
+      "first_divergence": {
+        "date": "2025-12-01",
+        "kind": "old_cash_rejection_now_affordable",
+        "order_index": 96,
+        "symbol": "002963",
+        "cost": "10240.89641527551462399705370",
+        "budget": "39379.43095805839011265867139"
+      }
+    }
+  ],
+  "synthetic_counterexamples": {
+    "end_of_day_guard_passes_but_prefunded_buy_rejected": true,
+    "post_coverage": "20",
+    "buy_budget_after_pretrade_variation": "60",
+    "negative_variation_150_on_cash_100_fail_closed": true
+  }
+}

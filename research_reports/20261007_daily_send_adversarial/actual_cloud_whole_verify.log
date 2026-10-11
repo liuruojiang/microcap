@@ -1,0 +1,8 @@
+[cloud-sync] downloaded 8388608/66242091 bytes
+[cloud-sync] downloaded 16777216/66242091 bytes
+[cloud-sync] downloaded 25165824/66242091 bytes
+[cloud-sync] downloaded 33554432/66242091 bytes
+[cloud-sync] downloaded 41943040/66242091 bytes
+[cloud-sync] downloaded 50331648/66242091 bytes
+[cloud-sync] downloaded 58720256/66242091 bytes
+{"ok": true, "run_id": 37644093633, "integrity_files_verified": 14982, "staged_artifacts": 32, "primary_files_unchanged": true}

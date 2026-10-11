@@ -1,0 +1,32 @@
+{
+  "status": "totals_pass_but_code_sha_stale",
+  "recorded_code_sha256": "66e7d5fd92326892fcc40aa4f4295d9ef8d87c2ae29b9b3d92d49cd9def49a54",
+  "current_code_sha256": "54e1e6031a9d028f176e9571f77f8f3082b8d82313d4dff4c23796dcbc98ff24",
+  "result_sha256": "64895f09ba77f4a519c8783c17f1997b5d050bd79887a2f79f12f7fa2843647c",
+  "daily_sha256": "3f7098464333f9e1f89ac8a4a0c99489b58e4b7951feb449de10d9e4c8145d25",
+  "branches": {
+    "prefunded": {
+      "rows": 49,
+      "last_date": "2010-04-30",
+      "max_component_residual": "4.92844578283E-22",
+      "fee_days": 5,
+      "reported_rebalances": 5,
+      "first_block": {
+        "date": "2010-05-04",
+        "reason": "unverified_missing_raw_close:2010-05-04:600633"
+      }
+    },
+    "netted": {
+      "rows": 49,
+      "last_date": "2010-04-30",
+      "max_component_residual": "4.76919015996E-22",
+      "fee_days": 5,
+      "reported_rebalances": 5,
+      "first_block": {
+        "date": "2010-05-04",
+        "reason": "unverified_missing_raw_close:2010-05-04:600633"
+      }
+    }
+  },
+  "limits": "Totals, date continuity and reported trade fees only; no independent per-stock daily reconstruction without position/order detail."
+}

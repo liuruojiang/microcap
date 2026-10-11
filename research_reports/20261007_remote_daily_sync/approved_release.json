@@ -1,0 +1,11 @@
+{
+  "release_url": "https://github.com/liuruojiang/microcap/releases/tag/microcap-audit-20261007",
+  "tag": "microcap-audit-20261007",
+  "strategy_sha": "501b269b9f51a83f05f3b71488143b4da285cd0b",
+  "asset_name": "microcap-approved-state-20260930-501b269b.zip",
+  "asset_url": "https://github.com/liuruojiang/microcap/releases/download/microcap-audit-20261007/microcap-approved-state-20260930-501b269b.zip",
+  "sha256": "d6c5e5833d3384fb9990c79567315f7e845b8dacfd4e7b6a651c9c0aa5a12fbe",
+  "bytes": 70850779,
+  "state_date": "2026-09-30",
+  "remote_asset_digest_verified": true
+}
