@@ -1,0 +1,13 @@
+{
+  "original_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Documents\\Codex\\2026-05-10\\github-4-45-10-45-github\\microcap-ci-fix",
+  "original_branch": "codex/fix-microcap-cache-universe",
+  "original_head": "4da4d5adc63c9bcdcf65f2e8c0c5688525833a2a",
+  "scope": "Historical working-copy evidence; archived rather than replacing current formal state.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 2624,
+      "sha256": "155e02004f012e3c4a367c703688abb3b97091d4b6421637812d439df0067b9e"
+    }
+  ]
+}
