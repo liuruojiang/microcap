@@ -1,0 +1,73 @@
+{
+  "original_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Documents\\Codex\\worktrees\\microcap-state-reproduce",
+  "original_branch": "codex/microcap-state-reproduce",
+  "original_head": "4591d3ccdb607b2ef85222c14ebe60a66bcfff09",
+  "scope": "Historical working-copy evidence; archived rather than replacing current formal state.",
+  "files": [
+    {
+      "path": ".microcap_index_cache/active_universe.csv",
+      "bytes": 148711,
+      "sha256": "91d92e9d042f1191ce5d8224abbe0e32189d3cae8495c0ba42051bff31bdf815"
+    },
+    {
+      "path": ".microcap_index_cache/current_st.csv",
+      "bytes": 3351,
+      "sha256": "b93d797befe507bbda2f4e4f697a4b6828134ee1071abd54e015deeace2fe9ad"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_effective_members.csv",
+      "bytes": 5459,
+      "sha256": "b2932f10ad9460a300cd6d0954f4d2da3c873dbeb3379d46473745bc69f06563"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_meta.json",
+      "bytes": 393,
+      "sha256": "f50f0bdcb7fb99e85a5fa6e03d57d2ce1ebfee98bab088cdcf2d3f728d91dbbb"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_rebalance_changes.csv",
+      "bytes": 2191,
+      "sha256": "992dbf437b64e1b88eeaf904661a44f9533994f9cab42bf9af3d79dfaa592705"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_target_members.csv",
+      "bytes": 7686,
+      "sha256": "96763902bf2a1e2400b3747c22feac1654eaa714db4d9e2f6577da1ad8d85c1b"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "bytes": 597818,
+      "sha256": "5555dd16f4e4bc324f936923d4fc2b8085c45dc34b32f02a04aefa853e851cc7"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+      "bytes": 2028387,
+      "sha256": "043b3f497210d59e57a16cb09a30ebe28ab094a46a6d66c69ac41dd1a178dac3"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "bytes": 2132,
+      "sha256": "0d0240a701bf7dfa933f04b6730607a6cc3a9c14ac8f993d117a2921b2fdc2d2"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "bytes": 42807,
+      "sha256": "4a99ff147809247913d858c94a129d31c5c609f3ce4e6c41c4a1ecaec9ac8b4d"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+      "bytes": 2557,
+      "sha256": "993219c3269b0e7b20b6d7d1b0197867cff81b88e0d14d1ce141624571ec094e"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "bytes": 1496536,
+      "sha256": "33ab88409b55899f462d558cbc80cbbc84364ae9d97cdf9754f0876eb42a73e4"
+    },
+    {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "bytes": 234030,
+      "sha256": "adca1735ae7cd841d6597e9b6e68aa8907935774ec7903772ee74a31299594bc"
+    }
+  ]
+}
