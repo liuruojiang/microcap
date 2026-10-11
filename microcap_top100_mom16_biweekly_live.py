@@ -239,8 +239,8 @@ def is_tradable_name(name: str) -> bool:
 
 def is_live_tradable_name(name: str) -> bool:
     """Current/live member rule; deliberately separate from historical ST masks."""
-    text = str(name or "").strip().upper().replace(" ", "")
-    return is_tradable_name(name) and not text.startswith(("*ST", "ST", "PT"))
+    text = str(name or "").upper()
+    return is_tradable_name(name) and re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is None
 
 
 def assert_no_st_members(members: pd.DataFrame, label: str) -> None:

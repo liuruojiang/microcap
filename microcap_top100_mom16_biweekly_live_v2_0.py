@@ -516,8 +516,8 @@ def calc_metrics(ret: pd.Series) -> Metrics:
         raise ValueError("Return series is empty.")
 
     nav = (1.0 + ret).cumprod()
-    years = (ret.index[-1] - ret.index[0]).days / 365.25
-    annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else np.nan
+    years = len(ret) / CN_TRADING_DAYS
+    annual = nav.iloc[-1] ** (1.0 / years) - 1.0
     vol = ret.std(ddof=1) * np.sqrt(CN_TRADING_DAYS)
     sharpe = annual / vol if pd.notna(vol) and vol > 0 else np.nan
     high_water = nav.cummax().clip(lower=1.0)
@@ -1241,14 +1241,21 @@ SHARED_SHARE_CACHE_DIR = SHARED_CACHE_DIR / "share_change" if SHARED_CACHE_DIR e
 
 
 def load_calendar(start_date: str, end_date: str) -> pd.DatetimeIndex:
+    from scripts.exchange_calendar import sessions_for_day
+
+    exchange = set(sessions_for_day(pd.Timestamp(end_date).date()))
     if MAIN_PANEL.exists():
         panel = pd.read_csv(MAIN_PANEL, usecols=["date"])
         panel["date"] = pd.to_datetime(panel["date"])
         dates = panel["date"].drop_duplicates().sort_values()
         dates = dates[(dates >= pd.Timestamp(start_date)) & (dates <= pd.Timestamp(end_date))]
         if len(dates):
+            invalid = next((day for day in dates if day.date() not in exchange), None)
+            if invalid is not None:
+                raise ValueError(f"index panel contains non-exchange-session date: {invalid.date()}")
             return pd.DatetimeIndex(dates)
-    return pd.bdate_range(start=start_date, end=end_date)
+    return pd.DatetimeIndex(day for day in sorted(exchange)
+                            if pd.Timestamp(start_date).date() <= day <= pd.Timestamp(end_date).date())
 
 
 def try_fetch_windpy(index_code: str, start_date: str, end_date: str) -> pd.DataFrame:
@@ -2349,7 +2356,14 @@ def load_trading_dates() -> pd.DatetimeIndex:
     panel["date"] = pd.to_datetime(panel["date"])
     dates = panel["date"].drop_duplicates().sort_values()
     dates = dates[(dates >= pd.Timestamp(START_DATE)) & (dates <= pd.Timestamp(END_DATE))]
-    return pd.DatetimeIndex(dates)
+    from scripts.exchange_calendar import sessions_for_day
+
+    observed = pd.DatetimeIndex(dates)
+    exchange = set(sessions_for_day(pd.Timestamp(END_DATE).date()))
+    invalid = next((day for day in observed if day.date() not in exchange), None)
+    if invalid is not None:
+        raise ValueError(f"historical panel contains non-exchange-session date: {invalid.date()}")
+    return observed
 
 
 def load_current_st_name_map() -> dict[str, str]:
@@ -2404,8 +2418,8 @@ def load_universe() -> list[str]:
 
 
 def is_st_name(name: str | None) -> bool:
-    text = str(name or "").strip().upper().replace(" ", "")
-    return text.startswith(("*ST", "ST", "PT"))
+    text = str(name or "").upper()
+    return re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is not None
 
 
 def build_st_intervals_from_name_changes(
@@ -3054,7 +3068,8 @@ def is_price_at_limit(
         return False
     if direction not in {-1, 1}:
         raise ValueError(f"unsupported limit direction: {direction}")
-    limit_price = round_limit_price(float(prev_close) * (1.0 + direction * float(limit_ratio)))
+    exact_limit = Decimal(str(prev_close)) * (Decimal("1") + Decimal(direction) * Decimal(str(limit_ratio)))
+    limit_price = round_limit_price(exact_limit)
     expected_return = limit_price / float(prev_close) - 1.0
     actual_return = float(price) / float(prev_close) - 1.0
     return abs(actual_return - expected_return) <= LIMIT_PRICE_REL_EPS
@@ -3922,8 +3937,8 @@ def is_tradable_name(name: str) -> bool:
 
 def is_live_tradable_name(name: str) -> bool:
     """Current/live member rule; deliberately separate from historical ST masks."""
-    text = str(name or "").strip().upper().replace(" ", "")
-    return is_tradable_name(name) and not text.startswith(("*ST", "ST", "PT"))
+    text = str(name or "").upper()
+    return is_tradable_name(name) and re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is None
 
 
 def assert_no_st_members(members: pd.DataFrame, label: str) -> None:
@@ -5869,6 +5884,13 @@ def ensure_strategy_files(
     trading_dates = pd.DatetimeIndex(
         panel.loc[panel["date"] <= pd.Timestamp(target_end_date), "date"].drop_duplicates().sort_values()
     )
+    from scripts.exchange_calendar import sessions_for_day
+
+    exchange = set(sessions_for_day(pd.Timestamp(target_end_date).date()))
+    invalid = next((day for day in trading_dates
+                    if day >= pd.Timestamp(START_DATE) and day.date() not in exchange), None)
+    if invalid is not None:
+        raise ValueError(f"full proxy rebuild panel contains non-exchange-session date: {invalid.date()}")
 
     index_df, members_df, turnover_df, meta = build_local_proxy_bundle(args, trading_dates)
     args.index_csv.parent.mkdir(parents=True, exist_ok=True)

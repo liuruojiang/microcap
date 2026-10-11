@@ -366,7 +366,14 @@ def load_trading_dates() -> pd.DatetimeIndex:
     panel["date"] = pd.to_datetime(panel["date"])
     dates = panel["date"].drop_duplicates().sort_values()
     dates = dates[(dates >= pd.Timestamp(START_DATE)) & (dates <= pd.Timestamp(END_DATE))]
-    return pd.DatetimeIndex(dates)
+    from scripts.exchange_calendar import sessions_for_day
+
+    observed = pd.DatetimeIndex(dates)
+    exchange = set(sessions_for_day(pd.Timestamp(END_DATE).date()))
+    invalid = next((day for day in observed if day.date() not in exchange), None)
+    if invalid is not None:
+        raise ValueError(f"historical panel contains non-exchange-session date: {invalid.date()}")
+    return observed
 
 
 def load_current_st_name_map() -> dict[str, str]:
@@ -425,8 +432,8 @@ def load_universe() -> list[str]:
 
 
 def is_st_name(name: str | None) -> bool:
-    text = str(name or "").strip().upper().replace(" ", "")
-    return text.startswith(("*ST", "ST", "PT"))
+    text = str(name or "").upper()
+    return re.match(r"^\s*(?:[SG]\s*)?\*?\s*(?:ST|PT)(?![A-Z])", text) is not None
 
 
 def build_st_intervals_from_name_changes(
@@ -1008,6 +1015,9 @@ def get_price_limit_ratio(symbol: str, trade_date: pd.Timestamp, is_st: bool = F
     if code.startswith("688"):
         return 0.2
     if is_st:
+        mainland_main_board = code.startswith(("000", "001", "002", "003", "600", "601", "603", "605"))
+        if mainland_main_board and pd.Timestamp(trade_date).normalize() >= pd.Timestamp("2026-07-06"):
+            return 0.1
         return 0.05
     return 0.1
 
@@ -1022,7 +1032,8 @@ def is_price_at_limit(
         return False
     if direction not in {-1, 1}:
         raise ValueError(f"unsupported limit direction: {direction}")
-    limit_price = round_limit_price(float(prev_close) * (1.0 + direction * float(limit_ratio)))
+    exact_limit = Decimal(str(prev_close)) * (Decimal("1") + Decimal(direction) * Decimal(str(limit_ratio)))
+    limit_price = round_limit_price(exact_limit)
     expected_return = limit_price / float(prev_close) - 1.0
     actual_return = float(price) / float(prev_close) - 1.0
     return abs(actual_return - expected_return) <= LIMIT_PRICE_REL_EPS

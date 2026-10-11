@@ -29,7 +29,12 @@ def change_csv_cell(path, field, value):
 
 
 @pytest.fixture
-def workspace(tmp_path):
+def workspace(tmp_path, monkeypatch):
+    from scripts import exchange_calendar
+
+    monkeypatch.setattr(exchange_calendar, "sessions_for_day",
+                        lambda _day: (date(2026, 8, 20), date(2026, 9, 2),
+                                      date(2026, 9, 3), date(2026, 9, 4)))
     contract_source = Path(__file__).resolve().parents[1] / "scripts/top100_data_contracts.py"
     contract_target = tmp_path / "scripts/top100_data_contracts.py"
     contract_target.parent.mkdir(parents=True, exist_ok=True)
@@ -446,6 +451,21 @@ def test_member_action_contract_rejects_missed_or_far_future_execution(
     report = delivery.inspect_outputs(workspace, "2026-09-03")
     assert not report["ok"]
     assert any("member actionability" in error or "member execution date" in error
+               for error in report["errors"])
+
+
+def test_historical_holiday_in_base_panel_blocks_whole_delivery(workspace):
+    proxy = workspace / "outputs" / delivery.BASE_FILES["proxy_index"]
+    proxy.write_text(proxy.read_text(encoding="utf-8").replace(
+        "2026-09-02,0.01,1.01", "2018-06-15,0.0,1.0\n2026-09-02,0.01,1.01"
+    ), encoding="utf-8")
+    path = workspace / "outputs" / delivery.BASE_PANEL
+    path.write_text(path.read_text(encoding="utf-8").replace(
+        "2026-09-02,0.01,1.01", "2018-06-18,0.01,1.01\n2026-09-02,0.01,1.01"
+    ), encoding="utf-8")
+    report = delivery.inspect_outputs(workspace, "2026-09-03")
+    assert not report["ok"]
+    assert any("non-exchange-session date" in error and "2018-06-18" in error
                for error in report["errors"])
 
 
