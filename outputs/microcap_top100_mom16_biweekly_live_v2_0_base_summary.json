@@ -32,10 +32,10 @@
   "next_rebalance_date": null,
   "history_anchor": {
     "latest_trade_date": "2026-10-09",
-    "current_date": "2026-10-09",
-    "stale_calendar_days": 0,
+    "current_date": "2026-10-11",
+    "stale_calendar_days": 2,
     "stale_trading_days": 0,
-    "staleness_value": 0,
+    "staleness_value": 2,
     "staleness_unit": "calendar_days",
     "max_stale_anchor_days": 5,
     "is_stale": false,
