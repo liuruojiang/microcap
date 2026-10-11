@@ -1,0 +1,18 @@
+{
+  "original_path": "D:\\Codex\\worktrees\\microcap-metadata-preserve-20260917",
+  "original_branch": "codex/microcap-metadata-preserve-20260917",
+  "original_head": "d1ac74a3fc3ce6a4f879a87ef5dab20bc1a718b4",
+  "scope": "Historical working-copy evidence; archived rather than replacing current formal state.",
+  "files": [
+    {
+      "path": "microcap_top100_mom16_biweekly_live_v2_0.py",
+      "bytes": 670187,
+      "sha256": "755959293e688d5fc0a9d84d43c4fbba3bcf96158a90953cb26f8d62febc8f61"
+    },
+    {
+      "path": "tests/test_security_meta_preserve_20260917.py",
+      "bytes": 3899,
+      "sha256": "2c6687d6e29fce168288e559a2ee6de70782f332874662e51cfbef2e9dc1ab10"
+    }
+  ]
+}
