@@ -1,0 +1,23 @@
+{
+  "original_path": "D:\\Codex\\worktrees\\microcap-continuation-20260917",
+  "original_branch": "codex/frozen-member-continuation-20260917",
+  "original_head": "89bb4ef59481edb8dbf7d3cde4e4b880dfe6cc93",
+  "scope": "Historical working-copy evidence; archived rather than replacing current formal state.",
+  "files": [
+    {
+      "path": "combined-tests.log",
+      "bytes": 264,
+      "sha256": "5357a0c8824b25bf7e85b3e0c08ee8ffbb5780bdd29aba561f76deb8f1f89e5f"
+    },
+    {
+      "path": "continuation-tests.log",
+      "bytes": 264,
+      "sha256": "401e3058b9d69e82a901af5ab8ddac55f85ced5e888a8aeb383d4e6ec61f09b2"
+    },
+    {
+      "path": "continuation-tests2.log",
+      "bytes": 264,
+      "sha256": "3ff667152502c62b1ce950420e8427025ef50abc3249fc1f91b1b2cb9996bcdd"
+    }
+  ]
+}
