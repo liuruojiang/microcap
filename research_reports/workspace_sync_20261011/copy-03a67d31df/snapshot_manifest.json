@@ -1,0 +1,108 @@
+{
+  "original_path": "C:\\Users\\Administrator.DESKTOP-95I7VVU\\Documents\\Codex\\worktrees\\microcap-daily-repair-20260916",
+  "original_branch": "codex/microcap-daily-repair-summary-tail",
+  "original_head": "dc7aa4df133ab381ea32b9e86f008d572a06fd8e",
+  "scope": "Historical working-copy evidence; archived rather than replacing current formal state.",
+  "files": [
+    {
+      "path": ".microcap_index_cache/active_universe.csv",
+      "bytes": 148688,
+      "sha256": "b60b623372e977481c27e963b01938aa555c1e2380df1acdd3bc1f92ef9bcf8c"
+    },
+    {
+      "path": ".microcap_index_cache/current_st.csv",
+      "bytes": 3351,
+      "sha256": "b93d797befe507bbda2f4e4f697a4b6828134ee1071abd54e015deeace2fe9ad"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_effective_members.csv",
+      "bytes": 5459,
+      "sha256": "b2932f10ad9460a300cd6d0954f4d2da3c873dbeb3379d46473745bc69f06563"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_meta.json",
+      "bytes": 393,
+      "sha256": "f50f0bdcb7fb99e85a5fa6e03d57d2ce1ebfee98bab088cdcf2d3f728d91dbbb"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_rebalance_changes.csv",
+      "bytes": 2191,
+      "sha256": "992dbf437b64e1b88eeaf904661a44f9533994f9cab42bf9af3d79dfaa592705"
+    },
+    {
+      "path": ".microcap_index_cache/realtime/microcap_top100_mom16_biweekly_live_v1_1_static_target_members.csv",
+      "bytes": 7686,
+      "sha256": "96763902bf2a1e2400b3747c22feac1654eaa714db4d9e2f6577da1ad8d85c1b"
+    },
+    {
+      "path": "microcap_top100_mom16_biweekly_live_v2_0.py",
+      "bytes": 668871,
+      "sha256": "c8aa37fe4a3f74086731c803803e3360b09444377f9a8f7f54e4737e2e1de4f3"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_latest_signal.csv",
+      "bytes": 643,
+      "sha256": "5c204acedf59544c9ba9401a5c528ff57d77452ee04619b19c52e2553c6c2211"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv",
+      "bytes": 1318396,
+      "sha256": "8a40502538f8542e0f2965bf5d1bd0a7c8167a968f76d3e44f8063d1a3b03965"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "bytes": 606506,
+      "sha256": "e0a13ec94823df909a5e22473a24c4e01aa30bfc38b081f76ef62cbfe15471f3"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv",
+      "bytes": 2216,
+      "sha256": "6ee4bf8890df09bc0779dfd882e7b51d92972652a11b6bf40db109b5da281838"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+      "bytes": 2074549,
+      "sha256": "fa42c2482b75043c06adf0019222cf24cbcdc8b7a35dc29002f91d41f2d671ca"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "bytes": 2182,
+      "sha256": "bf5fb01c4ca90145d52ff2a186e02663386c6628671424ab060f065b121dde23"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "bytes": 43273,
+      "sha256": "8f26654e50ccb91540e7f8e75761796f8dbdbc5192c8261370c034a137b93292"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_rebalance_changes.csv",
+      "bytes": 2130,
+      "sha256": "74da483a82946925afbe49005290ac503991c6ac81064b5c44aa88a81243a3c1"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+      "bytes": 2590,
+      "sha256": "b71ff1b04278311b4e639363d05df47f138091058d37fca387be87a7192a8810"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_target_members.csv",
+      "bytes": 7663,
+      "sha256": "3fdcf88782c1bc5076d24395dd897c5e6a23a493a5b3f3603c745ad3a9855614"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "bytes": 1499435,
+      "sha256": "d133d5aa55fbb20c9300a5c8409521b7eae82036408ae017931068927edf068d"
+    },
+    {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "bytes": 237879,
+      "sha256": "3347b5e1deeedee966efd0b1b542f61f601be138891f297492bff316d000bd0f"
+    },
+    {
+      "path": "tests/test_realtime_state_guard_20260915.py",
+      "bytes": 7939,
+      "sha256": "415ee9d99db93a4d6221884f1fd8c95f5b47ca41b376c28356bd8decc744751b"
+    }
+  ]
+}
