@@ -1,0 +1,53 @@
+{
+  "status": "PASS_600778_exact_event_until_current_first_block",
+  "manifest_sha256": "14b2598931b96b42805d2ac47fd6701e9f73458dbcbdc0b1cda926ab288ed72f",
+  "source_sha256": {
+    "issuer_pdf": "4665a8fae757f04fce8e4bd11713d6b6b485bf7737c1aa60efc43aad0189bb81",
+    "cninfo_file": "54af732ea8434fb466f25e1f4423d5816f5688d9bca030a2f467c895271c5c6d",
+    "cninfo_row": "c4dca6ab96344bebe146cd1913ef181fc870a89c762115ed8f60aa711ade1ec9",
+    "candidate_file": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c"
+  },
+  "accounts": {
+    "prefunded": {
+      "record_shares": "6068.124346190226600876442059681182679921",
+      "gross_cash_paid": "546.1311911571203940788797853713064411929",
+      "old_stock_value": "97696.8019736626482741107171608670411467281",
+      "ex_stock_plus_cash": "97696.80197366264827411071716086704114672811",
+      "mutations_rejected": {
+        "candidate_cash_per_10_1p0": true,
+        "raw_official_cash_per_10_1p0": true,
+        "wrong_record_day": true,
+        "double_credit": true,
+        "missing_cash": true,
+        "old_mark_plus_cash": true
+      },
+      "booked_ex_orders": 0
+    },
+    "netted": {
+      "record_shares": "6936.774020385449242777845654225535705209",
+      "gross_cash_paid": "624.3096618346904318500061088802982134688",
+      "old_stock_value": "111682.0617282057328087233150330311248538649",
+      "ex_stock_plus_cash": "111682.06172820573280872331503303112485386489",
+      "mutations_rejected": {
+        "candidate_cash_per_10_1p0": true,
+        "raw_official_cash_per_10_1p0": true,
+        "wrong_record_day": true,
+        "double_credit": true,
+        "missing_cash": true,
+        "old_mark_plus_cash": true
+      },
+      "booked_ex_orders": 0
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2015-07-09",
+      "reason": "unverified_missing_raw_close:2015-07-09:002088"
+    },
+    "netted": {
+      "date": "2015-07-09",
+      "reason": "unverified_missing_raw_close:2015-07-09:002088"
+    }
+  },
+  "limitations": "Gross paper cash, not verified investor-specific net payment. Zero-volume reference mark is not an executable close; 2015-10-13 preclose is future corroboration only."
+}

@@ -1,0 +1,2 @@
+signal
+strategy_revision: plain_mom16_fixed1_20260904

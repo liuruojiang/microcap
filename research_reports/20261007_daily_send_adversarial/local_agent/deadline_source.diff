@@ -1,0 +1,109 @@
+diff --git a/microcap_top100_mom16_biweekly_live.py b/microcap_top100_mom16_biweekly_live.py
+index f7124c71..361544e0 100644
+--- a/microcap_top100_mom16_biweekly_live.py
++++ b/microcap_top100_mom16_biweekly_live.py
+@@ -3193,6 +3193,12 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
+             f"成员股报价交易日与对冲腿报价交易日不一致: "
+             f"member={member_quote_date}, hedge={hedge_quote_date}，拒绝输出实盘信号。"
+         )
++    from scripts.top100_data_contracts import assert_intraday_publication_deadline
++
++    snapshot_text = str(meta.get("snapshot_time") or "").strip()
++    if not snapshot_text:
++        raise RuntimeError("Realtime publication deadline requires snapshot_time.")
++    assert_intraday_publication_deadline(_cn_timestamp(pd.Timestamp(snapshot_text)), _cn_timestamp())
+ 
+ 
+ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
+diff --git a/microcap_top100_mom16_biweekly_live_v2_0.py b/microcap_top100_mom16_biweekly_live_v2_0.py
+index caa71f58..8516d50b 100644
+--- a/microcap_top100_mom16_biweekly_live_v2_0.py
++++ b/microcap_top100_mom16_biweekly_live_v2_0.py
+@@ -8071,9 +8071,13 @@ def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) ->
+     if not snapshot_text:
+         raise RuntimeError("Realtime meta missing snapshot_time for independent calendar validation.")
+     snapshot = _cn_timestamp(pd.Timestamp(snapshot_text))
++    from scripts.top100_data_contracts import assert_intraday_publication_deadline
++
++    now = _cn_timestamp()
++    assert_intraday_publication_deadline(snapshot, now)
+     if snapshot.date() != quote_day.date() or quote_day.date() != _cn_local_day().date():
+         raise RuntimeError("Realtime snapshot and quote date must both be today's Beijing session.")
+-    if snapshot > _cn_timestamp() + pd.Timedelta(minutes=1):
++    if snapshot > now + pd.Timedelta(minutes=1):
+         raise RuntimeError("Realtime snapshot_time is in the future.")
+     if not is_trading_day(quote_day.date()):
+         raise RuntimeError("Realtime quote date is not an official exchange trading session.")
+@@ -8095,6 +8099,7 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
+ 
+ 
+ REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
++    "Realtime publication deadline",
+     "synthetic last-close fallback quotes",
+     "independent refresh proof",
+     "independently refreshed latest completed trade date",
+@@ -12674,6 +12679,14 @@ def _apply_selected_realtime_meta_to_signal_row(
+ 
+ 
+ def _apply_realtime_meta_columns_to_signal_row(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:
++    publication_fields = {
++        "snapshot_time", "quote_trade_date", "latest_anchor_trade_date",
++        "expected_latest_completed_trade_date", "expected_latest_completed_trade_date_source",
++        "expected_latest_completed_trade_date_verified_on",
++    }
++    if publication_fields.issubset(meta):
++        # All three live versions use this helper just before writing their CSV.
++        realtime_core.base_mod.assert_realtime_anchor_precedes_quote_trade_date(meta)
+     for col in MEMBER_REBALANCE_META_COLS:
+         if col in meta and col not in signal_row.columns:
+             signal_row[col] = _csv_safe_value(meta[col])
+diff --git a/scripts/top100_data_contracts.py b/scripts/top100_data_contracts.py
+index 29076ad9..4903d68b 100644
+--- a/scripts/top100_data_contracts.py
++++ b/scripts/top100_data_contracts.py
+@@ -3,7 +3,7 @@ from __future__ import annotations
+ 
+ import math
+ import csv
+-from datetime import date
++from datetime import date, time
+ from pathlib import Path
+ 
+ import numpy as np
+@@ -104,6 +104,25 @@ def validate_mapped_rebalance_costs(index: pd.Index, turnover: pd.DataFrame, map
+         raise ValueError("mapped rebalance costs differ from dated turnover events")
+ 
+ 
++def assert_intraday_publication_deadline(snapshot_time: object, now: object | None = None) -> None:
++    """Live publication ends at 15:00; archived rows only check their snapshot."""
++    values = [("snapshot", snapshot_time)]
++    if now is not None:
++        values.append(("current time", now))
++    for label, value in values:
++        try:
++            stamp = pd.Timestamp(value)
++        except (ValueError, TypeError) as exc:
++            raise RuntimeError(f"Realtime publication deadline requires a valid {label}.") from exc
++        if pd.isna(stamp) or stamp.tz is None:
++            raise RuntimeError(f"Realtime publication deadline requires a timezone-aware {label}.")
++        if stamp.tz_convert("Asia/Shanghai").time().replace(tzinfo=None) >= time(15, 0):
++            raise RuntimeError(
++                f"Realtime publication deadline: {label} must be strictly before 15:00:00 Beijing; "
++                "use a close-confirmed report after the close."
++            )
++
++
+ def realtime_row_is_consistent(row: object, active_holding: str) -> bool:
+     """Validate a dated snapshot; age alone does not invalidate an archived row."""
+     try:
+@@ -120,6 +139,10 @@ def realtime_row_is_consistent(row: object, active_holding: str) -> bool:
+         snapshot = pd.Timestamp(row.get("snapshot_time"))
+         if pd.isna(snapshot) or snapshot.tz is None or snapshot.tz_convert("Asia/Shanghai").date() != quote:
+             return False
++        try:
++            assert_intraday_publication_deadline(snapshot)
++        except RuntimeError:
++            return False
+         if latest_completed_session(snapshot.to_pydatetime()) != anchor:
+             return False
+         if row.get("signal_timing") != "intraday_hypothetical_if_now_close":

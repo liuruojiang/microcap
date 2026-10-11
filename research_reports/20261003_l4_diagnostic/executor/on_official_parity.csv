@@ -1,0 +1,16 @@
+﻿column,max_abs_diff,mismatch_rows
+return_net,9.98821251402271e-17,0
+nav_net,3.552713678800501e-15,0
+total_cost,0.0,0
+rebalance_cost,0.0,0
+entry_exit_cost,0.0,0
+annualized_log_wls_score,4.440892098500626e-16,0
+overheat_feature_value,2.220446049250313e-16,0
+holding,,0
+next_holding,,0
+base_holding,,0
+base_next_holding,,0
+overheat_risk_off,,0
+overheat_exit_triggered,,0
+overheat_block_entry_triggered,,0
+overheat_reentry_triggered,,0

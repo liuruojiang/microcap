@@ -1,0 +1,163 @@
+{
+  "scope": "old-input conditional proportional-account arithmetic only",
+  "sources": {
+    "proxy": {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "rows": 4067,
+      "first": "2010-01-05",
+      "last": "2026-09-30",
+      "previous_2026_09_29_sha256": "d5cae749dbf2c1a474953be30632de26876fd8a2bbf156a13e35eb66bda7b13e",
+      "prefix_sha256_without_2026_09_30": "d5cae749dbf2c1a474953be30632de26876fd8a2bbf156a13e35eb66bda7b13e",
+      "single_row_append_or_unchanged_verified": true
+    },
+    "panel": {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "rows": 8738,
+      "first": "1990-12-19",
+      "last": "2026-09-30",
+      "previous_2026_09_29_sha256": "6058eea855c5cdce4f69213717e9de920e839fc1754c6971d5f94ebf7841be66",
+      "prefix_sha256_without_2026_09_30": "6058eea855c5cdce4f69213717e9de920e839fc1754c6971d5f94ebf7841be66",
+      "single_row_append_or_unchanged_verified": true
+    },
+    "turnover": {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "rows": 432,
+      "first": "2010-01-14",
+      "last": "2026-09-17",
+      "previous_2026_09_29_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "prefix_sha256_without_2026_09_30": null,
+      "single_row_append_or_unchanged_verified": true
+    },
+    "base": {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "rows": 4050,
+      "first": "2010-01-28",
+      "last": "2026-09-30",
+      "previous_2026_09_29_sha256": "1c83bda412ac3247703af3f2a0dcf9e1341fe018896f0c4f1fffd713d1d90ffa",
+      "prefix_sha256_without_2026_09_30": "1c83bda412ac3247703af3f2a0dcf9e1341fe018896f0c4f1fffd713d1d90ffa",
+      "single_row_append_or_unchanged_verified": true
+    },
+    "v2_0": {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "rows": 4033,
+      "first": "2010-03-01",
+      "last": "2026-09-30",
+      "previous_2026_09_29_sha256": "96cdd20f32b1bebcc02bc8b51f9c927866bb972a5e91bd0bcbf0e9a64b79c4cb",
+      "prefix_sha256_without_2026_09_30": "96cdd20f32b1bebcc02bc8b51f9c927866bb972a5e91bd0bcbf0e9a64b79c4cb",
+      "single_row_append_or_unchanged_verified": true
+    }
+  },
+  "cutoffs": {
+    "2026-09-30": {
+      "cutoff": "2026-09-30",
+      "rows": 4050,
+      "first": "2010-01-28",
+      "last": "2026-09-30",
+      "paired_close_rows": 4067,
+      "proxy_rows": 4067,
+      "turnover_events": 432,
+      "turnover_last_event": "2026-09-17",
+      "base_max_abs_error": {
+        "close": 2.9103830456733704e-11,
+        "micro_return": 2.220446049250313e-16,
+        "hedge_return": 0.0,
+        "momentum_gap": 2.220446049250313e-16,
+        "gross": 2.220446049250313e-16,
+        "cost": 1.0018028073766061e-16,
+        "net": 2.220446049250313e-16,
+        "nav": 1.5631940186722204e-13
+      },
+      "base_max_error_dates": {
+        "close": "2025-09-22",
+        "micro_return": "2025-09-22",
+        "hedge_return": null,
+        "momentum_gap": "2025-09-22",
+        "gross": "2026-09-08",
+        "cost": "2015-05-28",
+        "net": "2010-03-25",
+        "nav": "2026-09-23"
+      },
+      "base_state_mismatch_count": 0,
+      "base_first_state_mismatch": null,
+      "reconstruction_pass": true,
+      "v2_0_strategy_rows": 4033,
+      "v2_0_vs_plain_baseline_different_return_days": 1,
+      "v2_0_vs_plain_baseline_first_difference": "2010-03-01",
+      "windows_conditional_arithmetic_only": {
+        "full": {
+          "first": "2010-01-28",
+          "last": "2026-09-30",
+          "return_days": 4050,
+          "terminal_nav_window_anchor_1": 32.8938902339299,
+          "annualized_244_N": 0.23424538123250782,
+          "max_drawdown_initial_1": -0.14804055047142783,
+          "max_drawdown_trough": "2026-07-22",
+          "cost_days": 528,
+          "sum_daily_cost_rate": 0.8854500000000001
+        },
+        "10Y": {
+          "first": "2016-09-30",
+          "last": "2026-09-30",
+          "return_days": 2429,
+          "terminal_nav_window_anchor_1": 5.93471772557671,
+          "annualized_244_N": 0.1958872885464069,
+          "max_drawdown_initial_1": -0.14804055047142783,
+          "max_drawdown_trough": "2026-07-22",
+          "cost_days": 318,
+          "sum_daily_cost_rate": 0.55383
+        },
+        "5Y": {
+          "first": "2021-09-30",
+          "last": "2026-09-30",
+          "return_days": 1212,
+          "terminal_nav_window_anchor_1": 3.223326091396603,
+          "annualized_244_N": 0.2657031980354685,
+          "max_drawdown_initial_1": -0.1480405504714285,
+          "max_drawdown_trough": "2026-07-22",
+          "cost_days": 160,
+          "sum_daily_cost_rate": 0.27252
+        },
+        "3Y": {
+          "first": "2023-10-09",
+          "last": "2026-09-30",
+          "return_days": 726,
+          "terminal_nav_window_anchor_1": 1.6915341482337063,
+          "annualized_244_N": 0.1932253257479326,
+          "max_drawdown_initial_1": -0.14804055047142828,
+          "max_drawdown_trough": "2026-07-22",
+          "cost_days": 97,
+          "sum_daily_cost_rate": 0.1776
+        },
+        "1Y": {
+          "first": "2025-09-30",
+          "last": "2026-09-30",
+          "return_days": 242,
+          "terminal_nav_window_anchor_1": 1.1462463794952287,
+          "annualized_244_N": 0.1475401184112417,
+          "max_drawdown_initial_1": -0.1480405504714275,
+          "max_drawdown_trough": "2026-07-22",
+          "cost_days": 31,
+          "sum_daily_cost_rate": 0.06144
+        }
+      },
+      "fee_omission_counterexample": {
+        "date": "2010-01-28",
+        "expected_fee": 0.003,
+        "return_error_if_omitted": 0.0030000000000000027,
+        "rejected": true
+      },
+      "first_day_denominator_counterexample": {
+        "first_day_return": -0.0030000000000000027,
+        "annualized_244_N": 0.23424538123250782,
+        "annualized_244_N_minus_1_using_same_terminal_nav": 0.23430953676048483,
+        "annualized_calendar_from_first_to_last": 0.23311758252613224
+      },
+      "capital_account_certified": false
+    }
+  }
+}

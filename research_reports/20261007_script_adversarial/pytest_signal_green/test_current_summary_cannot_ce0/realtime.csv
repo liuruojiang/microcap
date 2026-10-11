@@ -1,0 +1,2 @@
+version,strategy_version,strategy_revision,lookback,halflife,r2_entry_gate,momentum_gap_entry_threshold,momentum_gap_exit_buffer,signal_spread_hedge_ratio,execution_hedge_ratio,overheat_feature_window,overheat_trigger_threshold,overheat_recovery_threshold,overheat_enabled,r2_gate_enabled,target_vol_enabled,cash_day_yield_enabled,financing_enabled
+2.3,v2.3,retired_revision,25,2.5,0.0,0.0,0.08,1.0,0.8,10,0.26,0.2,True,False,True,False,False

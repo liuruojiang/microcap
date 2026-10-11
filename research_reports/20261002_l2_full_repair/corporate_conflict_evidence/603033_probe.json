@@ -1,0 +1,65 @@
+{
+  "queried_utc": "2026-10-03T02:10:10.623828+00:00",
+  "issuer_sources": {
+    "603033_implementation": {
+      "url": "https://static.cninfo.com.cn/finalpage/2018-05-11/1204930567.PDF",
+      "sha256": "36cb0ce8869ac318b36a1615561eaca1982a30dbd55946f67e0f7bb498b0f4f8"
+    },
+    "603033_suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2018-02-01/1204379748.PDF",
+      "sha256": "10c3815a866ceb23016e7a3e0361ee631e68ba8c240d41e3d44f5d3a2a0971fe"
+    },
+    "603033_resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2018-05-26/1205007433.PDF",
+      "sha256": "cc6c9e19dd6499f85e08d7ed3294b9bd9eee55608550a2ec18c9f3cc5c831446"
+    }
+  },
+  "source_status": "cninfo=1;sina=0; single_source_only",
+  "event_scope": "netted 603033 only; record=2018-05-18; ex=pay=2018-05-21; gross cash 0.15/share",
+  "vendor_query": "BaoStock sh.603033 daily adjustflag=3, 2018-01-30..2018-05-30",
+  "last_actual_trade_before_ex": {
+    "date": "2018-01-31",
+    "code": "sh.603033",
+    "open": "18.0800",
+    "high": "19.1600",
+    "low": "17.8200",
+    "close": "18.8500",
+    "preclose": "18.1200",
+    "volume": "2381440",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_zero_volume_reference": {
+    "date": "2018-05-21",
+    "code": "sh.603033",
+    "open": "18.7000",
+    "high": "18.7000",
+    "low": "18.7000",
+    "close": "18.7000",
+    "preclose": "18.7000",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2018-05-28",
+    "code": "sh.603033",
+    "open": "20.5700",
+    "high": "20.5700",
+    "low": "19.8600",
+    "close": "20.5700",
+    "preclose": "18.7000",
+    "volume": "3570340",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_rows": 78,
+  "vendor_csv_sha256": "a3c381e25a70e993a17836f7b0f9ff88f251238c89af3cff5bbe839c1f065a2e",
+  "account_rights_events_sha256": "fc6a991fb8ce4dfb34dacf86b2f95a420145171d018307e2fa511e7f402083a5",
+  "netted_record_shares": "7112.175929496385174632284704529003339784",
+  "netted_gross_cash_due": "1066.826389424457776194842705679350500968",
+  "missing_cash_mark_delta_yuan": "-1066.826389424457776194842705679350500968",
+  "double_cash_mark_delta_yuan": "1066.826389424457776194842705679350500968",
+  "missing_or_duplicate_cash_false_return": "0.007957559681697612732095490716180371352788129526704575518342537739",
+  "assessment": "Use 18.70 only as suspended zero-volume valuation with gross cash once. No fill before 05-28 actual resumption."
+}

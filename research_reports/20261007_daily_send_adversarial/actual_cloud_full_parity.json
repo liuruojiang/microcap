@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "scope": "actual_cloud_full_delivery_readback",
+  "run_id": 37644093633,
+  "strategy_sha": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+  "automation_sha": "ff81e937effe74f672502177936f8c919d8f11af",
+  "artifact_name": "microcap-whole-delivery-validation-state",
+  "transport": {
+    "github_artifact": 11494840703,
+    "github_artifact_bytes": 66242091,
+    "github_artifact_sha256": "d89599e839fda041f113776040ac21cda4b09840daa91dd750f547daafa1f3e0"
+  },
+  "bundle_sha256": "930cd53c105b1bf0fc82f1541e4ffb294b65dfdfee76601a8895e70b987499e1",
+  "integrity_files_verified": 14982,
+  "staged_artifacts": 32,
+  "source_and_base_inputs_match": true,
+  "whole_delivery_check": true,
+  "primary_files_unchanged": true,
+  "comparisons": {
+    "v2.0": {
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "local_sha256": "0e4763e1cdf58345e3fd9be40ebd767f5811bce1090d9a12662d516d83022059",
+      "cloud_sha256": "1690f32d5d2fe0599f9e5d89ec17a62c7228eb96b1e7fd22d207085e67a8334f",
+      "same_categorical": {
+        "date": true,
+        "version": true,
+        "strategy_revision": true,
+        "holding": true,
+        "next_holding": true
+      },
+      "max_absolute_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "final_csv": {
+        "version": "2.0",
+        "strategy_version": null,
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "current_holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    },
+    "v2.3": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "local_sha256": "f4f944b600eb30d9d7c8a5428d5c7a8894212d2fc5b566c0dd8f93e5e5a80aeb",
+      "cloud_sha256": "0193da45b0f5a087ff88e7b48c14ddba325d52c715524de8be2a26e4efb4a87f",
+      "same_categorical": {
+        "date": true,
+        "version": true,
+        "strategy_revision": true,
+        "holding": true,
+        "next_holding": true
+      },
+      "max_absolute_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "final_csv": {
+        "version": "2.3",
+        "strategy_version": "v2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "current_holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "open",
+        "current_execution_scale": "0.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    },
+    "v2.5": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "local_sha256": "0e5512d6c9d7c375339ce782aa78c1e8204a43a0cc1939539f950fc0e382fd00",
+      "cloud_sha256": "803ce1a6925b136c6ab29cc84f25ecbf252b0000149ec7c320723a22d709b544",
+      "same_categorical": {
+        "date": true,
+        "version": true,
+        "strategy_revision": true,
+        "holding": true,
+        "next_holding": true
+      },
+      "max_absolute_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "entry_exit_cost": 0.0,
+        "rebalance_cost": 0.0,
+        "total_cost": 0.0,
+        "current_execution_scale": 0.0
+      },
+      "final_csv": {
+        "version": "2.5",
+        "strategy_version": "v2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18"
+      }
+    }
+  }
+}

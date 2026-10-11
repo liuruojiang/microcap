@@ -1,0 +1,39 @@
+{
+  "signal_close": "2010-01-14",
+  "candidate_execution_close": "2010-01-15",
+  "seed_members": 100,
+  "target_members": 100,
+  "proposed_sell": 10,
+  "proposed_buy": 10,
+  "real_raw_close_verified": 18,
+  "nontrading_or_raw_missing": [
+    {
+      "symbol": "300025",
+      "side": "sell"
+    },
+    {
+      "symbol": "600455",
+      "side": "sell"
+    }
+  ],
+  "at_side_close_limit": [
+    {
+      "symbol": "600180",
+      "side": "buy"
+    }
+  ],
+  "paper_close_eligible": 17,
+  "paper_exits_after_capacity": 8,
+  "paper_entries_after_capacity": 8,
+  "paper_blocked_by_capacity": [
+    "002245"
+  ],
+  "paper_member_count_after": 100,
+  "actual_auction_fills_verified": 0,
+  "input_sha256": {
+    "target": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "seed": "9882d37149ace8e0ab4e5a9d760a5a712261a6728543cc2c97524a7d39243bf5",
+    "baostock_raw": "48c1f97004243d4caea32b59440b28a6da12536ad81f3d06f3d0037b7f143fdc"
+  },
+  "warning": "BaoStock isST is diagnostic and L1 status is unresolved; close-limit does not prove auction fill"
+}

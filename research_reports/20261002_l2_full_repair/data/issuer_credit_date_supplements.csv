@@ -1,0 +1,5 @@
+symbol,ex_date,record_date,share_list_date,cash_pay_date,bonus_per_10,cash_per_10_gross,source_url,evidence_grade,auto_apply_to_conditional_paper
+600985,2015-07-10,2015-07-09,2015-07-13,2015-07-10,5,1.7,https://finance.sina.cn/stock/ssgs/2015-07-03/detail-ifxesftm9449972.d.html,issuer_notice_secondary_summary_pending_original_pdf,false
+688657,2026-05-14,2026-05-13,2026-05-14,2026-05-14,4.6,6,https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12300119&stockid=688657,issuer_implementation_notice_mirror,true
+603709,2026-07-23,2026-07-22,2026-07-23,2026-07-23,3,0.8,https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12449850&stockid=603709,issuer_implementation_notice_mirror,true
+688501,2026-08-06,2026-08-05,2026-08-06,2026-08-06,4,2.8,https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12467315&stockid=688501,issuer_implementation_notice_mirror,true

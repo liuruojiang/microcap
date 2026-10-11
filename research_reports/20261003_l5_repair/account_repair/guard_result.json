@@ -1,0 +1,75 @@
+{
+  "label": "research_only_frozen_old_pool_upper_bound_cash_coverage_gate",
+  "input_signal_basis": "old_branch_proxy_unbound_counterexample_only",
+  "contract": "zero_upfront_theoretical_swap_end_of_day_variation_cash_transfer_no_initial_margin",
+  "result_sha256": "1780228a571b2a9bd2633f9e40a2457df31844c4b9e330cadd329339aed0bd82",
+  "cases": {
+    "prefunded_on": {
+      "input": "research_reports\\20261003_l5_diagnostic\\executor\\prefunded_on\\recent_prefunded_v2_3_strategy_daily.csv",
+      "input_sha256": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+      "rows": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "first_debt_date": "2026-02-26",
+      "debt_days": 11,
+      "first_breach": null,
+      "breach_days": 0,
+      "maximum_gap": "0",
+      "strict_full_period_status": "NECESSARY_CASH_CHECK_ONLY"
+    },
+    "prefunded_off": {
+      "input": "research_reports\\20261003_l5_diagnostic\\executor\\prefunded_off\\recent_prefunded_v2_3_strategy_daily.csv",
+      "input_sha256": "ec10beea5fdeb1345bd254a1cf8670a1a2a88c4c2eee5f23c277c9b5239977fa",
+      "rows": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "first_debt_date": "2026-02-26",
+      "debt_days": 11,
+      "first_breach": null,
+      "breach_days": 0,
+      "maximum_gap": "0",
+      "strict_full_period_status": "NECESSARY_CASH_CHECK_ONLY"
+    },
+    "netted_on": {
+      "input": "research_reports\\20261003_l5_diagnostic\\executor\\netted_on\\recent_netted_v2_3_strategy_daily.csv",
+      "input_sha256": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+      "rows": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "first_debt_date": "2026-02-27",
+      "debt_days": 1,
+      "first_breach": {
+        "date": "2026-02-27",
+        "cash": "1559.90098909835314012480412554690814215",
+        "swap_margin": "-6009.223506790550760760630558254521881546",
+        "gap": "4449.322517692197620635826433"
+      },
+      "breach_days": 1,
+      "maximum_gap": "4449.322517692197620635826433",
+      "strict_full_period_status": "FAIL_CLOSED"
+    },
+    "netted_off": {
+      "input": "research_reports\\20261003_l5_diagnostic\\executor\\netted_off\\recent_netted_v2_3_strategy_daily.csv",
+      "input_sha256": "563b13350e79669482d32e3aef410564a6de28e8a862de9505c3e7475ffe36d3",
+      "rows": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "first_debt_date": "2026-02-27",
+      "debt_days": 1,
+      "first_breach": {
+        "date": "2026-02-27",
+        "cash": "1559.90098909835314012480412554690814215",
+        "swap_margin": "-6009.223506790550760760630558254521881546",
+        "gap": "4449.322517692197620635826433"
+      },
+      "breach_days": 1,
+      "maximum_gap": "4449.322517692197620635826433",
+      "strict_full_period_status": "FAIL_CLOSED"
+    }
+  },
+  "injection": {
+    "name": "2026-02-27 existing netted shortfall",
+    "detected": true
+  },
+  "limitation": "End-of-day necessary cash check only; no order resizes or execution replay after breach."
+}

@@ -1,0 +1,244 @@
+FFFFFF.FFFFFFFF                                                          [100%]
+================================== FAILURES ===================================
+________ test_current_summary_cannot_certify_retired_realtime_artifact ________
+
+tmp_path = WindowsPath('C:/Users/Administrator.DESKTOP-95I7VVU/AppData/Local/Temp/pytest-of-Administrator/pytest-260/test_current_summary_cannot_ce0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000017433091BA0>
+
+    def test_current_summary_cannot_certify_retired_realtime_artifact(tmp_path, monkeypatch):
+        realtime = tmp_path / "realtime.csv"
+        summary = tmp_path / "summary.json"
+        summary.write_text("{}", encoding="utf-8")
+        _write_realtime(realtime, strategy_revision="retired_revision", target_vol_enabled=True)
+        monkeypatch.setattr(v23, "SUMMARY_JSON", summary)
+        monkeypatch.setattr(v23, "REALTIME_SIGNAL_CSV", realtime)
+        monkeypatch.setattr(v23, "summary_matches_current_v2_3_base", lambda _summary: True)
+>       assert v23.incompatible_v2_3_outputs() == [realtime]
+E       AssertionError: assert [] == [WindowsPath(...ealtime.csv')]
+E         
+E         Right contains one more item: WindowsPath('C:/Users/Administrator.DESKTOP-95I7VVU/AppData/Local/Temp/pytest-of-Administrator/pytest-260/test_current_summary_cannot_ce0/realtime.csv')
+E         Use -v to get more diff
+
+tests\test_script_signal_adversarial.py:77: AssertionError
+_______ test_retired_realtime_artifact_is_not_unconditionally_protected _______
+
+tmp_path = WindowsPath('C:/Users/Administrator.DESKTOP-95I7VVU/AppData/Local/Temp/pytest-of-Administrator/pytest-260/test_retired_realtime_artifact0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000017433092780>
+
+    def test_retired_realtime_artifact_is_not_unconditionally_protected(tmp_path, monkeypatch):
+        realtime = tmp_path / "realtime.csv"
+        _write_realtime(realtime, strategy_revision="retired_revision")
+        monkeypatch.setattr(v23, "REALTIME_SIGNAL_CSV", realtime)
+>       assert v23._stale_outputs_to_remove_after_generate([realtime], set()) == [realtime]
+E       AssertionError: assert [] == [WindowsPath(...ealtime.csv')]
+E         
+E         Right contains one more item: WindowsPath('C:/Users/Administrator.DESKTOP-95I7VVU/AppData/Local/Temp/pytest-of-Administrator/pytest-260/test_retired_realtime_artifact0/realtime.csv')
+E         Use -v to get more diff
+
+tests\test_script_signal_adversarial.py:84: AssertionError
+____________ test_v23_signal_never_inherits_v20_risk_metric[0.21] _____________
+
+feature = 0.21
+
+    @pytest.mark.parametrize("feature", [.21, np.nan])
+    def test_v23_signal_never_inherits_v20_risk_metric(feature):
+        poisoned_reference = {"latest_signal": {
+            "overheat_metric": 999., "overheat_feature_value": 999.,
+            "gap_peak": 777., "gap_decay_ratio": 666.,
+            "trade_return_net": 888., "latest_realized_vol": 555.,
+            "return_gross_base": 444.,
+            "blocked_until_signal_reset": True, "signal_reset_seen": True,
+        }}
+        signal = v23._build_signal_row(_net(feature=feature), poisoned_reference).iloc[0]
+        if pd.isna(feature):
+            assert pd.isna(signal["overheat_metric"])
+            assert pd.isna(signal["overheat_feature_value"])
+        else:
+>           assert signal["overheat_metric"] == pytest.approx(feature)
+E           assert np.float64(999.0) == 0.21 ± 2.1e-07
+E             
+E             comparison failed
+E             Obtained: 999.0
+E             Expected: 0.21 ± 2.1e-07
+
+tests\test_script_signal_adversarial.py:165: AssertionError
+_____________ test_v23_signal_never_inherits_v20_risk_metric[nan] _____________
+
+feature = nan
+
+    @pytest.mark.parametrize("feature", [.21, np.nan])
+    def test_v23_signal_never_inherits_v20_risk_metric(feature):
+        poisoned_reference = {"latest_signal": {
+            "overheat_metric": 999., "overheat_feature_value": 999.,
+            "gap_peak": 777., "gap_decay_ratio": 666.,
+            "trade_return_net": 888., "latest_realized_vol": 555.,
+            "return_gross_base": 444.,
+            "blocked_until_signal_reset": True, "signal_reset_seen": True,
+        }}
+        signal = v23._build_signal_row(_net(feature=feature), poisoned_reference).iloc[0]
+        if pd.isna(feature):
+>           assert pd.isna(signal["overheat_metric"])
+E           assert False
+E            +  where False = <function isna at 0x000001742ED694E0>(np.float64(999.0))
+E            +    where <function isna at 0x000001742ED694E0> = pd.isna
+
+tests\test_script_signal_adversarial.py:162: AssertionError
+_____________ test_constant_positive_nav_scores_exactly_zero[1.5] _____________
+
+level = 1.5
+
+    @pytest.mark.parametrize("level", [1.5, 2., 5.])
+    def test_constant_positive_nav_scores_exactly_zero(level):
+        nav = pd.Series(np.full(80, level), index=pd.bdate_range("2025-01-02", periods=80))
+        out = v23.log_wls_score_and_r2(nav).dropna()
+        assert len(out) == len(nav) - v23.LOOKBACK + 1
+>       assert out["annualized_log_wls_score"].eq(0.).all()
+E       assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2025-02-05    False\n2025-02-06    False\n2025-02-07    False\n2025-02-10    False\n2025-02-11    False\n2025-02-12    Fals... False\n2025-04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, dtype: bool.all
+E        +      where 2025-02-05    False\n2025-02-06    False\n2025-02-07    False\n2025-02-10    False\n2025-02-11    False\n2025-02-12    Fals... False\n2025-04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, dtype: bool = eq(0.0)
+E        +        where eq = 2025-02-05   -2.320250e-30\n2025-02-06   -2.320250e-30\n2025-02-07   -2.320250e-30\n2025-02-10   -2.320250e-30\n2025-02-11...20250e-30\n2025-04-22   -2.320250e-30\n2025-04-23   -2.320250e-30\nFreq: B, Name: annualized_log_wls_score, dtype: float64.eq
+
+tests\test_script_signal_adversarial.py:200: AssertionError
+_____________ test_constant_positive_nav_scores_exactly_zero[2.0] _____________
+
+level = 2.0
+
+    @pytest.mark.parametrize("level", [1.5, 2., 5.])
+    def test_constant_positive_nav_scores_exactly_zero(level):
+        nav = pd.Series(np.full(80, level), index=pd.bdate_range("2025-01-02", periods=80))
+        out = v23.log_wls_score_and_r2(nav).dropna()
+        assert len(out) == len(nav) - v23.LOOKBACK + 1
+>       assert out["annualized_log_wls_score"].eq(0.).all()
+E       assert np.False_
+E        +  where np.False_ = all()
+E        +    where all = 2025-02-05    False\n2025-02-06    False\n2025-02-07    False\n2025-02-10    False\n2025-02-11    False\n2025-02-12    Fals... False\n2025-04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, dtype: bool.all
+E        +      where 2025-02-05    False\n2025-02-06    False\n2025-02-07    False\n2025-02-10    False\n2025-02-11    False\n2025-02-12    Fals... False\n2025-04-21    False\n2025-04-22    False\n2025-04-23    False\nFreq: B, Name: annualized_log_wls_score, dtype: bool = eq(0.0)
+E        +        where eq = 2025-02-05   -4.640501e-30\n2025-02-06   -4.640501e-30\n2025-02-07   -4.640501e-30\n2025-02-10   -4.640501e-30\n2025-02-11...40501e-30\n2025-04-22   -4.640501e-30\n2025-04-23   -4.640501e-30\nFreq: B, Name: annualized_log_wls_score, dtype: float64.eq
+
+tests\test_script_signal_adversarial.py:200: AssertionError
+____________________ test_log_wls_rejects_invalid_nav[0.0] ____________________
+
+invalid = 0.0
+
+    @pytest.mark.parametrize("invalid", [0., -1., np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_log_wls_rejects_invalid_nav(invalid):
+        nav = pd.Series([1.] * 40)
+        nav.iloc[10] = invalid
+>       with pytest.raises(ValueError, match="finite positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:208: Failed
+___________________ test_log_wls_rejects_invalid_nav[-1.0] ____________________
+
+invalid = -1.0
+
+    @pytest.mark.parametrize("invalid", [0., -1., np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_log_wls_rejects_invalid_nav(invalid):
+        nav = pd.Series([1.] * 40)
+        nav.iloc[10] = invalid
+>       with pytest.raises(ValueError, match="finite positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:208: Failed
+____________________ test_log_wls_rejects_invalid_nav[nan] ____________________
+
+invalid = nan
+
+    @pytest.mark.parametrize("invalid", [0., -1., np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_log_wls_rejects_invalid_nav(invalid):
+        nav = pd.Series([1.] * 40)
+        nav.iloc[10] = invalid
+>       with pytest.raises(ValueError, match="finite positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:208: Failed
+____________________ test_log_wls_rejects_invalid_nav[inf] ____________________
+
+invalid = inf
+
+    @pytest.mark.parametrize("invalid", [0., -1., np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_log_wls_rejects_invalid_nav(invalid):
+        nav = pd.Series([1.] * 40)
+        nav.iloc[10] = invalid
+>       with pytest.raises(ValueError, match="finite positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:208: Failed
+___________________ test_log_wls_rejects_invalid_nav[-inf] ____________________
+
+invalid = -inf
+
+    @pytest.mark.parametrize("invalid", [0., -1., np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_log_wls_rejects_invalid_nav(invalid):
+        nav = pd.Series([1.] * 40)
+        nav.iloc[10] = invalid
+>       with pytest.raises(ValueError, match="finite positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:208: Failed
+_______________ test_log_wls_rejects_invalid_nav[not-a-number] ________________
+
+invalid = 'not-a-number'
+
+    @pytest.mark.parametrize("invalid", [0., -1., np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_log_wls_rejects_invalid_nav(invalid):
+        nav = pd.Series([1.] * 40)
+        nav.iloc[10] = invalid
+>       with pytest.raises(ValueError, match="finite positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:208: Failed
+________ test_spread_nav_fails_closed_when_positive_prices_imply_ruin _________
+
+    def test_spread_nav_fails_closed_when_positive_prices_imply_ruin():
+        prices = pd.DataFrame({"microcap": [100., 100., 101.], "hedge": [100., 230., 100.]},
+                              index=pd.bdate_range("2025-01-02", periods=3))
+>       with pytest.raises(ValueError, match="spread.*(non-positive|ruin)"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:215: Failed
+__________ test_spread_nav_fails_closed_on_derived_nonfinite_returns __________
+
+    def test_spread_nav_fails_closed_on_derived_nonfinite_returns():
+        prices = pd.DataFrame({"microcap": [1e-300, 1e300], "hedge": [100., 100.]},
+                              index=pd.bdate_range("2025-01-02", periods=2))
+>       with pytest.raises(ValueError, match="spread.*non-finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_signal_adversarial.py:222: Failed
+============================== warnings summary ===============================
+tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[-1.0]
+tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[-inf]
+  C:\Python314\Lib\site-packages\pandas\core\arraylike.py:399: RuntimeWarning: invalid value encountered in log
+    result = getattr(ufunc, method)(*inputs, **kwargs)
+
+tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[not-a-number]
+  D:\动量策略\微盘股对冲策略\tests\test_script_signal_adversarial.py:207: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value 'not-a-number' has dtype incompatible with float64, please explicitly cast to a compatible dtype first.
+    nav.iloc[10] = invalid
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_script_signal_adversarial.py::test_current_summary_cannot_certify_retired_realtime_artifact
+FAILED tests/test_script_signal_adversarial.py::test_retired_realtime_artifact_is_not_unconditionally_protected
+FAILED tests/test_script_signal_adversarial.py::test_v23_signal_never_inherits_v20_risk_metric[0.21]
+FAILED tests/test_script_signal_adversarial.py::test_v23_signal_never_inherits_v20_risk_metric[nan]
+FAILED tests/test_script_signal_adversarial.py::test_constant_positive_nav_scores_exactly_zero[1.5]
+FAILED tests/test_script_signal_adversarial.py::test_constant_positive_nav_scores_exactly_zero[2.0]
+FAILED tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[0.0]
+FAILED tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[-1.0]
+FAILED tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[nan]
+FAILED tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[inf]
+FAILED tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[-inf]
+FAILED tests/test_script_signal_adversarial.py::test_log_wls_rejects_invalid_nav[not-a-number]
+FAILED tests/test_script_signal_adversarial.py::test_spread_nav_fails_closed_when_positive_prices_imply_ruin
+FAILED tests/test_script_signal_adversarial.py::test_spread_nav_fails_closed_on_derived_nonfinite_returns
+14 failed, 1 passed, 29 deselected, 3 warnings in 2.77s

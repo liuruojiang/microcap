@@ -1,0 +1,81 @@
+{
+  "label": "research_only_old_pool_common_cash_variation_until_first_order_divergence",
+  "input_signal_basis": "old_branch_proxy_unbound_counterexample_only",
+  "contract": "swap_variation_settled_to_common_cash_before_T_plus_1_close_stock_orders_no_credit_no_upfront_margin",
+  "result_sha256": "1780228a571b2a9bd2633f9e40a2457df31844c4b9e330cadd329339aed0bd82",
+  "cases": {
+    "prefunded_on": {
+      "input_sha256": {
+        "daily": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+        "orders": "0c415d9de5d0317dd217f8acb2f1bad47b87813bf92240f31d88a5b83eafaa72",
+        "rights": "07ba318e8708ca0c13c9013139ca0ef2037e65e187038fb96914adde9f7a28d4"
+      },
+      "status": "FAIL_CLOSED_REJECTED_BUY_NOW_AFFORDABLE",
+      "date": "2025-11-14",
+      "order_index": 105,
+      "symbol": "002207",
+      "cash_budget": "9143.906665491558196891569284",
+      "order_cost": "246.1222384492999073914332969",
+      "checked_orders": 205,
+      "last_verified_date": "2025-11-13"
+    },
+    "prefunded_off": {
+      "input_sha256": {
+        "daily": "ec10beea5fdeb1345bd254a1cf8670a1a2a88c4c2eee5f23c277c9b5239977fa",
+        "orders": "4defaa610dbc3af4c9a085f50ccbdbbde84fc5335c22a91e4540174cc53fb81c",
+        "rights": "3e18f368171d7bad43054fd60870b3b716cb355dede712e2b0abb977d9afce45"
+      },
+      "status": "FAIL_CLOSED_REJECTED_BUY_NOW_AFFORDABLE",
+      "date": "2025-11-14",
+      "order_index": 105,
+      "symbol": "002207",
+      "cash_budget": "9143.906665491558196891569284",
+      "order_cost": "246.1222384492999073914332969",
+      "checked_orders": 205,
+      "last_verified_date": "2025-11-13"
+    },
+    "netted_on": {
+      "input_sha256": {
+        "daily": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+        "orders": "9bd2e34c89d1c3c00fa774212f507be2edc36bb752f1231428f87639ae8cc7c6",
+        "rights": "9291a1e821f35c5b57c885c92254f1fe3bdf394b1f21feaf6ecaef90babbff0e"
+      },
+      "status": "FAIL_CLOSED_REJECTED_BUY_NOW_AFFORDABLE",
+      "date": "2025-12-01",
+      "order_index": 96,
+      "symbol": "002963",
+      "cash_budget": "39379.43095805839011265867139",
+      "order_cost": "10240.89641527551462399705370",
+      "checked_orders": 407,
+      "last_verified_date": "2025-11-28"
+    },
+    "netted_off": {
+      "input_sha256": {
+        "daily": "563b13350e79669482d32e3aef410564a6de28e8a862de9505c3e7475ffe36d3",
+        "orders": "782d8e81d1c12a52ab5a84c4f6888cf24a65c9c69538a545b88c6e1ac222e62d",
+        "rights": "32857bb31b51a0fc37ed1d16a5ba47099a3c55e9ef4c08cb641a7ee6fa940d9b"
+      },
+      "status": "FAIL_CLOSED_REJECTED_BUY_NOW_AFFORDABLE",
+      "date": "2025-12-01",
+      "order_index": 96,
+      "symbol": "002963",
+      "cash_budget": "39379.43095805839011265867139",
+      "order_cost": "10240.89641527551462399705370",
+      "checked_orders": 407,
+      "last_verified_date": "2025-11-28"
+    }
+  },
+  "synthetic_prefunded_counterexample": {
+    "old_end_cash_plus_margin": "19.58",
+    "result": {
+      "status": "FAIL_CLOSED_BOOKED_BUY_UNFUNDED",
+      "date": "2025-10-09",
+      "order_index": 1,
+      "symbol": "B",
+      "cash_budget": "60",
+      "order_cost": "90.270",
+      "checked_orders": 1,
+      "last_verified_date": null
+    }
+  }
+}

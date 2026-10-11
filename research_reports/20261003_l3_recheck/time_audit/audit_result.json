@@ -1,0 +1,151 @@
+{
+  "scope": "read_only_L3_time_source_challenge_of_old_v2_0; no_corrected_NAV",
+  "source_revision": "plain_mom16_fixed1_20260904",
+  "input_sha256": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+    "research_reports/20261002_l2_full_repair/data/trade_calendar_evidence/baostock_trade_calendar_20100222_20260930.csv": "80cfc76c2a0f3ce46251f887103e68d494fb9c154735ee2a7b6df6268b230442",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "8d16e11add9f92f972b5379a175539ca65d4c828e1aa4ff720868ecee04007b2"
+  },
+  "input_rows_dates": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4067,
+      "first": "2010-01-05",
+      "last": "2026-09-30"
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8738,
+      "first": "1990-12-19",
+      "last": "2026-09-30"
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 432,
+      "first": "2010-01-14",
+      "last": "2026-09-17"
+    },
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4050,
+      "first": "2010-01-28",
+      "last": "2026-09-30"
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4033,
+      "first": "2010-03-01",
+      "last": "2026-09-30"
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3988,
+      "first": "2010-05-05",
+      "last": "2026-09-30"
+    }
+  },
+  "calendar": {
+    "file_rows": 6065,
+    "trade_rows": 4037,
+    "proxy_nontrading_dates": [
+      "2018-06-18"
+    ],
+    "panel_nontrading_dates": [
+      "2018-06-18"
+    ],
+    "nav_nontrading_dates": [
+      "2018-06-18"
+    ]
+  },
+  "first_calendar_difference": "2018-06-18",
+  "whole_series_trailing_mom_replay": {
+    "v2_0_days": 4033,
+    "micro_max_abs_error": 9.8879238130678e-17,
+    "hedge_max_abs_error": 9.974659986866641e-17,
+    "next_holding_signal_mismatch": 0,
+    "future_price_lead_mutant_mismatch_days": 4032
+  },
+  "first_momentum_difference": "2018-06-19",
+  "last_momentum_difference": "2018-07-09",
+  "changed_micro_momentum_days": 15,
+  "changed_hedge_momentum_days": 15,
+  "signal_difference_dates": [
+    "2018-06-29"
+  ],
+  "first_signal_difference": "2018-06-29",
+  "first_conditional_legacy_fee_difference": {
+    "date": "2018-06-29",
+    "old_entry_exit_cost": 0.0,
+    "calendar_only_legacy_exit_cost_if_same_rule": 0.003
+  },
+  "first_conditional_legacy_holding_difference_date": "2018-07-02",
+  "first_signal_detail": {
+    "date": "2018-06-29",
+    "previous_signal_date": "2018-06-28",
+    "previous_old_signal": "long_microcap_short_zz1000",
+    "previous_calendar_corrected_raw_signal": "long_microcap_short_zz1000",
+    "previous_old_entry_cost": 0.003,
+    "old_proxy_16d": {
+      "numerator_date": "2018-06-29",
+      "numerator_close": 20763.76650557052,
+      "denominator_date": "2018-06-07",
+      "denominator_close": 23007.91689617909,
+      "mom16": -0.09753818221506427
+    },
+    "old_hedge_16d": {
+      "numerator_date": "2018-06-29",
+      "numerator_close": 5608.54,
+      "denominator_date": "2018-06-07",
+      "denominator_close": 6274.88,
+      "mom16": -0.10619167219134074
+    },
+    "clean_proxy_16d": {
+      "numerator_date": "2018-06-29",
+      "numerator_close": 20763.76650557052,
+      "denominator_date": "2018-06-06",
+      "denominator_close": 23430.684081534208,
+      "mom16": -0.1138215839829233
+    },
+    "clean_hedge_16d": {
+      "numerator_date": "2018-06-29",
+      "numerator_close": 5608.54,
+      "denominator_date": "2018-06-06",
+      "denominator_close": 6320.47,
+      "mom16": -0.11263877528095223
+    },
+    "old_next_holding": "long_microcap_short_zz1000",
+    "old_holding": "long_microcap_short_zz1000",
+    "calendar_corrected_raw_signal": "cash (exit at T close under legacy signal convention)",
+    "old_same_day_entry_exit_cost": 0.0,
+    "old_return_net": 0.0030639399826111
+  },
+  "first_following_session": {
+    "date": "2018-07-02",
+    "old_holding": "long_microcap_short_zz1000",
+    "old_return_raw": -0.0014307920901644,
+    "old_return_net": -0.0014307920901643,
+    "calendar_corrected_legacy_signal_lag_holding": "cash",
+    "T_plus_1_close_contract_intraday_holding": "depends on 2018-06-29 paper buy fill, could be long before the 2018-07-02 close exit attempt",
+    "note": "A calendar-only legacy signal counterfactual is distinct from the T+1-close share-account model. No corrected NAV is calculated."
+  },
+  "disabled_module_rows_checked": 4033,
+  "recent_clock_example": {
+    "signal_date": "2026-09-22",
+    "fill_date": "2026-09-23",
+    "old_T_holding": "cash",
+    "old_T_next_holding": "long_microcap_short_zz1000",
+    "old_T_plus_1_holding": "long_microcap_short_zz1000"
+  },
+  "mutations": {
+    "reinsert_holiday_recreates_false_continuation": true,
+    "reinsert_holiday_rejected_by_calendar": true,
+    "future_price_lead_mutant_rejected": true,
+    "early_T_plus_1_fill_rejected": true,
+    "overheat_residual_rejected": true
+  }
+}

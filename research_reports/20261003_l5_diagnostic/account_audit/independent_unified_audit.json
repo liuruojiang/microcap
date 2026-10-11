@@ -1,0 +1,822 @@
+{
+  "input_hashes": {
+    "recent_prefunded_v2_0_strategy": {
+      "daily": "c4bdc5b3197756877df30aba09573f2c02e62b881c0433b64f698356ac57ed97",
+      "holdings": "59c079aee8f3affd144517233fc6a8a4bf7a7a0c1d4034446a2e0f7722f225ac",
+      "orders": "30f43b1bad0e8c55bd04b811033d944aea38753b966353515cbbb01ec721c8d1",
+      "rights": "0570adff470d96bcc2dab457e36eb3f5a72cbe4a5f419da3bb62bb051feb9497"
+    },
+    "recent_prefunded_v2_3_strategy": {
+      "daily": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+      "holdings": "a77714b7345ff7dd13e24eafacc94736ff947f3f57762439c05aab7f774c712c",
+      "orders": "0c415d9de5d0317dd217f8acb2f1bad47b87813bf92240f31d88a5b83eafaa72",
+      "rights": "07ba318e8708ca0c13c9013139ca0ef2037e65e187038fb96914adde9f7a28d4"
+    },
+    "recent_prefunded_v2_5_strategy": {
+      "daily": "a4d4adde5e6690f74ef9781f4faecd88ef4b030b38445ee8ed6b22e14882dff4",
+      "holdings": "08c68d3275d963c16a74a66a4cd56fd2a0e3c66f7c42ab831a832e3d291d96a1",
+      "orders": "78f250cf17f527b5ed1d3367eabaebeb8a36d454f842d1f06ce5a728d0231e62",
+      "rights": "eb73e8b706f01724e91707640a32d1231b3a713f7dd5ceb315c1ddcd851ab06c"
+    },
+    "recent_netted_v2_0_strategy": {
+      "daily": "a4979f38a4b2cfdf8301cab430929806babdfe7b6b9164a858a759e480316d38",
+      "holdings": "d8b7b547c47b655b934e0f8ad2110aeeadf30f5acadc5207870949cefcc37add",
+      "orders": "ff043087170155dce8a2cfe689ad4218fb81249fe05a7042f30446a90d6f0309",
+      "rights": "07b0307e2fd67f46d55fa25ddaea14f3878e9273396e02dca4d8979a7d5c52ed"
+    },
+    "recent_netted_v2_3_strategy": {
+      "daily": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+      "holdings": "81f50fc750629b6d79011910cdee568c9d99b6a2e7122ae89eed6076bc707cb9",
+      "orders": "9bd2e34c89d1c3c00fa774212f507be2edc36bb752f1231428f87639ae8cc7c6",
+      "rights": "9291a1e821f35c5b57c885c92254f1fe3bdf394b1f21feaf6ecaef90babbff0e"
+    },
+    "recent_netted_v2_5_strategy": {
+      "daily": "20bcfd5d554844c2d7220109e0537a8243e017fb83146afb17b11e48f3843fe4",
+      "holdings": "0d6040ba6632d38c6760078748c5a7111559ba49b10aead43f829c52a47d6982",
+      "orders": "70d04af31cc5f98ce236fc2772110b7942ce8c4988231a51dae4de49e3e5e810",
+      "rights": "dfb1dc0b8713390fa3a0bb7790e7b01cc3cd739531087b0adb245a362f1e01b3"
+    }
+  },
+  "accounts": [
+    {
+      "branch": "prefunded",
+      "version": "v2.0",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "8.26E-34",
+        "stock_share_valuation": "6.5663E-35",
+        "held_count": "0",
+        "equity_components": "9.6000E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "4.02E-36",
+        "cash_event_flow": "4.2440561E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.983968661249681840189757E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "3.51E-35",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 3047,
+      "fees_total": "68191.404099751420314153871654810185180187961120",
+      "rejected_orders": 371,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 22,
+        "insufficient_prefunded_cash": 340,
+        "suspended_or_zero_volume": 9
+      },
+      "swap_drag_total": "27294.414795346938244890803840720943976496275",
+      "rights_cash_paid": "577.58116463902605363164204060257079010330",
+      "shadow_financing_total_unapplied": "37.0861550489268428207086097216148872238194800",
+      "max_hedge_to_equity": [
+        "2025-11-13",
+        "0.81374747090205937116989473716628906212871095938507459646362226634"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.030840320637977083408194769143668715636242971085033747211542228060"
+      ],
+      "debt_days": 29,
+      "first_debt": "2025-11-05",
+      "unfunded_even_if_stock_cash_transferable_days": 7,
+      "first_unfunded": "2025-11-05",
+      "max_cash_debt_gap": "17525.70890401844405040687964436903212844",
+      "max_cash_debt_gap_date": "2025-11-13",
+      "cash_debt_gaps": [
+        [
+          "2025-11-05",
+          "2360.190864696999342622908336726784497374"
+        ],
+        [
+          "2025-11-06",
+          "12003.71447702220449904135693108044525827"
+        ],
+        [
+          "2025-11-07",
+          "11181.08092013221059576884030749789837047"
+        ],
+        [
+          "2025-11-10",
+          "13723.22356093443570396335233732825296865"
+        ],
+        [
+          "2025-11-11",
+          "11535.43411689330270700424279510228951817"
+        ],
+        [
+          "2025-11-12",
+          "5815.354565947332745346759487135424230222"
+        ],
+        [
+          "2025-11-13",
+          "17525.70890401844405040687964436903212844"
+        ]
+      ]
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.109E-33",
+        "stock_share_valuation": "5.6091E-35",
+        "held_count": "0",
+        "equity_components": "6.0000E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "4.28E-36",
+        "cash_event_flow": "3.8906313E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.662315683053965116270519E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "5.2E-36",
+        "order_gross": "4.99E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2024,
+      "fees_total": "42417.091485417909374364150277605658170806585102",
+      "rejected_orders": 269,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 12,
+        "insufficient_prefunded_cash": 250,
+        "suspended_or_zero_volume": 7
+      },
+      "swap_drag_total": "16420.158890890436948409629931307055442520013",
+      "rights_cash_paid": "212.06068820669599826042345929940250499053",
+      "shadow_financing_total_unapplied": "4.8518512607460388715344388720234377786278000",
+      "max_hedge_to_equity": [
+        "2025-11-13",
+        "0.79927476115759965004380951219635966549520793803269068982338176656"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.0098874374730248340555518644666620874506116743146700832185174966565"
+      ],
+      "debt_days": 11,
+      "first_debt": "2026-02-26",
+      "unfunded_even_if_stock_cash_transferable_days": 0,
+      "first_unfunded": null,
+      "max_cash_debt_gap": "0",
+      "max_cash_debt_gap_date": null,
+      "cash_debt_gaps": []
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.5",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "2.29E-33",
+        "stock_share_valuation": "8.4869E-35",
+        "held_count": "0",
+        "equity_components": "5.000000000000000000000000E-34",
+        "debt_definition": "0",
+        "hedge_reset": "0",
+        "executed_order_count": "0",
+        "daily_stock_fee": "4.62E-36",
+        "cash_event_flow": "2.04496E-33",
+        "receivable_event_flow": "0",
+        "swap_pnl": "0",
+        "swap_drag": "0",
+        "swap_margin_roll": "0",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2379,
+      "fees_total": "46641.990316520372460994120531398856105297656966",
+      "rejected_orders": 206,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 17,
+        "insufficient_prefunded_cash": 183,
+        "suspended_or_zero_volume": 6
+      },
+      "swap_drag_total": "0E-40",
+      "rights_cash_paid": "476.42843397618453853903867783793960775082",
+      "shadow_financing_total_unapplied": "0E-78",
+      "max_hedge_to_equity": [
+        null,
+        "0"
+      ],
+      "max_debt_to_equity": [
+        null,
+        "0"
+      ],
+      "debt_days": 0,
+      "first_debt": null,
+      "unfunded_even_if_stock_cash_transferable_days": 0,
+      "first_unfunded": null,
+      "max_cash_debt_gap": "0",
+      "max_cash_debt_gap_date": null,
+      "cash_debt_gaps": []
+    },
+    {
+      "branch": "netted",
+      "version": "v2.0",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.09E-33",
+        "stock_share_valuation": "8.0080E-35",
+        "held_count": "0",
+        "equity_components": "9.1700E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "6.01E-36",
+        "cash_event_flow": "8.6849E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.817844494913202414711983E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "4.32E-35",
+        "order_gross": "4.995E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2899,
+      "fees_total": "56821.350961680010803423292944953803113081008541",
+      "rejected_orders": 109,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 19,
+        "insufficient_netted_cash": 82,
+        "member_capacity": 1,
+        "suspended_or_zero_volume": 7
+      },
+      "swap_drag_total": "29248.430404572503208912351993621771259386752",
+      "rights_cash_paid": "576.50315923744526891700921004963471900662",
+      "shadow_financing_total_unapplied": "56.9020395135487910292149451684621010962921400",
+      "max_hedge_to_equity": [
+        "2026-02-27",
+        "0.82055879034767041303012454093109994797717889487047061289411607639"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.039142455528027402956723044340157169472836326538038551238587659699"
+      ],
+      "debt_days": 39,
+      "first_debt": "2025-11-05",
+      "unfunded_even_if_stock_cash_transferable_days": 22,
+      "first_unfunded": "2025-11-05",
+      "max_cash_debt_gap": "26587.10269503055771720188611786856771259",
+      "max_cash_debt_gap_date": "2026-02-27",
+      "cash_debt_gaps": [
+        [
+          "2025-11-05",
+          "2360.190864696999342622908336726784497374"
+        ],
+        [
+          "2025-11-06",
+          "12003.71447702220449904135693108044525827"
+        ],
+        [
+          "2025-11-07",
+          "11181.08092013221059576884030749789837047"
+        ],
+        [
+          "2025-11-10",
+          "13723.22356093443570396335233732825296865"
+        ],
+        [
+          "2025-11-11",
+          "11535.43411689330270700424279510228951817"
+        ],
+        [
+          "2025-11-12",
+          "5815.354565947332745346759487135424230222"
+        ],
+        [
+          "2025-11-13",
+          "17525.70890401844405040687964436903212844"
+        ],
+        [
+          "2026-01-23",
+          "15204.954988462783587900926161932344318127"
+        ],
+        [
+          "2026-01-26",
+          "5342.822403030190074570669816807442110757"
+        ],
+        [
+          "2026-01-27",
+          "7190.499535652168103938298389706013044597"
+        ],
+        [
+          "2026-01-28",
+          "9117.259921133100204621456278972651858187"
+        ],
+        [
+          "2026-01-29",
+          "2976.167782338298373005480756131719223017"
+        ],
+        [
+          "2026-02-09",
+          "4438.2720295362145212339094772267346269642"
+        ],
+        [
+          "2026-02-10",
+          "6395.0019400972699689134243462107977806572"
+        ],
+        [
+          "2026-02-11",
+          "5538.6547444722922561840666716214606009582"
+        ],
+        [
+          "2026-02-12",
+          "13556.4281817914499449387885114064014221642"
+        ],
+        [
+          "2026-02-13",
+          "2706.7249770090264624851744220367679891742"
+        ],
+        [
+          "2026-02-24",
+          "12680.2083049470686349506304840773411190642"
+        ],
+        [
+          "2026-02-25",
+          "12600.05590825269141825661435665467699493"
+        ],
+        [
+          "2026-02-26",
+          "19340.39139152283477238966960405573252072"
+        ],
+        [
+          "2026-02-27",
+          "26587.10269503055771720188611786856771259"
+        ],
+        [
+          "2026-03-02",
+          "18524.05511841312216903299918737651743222"
+        ]
+      ]
+    },
+    {
+      "branch": "netted",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.235E-33",
+        "stock_share_valuation": "4.6943E-35",
+        "held_count": "0",
+        "equity_components": "6.34E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "4.19E-36",
+        "cash_event_flow": "5.5374E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.935053936925191609132673E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "3.65E-35",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2051,
+      "fees_total": "43040.302487286314120905218942788725499234922163",
+      "rejected_orders": 95,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 15,
+        "insufficient_netted_cash": 73,
+        "suspended_or_zero_volume": 7
+      },
+      "swap_drag_total": "15381.8650779182744496393158475808957278505184",
+      "rights_cash_paid": "75.09367271883928496824018093836445986374",
+      "shadow_financing_total_unapplied": "0.7388389557529365689459791669985067887148000",
+      "max_hedge_to_equity": [
+        "2026-02-27",
+        "0.80354381250174636532319810075564657188241410490002371081313204519"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.0059828101088629901522311895241504584232197629928259066073779176674"
+      ],
+      "debt_days": 1,
+      "first_debt": "2026-02-27",
+      "unfunded_even_if_stock_cash_transferable_days": 1,
+      "first_unfunded": "2026-02-27",
+      "max_cash_debt_gap": "4449.322517692197620635826432707613739396",
+      "max_cash_debt_gap_date": "2026-02-27",
+      "cash_debt_gaps": [
+        [
+          "2026-02-27",
+          "4449.322517692197620635826432707613739396"
+        ]
+      ]
+    },
+    {
+      "branch": "netted",
+      "version": "v2.5",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "2.061E-33",
+        "stock_share_valuation": "7.1829E-35",
+        "held_count": "0",
+        "equity_components": "5.000000000000000000000000E-34",
+        "debt_definition": "0",
+        "hedge_reset": "0",
+        "executed_order_count": "0",
+        "daily_stock_fee": "5.17E-36",
+        "cash_event_flow": "1.37014E-33",
+        "receivable_event_flow": "0",
+        "swap_pnl": "0",
+        "swap_drag": "0",
+        "swap_margin_roll": "0",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2622,
+      "fees_total": "52061.614829502757974783717906100436424246622802",
+      "rejected_orders": 43,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 19,
+        "insufficient_netted_cash": 15,
+        "member_capacity": 3,
+        "suspended_or_zero_volume": 6
+      },
+      "swap_drag_total": "0E-40",
+      "rights_cash_paid": "481.92932940214843966637557863849661221001",
+      "shadow_financing_total_unapplied": "0E-78",
+      "max_hedge_to_equity": [
+        null,
+        "0"
+      ],
+      "max_debt_to_equity": [
+        null,
+        "0"
+      ],
+      "debt_days": 0,
+      "first_debt": null,
+      "unfunded_even_if_stock_cash_transferable_days": 0,
+      "first_unfunded": null,
+      "max_cash_debt_gap": "0",
+      "max_cash_debt_gap_date": null,
+      "cash_debt_gaps": []
+    }
+  ],
+  "mutants": {
+    "omit_order_fee": [
+      "cash_event_flow",
+      "daily_stock_fee",
+      "order_fee"
+    ],
+    "double_order_fee": [
+      "cash_event_flow",
+      "daily_stock_fee",
+      "order_fee"
+    ],
+    "change_share": [
+      "share_event_flow",
+      "stock_share_valuation"
+    ],
+    "omit_right_payment": [
+      "cash_event_flow",
+      "receivable_event_flow"
+    ],
+    "omit_hedge_pnl": [
+      "swap_margin_roll",
+      "swap_pnl"
+    ],
+    "omit_hedge_drag": [
+      "swap_drag",
+      "swap_margin_roll"
+    ],
+    "erase_hedge_reset": [
+      "hedge_reset",
+      "swap_drag",
+      "swap_pnl"
+    ],
+    "offset_cash_with_margin": [
+      "cash_event_flow",
+      "equity_components"
+    ]
+  },
+  "arm_hashes": {
+    "prefunded_on": {
+      "daily": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+      "holdings": "a77714b7345ff7dd13e24eafacc94736ff947f3f57762439c05aab7f774c712c",
+      "orders": "0c415d9de5d0317dd217f8acb2f1bad47b87813bf92240f31d88a5b83eafaa72",
+      "rights": "07ba318e8708ca0c13c9013139ca0ef2037e65e187038fb96914adde9f7a28d4"
+    },
+    "prefunded_off": {
+      "daily": "ec10beea5fdeb1345bd254a1cf8670a1a2a88c4c2eee5f23c277c9b5239977fa",
+      "holdings": "55e233ddbc165d54e7036369226435e0d906b68eebf5063640e95e83fb77944d",
+      "orders": "4defaa610dbc3af4c9a085f50ccbdbbde84fc5335c22a91e4540174cc53fb81c",
+      "rights": "3e18f368171d7bad43054fd60870b3b716cb355dede712e2b0abb977d9afce45"
+    },
+    "netted_on": {
+      "daily": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+      "holdings": "81f50fc750629b6d79011910cdee568c9d99b6a2e7122ae89eed6076bc707cb9",
+      "orders": "9bd2e34c89d1c3c00fa774212f507be2edc36bb752f1231428f87639ae8cc7c6",
+      "rights": "9291a1e821f35c5b57c885c92254f1fe3bdf394b1f21feaf6ecaef90babbff0e"
+    },
+    "netted_off": {
+      "daily": "563b13350e79669482d32e3aef410564a6de28e8a862de9505c3e7475ffe36d3",
+      "holdings": "aafb338b2dfb508c8039b7e658e1d4c825560c9149962e90a85b25fddde7a5ae",
+      "orders": "782d8e81d1c12a52ab5a84c4f6888cf24a65c9c69538a545b88c6e1ac222e62d",
+      "rights": "32857bb31b51a0fc37ed1d16a5ba47099a3c55e9ef4c08cb641a7ee6fa940d9b"
+    }
+  },
+  "arms": [
+    {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.109E-33",
+        "stock_share_valuation": "5.6091E-35",
+        "held_count": "0",
+        "equity_components": "6.0000E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "4.28E-36",
+        "cash_event_flow": "3.8906313E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.662315683053965116270519E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "5.2E-36",
+        "order_gross": "4.99E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2024,
+      "fees_total": "42417.091485417909374364150277605658170806585102",
+      "rejected_orders": 269,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 12,
+        "insufficient_prefunded_cash": 250,
+        "suspended_or_zero_volume": 7
+      },
+      "swap_drag_total": "16420.158890890436948409629931307055442520013",
+      "rights_cash_paid": "212.06068820669599826042345929940250499053",
+      "shadow_financing_total_unapplied": "4.8518512607460388715344388720234377786278000",
+      "max_hedge_to_equity": [
+        "2025-11-13",
+        "0.79927476115759965004380951219635966549520793803269068982338176656"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.0098874374730248340555518644666620874506116743146700832185174966565"
+      ],
+      "debt_days": 11,
+      "first_debt": "2026-02-26",
+      "unfunded_even_if_stock_cash_transferable_days": 0,
+      "first_unfunded": null,
+      "max_cash_debt_gap": "0",
+      "max_cash_debt_gap_date": null,
+      "cash_debt_gaps": [],
+      "recent_period_return": "-0.0675903133494624694403930120885871213094",
+      "recent_max_drawdown": "-0.11772089145747041705940588735371544359391921150069043480575498059",
+      "recent_mdd_peak_trough": [
+        "2026-02-24",
+        "2026-04-03"
+      ],
+      "recent_terminal_equity": "932409.6866505375305596069879114128786906",
+      "state": "on"
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.109E-33",
+        "stock_share_valuation": "5.6091E-35",
+        "held_count": "0",
+        "equity_components": "6.0000E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "6.06E-36",
+        "cash_event_flow": "5.4234E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.968228864237134617864964E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "4.77E-35",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2510,
+      "fees_total": "50790.634142466500101887720954304035999070228857",
+      "rejected_orders": 400,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 13,
+        "insufficient_prefunded_cash": 379,
+        "suspended_or_zero_volume": 8
+      },
+      "swap_drag_total": "22900.282674002582807277382682092397088142471",
+      "rights_cash_paid": "859.94143538014944870064669211075869735934",
+      "shadow_financing_total_unapplied": "4.8518512607460388715344388720234377786278000",
+      "max_hedge_to_equity": [
+        "2025-11-13",
+        "0.79927476115759965004380951219635966549520793803269068982338176656"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.0098874374730248340555518644666620874506116743146700832185174966565"
+      ],
+      "debt_days": 11,
+      "first_debt": "2026-02-26",
+      "unfunded_even_if_stock_cash_transferable_days": 0,
+      "first_unfunded": null,
+      "max_cash_debt_gap": "0",
+      "max_cash_debt_gap_date": null,
+      "cash_debt_gaps": [],
+      "recent_period_return": "0.041734218860423672140072511497304345455",
+      "recent_max_drawdown": "-0.11772089145747041705940588735371544359391921150069043480575498059",
+      "recent_mdd_peak_trough": [
+        "2026-02-24",
+        "2026-04-03"
+      ],
+      "recent_terminal_equity": "1041734.218860423672140072511497304345455",
+      "state": "off"
+    },
+    {
+      "branch": "netted",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.235E-33",
+        "stock_share_valuation": "4.6943E-35",
+        "held_count": "0",
+        "equity_components": "6.34E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "4.19E-36",
+        "cash_event_flow": "5.5374E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.935053936925191609132673E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "3.65E-35",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2051,
+      "fees_total": "43040.302487286314120905218942788725499234922163",
+      "rejected_orders": 95,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 15,
+        "insufficient_netted_cash": 73,
+        "suspended_or_zero_volume": 7
+      },
+      "swap_drag_total": "15381.8650779182744496393158475808957278505184",
+      "rights_cash_paid": "75.09367271883928496824018093836445986374",
+      "shadow_financing_total_unapplied": "0.7388389557529365689459791669985067887148000",
+      "max_hedge_to_equity": [
+        "2026-02-27",
+        "0.80354381250174636532319810075564657188241410490002371081313204519"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.0059828101088629901522311895241504584232197629928259066073779176674"
+      ],
+      "debt_days": 1,
+      "first_debt": "2026-02-27",
+      "unfunded_even_if_stock_cash_transferable_days": 1,
+      "first_unfunded": "2026-02-27",
+      "max_cash_debt_gap": "4449.322517692197620635826432707613739396",
+      "max_cash_debt_gap_date": "2026-02-27",
+      "cash_debt_gaps": [
+        [
+          "2026-02-27",
+          "4449.322517692197620635826432707613739396"
+        ]
+      ],
+      "recent_period_return": "-0.0249790873724650783653210021526202183683",
+      "recent_max_drawdown": "-0.11766570105879217413956861072343224947719946440272365228377569727",
+      "recent_mdd_peak_trough": [
+        "2026-02-24",
+        "2026-03-23"
+      ],
+      "recent_terminal_equity": "975020.9126275349216346789978473797816317",
+      "state": "on"
+    },
+    {
+      "branch": "netted",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "problems": [],
+      "max_residuals": {
+        "stock_market_value": "1.235E-33",
+        "stock_share_valuation": "7.0111E-35",
+        "held_count": "0",
+        "equity_components": "6.34E-34",
+        "debt_definition": "0",
+        "hedge_reset": "4E-35",
+        "executed_order_count": "0",
+        "daily_stock_fee": "3.86E-36",
+        "cash_event_flow": "4.6480E-34",
+        "receivable_event_flow": "0",
+        "swap_pnl": "4.935053936925191609132673E-36",
+        "swap_drag": "5E-38",
+        "swap_margin_roll": "5.47E-35",
+        "order_gross": "5.00E-36",
+        "order_fee": "5E-39",
+        "share_event_flow": "0",
+        "pending_order_count": "0"
+      },
+      "booked_orders": 2593,
+      "fees_total": "48336.285421500952710712448344651936775535789817",
+      "rejected_orders": 187,
+      "reject_reasons": {
+        "at_side_close_limit_diagnostic_ST_and_board": 18,
+        "insufficient_netted_cash": 161,
+        "suspended_or_zero_volume": 8
+      },
+      "swap_drag_total": "25234.2043836831995058271438404227309251000737",
+      "rights_cash_paid": "862.97844057882210779463104867713678999148",
+      "shadow_financing_total_unapplied": "0.7388389557529365689459791669985067887148000",
+      "max_hedge_to_equity": [
+        "2026-02-27",
+        "0.80354381250174636532319810075564657188241410490002371081313204519"
+      ],
+      "max_debt_to_equity": [
+        "2026-02-27",
+        "0.0059828101088629901522311895241504584232197629928259066073779176674"
+      ],
+      "debt_days": 1,
+      "first_debt": "2026-02-27",
+      "unfunded_even_if_stock_cash_transferable_days": 1,
+      "first_unfunded": "2026-02-27",
+      "max_cash_debt_gap": "4449.322517692197620635826432707613739396",
+      "max_cash_debt_gap_date": "2026-02-27",
+      "cash_debt_gaps": [
+        [
+          "2026-02-27",
+          "4449.322517692197620635826432707613739396"
+        ]
+      ],
+      "recent_period_return": "0.094697935039572203488393458226745224548",
+      "recent_max_drawdown": "-0.12762520248718525651727070825406333193485680923258730518992070875",
+      "recent_mdd_peak_trough": [
+        "2026-02-24",
+        "2026-07-09"
+      ],
+      "recent_terminal_equity": "1094697.935039572203488393458226745224548",
+      "state": "off"
+    }
+  ],
+  "arm_comparison": {
+    "prefunded": {
+      "first_daily_state_difference": "2026-07-06",
+      "state_difference_days": 62,
+      "first_equity_difference": "2026-07-07",
+      "equity_difference_days": 61,
+      "final_equity_on_minus_off": "-109324.5322098861415804655235858914667644",
+      "on_original_l2_byte_parity": true
+    },
+    "netted": {
+      "first_daily_state_difference": "2026-03-25",
+      "state_difference_days": 130,
+      "first_equity_difference": "2026-03-26",
+      "equity_difference_days": 129,
+      "final_equity_on_minus_off": "-119677.0224120372818537144603793654429163",
+      "on_original_l2_byte_parity": true
+    }
+  }
+}

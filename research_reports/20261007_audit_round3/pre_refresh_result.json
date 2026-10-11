@@ -1,0 +1,13 @@
+{
+  "command": [
+    "C:\\Python314\\python.exe",
+    "-B",
+    "-X",
+    "utf8",
+    "scripts/top100_delivery.py",
+    "refresh-all"
+  ],
+  "exit_code": 1,
+  "stdout": "{\n  \"ok\": false,\n  \"scope\": \"whole_workspace_delivery\",\n  \"errors\": [\n    \"Local core/authority differs from remote release: scripts/top100_delivery.py\"\n  ]\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,3 @@
+rebalance_date,execution_date,execution_timing,two_side_cost_rate
+2026-09-01,2026-09-01,close,0.006
+2026-09-02,2026-09-03,next_open,0.006

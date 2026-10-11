@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="8" skipped="0" tests="10" time="1.936" timestamp="2026-10-07T22:42:47.389362+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_before_deadline_is_accepted[2026-10-08T14:59:59+08:00]" time="0.064" /><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_before_deadline_is_accepted[2026-10-08T06:59:59+00:00]" time="0.001" /><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_final_guard_rejects[2026-10-08T15:00:00+08:00]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;">calendar_oracle = None
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002727455F410&gt;
+stamp = '2026-10-08T15:00:00+08:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_final_guard_rejects(calendar_oracle, monkeypatch, stamp):
+        clock = pd.Timestamp(stamp).tz_convert("Asia/Shanghai")
+        namespace = v20.base_mod.assert_realtime_anchor_precedes_quote_trade_date.__globals__
+        original = namespace["_cn_timestamp"]
+        monkeypatch.setitem(namespace, "_cn_timestamp", lambda now=None: clock if now is None else original(now))
+        monkeypatch.setitem(namespace, "_cn_local_day", lambda now=None: pd.Timestamp(clock.date()))
+&gt;       with pytest.raises(RuntimeError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:71: Failed</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_final_guard_rejects[2026-10-08T15:15:00+08:00]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;">calendar_oracle = None
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000027274671040&gt;
+stamp = '2026-10-08T15:15:00+08:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_final_guard_rejects(calendar_oracle, monkeypatch, stamp):
+        clock = pd.Timestamp(stamp).tz_convert("Asia/Shanghai")
+        namespace = v20.base_mod.assert_realtime_anchor_precedes_quote_trade_date.__globals__
+        original = namespace["_cn_timestamp"]
+        monkeypatch.setitem(namespace, "_cn_timestamp", lambda now=None: clock if now is None else original(now))
+        monkeypatch.setitem(namespace, "_cn_local_day", lambda now=None: pd.Timestamp(clock.date()))
+&gt;       with pytest.raises(RuntimeError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:71: Failed</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_final_guard_rejects[2026-10-08T15:29:59+08:00]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;">calendar_oracle = None
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000272746719D0&gt;
+stamp = '2026-10-08T15:29:59+08:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_final_guard_rejects(calendar_oracle, monkeypatch, stamp):
+        clock = pd.Timestamp(stamp).tz_convert("Asia/Shanghai")
+        namespace = v20.base_mod.assert_realtime_anchor_precedes_quote_trade_date.__globals__
+        original = namespace["_cn_timestamp"]
+        monkeypatch.setitem(namespace, "_cn_timestamp", lambda now=None: clock if now is None else original(now))
+        monkeypatch.setitem(namespace, "_cn_local_day", lambda now=None: pd.Timestamp(clock.date()))
+&gt;       with pytest.raises(RuntimeError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:71: Failed</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_final_guard_rejects[2026-10-08T07:00:00+00:00]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;">calendar_oracle = None
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000272744BE350&gt;
+stamp = '2026-10-08T07:00:00+00:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_final_guard_rejects(calendar_oracle, monkeypatch, stamp):
+        clock = pd.Timestamp(stamp).tz_convert("Asia/Shanghai")
+        namespace = v20.base_mod.assert_realtime_anchor_precedes_quote_trade_date.__globals__
+        original = namespace["_cn_timestamp"]
+        monkeypatch.setitem(namespace, "_cn_timestamp", lambda now=None: clock if now is None else original(now))
+        monkeypatch.setitem(namespace, "_cn_local_day", lambda now=None: pd.Timestamp(clock.date()))
+&gt;       with pytest.raises(RuntimeError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'RuntimeError'&gt;
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:71: Failed</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_written_row_rejects[2026-10-08T15:00:00+08:00]" time="0.001"><failure message="AssertionError: assert not True&#10; +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')&#10; +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T15:00:00+08:00')">calendar_oracle = None, stamp = '2026-10-08T15:00:00+08:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_written_row_rejects(calendar_oracle, stamp):
+&gt;       assert not realtime_row_is_consistent(row(stamp), "long_microcap_short_zz1000")
+E       AssertionError: assert not True
+E        +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')
+E        +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T15:00:00+08:00')
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:82: AssertionError</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_written_row_rejects[2026-10-08T15:15:00+08:00]" time="0.001"><failure message="AssertionError: assert not True&#10; +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')&#10; +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T15:15:00+08:00')">calendar_oracle = None, stamp = '2026-10-08T15:15:00+08:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_written_row_rejects(calendar_oracle, stamp):
+&gt;       assert not realtime_row_is_consistent(row(stamp), "long_microcap_short_zz1000")
+E       AssertionError: assert not True
+E        +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')
+E        +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T15:15:00+08:00')
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:82: AssertionError</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_written_row_rejects[2026-10-08T15:29:59+08:00]" time="0.001"><failure message="AssertionError: assert not True&#10; +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')&#10; +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T15:29:59+08:00')">calendar_oracle = None, stamp = '2026-10-08T15:29:59+08:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_written_row_rejects(calendar_oracle, stamp):
+&gt;       assert not realtime_row_is_consistent(row(stamp), "long_microcap_short_zz1000")
+E       AssertionError: assert not True
+E        +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')
+E        +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T15:29:59+08:00')
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:82: AssertionError</failure></testcase><testcase classname="research_reports.20261007_daily_send_adversarial.local_agent.test_local_intraday_deadline" name="test_at_or_after_deadline_written_row_rejects[2026-10-08T07:00:00+00:00]" time="0.001"><failure message="AssertionError: assert not True&#10; +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')&#10; +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T07:00:00+00:00')">calendar_oracle = None, stamp = '2026-10-08T07:00:00+00:00'
+
+    @pytest.mark.parametrize("stamp", [
+        "2026-10-08T15:00:00+08:00",
+        "2026-10-08T15:15:00+08:00",
+        "2026-10-08T15:29:59+08:00",
+        "2026-10-08T07:00:00+00:00",
+    ])
+    def test_at_or_after_deadline_written_row_rejects(calendar_oracle, stamp):
+&gt;       assert not realtime_row_is_consistent(row(stamp), "long_microcap_short_zz1000")
+E       AssertionError: assert not True
+E        +  where True = realtime_row_is_consistent({'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...}, 'long_microcap_short_zz1000')
+E        +    where {'current_execution_scale': 0, 'current_holding': 'cash', 'date': '2026-10-08', 'expected_latest_completed_trade_date': '2026-09-30', ...} = row('2026-10-08T07:00:00+00:00')
+
+research_reports\20261007_daily_send_adversarial\local_agent\test_local_intraday_deadline.py:82: AssertionError</failure></testcase></testsuite></testsuites>

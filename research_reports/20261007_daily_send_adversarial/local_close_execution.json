@@ -1,0 +1,14 @@
+{
+  "0": {
+    "exit_code": 0,
+    "log": "research_reports\\20261007_daily_send_adversarial\\local_close_v2_0.txt"
+  },
+  "3": {
+    "exit_code": 0,
+    "log": "research_reports\\20261007_daily_send_adversarial\\local_close_v2_3.txt"
+  },
+  "5": {
+    "exit_code": 0,
+    "log": "research_reports\\20261007_daily_send_adversarial\\local_close_v2_5.txt"
+  }
+}

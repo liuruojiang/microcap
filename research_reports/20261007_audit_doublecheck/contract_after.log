@@ -1,0 +1,15 @@
+................................................................F....... [ 86%]
+...........                                                              [100%]
+================================== FAILURES ===================================
+_ test_native_signal_cli_cleanup_keeps_current_concurrent_writer[3-microcap_top100_mom16_biweekly_live_v2_3] _
+tests\test_doublecheck_contract_adversarial.py:278: in test_native_signal_cli_cleanup_keeps_current_concurrent_writer
+    assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, version, module,
+tests\test_doublecheck_contract_adversarial.py:258: in assert_native_cli_cleanup
+    assert retained and realtime_path.read_bytes() == writer_bytes
+E   AssertionError: assert (True and b'signal_labe...9,100/100\r\n' == b'signal_labe...100/100\r\r\n'
+E     
+E     At index 3703 diff: b'\n' != b'\r'
+E     Use -v to get more diff)
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_signal_cli_cleanup_keeps_current_concurrent_writer[3-microcap_top100_mom16_biweekly_live_v2_3]
+1 failed, 82 passed in 121.62s (0:02:01)

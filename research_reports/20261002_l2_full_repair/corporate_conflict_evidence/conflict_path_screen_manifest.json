@@ -1,0 +1,61 @@
+{
+  "scope": "old effective member snapshots and stopped diagnostic fixed-share accounts only",
+  "conflicts": 51,
+  "kinds": {
+    "ratio_precision_difference_le_0p000031": 49,
+    "distinct_rows_same_source": 2
+  },
+  "old_snapshot_overlap": 3,
+  "old_snapshot_overlap_keys": [
+    [
+      "002034",
+      "2013-06-27"
+    ],
+    [
+      "300062",
+      "2013-07-17"
+    ],
+    [
+      "300120",
+      "2014-06-11"
+    ]
+  ],
+  "prefunded_status_counts": {
+    "not_held_at_record_before_stop": 2,
+    "held_at_record_before_stop": 2,
+    "unreached_after_stop": 47
+  },
+  "netted_status_counts": {
+    "not_held_at_record_before_stop": 1,
+    "held_at_record_before_stop": 2,
+    "unreached_after_stop": 48
+  },
+  "branch_last_settled": {
+    "prefunded": "2014-06-16",
+    "netted": "2014-05-22"
+  },
+  "branch_first_block": {
+    "prefunded": {
+      "date": "2014-06-17",
+      "reason": "unverified_missing_raw_close:2014-06-17:600758"
+    },
+    "netted": {
+      "date": "2014-05-23",
+      "reason": "unverified_missing_raw_close:2014-05-23:002624"
+    }
+  },
+  "input_sha256": {
+    "research_reports\\20261002_l2_full_repair\\data\\event_conflict_classification.csv": "21736aed3099c8cca8ad496f3ce864b2f0fd6b419533e8f8a4eb1fb7e8f7ed80",
+    "research_reports\\20261002_l2_full_repair\\data\\event_candidates_2010_20260930.csv": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "research_reports\\20261002_l2_full_repair\\engine\\full_history_daily_positions.csv": "e37bcdd26e422b4585b19b737a2105b5593a6c988c74637f76d3ce6a0f483f41",
+    "research_reports\\20261002_l2_full_repair\\engine\\full_history_result.json": "45771dca650c9971c72d1eefa289ff7fc55e510220a4dc0ddb4f76b9faba7b12",
+    "research_reports\\20261002_l2_full_repair\\data\\suspension_ex_evidence\\300062_20130711_issuer_dividend.pdf": "8ba3fd6885ee620d7eb614f2613171b2791921e2d29685588bafc58ba92fa95d",
+    "research_reports\\20261002_l2_full_repair\\data\\suspension_ex_evidence\\300120_20140604_issuer_dividend.pdf": "31aafbfcc0499c3e9d26260b2ce07713b651a5eef722fd907a3fa93d9bea9a37"
+  },
+  "screen_sha256": "fbfd85bdcb246a361a0565eb592038eda2113e8152b454ab923e77954d7bf270",
+  "limits": [
+    "Old member snapshot overlap is a lower-bound trigger screen, not exact post-repair fixed-share exposure.",
+    "A branch's future conflict status remains unknown after its first block; unreached does not mean not held.",
+    "Issuer verification here covers only 300062 and 300120; existing 002034 evidence is in data/suspension_ex_evidence/."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "PASS_conditional_paper_account_arithmetic_only",
+  "source_result_sha256": "1626c7da195abf8c187a9910b309cca3109cf1addb69ed1dd1f4335c23eea0ce",
+  "audit_code_sha256": "57928e0f59c940ab8fc42dc94a3c49f95904d313c92d8cdd905f9e7db909bdd6",
+  "branches": {
+    "prefunded": {
+      "days": 241,
+      "holding_rows": 21605,
+      "order_rows": 2827,
+      "rights_rows": 119,
+      "max_account_residual": "3E-33",
+      "003017_record_shares": "0",
+      "003017_gross_cash": "0",
+      "end_equity": "1240881.419638856621785191826947402642771"
+    },
+    "netted": {
+      "days": 241,
+      "holding_rows": 23992,
+      "order_rows": 2917,
+      "rights_rows": 144,
+      "max_account_residual": "5E-33",
+      "003017_record_shares": "539.1375240684788356761664880485725024517",
+      "003017_gross_cash": "161.7412572205436507028499464145717507355",
+      "end_equity": "1246322.203588077845840396689693070054651"
+    }
+  }
+}

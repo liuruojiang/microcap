@@ -1,0 +1,18 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[ENTRY_COST] _
+tests\test_round3_math_ledger.py:195: in test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants
+    _expect_block(f"v23_cost_constant_{constant}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_cost_constant_ENTRY_COST: actual execution builder accepted the corrupted upstream result
+_ test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[EXIT_COST] _
+tests\test_round3_math_ledger.py:195: in test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants
+    _expect_block(f"v23_cost_constant_{constant}",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_cost_constant_EXIT_COST: actual execution builder accepted the corrupted upstream result
+=========================== short test summary info ===========================
+FAILED tests/test_round3_math_ledger.py::test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[ENTRY_COST]
+FAILED tests/test_round3_math_ledger.py::test_v23_base_fee_contract_cannot_certify_changed_approved_cost_constants[EXIT_COST]
+2 failed, 23 deselected in 6.14s

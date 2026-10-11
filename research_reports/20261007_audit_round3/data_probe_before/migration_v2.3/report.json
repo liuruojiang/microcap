@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "approved": 1,
+  "previous_costed_nav_sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe",
+  "candidate_frame_sha256": "3012b7ce7bc26da8408e498f51c394213cfda165437283fad28ac15fe33b1c12",
+  "base_proxy_meta_sha256": "8876fffd514c9be106e228050e55f68f22b26ead7d165fbd13c714ad5a95f05c",
+  "rewrite_audit_sha256": "44ebe257c43cb6926c586c1fe91d09932f4f1891034e0c3a32408ccd4d34b39d",
+  "previous_row_count": 1,
+  "candidate_row_count": 2,
+  "previous_latest_date": "2026-09-01",
+  "candidate_latest_date": "2026-09-02",
+  "new_member_st_violations": 0,
+  "new_member_bad_policy_count": 0,
+  "proxy_meta_matches_current_cache": true,
+  "version": "2.3",
+  "v2_0_costed_nav_sha256": "dcd19eeda3f6e3f46324a720dfdda40608c878aefef22a504a3c5a2d6397f3fe"
+}

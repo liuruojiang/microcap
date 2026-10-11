@@ -1,0 +1,59 @@
+{
+  "queried_utc": "2026-10-03T02:10:10.623828+00:00",
+  "issuer_source": {
+    "url": "https://static.cninfo.com.cn/finalpage/2018-06-01/1205021532.PDF",
+    "sha256": "0705aaf7dc9595ef0ea1bb178bad26916caae0e1eb32f3b33508c787b18150d4"
+  },
+  "source_status": "cninfo=1;sina=0; single_source_only; normalized share_credit_date blank",
+  "event_scope": "prefunded 603031; record=2018-06-06; ex=pay=2018-06-07; bonus=0.4 and gross cash=0.15 per old share",
+  "new_unrestricted_shares_first_listing_and_paper_release_date": "2018-06-08",
+  "actual_csdc_share_credit_date": null,
+  "credit_boundary": "Issuer says CSDC directly credits shares but gives no exact credit timestamp. New rights valued pending from 06-07; paper-tradable from listed 06-08.",
+  "vendor_query": "BaoStock sh.603031 daily adjustflag=3, 2018-06-04..2018-06-12",
+  "record_traded_bar": {
+    "date": "2018-06-06",
+    "code": "sh.603031",
+    "open": "22.6700",
+    "high": "23.1000",
+    "low": "22.6100",
+    "close": "23.0000",
+    "preclose": "22.9000",
+    "volume": "2446100",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_traded_bar": {
+    "date": "2018-06-07",
+    "code": "sh.603031",
+    "open": "16.3300",
+    "high": "16.5000",
+    "low": "15.8500",
+    "close": "15.8700",
+    "preclose": "16.3200",
+    "volume": "1829300",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "release_traded_bar": {
+    "date": "2018-06-08",
+    "code": "sh.603031",
+    "open": "15.6900",
+    "high": "15.6900",
+    "low": "15.0900",
+    "close": "15.3500",
+    "preclose": "15.8700",
+    "volume": "3264020",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "theoretical_ex_reference_unrounded": "16.32142857142857142857142857142857142857142857142857142857142857",
+  "vendor_rows": 7,
+  "vendor_csv_sha256": "513dc83a467f2dbbcb00a6fccd1d1033607cbb755e591a0591b5149d229e4357",
+  "stopped_account_positions_sha256": "1ae031f04bf6c9d97d62553dd48bc6097b9b102fe423e6a87a9bfdc00f7b45fa",
+  "stopped_account_orders_sha256": "bb5ce406827a43b2e419efb5bbed7572a67e090b4aab1f9499e764211fa3053d",
+  "conditional_prefunded_record_shares_from_2018_06_05": "3958.734431454845232167538637784319286957",
+  "conditional_bonus_due": "1583.4937725819380928670154551137277147828",
+  "conditional_gross_cash_due": "593.81016471822678482513079566764789304355",
+  "entitlement_limit": "Stopped account has no 06-06 record line. Last settled shares with no recorded 06-06 order remain conditional until rerun rights record.",
+  "valuation_counterexample": "At 06-07 true close 15.87, each old share plus pending 0.4 and cash 0.15 is worth 1.4*15.87+0.15=22.368. Omitting pending bonus yields 16.02; treating 06-07 new shares as sellable precedes 06-08 listing. 23.00 previous close to 22.368 includes true market move."
+}

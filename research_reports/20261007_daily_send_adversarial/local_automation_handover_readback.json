@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "settings_unchanged": {
+    "id": true,
+    "kind": true,
+    "name": true,
+    "status": true,
+    "rrule": true,
+    "model": true,
+    "reasoning_effort": true,
+    "execution_environment": true,
+    "target": true,
+    "cwds": true
+  },
+  "gate_files": 17,
+  "final_toml_sha256": "bbc6552fba3db3d63cfb3b413aecbd3b9f549272521f8520ac875cc75874d73f",
+  "official_builder_path_explicit": true,
+  "strict_15_00_deadline_present": true,
+  "pinned_strategy_present": true,
+  "local_report_channel": "Codex task only"
+}

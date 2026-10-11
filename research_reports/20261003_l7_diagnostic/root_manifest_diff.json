@@ -1,0 +1,25 @@
+{
+  "hash_rule": "SHA256 after CRLF to LF normalization",
+  "manifest_expected_date": "2026-09-30",
+  "manifest_status": "complete",
+  "diff": {
+    "inputs": [
+      {
+        "path": "microcap_top100_mom16_biweekly_live_v2_0.py",
+        "manifest_sha_lf": "d86b53a2e216261af55ab77182c1ba0c10e595732fbe4a5eb0ae47235802240a",
+        "current_sha_lf": "e84cefc6734bf88635e17e0cda3bc5e4bfa7181e7f2922e969c0b219329bdeef"
+      },
+      {
+        "path": "microcap_top100_mom16_biweekly_live_v2_3.py",
+        "manifest_sha_lf": "5f0ac783d5796ac6742fdbf391603d3bb6b529e784e7aaf89c478e64d69c52d8",
+        "current_sha_lf": "b3ca6503fb561114ef9d673dcb59fe840aec79e3a09fa2aabed5c639c7e39b59"
+      },
+      {
+        "path": "microcap_top100_mom16_biweekly_live_v2_5.py",
+        "manifest_sha_lf": "110ae5b3334f1bebcf986750090dea9f8d2b7bdd0aeb7ae3414053d5f6909a6b",
+        "current_sha_lf": "7b3f942cb9dd218d406d0e382d90ad712a30e9ed31c5c54907964c81dd8ea499"
+      }
+    ],
+    "artifacts": []
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "source_bars_sha256": "9c456724de85480df953ac3e97ba1a51c32c1ff119057073777b0fb5bfee0e20",
+  "engine_files_sha256": {
+    "full_history_daily_positions.csv": "9f05a8dba2dc31ab7052d66d68a6e879f63d27faa27d415eeb4fad45549f4e92",
+    "full_history_rights_events.csv": "4d3d9d5d406c086fbe6c6b5d3a4e9146c3444427f3c3cf263bfe73708d7a5539",
+    "full_history_settled_orders.csv": "b8124a6d0288ade7ff17d66e550cf1ba88c73c14d4e9b868a633f74d3de4b7c9"
+  },
+  "events": {
+    "600211": {
+      "record_qty": "873.1383477341242422082474165879571940194",
+      "ex_old_mark": "14.63",
+      "pending_qty": "87.31383477341242422082474165879571940194",
+      "credited_date": "2010-09-08",
+      "correct_ex_value": "14051.415430085261429857325675149995123350",
+      "ordinary_bonus_understates_by": "640.010408889113069538645356358972623212016000000",
+      "stale_mark_overstates_by": "701.1300932305017664932226755201296268017824",
+      "counterexamples_rejected": true
+    },
+    "000810": {
+      "prefunded": {
+        "record_qty": "1011.416739664529004532613007269800576969",
+        "paid_tax_before": "202.28334793290580090652260145396011539380",
+        "ex_mark": "13.80",
+        "first_real_sell": "2012-02-10",
+        "stale_mark_overstates_by": "202.28334793290580090652260145396011539380",
+        "omit_cash_understates_by": "202.28334793290580090652260145396011539380",
+        "counterexamples_rejected": true
+      },
+      "netted": {
+        "record_qty": "1030.283745637000560501629711285292955548",
+        "paid_tax_before": "206.05674912740011210032594225705859110960",
+        "ex_mark": "13.80",
+        "first_real_sell": "2012-02-10",
+        "stale_mark_overstates_by": "206.05674912740011210032594225705859110960",
+        "omit_cash_understates_by": "206.05674912740011210032594225705859110960",
+        "counterexamples_rejected": true
+      }
+    }
+  },
+  "status": "PASS_two_issuer_events_only"
+}

@@ -1,0 +1,20 @@
+{
+  "status": "PASS_SPECIAL_RESTRUCTURING_REJECTED",
+  "manifest_sha256": "992f5ddbfaa584befa593a221081eb70adefb4b910eba648cd369fa1d8c5896a",
+  "code_sha256": "e36305d5bdca7b7556bd526f254c4d94fd040c098e0da5fbd4552928cfb1501b",
+  "issuer_pdf_sha256": "7a3f03ea4d7ac18c66d36598efbbb16f6251a4dbfc60ecd39a53bc8bc6412604",
+  "cninfo_original_row_sha256": "f754305bf46225fa262ef6c8505a431108e3732452ed0b701b216b83e9ded08f",
+  "issuer_entitlement": "zero new shares and zero cash for existing shareholders",
+  "issuer_special_reference_price": "4.45",
+  "candidate_bonus_per_10": "10.0",
+  "last_account_day": "2018-12-14",
+  "last_settled_account_shares": "19575.69360011995581213787714808098246259",
+  "naive_phantom_bonus_shares": "19575.693600119955812137877148080982462590",
+  "mutant_credit_date": "2018-12-19",
+  "mutant_result": "rejected_non_shareholder_reorg_not_entitlement",
+  "first_block": {
+    "date": "2018-12-17",
+    "reason": "non_shareholder_reorg_not_entitlement:2018-12-17:600423"
+  },
+  "limitation": "This proves rejection, not a valued continuation through the restructuring."
+}

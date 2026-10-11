@@ -1,0 +1,2 @@
+date,holding,next_holding,nav_net,return,microcap_close,hedge_close,microcap_mom,hedge_mom,momentum_gap,signal_on
+2026-08-10,long_microcap_short_zz1000,long_microcap_short_zz1000,1.2,0.01,101.0,202.0,0.03,0.01,0.02,True

@@ -1,0 +1,359 @@
+{
+  "started_beijing": "2026-10-07T21:31:28.062117+08:00",
+  "strategy_sha_before": "eefd27d81d2c9c9f1438975c4d5c221d1b81bf96",
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_213127",
+  "backup_files": [
+    {
+      "path": ".microcap_index_cache/realtime/top100_realtime_refresh_proof.json",
+      "sha256": "67a20e279210a49caf1c14460d749d63ab64a0ecc862a347f75789144a44e7ee",
+      "bytes": 196
+    },
+    {
+      "path": "microcap_top100_mom16_biweekly_live.py",
+      "sha256": "f6408e3b4191de78e8e4d7e14a1fea388d42f6ce55b67de38c92302384cb9710",
+      "bytes": 291909
+    },
+    {
+      "path": "microcap_top100_mom16_biweekly_live_v2_0.py",
+      "sha256": "87725ea0664ef529e360c6f4f1c9a07924c54f6b7e23462d9f85914ecbecb442",
+      "bytes": 671102
+    },
+    {
+      "path": "microcap_top100_mom16_biweekly_live_v2_3.py",
+      "sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+      "bytes": 111164
+    },
+    {
+      "path": "microcap_top100_mom16_biweekly_live_v2_5.py",
+      "sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+      "bytes": 120043
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json",
+      "sha256": "fbd302da73a013a172907c820f79f82bb9d2c59c6d5862635894acfb2b36d2e6",
+      "bytes": 1256
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+      "bytes": 606822
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv",
+      "sha256": "4aaa0eeb26c14d31a046a97e32cdf5b2ebc320916147c680da1bc22378df23bc",
+      "bytes": 2216
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+      "sha256": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+      "bytes": 2076434
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+      "sha256": "1cd339a3aa173f705e8ce7b518579a90e9596ef62b7fecc8a711e19023e6e2e8",
+      "bytes": 2933
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "bytes": 43355
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+      "sha256": "949b297da278718d4c163a5ac8a25f3ee1d4c3abdf65de27e2beedea2063580a",
+      "bytes": 2630
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "sha256": "9148edf40c08cb181b59887d54ec64743995edc1a8235e9765f8bcdfdb1f8165",
+      "bytes": 3074
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "bytes": 3895921
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv",
+      "sha256": "28e47649ca2494ba9757b45f0c9f9b4c3750ff18be498f0209f08cca20979200",
+      "bytes": 193476
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.csv",
+      "sha256": "1907983d3cea5af8643c1675f0a284d0fc4297fca02fa349bb349cdfd4b4f0f6",
+      "bytes": 949
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.json",
+      "sha256": "11b4b9a78342deea8bfbc2ed65b6adc8069b7a151164419ee88b57da20a615cb",
+      "bytes": 8405
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_yearly.csv",
+      "sha256": "564d720ff4d856af85885b470a5c5d583830e45b491e95e01febecd4d81fe886",
+      "bytes": 1900
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json",
+      "sha256": "54b571fb4e20542d7c452a5e30af6ec708b39a7ce151608d70fa625a295fc562",
+      "bytes": 17161
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "sha256": "b92d9c80a9b3f0a9905389384e9f5c359f6ebac2eefc86fc07ce3ace3a50fd53",
+      "bytes": 4979
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv",
+      "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+      "bytes": 5577754
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv",
+      "sha256": "f905553af7f7581eabac1ed09881a8aa5e16d4feda2974340af2b20dc4061fec",
+      "bytes": 186051
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.csv",
+      "sha256": "e56495b1fb43669d29f11c07f0298551c47c6e1674e599c9487595228cf38337",
+      "bytes": 943
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.json",
+      "sha256": "cd18faf292a036b42523079566d04427780b7eb9192c0320cacfa23b399671bd",
+      "bytes": 3365
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_yearly.csv",
+      "sha256": "bee5fe8d69fb751b3c4a53ff9cd764057b841f0171109525e227b7dfc2e43e5f",
+      "bytes": 1898
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json",
+      "sha256": "246a41923227c3aa231ef59c168834c00f58cadaab60c1080daf0e906843df91",
+      "bytes": 20675
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "sha256": "397ec78a094a96a0ecc41227d2651c8ae97d92717921fda306bd52e694319404",
+      "bytes": 4032
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+      "sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+      "bytes": 5131719
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv",
+      "sha256": "ff6b75d37a509a1298d95bb3b4112112bfb64d7640e3a0558db4e3477ae4b2f9",
+      "bytes": 184522
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.csv",
+      "sha256": "a5061df7e7d590aaeafb9962a22ec0fe462eb794cd768dac0a3ed0d72e6fcd78",
+      "bytes": 2094
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.json",
+      "sha256": "13299f4e80125647a21dbf3a745bfb1c579d4d97ffcacc9a23caf61d675930a0",
+      "bytes": 5249
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_yearly.csv",
+      "sha256": "5bf6f9b1fce1d013ad766f04c2a150f9dfef8c8e03aab5b88d381c24b9c869c4",
+      "bytes": 1905
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json",
+      "sha256": "b28fac7ff1fa6cc899a1233254a9d8f2df97ed6cdd1c1f8f0aaeec25fe5c8daf",
+      "bytes": 20233
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+      "bytes": 1588998
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a",
+      "bytes": 5131719
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+      "bytes": 5577754
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+      "bytes": 3895921
+    },
+    {
+      "path": "outputs/top100_delivery_manifest.json",
+      "sha256": "91727eb272d57801fe1a811cef549b5f915ae0dc07b905f3c39c43b5b6c7cae8",
+      "bytes": 186
+    },
+    {
+      "path": "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+      "bytes": 238562
+    },
+    {
+      "path": "scripts/top100_cloud_delivery.py",
+      "sha256": "2741d0b8a009cffa8069781d6f8a7072425e5f3017e1825bb6d035e519c08962",
+      "bytes": 17870
+    },
+    {
+      "path": "scripts/top100_data_contracts.py",
+      "sha256": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288",
+      "bytes": 8868
+    },
+    {
+      "path": "scripts/top100_delivery.py",
+      "sha256": "4027af3fa1681eb3a3c0632fe20fea9606d41a6f41b0a4adba98d8a5aa8fbe7f",
+      "bytes": 34357
+    },
+    {
+      "path": "tests/test_adversarial_delivery_state_consistency.py",
+      "sha256": "bb8e8efe27655f800ba2893242459b43af14915c0ba1556764c540d4e9058570",
+      "bytes": 3191
+    },
+    {
+      "path": "tests/test_adversarial_microcap_delivery.py",
+      "sha256": "08c33c2b47581cc5283aade5aa26fff6b43afeb753f95899ec5c68999aa65ae8",
+      "bytes": 11777
+    },
+    {
+      "path": "tests/test_doublecheck_contract_adversarial.py",
+      "sha256": "4b24e3a6840f9145df36771efeb3f6875d2d901060a64bd56fc926a3c9b7c36a",
+      "bytes": 20176
+    },
+    {
+      "path": "tests/test_doublecheck_data_adversarial.py",
+      "sha256": "7305c4a7a3a27839d06ad822d7fa6847b1f1fa2aa56aa217f8bdf1ed32557e80",
+      "bytes": 13790
+    },
+    {
+      "path": "tests/test_doublecheck_math_adversarial.py",
+      "sha256": "eb734af9e49069cf95728ab458b4f4842fc270ebee2bb2cb1a94da4f77aea1ea",
+      "bytes": 30805
+    },
+    {
+      "path": "tests/test_frozen_member_continuation_20260917.py",
+      "sha256": "f93260e7342e673903b900fa15bca414ec17e7edec3de1fd556dd22691da0cdb",
+      "bytes": 10198
+    },
+    {
+      "path": "tests/test_microcap_v2_review_remediations.py",
+      "sha256": "24f522b2057e0de52cfd7b9ca96aa1959f50a3e24d527a97dfacda635210603e",
+      "bytes": 87850
+    },
+    {
+      "path": "tests/test_realtime_exchange_calendar.py",
+      "sha256": "1fefc0609c43b3dd5c7f355052583532b8530b5c0882fd97003de5b494011b41",
+      "bytes": 8875
+    },
+    {
+      "path": "tests/test_round3_data_boundary.py",
+      "sha256": "a758f542d9fdc1800bcdd5a0a195d0a3c5cc4689d6ac61f89c0dbe503ca1d113",
+      "bytes": 18051
+    },
+    {
+      "path": "tests/test_round3_delivery_boundary.py",
+      "sha256": "a66fc1a0646e9bb14213e9e487592786ec49bdf38747f3dc81d46a4c3b1df524",
+      "bytes": 4521
+    },
+    {
+      "path": "tests/test_round3_math_ledger.py",
+      "sha256": "098f3d801c82e8bb2a65c9a4bb3cdb47031add9c64692d0d2ef60162ed0ff297",
+      "bytes": 22861
+    },
+    {
+      "path": "tests/test_round3_state_contract.py",
+      "sha256": "649c4096f45ae906df06619105266302db1cb86e6186434ec1f2c5b3141c5eac",
+      "bytes": 22228
+    },
+    {
+      "path": "tests/test_script_data_adversarial.py",
+      "sha256": "5ef0dd2cf63b045ca05862bf7975872b01eff558cc72c1a852bdcd1b6343f9f2",
+      "bytes": 11776
+    },
+    {
+      "path": "tests/test_script_delivery_adversarial.py",
+      "sha256": "85e4f74cb95a3f0b861f81db3ca8ec448d61a714f7e2050b19462959ededc53a",
+      "bytes": 2373
+    },
+    {
+      "path": "tests/test_script_math_adversarial.py",
+      "sha256": "fa2bdacc2572e8513deeac1a08a13fea32bd2a6867081d1391e51f733c1fcbf6",
+      "bytes": 10255
+    },
+    {
+      "path": "tests/test_script_signal_adversarial.py",
+      "sha256": "e9257590dc5c93b5ee47b498c17418ede6dd25a49f4f8de52bf7e0e4a508adc0",
+      "bytes": 16721
+    },
+    {
+      "path": "tests/test_security_meta_preserve_20260917.py",
+      "sha256": "017af225d48461d56bd0999cb068dcf8acfd03c365e1bd775fee7a91398652f0",
+      "bytes": 5475
+    },
+    {
+      "path": "tests/test_top100_delivery.py",
+      "sha256": "7dcf62f2871201879717107f96042a2c8b00458943a14266911bfe16fd6a7b63",
+      "bytes": 24801
+    },
+    {
+      "path": "tests/test_v25_realtime_artifact_invalidation.py",
+      "sha256": "fe8d10b2ffc01d6f325443c6529f81945fb35a11238c943079f66c4f2bf8167c",
+      "bytes": 3173
+    }
+  ],
+  "source_paths_to_publish": [
+    "microcap_top100_mom16_biweekly_live.py",
+    "microcap_top100_mom16_biweekly_live_v2_0.py",
+    "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "microcap_top100_mom16_biweekly_live_v2_5.py",
+    "scripts/top100_delivery.py",
+    "tests/test_adversarial_delivery_state_consistency.py",
+    "tests/test_microcap_v2_review_remediations.py",
+    "tests/test_top100_delivery.py",
+    "tests/test_script_data_adversarial.py",
+    "tests/test_script_delivery_adversarial.py",
+    "tests/test_script_math_adversarial.py",
+    "tests/test_script_signal_adversarial.py",
+    "tests/test_security_meta_preserve_20260917.py",
+    "tests/test_v25_realtime_artifact_invalidation.py",
+    "tests/test_adversarial_microcap_delivery.py",
+    "tests/test_doublecheck_data_adversarial.py",
+    "tests/test_doublecheck_math_adversarial.py",
+    "tests/test_doublecheck_contract_adversarial.py",
+    "scripts/top100_cloud_delivery.py",
+    "scripts/top100_data_contracts.py",
+    "tests/test_frozen_member_continuation_20260917.py",
+    "tests/test_realtime_exchange_calendar.py",
+    "tests/test_round3_data_boundary.py",
+    "tests/test_round3_math_ledger.py",
+    "tests/test_round3_state_contract.py",
+    "tests/test_round3_delivery_boundary.py"
+  ],
+  "tracked_status_before": " M microcap_top100_mom16_biweekly_live.py\n M microcap_top100_mom16_biweekly_live_v2_0.py\n M microcap_top100_mom16_biweekly_live_v2_3.py\n M microcap_top100_mom16_biweekly_live_v2_5.py\n M outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json\n M scripts/top100_cloud_delivery.py\n M scripts/top100_delivery.py\n M tests/test_adversarial_delivery_state_consistency.py\n M tests/test_adversarial_microcap_delivery.py\n M tests/test_frozen_member_continuation_20260917.py\n M tests/test_microcap_v2_review_remediations.py\n M tests/test_realtime_exchange_calendar.py\n M tests/test_security_meta_preserve_20260917.py\n M tests/test_top100_delivery.py\n M tests/test_v25_realtime_artifact_invalidation.py\n",
+  "expected_session": "2026-09-30",
+  "scope": [
+    "strategy_remote",
+    "local_daily_route",
+    "cloud_daily_route"
+  ],
+  "audit_suite": {
+    "passed": 1189,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "code_and_backtest_audit_reports": [
+    "20261007_script_adversarial",
+    "20261007_audit_doublecheck",
+    "20261007_audit_round3",
+    "20261007_audit_drawdown_impact"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "meta_version": 2,
+  "st_notice_policy_version": "cninfo-category-plus-entry-exit-keyword-v3",
+  "symbol": "600543",
+  "first_trade_date": "2010-01-04",
+  "last_trade_date": "2026-09-17",
+  "list_date": "2004-03-24",
+  "delist_date": null,
+  "exchange": "SSE",
+  "board": "主板",
+  "current_st_snapshot_name": "*ST莫高",
+  "name_history_status": "not_applicable",
+  "notice_query_status": "error:RuntimeError:CNInfo announcement query failed for 600543: 403 Client Error: Forbidden for url: http://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "notice_count": 0,
+  "current_st_history_resolved": true,
+  "st_intervals": [
+    {
+      "start": "2023-05-04",
+      "end": "2024-07-07",
+      "source": "issuer_announcements_2023-04-28_2024-07-05"
+    },
+    {
+      "start": "2026-04-27",
+      "end": null,
+      "source": "issuer_announcement_2026-04-24"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "scope": "old raw execution path only; not new fixed-share actual holdings",
+  "event_candidates_in_old_path": 969,
+  "status_counts": {
+    "dividend_or_bonus:two_source_match": 418,
+    "dividend_or_bonus:single_source_only": 544,
+    "dividend_or_bonus:source_conflict_or_duplicate": 3,
+    "rights_issue:single_source_only": 4
+  },
+  "old_record_qualified_snapshot_count": 955,
+  "old_record_and_ex_raw_missing_count": 40,
+  "first_event_in_old_path": {
+    "symbol": "002049",
+    "ex_date": "2010-04-08",
+    "event_type": "dividend_or_bonus",
+    "record_date": "2010-04-07",
+    "announcement_date": "2010-03-31",
+    "cash_pay_date": "2010-04-08",
+    "share_credit_date": "",
+    "bonus_per_10": "0.0",
+    "cash_per_10_gross": "1.1",
+    "rights_per_10": "",
+    "subscription_price": "",
+    "payment_start": "",
+    "payment_end": "",
+    "source": "cninfo",
+    "source_status": "two_source_match",
+    "source_rows": "cninfo=1;sina=1",
+    "old_held_at_record_snapshot": true,
+    "old_held_at_ex_snapshot": true,
+    "ex_date_raw_close_present": true,
+    "record_day_rebalance_ambiguity": false
+  },
+  "first_problematic_old_path_event": {
+    "symbol": "600211",
+    "ex_date": "2010-09-07",
+    "event_type": "dividend_or_bonus",
+    "record_date": "2010-09-06",
+    "announcement_date": "2010-09-01",
+    "cash_pay_date": "",
+    "share_credit_date": "2010-09-08",
+    "bonus_per_10": "1.0",
+    "cash_per_10_gross": "0.0",
+    "rights_per_10": "",
+    "subscription_price": "",
+    "payment_start": "",
+    "payment_end": "",
+    "source": "cninfo",
+    "source_status": "single_source_only",
+    "source_rows": "cninfo=1;sina=0",
+    "old_held_at_record_snapshot": true,
+    "old_held_at_ex_snapshot": true,
+    "ex_date_raw_close_present": false,
+    "record_day_rebalance_ambiguity": false
+  },
+  "input_sha256": {
+    "events": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "old_members": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c",
+    "initial_seed": "9882d37149ace8e0ab4e5a9d760a5a712261a6728543cc2c97524a7d39243bf5"
+  },
+  "output_sha256": "6d1dcd7d0c200e5219ad181deb6c335fd531627046baf82ad22c29c0b02a4a76"
+}

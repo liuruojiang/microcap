@@ -1,0 +1,188 @@
+{
+  "v2.0": {
+    "ratio_r2": {
+      "rows_different_text": 5,
+      "equal_numeric": false,
+      "max_numeric_difference": 1.1102230246251565e-16,
+      "first_examples": [
+        [
+          "0.4408495950299408",
+          "0.44084959502994087"
+        ],
+        [
+          "0.43704133885136487",
+          "0.4370413388513648"
+        ]
+      ]
+    }
+  },
+  "v2.3": {
+    "microcap_mom": {
+      "rows_different_text": 72,
+      "equal_numeric": false,
+      "max_numeric_difference": 6.5503158452884236e-15,
+      "first_examples": [
+        [
+          "1.5063100126674254",
+          "1.506310012667426"
+        ],
+        [
+          "1.7687184495748685",
+          "1.7687184495748687"
+        ]
+      ]
+    },
+    "hedge_mom": {
+      "rows_different_text": 100,
+      "equal_numeric": false,
+      "max_numeric_difference": 8.881784197001252e-16,
+      "first_examples": [
+        [
+          "0.9677326730077275",
+          "0.9677326730077273"
+        ],
+        [
+          "-0.10169476990642966",
+          "-0.10169476990642963"
+        ]
+      ]
+    },
+    "microcap_log_wls_r2": {
+      "rows_different_text": 71,
+      "equal_numeric": false,
+      "max_numeric_difference": 5.10702591327572e-15,
+      "first_examples": [
+        [
+          "0.812622402155714",
+          "0.8126224021557139"
+        ],
+        [
+          "0.8883555545890148",
+          "0.8883555545890147"
+        ]
+      ]
+    },
+    "hedge_log_wls_r2": {
+      "rows_different_text": 81,
+      "equal_numeric": false,
+      "max_numeric_difference": 1.2212453270876722e-15,
+      "first_examples": [
+        [
+          "0.5631053651348166",
+          "0.5631053651348167"
+        ],
+        [
+          "0.43922679613684623",
+          "0.4392267961368461"
+        ]
+      ]
+    },
+    "momentum_gap": {
+      "rows_different_text": 45,
+      "equal_numeric": false,
+      "max_numeric_difference": 4.440892098500626e-16,
+      "first_examples": [
+        [
+          "-0.07286855084820565",
+          "-0.07286855084820545"
+        ],
+        [
+          "-0.06344682263998938",
+          "-0.06344682263998928"
+        ]
+      ]
+    },
+    "annualized_log_wls_score": {
+      "rows_different_text": 45,
+      "equal_numeric": false,
+      "max_numeric_difference": 4.440892098500626e-16,
+      "first_examples": [
+        [
+          "-0.07286855084820565",
+          "-0.07286855084820545"
+        ],
+        [
+          "-0.06344682263998938",
+          "-0.06344682263998928"
+        ]
+      ]
+    },
+    "log_wls_r2": {
+      "rows_different_text": 44,
+      "equal_numeric": false,
+      "max_numeric_difference": 5.551115123125783e-16,
+      "first_examples": [
+        [
+          "0.04730073948254987",
+          "0.047300739482549536"
+        ],
+        [
+          "0.047752996067378595",
+          "0.04775299606737837"
+        ]
+      ]
+    }
+  },
+  "v2.5": {
+    "microcap_mom": {
+      "rows_different_text": 73,
+      "equal_numeric": false,
+      "max_numeric_difference": 5.662137425588298e-15,
+      "first_examples": [
+        [
+          "1.453676664039976",
+          "1.4536766640399765"
+        ],
+        [
+          "1.7012968152642582",
+          "1.7012968152642585"
+        ]
+      ]
+    },
+    "momentum_gap": {
+      "rows_different_text": 73,
+      "equal_numeric": false,
+      "max_numeric_difference": 5.662137425588298e-15,
+      "first_examples": [
+        [
+          "1.453676664039976",
+          "1.4536766640399765"
+        ],
+        [
+          "1.7012968152642582",
+          "1.7012968152642585"
+        ]
+      ]
+    },
+    "annualized_log_wls_score": {
+      "rows_different_text": 73,
+      "equal_numeric": false,
+      "max_numeric_difference": 5.662137425588298e-15,
+      "first_examples": [
+        [
+          "1.453676664039976",
+          "1.4536766640399765"
+        ],
+        [
+          "1.7012968152642582",
+          "1.7012968152642585"
+        ]
+      ]
+    },
+    "log_wls_r2": {
+      "rows_different_text": 65,
+      "equal_numeric": false,
+      "max_numeric_difference": 4.107825191113079e-15,
+      "first_examples": [
+        [
+          "0.8760377899306266",
+          "0.8760377899306265"
+        ],
+        [
+          "0.9214872273178717",
+          "0.9214872273178716"
+        ]
+      ]
+    }
+  }
+}

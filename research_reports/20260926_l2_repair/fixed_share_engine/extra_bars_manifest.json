@@ -1,0 +1,12 @@
+{
+  "source": "BaoStock anonymous query_history_k_data_plus",
+  "date": "2010-02-12",
+  "symbols": [
+    "002066",
+    "002074"
+  ],
+  "fields": "date,code,open,close,preclose,volume,tradestatus,isST",
+  "adjustflag": "3",
+  "frequency": "d",
+  "sha256": "d1bbc52667ab5e93f0e92162f81abe780b29d23d0a1453077aacdbdeff4c8b4d"
+}

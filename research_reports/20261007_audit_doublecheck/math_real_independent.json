@@ -1,0 +1,1080 @@
+{
+  "scope": "read_only_second_arithmetic_audit_diagnostic",
+  "target": "2026-09-30",
+  "independent_method": "pairwise WLS covariance identity plus 75-digit Decimal spot checks; independent price/state/fee ledger; original entire v20/v23/v25 stack",
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "last_date": "2026-09-30",
+      "source_sha256": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+      "original_source_sha256": "9e12b731fcce474234ffd5136288d20ce6ba19872f606ccf47e58816d07bd550",
+      "comparisons": {
+        "original_entire_stack": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        },
+        "official_csv": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 9.98821251402271e-17,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 3.552713678800501e-15,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 9.985502008591496e-17,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        },
+        "independent_ledger": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 4.336808689942018e-19,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        }
+      },
+      "cash_pre_cost_zero": true
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30",
+      "source_sha256": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+      "original_source_sha256": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+      "comparisons": {
+        "original_entire_stack": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        },
+        "official_csv": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 9.98821251402271e-17,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 3.552713678800501e-15,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 9.985502008591496e-17,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        },
+        "independent_ledger": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 4.336808689942018e-19,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        }
+      },
+      "all_sample_pairwise_max_score_error": 1.7763568394002505e-15,
+      "score_sign_changes": 0,
+      "decimal_spots": 21,
+      "prefix": [
+        {
+          "date": "2010-07-05",
+          "rows": 41,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2010-08-27",
+          "rows": 80,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2010-11-29",
+          "rows": 138,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2012-06-01",
+          "rows": 504,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2015-04-28",
+          "rows": 1208,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2020-08-28",
+          "rows": 2512,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2026-09-01",
+          "rows": 3968,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        }
+      ],
+      "cash_fee_days": 94,
+      "cash_pre_cost_zero": true,
+      "costed_below_same_path_no_cost": true
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30",
+      "source_sha256": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+      "original_source_sha256": "b5b90ed35dc06427050c6ba0b56535a7b9ace62242d3d8e9f139f25b754d9acc",
+      "comparisons": {
+        "original_entire_stack": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        },
+        "official_csv": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 9.974659986866641e-17,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 1.4210854715202004e-14,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 9.974659986866641e-17,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        },
+        "independent_ledger": {
+          "holding": {
+            "different_rows": 0
+          },
+          "next_holding": {
+            "different_rows": 0
+          },
+          "return_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "nav_net": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "total_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "entry_exit_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "rebalance_cost": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "overlay_pre_cost_return": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "current_execution_scale": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          },
+          "signal_on": {
+            "max_absolute_difference": 0.0,
+            "different_beyond_tolerance": 0
+          }
+        }
+      },
+      "all_sample_pairwise_max_score_error": 5.329070518200751e-15,
+      "score_sign_changes": 0,
+      "decimal_spots": 21,
+      "prefix": [
+        {
+          "date": "2010-07-05",
+          "rows": 41,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2010-08-27",
+          "rows": 80,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2010-11-29",
+          "rows": 138,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2012-06-01",
+          "rows": 504,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2015-04-28",
+          "rows": 1208,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2020-08-28",
+          "rows": 2512,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        },
+        {
+          "date": "2026-09-01",
+          "rows": 3968,
+          "comparison": {
+            "holding": {
+              "different_rows": 0
+            },
+            "next_holding": {
+              "different_rows": 0
+            },
+            "return_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "nav_net": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "total_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "entry_exit_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "rebalance_cost": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "overlay_pre_cost_return": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "current_execution_scale": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            },
+            "signal_on": {
+              "max_absolute_difference": 0.0,
+              "different_beyond_tolerance": 0
+            }
+          }
+        }
+      ],
+      "cash_fee_days": 126,
+      "cash_pre_cost_zero": true,
+      "costed_below_same_path_no_cost": true
+    }
+  },
+  "freshness": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "rows": 8738,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054"
+    },
+    "proxy_index": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "rows": 4067,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973"
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "rows": 432,
+      "latest_date": "2026-09-17",
+      "raw_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+    },
+    "base_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "rows": 4050,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45"
+    },
+    "v20_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+    },
+    "v23_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5"
+    },
+    "v25_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "raw_sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+    }
+  },
+  "source_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "a8429df05baa894122ab982b0345443ca183f41ee115f142f779edb2dd1c48e5",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267"
+  },
+  "production_sources_stable_during_audit": true,
+  "official_artifacts_unchanged": true,
+  "result": "PASS"
+}

@@ -1,0 +1,66 @@
+/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/openpyxl/styles/stylesheet.py:237: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+  0%|          | 0/18 [00:00<?, ?it/s]  6%|▌         | 1/18 [00:01<00:22,  1.31s/it] 11%|█         | 2/18 [00:02<00:21,  1.33s/it] 17%|█▋        | 3/18 [00:03<00:19,  1.27s/it] 22%|██▏       | 4/18 [00:05<00:17,  1.26s/it] 28%|██▊       | 5/18 [00:06<00:14,  1.15s/it] 33%|███▎      | 6/18 [00:07<00:13,  1.11s/it] 39%|███▉      | 7/18 [00:08<00:12,  1.17s/it] 44%|████▍     | 8/18 [00:09<00:10,  1.09s/it] 50%|█████     | 9/18 [00:10<00:09,  1.07s/it] 56%|█████▌    | 10/18 [00:11<00:08,  1.07s/it] 61%|██████    | 11/18 [00:12<00:07,  1.06s/it] 67%|██████▋   | 12/18 [00:13<00:06,  1.06s/it] 72%|███████▏  | 13/18 [00:14<00:05,  1.03s/it] 78%|███████▊  | 14/18 [00:15<00:04,  1.05s/it] 83%|████████▎ | 15/18 [00:16<00:03,  1.01s/it] 89%|████████▉ | 16/18 [00:17<00:02,  1.09s/it] 94%|█████████▍| 17/18 [00:18<00:01,  1.10s/it]100%|██████████| 18/18 [00:20<00:00,  1.13s/it]                                               /home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_3.py:1937: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+signal
+strategy_version: v2.3
+base_version: embedded_v2_base
+signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, R2 entry filter OFF, signal spread 1.0x, execution hedge 0.8x
+overlay: entry score > 0.00, exit buffer 0.08, vol10 overheat trigger 26%, recovery 20.0%, no target-vol/cash-yield/financing
+current_holding: cash
+next_holding: long_microcap_short_zz1000
+trade_state: open
+holding_trade_state: open
+scale_trade_state: hold_scale
+signal_date: 2026-09-30
+annualized_log_wls_score: +207.5162%
+log_wls_r2: 0.6546
+momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap
+current_execution_scale: 0.00
+next_session_target_scale: 1.00
+next_session_actionable_scale: 1.00
+raw_scale_delta: +1.00
+actionable_scale_delta: +1.00
+scale_delta: +1.00
+next_session_turnover: 1.8000
+next_session_leg_turnover: 1.8000
+next_session_trade_cost_est: 0.3000%
+overheat_feature_value: 19.7397%
+overheat_risk_off: True
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+  return _generate_v2_0_outputs_unlocked()
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/microcap_top100_mom16_biweekly_live_v2_3.py:1937: RuntimeWarning: v2.0 base fingerprint changed during generation; official v2.0 output cache is keyed to the post-generation state.
+  official_v2_0_out = _load_official_v2_0_out()
+signal
+strategy_version: v2.3
+base_version: embedded_v2_base
+signal_model: spread-NAV log-WLS exp half-life 2.5, lookback 25, R2 entry filter OFF, signal spread 1.0x, execution hedge 0.8x
+overlay: entry score > 0.00, exit buffer 0.08, vol10 overheat trigger 26%, recovery 20.0%, no target-vol/cash-yield/financing
+current_holding: cash
+next_holding: long_microcap_short_zz1000
+trade_state: open
+holding_trade_state: open
+scale_trade_state: hold_scale
+signal_date: 2026-09-30
+annualized_log_wls_score: +207.5162%
+log_wls_r2: 0.6546
+momentum_gap_legacy_note: legacy field is the annualized log-WLS score, not plain gap
+current_execution_scale: 0.00
+next_session_target_scale: 1.00
+next_session_actionable_scale: 1.00
+raw_scale_delta: +1.00
+actionable_scale_delta: +1.00
+scale_delta: +1.00
+next_session_turnover: 1.8000
+next_session_leg_turnover: 1.8000
+next_session_trade_cost_est: 0.3000%
+overheat_feature_value: 19.7397%
+overheat_risk_off: True
+official_close_confirmed_signal: True
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json
+/home/runner/work/codex-daily-automation-probe/codex-daily-automation-probe/microcap-v23/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv

@@ -1,0 +1,413 @@
+{
+  "cutoff": "2026-09-24",
+  "files": {
+    "proxy": {
+      "path": "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "sha256": "d5cae749dbf2c1a474953be30632de26876fd8a2bbf156a13e35eb66bda7b13e",
+      "rows_through_cutoff": 4064
+    },
+    "panel": {
+      "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "sha256": "6058eea855c5cdce4f69213717e9de920e839fc1754c6971d5f94ebf7841be66",
+      "rows_through_cutoff": 8735
+    },
+    "turnover": {
+      "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+      "rows_through_cutoff": 432
+    },
+    "official_index": {
+      "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "sha256": "96cdd20f32b1bebcc02bc8b51f9c927866bb972a5e91bd0bcbf0e9a64b79c4cb",
+      "rows_through_cutoff": 4030
+    },
+    "base": {
+      "path": "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "sha256": "1c83bda412ac3247703af3f2a0dcf9e1341fe018896f0c4f1fffd713d1d90ffa",
+      "rows_through_cutoff": 4047
+    },
+    "v23": {
+      "path": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "sha256": "148e06d1203b645d26ea585f0833a89ffcc22f26bea5ada73d9934024a5a097c",
+      "rows_through_cutoff": 3985
+    },
+    "v25": {
+      "path": "outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "sha256": "80833bea717c320009fcd263e4b8a46e305c9b84a961dd8de5d744b83fc492b0",
+      "rows_through_cutoff": 3985
+    }
+  },
+  "raw_aligned_close": {
+    "rows": 4047,
+    "first": "2010-01-28",
+    "last": "2026-09-24"
+  },
+  "turnover": {
+    "rows": 432,
+    "first": "2010-01-14",
+    "last": "2026-09-17"
+  },
+  "v23": {
+    "rows": 3985,
+    "first": "2010-05-05",
+    "last": "2026-09-24",
+    "base_active_days": 2805,
+    "active_days": 2663,
+    "overheat_exit_days": 5,
+    "overheat_reentry_days": 7,
+    "blocked_entry_days": 7,
+    "fee_days": 451,
+    "checks": {
+      "microcap_close": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "hedge_close": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "spread_nav": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 7.105427357601002e-15
+      },
+      "annualized_log_wls_score": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 1.3322676295501878e-15
+      },
+      "log_wls_r2": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 3.104461132608094e-14
+      },
+      "base_holding": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "base_next_holding": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "overheat_feature_value": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 2.220446049250313e-16
+      },
+      "holding": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "next_holding": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "overheat_risk_off": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "overheat_exit_triggered": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "overheat_reentry_triggered": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "overheat_block_entry_triggered": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "base_pre_cost_return": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 9.985502008591496e-17
+      },
+      "entry_exit_cost": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "rebalance_cost": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "total_cost": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "return_net": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 9.98821251402271e-17
+      },
+      "nav_net": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 3.552713678800501e-15
+      },
+      "fault_next_state_as_current": {
+        "mismatch_count": 186,
+        "first_date": "2010-06-17",
+        "actual": 0.0,
+        "expected": 0.005368851347027334,
+        "max_abs_error": 0.0467879299761437
+      },
+      "fault_missing_fee": {
+        "mismatch_count": 451,
+        "first_date": "2010-06-17",
+        "actual": -0.003,
+        "expected": 0.0,
+        "max_abs_error": 0.0030948072520535323
+      },
+      "fault_fee_delayed": {
+        "mismatch_count": 877,
+        "first_date": "2010-06-17",
+        "actual": -0.003,
+        "expected": 0.0,
+        "max_abs_error": 0.0030948072520534213
+      },
+      "fault_overheat_ignored": {
+        "mismatch_count": 143,
+        "first_date": "2020-09-10",
+        "actual": "cash",
+        "expected": "long_microcap_short_zz1000"
+      },
+      "fault_reentry_suppressed": {
+        "mismatch_count": 7,
+        "first_date": "2020-09-24",
+        "actual": "true",
+        "expected": "false"
+      }
+    }
+  },
+  "v25": {
+    "rows": 3985,
+    "first": "2010-05-05",
+    "last": "2026-09-24",
+    "active_days": 2571,
+    "fee_days": 507,
+    "checks": {
+      "microcap_close": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "microcap_ret": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 9.974659986866641e-17
+      },
+      "microcap_nav": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 5.684341886080802e-14
+      },
+      "annualized_log_wls_score": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 3.552713678800501e-15
+      },
+      "log_wls_r2": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 1.0769163338864018e-14
+      },
+      "holding": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "next_holding": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null
+      },
+      "base_pre_cost_return": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 9.974659986866641e-17
+      },
+      "entry_exit_cost": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "rebalance_cost": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "total_cost": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 0.0
+      },
+      "return_net": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 9.974659986866641e-17
+      },
+      "nav_net": {
+        "mismatch_count": 0,
+        "first_date": null,
+        "actual": null,
+        "expected": null,
+        "max_abs_error": 1.4210854715202004e-14
+      },
+      "fault_next_state_as_current": {
+        "mismatch_count": 251,
+        "first_date": "2010-05-28",
+        "actual": 0.0,
+        "expected": 0.004308223128561384,
+        "max_abs_error": 0.0796461188812833
+      },
+      "fault_missing_fee": {
+        "mismatch_count": 507,
+        "first_date": "2010-05-28",
+        "actual": -0.003,
+        "expected": 0.0,
+        "max_abs_error": 0.0030554833005092073
+      },
+      "fault_fee_delayed": {
+        "mismatch_count": 962,
+        "first_date": "2010-05-28",
+        "actual": -0.003,
+        "expected": 0.0,
+        "max_abs_error": 0.0031352188505166384
+      }
+    }
+  },
+  "v25_drawdown_anchor": [
+    {
+      "window": "full",
+      "rows": 3985,
+      "first": "2010-05-05",
+      "first_return": 0.0,
+      "old_mdd_pct": -27.65422172281278,
+      "anchored_mdd_pct": -27.65422172281278,
+      "delta_percentage_points": 0.0
+    },
+    {
+      "window": "10y",
+      "rows": 2430,
+      "first": "2016-09-26",
+      "first_return": -0.0235587415450682,
+      "old_mdd_pct": -27.003425984283467,
+      "anchored_mdd_pct": -27.003425984283467,
+      "delta_percentage_points": 0.0
+    },
+    {
+      "window": "5y",
+      "rows": 1213,
+      "first": "2021-09-24",
+      "first_return": -0.0253660838304629,
+      "old_mdd_pct": -20.28892557014913,
+      "anchored_mdd_pct": -20.28892557014913,
+      "delta_percentage_points": 0.0
+    },
+    {
+      "window": "3y",
+      "rows": 727,
+      "first": "2023-09-25",
+      "first_return": 0.0,
+      "old_mdd_pct": -19.723904586064577,
+      "anchored_mdd_pct": -19.723904586064577,
+      "delta_percentage_points": 0.0
+    },
+    {
+      "window": "1y",
+      "rows": 243,
+      "first": "2025-09-24",
+      "first_return": 0.0,
+      "old_mdd_pct": -12.875946570064267,
+      "anchored_mdd_pct": -12.875946570064267,
+      "delta_percentage_points": 0.0
+    },
+    {
+      "window": "injected_first_day_loss",
+      "rows": 2,
+      "first": "2000-01-03",
+      "first_return": -0.1,
+      "old_mdd_pct": 0.0,
+      "anchored_mdd_pct": -9.999999999999998,
+      "delta_percentage_points": -9.999999999999998
+    },
+    {
+      "window": "year_2016",
+      "rows": 244,
+      "first": "2016-01-04",
+      "first_return": -0.0827754955547107,
+      "first_negative_date": "2016-01-04",
+      "old_mdd_pct": -14.768732567823427,
+      "anchored_mdd_pct": -15.882882933382813,
+      "delta_percentage_points": -1.1141503655593854
+    }
+  ]
+}

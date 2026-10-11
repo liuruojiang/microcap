@@ -1,0 +1,20 @@
+{
+  "reconciliation": "PASS for saved conditional stock-only arithmetic",
+  "frozen_quantity_uses_only_T_close": true,
+  "cash_and_fee_residual": "-3E-34",
+  "original_rank_order_rejected": [
+    "600979",
+    "002193"
+  ],
+  "reversed_rank_order_rejected": [
+    "600455",
+    "002057"
+  ],
+  "rank_priority_changes_rejection_identity": true,
+  "next_day_missing_true_close": [
+    "600982"
+  ],
+  "execution_trade_status_limit_auction_fill_checked_in_engine": false,
+  "rights_ledger_exhaustiveness_certified": false,
+  "continuous_account_certified": false
+}

@@ -1,0 +1,25 @@
+{
+  "source": "BaoStock query_history_k_data_plus",
+  "fields": "date,code,close,preclose,volume,tradestatus",
+  "frequency": "d",
+  "adjustflag": "3 (unadjusted)",
+  "requests": [
+    [
+      "sh.600211",
+      "2010-09-03",
+      "2010-09-09"
+    ],
+    [
+      "sz.000810",
+      "2011-06-15",
+      "2011-06-20"
+    ],
+    [
+      "sz.000810",
+      "2012-02-08",
+      "2012-02-14"
+    ]
+  ],
+  "rows": 14,
+  "csv_sha256": "9c456724de85480df953ac3e97ba1a51c32c1ff119057073777b0fb5bfee0e20"
+}

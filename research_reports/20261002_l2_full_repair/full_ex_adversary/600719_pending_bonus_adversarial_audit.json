@@ -1,0 +1,70 @@
+{
+  "status": "PASS_600719_source_and_paper_pending",
+  "manifest_sha256": "b9dfa7c1eac92c674221e9ed0ca1866c2380ec4d663267fa1815dac158aa588a",
+  "issuer_pdf_sha256": "91c32510cbabeb5c1a599c4b900d6c817da1b1503a83f1e40b2e786f7ee75248",
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "true_trade_bars": {
+    "2015-11-27": {
+      "date": "2015-11-27",
+      "close": "15.2200",
+      "preclose": "16.1900",
+      "volume": "19477951",
+      "tradestatus": "1"
+    },
+    "2015-11-30": {
+      "date": "2015-11-30",
+      "close": "7.6400",
+      "preclose": "7.6100",
+      "volume": "22075752",
+      "tradestatus": "1"
+    },
+    "2015-12-01": {
+      "date": "2015-12-01",
+      "close": "7.9900",
+      "preclose": "7.6400",
+      "volume": "61429214",
+      "tradestatus": "1"
+    }
+  },
+  "accounts": {
+    "prefunded": {
+      "record_shares": "6024.648515810069691071265255597368401080",
+      "bonus_due": "6024.64851581006969107126525559736840108",
+      "record_value": "91695.15041062926069810465719019194706443760",
+      "ex_old_shares": "6024.648515810069691071265255597368401080",
+      "ex_pending_shares": "6024.64851581006969107126525559736840108",
+      "ex_value_with_pending": "92056.62932157786487956893310552778916850240",
+      "paper_release_shares": "12049.29703162013938214253051119473680216",
+      "early_sell_mutant_rejected_by_listing_clock": {
+        "date": "2015-11-30",
+        "sell_new_shares": "6024.64851581006969107126525559736840108"
+      },
+      "ex_orders": []
+    },
+    "netted": {
+      "record_shares": "6952.778846609028667184566467383212222477",
+      "bonus_due": "6952.778846609028667184566467383212222477",
+      "record_value": "105821.29404538941631454910163357249002609994",
+      "ex_old_shares": "6952.778846609028667184566467383212222477",
+      "ex_pending_shares": "6952.778846609028667184566467383212222477",
+      "ex_value_with_pending": "106238.46077618595803458017562161548275944856",
+      "paper_release_shares": "13905.55769321805733436913293476642444495",
+      "early_sell_mutant_rejected_by_listing_clock": {
+        "date": "2015-11-30",
+        "sell_new_shares": "6952.778846609028667184566467383212222477"
+      },
+      "ex_orders": []
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2016-05-20",
+      "reason": "unverified_missing_raw_close:2016-05-20:300423"
+    },
+    "netted": {
+      "date": "2016-05-20",
+      "reason": "unverified_missing_raw_close:2016-05-20:300423"
+    }
+  },
+  "limitations": "Actual broker credit date remains unproved; transfer on 2015-12-01 is paper trade eligibility from issuer listing date. Real ex-date close 7.64, not 7.61 reference."
+}

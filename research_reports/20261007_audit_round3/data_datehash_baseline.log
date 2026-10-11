@@ -1,0 +1,41 @@
+FFFFF                                                                    [100%]
+================================== FAILURES ===================================
+____ test_candidate_frame_hash_preserves_legal_mixed_date_canonicalization ____
+tests\test_round3_data_boundary.py:231: in test_candidate_frame_hash_preserves_legal_mixed_date_canonicalization
+    assert v20.overlay_mod._candidate_frame_sha256(mixed) == v20.overlay_mod._candidate_frame_sha256(canonical)
+E   AssertionError: assert '24dd4fbb3045...8bcf13a57407b' == 'f66f7896c1f9...afbdc46090706'
+E     
+E     - f66f7896c1f9ea41ec80385055d888ef114c014bd421608f128afbdc46090706
+E     + 24dd4fbb3045f6d67d4872169a343de295437a688d49811b9118bcf13a57407b
+___ test_candidate_frame_hash_binds_each_intermediate_mixed_format_session ____
+tests\test_round3_data_boundary.py:239: in test_candidate_frame_hash_binds_each_intermediate_mixed_format_session
+    assert v20.overlay_mod._candidate_frame_sha256(original) != v20.overlay_mod._candidate_frame_sha256(changed)
+E   AssertionError: assert '24dd4fbb3045f6d67d4872169a343de295437a688d49811b9118bcf13a57407b' != '24dd4fbb3045f6d67d4872169a343de295437a688d49811b9118bcf13a57407b'
+E    +  where '24dd4fbb3045f6d67d4872169a343de295437a688d49811b9118bcf13a57407b' = <function _candidate_frame_sha256 at 0x00000200F1C0DBC0>(                  date  return_net\n0           2026-09-01        0.01\n1  2026-09-02 00:00:00        0.02\n2           2026-09-04        0.03)
+E    +    where <function _candidate_frame_sha256 at 0x00000200F1C0DBC0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...200F1C0E980>, _handle_query=<function _handle_query at 0x00000200F1C0EAE0>, main=<function main at 0x00000200F1C0EC40>)._candidate_frame_sha256
+E    +      where namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...200F1C0E980>, _handle_query=<function _handle_query at 0x00000200F1C0EAE0>, main=<function main at 0x00000200F1C0EC40>) = v20.overlay_mod
+E    +  and   '24dd4fbb3045f6d67d4872169a343de295437a688d49811b9118bcf13a57407b' = <function _candidate_frame_sha256 at 0x00000200F1C0DBC0>(                  date  return_net\n0           2026-09-01        0.01\n1  2026-09-03 00:00:00        0.02\n2           2026-09-04        0.03)
+E    +    where <function _candidate_frame_sha256 at 0x00000200F1C0DBC0> = namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...200F1C0E980>, _handle_query=<function _handle_query at 0x00000200F1C0EAE0>, main=<function main at 0x00000200F1C0EC40>)._candidate_frame_sha256
+E    +      where namespace(annotations=_Feature((3, 7, 0, 'beta', 1), None, 16777216), argparse=<module 'argparse' from 'C:\\Python314\...200F1C0E980>, _handle_query=<function _handle_query at 0x00000200F1C0EAE0>, main=<function main at 0x00000200F1C0EC40>) = v20.overlay_mod
+__ test_lineage_migration_binds_legal_intermediate_mixed_format_session[2.0] __
+tests\test_round3_data_boundary.py:307: in test_lineage_migration_binds_legal_intermediate_mixed_format_session
+    assert verifier(report_path, previous, candidate, audit_path) is True
+E   AssertionError: assert False is True
+E    +  where False = <function v2_0_rewrite_audit_matches_approved_lineage_migration at 0x00000200F1C0DD20>(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_datehash_baseline_tmp_01/test_lineage_migration_binds_l0/report.json'),         date  return_net\n0 2026-09-01         0.0,                   date  return_net\n0           2026-09-01        0.01\n1  2026-09-02 00:00:00        0.02\n2           2026-09-04        0.03, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_datehash_baseline_tmp_01/test_lineage_migration_binds_l0/audit.csv'))
+__ test_lineage_migration_binds_legal_intermediate_mixed_format_session[2.3] __
+tests\test_round3_data_boundary.py:307: in test_lineage_migration_binds_legal_intermediate_mixed_format_session
+    assert verifier(report_path, previous, candidate, audit_path) is True
+E   AssertionError: assert False is True
+E    +  where False = <function v2_3_rewrite_audit_matches_approved_lineage_migration at 0x00000200F1CE85C0>(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_datehash_baseline_tmp_01/test_lineage_migration_binds_l1/report.json'),         date  return_net\n0 2026-09-01         0.0,                   date  return_net\n0           2026-09-01        0.01\n1  2026-09-02 00:00:00        0.02\n2           2026-09-04        0.03, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_datehash_baseline_tmp_01/test_lineage_migration_binds_l1/audit.csv'))
+__ test_lineage_migration_binds_legal_intermediate_mixed_format_session[2.5] __
+tests\test_round3_data_boundary.py:307: in test_lineage_migration_binds_legal_intermediate_mixed_format_session
+    assert verifier(report_path, previous, candidate, audit_path) is True
+E   AssertionError: assert False is True
+E    +  where False = <function v2_5_rewrite_audit_matches_approved_lineage_migration at 0x00000200F1CC10C0>(WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_datehash_baseline_tmp_01/test_lineage_migration_binds_l2/report.json'),         date  return_net\n0 2026-09-01         0.0,                   date  return_net\n0           2026-09-01        0.01\n1  2026-09-02 00:00:00        0.02\n2           2026-09-04        0.03, WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/data_datehash_baseline_tmp_01/test_lineage_migration_binds_l2/audit.csv'))
+=========================== short test summary info ===========================
+FAILED tests/test_round3_data_boundary.py::test_candidate_frame_hash_preserves_legal_mixed_date_canonicalization
+FAILED tests/test_round3_data_boundary.py::test_candidate_frame_hash_binds_each_intermediate_mixed_format_session
+FAILED tests/test_round3_data_boundary.py::test_lineage_migration_binds_legal_intermediate_mixed_format_session[2.0]
+FAILED tests/test_round3_data_boundary.py::test_lineage_migration_binds_legal_intermediate_mixed_format_session[2.3]
+FAILED tests/test_round3_data_boundary.py::test_lineage_migration_binds_legal_intermediate_mixed_format_session[2.5]
+5 failed, 52 deselected in 62.79s (0:01:02)

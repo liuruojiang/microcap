@@ -1,0 +1,196 @@
+FFFFFFFFFFFF                                                             [100%]
+================================== FAILURES ===================================
+___________ test_v25_wls_rejects_nonpositive_or_nonfinite_nav[0.0] ____________
+
+bad_nav = 0.0
+
+    @pytest.mark.parametrize("bad_nav", [0.0, -1.0, np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_wls_rejects_nonpositive_or_nonfinite_nav(bad_nav: object) -> None:
+        nav = pd.Series(1.0, index=pd.bdate_range("2025-01-02", periods=80), dtype=object)
+        nav.iloc[40] = bad_nav
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:173: Failed
+___________ test_v25_wls_rejects_nonpositive_or_nonfinite_nav[-1.0] ___________
+
+bad_nav = -1.0
+
+    @pytest.mark.parametrize("bad_nav", [0.0, -1.0, np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_wls_rejects_nonpositive_or_nonfinite_nav(bad_nav: object) -> None:
+        nav = pd.Series(1.0, index=pd.bdate_range("2025-01-02", periods=80), dtype=object)
+        nav.iloc[40] = bad_nav
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:173: Failed
+___________ test_v25_wls_rejects_nonpositive_or_nonfinite_nav[nan] ____________
+
+bad_nav = nan
+
+    @pytest.mark.parametrize("bad_nav", [0.0, -1.0, np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_wls_rejects_nonpositive_or_nonfinite_nav(bad_nav: object) -> None:
+        nav = pd.Series(1.0, index=pd.bdate_range("2025-01-02", periods=80), dtype=object)
+        nav.iloc[40] = bad_nav
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:173: Failed
+___________ test_v25_wls_rejects_nonpositive_or_nonfinite_nav[inf] ____________
+
+bad_nav = inf
+
+    @pytest.mark.parametrize("bad_nav", [0.0, -1.0, np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_wls_rejects_nonpositive_or_nonfinite_nav(bad_nav: object) -> None:
+        nav = pd.Series(1.0, index=pd.bdate_range("2025-01-02", periods=80), dtype=object)
+        nav.iloc[40] = bad_nav
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:173: Failed
+___________ test_v25_wls_rejects_nonpositive_or_nonfinite_nav[-inf] ___________
+
+bad_nav = -inf
+
+    @pytest.mark.parametrize("bad_nav", [0.0, -1.0, np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_wls_rejects_nonpositive_or_nonfinite_nav(bad_nav: object) -> None:
+        nav = pd.Series(1.0, index=pd.bdate_range("2025-01-02", periods=80), dtype=object)
+        nav.iloc[40] = bad_nav
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:173: Failed
+_______ test_v25_wls_rejects_nonpositive_or_nonfinite_nav[not-a-number] _______
+
+bad_nav = 'not-a-number'
+
+    @pytest.mark.parametrize("bad_nav", [0.0, -1.0, np.nan, np.inf, -np.inf, "not-a-number"])
+    def test_v25_wls_rejects_nonpositive_or_nonfinite_nav(bad_nav: object) -> None:
+        nav = pd.Series(1.0, index=pd.bdate_range("2025-01-02", periods=80), dtype=object)
+        nav.iloc[40] = bad_nav
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:173: Failed
+___________ test_v25_no_target_vol_rejects_insolvent_returns[-1.0] ____________
+
+bad_return = -1.0
+
+    @pytest.mark.parametrize("bad_return", [-1.0, -1.01])
+    def test_v25_no_target_vol_rejects_insolvent_returns(bad_return: float) -> None:
+        frame = _costed_frame()
+        frame.loc[frame.index[1], "return_net"] = bad_return
+        frame.loc[frame.index[1], "overlay_pre_cost_return"] = bad_return
+>       with pytest.raises(ValueError, match="return_net.*at or below -1"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:182: Failed
+___________ test_v25_no_target_vol_rejects_insolvent_returns[-1.01] ___________
+
+bad_return = -1.01
+
+    @pytest.mark.parametrize("bad_return", [-1.0, -1.01])
+    def test_v25_no_target_vol_rejects_insolvent_returns(bad_return: float) -> None:
+        frame = _costed_frame()
+        frame.loc[frame.index[1], "return_net"] = bad_return
+        frame.loc[frame.index[1], "overlay_pre_cost_return"] = bad_return
+>       with pytest.raises(ValueError, match="return_net.*at or below -1"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:182: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav[overflow] __
+
+returns = [1e+200, 1e+200]
+
+    @pytest.mark.parametrize("returns", [[1e200, 1e200], [-0.99] * 300], ids=["overflow", "underflow"])
+    def test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav(returns: list[float]) -> None:
+        frame = pd.DataFrame(
+            {
+                "return_net": returns,
+                "overlay_pre_cost_return": returns,
+                "total_cost": 0.0,
+                "holding": "long_microcap_top100",
+                "next_holding": "long_microcap_top100",
+            },
+            index=pd.bdate_range("2025-01-02", periods=len(returns)),
+        )
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:198: Failed
+_ test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav[underflow] _
+
+returns = [-0.99, -0.99, -0.99, -0.99, -0.99, -0.99, ...]
+
+    @pytest.mark.parametrize("returns", [[1e200, 1e200], [-0.99] * 300], ids=["overflow", "underflow"])
+    def test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav(returns: list[float]) -> None:
+        frame = pd.DataFrame(
+            {
+                "return_net": returns,
+                "overlay_pre_cost_return": returns,
+                "total_cost": 0.0,
+                "holding": "long_microcap_top100",
+                "next_holding": "long_microcap_top100",
+            },
+            index=pd.bdate_range("2025-01-02", periods=len(returns)),
+        )
+>       with pytest.raises(ValueError, match="NAV.*finite.*positive"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:198: Failed
+_________ test_v25_no_target_vol_rejects_an_omitted_transaction_cost __________
+
+    def test_v25_no_target_vol_rejects_an_omitted_transaction_cost() -> None:
+        frame = _costed_frame()
+        frame.loc[frame.index[0], "return_net"] = 0.0
+>       with pytest.raises(ValueError, match="return_net.*cost arithmetic"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:205: Failed
+________ test_v25_no_target_vol_rejects_a_cash_day_with_market_return _________
+
+    def test_v25_no_target_vol_rejects_a_cash_day_with_market_return() -> None:
+        frame = _costed_frame()
+        frame.loc[frame.index[0], "return_net"] = (1.0 + 0.02) * (1.0 - 0.003) - 1.0
+        frame.loc[frame.index[0], "overlay_pre_cost_return"] = 0.02
+>       with pytest.raises(ValueError, match="cash holding.*non-zero pre-cost return"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_script_math_adversarial.py:213: Failed
+============================== warnings summary ===============================
+tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[-1.0]
+tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[-inf]
+  C:\Python314\Lib\site-packages\pandas\core\arraylike.py:399: RuntimeWarning: invalid value encountered in log
+    result = getattr(ufunc, method)(*inputs, **kwargs)
+
+tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav[overflow]
+  C:\Python314\Lib\site-packages\numpy\_core\fromnumeric.py:54: RuntimeWarning: overflow encountered in accumulate
+    return bound(*args, **kwds)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[0.0]
+FAILED tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[-1.0]
+FAILED tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[nan]
+FAILED tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[inf]
+FAILED tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[-inf]
+FAILED tests/test_script_math_adversarial.py::test_v25_wls_rejects_nonpositive_or_nonfinite_nav[not-a-number]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_insolvent_returns[-1.0]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_insolvent_returns[-1.01]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav[overflow]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_nonfinite_or_zero_accumulated_nav[underflow]
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_an_omitted_transaction_cost
+FAILED tests/test_script_math_adversarial.py::test_v25_no_target_vol_rejects_a_cash_day_with_market_return
+12 failed, 29 deselected, 3 warnings in 2.37s

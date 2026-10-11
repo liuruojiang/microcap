@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "actual_function": "try_extend_proxy_index_without_rebalance",
+  "network_price_refresh": "suppressed on frozen local cache; no source files changed",
+  "bridge": "2026-09-17",
+  "midway": "2026-09-23",
+  "terminal": "2026-09-30",
+  "batch_first": true,
+  "split_first": true,
+  "split_second": true,
+  "repeat_returned": false,
+  "repeat_file_unchanged": true,
+  "protected_sources_unchanged": true,
+  "tail_rows": 8,
+  "max_abs_error": {
+    "batch_return": 0.0,
+    "split_return": 0.0,
+    "batch_close": 0.0,
+    "split_close": 0.0,
+    "batch_vs_split_close": 0.0
+  }
+}

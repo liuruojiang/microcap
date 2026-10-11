@@ -1,0 +1,13 @@
+{
+  "status": "old_candidate_IPO_window_scanned",
+  "window_start": "2019-07-01",
+  "window_end": "2026-09-17",
+  "distinct_candidate_symbols_checked": 536,
+  "IPO_five_day_candidate_buys": [],
+  "count": 0,
+  "source_sha256": {
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "research_reports\\20260926_l1_repair\\full_replay\\members_by_rebalance.csv": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c"
+  },
+  "scope": "Old same-close candidate buys only; board/date exemptions based on exchange rules. Does not certify listing status for reconstructed new L1 pool or T+1 orders."
+}

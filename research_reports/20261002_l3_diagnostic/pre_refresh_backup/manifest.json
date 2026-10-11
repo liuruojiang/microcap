@@ -1,0 +1,317 @@
+[
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json",
+    "sha256": "FBD302DA73A013A172907C820F79F82BB9D2C59C6D5862635894ACFB2B36D2E6",
+    "bytes": 1256
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_latest_signal.csv",
+    "sha256": "5C204ACEDF59544C9BA9401A5C528FF57D77452EE04619B19C52E2553C6C2211",
+    "bytes": 643
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_nav.csv",
+    "sha256": "8A40502538F8542E0F2965BF5D1BD0A7C8167A968F76D3E44F8063D1A3B03965",
+    "bytes": 1318396
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+    "sha256": "6058EEA855C5CDCE4F69213717E9DE920E839FC1754C6971D5F94EBF7841BE66",
+    "bytes": 606791
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv",
+    "sha256": "4AAA0EEB26C14D31A046A97E32CDF5B2EBC320916147C680DA1BC22378DF23BC",
+    "bytes": 2216
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+    "sha256": "04A851BB6E7E67F181607C499A0CA3264443B6E3B655817AC0933532517F7517",
+    "bytes": 2076434
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+    "sha256": "64EFAF666F5A9FBFC1E5980AE40B27735D45310BD69E31BDBBA32A2BFBDDFA75",
+    "bytes": 2933
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+    "sha256": "602A23B38FE7A8274C6358E8FFDB4C78620B0C745BE9DFFEA46CB7790BF3828D",
+    "bytes": 43355
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_rebalance_changes.csv",
+    "sha256": "74DA483A82946925AFBE49005290AC503991C6AC81064B5C44AA88A81243A3C1",
+    "bytes": 2130
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_summary.json",
+    "sha256": "F4BA8C37D20A62F851F7C5C36D8F2CF286A6A4547D27AC9EDA0C73ED0DCFDCEE",
+    "bytes": 2630
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_target_members.csv",
+    "sha256": "3FDCF88782C1BC5076D24395DD897C5E6A23A493A5B3F3603C745AD3A9855614",
+    "bytes": 7663
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_historical_rewrite_diagnostics.json",
+    "sha256": "0C425378D3237C92E34413D5F4E62EDC87A95C7F527C2DCA4443B30032B23603",
+    "bytes": 1519
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+    "sha256": "3AA9C32F84AE4B074BAAADF6AABB625CBBF23810D4770D35235091A94C25E168",
+    "bytes": 3068
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+    "sha256": "96CDD20F32B1BEBCC02BC8B51F9C927866BB972A5E91BD0BCBF0E9A64B79C4CB",
+    "bytes": 3894868
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_performance_curve.png",
+    "sha256": "1879CE729DBC963CFD0114F05C2A4ACA1F11EBD3F0BF9D56D4E5195CF9940BDA",
+    "bytes": 66851
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv",
+    "sha256": "4C3FEEFFE5AD2FFAEB81E6EAE11CA77B42321ACB15FE03385AE2CF11818E928A",
+    "bytes": 193422
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_performance_summary.csv",
+    "sha256": "4C5A7C8B751BC99FEA6C1BB2CE3532AA7BF8478053327A4AEB51248BC376E2C8",
+    "bytes": 947
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_performance_summary.json",
+    "sha256": "16DDDF0053827F10F3A370B811AFC32C19BDF9894F26A578CF5A5E278D7A0894",
+    "bytes": 8403
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_performance_yearly.csv",
+    "sha256": "0D362C267472E1DA99AA787A33C8850C48902524067B8078C87AF0F14825959E",
+    "bytes": 1901
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_realtime_signal.csv",
+    "sha256": "021EDCEFB14783EFCA524707F46E3834DAB84BF9B5203BA2350700EC563CB57B",
+    "bytes": 3753
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_summary.json",
+    "sha256": "9B41DED3EF78247CA3B23F3CCB84D37E4C5AF817BB05539951F5D2A81121D172",
+    "bytes": 17155
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+    "sha256": "04F23B32C56F02B81119B9E41734FDAD2EFB0D8805196BA1C31C17018AA09536",
+    "bytes": 4932
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_nav.csv",
+    "sha256": "148E06D1203B645D26EA585F0833A89FFCC22F26BEA5ADA73D9934024A5A097C",
+    "bytes": 5576343
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_performance_curve.png",
+    "sha256": "EE4C40C46C8C32022B8E9B8062721314997F45A3C333D6D2CC0D2645A30E82F6",
+    "bytes": 62833
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv",
+    "sha256": "24072158CBD2C4D94586FEE8B5E6954E79B041629E1C27EC55D195AC42331B23",
+    "bytes": 185997
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_performance_summary.csv",
+    "sha256": "12D159AAC3621408774C44BBD84237E6BC30D8BCEEB7BE732F158264C322930B",
+    "bytes": 940
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_performance_summary.json",
+    "sha256": "7DFB106018C552070B130BD6F18280199DFD51129CED815DA4BE9ABB2A45E4C8",
+    "bytes": 3363
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_performance_yearly.csv",
+    "sha256": "BF18B63C1DB189F196AA25EC0548EF6442A006169D77B21FA0139BB6ADDDA1D3",
+    "bytes": 1900
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_realtime_signal.csv",
+    "sha256": "0A9CA9D9CFD7E23996D893199FDC38561F7ACE49BD11F8448E32C31D9C1B1AF3",
+    "bytes": 5646
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_summary.json",
+    "sha256": "5329C73874D6AF0791441A24FFB50B42EFD29976C1E24EA79EB9137E9FB9862C",
+    "bytes": 20627
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+    "sha256": "D588DBDEB146B2D466AB3C456FECC496EB8DF6B88BFEE33B87823EA006C02E02",
+    "bytes": 4024
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+    "sha256": "80833BEA717C320009FCD263E4B8A46E305C9B84A961DD8DE5D744B83FC492B0",
+    "bytes": 5130361
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_performance_curve.png",
+    "sha256": "ED3F39923A995F02924AA8896AAE2F6BBD0FC722A1CB8D99D9519EAE3C6DE2EE",
+    "bytes": 66761
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv",
+    "sha256": "48CD486BB32A7BEAD01C845514061C3B354378F050D671969E05BF9957D2BEE8",
+    "bytes": 184469
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_performance_summary.csv",
+    "sha256": "E872DD45B2E30879F0DB31CC93659D060CA28C6DD23565695E5AB433355D7B46",
+    "bytes": 2104
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_performance_summary.json",
+    "sha256": "CEB37D5D854A1326F6FFE94A1A1C54A34BD47F3A86D241CD398F02A50FF6961B",
+    "bytes": 5259
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_performance_yearly.csv",
+    "sha256": "9A79E16C95E3FD52ED05596BE73BCD4FA657E1ADC9D0F5CB0DF33AD81C0F18CE",
+    "bytes": 1904
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_realtime_signal.csv",
+    "sha256": "F2B87532B29C5037CFC3F6379589CF4CC4E83E51F47F2303C4471D5F633EFAB2",
+    "bytes": 12510
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_summary.json",
+    "sha256": "79C959209F93B529E99D8754A55A116D164FDF7949446B9B5194CF3286D85EAA",
+    "bytes": 20226
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+    "sha256": "1C83BDA412AC3247703AF3F2A0DCF9E1341FE018896F0C4F1FFFD713D1D90FFA",
+    "bytes": 1588558
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+    "sha256": "80833BEA717C320009FCD263E4B8A46E305C9B84A961DD8DE5D744B83FC492B0",
+    "bytes": 5130361
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+    "sha256": "148E06D1203B645D26EA585F0833A89FFCC22F26BEA5ADA73D9934024A5A097C",
+    "bytes": 5576343
+  },
+  {
+    "path": "outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+    "sha256": "96CDD20F32B1BEBCC02BC8B51F9C927866BB972A5E91BD0BCBF0E9A64B79C4CB",
+    "bytes": 3894868
+  },
+  {
+    "path": "outputs\\top100_delivery_manifest.json",
+    "sha256": "087D574AA52A7C161F36D51A3285ED52C31DE6B59EF1FA348E5A79F23643C096",
+    "bytes": 9541
+  },
+  {
+    "path": "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+    "sha256": "D5CAE749DBF2C1A474953BE30632DE26876FD8A2BBF156A13E35EB66BDA7B13E",
+    "bytes": 238500
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\latest_total_shares.csv",
+    "sha256": "7EB70257593DA06F682A3DDDA54A9D260D4FC514F645237F5CA74B08F8DA61A6",
+    "bytes": 2
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_realtime_fast_cached_signal.csv",
+    "sha256": "5A14745E8F95BF6A06964FE5701108FAEE2543A3047FA1C89482A8D62FAEA410",
+    "bytes": 975
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_realtime_fast_meta.json",
+    "sha256": "C825B6B817C06C81F0108EF3447E6519F322447DFF20A632AE0F11BE0DA3F3B4",
+    "bytes": 470
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_static_effective_members.csv",
+    "sha256": "11BC69249B7A60D5F178ACC5D5463E59E170C83A7E5E17D5BB2EDCB33068EA57",
+    "bytes": 5549
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_static_meta.json",
+    "sha256": "5A82B96755EAD9AFB79673E3A6950E7A0187A42A64FB0D69A9AC26890CF6BBDC",
+    "bytes": 402
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_static_rebalance_changes.csv",
+    "sha256": "D829644D75D38540214A853528AF9593C4F6DC4114DC2EDEAA69722D2E1F2BB4",
+    "bytes": 2230
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_static_target_members.csv",
+    "sha256": "55DC4CA631D593C138A1BE018A07F6C4FCD76767C6B0E3D3BF581286903B46F7",
+    "bytes": 7776
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v1_1_static_effective_members.csv",
+    "sha256": "B2932F10AD9460A300CD6D0954F4D2DA3C873DBEB3379D46473745BC69F06563",
+    "bytes": 5459
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v1_1_static_meta.json",
+    "sha256": "F50F0BDCB7FB99E85A5FA6E03D57D2CE1EBFEE98BAB088CDCF2D3F728D91DBBB",
+    "bytes": 393
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v1_1_static_rebalance_changes.csv",
+    "sha256": "992DBF437B64E1B88EEAF904661A44F9533994F9CAB42BF9AF3D79DFAA592705",
+    "bytes": 2191
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v1_1_static_target_members.csv",
+    "sha256": "96763902BF2A1E2400B3747C22FEAC1654EAA714DB4D9E2F6577DA1AD8D85C1B",
+    "bytes": 7686
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v2_0_base_static_effective_members.csv",
+    "sha256": "22A6821346200D3D85B4769DA677A3AE7973C9BDC4E617A56FD006DE115D8612",
+    "bytes": 5463
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v2_0_base_static_meta.json",
+    "sha256": "864D53F6867AEB527FA20034D53160C56884BD25387755C79F7D13C6B12CC90A",
+    "bytes": 467
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v2_0_base_static_rebalance_changes.csv",
+    "sha256": "C9543831009FE1DBD5443BF8233A8F5A37F5F12022951A00CD42CAAE437248F2",
+    "bytes": 1881
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\microcap_top100_mom16_biweekly_live_v2_0_base_static_target_members.csv",
+    "sha256": "3522BC6D2B2616AA4A14C8C38A13C25F333F17E9C732C9BF4087BB7A2B84314A",
+    "bytes": 7690
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\stock_spot_latest.csv",
+    "sha256": "8393988AB88BB76A09C0030006ACB55254F8F1AAFE577565B5679C6EE942BF0A",
+    "bytes": 559367
+  },
+  {
+    "path": ".microcap_index_cache\\realtime\\top100_realtime_refresh_proof.json",
+    "sha256": "ABEB0CC72764CE613349095F34031D8D76442D72054A812E0CA77D779E18A258",
+    "bytes": 894
+  },
+  {
+    "path": "mnt_strategy_data_cn.csv",
+    "sha256": "2D2E7439262513675CEB642F38CCFDCE5173A0ECF6EBE8811A5D94630052A15B",
+    "bytes": 594499
+  }
+]

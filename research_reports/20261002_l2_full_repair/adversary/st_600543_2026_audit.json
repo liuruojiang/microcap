@@ -1,0 +1,229 @@
+{
+  "status": "FAIL_recent_point_in_time_ST_member_gate",
+  "issuer_announcement_date": "2026-04-24",
+  "actual_ST_effective_date": "2026-04-27",
+  "issuer_notice_mirror": "https://stockmc.xueqiu.com/202604/600543_20260424_NEMZ.pdf",
+  "official_exchange_notice_url": "https://static.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-04-24/600543_20260424_NEMZ.pdf",
+  "independent_SSE_hosted_corroboration_url": "https://static.sse.com.cn/disclosure/bond/announcement/company/c/new/2026-07-30/243808_20260730_KCLJ.pdf",
+  "issuer_notice_mirror_sha256": "e44b19fbb6bee6dde1eb8011b714fc278654595e5d2d795d44fd4732fef99fb1",
+  "prior_ST_interval": {
+    "start": "2023-05-04",
+    "end_inclusive": "2024-07-07",
+    "removed_at_open": "2024-07-08",
+    "issuer_entry_notice_source": "https://epaper.stcn.com/att/202304/28/2abb1e5a-46dc-4930-980f-fd25cbab4944.pdf",
+    "issuer_entry_notice_sha256": "89251a8f76f8190db7c8937997b8d081aacbde4820117dd7646ccd9e2a7202c5",
+    "issuer_exit_exchange_original": "https://static.sse.com.cn/disclosure/listedinfo/announcement/c/new/2024-07-05/600543_20240705_MREZ.pdf",
+    "issuer_exit_notice_mirror": "https://www.cczq.com/home/uploads/2024/07-05/08-29-460171-1615289614.pdf",
+    "issuer_exit_notice_mirror_sha256": "9db7b121274a7d1cb2d7c0cc148048ce40cd60b1d861fb57fd50c52ff66cec62",
+    "bad_targets": [
+      {
+        "date": "2023-05-04",
+        "rank": 80
+      },
+      {
+        "date": "2023-05-18",
+        "rank": 50
+      },
+      {
+        "date": "2023-06-01",
+        "rank": 58
+      },
+      {
+        "date": "2023-06-15",
+        "rank": 83
+      },
+      {
+        "date": "2023-06-29",
+        "rank": 81
+      },
+      {
+        "date": "2023-07-13",
+        "rank": 71
+      },
+      {
+        "date": "2023-07-27",
+        "rank": 47
+      },
+      {
+        "date": "2023-08-10",
+        "rank": 54
+      },
+      {
+        "date": "2023-08-24",
+        "rank": 72
+      },
+      {
+        "date": "2023-09-07",
+        "rank": 55
+      },
+      {
+        "date": "2023-10-09",
+        "rank": 65
+      },
+      {
+        "date": "2023-10-19",
+        "rank": 66
+      },
+      {
+        "date": "2023-11-02",
+        "rank": 65
+      },
+      {
+        "date": "2023-11-16",
+        "rank": 75
+      },
+      {
+        "date": "2023-11-30",
+        "rank": 60
+      },
+      {
+        "date": "2023-12-14",
+        "rank": 62
+      },
+      {
+        "date": "2023-12-28",
+        "rank": 76
+      },
+      {
+        "date": "2024-01-11",
+        "rank": 81
+      }
+    ],
+    "bad_target_count": 18,
+    "bad_effective_count": 18
+  },
+  "cache_intervals": [
+    {
+      "start": "2026-09-17",
+      "end": null,
+      "source": "current_name_snapshot"
+    }
+  ],
+  "cache_notice_status": "error:RuntimeError:CNInfo announcement query failed for 600543: 403 Client Error: Forbidden for url: http://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "source_file_sha256": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "members_by_rebalance.csv": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c",
+    "600543.json": "446a5919cbe82c5483ab4d4c0c46bcfb83df3d03e836cd8b4ac08322f974fc93"
+  },
+  "first_bad_target": "2026-04-30",
+  "bad_targets": [
+    {
+      "date": "2026-04-30",
+      "rank": 4
+    },
+    {
+      "date": "2026-05-14",
+      "rank": 4
+    },
+    {
+      "date": "2026-05-28",
+      "rank": 6
+    },
+    {
+      "date": "2026-06-11",
+      "rank": 5
+    },
+    {
+      "date": "2026-06-25",
+      "rank": 6
+    },
+    {
+      "date": "2026-07-09",
+      "rank": 7
+    },
+    {
+      "date": "2026-07-23",
+      "rank": 6
+    },
+    {
+      "date": "2026-08-06",
+      "rank": 6
+    },
+    {
+      "date": "2026-08-20",
+      "rank": 5
+    },
+    {
+      "date": "2026-09-03",
+      "rank": 5
+    }
+  ],
+  "bad_target_count": 10,
+  "bad_effective_rebalance_dates": [
+    "2026-04-30",
+    "2026-05-14",
+    "2026-05-28",
+    "2026-06-11",
+    "2026-06-25",
+    "2026-07-09",
+    "2026-07-23",
+    "2026-08-06",
+    "2026-08-20"
+  ],
+  "bad_effective_count": 9,
+  "target_effective_overlap_count": 9,
+  "in_last_1y_window_ending_2026_09_30": true,
+  "recent_paper_account": {
+    "prefunded": {
+      "hold_days_after_actual_ST_start": 100,
+      "first_held": {
+        "date": "2026-04-27",
+        "shares": "2540.164063358845443430143689953631326494",
+        "market_value": "12548.41047299269649054490982837093875288"
+      },
+      "last_held": {
+        "date": "2026-09-17",
+        "shares": "2846.998566397420537427122019198941423869",
+        "market_value": "11615.75415090147579270265783833168100939"
+      },
+      "orders_after_ST_start": 11,
+      "booked_buys_after_ST_start": 7,
+      "order_side_counts": {
+        "buy": 7,
+        "sell": 4
+      },
+      "first_post_ST_order": {
+        "signal_date": "2026-04-30",
+        "execution_date": "2026-05-06",
+        "side": "buy",
+        "booked": "True",
+        "frozen_shares": "80.743211884270467631266300687759132450"
+      },
+      "file_sha256": {
+        "recent_prefunded_holdings.csv": "f2edbe3eb61ee412cfacc04611c8985361095de4125c1e9df8798dac29d99c6d",
+        "recent_prefunded_orders.csv": "b686c213bee5eff734a41a846b50d262a60ef8b0d17341b45a36876d4a672a44"
+      }
+    },
+    "netted": {
+      "hold_days_after_actual_ST_start": 100,
+      "first_held": {
+        "date": "2026-04-27",
+        "shares": "2578.584849839832255420931223711583943048",
+        "market_value": "12738.20915820877134177940024513522467866"
+      },
+      "last_held": {
+        "date": "2026-09-17",
+        "shares": "2836.885993497684457240435237625439686665",
+        "market_value": "11574.49485347055258554097576951179392159"
+      },
+      "orders_after_ST_start": 11,
+      "booked_buys_after_ST_start": 6,
+      "order_side_counts": {
+        "buy": 6,
+        "sell": 5
+      },
+      "first_post_ST_order": {
+        "signal_date": "2026-04-30",
+        "execution_date": "2026-05-06",
+        "side": "buy",
+        "booked": "True",
+        "frozen_shares": "106.551262478996642658171172239690547198"
+      },
+      "file_sha256": {
+        "recent_netted_holdings.csv": "0924fe2cbefdfd08e2198cc843104789fe1dbc836f168dc9603f129b743d8c46",
+        "recent_netted_orders.csv": "79d0cf1f76559395b0ee011a37311ab8ac7d5e697205b2f4e573f4bb5ef82302"
+      }
+    }
+  },
+  "correction_scope": "Two issuer-dated candidate intervals: 2023-05-04 through 2024-07-07, and 2026-04-27 onward. Rebuild full historical ranked member universe, proxy and downstream version streams in isolated lineage; do not delete rank 600543 to make a 99-stock NAV. No current-snapshot backfill."
+}

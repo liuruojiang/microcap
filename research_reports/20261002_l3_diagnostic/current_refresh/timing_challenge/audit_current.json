@@ -1,0 +1,170 @@
+{
+  "label": "read_only_current_tail_diagnostic_not_formal_performance",
+  "input_sha256": {
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "4e20dea7fb79ccf1658e549ec881ff931d26fb9c1156badc5bf9f7aa5ea5bfb3",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+  },
+  "nav_rows": 4033,
+  "nav_first": "2010-03-01",
+  "nav_last": "2026-09-30",
+  "turnover_rows": 432,
+  "turnover_last": "2026-09-17",
+  "checks": {
+    "mom_micro_max_abs": 9.8879238130678e-17,
+    "mom_hedge_max_abs": 9.974659986866641e-17,
+    "signal_mismatch": 0,
+    "holding_lag_mismatch": 0,
+    "entry_exit_fee_mismatch": 0
+  },
+  "disabled_nonzero_counts": {
+    "signal_quality_derisk_enabled": 0,
+    "signal_quality_derisk_triggered": 0,
+    "target_vol_enabled": 0,
+    "overheat_enabled": 0,
+    "overheat_triggered": 0,
+    "blocked_until_signal_reset": 0,
+    "peak_decay_enabled": 0,
+    "net_drawdown_stop_enabled": 0,
+    "signal_quality_scale_cost": 0,
+    "scale_change_cost": 0,
+    "financing_cost": 0,
+    "target_vol_trade_cost": 0,
+    "idle_cash_yield": 0
+  },
+  "windows": {
+    "last_5y": {
+      "start": "2021-09-30",
+      "end": "2026-09-30",
+      "signal_switches": 70,
+      "switches_charged_on_signal_date": 70,
+      "member_rebalances": 129,
+      "member_rebalances_close_timing": 129,
+      "member_entries": 1469,
+      "member_exits": 1469,
+      "active_member_rebalance_cost_days": 90,
+      "delta_from_old": {
+        "signal_switches": 0,
+        "switches_charged_on_signal_date": 0,
+        "member_rebalances": 0,
+        "member_rebalances_close_timing": 0,
+        "member_entries": 0,
+        "member_exits": 0,
+        "active_member_rebalance_cost_days": 0
+      }
+    },
+    "last_3y": {
+      "start": "2023-09-30",
+      "end": "2026-09-30",
+      "signal_switches": 48,
+      "switches_charged_on_signal_date": 48,
+      "member_rebalances": 77,
+      "member_rebalances_close_timing": 77,
+      "member_entries": 875,
+      "member_exits": 875,
+      "active_member_rebalance_cost_days": 49,
+      "delta_from_old": {
+        "signal_switches": 0,
+        "switches_charged_on_signal_date": 0,
+        "member_rebalances": 0,
+        "member_rebalances_close_timing": 0,
+        "member_entries": 0,
+        "member_exits": 0,
+        "active_member_rebalance_cost_days": 0
+      }
+    },
+    "last_1y": {
+      "start": "2025-09-30",
+      "end": "2026-09-30",
+      "signal_switches": 17,
+      "switches_charged_on_signal_date": 17,
+      "member_rebalances": 25,
+      "member_rebalances_close_timing": 25,
+      "member_entries": 315,
+      "member_exits": 315,
+      "active_member_rebalance_cost_days": 14,
+      "delta_from_old": {
+        "signal_switches": 0,
+        "switches_charged_on_signal_date": 0,
+        "member_rebalances": 0,
+        "member_rebalances_close_timing": 0,
+        "member_entries": 0,
+        "member_exits": 0,
+        "active_member_rebalance_cost_days": 0
+      }
+    }
+  },
+  "september_example_kept": true,
+  "injected_early_fill_rejected": true,
+  "actual_september_t1_clock_rejected": true,
+  "tail_records": [
+    {
+      "date": "2026-09-22",
+      "holding": "cash",
+      "next_holding": "long_microcap_short_zz1000",
+      "microcap_mom": 0.0016359414977997,
+      "hedge_mom": -0.0014660722416363,
+      "return_raw": 0.0,
+      "entry_exit_cost": 0.003,
+      "rebalance_cost": 0.0,
+      "return_net": -0.003
+    },
+    {
+      "date": "2026-09-23",
+      "holding": "long_microcap_short_zz1000",
+      "next_holding": "cash",
+      "microcap_mom": -0.0016501290761965,
+      "hedge_mom": 0.0070456897855246,
+      "return_raw": 0.0055637995929428,
+      "entry_exit_cost": 0.003,
+      "rebalance_cost": 0.0,
+      "return_net": 0.0025471081941641
+    },
+    {
+      "date": "2026-09-24",
+      "holding": "cash",
+      "next_holding": "long_microcap_short_zz1000",
+      "microcap_mom": 0.0012899490249018,
+      "hedge_mom": -0.0017947571098014,
+      "return_raw": 0.0,
+      "entry_exit_cost": 0.003,
+      "rebalance_cost": 0.0,
+      "return_net": -0.003
+    },
+    {
+      "date": "2026-09-28",
+      "holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "microcap_mom": 0.0122569300424681,
+      "hedge_mom": -0.0402530388756879,
+      "return_raw": 0.0232057352184241,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 0.0,
+      "return_net": 0.023205735218424
+    },
+    {
+      "date": "2026-09-29",
+      "holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "microcap_mom": 0.0295753287571749,
+      "hedge_mom": -0.0243393394753286,
+      "return_raw": 0.0165426685960464,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 0.0,
+      "return_net": 0.0165426685960463
+    },
+    {
+      "date": "2026-09-30",
+      "holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000",
+      "microcap_mom": 0.0201343343725968,
+      "hedge_mom": -0.0445770267958275,
+      "return_raw": -0.0010923265118282,
+      "entry_exit_cost": 0.0,
+      "rebalance_cost": 0.0,
+      "return_net": -0.0010923265118282
+    }
+  ]
+}

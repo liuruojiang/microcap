@@ -1,0 +1,64 @@
+.........F.............................................................  [100%]
+================================== FAILURES ===================================
+_ test_v25_holding_returns_and_costs_match_independent_daily_ledger[next_open] _
+
+timing = 'next_open'
+
+    @pytest.mark.parametrize("timing", ["close", "next_open"])
+    def test_v25_holding_returns_and_costs_match_independent_daily_ledger(timing: str) -> None:
+        prices = _prices()
+        dates = prices.index[v25.LOOKBACK - 1 :]
+        rebalance_dates = [dates[20], dates[70]]
+        turnover = pd.DataFrame(
+            {
+                "rebalance_date": rebalance_dates,
+                "execution_date": rebalance_dates,
+                "execution_timing": timing,
+                "two_side_cost_rate": [0.006, 0.008],
+            }
+        )
+        nav = prices.microcap / prices.microcap.iloc[0]
+        scores = _independent_wls(nav, v25.LOOKBACK, v25.HALFLIFE, v25.TRADING_DAYS).annualized_log_wls_score
+        next_active = scores.to_numpy() > 0.0
+        active = np.r_[False, next_active[:-1]]
+        raw = (prices.microcap / prices.microcap.shift(1) - 1.0).loc[dates].to_numpy()
+        realized = np.where(active, raw, 0.0)
+        cost_active = next_active if timing == "close" else active
+        previous_active = active if timing == "close" else np.r_[False, active[:-1]]
+        transition_cost = np.where(
+            cost_active & ~previous_active,
+            v25.v2_0.base_mod.freq_mod.cost_mod.ENTRY_COST,
+            np.where(~cost_active & previous_active, v25.v2_0.base_mod.freq_mod.cost_mod.EXIT_COST, 0.0),
+        )
+        rebalance_cost = np.zeros(len(dates), dtype=float)
+        for dt, cost in zip(rebalance_dates, [0.006, 0.008], strict=True):
+            position = dates.searchsorted(dt, side="left" if timing == "close" else "right")
+            if cost_active[position] and previous_active[position]:
+                rebalance_cost[position] += cost
+        expected_cost = transition_cost + rebalance_cost
+        expected_net = (1.0 + realized) * (1.0 - expected_cost) - 1.0
+        actual = v25.build_v2_5_result(prices, turnover)
+        assert actual.holding.ne("cash").tolist() == active.tolist()
+        assert actual.next_holding.ne("cash").tolist() == next_active.tolist()
+        np.testing.assert_allclose(actual.base_pre_cost_return, realized, rtol=0.0, atol=1e-15)
+>       np.testing.assert_allclose(actual.total_cost, expected_cost, rtol=0.0, atol=0.0)
+E       AssertionError: 
+E       Not equal to tolerance rtol=0, atol=0
+E       
+E       Mismatched elements: 2 / 141 (1.42%)
+E       Mismatch at indices:
+E        [70]: 0.008 (ACTUAL), 0.0 (DESIRED)
+E        [71]: 0.0 (ACTUAL), 0.008 (DESIRED)
+E       Max absolute difference among violations: 0.008
+E       Max relative difference among violations: 1.
+E        ACTUAL: array([0.   , 0.003, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,
+E              0.   , 0.   , 0.003, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,
+E              0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,...
+E        DESIRED: array([0.   , 0.003, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,
+E              0.   , 0.   , 0.003, 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,
+E              0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   , 0.   ,...
+
+tests\test_script_math_adversarial.py:122: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_script_math_adversarial.py::test_v25_holding_returns_and_costs_match_independent_daily_ledger[next_open]
+1 failed, 70 passed in 3.39s

@@ -1,0 +1,52 @@
+{
+  "read_only_costed_hashes_unchanged": true,
+  "costed_sha256": {
+    "0": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "3": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "5": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+  },
+  "results": [
+    {
+      "version": "v2.0",
+      "candidate_rows": 4033,
+      "saved_rows": 4033,
+      "candidate_latest": "2026-09-30",
+      "saved_latest": "2026-09-30",
+      "first_diff": null,
+      "max_numeric_abs_diff": {
+        "return_net": 9.98821251402271e-17,
+        "nav_net": 3.552713678800501e-15,
+        "total_cost": 0.0
+      },
+      "official_rewrite_audit_function": "clean"
+    },
+    {
+      "version": "v2.3",
+      "candidate_rows": 3988,
+      "saved_rows": 3988,
+      "candidate_latest": "2026-09-30",
+      "saved_latest": "2026-09-30",
+      "first_diff": null,
+      "max_numeric_abs_diff": {
+        "return_net": 9.98821251402271e-17,
+        "nav_net": 3.552713678800501e-15,
+        "total_cost": 0.0
+      },
+      "official_rewrite_audit_function": "clean"
+    },
+    {
+      "version": "v2.5",
+      "candidate_rows": 3988,
+      "saved_rows": 3988,
+      "candidate_latest": "2026-09-30",
+      "saved_latest": "2026-09-30",
+      "first_diff": null,
+      "max_numeric_abs_diff": {
+        "return_net": 9.974659986866641e-17,
+        "nav_net": 1.4210854715202004e-14,
+        "total_cost": 0.0
+      },
+      "official_rewrite_audit_function": "clean"
+    }
+  ]
+}

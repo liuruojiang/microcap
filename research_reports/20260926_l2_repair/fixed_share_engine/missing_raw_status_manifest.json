@@ -1,0 +1,14 @@
+{
+  "source": "BaoStock anonymous query_history_k_data_plus",
+  "adjustflag": "3",
+  "frequency": "d",
+  "fields": "date,code,close,preclose,volume,tradestatus,isST",
+  "window": [
+    "2010-01-06",
+    "2010-01-15"
+  ],
+  "opening_orders_sha256": "3c5c3b6499b9e74fc5c5a7ffc14709a41cef7ab277279867850966015cd35a79",
+  "requested_missing_symbol_days": 9,
+  "returned_rows": 9,
+  "sha256": "bba02a93d7109a22e963b4cdd9219c7e58394383af376eac2d852e651c05e76c"
+}

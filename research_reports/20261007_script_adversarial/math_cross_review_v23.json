@@ -1,0 +1,67 @@
+{
+  "caliber": "independent_synthetic_diagnostic_no_production_artifact_writes",
+  "source_sha256": "dab988798bd1e262f2b8f738620b72794a38a79c55fa4d7c017b770c618a250a",
+  "cases": [
+    {
+      "case": "exact_ruin",
+      "result": "rejected",
+      "error": "v2.3 active return is at or below -1 (ruin): date=2025-01-02T00:00:00, value=np.float64(-1.0)"
+    },
+    {
+      "case": "negative_nav",
+      "result": "rejected",
+      "error": "v2.3 active return is at or below -1 (ruin): date=2025-01-02T00:00:00, value=np.float64(-1.01)"
+    },
+    {
+      "case": "nan",
+      "result": "rejected",
+      "error": "v2.3 active return is non-finite: date=2025-01-02T00:00:00, value=np.float64(nan)"
+    },
+    {
+      "case": "inf",
+      "result": "rejected",
+      "error": "v2.3 active return is non-finite: date=2025-01-02T00:00:00, value=np.float64(inf)"
+    },
+    {
+      "case": "overflow",
+      "result": "rejected",
+      "error": "v2.3 cumulative NAV is non-finite or non-positive: date=2025-01-03 00:00:00, value=inf"
+    },
+    {
+      "case": "underflow",
+      "result": "rejected",
+      "error": "v2.3 cumulative NAV is non-finite or non-positive: date=2025-08-15 00:00:00, value=0.0"
+    },
+    {
+      "case": "ignored_cash_market_returns",
+      "result": "PASS",
+      "net_returns": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case": "bad_mapped_cost_nan",
+      "result": "rejected",
+      "error": "v2.3 mapped rebalance cost is non-finite or outside [0, 1): date=2025-01-02 00:00:00, value=np.float64(nan)"
+    },
+    {
+      "case": "bad_mapped_cost_inf",
+      "result": "rejected",
+      "error": "v2.3 mapped rebalance cost is non-finite or outside [0, 1): date=2025-01-02 00:00:00, value=np.float64(inf)"
+    },
+    {
+      "case": "bad_mapped_cost_-0.1",
+      "result": "rejected",
+      "error": "v2.3 mapped rebalance cost is non-finite or outside [0, 1): date=2025-01-02 00:00:00, value=np.float64(-0.1)"
+    },
+    {
+      "case": "bad_mapped_cost_1.0",
+      "result": "rejected",
+      "error": "v2.3 mapped rebalance cost is non-finite or outside [0, 1): date=2025-01-02 00:00:00, value=np.float64(1.0)"
+    }
+  ],
+  "signal_cleanup_static_review": "PASS: final-row identity flags/core params enforced; stale realtime checked even with current summary; lock and identity recheck protect concurrent current writer",
+  "source_unchanged": true,
+  "result": "PASS"
+}

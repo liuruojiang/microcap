@@ -1,0 +1,43 @@
+{
+  "status": "PASS_ACTUAL_GUARD_AND_SETTLEMENT_MUTANTS",
+  "manifest_sha256": "3fc25deebce8d9e5d6912bb709473353eb95d9649c297fe2888008f44a184ef0",
+  "code_sha256": "5ae1f10af2b1af8832465b030b55e07f1b9aa5251fdc17abc55ab68d142f0d61",
+  "accepted_next_session_signal_shares": "140",
+  "guard_rejections": {
+    "release_late": "pending_bonus_not_next_session:2018-06-07:603031",
+    "rights_quantity_mismatch": "pending_bonus_rights_mismatch:2018-06-07"
+  },
+  "blocked_execution_and_no_unrealized_netted_cash": {
+    "halt": {
+      "reason": "suspended_or_zero_volume",
+      "orders": [
+        {
+          "side": "sell",
+          "booked": false,
+          "reason": "blocked_trade"
+        },
+        {
+          "side": "buy",
+          "booked": false,
+          "reason": "insufficient_netted_cash"
+        }
+      ]
+    },
+    "sell_side_limit": {
+      "reason": "at_side_close_limit_diagnostic_ST_and_board",
+      "orders": [
+        {
+          "side": "sell",
+          "booked": false,
+          "reason": "blocked_trade"
+        },
+        {
+          "side": "buy",
+          "booked": false,
+          "reason": "insufficient_netted_cash"
+        }
+      ]
+    }
+  },
+  "limitations": "Synthetic injections exercise the real signal guard and settlement functions; they are not historical execution evidence or proof of real fills."
+}

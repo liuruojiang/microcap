@@ -1,0 +1,65 @@
+{
+  "index_code": "TOP100_BIWEEKLY_THURSDAY_PROXY",
+  "source_used": "approved_executed_member_continuation",
+  "universe_source": "explicit_symbols",
+  "universe_symbol_count": 572,
+  "symbol_load_stats": {
+    "requested_count": 572,
+    "loaded_count": 571,
+    "legitimately_unavailable_count": 1,
+    "legitimately_unavailable": [
+      "300391"
+    ],
+    "failure_count": 0,
+    "failures": {}
+  },
+  "method_note": "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names from signal-date ranking, and applies conservative close execution: if the signal-date close is locked at the price limit, buys or sells are blocked at the close.",
+  "core_params": {
+    "top_n": 100,
+    "exclude_current_st": false,
+    "exclude_historical_st": true,
+    "exclude_bj_exchange": true,
+    "exclude_suspended_on_signal_date": true,
+    "block_limit_up_entry_at_close": true,
+    "block_limit_down_exit_at_close": true,
+    "rebalance_frequency": "biweekly",
+    "rebalance_weekday_anchor": "Thursday",
+    "rebalance_phase_anchor_date": "2016-01-07",
+    "lookback": 16,
+    "hedge_column": "1.000852",
+    "execution_timing": "close",
+    "trade_constraint_mode": "close",
+    "research_stack_version": "2026-05-12-p0-p1-history-meta-master-stv3",
+    "member_filter_policy_version": "empty-name-reject-v1",
+    "realtime_quote_policy_version": "strict-per-symbol-date-v1",
+    "proxy_rebalance_policy_version": "fixed-biweekly-anchor-20160107-v1",
+    "security_meta_version": 2,
+    "st_notice_policy_version": "cninfo-category-plus-entry-exit-keyword-v3",
+    "security_meta_cache_fingerprint": {
+      "present_count": 4975,
+      "missing_count": 0,
+      "sha256": "464011f06d52b9e5856218f53ad6060507609915ec4b66ce5f10ac29e3270eb2"
+    },
+    "security_master_enabled": true
+  },
+  "start_date": "2010-01-05",
+  "end_date": "2026-09-30",
+  "rebalance_dates_count": 432,
+  "effective_start_date": "2010-01-05",
+  "recent_extension_start": "2026-09-17",
+  "recent_candidate_symbols": 572,
+  "continuation_bridge_date": "2026-09-03",
+  "approved_migration_review_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
+  "metadata_evidence_completion": "2026-09-17 official HTTPS query; ten legacy records completed; ST intervals unchanged",
+  "tail_extension_method": "no_new_rebalance_saved_target_replay",
+  "tail_extension_start": "2026-09-17",
+  "tail_extension_end": "2026-09-30",
+  "tail_extension_rows": 8,
+  "tail_extension_effective_member_count": 100,
+  "tail_extension_replaced_flat_placeholder": false,
+  "tail_extension_return_source_counts": {
+    "adjusted": 0,
+    "raw": 100
+  },
+  "tail_extension_authority_sha256": "fbd302da73a013a172907c820f79f82bb9d2c59c6d5862635894acfb2b36d2e6"
+}

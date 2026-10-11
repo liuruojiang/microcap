@@ -1,0 +1,87 @@
+{
+  "queried_utc": "2026-10-03T01:45:49.157528+00:00",
+  "issuer_sources": {
+    "distribution": {
+      "url": "https://static.cninfo.com.cn/finalpage/2016-05-14/1202321214.PDF",
+      "sha256": "6aaca9ae25b55c8153cf299bea517ee1f30745445f2dad6fc0b30564e8950188"
+    },
+    "suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2016-03-22/1202063402.PDF",
+      "sha256": "e0dfbbc4f126772a550deda69ae187c50588c641b5f7222f6f31f7f5e84d88c6"
+    },
+    "resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2016-09-30/1202736676.PDF",
+      "sha256": "8d1f22b078c7b51846326d23cd64627cf16a95e9320543b7a716e208655fc155"
+    }
+  },
+  "candidate_source_status": "cninfo=1;sina=0; single_source_only",
+  "event_scope": "exact symbol, 2016-05-19 record, 2016-05-20 ex/credit/cash, 2 bonus and 1 gross cash per 10 only",
+  "suspension_start": "2016-03-21",
+  "resumption_date": "2016-09-30",
+  "record_date": "2016-05-19",
+  "ex_share_credit_cash_date": "2016-05-20",
+  "new_unrestricted_shares_legal_trading_start": "2016-05-20 but actual stock remains suspended until 2016-09-30",
+  "vendor_query": "BaoStock sz.300423 daily adjustflag=3, 2016-03-17..2016-10-10",
+  "vendor_rows": 137,
+  "last_actual_trade_before_ex": {
+    "date": "2016-03-18",
+    "code": "sz.300423",
+    "open": "32.5400",
+    "high": "34.6800",
+    "low": "32.5400",
+    "close": "34.3600",
+    "preclose": "32.7000",
+    "volume": "1381261",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_reference": {
+    "date": "2016-05-20",
+    "code": "sz.300423",
+    "open": "28.5500",
+    "high": "28.5500",
+    "low": "28.5500",
+    "close": "28.5500",
+    "preclose": "28.5500",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2016-09-30",
+    "code": "sz.300423",
+    "open": "31.4100",
+    "high": "31.4100",
+    "low": "31.4100",
+    "close": "31.4100",
+    "preclose": "28.5500",
+    "volume": "567531",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "43796e17890b4dc5212e7636eaefa9133ee0a6a9c82bf7dcf5683e62bc834730",
+  "account_rights_events_sha256": "4f18d5b3b6ba612a108e38ee1e46424bde54fe0c36264caf2d985522f6ec15c4",
+  "account_record_entitlements": {
+    "prefunded": {
+      "record_shares": "2638.704967164500878361454318573095328262",
+      "new_shares_due": "527.7409934329001756722908637146190656524",
+      "gross_cash_due_yuan": "263.8704967164500878361454318573095328262",
+      "correct_ex_mark_yuan": "90665.902671772250180499570386171555479082320",
+      "missing_bonus_false_return": "-0.1661816065192083818393480791618160651920838183934807916181606519",
+      "missing_cash_false_return": "-0.002910360884749708963911525029103608847497089639115250291036088475",
+      "double_bonus_false_return": "0.1661816065192083818393480791618160651920838183934807916181606519",
+      "double_cash_false_return": "0.002910360884749708963911525029103608847497089639115250291036088475"
+    },
+    "netted": {
+      "record_shares": "3107.853891491101839578022845047828539502",
+      "new_shares_due": "621.5707782982203679156045690095657079004",
+      "gross_cash_due_yuan": "310.7853891491101839578022845047828539502",
+      "correct_ex_mark_yuan": "106785.859711634259207900864955843388617288720",
+      "missing_bonus_false_return": "-0.1661816065192083818393480791618160651920838183934807916181606519",
+      "missing_cash_false_return": "-0.002910360884749708963911525029103608847497089639115250291036088475",
+      "double_bonus_false_return": "0.1661816065192083818393480791618160651920838183934807916181606519",
+      "double_cash_false_return": "0.002910360884749708963911525029103608847497089639115250291036088475"
+    }
+  },
+  "assessment": "On ex date, 28.55 is a zero-volume valuation reference, not fill. Each old share plus 0.2 new share plus 0.10 gross cash marks at 34.36, exactly preserving pre-ex value. Cash and bonus must each be booked once. Shares credited on ex date but cannot transact during suspension."
+}

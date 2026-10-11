@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "status": "smtp_accepted",
+  "message_id": "<179138730033.3104.10206622529935796000@gmail.com>",
+  "accepted_at": "2026-10-07T15:35:02+00:00",
+  "metadata_sha256": "6d817773e9d399ea421e56f9169d00430d3ed2630f31f676399bf8f6df30ce05",
+  "subject_sha256": "7fb578bfb7f42d783b1608ebb5f489f964a4a8e426708912d775fefef49778cb",
+  "body_sha256": "f5ac7f4cc189ccddc2944bbe48a2438da0d42500f6930cb88ff5a288b3d7f03a",
+  "sender": "liuruojiang@gmail.com",
+  "recipients": [
+    "liuruojiang@gmail.com"
+  ]
+}

@@ -1,0 +1,11 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___ test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch ____
+tests\test_round3_math_ledger.py:181: in test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch
+    _expect_block("v20_erase_mapped_rebalance_fee",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v20_erase_mapped_rebalance_fee: actual execution builder accepted the corrupted upstream result
+=========================== short test summary info ===========================
+FAILED tests/test_round3_math_ledger.py::test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch
+1 failed, 20 deselected in 7.22s

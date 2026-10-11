@@ -1,0 +1,36 @@
+{
+  "status": "hedge_arithmetic_pass_funding_unproven",
+  "source": "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+  "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+  "window": {
+    "start": "2026-07-13",
+    "end": "2026-09-15",
+    "active_rows": 47
+  },
+  "daily_reset_unit_proxy": {
+    "last_equity": "1.133232616374279520282154802539332166034",
+    "max_old_single_day_formula_diff": "5.2E-18",
+    "cumulative_stock_sweep_abs_per_initial_equity": "0.6871960839706493671172938516634388988565",
+    "cumulative_hedge_notional_reset_abs_per_initial_equity": "0.9325525842732390387917491268640112990057",
+    "first_day_cash_before_sweep": "0.0398126547673008440",
+    "first_negative_cash_before_sweep_date": "2026-07-14"
+  },
+  "daily_hedge_reset_fixed_stock_units": {
+    "last_equity": "1.120513678723399388978895240965925019915",
+    "last_cash": "0.05440323799862282591957691358967298236269",
+    "first_negative_cash_date": null,
+    "max_cash_debt": "0"
+  },
+  "fixed_hedge_notional_fixed_stock_units": {
+    "last_equity": "1.123568521736278616179318327376252037552",
+    "last_cash": "0.05745808101150205312",
+    "first_negative_cash_date": null,
+    "max_cash_debt": "0"
+  },
+  "assumptions": [
+    "stock sleeve is old arithmetic proxy unit, not verified fixed-share basket",
+    "zero-initial-value synthetic short index swap, no real IM contract or collateral schedule",
+    "0.0003 daily drag on short notional; no additional reset fee or borrowing interest",
+    "negative cash recorded as debt; ability and cost of credit unproven"
+  ]
+}

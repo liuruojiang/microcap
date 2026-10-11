@@ -1,0 +1,39 @@
+{
+  "scope": "frozen_official_v2_3_signal_binding_diagnostic_only",
+  "official_nav": "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+  "official_nav_sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+  "official_rows": 3988,
+  "official_first_date": "2010-05-05",
+  "official_last_date": "2026-09-30",
+  "bound_rows": 241,
+  "bound_first_date": "2025-10-09",
+  "bound_last_date": "2026-09-30",
+  "off_definition": "official_v2_3_base_next_holding_before_overheat; L4/L5 established inf-trigger OFF parity",
+  "branches": {
+    "prefunded": {
+      "prior_signal": "research_reports\\20261002_l2_full_repair\\version_integration\\recent_prefunded_rebuilt_signals.csv",
+      "prior_signal_sha256": "981cb31501177ca836e3a22d09703dc4876b18781ad27df852397a941aa755ba",
+      "prior_valid_signal_rows": 217,
+      "prior_vs_official_different_valid_days": 19,
+      "output": "research_reports\\20261003_l5_repair\\signal_audit\\prefunded\\recent_prefunded_rebuilt_signals.csv",
+      "output_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "off_output": "research_reports\\20261003_l5_repair\\signal_audit\\prefunded_off\\recent_prefunded_rebuilt_signals.csv",
+      "off_output_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "official_on_off_signal_diff_days": 49
+    },
+    "netted": {
+      "prior_signal": "research_reports\\20261002_l2_full_repair\\version_integration\\recent_netted_rebuilt_signals.csv",
+      "prior_signal_sha256": "8a896b31e317c87226d04d63fb4cc100d9780010567e41f23fee7b9239792a2a",
+      "prior_valid_signal_rows": 217,
+      "prior_vs_official_different_valid_days": 8,
+      "output": "research_reports\\20261003_l5_repair\\signal_audit\\netted\\recent_netted_rebuilt_signals.csv",
+      "output_sha256": "68cd8ebd97b988f3a47107ee9fe3dd5ef2ef928adc4f6f1de1f577842bcc6b9b",
+      "off_output": "research_reports\\20261003_l5_repair\\signal_audit\\netted_off\\recent_netted_rebuilt_signals.csv",
+      "off_output_sha256": "c2a215823bd21313545c7d3920ea0c360b73da91d8bebf9db606588e12dd9bbf",
+      "official_on_off_signal_diff_days": 49
+    }
+  },
+  "old_branch_signal_diff_days": 15,
+  "old_branch_first_signal_diff": "2026-02-27",
+  "bound_branch_signal_diff_days": 0
+}

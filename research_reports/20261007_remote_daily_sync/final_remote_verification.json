@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "primary_and_live_remote_sha": "4c082e82e5d645278f313c142880218bd0e739df",
+  "strategy_pin_reachable": true,
+  "local_delivery_still_complete": true,
+  "final_artifact_and_input_hashes_unchanged": true,
+  "expected_date": "2026-09-30",
+  "tracked_files_clean": true,
+  "existing_untracked_research_and_backups_preserved": true
+}

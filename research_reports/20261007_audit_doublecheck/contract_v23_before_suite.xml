@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="8.433" timestamp="2026-10-07T16:23:48.440361+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_doublecheck_contract_adversarial" name="test_native_v23_signal_cli_rejects_disabled_overheat_alias" time="6.559"><failure message="AssertionError: Native v2.3 信号 CLI kept disabled_native_overheat_alias realtime artifact&#10;assert not True">tests\test_doublecheck_contract_adversarial.py:233: in test_native_v23_signal_cli_rejects_disabled_overheat_alias
+    assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, "3", v23,
+tests\test_doublecheck_contract_adversarial.py:224: in assert_native_cli_cleanup
+    assert not retained, f"Native v2.{version} 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.3 信号 CLI kept disabled_native_overheat_alias realtime artifact
+E   assert not True</failure></testcase></testsuite></testsuites>

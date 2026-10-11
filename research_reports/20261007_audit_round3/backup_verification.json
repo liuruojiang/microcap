@@ -1,0 +1,12 @@
+{
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261007_200436",
+  "verified_files": 6,
+  "raw_sha256": {
+    "microcap_top100_mom16_biweekly_live.py": "a8429df05baa894122ab982b0345443ca183f41ee115f142f779edb2dd1c48e5",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+    "scripts\\top100_delivery.py": "bc82ffcb7a960293a665d1e71c8d7c43cb252c4b5be146204ad1236eb1d5e0df",
+    "outputs\\top100_delivery_manifest.json": "6b80b53bd50fea6d424a7aec885c7968e81491eec30f07cbc1afb16524fea074"
+  }
+}

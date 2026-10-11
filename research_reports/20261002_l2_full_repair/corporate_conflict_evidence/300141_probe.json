@@ -1,0 +1,73 @@
+{
+  "queried_utc": "2026-10-03T01:06:31.755294+00:00",
+  "issuer_sources": {
+    "distribution": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-04-29/1200933106.PDF",
+      "sha256": "319387b47ec4ba41ee70ad868fc783190f9b0352b5d26f042ec8db2051b50533"
+    },
+    "suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-05-06/1200967113.PDF",
+      "sha256": "78b77d2c9ba05cb7c8ae3a81a39c2f16bac2b343bdf90c0f9dbb8df7436e555d"
+    },
+    "resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-05-20/1201036277.PDF",
+      "sha256": "c8e5c7c17f3dbc3139e3a6893a4626756694ed618d14feb069e9e30a7289ae22"
+    }
+  },
+  "candidate_source_status": "cninfo=1;sina=0; single_source_only",
+  "event_scope": "exact symbol, record date, ex date, gross ratio only; no blanket single-source admission",
+  "record_date": "2015-05-06",
+  "ex_and_cash_credit_date": "2015-05-07",
+  "gross_cash_yuan_per_share": "0.10",
+  "vendor_query": "BaoStock sz.300141 daily adjustflag=3 (unadjusted), 2015-01-20..2015-05-22",
+  "vendor_rows": 82,
+  "last_actual_trade_before_ex": {
+    "date": "2015-01-22",
+    "code": "sz.300141",
+    "open": "13.6800",
+    "high": "13.9200",
+    "low": "13.5500",
+    "close": "13.9100",
+    "preclose": "13.7200",
+    "volume": "3082283",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_row": {
+    "date": "2015-05-07",
+    "code": "sz.300141",
+    "open": "13.8100",
+    "high": "13.8100",
+    "low": "13.8100",
+    "close": "13.8100",
+    "preclose": "13.8100",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2015-05-20",
+    "code": "sz.300141",
+    "open": "15.1900",
+    "high": "15.1900",
+    "low": "15.1900",
+    "close": "15.1900",
+    "preclose": "13.8100",
+    "volume": "132744",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "59f677b7cfe30cf6bc987e6aee12af357cfc93c1d0276ea2409e025a231c9f76",
+  "account_rights_events_sha256": "4d3d9d5d406c086fbe6c6b5d3a4e9146c3444427f3c3cf263bfe73708d7a5539",
+  "account_record_entitlements": {
+    "prefunded": {
+      "eligible_shares": "2961.988149356412646440517975073143236380",
+      "gross_cash_due_yuan": "296.198814935641264644051797507314323638"
+    },
+    "netted": {
+      "eligible_shares": "3184.282548136255571084253515215754499987",
+      "gross_cash_due_yuan": "318.4282548136255571084253515215754499987"
+    }
+  },
+  "assessment": "13.81 = last traded 13.91 minus gross dividend 0.10 and is resumed first true trade preclose. Eligible only as an issuer-documented single-event exception and a zero-volume valuation reference with cash/receivable; never an executable close or generic source admission."
+}

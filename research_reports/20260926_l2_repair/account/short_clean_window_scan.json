@@ -1,0 +1,45 @@
+{
+  "scan": "first_100_saved_rebalances_only",
+  "date_range": [
+    "2010-01-14",
+    "2013-10-31"
+  ],
+  "zero_blocked_rebalances": 2,
+  "three_day_all_100_raw_close_candidates": 0,
+  "eligible_windows": [
+    {
+      "rebalance_date": "2010-01-28",
+      "window": [
+        "2010-01-28",
+        "2010-01-29",
+        "2010-02-01"
+      ],
+      "missing_price_symbols": {
+        "2010-01-28": [],
+        "2010-01-29": [
+          "600452"
+        ],
+        "2010-02-01": [
+          "000526",
+          "002026"
+        ]
+      }
+    },
+    {
+      "rebalance_date": "2010-03-11",
+      "window": [
+        "2010-03-11",
+        "2010-03-12",
+        "2010-03-15"
+      ],
+      "missing_price_symbols": {
+        "2010-03-11": [],
+        "2010-03-12": [],
+        "2010-03-15": [
+          "002102"
+        ]
+      }
+    }
+  ],
+  "further_constraint": "No point-in-time corporate-action ledger exists in these files; price completeness alone would not certify an economic-return window."
+}

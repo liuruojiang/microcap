@@ -1,0 +1,378 @@
+{
+  "label": "L5 old-pool conditional time audit, no formal performance",
+  "branches": {
+    "prefunded": {
+      "branch": "prefunded",
+      "inputs_sha256": {
+        "research_reports\\20261002_l2_full_repair\\version_integration\\recent_prefunded_rebuilt_signals.csv": "981cb31501177ca836e3a22d09703dc4876b18781ad27df852397a941aa755ba",
+        "research_reports\\20261002_l2_full_repair\\version_integration\\recent_prefunded_v2_3_strategy_daily.csv": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+        "research_reports\\20261002_l2_full_repair\\version_integration\\recent_prefunded_v2_3_strategy_orders.csv": "0c415d9de5d0317dd217f8acb2f1bad47b87813bf92240f31d88a5b83eafaa72"
+      },
+      "sessions": 241,
+      "start": "2025-10-09",
+      "end": "2026-09-30",
+      "signal_to_next_close_clock_errors": 0,
+      "stock_order_bad_next_session_dates": 0,
+      "attempted_order_daily_count_errors": 0,
+      "same_day_fill_injection_detected_rows": 14,
+      "future_signal_injection_detected_rows": 28,
+      "independent_score_overheat_signal_errors": 0,
+      "independent_wls_score_max_abs_error": 8.326672684688674e-15,
+      "core_targets_long_days": 113,
+      "overheat_rejected_core_long_days": 32,
+      "model_vs_actual_binary_stock_state_gaps": [
+        {
+          "date": "2025-12-05",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-09-14",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 1
+        }
+      ],
+      "september": {
+        "2026-09-07": {
+          "proxy_close": 1245.4444000162505,
+          "score": 0.6798670307839205,
+          "vol10_independent": 0.25884523800773845,
+          "signal_at_close": true,
+          "model_holding_through_close": true,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 85,
+          "pending_orders": 0,
+          "executed_orders": 0
+        },
+        "2026-09-11": {
+          "proxy_close": 1193.2997457328036,
+          "score": -0.1059444159321827,
+          "vol10_independent": 0.19003249173672473,
+          "signal_at_close": false,
+          "model_holding_through_close": true,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 85,
+          "pending_orders": 85,
+          "executed_orders": 0
+        },
+        "2026-09-23": {
+          "proxy_close": 1256.4162442675029,
+          "score": -0.0047175809854162,
+          "vol10_independent": 0.1999441059401779,
+          "signal_at_close": false,
+          "model_holding_through_close": false,
+          "model_holding_after_close": false,
+          "actual_held_symbols": 0,
+          "pending_orders": 0,
+          "executed_orders": 0
+        },
+        "2026-09-24": {
+          "proxy_close": 1253.9448855816677,
+          "score": 0.4613427857419772,
+          "vol10_independent": 0.21994589469535486,
+          "signal_at_close": true,
+          "model_holding_through_close": false,
+          "model_holding_after_close": false,
+          "actual_held_symbols": 0,
+          "pending_orders": 100,
+          "executed_orders": 0
+        },
+        "2026-09-28": {
+          "proxy_close": 1246.8441977111306,
+          "score": 1.1492540039233703,
+          "vol10_independent": 0.2548789778049967,
+          "signal_at_close": true,
+          "model_holding_through_close": false,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 97,
+          "pending_orders": 0,
+          "executed_orders": 100
+        },
+        "2026-09-29": {
+          "proxy_close": 1267.3681297221635,
+          "score": 1.6517149351985947,
+          "vol10_independent": 0.2565863036115042,
+          "signal_at_close": true,
+          "model_holding_through_close": true,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 97,
+          "pending_orders": 0,
+          "executed_orders": 0
+        },
+        "2026-09-30": {
+          "proxy_close": 1263.2617060209982,
+          "score": 1.8444336123926464,
+          "vol10_independent": 0.18944697209566563,
+          "signal_at_close": true,
+          "model_holding_through_close": true,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 97,
+          "pending_orders": 0,
+          "executed_orders": 0
+        }
+      },
+      "source_proxy_ledger": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261002_l2_full_repair\\engine\\recent_prefunded_daily.csv",
+      "source_proxy_ledger_sha256": "26d1c6b01e6b625917047df4e70fe8c3e560fa7d53de27afce94d47faa34eeed",
+      "hedge_close_source": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "hedge_close_source_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+    },
+    "netted": {
+      "branch": "netted",
+      "inputs_sha256": {
+        "research_reports\\20261002_l2_full_repair\\version_integration\\recent_netted_rebuilt_signals.csv": "8a896b31e317c87226d04d63fb4cc100d9780010567e41f23fee7b9239792a2a",
+        "research_reports\\20261002_l2_full_repair\\version_integration\\recent_netted_v2_3_strategy_daily.csv": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+        "research_reports\\20261002_l2_full_repair\\version_integration\\recent_netted_v2_3_strategy_orders.csv": "9bd2e34c89d1c3c00fa774212f507be2edc36bb752f1231428f87639ae8cc7c6"
+      },
+      "sessions": 241,
+      "start": "2025-10-09",
+      "end": "2026-09-30",
+      "signal_to_next_close_clock_errors": 0,
+      "stock_order_bad_next_session_dates": 0,
+      "attempted_order_daily_count_errors": 0,
+      "same_day_fill_injection_detected_rows": 14,
+      "future_signal_injection_detected_rows": 27,
+      "independent_score_overheat_signal_errors": 0,
+      "independent_wls_score_max_abs_error": 1.3766765505351941e-14,
+      "core_targets_long_days": 117,
+      "overheat_rejected_core_long_days": 47,
+      "model_vs_actual_binary_stock_state_gaps": [
+        {
+          "date": "2025-12-05",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-05-14",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 2
+        },
+        {
+          "date": "2026-05-15",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 2
+        },
+        {
+          "date": "2026-05-18",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-05-19",
+          "model_holding_after_close": false,
+          "actual_held_symbols": 1
+        }
+      ],
+      "september": {
+        "2026-09-07": {
+          "proxy_close": 1248.5094050680202,
+          "score": 0.7280433770497413,
+          "vol10_independent": 0.2649767859233779,
+          "signal_at_close": false,
+          "model_holding_through_close": true,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 94,
+          "pending_orders": 94,
+          "executed_orders": 0
+        },
+        "2026-09-11": {
+          "proxy_close": 1189.5657161107015,
+          "score": -0.1679427078491179,
+          "vol10_independent": 0.19976284233574218,
+          "signal_at_close": false,
+          "model_holding_through_close": false,
+          "model_holding_after_close": false,
+          "actual_held_symbols": 0,
+          "pending_orders": 0,
+          "executed_orders": 0
+        },
+        "2026-09-23": {
+          "proxy_close": 1264.916998265944,
+          "score": 0.1708336670869499,
+          "vol10_independent": 0.23834987870405955,
+          "signal_at_close": true,
+          "model_holding_through_close": false,
+          "model_holding_after_close": false,
+          "actual_held_symbols": 0,
+          "pending_orders": 100,
+          "executed_orders": 0
+        },
+        "2026-09-24": {
+          "proxy_close": 1262.9505173903417,
+          "score": 0.6642222895504273,
+          "vol10_independent": 0.25227389673851525,
+          "signal_at_close": true,
+          "model_holding_through_close": false,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 95,
+          "pending_orders": 0,
+          "executed_orders": 100
+        },
+        "2026-09-28": {
+          "proxy_close": 1255.7737794471743,
+          "score": 1.3553360864532766,
+          "vol10_independent": 0.2757512051698696,
+          "signal_at_close": false,
+          "model_holding_through_close": true,
+          "model_holding_after_close": true,
+          "actual_held_symbols": 95,
+          "pending_orders": 95,
+          "executed_orders": 0
+        },
+        "2026-09-29": {
+          "proxy_close": 1280.9738339653272,
+          "score": 1.9003094460546217,
+          "vol10_independent": 0.27900291563502017,
+          "signal_at_close": false,
+          "model_holding_through_close": true,
+          "model_holding_after_close": false,
+          "actual_held_symbols": 0,
+          "pending_orders": 0,
+          "executed_orders": 95
+        },
+        "2026-09-30": {
+          "proxy_close": 1276.5357199536536,
+          "score": 2.099338618889899,
+          "vol10_independent": 0.19065574545633882,
+          "signal_at_close": true,
+          "model_holding_through_close": false,
+          "model_holding_after_close": false,
+          "actual_held_symbols": 0,
+          "pending_orders": 100,
+          "executed_orders": 0
+        }
+      },
+      "source_proxy_ledger": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261002_l2_full_repair\\engine\\recent_netted_daily.csv",
+      "source_proxy_ledger_sha256": "588544162893875e0474f8106803afdb8ee0a9fbe8c45c2489ec85e99cdf0ba1",
+      "hedge_close_source": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "hedge_close_source_sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+    }
+  },
+  "branch_comparison": {
+    "same_index": true,
+    "first_proxy_close_difference": "2025-10-17",
+    "overlap_signal_days": 217,
+    "different_signal_days": 15,
+    "first_signal_difference": "2026-02-27",
+    "different_signal_dates": [
+      "2026-02-27",
+      "2026-03-25",
+      "2026-03-26",
+      "2026-03-27",
+      "2026-03-30",
+      "2026-03-31",
+      "2026-04-01",
+      "2026-04-02",
+      "2026-09-07",
+      "2026-09-08",
+      "2026-09-09",
+      "2026-09-10",
+      "2026-09-23",
+      "2026-09-28",
+      "2026-09-29"
+    ]
+  },
+  "old_frozen": {
+    "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+    "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5",
+    "sep": {
+      "2026-09-07": {
+        "score": 0.754706503158795,
+        "vol10": 0.2679013669250814,
+        "holding": "long_microcap_short_zz1000",
+        "next_holding": "cash",
+        "exit": true,
+        "reentry": false
+      },
+      "2026-09-30": {
+        "score": 2.0751617477012,
+        "vol10": 0.197396600288481,
+        "holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "exit": false,
+        "reentry": true
+      }
+    }
+  },
+  "l5_on_off_interaction_clock": {
+    "prefunded": {
+      "sha256": {
+        "on_signal": "b414e97bd97789a8c5fd91eb8eec620e57588ccc9fa5e35f28e563270abf6c00",
+        "on_daily": "65b90b21975354be6dd484e5f5baaa72c9ec10475714b6f99e96064556ae897e",
+        "on_orders": "0c415d9de5d0317dd217f8acb2f1bad47b87813bf92240f31d88a5b83eafaa72",
+        "off_signal": "d0451953ee0d8df431719ac3f05e959648513cb289c235160fc7ae58243c30f5",
+        "off_daily": "ec10beea5fdeb1345bd254a1cf8670a1a2a88c4c2eee5f23c277c9b5239977fa",
+        "off_orders": "4defaa610dbc3af4c9a085f50ccbdbbde84fc5335c22a91e4540174cc53fb81c"
+      },
+      "first_signal_difference_T_close": "2026-07-06",
+      "first_actual_held_symbols_difference_T_plus_1_close": "2026-07-07",
+      "first_short_notional_difference_T_plus_1_close": "2026-07-07",
+      "first_swap_margin_difference_T_plus_2_close": "2026-07-08",
+      "first_signal_on": false,
+      "first_signal_off": true,
+      "first_signal_score": 0.254693467836003,
+      "first_signal_overheat_feature": 0.44958214846009475,
+      "off_target_vs_actual_stock_state_gaps": [
+        {
+          "date": "2025-12-05",
+          "target_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-09-14",
+          "target_after_close": false,
+          "actual_held_symbols": 1
+        }
+      ]
+    },
+    "netted": {
+      "sha256": {
+        "on_signal": "635a8edd5430cc6a047f11baef7af3236f9d4b98dc67cfd5fc5b0a487c756068",
+        "on_daily": "0e514f0f09cec29396dae11384d597dda52392519ddd9c869231ce3cf977c97c",
+        "on_orders": "9bd2e34c89d1c3c00fa774212f507be2edc36bb752f1231428f87639ae8cc7c6",
+        "off_signal": "1978d4fb8dc5baab8474a2cf9df278f4df296c546503b1d92c1e4526d7a18de4",
+        "off_daily": "563b13350e79669482d32e3aef410564a6de28e8a862de9505c3e7475ffe36d3",
+        "off_orders": "782d8e81d1c12a52ab5a84c4f6888cf24a65c9c69538a545b88c6e1ac222e62d"
+      },
+      "first_signal_difference_T_close": "2026-03-25",
+      "first_actual_held_symbols_difference_T_plus_1_close": "2026-03-26",
+      "first_short_notional_difference_T_plus_1_close": "2026-03-26",
+      "first_swap_margin_difference_T_plus_2_close": "2026-03-27",
+      "first_signal_on": false,
+      "first_signal_off": true,
+      "first_signal_score": 0.0497829156916008,
+      "first_signal_overheat_feature": 0.28962377831295355,
+      "off_target_vs_actual_stock_state_gaps": [
+        {
+          "date": "2025-12-05",
+          "target_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-05-14",
+          "target_after_close": false,
+          "actual_held_symbols": 2
+        },
+        {
+          "date": "2026-05-15",
+          "target_after_close": false,
+          "actual_held_symbols": 2
+        },
+        {
+          "date": "2026-05-18",
+          "target_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-05-19",
+          "target_after_close": false,
+          "actual_held_symbols": 1
+        },
+        {
+          "date": "2026-09-14",
+          "target_after_close": false,
+          "actual_held_symbols": 1
+        }
+      ]
+    }
+  }
+}

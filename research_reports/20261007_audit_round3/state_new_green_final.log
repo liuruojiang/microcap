@@ -1,0 +1,69 @@
+..........F...................................                           [100%]
+================================== FAILURES ===================================
+_____ test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer ______
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_new_green_final_tmp/test_native_v20_cleanup_preser0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018A5E1DACD0>
+capsys = <_pytest.capture.CaptureFixture object at 0x0000018A5CEAA5D0>
+
+    def test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer(
+        tmp_path, real_context, monkeypatch, capsys
+    ):
+>       native_generation(tmp_path, real_context, monkeypatch, capsys, "0", "concurrent_valid_replacement")
+
+tests\test_round3_state_contract.py:240: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_round3_state_contract.py:176: in native_generation
+    v20.main()
+microcap_top100_mom16_biweekly_live_v2_0.py:15225: in main
+    _handle_query(query)
+microcap_top100_mom16_biweekly_live_v2_0.py:15214: in _handle_query
+    overlay_mod._handle_query(query)
+<embedded_v2_overlay>:2822: in _handle_query
+    ???
+<embedded_v2_overlay>:2722: in _print_signal_query
+    ???
+microcap_top100_mom16_biweekly_live_v2_0.py:15185: in generate_v2_0_outputs
+    return _generate_v2_0_outputs_unlocked()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<embedded_v2_overlay>:2645: in generate_v2_0_outputs
+    ???
+C:\Python314\Lib\contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}, @py_assert0 = None, @py_assert3 = None
+@py_assert2 = None
+
+    @contextmanager
+    def cleanup_after_writer(*args, **kwargs):
+        # Deterministically exercise the real race boundary:
+        # cleanup already selected this malformed file, then a
+        # realtime writer commits valid bytes under its native
+        # lock before cleanup obtains the same lock.
+        assert read_csv(realtime)[1][0]["version"] == "9.9"
+        with original_lock(*args, **kwargs):
+            v20._overlay_ns["_atomic_write_text"](
+                realtime, legal_bytes.decode("utf-8"), encoding="utf-8")
+            replacement_bytes.append(realtime.read_bytes())
+>           assert v20.realtime_signal_matches_current_v2_0(realtime)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'microcap_top100_mom16_biweekly_live_v2_0' has no attribute 'realtime_signal_matches_current_v2_0'
+
+tests\test_round3_state_contract.py:170: AttributeError
+============================== warnings summary ===============================
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-wrong_version]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-missing_anchor]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-scale_conflict]
+tests/test_round3_state_contract.py::test_native_close_cli_preserves_legal_dated_realtime[0]
+tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+  D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+    return _generate_v2_0_outputs_unlocked()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+1 failed, 45 passed, 5 warnings in 81.72s (0:01:21)

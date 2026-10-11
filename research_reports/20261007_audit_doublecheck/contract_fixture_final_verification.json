@@ -1,0 +1,60 @@
+{
+  "scope": "diagnostic_final_fixture_verification_only",
+  "xml": "contract_fixture_verification_suite.xml",
+  "tests": 4,
+  "passed": 4,
+  "failed": 0,
+  "coverage": [
+    "corrected_real_next_session_generator_contract",
+    "all_three_versions_contradictory_member_state_rejected"
+  ],
+  "native_three_version_readback": {
+    "v2.0": {
+      "version": "2.0",
+      "member_rebalance_state": "rebalance",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "True",
+      "member_rebalance_official": "True",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04",
+      "member_enter_count": "1",
+      "member_exit_count": "1"
+    },
+    "v2.3": {
+      "version": "2.3",
+      "member_rebalance_state": "rebalance",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "True",
+      "member_rebalance_official": "True",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04",
+      "member_enter_count": "1",
+      "member_exit_count": "1"
+    },
+    "v2.5": {
+      "version": "2.5",
+      "member_rebalance_state": "rebalance",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "True",
+      "member_rebalance_official": "True",
+      "member_rebalance_signal_date": "2026-09-03",
+      "member_rebalance_execution_date": "2026-09-04",
+      "member_enter_count": "1",
+      "member_exit_count": "1"
+    }
+  },
+  "official_input_hashes_unchanged": {
+    "panel": true,
+    "proxy_index": true,
+    "turnover": true,
+    "base_costed_nav": true,
+    "v20_nav": true,
+    "v23_costed_nav": true,
+    "v25_costed_nav": true
+  },
+  "source_call_chain": [
+    "v2.3:2019 -> v2.0 augmenter",
+    "v2.5:2199 -> v2.0 augmenter",
+    "v2.0:11822 -> state from actual member set changes"
+  ]
+}

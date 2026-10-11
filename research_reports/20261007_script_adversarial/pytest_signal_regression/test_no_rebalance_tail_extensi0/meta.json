@@ -1,0 +1,14 @@
+{
+  "end_date": "2026-09-02",
+  "tail_extension_method": "no_new_rebalance_saved_target_replay",
+  "tail_extension_start": "2026-09-01",
+  "tail_extension_end": "2026-09-02",
+  "tail_extension_rows": 1,
+  "tail_extension_effective_member_count": 2,
+  "tail_extension_replaced_flat_placeholder": true,
+  "tail_extension_return_source_counts": {
+    "adjusted": 2,
+    "raw": 0
+  },
+  "tail_extension_authority_sha256": "fbd302da73a013a172907c820f79f82bb9d2c59c6d5862635894acfb2b36d2e6"
+}

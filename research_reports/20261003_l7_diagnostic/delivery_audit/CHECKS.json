@@ -1,0 +1,273 @@
+{
+  "scope": "read_only_delivery_audit",
+  "date": "2026-09-30",
+  "local_stream_errors": [],
+  "local_manifest_check_ok": false,
+  "local_manifest_errors": [
+    "delivery manifest mismatch: inputs; run refresh-all"
+  ],
+  "local_manifest_status": "complete",
+  "local_manifest_release_sha": "7dc9d934f7f24fade5236247db71ec4fd7f18471",
+  "local_manifest_verified_at": "2026-10-02T07:39:14.131409+00:00",
+  "pinned_strategy_commit": "db889f7d1517763b3d1ff99c3ae024e338514ce9",
+  "source_identity": {
+    "microcap_top100_mom16_biweekly_live_v2_0.py": {
+      "pinned_sha256": "d86b53a2e216261af55ab77182c1ba0c10e595732fbe4a5eb0ae47235802240a",
+      "manifest_sha256": "d86b53a2e216261af55ab77182c1ba0c10e595732fbe4a5eb0ae47235802240a",
+      "current_sha256": "e84cefc6734bf88635e17e0cda3bc5e4bfa7181e7f2922e969c0b219329bdeef",
+      "pinned_matches_manifest": true
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3.py": {
+      "pinned_sha256": "5f0ac783d5796ac6742fdbf391603d3bb6b529e784e7aaf89c478e64d69c52d8",
+      "manifest_sha256": "5f0ac783d5796ac6742fdbf391603d3bb6b529e784e7aaf89c478e64d69c52d8",
+      "current_sha256": "b3ca6503fb561114ef9d673dcb59fe840aec79e3a09fa2aabed5c639c7e39b59",
+      "pinned_matches_manifest": true
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5.py": {
+      "pinned_sha256": "110ae5b3334f1bebcf986750090dea9f8d2b7bdd0aeb7ae3414053d5f6909a6b",
+      "manifest_sha256": "110ae5b3334f1bebcf986750090dea9f8d2b7bdd0aeb7ae3414053d5f6909a6b",
+      "current_sha256": "7b3f942cb9dd218d406d0e382d90ad712a30e9ed31c5c54907964c81dd8ea499",
+      "pinned_matches_manifest": true
+    }
+  },
+  "final_signal_comparison": {
+    "v2.0": {
+      "local_file": "outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "remote_run_file": "research_reports\\20261003_l7_diagnostic\\delivery_audit\\run_digest\\microcap\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "local_sha256": "cab8b1654ebb0610664c1fdca83d9bee8773f5e3caa59337288c1b2a32be7761",
+      "remote_sha256": "4ddd4568edfe2d1fbebe6fd1aa388f72932215ac8b9b9816aadb47b39357fedd",
+      "compared_field_count": 90,
+      "difference_count": 3,
+      "first_difference": {
+        "field": "return_gross_base",
+        "local": "-0.0010923265118282274",
+        "remote": "-0.00109210888330387"
+      },
+      "differences": [
+        {
+          "field": "return_gross_base",
+          "local": "-0.0010923265118282274",
+          "remote": "-0.00109210888330387"
+        },
+        {
+          "field": "return_gross_target_vol",
+          "local": "-0.0010923265118282274",
+          "remote": "-0.00109210888330387"
+        },
+        {
+          "field": "trade_return_net",
+          "local": "0.035879136153486924",
+          "remote": "0.03587862287607435"
+        }
+      ],
+      "local_key_fields": {
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "date": "2026-09-30",
+        "current_holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_required": "True",
+        "member_rebalance_official": "True",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）"
+      },
+      "remote_key_fields": {
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "date": "2026-09-30",
+        "current_holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_required": "True",
+        "member_rebalance_official": "True",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）"
+      }
+    },
+    "v2.3": {
+      "local_file": "outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "remote_run_file": "research_reports\\20261003_l7_diagnostic\\delivery_audit\\run_digest\\microcap-v23\\outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "local_sha256": "b98c9338340914301e1fddc08b5358f148cda5b09e75a418bd225788853b0b23",
+      "remote_sha256": "c31fd19605bb093abe91c631b64a324778f065bc23e2e3018d8a6d734b3deced",
+      "compared_field_count": 128,
+      "difference_count": 10,
+      "first_difference": {
+        "field": "annualized_log_wls_score",
+        "local": "2.0751617477012",
+        "remote": "2.0751591770661793"
+      },
+      "differences": [
+        {
+          "field": "annualized_log_wls_score",
+          "local": "2.0751617477012",
+          "remote": "2.0751591770661793"
+        },
+        {
+          "field": "hedge_mom",
+          "local": "-1.0620969816048176",
+          "remote": "-1.0620936374492844"
+        },
+        {
+          "field": "log_wls_r2",
+          "local": "0.6545953159678628",
+          "remote": "0.6545969167070039"
+        },
+        {
+          "field": "momentum_gap",
+          "local": "2.0751617477012",
+          "remote": "2.0751591770661793"
+        },
+        {
+          "field": "overheat_feature_value",
+          "local": "0.19739660028848105",
+          "remote": "0.1973929922626622"
+        },
+        {
+          "field": "signal_execution_mismatch_cumulative_exec_minus_signal_component",
+          "local": "0.5345636885572524",
+          "remote": "0.534563685786626"
+        },
+        {
+          "field": "signal_execution_mismatch_mean_daily_exec_minus_signal",
+          "local": "0.00011318089112945233",
+          "remote": "0.00011318089056777471"
+        },
+        {
+          "field": "signal_execution_mismatch_rolling_corr_60d_latest",
+          "local": "0.9765025106409259",
+          "remote": "0.9765024524910938"
+        },
+        {
+          "field": "signal_execution_mismatch_rolling_corr_latest",
+          "local": "0.9765025106409259",
+          "remote": "0.9765024524910938"
+        },
+        {
+          "field": "spread_nav",
+          "local": "40.643658642601785",
+          "remote": "40.64366014270563"
+        }
+      ],
+      "local_key_fields": {
+        "version": "2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "date": "2026-09-30",
+        "current_holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "open",
+        "current_execution_scale": "0.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_required": "True",
+        "member_rebalance_official": "True",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）"
+      },
+      "remote_key_fields": {
+        "version": "2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "date": "2026-09-30",
+        "current_holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "open",
+        "current_execution_scale": "0.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_required": "True",
+        "member_rebalance_official": "True",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）"
+      }
+    },
+    "v2.5": {
+      "local_file": "outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "remote_run_file": "research_reports\\20261003_l7_diagnostic\\delivery_audit\\run_digest\\microcap-v25\\outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "local_sha256": "af3f993d0e88b5f956a87f41c5db884055968def2b9ab93fbfeea23ca1c17a23",
+      "remote_sha256": "15ce7fdf14f1196aada618b0e31a63be3a85682732e1fcfbe2623c5fc1389694",
+      "compared_field_count": 118,
+      "difference_count": 0,
+      "first_difference": null,
+      "differences": [],
+      "local_key_fields": {
+        "version": "2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "date": "2026-09-30",
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_required": "True",
+        "member_rebalance_official": "True",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）"
+      },
+      "remote_key_fields": {
+        "version": "2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "date": "2026-09-30",
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_required": "True",
+        "member_rebalance_official": "True",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）"
+      }
+    }
+  },
+  "remote_bundle": {
+    "path": "research_reports\\20261003_l7_diagnostic\\delivery_audit\\remote_whole\\microcap-whole-delivery-state.zip",
+    "archive_sha256": "df0f71ccd346ef09a192288a6bd66a3d0031356c0f291f736754f66f708cf28c",
+    "verified_internal_manifest_file_count": 14982,
+    "delivery_manifest_status": "complete",
+    "delivery_manifest_expected_date": "2026-09-30",
+    "delivery_manifest_release_sha": "db889f7d1517763b3d1ff99c3ae024e338514ce9",
+    "signals": {
+      "v2.0": {
+        "bundle_sha256": "4ddd4568edfe2d1fbebe6fd1aa388f72932215ac8b9b9816aadb47b39357fedd",
+        "bundle_vs_digest_key_fields_match": true,
+        "bundle_vs_digest_all_fields_match": true
+      },
+      "v2.3": {
+        "bundle_sha256": "c31fd19605bb093abe91c631b64a324778f065bc23e2e3018d8a6d734b3deced",
+        "bundle_vs_digest_key_fields_match": true,
+        "bundle_vs_digest_all_fields_match": true
+      },
+      "v2.5": {
+        "bundle_sha256": "15ce7fdf14f1196aada618b0e31a63be3a85682732e1fcfbe2623c5fc1389694",
+        "bundle_vs_digest_key_fields_match": true,
+        "bundle_vs_digest_all_fields_match": true
+      }
+    }
+  }
+}

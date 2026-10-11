@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "bridge": "2026-09-17",
+  "tail_end": "2026-09-30",
+  "tail_sessions": 8,
+  "source_counts": {
+    "adjusted": 0,
+    "raw": 100
+  },
+  "max_abs_error": {
+    "return_abs_error": 6.938893903907228e-17,
+    "batch_close_abs_error": 5.820766091346741e-11,
+    "resume_close_abs_error": 8.731149137020111e-11
+  },
+  "input_sha256": {
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "4aaa0eeb26c14d31a046a97e32cdf5b2ebc320916147c680da1bc22378df23bc",
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+  },
+  "cache_count": 100,
+  "cache_sha256_digest": "d4aa05b73f57ee9cfd852be2b9d30b98cb06f3373a5bdfacdbeb2f2b141d8d3a",
+  "read_only_frozen_legacy_proxy": true
+}

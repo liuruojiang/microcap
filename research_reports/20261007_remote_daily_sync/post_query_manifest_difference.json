@@ -1,0 +1,342 @@
+{
+  "inspect_outputs_ok": true,
+  "changed_artifact_names": [
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json"
+  ],
+  "json_field_differences": {
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json": {
+      "data_freshness_proof": {
+        "before": {
+          "expected_latest_date": "2026-09-30",
+          "expected_latest_rebalance_date": "2026-09-17",
+          "daily_keys": [
+            "base_panel_shadow",
+            "base_index_csv",
+            "base_costed_nav"
+          ],
+          "candidate": {
+            "label": "v2.0 official costed NAV",
+            "latest_date": "2026-09-30",
+            "row_count": 4033,
+            "continuity_verified": true
+          },
+          "files": {
+            "base_panel_shadow": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+              "exists": true,
+              "size": 606822,
+              "mtime_ns": 1791380067214383100,
+              "latest_date": "2026-09-30",
+              "row_count": 8738,
+              "date_column": "date"
+            },
+            "base_index_csv": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+              "exists": true,
+              "size": 238562,
+              "mtime_ns": 1790926657867588200,
+              "latest_date": "2026-09-30",
+              "row_count": 4067,
+              "date_column": "date"
+            },
+            "base_costed_nav": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+              "exists": true,
+              "size": 1588998,
+              "mtime_ns": 1790926659297810400,
+              "latest_date": "2026-09-30",
+              "row_count": 4050,
+              "date_column": "date"
+            },
+            "base_proxy_turnover": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+              "exists": true,
+              "size": 43355,
+              "mtime_ns": 1790240018797542300,
+              "latest_date": "2026-09-17",
+              "row_count": 432,
+              "date_column": "rebalance_date"
+            }
+          }
+        },
+        "after": {
+          "expected_latest_date": "2026-09-30",
+          "expected_latest_rebalance_date": "2026-09-17",
+          "daily_keys": [
+            "base_panel_shadow",
+            "base_index_csv",
+            "base_costed_nav"
+          ],
+          "candidate": {
+            "label": "v2.0 official costed NAV",
+            "latest_date": "2026-09-30",
+            "row_count": 4033,
+            "continuity_verified": true
+          },
+          "files": {
+            "base_panel_shadow": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+              "exists": true,
+              "size": 606822,
+              "mtime_ns": 1791380948337778000,
+              "latest_date": "2026-09-30",
+              "row_count": 8738,
+              "date_column": "date"
+            },
+            "base_index_csv": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+              "exists": true,
+              "size": 238562,
+              "mtime_ns": 1790926657867588200,
+              "latest_date": "2026-09-30",
+              "row_count": 4067,
+              "date_column": "date"
+            },
+            "base_costed_nav": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+              "exists": true,
+              "size": 1588998,
+              "mtime_ns": 1790926659297810400,
+              "latest_date": "2026-09-30",
+              "row_count": 4050,
+              "date_column": "date"
+            },
+            "base_proxy_turnover": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+              "exists": true,
+              "size": 43355,
+              "mtime_ns": 1790240018797542300,
+              "latest_date": "2026-09-17",
+              "row_count": 432,
+              "date_column": "rebalance_date"
+            }
+          }
+        }
+      }
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json": {
+      "data_freshness_proof": {
+        "before": {
+          "expected_latest_date": "2026-09-30",
+          "expected_latest_rebalance_date": "2026-09-17",
+          "daily_keys": [
+            "base_panel_shadow",
+            "base_index_csv",
+            "base_costed_nav"
+          ],
+          "candidate": {
+            "label": "v2.3 official costed NAV",
+            "latest_date": "2026-09-30",
+            "row_count": 3988,
+            "continuity_verified": true
+          },
+          "files": {
+            "base_panel_shadow": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+              "exists": true,
+              "size": 606822,
+              "mtime_ns": 1791380051499463200,
+              "latest_date": "2026-09-30",
+              "row_count": 8738,
+              "date_column": "date"
+            },
+            "base_index_csv": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+              "exists": true,
+              "size": 238562,
+              "mtime_ns": 1790926657867588200,
+              "latest_date": "2026-09-30",
+              "row_count": 4067,
+              "date_column": "date"
+            },
+            "base_costed_nav": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+              "exists": true,
+              "size": 1588998,
+              "mtime_ns": 1790926659297810400,
+              "latest_date": "2026-09-30",
+              "row_count": 4050,
+              "date_column": "date"
+            },
+            "base_proxy_turnover": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+              "exists": true,
+              "size": 43355,
+              "mtime_ns": 1790240018797542300,
+              "latest_date": "2026-09-17",
+              "row_count": 432,
+              "date_column": "rebalance_date"
+            }
+          }
+        },
+        "after": {
+          "expected_latest_date": "2026-09-30",
+          "expected_latest_rebalance_date": "2026-09-17",
+          "daily_keys": [
+            "base_panel_shadow",
+            "base_index_csv",
+            "base_costed_nav"
+          ],
+          "candidate": {
+            "label": "v2.3 official costed NAV",
+            "latest_date": "2026-09-30",
+            "row_count": 3988,
+            "continuity_verified": true
+          },
+          "files": {
+            "base_panel_shadow": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+              "exists": true,
+              "size": 606822,
+              "mtime_ns": 1791380934100260200,
+              "latest_date": "2026-09-30",
+              "row_count": 8738,
+              "date_column": "date"
+            },
+            "base_index_csv": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+              "exists": true,
+              "size": 238562,
+              "mtime_ns": 1790926657867588200,
+              "latest_date": "2026-09-30",
+              "row_count": 4067,
+              "date_column": "date"
+            },
+            "base_costed_nav": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+              "exists": true,
+              "size": 1588998,
+              "mtime_ns": 1790926659297810400,
+              "latest_date": "2026-09-30",
+              "row_count": 4050,
+              "date_column": "date"
+            },
+            "base_proxy_turnover": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+              "exists": true,
+              "size": 43355,
+              "mtime_ns": 1790240018797542300,
+              "latest_date": "2026-09-17",
+              "row_count": 432,
+              "date_column": "rebalance_date"
+            }
+          }
+        }
+      }
+    },
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json": {
+      "data_freshness_proof": {
+        "before": {
+          "expected_latest_date": "2026-09-30",
+          "expected_latest_rebalance_date": "2026-09-17",
+          "daily_keys": [
+            "base_panel_shadow",
+            "base_index_csv",
+            "base_costed_nav"
+          ],
+          "candidate": {
+            "label": "v2.5 official costed NAV",
+            "latest_date": "2026-09-30",
+            "row_count": 3988,
+            "continuity_verified": true
+          },
+          "files": {
+            "base_panel_shadow": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+              "exists": true,
+              "size": 606822,
+              "mtime_ns": 1791380076620087700,
+              "latest_date": "2026-09-30",
+              "row_count": 8738,
+              "date_column": "date"
+            },
+            "base_index_csv": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+              "exists": true,
+              "size": 238562,
+              "mtime_ns": 1790926657867588200,
+              "latest_date": "2026-09-30",
+              "row_count": 4067,
+              "date_column": "date"
+            },
+            "base_costed_nav": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+              "exists": true,
+              "size": 1588998,
+              "mtime_ns": 1790926659297810400,
+              "latest_date": "2026-09-30",
+              "row_count": 4050,
+              "date_column": "date"
+            },
+            "base_proxy_turnover": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+              "exists": true,
+              "size": 43355,
+              "mtime_ns": 1790240018797542300,
+              "latest_date": "2026-09-17",
+              "row_count": 432,
+              "date_column": "rebalance_date"
+            }
+          }
+        },
+        "after": {
+          "expected_latest_date": "2026-09-30",
+          "expected_latest_rebalance_date": "2026-09-17",
+          "daily_keys": [
+            "base_panel_shadow",
+            "base_index_csv",
+            "base_costed_nav"
+          ],
+          "candidate": {
+            "label": "v2.5 official costed NAV",
+            "latest_date": "2026-09-30",
+            "row_count": 3988,
+            "continuity_verified": true
+          },
+          "files": {
+            "base_panel_shadow": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+              "exists": true,
+              "size": 606822,
+              "mtime_ns": 1791380957795171200,
+              "latest_date": "2026-09-30",
+              "row_count": 8738,
+              "date_column": "date"
+            },
+            "base_index_csv": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+              "exists": true,
+              "size": 238562,
+              "mtime_ns": 1790926657867588200,
+              "latest_date": "2026-09-30",
+              "row_count": 4067,
+              "date_column": "date"
+            },
+            "base_costed_nav": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+              "exists": true,
+              "size": 1588998,
+              "mtime_ns": 1790926659297810400,
+              "latest_date": "2026-09-30",
+              "row_count": 4050,
+              "date_column": "date"
+            },
+            "base_proxy_turnover": {
+              "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+              "exists": true,
+              "size": 43355,
+              "mtime_ns": 1790240018797542300,
+              "latest_date": "2026-09-17",
+              "row_count": 432,
+              "date_column": "rebalance_date"
+            }
+          }
+        }
+      }
+    }
+  },
+  "normal_returns_and_nav_unchanged": true,
+  "required_recovery": "rerun official refresh-all and check after the standalone close queries"
+}

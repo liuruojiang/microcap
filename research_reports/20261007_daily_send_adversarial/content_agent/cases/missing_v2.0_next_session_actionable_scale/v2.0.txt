@@ -1,0 +1,2 @@
+signal
+next_session_actionable_scale: 1.0

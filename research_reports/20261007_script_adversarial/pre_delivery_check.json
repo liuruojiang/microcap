@@ -1,0 +1,133 @@
+{
+  "ok": true,
+  "scope": "whole_workspace_delivery",
+  "errors": [],
+  "expected_date": "2026-09-30",
+  "streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8738,
+      "latest_date": "2026-09-30",
+      "sha256": "e55c33ad02623c763b82f70775e663c60c7eb086f64e893d6cc2a1002f55140d"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4067,
+      "latest_date": "2026-09-30",
+      "sha256": "26fcb94b13de8404b38ed5301675489b38452c554d8e65a86b6e84093e18d756"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4050,
+      "latest_date": "2026-09-30",
+      "sha256": "1a226bd0c570a310f044ace2df304b21c5e775732c2a13a14b5e742bf30d89ef"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 432,
+      "latest_date": "2026-09-17",
+      "sha256": "a064a6bbbe7442d335556058c732fec584e75e3eff2439e2feb041e5605388e7"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "sha256": "0e4763e1cdf58345e3fd9be40ebd767f5811bce1090d9a12662d516d83022059"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "sha256": "0e4763e1cdf58345e3fd9be40ebd767f5811bce1090d9a12662d516d83022059"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-30",
+      "sha256": "45e529690b9fc0329ada294721595c6fba5761e09f235aee5c2d6fe86e8c1dfa"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-30",
+      "sha256": "cab8b1654ebb0610664c1fdca83d9bee8773f5e3caa59337288c1b2a32be7761"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "4f7f4d4ca102e56d13f9eebf2f0bca2b09bdfe29d3d7f4bdea1a6f07b85d2c53"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "4f7f4d4ca102e56d13f9eebf2f0bca2b09bdfe29d3d7f4bdea1a6f07b85d2c53"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "dd56b432fb40269529dff201027e3568fdc157cf9e62a0d416d1dfe65e9355e4"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-30",
+      "sha256": "b98c9338340914301e1fddc08b5358f148cda5b09e75a418bd225788853b0b23"
+    },
+    "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "002838e41a077828626eee6210e0fdacd610a6f54f0024e083d482fb6675c8e0"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "002838e41a077828626eee6210e0fdacd610a6f54f0024e083d482fb6675c8e0"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30",
+      "sha256": "231d1b1d2e5be6415373bfd85256ab99f3d7e57fa6271a91579447fa6367a6a1"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-30",
+      "sha256": "af3f993d0e88b5f956a87f41c5db884055968def2b9ab93fbfeea23ca1c17a23"
+    }
+  },
+  "inputs": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "26fcb94b13de8404b38ed5301675489b38452c554d8e65a86b6e84093e18d756",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "1a226bd0c570a310f044ace2df304b21c5e775732c2a13a14b5e742bf30d89ef",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": "4cb0461399bd8cc8d878a4cb399a9822236636e28b7dc591943e17beeee61b8d",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "be964a54caa5b3f294ad3558b7860cadc44974df615aed7640fcac488b53d13a",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "a064a6bbbe7442d335556058c732fec584e75e3eff2439e2feb041e5605388e7",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "2e6f7ed59718360e2ed7d4c50ca1c74fb4ec44310dd748490aa84e58a3f8d84f",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "e55c33ad02623c763b82f70775e663c60c7eb086f64e893d6cc2a1002f55140d",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json": "edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "8fea62ccab681180bf49c6a000eb258be930c5c6a867c5c362a5d56691c3ed03",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "b3ca6503fb561114ef9d673dcb59fe840aec79e3a09fa2aabed5c639c7e39b59",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "7b3f942cb9dd218d406d0e382d90ad712a30e9ed31c5c54907964c81dd8ea499"
+  },
+  "artifacts": {
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json": "95ec4d1d7e196a326d53f72d3a8ba674777448d9f614e7cabb25c1edcd70d7c4",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.json": "1d1b4c0a14ed18c553df847c2f407b531151f4040c58ebd2c9a66cb0fb85728c",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.csv": "f9a0e0373e82981ce3c92a3920f587372774e5aa364e5b098c702d0f99146b01",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_yearly.csv": "4198f9e788283986c21895eaef1cb0f711a5ed7ea564a6d0b76bff7ff2c37e1b",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json": "e819c8fc012e19155b7298da515071d357f47a2478f61f6a36e9c252da7dcdf7",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.json": "81f18683a1f7ab87c75558b76964c8aac2170cbb4a6f81cb104e702701a4286a",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.csv": "a00454dfbee93afd2599a8c7ab486d8d24b6a14ec3d20b8740b5aa344f01bd0d",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_yearly.csv": "99be71e60d51dc8f83bd8ec2cf2c3a1c1db1c8ed8434bfe3e51e0fa934cb172f",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json": "60f53fec4c24a234331555e8f05299f68e0eaa7d7d01d7453cbce02b8447e573",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.json": "6f181f1c4c68fefc38a2369b5083b6d51be339b8aba4b45efc108991fe9dc317",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.csv": "854427b34d9e661324f147bd15c094fd83063c87786f9f151dab45f593fee658",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_yearly.csv": "0b5df6d0c697390ae4d8028b04668477204fc3eb9133fb4ca0af06f0d6861216",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "e55c33ad02623c763b82f70775e663c60c7eb086f64e893d6cc2a1002f55140d",
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "26fcb94b13de8404b38ed5301675489b38452c554d8e65a86b6e84093e18d756",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "1a226bd0c570a310f044ace2df304b21c5e775732c2a13a14b5e742bf30d89ef",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "a064a6bbbe7442d335556058c732fec584e75e3eff2439e2feb041e5605388e7",
+    "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": "0e4763e1cdf58345e3fd9be40ebd767f5811bce1090d9a12662d516d83022059",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "0e4763e1cdf58345e3fd9be40ebd767f5811bce1090d9a12662d516d83022059",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": "45e529690b9fc0329ada294721595c6fba5761e09f235aee5c2d6fe86e8c1dfa",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": "cab8b1654ebb0610664c1fdca83d9bee8773f5e3caa59337288c1b2a32be7761",
+    "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": "4f7f4d4ca102e56d13f9eebf2f0bca2b09bdfe29d3d7f4bdea1a6f07b85d2c53",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "4f7f4d4ca102e56d13f9eebf2f0bca2b09bdfe29d3d7f4bdea1a6f07b85d2c53",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": "dd56b432fb40269529dff201027e3568fdc157cf9e62a0d416d1dfe65e9355e4",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": "b98c9338340914301e1fddc08b5358f148cda5b09e75a418bd225788853b0b23",
+    "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": "002838e41a077828626eee6210e0fdacd610a6f54f0024e083d482fb6675c8e0",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv": "002838e41a077828626eee6210e0fdacd610a6f54f0024e083d482fb6675c8e0",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": "231d1b1d2e5be6415373bfd85256ab99f3d7e57fa6271a91579447fa6367a6a1",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": "af3f993d0e88b5f956a87f41c5db884055968def2b9ab93fbfeea23ca1c17a23"
+  },
+  "date_proof_source": "live_official_history_loader",
+  "release_sha": "eefd27d81d2c9c9f1438975c4d5c221d1b81bf96"
+}

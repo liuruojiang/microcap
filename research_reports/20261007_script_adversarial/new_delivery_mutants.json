@@ -1,0 +1,95 @@
+{
+  "unchanged_real_outputs_accepted": true,
+  "mutants": [
+    {
+      "version": "2.0",
+      "field": "trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.0",
+      "field": "signal_label",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.0",
+      "field": "effective_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.0",
+      "field": "holding_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.0",
+      "field": "momentum_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.0",
+      "field": "scale_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.3",
+      "field": "trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.3",
+      "field": "signal_label",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.3",
+      "field": "effective_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.3",
+      "field": "holding_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.3",
+      "field": "momentum_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.3",
+      "field": "scale_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.5",
+      "field": "trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.5",
+      "field": "signal_label",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.5",
+      "field": "effective_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.5",
+      "field": "holding_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.5",
+      "field": "momentum_trade_state",
+      "patched_gate_rejected": true
+    },
+    {
+      "version": "2.5",
+      "field": "scale_trade_state",
+      "patched_gate_rejected": true
+    }
+  ]
+}

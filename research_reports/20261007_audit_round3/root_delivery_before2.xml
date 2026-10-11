@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="12" skipped="0" tests="13" time="23.972" timestamp="2026-10-07T20:11:52.728321+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_delivery_boundary" name="test_authentic_three_version_final_delivery_semantics_remain_valid" time="4.806" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-0]" time="1.502"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'wrong_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = _csv_rows(path)
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:93: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-3]" time="1.550"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'wrong_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = _csv_rows(path)
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:93: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-5]" time="1.583"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'wrong_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = _csv_rows(path)
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:93: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-0]" time="1.613"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'missing_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = _csv_rows(path)
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:93: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-3]" time="1.622"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'missing_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = _csv_rows(path)
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:93: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-5]" time="1.569"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'missing_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = _csv_rows(path)
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:93: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-0]" time="1.403"><failure message="AssertionError: Final CSV with incompatible row/header width was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'extra_cell'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = _csv_rows(path)
+        assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+        if mode == "extra_cell":
+            rows[1].append("unheaded_payload")
+        else:
+            rows[1].pop()
+        _save_rows(path, rows)
+        pandas_version = str(pd.read_csv(path).iloc[0]["version"])
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"ragged_signal_{v}_{mode}", report, pandas_version=pandas_version,
+               actual_header_columns=len(rows[0]), actual_row_columns=len(rows[1]))
+&gt;       assert not report["ok"], "Final CSV with incompatible row/header width was certified"
+E       AssertionError: Final CSV with incompatible row/header width was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:112: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-3]" time="1.374"><failure message="AssertionError: Final CSV with incompatible row/header width was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'extra_cell'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = _csv_rows(path)
+        assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+        if mode == "extra_cell":
+            rows[1].append("unheaded_payload")
+        else:
+            rows[1].pop()
+        _save_rows(path, rows)
+        pandas_version = str(pd.read_csv(path).iloc[0]["version"])
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"ragged_signal_{v}_{mode}", report, pandas_version=pandas_version,
+               actual_header_columns=len(rows[0]), actual_row_columns=len(rows[1]))
+&gt;       assert not report["ok"], "Final CSV with incompatible row/header width was certified"
+E       AssertionError: Final CSV with incompatible row/header width was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:112: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-5]" time="1.351"><failure message="AssertionError: Final CSV with incompatible row/header width was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'extra_cell'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = _csv_rows(path)
+        assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+        if mode == "extra_cell":
+            rows[1].append("unheaded_payload")
+        else:
+            rows[1].pop()
+        _save_rows(path, rows)
+        pandas_version = str(pd.read_csv(path).iloc[0]["version"])
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"ragged_signal_{v}_{mode}", report, pandas_version=pandas_version,
+               actual_header_columns=len(rows[0]), actual_row_columns=len(rows[1]))
+&gt;       assert not report["ok"], "Final CSV with incompatible row/header width was certified"
+E       AssertionError: Final CSV with incompatible row/header width was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:112: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-0]" time="1.600"><failure message="AssertionError: Final CSV with incompatible row/header width was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'short_row'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = _csv_rows(path)
+        assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+        if mode == "extra_cell":
+            rows[1].append("unheaded_payload")
+        else:
+            rows[1].pop()
+        _save_rows(path, rows)
+        pandas_version = str(pd.read_csv(path).iloc[0]["version"])
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"ragged_signal_{v}_{mode}", report, pandas_version=pandas_version,
+               actual_header_columns=len(rows[0]), actual_row_columns=len(rows[1]))
+&gt;       assert not report["ok"], "Final CSV with incompatible row/header width was certified"
+E       AssertionError: Final CSV with incompatible row/header width was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:112: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-3]" time="1.594"><failure message="AssertionError: Final CSV with incompatible row/header width was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'short_row'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = _csv_rows(path)
+        assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+        if mode == "extra_cell":
+            rows[1].append("unheaded_payload")
+        else:
+            rows[1].pop()
+        _save_rows(path, rows)
+        pandas_version = str(pd.read_csv(path).iloc[0]["version"])
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"ragged_signal_{v}_{mode}", report, pandas_version=pandas_version,
+               actual_header_columns=len(rows[0]), actual_row_columns=len(rows[1]))
+&gt;       assert not report["ok"], "Final CSV with incompatible row/header width was certified"
+E       AssertionError: Final CSV with incompatible row/header width was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:112: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-5]" time="1.639"><failure message="AssertionError: Final CSV with incompatible row/header width was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before2_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'short_row'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = _csv_rows(path)
+        assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+        if mode == "extra_cell":
+            rows[1].append("unheaded_payload")
+        else:
+            rows[1].pop()
+        _save_rows(path, rows)
+        pandas_version = str(pd.read_csv(path).iloc[0]["version"])
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"ragged_signal_{v}_{mode}", report, pandas_version=pandas_version,
+               actual_header_columns=len(rows[0]), actual_row_columns=len(rows[1]))
+&gt;       assert not report["ok"], "Final CSV with incompatible row/header width was certified"
+E       AssertionError: Final CSV with incompatible row/header width was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:112: AssertionError</failure></testcase></testsuite></testsuites>

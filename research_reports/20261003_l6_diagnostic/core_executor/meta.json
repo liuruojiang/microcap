@@ -1,0 +1,173 @@
+{
+  "status": "diagnostic_only_frozen_old_inputs",
+  "reason_formal_blocked": "L1/L2 PIT and migration unresolved; L5 shared-cash model stops on funding gaps",
+  "date_range": [
+    "2010-05-05",
+    "2026-09-30"
+  ],
+  "rows": 3988,
+  "source_and_input_sha256": {
+    "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_0.py": "8d16e11add9f92f972b5379a175539ca65d4c828e1aa4ff720868ecee04007b2",
+    "D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca",
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5"
+  },
+  "input_readback": {
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8738,
+      "first_date": "1990-12-19",
+      "last_date": "2026-09-30",
+      "date_column": "date"
+    },
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4067,
+      "first_date": "2010-01-05",
+      "last_date": "2026-09-30",
+      "date_column": "date"
+    },
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 432,
+      "first_date": "2010-01-14",
+      "last_date": "2026-09-17",
+      "date_column": "rebalance_date"
+    },
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4050,
+      "first_date": "2010-01-28",
+      "last_date": "2026-09-30",
+      "date_column": "date"
+    },
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "last_date": "2026-09-30",
+      "date_column": "date"
+    },
+    "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30",
+      "date_column": "date"
+    }
+  },
+  "formal_tuple": {
+    "LOOKBACK": 25,
+    "HALFLIFE": 2.5,
+    "R2_WINDOW": 25,
+    "R2_ENTRY_GATE": 0.0,
+    "MOMENTUM_GAP_ENTRY_THRESHOLD": 0.0,
+    "MOMENTUM_GAP_EXIT_BUFFER": 0.08,
+    "SIGNAL_SPREAD_HEDGE_RATIO": 1.0,
+    "EXECUTION_HEDGE_RATIO": 0.8,
+    "OVERHEAT_FEATURE_WINDOW": 10,
+    "OVERHEAT_TRIGGER_THRESHOLD": 0.26,
+    "OVERHEAT_RECOVERY_THRESHOLD": 0.2
+  },
+  "candidate_count": 14,
+  "candidate_grid": [
+    {
+      "candidate": "formal",
+      "group": "formal",
+      "settings": {}
+    },
+    {
+      "candidate": "lookback_24",
+      "group": "lookback",
+      "settings": {
+        "LOOKBACK": 24
+      }
+    },
+    {
+      "candidate": "lookback_26",
+      "group": "lookback",
+      "settings": {
+        "LOOKBACK": 26
+      }
+    },
+    {
+      "candidate": "lookback_27",
+      "group": "lookback",
+      "settings": {
+        "LOOKBACK": 27
+      }
+    },
+    {
+      "candidate": "lookback_40",
+      "group": "lookback",
+      "settings": {
+        "LOOKBACK": 40
+      }
+    },
+    {
+      "candidate": "halflife_2p25",
+      "group": "halflife",
+      "settings": {
+        "HALFLIFE": 2.25
+      }
+    },
+    {
+      "candidate": "halflife_2p75",
+      "group": "halflife",
+      "settings": {
+        "HALFLIFE": 2.75
+      }
+    },
+    {
+      "candidate": "halflife_3p00",
+      "group": "halflife",
+      "settings": {
+        "HALFLIFE": 3.0
+      }
+    },
+    {
+      "candidate": "entry_m0p01",
+      "group": "entry",
+      "settings": {
+        "MOMENTUM_GAP_ENTRY_THRESHOLD": -0.01
+      }
+    },
+    {
+      "candidate": "entry_p0p01",
+      "group": "entry",
+      "settings": {
+        "MOMENTUM_GAP_ENTRY_THRESHOLD": 0.01
+      }
+    },
+    {
+      "candidate": "exit_0p07",
+      "group": "exit",
+      "settings": {
+        "MOMENTUM_GAP_EXIT_BUFFER": 0.07
+      }
+    },
+    {
+      "candidate": "exit_0p09",
+      "group": "exit",
+      "settings": {
+        "MOMENTUM_GAP_EXIT_BUFFER": 0.09
+      }
+    },
+    {
+      "candidate": "exit_0p00",
+      "group": "exit",
+      "settings": {
+        "MOMENTUM_GAP_EXIT_BUFFER": 0.0
+      }
+    },
+    {
+      "candidate": "r2_on_0p08",
+      "group": "r2_gate",
+      "settings": {
+        "R2_ENTRY_GATE": 0.08
+      }
+    }
+  ],
+  "cost_and_execution": "Official old close-model: dated member turnover, 0.3% entry/exit, theoretical 0.8x index short plus 0.0003 daily drag; TV/cash yield/financing OFF. Not common-cash executable account.",
+  "natural_off_control": "N/A for continuous WLS lookback/half-life/entry/exit axes; formal tuple is same-batch comparator. R2 OFF is formal and ON 0.08 is historical candidate.",
+  "baseline_parity_tolerance": 1e-12,
+  "command": "python -X utf8 research_reports/20261003_l6_diagnostic/core_executor/run_core.py"
+}

@@ -1,0 +1,2 @@
+signal
+strategy_revision: plain_lb20_hl3_entry0_exit0_20260905

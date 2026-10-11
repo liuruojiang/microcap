@@ -1,0 +1,37 @@
+{
+  "scope": "frozen_old_Top100_SZSE_members_two_dates_only",
+  "input_sha256": {
+    "derived_szse_names": "856e18b71a21c14eba80b7111316ad5a99a30660d007248b95773affb8caca93",
+    "old_initial": "e667587245d9944950d858da78763ba6c4d06accdb083b799052828429acd9f4",
+    "old_targets": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "official_proven_st": "7c0f0cab78c93e70cf3c262c258b53e9740ac344a3fe66d7949927480e568da0",
+    "official_initial_candidate_names": "8e840d7037e4b39b27cc0cf7f037d63fcbab856c7ed09e818f767235a905b7b3"
+  },
+  "derived_cache_rows": 7345,
+  "derived_cache_symbols": 3105,
+  "derived_cache_first_change_date": "1994-01-03",
+  "derived_cache_last_change_date": "2026-04-30",
+  "old_SZSE_member_rows": 118,
+  "old_SZSE_member_symbols": 65,
+  "date_counts": {
+    "2010-01-04": 58,
+    "2010-01-14": 60
+  },
+  "provenance_counts": {
+    "last_dated_change_new_name": 118
+  },
+  "derived_ST_prefix_rows": 2,
+  "chain_break_rows": 0,
+  "official_ST_rows_in_scope": 1,
+  "official_vs_derived_conflict_rows": 0,
+  "separate_official_candidate_crosscheck_rows": 20,
+  "separate_official_candidate_name_conflicts": 0,
+  "separate_official_candidate_ST_conflicts": 0,
+  "certified_ST_status_from_derived_table_alone": 0,
+  "limits": [
+    "Only the derived CSV is available locally; the source XLSX bytes and headers could not be read back in this run.",
+    "Before the first dated change, old_name is retrospective and lacks a direct starting-state date.",
+    "No-change rows and continuity do not prove an exhaustive list of every ST entry and exit.",
+    "Current member names are never used as historical names."
+  ]
+}

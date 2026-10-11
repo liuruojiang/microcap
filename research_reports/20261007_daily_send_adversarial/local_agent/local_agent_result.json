@@ -1,0 +1,44 @@
+{
+  "calendar": {
+    "now": "2026-10-07T22:39:16.250295+08:00",
+    "calendar_source": "akshare.tool_trade_date_hist_sina",
+    "is_trading_day": false,
+    "latest_completed_session": "2026-09-30"
+  },
+  "changed_source_raw_hashes": {
+    "microcap_top100_mom16_biweekly_live.py": "da73063432bf218f4d3b81cca07d1e9c2e76e3bf676f0c5962f48310db764dde",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "004eb3349e3c32222d5e71d62f2b0c487f5800013358cb9c3ff423d87e8dfc4c",
+    "scripts/top100_data_contracts.py": "303607de24c4fde80598e2ed51c4b90e5cf27e56ad764f1360b226f5fe2b4be9",
+    "tests/test_realtime_publication_deadline.py": "c204072a2e80d66e04c5f739bc95a466c171a724f7f0ca8d4baad4e08ce836c7"
+  },
+  "primary_outputs_changed_under_delivery_crlf_normalized_hashes": [],
+  "validation": {
+    "full16_results.xml": {
+      "tests": 368,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "deadline_results.xml": {
+      "tests": 10,
+      "failures": 8,
+      "errors": 0,
+      "skipped": 0
+    },
+    "deadline_fixed_results.xml": {
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "deadline_final_results.xml": {
+      "tests": 83,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "local_smtp_scope": "explicitly forbidden by current local automation prompt; Codex report only",
+  "external_mail_sent_by_agent": false,
+  "partial_metadata_helper_contract": "No timing check on partial metadata copies; actual full publication metadata rechecks shared guard before written CSV. Archive row compatibility checks only the snapshot deadline, live publication checks snapshot and now."
+}

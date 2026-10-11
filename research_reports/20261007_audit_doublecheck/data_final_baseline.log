@@ -1,0 +1,168 @@
+FFFFFF..FFFFFFFFFF...FFFFFFFF...FF.                                      [100%]
+================================== FAILURES ===================================
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-nan-nan] _
+tests\test_doublecheck_data_adversarial.py:48: in test_freeze_distinguishes_missing_from_unparsed_text_with_same_display
+    with pytest.raises(RuntimeError, match="historical rewrite"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'RuntimeError'>
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-None-None] _
+tests\test_doublecheck_data_adversarial.py:48: in test_freeze_distinguishes_missing_from_unparsed_text_with_same_display
+    with pytest.raises(RuntimeError, match="historical rewrite"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'RuntimeError'>
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-missing2-<NA>] _
+tests\test_doublecheck_data_adversarial.py:48: in test_freeze_distinguishes_missing_from_unparsed_text_with_same_display
+    with pytest.raises(RuntimeError, match="historical rewrite"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'RuntimeError'>
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-nan-nan] _
+tests\test_doublecheck_data_adversarial.py:48: in test_freeze_distinguishes_missing_from_unparsed_text_with_same_display
+    with pytest.raises(RuntimeError, match="historical rewrite"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'RuntimeError'>
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-None-None] _
+tests\test_doublecheck_data_adversarial.py:48: in test_freeze_distinguishes_missing_from_unparsed_text_with_same_display
+    with pytest.raises(RuntimeError, match="historical rewrite"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'RuntimeError'>
+_ test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-missing2-<NA>] _
+tests\test_doublecheck_data_adversarial.py:48: in test_freeze_distinguishes_missing_from_unparsed_text_with_same_display
+    with pytest.raises(RuntimeError, match="historical rewrite"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'RuntimeError'>
+_ test_daily_close_loader_rejects_two_observations_for_one_session[shared_v20] _
+tests\test_doublecheck_data_adversarial.py:74: in test_daily_close_loader_rejects_two_observations_for_one_session
+    with pytest.raises(ValueError, match="date|session|daily"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_daily_close_loader_rejects_two_observations_for_one_session[mainline] __
+tests\test_doublecheck_data_adversarial.py:74: in test_daily_close_loader_rejects_two_observations_for_one_session
+    with pytest.raises(ValueError, match="date|session|daily"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_explicit_execution_date_cannot_be_reassigned_to_another_session[close] _
+tests\test_doublecheck_data_adversarial.py:84: in test_explicit_execution_date_cannot_be_reassigned_to_another_session
+    with pytest.raises(ValueError, match="date|session|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_explicit_execution_date_cannot_be_reassigned_to_another_session[next_open] _
+tests\test_doublecheck_data_adversarial.py:84: in test_explicit_execution_date_cannot_be_reassigned_to_another_session
+    with pytest.raises(ValueError, match="date|session|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed[2026-09-01] _
+tests\test_doublecheck_data_adversarial.py:93: in test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed
+    with pytest.raises(ValueError, match="date|calendar|window|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed[2026-09-18] _
+tests\test_doublecheck_data_adversarial.py:93: in test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed
+    with pytest.raises(ValueError, match="date|calendar|window|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+________ test_explicit_execution_date_cannot_precede_rebalance_signal _________
+tests\test_doublecheck_data_adversarial.py:101: in test_explicit_execution_date_cannot_precede_rebalance_signal
+    with pytest.raises(ValueError, match="date|execution|rebalance"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_explicit_non_session_inside_window_is_not_moved_to_monday ________
+tests\test_doublecheck_data_adversarial.py:109: in test_explicit_non_session_inside_window_is_not_moved_to_monday
+    with pytest.raises(ValueError, match="date|session|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_explicit_execution_date_does_not_hide_invalid_rebalance_date[signal_date0] _
+tests\test_doublecheck_data_adversarial.py:118: in test_explicit_execution_date_does_not_hide_invalid_rebalance_date
+    with pytest.raises(ValueError, match="date|Date|NaT|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_explicit_execution_date_does_not_hide_invalid_rebalance_date[invalid-signal-date] _
+tests\test_doublecheck_data_adversarial.py:118: in test_explicit_execution_date_does_not_hide_invalid_rebalance_date
+    with pytest.raises(ValueError, match="date|Date|NaT|execution"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_daily_frozen_index_rejects_timestamp_and_timezone_labels[shared_v20-date_value0] _
+tests\test_doublecheck_data_adversarial.py:142: in test_daily_frozen_index_rejects_timestamp_and_timezone_labels
+    with pytest.raises(ValueError, match="date|daily|time|session"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_daily_frozen_index_rejects_timestamp_and_timezone_labels[shared_v20-date_value1] _
+tests\test_doublecheck_data_adversarial.py:142: in test_daily_frozen_index_rejects_timestamp_and_timezone_labels
+    with pytest.raises(ValueError, match="date|daily|time|session"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_daily_frozen_index_rejects_timestamp_and_timezone_labels[mainline-date_value0] _
+tests\test_doublecheck_data_adversarial.py:142: in test_daily_frozen_index_rejects_timestamp_and_timezone_labels
+    with pytest.raises(ValueError, match="date|daily|time|session"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_daily_frozen_index_rejects_timestamp_and_timezone_labels[mainline-date_value1] _
+tests\test_doublecheck_data_adversarial.py:142: in test_daily_frozen_index_rejects_timestamp_and_timezone_labels
+    with pytest.raises(ValueError, match="date|daily|time|session"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[obsolete_policy] _
+tests\test_doublecheck_data_adversarial.py:184: in test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift
+    assert result is None or result.get("st_intervals") == intervals
+E   AssertionError: assert ({'board': None, 'current_st_history_resolved': True, 'current_st_snapshot_name': None, 'delist_date': None, ...} is None or [] == [{'end': '202...'2020-01-02'}]
+E     
+E     Right contains one more item: {'end': '2021-01-04', 'start': '2020-01-02'}
+E     Use -v to get more diff)
+_ test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[snapshot_drift] _
+tests\test_doublecheck_data_adversarial.py:184: in test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift
+    assert result is None or result.get("st_intervals") == intervals
+E   AssertionError: assert ({'board': None, 'current_st_history_resolved': True, 'current_st_snapshot_name': None, 'delist_date': None, ...} is None or [] == [{'end': '202...'2020-01-02'}]
+E     
+E     Right contains one more item: {'end': '2021-01-04', 'start': '2020-01-02'}
+E     Use -v to get more diff)
+_ test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[short_symbol] _
+tests\test_doublecheck_data_adversarial.py:184: in test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift
+    assert result is None or result.get("st_intervals") == intervals
+E   AssertionError: assert ({'board': None, 'current_st_history_resolved': True, 'current_st_snapshot_name': None, 'delist_date': None, ...} is None or [] == [{'end': '202...'2020-01-02'}]
+E     
+E     Right contains one more item: {'end': '2021-01-04', 'start': '2020-01-02'}
+E     Use -v to get more diff)
+_ test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[numeric_symbol] _
+tests\test_doublecheck_data_adversarial.py:184: in test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift
+    assert result is None or result.get("st_intervals") == intervals
+E   AssertionError: assert ({'board': None, 'current_st_history_resolved': True, 'current_st_snapshot_name': None, 'delist_date': None, ...} is None or [] == [{'end': '202...'2020-01-02'}]
+E     
+E     Right contains one more item: {'end': '2021-01-04', 'start': '2020-01-02'}
+E     Use -v to get more diff)
+_ test_successful_source_revision_still_requires_historical_st_migration[obsolete_policy] _
+tests\test_doublecheck_data_adversarial.py:247: in test_successful_source_revision_still_requires_historical_st_migration
+    with pytest.raises(namespace["SecurityMetaHistoryCorrectionRequired"], match="histor|lineage|interval|migration"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class '_doublecheck_data_microcap_top100_mom16_biweekly_live_v2_0.SecurityMetaHistoryCorrectionRequired'>
+_ test_successful_source_revision_still_requires_historical_st_migration[snapshot_drift] _
+tests\test_doublecheck_data_adversarial.py:247: in test_successful_source_revision_still_requires_historical_st_migration
+    with pytest.raises(namespace["SecurityMetaHistoryCorrectionRequired"], match="histor|lineage|interval|migration"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class '_doublecheck_data_microcap_top100_mom16_biweekly_live_v2_0.SecurityMetaHistoryCorrectionRequired'>
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-nan-nan]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-None-None]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[shared_v20-missing2-<NA>]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-nan-nan]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-None-None]
+FAILED tests/test_doublecheck_data_adversarial.py::test_freeze_distinguishes_missing_from_unparsed_text_with_same_display[mainline-missing2-<NA>]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_close_loader_rejects_two_observations_for_one_session[shared_v20]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_close_loader_rejects_two_observations_for_one_session[mainline]
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_cannot_be_reassigned_to_another_session[close]
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_cannot_be_reassigned_to_another_session[next_open]
+FAILED tests/test_doublecheck_data_adversarial.py::test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed[2026-09-01]
+FAILED tests/test_doublecheck_data_adversarial.py::test_legacy_next_open_event_before_window_requires_calendar_or_fails_closed[2026-09-18]
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_cannot_precede_rebalance_signal
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_non_session_inside_window_is_not_moved_to_monday
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_does_not_hide_invalid_rebalance_date[signal_date0]
+FAILED tests/test_doublecheck_data_adversarial.py::test_explicit_execution_date_does_not_hide_invalid_rebalance_date[invalid-signal-date]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_frozen_index_rejects_timestamp_and_timezone_labels[shared_v20-date_value0]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_frozen_index_rejects_timestamp_and_timezone_labels[shared_v20-date_value1]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_frozen_index_rejects_timestamp_and_timezone_labels[mainline-date_value0]
+FAILED tests/test_doublecheck_data_adversarial.py::test_daily_frozen_index_rejects_timestamp_and_timezone_labels[mainline-date_value1]
+FAILED tests/test_doublecheck_data_adversarial.py::test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[obsolete_policy]
+FAILED tests/test_doublecheck_data_adversarial.py::test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[snapshot_drift]
+FAILED tests/test_doublecheck_data_adversarial.py::test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[short_symbol]
+FAILED tests/test_doublecheck_data_adversarial.py::test_real_meta_refresh_cannot_erase_historical_st_evidence_after_identity_drift[numeric_symbol]
+FAILED tests/test_doublecheck_data_adversarial.py::test_successful_source_revision_still_requires_historical_st_migration[obsolete_policy]
+FAILED tests/test_doublecheck_data_adversarial.py::test_successful_source_revision_still_requires_historical_st_migration[snapshot_drift]
+26 failed, 9 passed in 2.57s

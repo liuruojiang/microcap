@@ -1,0 +1,87 @@
+{
+  "branch": "netted",
+  "version": "v2.5",
+  "last_settled": "2026-09-30",
+  "settled_days": 241,
+  "first_block": null,
+  "model": "theoretical_zero_upfront_daily_reset_index_swap_with_explicit_margin_debt",
+  "target_scale_source": "new_proxy_formal_version_next_session_actionable_scale_T_close",
+  "target_scale_values": [
+    "0.0",
+    "1.0"
+  ],
+  "strategy_stock_funding_contract": "netted",
+  "first_negative_stock_cash": null,
+  "min_stock_cash": "171.0471249555469068503127693765944252723",
+  "first_swap_margin_debt": null,
+  "max_swap_margin_debt": "0.0000",
+  "cumulative_shadow_financing_3pct": "0E-78",
+  "first_old_pool_ST_contamination": "2026-04-27:600543",
+  "first_actual_600543_held_after_ST": "2026-04-27",
+  "result_label": "old_L1_pool_conditional_diagnostic_not_certified",
+  "hedge_notional_policy": "0.8_x_actual_stock_plus_pending_rights_value_at_each_close",
+  "financing_rate_applied": 0,
+  "shadow_financing_annual": 0.03,
+  "stock_fee_each_booked_side": "0.003",
+  "source_signal_sha256": "8a896b31e317c87226d04d63fb4cc100d9780010567e41f23fee7b9239792a2a",
+  "detail_sha256": {
+    "daily": "20bcfd5d554844c2d7220109e0537a8243e017fb83146afb17b11e48f3843fe4",
+    "holdings": "0d6040ba6632d38c6760078748c5a7111559ba49b10aead43f829c52a47d6982",
+    "orders": "70d04af31cc5f98ce236fc2772110b7942ce8c4988231a51dae4de49e3e5e810",
+    "rights": "dfb1dc0b8713390fa3a0bb7790e7b01cc3cd739531087b0adb245a362f1e01b3"
+  },
+  "source_queries": [
+    {
+      "symbol": "002591",
+      "rows": 221,
+      "code": "sz.002591",
+      "start_date": "2025-11-06",
+      "end_date": "2026-09-30"
+    },
+    {
+      "symbol": "002652",
+      "rows": 186,
+      "code": "sz.002652",
+      "start_date": "2025-12-25",
+      "end_date": "2026-09-30"
+    },
+    {
+      "symbol": "002800",
+      "rows": 186,
+      "code": "sz.002800",
+      "start_date": "2025-12-25",
+      "end_date": "2026-09-30"
+    },
+    {
+      "symbol": "603177",
+      "rows": 52,
+      "code": "sh.603177",
+      "start_date": "2026-07-20",
+      "end_date": "2026-09-30"
+    },
+    {
+      "symbol": "688092",
+      "rows": 12,
+      "code": "sh.688092",
+      "start_date": "2026-09-14",
+      "end_date": "2026-09-30"
+    }
+  ],
+  "source_response_files": {
+    "queried_bars": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261002_l2_full_repair\\version_integration\\recent_netted_v2_5_strategy_queried_bars.csv",
+      "sha256": "9146afc7b8ed7cdcecd3430db104d7684dfe3cb15e18ddd788f44a164c42dac5",
+      "rows": 657
+    }
+  },
+  "input_sha256": {
+    "baostock_cache": "4483d79639fee889b4e3decd27a773dc47d998543714bac7e38524bdc2488dcc",
+    "event_candidates": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "target_members": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517"
+  },
+  "source_code_sha256": {
+    "engine_extend_ledger": "91a5a8d0457dd6ea6cac79666d73ce093b60efd8bc26f47a5b786cfe5e6269b3",
+    "engine_recent_slice": "c2181710514eb3f519a3cdcb3ba56b6fd0d2f2a94f30e8be9ba4ac5b82559034",
+    "strategy_replay": "4d900bd52cf2fdd16c786b921a515f5e1bfc78989d362e51bcabe420496a53b9"
+  }
+}

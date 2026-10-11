@@ -1,0 +1,12 @@
+﻿column,max_abs_diff,mismatch_rows
+return_net,9.98821251402271e-17,
+nav_net,3.552713678800501e-15,
+total_cost,0.0,
+annualized_log_wls_score,4.440892098500626e-16,
+log_wls_r2,1.1102230246251565e-16,
+overheat_feature_value,2.220446049250313e-16,
+holding,,0.0
+next_holding,,0.0
+base_holding,,0.0
+base_next_holding,,0.0
+overheat_risk_off,,0.0

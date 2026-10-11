@@ -1,0 +1,4 @@
+signal_close,candidate_open,old_members,target_members,status,reason
+2010-01-14,2010-01-15,100,100,blocked,"local/BaoStock close mismatch: [('000049', '2010-01-15'), ('300025', '2010-01-15'), ('600148', '2010-01-15'), ('600455', '2010-01-14'), ('600455', '2010-01-15'), ('600992', '2010-01-15')] total=6"
+2010-01-28,2010-01-29,100,100,blocked,"local/BaoStock close mismatch: [('600452', '2010-01-29')] total=1"
+2010-02-11,2010-02-12,100,100,blocked,"local/BaoStock close mismatch: [('002125', '2010-02-11'), ('600305', '2010-02-12'), ('600712', '2010-02-11')] total=3"

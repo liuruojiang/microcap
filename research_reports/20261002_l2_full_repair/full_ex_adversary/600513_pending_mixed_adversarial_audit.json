@@ -1,0 +1,60 @@
+{
+  "manifest_sha256": "c0de696a4234ac3a23aa0631e7c941b6492fbe1abcc84398da2dcf0bfd6196d5",
+  "code_sha256": "6f6a33316b200ff769502bb665fb79a9c0299e8070c7fac9d9805e8489df0a87",
+  "issuer_pdf_sha256": "afe4005e2a3182d819343fb0b990504335fa6126458b5bc0561ab67d4850464a",
+  "candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+  "market": {
+    "2016-07-05": {
+      "date": "2016-07-05",
+      "close": "19.7700",
+      "preclose": "19.8400",
+      "volume": "4973965",
+      "tradestatus": "1"
+    },
+    "2016-07-06": {
+      "date": "2016-07-06",
+      "close": "15.6100",
+      "preclose": "15.1600",
+      "volume": "4510726",
+      "tradestatus": "1"
+    },
+    "2016-07-07": {
+      "date": "2016-07-07",
+      "close": "15.4400",
+      "preclose": "15.6100",
+      "volume": "8047508",
+      "tradestatus": "1"
+    }
+  },
+  "reference": "15.16",
+  "branches": {
+    "prefunded": {
+      "record_shares": "5524.248038006063358372285265658734383539",
+      "bonus_pending_7_6": "1657.274411401819007511685579697620315062",
+      "gross_cash_7_6": "331.4548822803638015023371159395240630123",
+      "ex_equity_with_pending": "112435.02031753740753295112201195222090817391",
+      "booked_ex_orders": 0,
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": "1657.274411401819007511685579697620315062"
+    },
+    "netted": {
+      "record_shares": "6597.693960288951774328447897713939659265",
+      "bonus_pending_7_6": "1979.30818808668553229853436931418189778",
+      "gross_cash_7_6": "395.8616376173371064597068738628363795559",
+      "ex_equity_with_pending": "134282.86517376103546290690006217181388502835",
+      "booked_ex_orders": 0,
+      "premature_bonus_sale_mutant_rejected_by_listing_clock": "1979.30818808668553229853436931418189778"
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2017-05-18",
+      "reason": "missing_or_invalid_payment_date:2017-05-18:600513"
+    },
+    "netted": {
+      "date": "2016-07-18",
+      "reason": "unverified_missing_raw_close:2016-07-18:600189"
+    }
+  },
+  "status": "PASS_PAPER_PENDING_AND_LISTING_CLOCK_UNTIL_CURRENT_FIRST_BLOCK",
+  "limitations": "The issuer's 7/7 unrestricted-share listing date is a conservative paper trading clock, not proof of actual broker credit. Fractional shares and gross cash are model approximations."
+}

@@ -1,0 +1,148 @@
+{
+  "source": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261003_l5_diagnostic\\executor",
+  "cases": [
+    {
+      "branch": "prefunded",
+      "state": "on",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "funding_breaches": [],
+      "pretrade_margin_payoff_would_reject_booked_buys": [],
+      "first_pretrade_rejection": null,
+      "target_cash_with_actual_stock": [
+        {
+          "signal_date": "2025-12-04",
+          "execution_date": "2025-12-05",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-09-11",
+          "execution_date": "2026-09-14",
+          "held_count_after_sell_attempt": 1
+        }
+      ],
+      "order_timing_breaches": []
+    },
+    {
+      "branch": "prefunded",
+      "state": "off",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "funding_breaches": [],
+      "pretrade_margin_payoff_would_reject_booked_buys": [],
+      "first_pretrade_rejection": null,
+      "target_cash_with_actual_stock": [
+        {
+          "signal_date": "2025-12-04",
+          "execution_date": "2025-12-05",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-09-11",
+          "execution_date": "2026-09-14",
+          "held_count_after_sell_attempt": 1
+        }
+      ],
+      "order_timing_breaches": []
+    },
+    {
+      "branch": "netted",
+      "state": "on",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "funding_breaches": [
+        "2026-02-27:post_cash_plus_margin"
+      ],
+      "pretrade_margin_payoff_would_reject_booked_buys": [],
+      "first_pretrade_rejection": null,
+      "target_cash_with_actual_stock": [
+        {
+          "signal_date": "2025-12-04",
+          "execution_date": "2025-12-05",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-05-13",
+          "execution_date": "2026-05-14",
+          "held_count_after_sell_attempt": 2
+        },
+        {
+          "signal_date": "2026-05-14",
+          "execution_date": "2026-05-15",
+          "held_count_after_sell_attempt": 2
+        },
+        {
+          "signal_date": "2026-05-15",
+          "execution_date": "2026-05-18",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-05-18",
+          "execution_date": "2026-05-19",
+          "held_count_after_sell_attempt": 1
+        }
+      ],
+      "order_timing_breaches": []
+    },
+    {
+      "branch": "netted",
+      "state": "off",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "funding_breaches": [
+        "2026-02-27:post_cash_plus_margin"
+      ],
+      "pretrade_margin_payoff_would_reject_booked_buys": [],
+      "first_pretrade_rejection": null,
+      "target_cash_with_actual_stock": [
+        {
+          "signal_date": "2025-12-04",
+          "execution_date": "2025-12-05",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-05-13",
+          "execution_date": "2026-05-14",
+          "held_count_after_sell_attempt": 2
+        },
+        {
+          "signal_date": "2026-05-14",
+          "execution_date": "2026-05-15",
+          "held_count_after_sell_attempt": 2
+        },
+        {
+          "signal_date": "2026-05-15",
+          "execution_date": "2026-05-18",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-05-18",
+          "execution_date": "2026-05-19",
+          "held_count_after_sell_attempt": 1
+        },
+        {
+          "signal_date": "2026-09-11",
+          "execution_date": "2026-09-14",
+          "held_count_after_sell_attempt": 1
+        }
+      ],
+      "order_timing_breaches": []
+    }
+  ],
+  "synthetic_counterexample": {
+    "contract": "prefunded, variation margin payable before frozen buys",
+    "start_stock_cash": "100",
+    "pretrade_variation_due": "40",
+    "same_close_net_sales_not_eligible_for_buy_budget": "50",
+    "frozen_buy_cost": "90",
+    "old_buy_budget": "100",
+    "stock_cash_after_old_bookings": "60",
+    "post_cash_plus_margin_guard": "20",
+    "correct_pretrade_buy_budget": "60",
+    "old_booked_but_correct_contract_rejects": true
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "status": "PASS",
+  "scope": "actual_received_content_and_actual_three_version_final_csv_readonly",
+  "inputs": {
+    "gmail_message_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\inbox_message.json",
+    "gmail_message_sha256": "b2e3491b22dd9b007c8cec3d310802b7662837908ffda2ee6114c81b5e9da5e8",
+    "cloud_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\cloud_artifacts_readback\\microcap-realtime-digest\\artifacts\\metadata.json",
+    "cloud_metadata_sha256": "6d817773e9d399ea421e56f9169d00430d3ed2630f31f676399bf8f6df30ce05",
+    "local_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\local_digest_preview\\metadata.json",
+    "local_metadata_sha256": "37e17b9a92d25389de2b95b4f4d6fa73661a187ece3288b55ff24027395a6e08"
+  },
+  "gmail_message_id": "1a11700f88c6592b",
+  "gmail_inbox_label_present": true,
+  "examined_gmail_messages": 1,
+  "rfc_message_id": "<179138730033.3104.10206622529935796000@gmail.com>",
+  "gmail_body_source": "payload.body.content",
+  "subject_equal_gmail_local_cloud": true,
+  "received_body_exact_equal_before_mime_normalization": false,
+  "received_body_matches_cloud_metadata_with_standard_mime_terminal_newline": true,
+  "cloud_body_sha256": "f5ac7f4cc189ccddc2944bbe48a2438da0d42500f6930cb88ff5a288b3d7f03a",
+  "received_body_sha256": "191b7f51f4b5d3bd7176d74f11a5ee0639156569e276a1a668a8d037c412e5a7",
+  "received_minus_metadata_character_count": 1,
+  "local_cloud_core_body_exact_equal": true,
+  "local_cloud_body_exception": {
+    "cloud_workflow_link": "[查看完整诊断与原始输出](https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/37644093633)",
+    "local_workflow_link": null
+  },
+  "strategy_sha_in_received_body": "de6ce1a9f05bf9032d3423b63121f778723db3d0",
+  "delivery_test_id": "microcap-20261007-de6ce1a9-01",
+  "signal_date": "2026-09-30",
+  "publication_mode": "close_confirmed",
+  "final_csv_only_reconstruction_exactly_matches_cloud_body": true,
+  "versions": {
+    "v2.0": {
+      "cloud_final_csv_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\cloud_artifacts_readback\\microcap-realtime-digest\\microcap\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "cloud_final_csv_sha256": "d1813e238ce90936f6914e75b494238fafa6a1c8e62ba9a7143fa03b578c593a",
+      "local_final_csv_path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "local_final_csv_sha256": "9148edf40c08cb181b59887d54ec64743995edc1a8235e9765f8bcdfdb1f8165",
+      "checks": {
+        "strategy_identity": {
+          "ok": true,
+          "note": ""
+        },
+        "member_action": {
+          "ok": true,
+          "note": ""
+        },
+        "publication": {
+          "ok": true,
+          "note": ""
+        },
+        "execution": {
+          "ok": true,
+          "note": ""
+        }
+      },
+      "authoritative_fields": {
+        "date": "2026-09-30",
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "overlay_type": "plain_mom16_fixed1_20260904",
+        "current_holding": "long_microcap_short_zz1000",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "hold",
+        "holding_trade_state": "hold",
+        "effective_trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "signal_timing": "close_confirmed",
+        "official_close_confirmed_signal": "True"
+      },
+      "local_cloud_authoritative_fields_equal": true,
+      "action_from_csv_only": "无操作",
+      "csv_missing_optional_stdout_identity_aliases": [
+        "strategy_version"
+      ],
+      "identity_fallback_from_stdout_needed": false,
+      "identity_contract_fields": {
+        "text": {
+          "version": "2.0",
+          "overlay_type": "plain_mom16_fixed1_20260904",
+          "strategy_revision": "plain_mom16_fixed1_20260904"
+        },
+        "bool": {
+          "overheat_enabled": "False",
+          "overheat_require_signal_reset": "False",
+          "blocked_until_signal_reset": "False",
+          "target_vol_enabled": "False"
+        },
+        "number": {
+          "overheat_window": "0",
+          "overheat_threshold": "0.0",
+          "target_vol": "0.0",
+          "target_vol_window": "0",
+          "max_leverage": "1.0",
+          "lookback": "16",
+          "momentum_gap_exit_buffer": "0.0",
+          "fixed_hedge_ratio": "0.8"
+        }
+      }
+    },
+    "v2.3": {
+      "cloud_final_csv_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\cloud_artifacts_readback\\microcap-realtime-digest\\microcap-v23\\outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "cloud_final_csv_sha256": "44a672c11a82bf324c556e22480a975695f01f646eb8bd9776b63af010df3e34",
+      "local_final_csv_path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "local_final_csv_sha256": "92a4124a3333010485fad0eba185e14a48f45f357c9fdc53172d1a2452d7bc86",
+      "checks": {
+        "strategy_identity": {
+          "ok": true,
+          "note": ""
+        },
+        "member_action": {
+          "ok": true,
+          "note": ""
+        },
+        "publication": {
+          "ok": true,
+          "note": ""
+        },
+        "execution": {
+          "ok": true,
+          "note": ""
+        }
+      },
+      "authoritative_fields": {
+        "date": "2026-09-30",
+        "version": "2.3",
+        "strategy_version": "v2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "overlay_type": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "signal_model": "spread_nav_log_wls_exp_halflife_2p5_lb25_r2off_signal1p0_exec0p8_vol10_overheat26_recovery20",
+        "current_holding": "cash",
+        "next_holding": "long_microcap_short_zz1000",
+        "trade_state": "open",
+        "holding_trade_state": "open",
+        "effective_trade_state": "open",
+        "current_execution_scale": "0.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "signal_timing": "close_confirmed",
+        "official_close_confirmed_signal": "True"
+      },
+      "local_cloud_authoritative_fields_equal": true,
+      "action_from_csv_only": "开仓",
+      "csv_missing_optional_stdout_identity_aliases": [],
+      "identity_fallback_from_stdout_needed": false,
+      "identity_contract_fields": {
+        "text": {
+          "version": "2.3",
+          "strategy_version": "v2.3",
+          "overlay_type": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+          "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+          "signal_model": "spread_nav_log_wls_exp_halflife_2p5_lb25_r2off_signal1p0_exec0p8_vol10_overheat26_recovery20"
+        },
+        "bool": {
+          "overheat_enabled": "True",
+          "target_vol_enabled": "False",
+          "r2_gate_enabled": "False",
+          "cash_day_yield_enabled": "False",
+          "financing_enabled": "False"
+        },
+        "number": {
+          "lookback": "25",
+          "halflife": "2.5",
+          "r2_entry_gate": "0.0",
+          "signal_spread_hedge_ratio": "1.0",
+          "momentum_gap_entry_threshold": "0.0",
+          "momentum_gap_exit_buffer": "0.08",
+          "execution_hedge_ratio": "0.8",
+          "overheat_feature_window": "10",
+          "overheat_trigger_threshold": "0.26",
+          "overheat_recovery_threshold": "0.2",
+          "target_vol": "0.0",
+          "target_vol_window": "0"
+        }
+      }
+    },
+    "v2.5": {
+      "cloud_final_csv_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\cloud_artifacts_readback\\microcap-realtime-digest\\microcap-v25\\outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "cloud_final_csv_sha256": "135dd1fd2034f587d06468c3c0bf82268ad7e7c347be07b83af0f7eb54051eda",
+      "local_final_csv_path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "local_final_csv_sha256": "9f2be1a7c840c52d3684602740aa5692eb889be908636b0916ab82460473a42d",
+      "checks": {
+        "strategy_identity": {
+          "ok": true,
+          "note": ""
+        },
+        "member_action": {
+          "ok": true,
+          "note": ""
+        },
+        "publication": {
+          "ok": true,
+          "note": ""
+        },
+        "execution": {
+          "ok": true,
+          "note": ""
+        }
+      },
+      "authoritative_fields": {
+        "date": "2026-09-30",
+        "version": "2.5",
+        "strategy_version": "v2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "overlay_type": "plain_lb20_hl3_entry0_exit0_20260905",
+        "signal_model": "microcap_only_log_wls_exp_halflife_3p0_lb20_entry0_exit0_no_targetvol",
+        "current_holding": "long_microcap_top100",
+        "next_holding": "long_microcap_top100",
+        "trade_state": "hold",
+        "holding_trade_state": "hold",
+        "effective_trade_state": "hold",
+        "current_execution_scale": "1.0",
+        "next_session_actionable_scale": "1.0",
+        "member_rebalance_required": "True",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True",
+        "member_rebalance_signal_date": "2026-09-17",
+        "member_rebalance_execution_date": "2026-09-18",
+        "member_rebalance_label": "名单调仓（调入 17，调出 17）",
+        "member_enter_count": "17",
+        "member_exit_count": "17",
+        "signal_timing": "close_confirmed",
+        "official_close_confirmed_signal": "True"
+      },
+      "local_cloud_authoritative_fields_equal": true,
+      "action_from_csv_only": "无操作",
+      "csv_missing_optional_stdout_identity_aliases": [],
+      "identity_fallback_from_stdout_needed": false,
+      "identity_contract_fields": {
+        "text": {
+          "version": "2.5",
+          "strategy_version": "v2.5",
+          "overlay_type": "plain_lb20_hl3_entry0_exit0_20260905",
+          "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+          "signal_model": "microcap_only_log_wls_exp_halflife_3p0_lb20_entry0_exit0_no_targetvol"
+        },
+        "bool": {
+          "hedge_removed": "True",
+          "overheat_enabled": "False",
+          "target_vol_enabled": "False",
+          "cash_day_yield_enabled": "False",
+          "financing_enabled": "False"
+        },
+        "number": {
+          "signal_spread_hedge_ratio": "0.0",
+          "execution_hedge_ratio": "0.0",
+          "fixed_hedge_ratio": "0.0",
+          "lookback": "20",
+          "halflife": "3.0",
+          "entry_threshold": "0.0",
+          "exit_threshold": "0.0",
+          "target_vol": "0.0",
+          "target_vol_window": "0"
+        }
+      }
+    }
+  },
+  "historical_sample_warning_precedes_action_example": true,
+  "today_trading_phrases_absent": true,
+  "exceptions": [
+    "MIME adds one terminal newline to the received plain text.",
+    "Cloud metadata adds its exact workflow diagnostic link; all other local/cloud text is identical.",
+    "Historical sample retains its next-session v2.3 open plan, explicitly below the historical sample warning."
+  ],
+  "limits": [
+    "One provided Gmail message is examined; mailbox-wide uniqueness is not re-queried in this read-only subtask.",
+    "This subtask sends no mail, runs no signal query, and modifies no input artifact or manifest."
+  ],
+  "builder_source_sha256": "d0e7ee6316f0e638fc2274c513e966ae1a44ea838df4f9333a1cd5670221b340"
+}

@@ -1,0 +1,50 @@
+{
+  "local_gate": {
+    "source": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261007_daily_send_adversarial\\root_local_gate.xml",
+    "sha256": "0f947773574d15ecb0de370ae3b7470f3050032009826e7a4a516e8955a75404",
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "402",
+        "time": "48.314",
+        "timestamp": "2026-10-07T22:52:58.337360+08:00",
+        "hostname": "DESKTOP-95I7VVU"
+      }
+    ]
+  },
+  "automation_all": {
+    "source": "D:\\\u52a8\u91cf\u7b56\u7565\\codex-daily-automation-probe-l7-sync\\artifacts\\20261007-verified-all.xml",
+    "sha256": "99e3a62f0b0c9ec6d65634375bf1ce9d5bf4165fdc0e199e1d77387f48c47b01",
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "835",
+        "time": "121.885",
+        "timestamp": "2026-10-07T23:22:36.235980+08:00",
+        "hostname": "DESKTOP-95I7VVU"
+      }
+    ]
+  },
+  "automation_final_delivery": {
+    "source": "D:\\\u52a8\u91cf\u7b56\u7565\\codex-daily-automation-probe-l7-sync\\artifacts\\20261007-sending-final.xml",
+    "sha256": "f77d5c215e25d8626d7024307c548d25c3f9da5ae3013334e341a08bf38d4856",
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "135",
+        "time": "4.286",
+        "timestamp": "2026-10-07T23:19:27.964885+08:00",
+        "hostname": "DESKTOP-95I7VVU"
+      }
+    ]
+  }
+}

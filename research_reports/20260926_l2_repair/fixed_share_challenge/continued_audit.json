@@ -1,0 +1,88 @@
+{
+  "audit": "INDEPENDENT_TWO_MORE_REBALANCES_ARITHMETIC_PARITY_ONLY",
+  "branches": {
+    "prefunded": {
+      "events": [
+        {
+          "signal": "2010-01-28",
+          "execution": "2010-01-29",
+          "frozen_orders": 105,
+          "blocked": {
+            "600452": "suspended_or_zero_volume"
+          },
+          "booked_sell": 34,
+          "booked_buy": 62,
+          "members_after": 93,
+          "fee": "497.4169780124286386377600526929724141331",
+          "cash_after": "69909.27476148284621620530782193490206912",
+          "old_equity_entire_T1_before_trade": "981167.5549268726812579608674355764666613",
+          "conservation_residual": "8E-34"
+        },
+        {
+          "signal": "2010-02-11",
+          "execution": "2010-02-12",
+          "frozen_orders": 109,
+          "blocked": {
+            "002357": "at_side_close_limit_diagnostic_ST",
+            "600305": "suspended_or_zero_volume"
+          },
+          "booked_sell": 39,
+          "booked_buy": 57,
+          "members_after": 89,
+          "fee": "543.1649849577080487647015977729274317300",
+          "cash_after": "111096.0432354041650133325531832171002361",
+          "old_equity_entire_T1_before_trade": "1007103.346314390861043132493665830595349",
+          "conservation_residual": "2E-34"
+        }
+      ],
+      "last_conditional_day": "2010-02-12",
+      "mark_days_recomputed": 20,
+      "old_lot_daily_equity_rows_matched": 20
+    },
+    "netted": {
+      "events": [
+        {
+          "signal": "2010-01-28",
+          "execution": "2010-01-29",
+          "frozen_orders": 107,
+          "blocked": {
+            "600452": "suspended_or_zero_volume"
+          },
+          "booked_sell": 40,
+          "booked_buy": 66,
+          "members_after": 100,
+          "fee": "583.6470183901235024225969216202431508980",
+          "cash_after": "1454.457190002932419155541315277712465882",
+          "old_equity_entire_T1_before_trade": "972103.4502278279722090314275537070875670",
+          "conservation_residual": "0E-34"
+        },
+        {
+          "signal": "2010-02-11",
+          "execution": "2010-02-12",
+          "frozen_orders": 112,
+          "blocked": {
+            "002357": "at_side_close_limit_diagnostic_ST",
+            "600305": "suspended_or_zero_volume"
+          },
+          "booked_sell": 41,
+          "booked_buy": 69,
+          "members_after": 99,
+          "fee": "818.7810722231966176312015370555238943829",
+          "cash_after": "9900.253015923543942075231325171665854200",
+          "old_equity_entire_T1_before_trade": "1000080.641271576759293834015599638587716",
+          "conservation_residual": "0E-34"
+        }
+      ],
+      "last_conditional_day": "2010-02-12",
+      "mark_days_recomputed": 20,
+      "old_lot_daily_equity_rows_matched": 20
+    }
+  },
+  "bounds": [
+    "old L1 members",
+    "incomplete rights event ledger",
+    "diagnostic ST and trade status",
+    "no auction fill",
+    "netted theoretical"
+  ]
+}

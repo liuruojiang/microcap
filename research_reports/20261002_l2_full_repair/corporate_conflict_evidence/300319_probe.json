@@ -1,0 +1,89 @@
+{
+  "queried_utc": "2026-10-03T01:01:37.683081+00:00",
+  "issuer_sources": {
+    "distribution": {
+      "url": "https://static.cninfo.com.cn/finalpage/2014-09-10/1200220201.PDF",
+      "sha256": "965d399e1d7c53952a5a4d060e8a0cdc597960a66bbf00650ee2a39218823d6c"
+    },
+    "suspension": {
+      "url": "https://static.cninfo.com.cn/finalpage/2014-07-25/1200078636.PDF",
+      "sha256": "5174f302b251a3147d5c207d89b366a50abaf69e4f7442b026c78d00a1fc7c48"
+    },
+    "resumption": {
+      "url": "https://static.cninfo.com.cn/finalpage/2015-01-05/1200511737.PDF",
+      "sha256": "71ad81837155b7e86c15b92b27e85480e049acfe17a88943d1a3eadf2f2aca0d"
+    }
+  },
+  "record_date": "2014-09-17",
+  "ex_and_share_credit_date": "2014-09-18",
+  "new_unrestricted_shares_legal_trade_start": "2014-09-18",
+  "actual_trade_unavailable_until": "2015-01-05",
+  "vendor_query": "BaoStock sz.300319 daily adjustflag=3 (unadjusted), 2014-07-14..2015-01-06",
+  "vendor_rows": 119,
+  "last_actual_trade_before_ex": {
+    "date": "2014-07-18",
+    "code": "sz.300319",
+    "open": "26.2000",
+    "high": "28.2200",
+    "low": "26.2000",
+    "close": "26.5900",
+    "preclose": "26.1600",
+    "volume": "2020252",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_date_zero_volume_row": {
+    "date": "2014-09-18",
+    "code": "sz.300319",
+    "open": "10.6400",
+    "high": "10.6400",
+    "low": "10.6400",
+    "close": "10.6400",
+    "preclose": "10.6400",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2015-01-05",
+    "code": "sz.300319",
+    "open": "11.7000",
+    "high": "11.7000",
+    "low": "11.7000",
+    "close": "11.7000",
+    "preclose": "10.6400",
+    "volume": "837541",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_csv_sha256": "e12fc0bd78d21b56b2f9fea4991a9e9a26e5c36757f17179233c2dc61fffc8da",
+  "account_rights_events_sha256": "6b1b96adf99121a44b19dce549ff012246f875bbb01a151f60e26095f3d2c136",
+  "account_record_entitlements": {
+    "prefunded": {
+      "eligible_shares_at_record": "941.3560310872938679699525743946697045656",
+      "bonus_due_1p5_per_share": "1412.034046630940801954928861592004556848",
+      "total_shares_from_ex_date": "2353.3900777182346699248814359866742614136",
+      "pre_split_mark_yuan": "25030.656866611143949321038953154267444399304",
+      "correct_ex_mark_with_all_shares_yuan": "25040.070426922016888000738478898214141440704",
+      "price_only_missing_bonus_mark_yuan": "10016.028170768806755200295391559285656577984",
+      "early_bonus_unadjusted_price_mark_yuan": "62576.642166527859873302597382885668610987624",
+      "price_only_false_return": "-0.5998495675065814215870628055660022564874012786761940579165099662",
+      "early_bonus_false_return": "1.499999999999999999999999999999999999999575081067321586870682260",
+      "rounded_reference_mark_delta_yuan": "9.413560310872938679699525743946697041400"
+    },
+    "netted": {
+      "eligible_shares_at_record": "985.5356104380390967819300673887163674786",
+      "bonus_due_1p5_per_share": "1478.303415657058645172895101083074551218",
+      "total_shares_from_ex_date": "2463.8390260950977419548251684717909186966",
+      "pre_split_mark_yuan": "26205.391881547459583431520491865968211255974",
+      "correct_ex_mark_with_all_shares_yuan": "26215.247237651839974399339792539855374931824",
+      "price_only_missing_bonus_mark_yuan": "10486.098895060735989759735917015942149972304",
+      "early_bonus_unadjusted_price_mark_yuan": "65513.479703868648958578801229664920528142594",
+      "price_only_false_return": "-0.5998495675065814215870628055660022564874012786761940579165099662",
+      "early_bonus_false_return": "1.500000000000000000000000000000000000000101467667876103628980979",
+      "rounded_reference_mark_delta_yuan": "9.855356104380390967819300673887163675850"
+    }
+  },
+  "invariant": "On ex date, 2.5 total shares per eligible share must be valued at adjusted ex reference; newly credited shares cannot fill an order while trading remains suspended. If held as pending entitlement, include its value exactly once.",
+  "source_limit": "BaoStock is vendor data and 10.64 is a zero-volume reference, not an executable close; the 0.004/share price-rounding uplift after the 2.5 split is reference rounding, not earned trading return."
+}

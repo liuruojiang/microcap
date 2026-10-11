@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "artifact_id": 11486831593,
+  "artifact_name": "microcap-whole-delivery-validation-state",
+  "bundle": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_remote_daily_sync\\cloud_whole_delivery\\microcap-whole-delivery-state.zip",
+  "bundle_sha256": "d6c2eb157b0f86433be7fc7c1918bd3a435bbf4fb3851f6c2266aa6b4887dad3",
+  "transport": {
+    "github_artifact": 11486831593,
+    "github_artifact_bytes": 66242057,
+    "github_artifact_sha256": "fa96edf2f2c00c243e9e4270c09b0ccfa80961455828f805b02c03ae99a4b2a4"
+  }
+}

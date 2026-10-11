@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="12" skipped="0" tests="13" time="14.846" timestamp="2026-10-07T20:10:16.703886+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_delivery_boundary" name="test_authentic_three_version_final_delivery_semantics_remain_valid" time="4.810" /><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-0]" time="1.510"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'wrong_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:89: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-3]" time="1.602"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'wrong_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:89: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[wrong_version-5]" time="1.534"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'wrong_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:89: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-0]" time="1.509"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'missing_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:89: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-3]" time="1.502"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'missing_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:89: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_final_nav_version_identity_cannot_disagree_with_named_stream[missing_version-5]" time="1.469"><failure message="AssertionError: A contradictory final NAV version was certified&#10;assert not True">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'missing_version'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("wrong_version", "missing_version"))
+    def test_final_nav_version_identity_cannot_disagree_with_named_stream(workspace, v, mode):
+        root, date = workspace
+        for name in (delivery.COSTED[v], f"microcap_top100_mom16_biweekly_live_v2_{v}_nav.csv"):
+            path = root / "outputs" / name
+            rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+            position = rows[0].index("version")
+            if mode == "wrong_version":
+                rows[len(rows) // 2][position] = "2.5" if v != "5" else "2.0"
+            else:
+                for row in rows:
+                    del row[position]
+            _save_rows(path, rows)
+        report = delivery.inspect_outputs(root, date)
+        _probe(f"nav_identity_{v}_{mode}", report)
+&gt;       assert not report["ok"], "A contradictory final NAV version was certified"
+E       AssertionError: A contradictory final NAV version was certified
+E       assert not True
+
+tests\test_round3_delivery_boundary.py:89: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-0]" time="0.028"><failure message="AssertionError: assert (4 == 2)&#10; +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...rocap_short_zz1000', 'long_microcap_short_zz1000', 'long_microcap_short_zz1000', 'hold', 'hold', 'rebalance', ...], []])">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'extra_cell'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+&gt;       assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+E       AssertionError: assert (4 == 2)
+E        +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...rocap_short_zz1000', 'long_microcap_short_zz1000', 'long_microcap_short_zz1000', 'hold', 'hold', 'rebalance', ...], []])
+
+tests\test_round3_delivery_boundary.py:98: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-3]" time="0.036"><failure message="AssertionError: assert (4 == 2)&#10; +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_short_zz1000', 'cash', 'long_microcap_short_zz1000', 'open', 'open', 'rebalance', ...], []])">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'extra_cell'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+&gt;       assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+E       AssertionError: assert (4 == 2)
+E        +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_short_zz1000', 'cash', 'long_microcap_short_zz1000', 'open', 'open', 'rebalance', ...], []])
+
+tests\test_round3_delivery_boundary.py:98: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[extra_cell-5]" time="0.026"><failure message="AssertionError: assert (4 == 2)&#10; +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_top100', 'long_microcap_top100', 'long_microcap_top100', 'hold', 'hold', 'rebalance', ...], []])">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'extra_cell'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+&gt;       assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+E       AssertionError: assert (4 == 2)
+E        +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_top100', 'long_microcap_top100', 'long_microcap_top100', 'hold', 'hold', 'rebalance', ...], []])
+
+tests\test_round3_delivery_boundary.py:98: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-0]" time="0.033"><failure message="AssertionError: assert (4 == 2)&#10; +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...rocap_short_zz1000', 'long_microcap_short_zz1000', 'long_microcap_short_zz1000', 'hold', 'hold', 'rebalance', ...], []])">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '0', mode = 'short_row'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+&gt;       assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+E       AssertionError: assert (4 == 2)
+E        +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...rocap_short_zz1000', 'long_microcap_short_zz1000', 'long_microcap_short_zz1000', 'hold', 'hold', 'rebalance', ...], []])
+
+tests\test_round3_delivery_boundary.py:98: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-3]" time="0.035"><failure message="AssertionError: assert (4 == 2)&#10; +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_short_zz1000', 'cash', 'long_microcap_short_zz1000', 'open', 'open', 'rebalance', ...], []])">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '3', mode = 'short_row'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+&gt;       assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+E       AssertionError: assert (4 == 2)
+E        +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_short_zz1000', 'cash', 'long_microcap_short_zz1000', 'open', 'open', 'rebalance', ...], []])
+
+tests\test_round3_delivery_boundary.py:98: AssertionError</failure></testcase><testcase classname="tests.test_round3_delivery_boundary" name="test_native_signal_ragged_rows_cannot_be_certified[short_row-5]" time="0.067"><failure message="AssertionError: assert (4 == 2)&#10; +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_top100', 'long_microcap_top100', 'long_microcap_top100', 'hold', 'hold', 'rebalance', ...], []])">workspace = (WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/root_delivery_before_tmp/round3_delivery0'), '2026-09-30')
+v = '5', mode = 'short_row'
+
+    @pytest.mark.parametrize("v", ("0", "3", "5"))
+    @pytest.mark.parametrize("mode", ("extra_cell", "short_row"))
+    def test_native_signal_ragged_rows_cannot_be_certified(workspace, v, mode):
+        root, date = workspace
+        path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv"
+        rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8-sig"))))
+&gt;       assert len(rows) == 2 and len(rows[0]) == len(rows[1])
+E       AssertionError: assert (4 == 2)
+E        +  where 4 = len([['signal_label', 'current_holding', 'next_holding', 'trade_state', 'momentum_trade_state', 'member_rebalance_state', ...], [], ['long_microcap_top100', 'long_microcap_top100', 'long_microcap_top100', 'hold', 'hold', 'rebalance', ...], []])
+
+tests\test_round3_delivery_boundary.py:98: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,4 @@
+{
+  "scripts/check_microcap_delivery.py": "b74d68a1cbab7fee3f3853b156e7475c17864ad9aa9ec46787ad0c342f2586ab",
+  ".github/workflows/microcap-realtime-digest.yml": "3a6c1ca6f05daf0c4bc1de103caeabcf3c2904b3aa426a94ab771cceda7c1156"
+}

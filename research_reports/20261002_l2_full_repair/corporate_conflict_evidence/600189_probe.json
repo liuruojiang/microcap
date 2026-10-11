@@ -1,0 +1,54 @@
+{
+  "queried_utc": "2026-10-03T01:59:57.594277+00:00",
+  "issuer": {
+    "url": "https://static.cninfo.com.cn/finalpage/2016-07-08/1202458737.PDF",
+    "pdf_sha256": "87429d77b24a9652d8c2d689396dde11852c90f6d9689647021265d6f5b80143",
+    "live_pdf_sha256_matched": true
+  },
+  "source_status": "cninfo=1;sina=0; single_source_only",
+  "event_scope": "netted 600189 only; record=2016-07-15; ex=pay=2016-07-18; gross cash 0.05/share",
+  "vendor_query": "BaoStock sh.600189 daily adjustflag=3, 2016-07-06..2017-01-06",
+  "last_actual_trade_before_ex": {
+    "date": "2016-07-07",
+    "code": "sh.600189",
+    "open": "11.7800",
+    "high": "12.1100",
+    "low": "11.7300",
+    "close": "12.1000",
+    "preclose": "11.7600",
+    "volume": "11997800",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "ex_zero_volume_reference": {
+    "date": "2016-07-18",
+    "code": "sh.600189",
+    "open": "12.0500",
+    "high": "12.0500",
+    "low": "12.0500",
+    "close": "12.0500",
+    "preclose": "12.0500",
+    "volume": "0",
+    "tradestatus": "0",
+    "isST": "0"
+  },
+  "first_actual_trade_after_ex": {
+    "date": "2017-01-04",
+    "code": "sh.600189",
+    "open": "13.2600",
+    "high": "13.2600",
+    "low": "13.2600",
+    "close": "13.2600",
+    "preclose": "12.0500",
+    "volume": "832877",
+    "tradestatus": "1",
+    "isST": "0"
+  },
+  "vendor_rows": 125,
+  "vendor_csv_sha256": "ece40fed0ea8a2ce9335352610c1a577a6c040005c58ba5d65aa06612dc25b6a",
+  "account_rights_events_sha256": "e57834609476bdff950d1e9aa57bc618d532c10096cb1e9027dc3176bab0c5af",
+  "netted_record_shares": "10884.43094518257552075040736066711435766",
+  "netted_gross_cash_due": "544.221547259128776037520368033355717883",
+  "missing_or_duplicate_cash_false_return": "0.004132231404958677685950413223140495867768595041322314049586776860",
+  "assessment": "12.05 is a zero-volume estimate for suspended valuation with 0.05/share gross cash booked once; never an execution price. Admit exact event only."
+}

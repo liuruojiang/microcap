@@ -1,0 +1,111 @@
+{
+  "label": "independent_read_only_conditional_account_audit",
+  "results": [
+    {
+      "branch": "prefunded",
+      "version": "v2.0",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "booked_orders": 3047,
+      "fees": "68191.404099751420314153871654810185180187955880",
+      "ending_equity": "997486.728914812019572683104814138195023259990284706526924585",
+      "conditional_annualized": "-0.002544516780492683128265098077415046198779305398222609579367",
+      "conditional_max_drawdown": "-0.160253587072867018370500363935285480780955180055455223137166",
+      "max_identity_residual": "2.58777282615546856548E-33",
+      "sha_valid": true,
+      "target_scale_0_1": true
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "booked_orders": 2024,
+      "fees": "42417.091485417909374364150277605658170806569173",
+      "ending_equity": "932409.686650537530559606987911412878690570293951375469334816",
+      "conditional_annualized": "-0.068402235300096775919328363308858896172689790889118019929964",
+      "conditional_max_drawdown": "-0.117720891457470417059405887353715443592647383370904433832182",
+      "max_identity_residual": "1.404204652116744893684E-33",
+      "sha_valid": true,
+      "target_scale_0_1": true
+    },
+    {
+      "branch": "prefunded",
+      "version": "v2.5",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "booked_orders": 2379,
+      "fees": "46641.990316520372460994120531398856105297551060",
+      "ending_equity": "1158956.76356196883574622124034494981112506216094000000000000",
+      "conditional_annualized": "0.16108697117061940882254783028619702300996173500331330169581",
+      "conditional_max_drawdown": "-0.111565455666468716715945685417693815308714249481057132469866",
+      "max_identity_residual": "4.72124897700000000000E-33",
+      "sha_valid": true,
+      "target_scale_0_1": true
+    },
+    {
+      "branch": "netted",
+      "version": "v2.0",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "booked_orders": 2899,
+      "fees": "56821.350961680010803423292944953803113081082710",
+      "ending_equity": "1004804.00630782715061035174379391387816503156108664569243894",
+      "conditional_annualized": "0.00486395241683231309026836055303104113153785015839571873808",
+      "conditional_max_drawdown": "-0.180651282397362872509997423505994948112876392444775514592226",
+      "max_identity_residual": "1.819167153533553484921E-33",
+      "sha_valid": true,
+      "target_scale_0_1": true
+    },
+    {
+      "branch": "netted",
+      "version": "v2.3",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "booked_orders": 2051,
+      "fees": "43040.302487286314120905218942788725499235127941",
+      "ending_equity": "975020.912627534921634678997847379781630602451912768529569062",
+      "conditional_annualized": "-0.025286065751800615560328520711680353848121434706298168615327",
+      "conditional_max_drawdown": "-0.117665701058792174139568610723432249477273171439671054370552",
+      "max_identity_residual": "2.774793109575581435679E-33",
+      "sha_valid": true,
+      "target_scale_0_1": true
+    },
+    {
+      "branch": "netted",
+      "version": "v2.5",
+      "days": 241,
+      "first_date": "2025-10-09",
+      "last_date": "2026-09-30",
+      "booked_orders": 2622,
+      "fees": "52061.614829502757974783717906100436424247078938",
+      "ending_equity": "1172654.13491042864677028071274208363167760108706200000000000",
+      "conditional_annualized": "0.17498135696465021022089361765448615095955486501479907273429",
+      "conditional_max_drawdown": "-0.116722198819256440929878513251341674264321140735637302927473",
+      "max_identity_residual": "2.79480596800000000000E-33",
+      "sha_valid": true,
+      "target_scale_0_1": true
+    }
+  ],
+  "mutation_checks": {
+    "source_order": {
+      "signal_date": "2025-11-03",
+      "execution_date": "2025-11-04",
+      "symbol": "688701",
+      "side": "buy",
+      "frozen_shares": "1082.251082251082251082251082251082251082",
+      "execution_price": "9.26",
+      "fee": "30.06493506493506493506493506493506493506"
+    },
+    "rejected_mutations": {
+      "same_day_holding_shift": "('not_frozen_previous_close', '2025-11-04', '2025-11-03')",
+      "fee_omission": "order_fee:2025-11-04:expected=30.06493506493506493506493506493506493505796:reported=0:delta=30.06493506493506493506493506493506493505796"
+    }
+  },
+  "certification_blocker": "2026-04-27 600543 old target ST contamination; seeded slice, theoretical swap, not continuous formal NAV"
+}

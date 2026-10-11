@@ -1,0 +1,129 @@
+{
+  "status": "source_and_actual_recent_record_entitlement_pass",
+  "source_sha256": {
+    "research_reports\\20260926_l1_repair\\corporate_actions\\cninfo_distribution_events.csv": "54af732ea8434fb466f25e1f4423d5816f5688d9bca030a2f467c895271c5c6d",
+    "research_reports\\20261002_l2_full_repair\\data\\sina_tail_dividend_full_history.csv": "f8ec7a31db32cb60dbda3e4c2b876bf81b154bdde4f6a3563d83445c1543430c",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "4aaa0eeb26c14d31a046a97e32cdf5b2ebc320916147c680da1bc22378df23bc",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    ".microcap_index_cache\\prices_raw\\003017.csv": "6729413ddd2e4296eb594637c5052bcc01ca8dcc4f60a39b36a25883ba9c27de"
+  },
+  "symbol": "003017",
+  "old_effective_snapshot_asof": "2026-09-17",
+  "old_target_rank": "82",
+  "old_effective_rank": "70",
+  "record_date": "2026-09-29",
+  "ex_date": "2026-09-30",
+  "gross_cash_per_10": "3",
+  "gross_cash_per_share": "0.3",
+  "raw_close_record": "22.81",
+  "raw_close_ex": "22.63",
+  "raw_price_return": "-0.0078912757562472599736957475",
+  "gross_economic_return_if_record_holder": "0.005260850504164839982463832",
+  "difference_per_stock": "0.0131521262604120999561595795",
+  "conditional_old_100_equal_weight_difference": "0.000131521262604120999561595795",
+  "record_shares_supplied": null,
+  "gross_cash_receivable": null,
+  "recent_paper_account": {
+    "prefunded": {
+      "held_at_record_close": false,
+      "record_shares": "0",
+      "gross_cash_due_and_paid": "0.0",
+      "phase_dates": {},
+      "ledger_sha256": {
+        "recent_prefunded_holdings.csv": "f2edbe3eb61ee412cfacc04611c8985361095de4125c1e9df8798dac29d99c6d",
+        "recent_prefunded_rights.csv": "77fde7a990f4a6be63081ffdfe0b86886cd14773bbe5a3c18057a7b32253ff12"
+      }
+    },
+    "netted": {
+      "held_at_record_close": true,
+      "record_shares": "539.1375240684788356761664880485725024517",
+      "gross_cash_due_and_paid": "161.7412572205436507028499464",
+      "phase_dates": {
+        "record": "2026-09-29",
+        "ex": "2026-09-30",
+        "cash_paid": "2026-09-30"
+      },
+      "ledger_sha256": {
+        "recent_netted_holdings.csv": "0924fe2cbefdfd08e2198cc843104789fe1dbc836f168dc9603f129b743d8c46",
+        "recent_netted_rights.csv": "cd31a99655414987f6e01e7132a361e1a085279939b5df6c92f736ce67d9fb4c"
+      }
+    }
+  },
+  "six_signal_gated_strategy_paper_accounts": {
+    "prefunded_v2.0": {
+      "record_shares": "430.5290713931399630526527512269304951227",
+      "gross_cash_due_and_paid": "129.1587214179419889157958254",
+      "phase_dates": {
+        "record": "2026-09-29",
+        "ex": "2026-09-30",
+        "cash_paid": "2026-09-30"
+      },
+      "ledger_sha256": {
+        "recent_prefunded_v2_0_strategy_holdings.csv": "59c079aee8f3affd144517233fc6a8a4bf7a7a0c1d4034446a2e0f7722f225ac",
+        "recent_prefunded_v2_0_strategy_rights.csv": "0570adff470d96bcc2dab457e36eb3f5a72cbe4a5f419da3bb62bb051feb9497"
+      }
+    },
+    "prefunded_v2.3": {
+      "record_shares": "402.2443109675659346472740376120324254790",
+      "gross_cash_due_and_paid": "120.6732932902697803941822113",
+      "phase_dates": {
+        "record": "2026-09-29",
+        "ex": "2026-09-30",
+        "cash_paid": "2026-09-30"
+      },
+      "ledger_sha256": {
+        "recent_prefunded_v2_3_strategy_holdings.csv": "a77714b7345ff7dd13e24eafacc94736ff947f3f57762439c05aab7f774c712c",
+        "recent_prefunded_v2_3_strategy_rights.csv": "07ba318e8708ca0c13c9013139ca0ef2037e65e187038fb96914adde9f7a28d4"
+      }
+    },
+    "prefunded_v2.5": {
+      "record_shares": "500.4050649429377717465764771038230717441",
+      "gross_cash_due_and_paid": "150.1215194828813315239729431",
+      "phase_dates": {
+        "record": "2026-09-29",
+        "ex": "2026-09-30",
+        "cash_paid": "2026-09-30"
+      },
+      "ledger_sha256": {
+        "recent_prefunded_v2_5_strategy_holdings.csv": "08c68d3275d963c16a74a66a4cd56fd2a0e3c66f7c42ab831a832e3d291d96a1",
+        "recent_prefunded_v2_5_strategy_rights.csv": "eb73e8b706f01724e91707640a32d1231b3a713f7dd5ceb315c1ddcd851ab06c"
+      }
+    },
+    "netted_v2.0": {
+      "record_shares": "433.6873095429027197942650200885874749925",
+      "gross_cash_due_and_paid": "130.1061928628708159382795060",
+      "phase_dates": {
+        "record": "2026-09-29",
+        "ex": "2026-09-30",
+        "cash_paid": "2026-09-30"
+      },
+      "ledger_sha256": {
+        "recent_netted_v2_0_strategy_holdings.csv": "d8b7b547c47b655b934e0f8ad2110aeeadf30f5acadc5207870949cefcc37add",
+        "recent_netted_v2_0_strategy_rights.csv": "07b0307e2fd67f46d55fa25ddaea14f3878e9273396e02dca4d8979a7d5c52ed"
+      }
+    },
+    "netted_v2.3": {
+      "record_shares": "0",
+      "gross_cash_due_and_paid": "0.0",
+      "phase_dates": {},
+      "ledger_sha256": {
+        "recent_netted_v2_3_strategy_holdings.csv": "81f50fc750629b6d79011910cdee568c9d99b6a2e7122ae89eed6076bc707cb9",
+        "recent_netted_v2_3_strategy_rights.csv": "9291a1e821f35c5b57c885c92254f1fe3bdf394b1f21feaf6ecaef90babbff0e"
+      }
+    },
+    "netted_v2.5": {
+      "record_shares": "506.3192061901984374871004818609229254166",
+      "gross_cash_due_and_paid": "151.8957618570595312461301446",
+      "phase_dates": {
+        "record": "2026-09-29",
+        "ex": "2026-09-30",
+        "cash_paid": "2026-09-30"
+      },
+      "ledger_sha256": {
+        "recent_netted_v2_5_strategy_holdings.csv": "0d6040ba6632d38c6760078748c5a7111559ba49b10aead43f829c52a47d6982",
+        "recent_netted_v2_5_strategy_rights.csv": "dfb1dc0b8713390fa3a0bb7790e7b01cc3cd739531087b0adb245a362f1e01b3"
+      }
+    }
+  },
+  "qualification_note": "New T+1 fixed-share ledger's 2026-09-29 settled shares independently verified against all record, ex and cash-paid phases. Old equal-weight amount remains conditional because its share count was not recorded."
+}

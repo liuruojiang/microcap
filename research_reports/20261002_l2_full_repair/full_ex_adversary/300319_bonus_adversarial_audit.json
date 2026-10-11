@@ -1,0 +1,76 @@
+{
+  "status": "PASS_300319_targeted_through_current_first_block_only",
+  "manifest_sha256": "f4495e21734942109942c48caad2c555b243d00ee7f46b865ea0c6323875d703",
+  "code_sha256": "583dffdcbe4aa0124bd2c8f25e8ff4e979fd1f86479788719480c1e0690f3330",
+  "source_sha256": {
+    "issuer_distribution_pdf": "965d399e1d7c53952a5a4d060e8a0cdc597960a66bbf00650ee2a39218823d6c",
+    "baostock_unadjusted_window": "e12fc0bd78d21b56b2f9fea4991a9e9a26e5c36757f17179233c2dc61fffc8da"
+  },
+  "last_true_trade": {
+    "date": "2014-07-18",
+    "close": "26.5900",
+    "volume": "2020252"
+  },
+  "ex_halt_bar": {
+    "date": "2014-09-18",
+    "preclose": "10.6400",
+    "volume": "0"
+  },
+  "first_true_resume": {
+    "date": "2015-01-05",
+    "preclose": "10.6400",
+    "volume": "837541"
+  },
+  "theoretical_mark": "10.64",
+  "accounts": {
+    "prefunded": {
+      "record_shares": "941.3560310872938679699525743946697045656",
+      "credited_bonus_shares": "1412.034046630940801954928861592004556848",
+      "ex_shares": "2353.390077718234669924881435986674261414",
+      "pre_value": "25030.65686661114394932103895315426744440",
+      "ex_value": "25040.07042692201688800073847889821414144",
+      "mark_rounding_gain": "9.41356031087293867969952574394669704140000",
+      "missing_bonus_understatement": "15024.042256153210132800443087338928484862720",
+      "stale_price_overstatement": "37536.57173960584298530185890398745446954692000",
+      "double_bonus_overstatement": "15024.042256153210132800443087338928484862720",
+      "halt_booked_orders": 0,
+      "halt_blocked_attempts": 12,
+      "mutations_rejected": [
+        "record_day_early_credit",
+        "ex_day_missing_bonus",
+        "ex_day_double_bonus",
+        "ex_day_stale_price"
+      ]
+    },
+    "netted": {
+      "record_shares": "985.5356104380390967819300673887163674786",
+      "credited_bonus_shares": "1478.303415657058645172895101083074551218",
+      "ex_shares": "2463.839026095097741954825168471790918697",
+      "pre_value": "26205.39188154745958343152049186596821126",
+      "ex_value": "26215.24723765183997439933979253985537494",
+      "mark_rounding_gain": "9.85535610438039096781930067388716367585000",
+      "missing_bonus_understatement": "15729.148342591103984639603875523913224959520",
+      "stale_price_overstatement": "39298.23246621680898417946143712506515321077000",
+      "double_bonus_overstatement": "15729.148342591103984639603875523913224959520",
+      "halt_booked_orders": 0,
+      "halt_blocked_attempts": 12,
+      "mutations_rejected": [
+        "record_day_early_credit",
+        "ex_day_missing_bonus",
+        "ex_day_double_bonus",
+        "ex_day_stale_price"
+      ]
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2015-05-28",
+      "reason": "unverified_missing_raw_close:2015-05-28:300421"
+    },
+    "netted": {
+      "date": "2015-05-28",
+      "reason": "unverified_missing_raw_close:2015-05-28:300421"
+    }
+  },
+  "limitation": "Fractional paper shares and zero-volume reference marks are not executable fills; issuer fractional-share allocation is account-specific."
+}

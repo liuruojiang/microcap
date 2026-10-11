@@ -1,0 +1,134 @@
+{
+  "frozen_date": "2026-09-30",
+  "inspect_outputs_ok": true,
+  "inspect_outputs_errors": [],
+  "stream_count": 16,
+  "stream_dates_and_rows": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8738,
+      "latest_date": "2026-09-30"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4067,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4050,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 432,
+      "latest_date": "2026-09-17"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4033,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 3988,
+      "latest_date": "2026-09-30"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-09-30"
+    }
+  },
+  "manifest_status": "complete",
+  "manifest_expected_date": "2026-09-30",
+  "manifest_validation_ok": false,
+  "manifest_errors": [
+    "delivery manifest mismatch: inputs; run refresh-all"
+  ],
+  "changed_manifest_input_names": [
+    "microcap_top100_mom16_biweekly_live_v2_0.py",
+    "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "microcap_top100_mom16_biweekly_live_v2_5.py"
+  ],
+  "final_signal_rows": {
+    "v2.0": {
+      "file": "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "sha256_normalized": "cab8b1654ebb0610664c1fdca83d9bee8773f5e3caa59337288c1b2a32be7761",
+      "rows": 1,
+      "date": "2026-09-30",
+      "version": "2.0",
+      "strategy_revision": "plain_mom16_fixed1_20260904",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_required": "True",
+      "member_enter_count": "17",
+      "member_exit_count": "17",
+      "current_holding": "long_microcap_short_zz1000",
+      "next_holding": "long_microcap_short_zz1000"
+    },
+    "v2.3": {
+      "file": "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "sha256_normalized": "b98c9338340914301e1fddc08b5358f148cda5b09e75a418bd225788853b0b23",
+      "rows": 1,
+      "date": "2026-09-30",
+      "version": "2.3",
+      "strategy_revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_required": "True",
+      "member_enter_count": "17",
+      "member_exit_count": "17",
+      "current_holding": "cash",
+      "next_holding": "long_microcap_short_zz1000"
+    },
+    "v2.5": {
+      "file": "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "sha256_normalized": "af3f993d0e88b5f956a87f41c5db884055968def2b9ab93fbfeea23ca1c17a23",
+      "rows": 1,
+      "date": "2026-09-30",
+      "version": "2.5",
+      "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "member_rebalance_signal_date": "2026-09-17",
+      "member_rebalance_execution_date": "2026-09-18",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_required": "True",
+      "member_enter_count": "17",
+      "member_exit_count": "17",
+      "current_holding": "long_microcap_top100",
+      "next_holding": "long_microcap_top100"
+    }
+  },
+  "read_only": true
+}

@@ -1,0 +1,2 @@
+version,strategy_version,strategy_revision,lookback,halflife,r2_entry_gate,momentum_gap_entry_threshold,momentum_gap_exit_buffer,execution_hedge_ratio,overheat_feature_window,overheat_trigger_threshold,overheat_recovery_threshold,overheat_enabled,r2_gate_enabled,target_vol_enabled,cash_day_yield_enabled,financing_enabled
+2.3,v2.3,plain_lb25_hl2p5_r2off_vol10_26_20_20260904,25,2.5,0.0,0.0,0.08,0.8,10,0.26,0.2,True,False,False,False,False

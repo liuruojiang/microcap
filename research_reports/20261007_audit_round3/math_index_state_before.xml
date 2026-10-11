@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="7.322" timestamp="2026-10-07T20:14:09.951350+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_math_ledger" name="test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[nan]" time="3.881"><failure message="Failed: v23_bad_next_state_nan: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:238: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_nan: actual execution builder accepted the corrupted upstream result</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[damaged]" time="0.326"><failure message="Failed: v23_bad_next_state_damaged: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:238: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_damaged: actual execution builder accepted the corrupted upstream result</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[long_microcap_top100]" time="0.382"><failure message="Failed: v23_bad_next_state_long_microcap_top100: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:238: in test_v23_foreign_or_missing_next_state_cannot_be_silently_executed
+    _expect_block("v23_bad_next_state_" + str(bad),
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_bad_next_state_long_microcap_top100: actual execution builder accepted the corrupted upstream result</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_actual_gross_dependency_cannot_omit_a_non_event_active_session[23]" time="0.372"><failure message="Failed: v23_gross_missing_active_session: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:258: in test_actual_gross_dependency_cannot_omit_a_non_event_active_session
+    _expect_block(f"v{version}_gross_missing_active_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v23_gross_missing_active_session: actual execution builder accepted the corrupted upstream result</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_actual_gross_dependency_cannot_omit_a_non_event_active_session[25]" time="0.242"><failure message="Failed: v25_gross_missing_active_session: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:258: in test_actual_gross_dependency_cannot_omit_a_non_event_active_session
+    _expect_block(f"v{version}_gross_missing_active_session",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v25_gross_missing_active_session: actual execution builder accepted the corrupted upstream result</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,12 @@
+..............................................                           [100%]
+============================== warnings summary ===============================
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-wrong_version]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-missing_anchor]
+tests/test_round3_state_contract.py::test_native_close_cli_does_not_preserve_malformed_realtime[0-scale_conflict]
+tests/test_round3_state_contract.py::test_native_close_cli_preserves_legal_dated_realtime[0]
+tests/test_round3_state_contract.py::test_native_v20_cleanup_preserves_concurrent_legal_realtime_writer
+  D:\动量策略\微盘股对冲策略\microcap_top100_mom16_biweekly_live_v2_0.py:15185: RuntimeWarning: WARNING: current performance source is public/local proxy, not official Wind 868008.WI.
+    return _generate_v2_0_outputs_unlocked()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+46 passed, 5 warnings in 79.59s (0:01:19)

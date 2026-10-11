@@ -1,0 +1,25 @@
+{
+  "queried_utc": "2026-10-03T01:08:35.591473+00:00",
+  "scope": "2015-01-01..2026-09-30, normalized events intersected with old effective member snapshots; priority screen only, not actual post-repair account holdings or issuer certification",
+  "normalized_all_single_source_events": 6982,
+  "old_snapshot_single_source_overlaps": 543,
+  "old_snapshot_single_source_missing_raw_close": 17,
+  "vendor_zero_volume_suspended_confirmed": 17,
+  "year_counts": {
+    "2015": 6,
+    "2016": 4,
+    "2017": 2,
+    "2018": 5
+  },
+  "distinct_symbols": 16,
+  "input_sha256": {
+    "research_reports\\20261002_l2_full_repair\\data\\event_candidates_2010_20260930.csv": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+    "research_reports\\20261002_l2_full_repair\\data\\old_path_event_overlaps.csv": "6d1dcd7d0c200e5219ad181deb6c335fd531627046baf82ad22c29c0b02a4a76"
+  },
+  "output_sha256": "1c20d6b3a7a78c74a783476dcbbe48fc0631ec682c5467edc56ad3b139316e23",
+  "limits": [
+    "Only old member snapshot intersections are counted; a corrected account may hold different stocks.",
+    "A missing raw bar and vendor zero-volume status prioritize research but do not certify the issuer event or valuation reference.",
+    "The count is not a count of future engine blocks; branch holdings, tax, settlement, and other causes differ."
+  ]
+}

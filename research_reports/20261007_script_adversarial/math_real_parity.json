@@ -1,0 +1,228 @@
+{
+  "caliber": "read_only_diagnostic_recompute_with_official_baseline_parity",
+  "target_latest_completed_session": "2026-09-30",
+  "freshness": {
+    "panel": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+      "rows": 8738,
+      "start": "1990-12-19",
+      "end": "2026-09-30",
+      "sha256": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054"
+    },
+    "proxy_index": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+      "rows": 4067,
+      "start": "2010-01-05",
+      "end": "2026-09-30",
+      "sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973"
+    },
+    "turnover": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+      "rows": 432,
+      "start": "2010-01-14",
+      "end": "2026-09-17",
+      "sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d"
+    },
+    "base_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+      "rows": 4050,
+      "start": "2010-01-28",
+      "end": "2026-09-30",
+      "sha256": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45"
+    },
+    "v20_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "rows": 4033,
+      "start": "2010-03-01",
+      "end": "2026-09-30",
+      "sha256": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+    },
+    "v23_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "sha256": "9aa647b2f661ca3edb65b835870827ff4913b92044064c3ef25eccf7c31c82c5"
+    },
+    "v25_costed_nav": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "sha256": "e4eb3047d09b98a59f292d90f92aca12a750437aae4c32070d7e63cd4477467a"
+    }
+  },
+  "close_input_rows": 4050,
+  "close_input_start": "2010-01-28",
+  "close_input_end": "2026-09-30",
+  "versions": {
+    "v2.3": {
+      "source_before_sha256": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+      "source_after_sha256": "dab988798bd1e262f2b8f738620b72794a38a79c55fa4d7c017b770c618a250a",
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "old_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        }
+      },
+      "official_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 9.98821251402271e-17,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 3.552713678800501e-15,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 9.985502008591496e-17,
+          "outside_1e12": 0
+        }
+      },
+      "wls_max_abs_score_change": 8.881784197001252e-16,
+      "zero_threshold_sign_changes": 0,
+      "scores_within_1e10_of_zero": 0,
+      "minimum_abs_score": 0.0005674432320621117,
+      "independent_weighted_lstsq_max_score_error": 1.715294573045867e-14,
+      "independent_weighted_lstsq_max_r2_error": 4.75175454539567e-14
+    },
+    "v2.5": {
+      "source_before_sha256": "b5b90ed35dc06427050c6ba0b56535a7b9ace62242d3d8e9f139f25b754d9acc",
+      "source_after_sha256": "087ec7caa89d3556d16a70558ff6e08212449a5a28140b0aac365a276ba5a18a",
+      "rows": 3988,
+      "start": "2010-05-05",
+      "end": "2026-09-30",
+      "old_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        }
+      },
+      "official_vs_new": {
+        "holding": {
+          "different_rows": 0
+        },
+        "next_holding": {
+          "different_rows": 0
+        },
+        "return_net": {
+          "max_abs_error": 9.974659986866641e-17,
+          "outside_1e12": 0
+        },
+        "nav_net": {
+          "max_abs_error": 1.4210854715202004e-14,
+          "outside_1e12": 0
+        },
+        "current_execution_scale": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "total_cost": {
+          "max_abs_error": 0.0,
+          "outside_1e12": 0
+        },
+        "overlay_pre_cost_return": {
+          "max_abs_error": 9.974659986866641e-17,
+          "outside_1e12": 0
+        }
+      },
+      "wls_max_abs_score_change": 1.7763568394002505e-15,
+      "zero_threshold_sign_changes": 0,
+      "scores_within_1e10_of_zero": 0,
+      "minimum_abs_score": 0.000551671463022938,
+      "independent_weighted_lstsq_max_score_error": 6.52811138479592e-14,
+      "independent_weighted_lstsq_max_r2_error": 3.164135620181696e-14
+    }
+  },
+  "v25_real_numeric_text_parity": {
+    "holding": {
+      "different_rows": 0
+    },
+    "next_holding": {
+      "different_rows": 0
+    },
+    "return_net": {
+      "max_abs_error": 0.0,
+      "outside_1e12": 0
+    },
+    "nav_net": {
+      "max_abs_error": 0.0,
+      "outside_1e12": 0
+    },
+    "current_execution_scale": {
+      "max_abs_error": 0.0,
+      "outside_1e12": 0
+    },
+    "total_cost": {
+      "max_abs_error": 0.0,
+      "outside_1e12": 0
+    },
+    "overlay_pre_cost_return": {
+      "max_abs_error": 0.0,
+      "outside_1e12": 0
+    }
+  },
+  "official_artifacts_unchanged": true,
+  "result": "PASS"
+}

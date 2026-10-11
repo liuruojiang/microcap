@@ -1,0 +1,59 @@
+{
+  "scope": "diagnostic_only_execution_date_parse_correction",
+  "cause": "Single-format inference from YYYY-MM-DD rejected the valid trailing YYYY-MM-DD 00:00:00 text; no index drop or positional mask reuse.",
+  "pandas_version": "2.3.3",
+  "raw_missing_execution_dates": 0,
+  "old_vector_parse_failed_nonempty_rows": [
+    {
+      "data_row_index_0_based": 431,
+      "data_row_1_based": 432,
+      "csv_line_1_based": 433,
+      "rebalance_date": "2026-09-17",
+      "raw_execution_date": "2026-09-17 00:00:00",
+      "correct_parsed_execution_date": "2026-09-17T00:00:00"
+    }
+  ],
+  "new_parser_matches_production_scalar_timestamp_all_432_rows": true,
+  "corrected_turnover_semantics": {
+    "execution_timing": {
+      "close": 432
+    },
+    "explicit_execution_dates": 432,
+    "valid_execution_dates": 432,
+    "invalid_nonempty_execution_dates": 0,
+    "execution_date_text_formats": {
+      "date_only_rows": 431,
+      "timestamp_rows": 1
+    },
+    "date_parser": "pd.to_datetime(format='mixed', errors='coerce'); missing counted from raw cells",
+    "execution_dates_before_signal": 0,
+    "nonmidnight_execution_dates": 0,
+    "execution_dates_not_in_proxy": 0,
+    "invalid_rates": 0,
+    "legacy_without_execution_date": 0,
+    "legacy_missing_execution_rows": [],
+    "invalid_execution_rows": [],
+    "timestamp_execution_rows": [
+      {
+        "rebalance_date": "2026-09-17",
+        "execution_date": "2026-09-17 00:00:00",
+        "execution_timing": "close"
+      }
+    ]
+  },
+  "turnover_raw_sha256": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+  "official_input_hashes_unchanged": true,
+  "production_and_test_hashes_unchanged_from_pre_correction_readback": {
+    "microcap_top100_mom16_biweekly_live.py": true,
+    "microcap_top100_mom16_biweekly_live_v2_0.py": true,
+    "tests/test_doublecheck_data_adversarial.py": true
+  },
+  "evidence_sha256": {
+    "data_real_checks.py": "55a7564f899d8dc8e037fd27ca79fc37ef435d75b5c4d883b9ae12a9c72d6559",
+    "data_real_checks.json": "d5b951cdab3d54b3c38af736cf1b1518667130e8964075a314f5139ff7465249",
+    "data_review.md": "4e9105fb366eb260be07a5745b02108d1983e2481be1009288c0c991ad4820ba",
+    "data_real_checks_before_execution_parse_fix.py": "c26bd513335ac8082dc5126e837d477853be7f1bb96224851abe35adc4dff909",
+    "data_real_checks_before_execution_parse_fix.json": "908118b5223ca15655db7d85f776586c3188f9a928205b288f8b4fdb2a103bea",
+    "data_review_before_execution_parse_fix.md": "a8b821ef7dffbc9cdae719b1c896da5fcb9f1ebd4bcafce6bfc1f1513d4355d3"
+  }
+}

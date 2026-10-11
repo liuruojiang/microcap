@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="7.011" timestamp="2026-10-07T20:12:48.325641+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_math_ledger" name="test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch" time="5.070"><failure message="Failed: v20_erase_mapped_rebalance_fee: actual execution builder accepted the corrupted upstream result">tests\test_round3_math_ledger.py:181: in test_v20_mapped_fee_cannot_be_erased_in_actual_fixed_exposure_dispatch
+    _expect_block("v20_erase_mapped_rebalance_fee",
+tests\test_round3_math_ledger.py:121: in _expect_block
+    pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E   Failed: v20_erase_mapped_rebalance_fee: actual execution builder accepted the corrupted upstream result</failure></testcase></testsuite></testsuites>

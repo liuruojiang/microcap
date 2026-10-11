@@ -1,0 +1,56 @@
+........................................................................ [ 54%]
+.....................................................F.......            [100%]
+================================== FAILURES ===================================
+_______ test_tracked_frozen_tail_authority_matches_post_rebalance_seed ________
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_script_adversarial/pytest_signal_regression/test_tracked_frozen_tail_autho0')
+
+    def test_tracked_frozen_tail_authority_matches_post_rebalance_seed(tmp_path: Path) -> None:
+        authority_path = v2_0.base_mod.FROZEN_TAIL_AUTHORITY_PATH
+        repo = Path(__file__).resolve().parents[1]
+    
+        def tracked_bytes(path: Path) -> bytes:
+            return subprocess.check_output(
+                ["git", "show", f"HEAD:{path.relative_to(repo).as_posix()}"], cwd=repo
+            )
+    
+        # Validate the committed seed, not runtime files legitimately extended later.
+        # Live files remain covered by the separate rewrite and whole-delivery gates.
+        authority = json.loads(tracked_bytes(authority_path))
+        output_dir = authority_path.parent
+        files = {
+            "proxy_index": output_dir / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+            "costed_nav": (
+                output_dir
+                / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv"
+            ),
+            "proxy_meta": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+            "proxy_members": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+            "proxy_turnover": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+            "proxy_effective_members": (
+                output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv"
+            ),
+        }
+    
+        for label, path in files.items():
+            snapshot_path = tmp_path / path.name
+            snapshot_path.write_bytes(tracked_bytes(path))
+            files[label] = snapshot_path
+        assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
+        assert authority["seed_end_date"] == "2026-09-17"
+>       assert authority["seed_file_sha256"] == {
+            label: v2_0.base_mod._file_sha256(path) for label, path in files.items()
+        }
+E       AssertionError: assert {'costed_nav'...b53d13a', ...} == {'costed_nav'...b53d13a', ...}
+E         
+E         Omitting 3 identical items, use -vv to show
+E         Differing items:
+E         {'costed_nav': '3f2b68c82ac5f5e8d8611918476a5739cd15e4be8426aa9285bce7bdd48e1bce'} != {'costed_nav': '1a226bd0c570a310f044ace2df304b21c5e775732c2a13a14b5e742bf30d89ef'}
+E         {'proxy_index': '9b04ba7b633be63c44b05399460005331150a8605116a79019004d07b3a9a148'} != {'proxy_index': '26fcb94b13de8404b38ed5301675489b38452c554d8e65a86b6e84093e18d756'}
+E         {'proxy_meta': 'c2fcf3b109b26381f178990397f0def5a0a54825753981a7b331bf80a6136fff'} != {'proxy_meta': '4cb0461399bd8cc8d878a4cb399a9822236636e28b7dc591943e17beeee61b8d'}
+E         Use -v to get more diff
+
+tests\test_microcap_v2_review_remediations.py:1780: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_microcap_v2_review_remediations.py::test_tracked_frozen_tail_authority_matches_post_rebalance_seed
+1 failed, 132 passed in 8.09s

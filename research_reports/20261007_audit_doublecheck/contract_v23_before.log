@@ -1,0 +1,12 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________ test_native_v23_signal_cli_rejects_disabled_overheat_alias __________
+tests\test_doublecheck_contract_adversarial.py:233: in test_native_v23_signal_cli_rejects_disabled_overheat_alias
+    assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, "3", v23,
+tests\test_doublecheck_contract_adversarial.py:224: in assert_native_cli_cleanup
+    assert not retained, f"Native v2.{version} 信号 CLI kept {attack} realtime artifact"
+E   AssertionError: Native v2.3 信号 CLI kept disabled_native_overheat_alias realtime artifact
+E   assert not True
+=========================== short test summary info ===========================
+FAILED tests/test_doublecheck_contract_adversarial.py::test_native_v23_signal_cli_rejects_disabled_overheat_alias
+1 failed, 29 deselected in 8.73s

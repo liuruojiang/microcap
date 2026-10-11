@@ -1,0 +1,24 @@
+{
+  "scope": "round3_math_diagnostic_only",
+  "result": "PASS",
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "same_round_frozen_max_difference": 0,
+      "independent_ledger_max_difference": 4.336808689942018e-19,
+      "official_saved_max_difference": 3.552713678800501e-15
+    },
+    "v2.3": {
+      "rows": 3988,
+      "same_round_frozen_max_difference": 0,
+      "independent_ledger_max_difference": 4.336808689942018e-19,
+      "official_saved_max_difference": 3.552713678800501e-15
+    },
+    "v2.5": {
+      "rows": 3988,
+      "same_round_frozen_max_difference": 0,
+      "independent_ledger_max_difference": 0,
+      "official_saved_max_difference": 1.4210854715202004e-14
+    }
+  }
+}

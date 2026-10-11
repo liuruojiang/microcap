@@ -1,0 +1,9 @@
+{
+  "scope": "read_only_external_digest_contract_tests",
+  "repository": "liuruojiang/codex-daily-automation-probe",
+  "remote_sha": "a89e9099f33ce291830a1415893a6e7cec5eb4cd",
+  "github_blob_sha": "54acd09f16e8cf19df6d5ed1dc64fb7e833233c1",
+  "snapshot": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_script_adversarial\\external_digest_source.py",
+  "sha256": "2fee97afec037470290a3be97538aa528ecc5f7ea63b7f9c3b37ee4aa38578f4",
+  "same_as_local_checkout": false
+}

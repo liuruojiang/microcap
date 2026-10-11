@@ -1,0 +1,14 @@
+init_quant_param_scan_run.py
+run_id=20261003_l6_frozen_old_inputs
+project=microcap Top100
+strategy=v2.3
+subsystem=overheat_defense
+parameter_group=feature_window_trigger_recovery
+repo=D:\动量策略\微盘股对冲策略
+
+python -X utf8 research_reports/20261003_l6_diagnostic/executor/20261003_l6_frozen_old_inputs/run_scan.py
+
+finalize_quant_param_scan_run.py
+finalized_at=2026-10-03T12:03:27+08:00
+decision=keep_default
+stability_label=mixed_window_tradeoff

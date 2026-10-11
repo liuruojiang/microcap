@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="2.401" timestamp="2026-10-07T20:21:05.902556+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_data_boundary" name="test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event[shared_v20-legal_mixed]" time="0.052"><failure message="assert np.float64(0.0) == 0.002 ± 2.0e-09&#10;  &#10;  comparison failed&#10;  Obtained: 0.0&#10;  Expected: 0.002 ± 2.0e-09">tests\test_round3_data_boundary.py:172: in test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event
+    assert read_back.loc["2026-09-02", "rebalance_cost"] == pytest.approx(0.002)
+E   assert np.float64(0.0) == 0.002 ± 2.0e-09
+E     
+E     comparison failed
+E     Obtained: 0.0
+E     Expected: 0.002 ± 2.0e-09</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event[shared_v20-missing_signal]" time="0.033"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:165: in test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event
+    with pytest.raises(ValueError, match="date|event|turnover"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event[mainline-legal_mixed]" time="0.034"><failure message="assert np.float64(0.0) == 0.002 ± 2.0e-09&#10;  &#10;  comparison failed&#10;  Obtained: 0.0&#10;  Expected: 0.002 ± 2.0e-09">tests\test_round3_data_boundary.py:172: in test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event
+    assert read_back.loc["2026-09-02", "rebalance_cost"] == pytest.approx(0.002)
+E   assert np.float64(0.0) == 0.002 ± 2.0e-09
+E     
+E     comparison failed
+E     Obtained: 0.0
+E     Expected: 0.002 ± 2.0e-09</failure></testcase><testcase classname="tests.test_round3_data_boundary" name="test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event[mainline-missing_signal]" time="0.032"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tests\test_round3_data_boundary.py:165: in test_actual_base_nav_rebuild_preserves_event_or_rejects_bad_event
+    with pytest.raises(ValueError, match="date|event|turnover"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE &lt;class 'ValueError'&gt;</failure></testcase></testsuite></testsuites>

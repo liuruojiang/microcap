@@ -1,0 +1,703 @@
+{
+  "status": "PASS_EXACT_EVENTS_THROUGH_CURRENT_FIRST_BLOCK",
+  "manifest_sha256": "992f5ddbfaa584befa593a221081eb70adefb4b910eba648cd369fa1d8c5896a",
+  "code_sha256": "e36305d5bdca7b7556bd526f254c4d94fd040c098e0da5fbd4552928cfb1501b",
+  "events": {
+    "002735": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "eeed3d9fecd6dd8ee69d8ad462d92fac76dd557880ceea5176a13fd8cfec951a",
+      "original_row_sha256": "2a5804ea146b58ceac622091ab66b40dea14a7823fa06540d989e362449a344d",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2016-04-01",
+          "code": "sz.002735",
+          "close": "41.2700",
+          "preclose": "41.1700",
+          "volume": "2427215",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "002735"
+        },
+        "record": {
+          "date": "2016-06-02",
+          "code": "sz.002735",
+          "close": "41.2700",
+          "preclose": "41.2700",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "002735"
+        },
+        "ex": {
+          "date": "2016-06-03",
+          "code": "sz.002735",
+          "close": "41.1900",
+          "preclose": "41.1900",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "002735"
+        },
+        "resume": {
+          "date": "2016-11-04",
+          "code": "sz.002735",
+          "close": "45.3100",
+          "preclose": "41.1900",
+          "volume": "217802",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "002735"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "record_shares": "2249.394913779063264332313335138119929625",
+          "gross_cash_paid": "184.4503829298831876752496934813258342292",
+          "old_stock_value": "92832.52809166194091899457134115020949562375",
+          "ex_stock_plus_cash": "92837.02688148949904552323596782048573548295",
+          "paper_rounding_delta": "4.49878982755812652866462667027623985920",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "4.49878982755812652866462667027623985925",
+            "double_cash": "184.4503829298831876752496934813258342292",
+            "missing_cash": "-184.4503829298831876752496934813258342292",
+            "stale_mark_plus_cash": "179.95159310232506114658506681104959437000"
+          }
+        },
+        "netted": {
+          "record_shares": "2691.470430321959050469874860150183234180",
+          "gross_cash_paid": "220.7005752864006421385297385323150252028",
+          "old_stock_value": "111076.98465938725001289173547839806207460860",
+          "ex_stock_plus_cash": "111082.36760024789393099267522811836244107700",
+          "paper_rounding_delta": "5.38294086064391810093974972030036646840",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "5.38294086064391810093974972030036646836",
+            "double_cash": "220.7005752864006421385297385323150252028",
+            "missing_cash": "-220.7005752864006421385297385323150252028",
+            "stale_mark_plus_cash": "215.31763442575672403758998881201465873440"
+          }
+        }
+      }
+    },
+    "300046": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "0104460007b40cb68b31983a7cf580600cc0fb5f39e8d96b4c91e91a3a6ffb51",
+      "original_row_sha256": "523378637ba4789e67c3db940cea655f6bc5b9ff44a602d4ee57397cd96be7db",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2016-03-04",
+          "code": "sz.300046",
+          "close": "17.8400",
+          "preclose": "18.2800",
+          "volume": "5272429",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300046"
+        },
+        "record": {
+          "date": "2016-06-14",
+          "code": "sz.300046",
+          "close": "17.8400",
+          "preclose": "17.8400",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300046"
+        },
+        "ex": {
+          "date": "2016-06-15",
+          "code": "sz.300046",
+          "close": "17.5900",
+          "preclose": "17.5900",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300046"
+        },
+        "resume": {
+          "date": "2016-09-20",
+          "code": "sz.300046",
+          "close": "19.3500",
+          "preclose": "17.5900",
+          "volume": "126772",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300046"
+        }
+      },
+      "wrong_amount_same_mark": false,
+      "branches": {
+        "prefunded": {
+          "record_shares": "4540.864535680168942937820071612474633612",
+          "gross_cash_paid": "1135.216133920042235734455017903118658403",
+          "old_stock_value": "81009.02331653421394201071007756654746363808",
+          "ex_stock_plus_cash": "81009.02331653421394201071007756654746363808",
+          "paper_rounding_delta": "0E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "45.40864535680168942937820071612474633612",
+            "double_cash": "1135.216133920042235734455017903118658403",
+            "missing_cash": "-1135.216133920042235734455017903118658403",
+            "stale_mark_plus_cash": "1135.21613392004223573445501790311865840300"
+          }
+        },
+        "netted": {
+          "record_shares": "5272.706837310368831360975932105193935431",
+          "gross_cash_paid": "1318.176709327592207840243983026298483858",
+          "old_stock_value": "94065.08997761697995147981062875665980808904",
+          "ex_stock_plus_cash": "94065.08997761697995147981062875665980808929",
+          "paper_rounding_delta": "2.5E-37",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "52.72706837310368831360975932105193935431",
+            "double_cash": "1318.176709327592207840243983026298483858",
+            "missing_cash": "-1318.176709327592207840243983026298483858",
+            "stale_mark_plus_cash": "1318.17670932759220784024398302629848385775"
+          }
+        }
+      }
+    },
+    "300461": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "2b71e38e0ff4adabac6e66ba07876e7cd872d70ffafe8786ee8758fb0ffa0830",
+      "original_row_sha256": "52f317fa060f5982cf751dafff484bd6a9f7c8b793c7e0dc7908c52c07606c74",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2016-05-24",
+          "code": "sz.300461",
+          "close": "46.3500",
+          "preclose": "45.8500",
+          "volume": "1011198",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300461"
+        },
+        "record": {
+          "date": "2016-06-15",
+          "code": "sz.300461",
+          "close": "46.3500",
+          "preclose": "46.3500",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300461"
+        },
+        "ex": {
+          "date": "2016-06-16",
+          "code": "sz.300461",
+          "close": "46.2000",
+          "preclose": "46.2000",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300461"
+        },
+        "resume": {
+          "date": "2016-10-27",
+          "code": "sz.300461",
+          "close": "50.8200",
+          "preclose": "46.2000",
+          "volume": "90760",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300461"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "record_shares": "2050.296939888109861489672614843399869169",
+          "gross_cash_paid": "307.5445409832164792234508922265099803754",
+          "old_stock_value": "95031.26316381389208004632569799158393598315",
+          "ex_stock_plus_cash": "95031.26316381389208004632569799158393598320",
+          "paper_rounding_delta": "5E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-2.050296939888109861489672614843399869169",
+            "double_cash": "307.5445409832164792234508922265099803754",
+            "missing_cash": "-307.5445409832164792234508922265099803754",
+            "stale_mark_plus_cash": "307.54454098321647922345089222650998037535"
+          }
+        },
+        "netted": {
+          "record_shares": "2437.812751121268748085302800261087273674",
+          "gross_cash_paid": "365.6719126681903122127954200391630910511",
+          "old_stock_value": "112992.62101447080647375378479210139513478990",
+          "ex_stock_plus_cash": "112992.62101447080647375378479210139513478990",
+          "paper_rounding_delta": "0E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-2.437812751121268748085302800261087273674",
+            "double_cash": "365.6719126681903122127954200391630910511",
+            "missing_cash": "-365.6719126681903122127954200391630910511",
+            "stale_mark_plus_cash": "365.67191266819031221279542003916309105110"
+          }
+        }
+      }
+    },
+    "600189": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "87429d77b24a9652d8c2d689396dde11852c90f6d9689647021265d6f5b80143",
+      "original_row_sha256": "51074199c20a1054f3468fa22ad00a163723e9ed98bc8db01db1a83b961ade33",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2016-07-07",
+          "close": "12.1000",
+          "preclose": "11.7600",
+          "volume": "11997800",
+          "tradestatus": "1"
+        },
+        "record": {
+          "date": "2016-07-15",
+          "code": "sh.600189",
+          "close": "12.1000",
+          "preclose": "12.1000",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "600189"
+        },
+        "ex": {
+          "date": "2016-07-18",
+          "code": "sh.600189",
+          "close": "12.0500",
+          "preclose": "12.0500",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "600189"
+        },
+        "resume": {
+          "date": "2017-01-04",
+          "code": "sh.600189",
+          "close": "13.2600",
+          "preclose": "12.0500",
+          "volume": "832877",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "600189"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "status": "NOT_HELD_ON_RECORD_DATE"
+        },
+        "netted": {
+          "record_shares": "10884.43094518257552075040736066711435766",
+          "gross_cash_paid": "544.221547259128776037520368033355717883",
+          "old_stock_value": "131701.6144367091638010799290640720837276860",
+          "ex_stock_plus_cash": "131701.6144367091638010799290640720837276860",
+          "paper_rounding_delta": "0E-37",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-10.88443094518257552075040736066711435766",
+            "double_cash": "544.221547259128776037520368033355717883",
+            "missing_cash": "-544.221547259128776037520368033355717883",
+            "stale_mark_plus_cash": "544.2215472591287760375203680333557178830"
+          }
+        }
+      }
+    },
+    "300423": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "aad834fa11a91d266fc32c0423546f648ed5548df15ff43c4488cee0ca8f330e",
+      "original_row_sha256": "7cae9e9b68a450407141adec2371b47a864f8df5f450cffd7a78d32a6c87a91b",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2017-02-24",
+          "code": "sz.300423",
+          "close": "34.0000",
+          "preclose": "32.5100",
+          "volume": "2759157",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300423"
+        },
+        "record": {
+          "date": "2017-05-25",
+          "code": "sz.300423",
+          "close": "34.0000",
+          "preclose": "34.0000",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300423"
+        },
+        "ex": {
+          "date": "2017-05-26",
+          "code": "sz.300423",
+          "close": "33.9500",
+          "preclose": "33.9500",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300423"
+        },
+        "resume": {
+          "date": "2017-07-31",
+          "code": "sz.300423",
+          "close": "30.5600",
+          "preclose": "33.9500",
+          "volume": "3336699",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300423"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "record_shares": "3920.781787293934418452737535709744080465",
+          "gross_cash_paid": "196.0390893646967209226368767854872040232",
+          "old_stock_value": "133306.58076799377022739307621413129873581000",
+          "ex_stock_plus_cash": "133306.58076799377022739307621413129873580995",
+          "paper_rounding_delta": "-5E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-3.920781787293934418452737535709744080465",
+            "double_cash": "196.0390893646967209226368767854872040232",
+            "missing_cash": "-196.0390893646967209226368767854872040232",
+            "stale_mark_plus_cash": "196.03908936469672092263687678548720402325"
+          }
+        },
+        "netted": {
+          "record_shares": "4762.627984149165667358622527239885832852",
+          "gross_cash_paid": "238.1313992074582833679311263619942916426",
+          "old_stock_value": "161929.35146107163269019316592615611831696800",
+          "ex_stock_plus_cash": "161929.35146107163269019316592615611831696800",
+          "paper_rounding_delta": "0E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-4.762627984149165667358622527239885832852",
+            "double_cash": "238.1313992074582833679311263619942916426",
+            "missing_cash": "-238.1313992074582833679311263619942916426",
+            "stale_mark_plus_cash": "238.13139920745828336793112636199429164260"
+          }
+        }
+      }
+    },
+    "300478": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "6ce5cfc87620e740b380f09b2ccaccdd3ca6b4b8ab3a90e4229d382a861dcc5b",
+      "original_row_sha256": "9e5d84239aba54eeefafeefc362169f1e3feb1a8f0c1c42d6402e23d6cd89964",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2017-03-17",
+          "code": "sz.300478",
+          "close": "55.7500",
+          "preclose": "56.2500",
+          "volume": "820502",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300478"
+        },
+        "record": {
+          "date": "2017-06-06",
+          "code": "sz.300478",
+          "close": "55.7500",
+          "preclose": "55.7500",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300478"
+        },
+        "ex": {
+          "date": "2017-06-07",
+          "code": "sz.300478",
+          "close": "55.6000",
+          "preclose": "55.6000",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "300478"
+        },
+        "resume": {
+          "date": "2017-08-07",
+          "code": "sz.300478",
+          "close": "50.0400",
+          "preclose": "55.6000",
+          "volume": "31800",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "300478"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "record_shares": "2331.865300034079712156975151069462407312",
+          "gross_cash_paid": "349.7797950051119568235462726604193610968",
+          "old_stock_value": "130001.49047689994395275136467212252920764400",
+          "ex_stock_plus_cash": "130001.49047689994395275136467212252920764400",
+          "paper_rounding_delta": "0E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-2.331865300034079712156975151069462407312",
+            "double_cash": "349.7797950051119568235462726604193610968",
+            "missing_cash": "-349.7797950051119568235462726604193610968",
+            "stale_mark_plus_cash": "349.77979500511195682354627266041936109680"
+          }
+        },
+        "netted": {
+          "record_shares": "2840.346403189899404042715849973061159349",
+          "gross_cash_paid": "426.0519604784849106064073774959591739024",
+          "old_stock_value": "158349.31197783689177538140863599815963370675",
+          "ex_stock_plus_cash": "158349.31197783689177538140863599815963370680",
+          "paper_rounding_delta": "5E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-2.840346403189899404042715849973061159349",
+            "double_cash": "426.0519604784849106064073774959591739024",
+            "missing_cash": "-426.0519604784849106064073774959591739024",
+            "stale_mark_plus_cash": "426.05196047848491060640737749595917390235"
+          }
+        }
+      }
+    },
+    "603033": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "36cb0ce8869ac318b36a1615561eaca1982a30dbd55946f67e0f7bb498b0f4f8",
+      "original_row_sha256": "b05d640c12d040ace2626ef4850c618f219d55b743c817b79a2b2ab7db35758e",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2018-01-31",
+          "code": "sh.603033",
+          "close": "18.8500",
+          "preclose": "18.1200",
+          "volume": "2381440",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "603033"
+        },
+        "record": {
+          "date": "2018-05-18",
+          "code": "sh.603033",
+          "close": "18.8500",
+          "preclose": "18.8500",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "603033"
+        },
+        "ex": {
+          "date": "2018-05-21",
+          "code": "sh.603033",
+          "close": "18.7000",
+          "preclose": "18.7000",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "603033"
+        },
+        "resume": {
+          "date": "2018-05-28",
+          "code": "sh.603033",
+          "close": "20.5700",
+          "preclose": "18.7000",
+          "volume": "3570340",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "603033"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "status": "NOT_HELD_ON_RECORD_DATE"
+        },
+        "netted": {
+          "record_shares": "7112.175929496385174632284704529003339784",
+          "gross_cash_paid": "1066.826389424457776194842705679350500968",
+          "old_stock_value": "134064.51627100686054181856668037171295492840",
+          "ex_stock_plus_cash": "134064.51627100686054181856668037171295492880",
+          "paper_rounding_delta": "4.0E-37",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-7.112175929496385174632284704529003339784",
+            "double_cash": "1066.826389424457776194842705679350500968",
+            "missing_cash": "-1066.826389424457776194842705679350500968",
+            "stale_mark_plus_cash": "1066.82638942445777619484270567935050096760"
+          }
+        }
+      }
+    },
+    "002778": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "eb75b5d9518345cfd50222cdabe7a33b5482cac198f0cf3a18501916de8a8388",
+      "original_row_sha256": "24cb1a343af301c7c7f93446966c9f622f68f3b59ca0ddb07d5c5a79ab040fdb",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2018-04-20",
+          "code": "sz.002778",
+          "close": "19.0900",
+          "preclose": "19.9000",
+          "volume": "897280",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "002778"
+        },
+        "record": {
+          "date": "2018-06-14",
+          "code": "sz.002778",
+          "close": "19.0900",
+          "preclose": "19.0900",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "002778"
+        },
+        "ex": {
+          "date": "2018-06-15",
+          "code": "sz.002778",
+          "close": "19.0200",
+          "preclose": "19.0200",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "002778"
+        },
+        "resume": {
+          "date": "2018-07-20",
+          "code": "sz.002778",
+          "close": "19.3000",
+          "preclose": "19.0200",
+          "volume": "4081873",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "002778"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "record_shares": "5046.691073007363191454587748461610358281",
+          "gross_cash_paid": "353.2683751105154234018211423923127250797",
+          "old_stock_value": "96341.33258371056332486808011813214173958429",
+          "ex_stock_plus_cash": "96341.33258371056332486808011813214173958432",
+          "paper_rounding_delta": "3E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-5.046691073007363191454587748461610358281",
+            "double_cash": "353.2683751105154234018211423923127250797",
+            "missing_cash": "-353.2683751105154234018211423923127250797",
+            "stale_mark_plus_cash": "353.26837511051542340182114239231272507967"
+          }
+        },
+        "netted": {
+          "record_shares": "6102.049291347760442952918619944158907611",
+          "gross_cash_paid": "427.1434503943432310067043033960911235328",
+          "old_stock_value": "116488.12097182874685597121645473399354629399",
+          "ex_stock_plus_cash": "116488.12097182874685597121645473399354629402",
+          "paper_rounding_delta": "3E-38",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-6.102049291347760442952918619944158907611",
+            "double_cash": "427.1434503943432310067043033960911235328",
+            "missing_cash": "-427.1434503943432310067043033960911235328",
+            "stale_mark_plus_cash": "427.14345039434323100670430339609112353277"
+          }
+        }
+      }
+    },
+    "600796": {
+      "status": "PASS_SOURCE_MARK_LEDGER_AND_MUTATIONS",
+      "issuer_sha256": "c0e8e52e11528f70650b43d1a48ff4078394841d2ed9ba0b5ee487d44e2ae63c",
+      "original_row_sha256": "4557e2fb859a2f5b8c749603df2d4340a9ff78faff5c9d9a403913e72a31ac87",
+      "source_candidate_sha256": "d2efcd97b68d22bbd1440b98a1c0b235cc211224b47ed04dcdc143b8562bf86c",
+      "market": {
+        "last_trade": {
+          "date": "2018-04-27",
+          "code": "sh.600796",
+          "close": "6.1100",
+          "preclose": "6.0600",
+          "volume": "1806291",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "600796"
+        },
+        "record": {
+          "date": "2018-06-26",
+          "code": "sh.600796",
+          "close": "6.1100",
+          "preclose": "6.1100",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "600796"
+        },
+        "ex": {
+          "date": "2018-06-27",
+          "code": "sh.600796",
+          "close": "6.0800",
+          "preclose": "6.0800",
+          "volume": "0",
+          "tradestatus": "0",
+          "isST": "0",
+          "symbol": "600796"
+        },
+        "resume": {
+          "date": "2018-10-31",
+          "code": "sh.600796",
+          "close": "5.4700",
+          "preclose": "6.0800",
+          "volume": "582400",
+          "tradestatus": "1",
+          "isST": "0",
+          "symbol": "600796"
+        }
+      },
+      "wrong_amount_same_mark": true,
+      "branches": {
+        "prefunded": {
+          "record_shares": "16936.65208406295424033214107176600099558",
+          "gross_cash_paid": "508.0995625218886272099642321529800298674",
+          "old_stock_value": "103482.9442336246504084293819484902660829938",
+          "ex_stock_plus_cash": "103482.9442336246504084293819484902660829938",
+          "paper_rounding_delta": "0E-37",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-16.93665208406295424033214107176600099558",
+            "double_cash": "508.0995625218886272099642321529800298674",
+            "missing_cash": "-508.0995625218886272099642321529800298674",
+            "stale_mark_plus_cash": "508.0995625218886272099642321529800298674"
+          }
+        },
+        "netted": {
+          "record_shares": "20310.69135678740757456318164158637505361",
+          "gross_cash_paid": "609.3207407036222272368954492475912516083",
+          "old_stock_value": "124098.3241899710602805810398300927515775571",
+          "ex_stock_plus_cash": "124098.3241899710602805810398300927515775571",
+          "paper_rounding_delta": "0E-37",
+          "booked_ex_orders": 0,
+          "mutations_rejected": {
+            "wrong_cash_even_if_same_mark": "-20.31069135678740757456318164158637505361",
+            "double_cash": "609.3207407036222272368954492475912516083",
+            "missing_cash": "-609.3207407036222272368954492475912516083",
+            "stale_mark_plus_cash": "609.3207407036222272368954492475912516083"
+          }
+        }
+      }
+    }
+  },
+  "first_blocks": {
+    "prefunded": {
+      "date": "2018-12-17",
+      "reason": "non_shareholder_reorg_not_entitlement:2018-12-17:600423"
+    },
+    "netted": {
+      "date": "2018-07-06",
+      "reason": "unverified_missing_raw_close:2018-07-06:600232"
+    }
+  }
+}

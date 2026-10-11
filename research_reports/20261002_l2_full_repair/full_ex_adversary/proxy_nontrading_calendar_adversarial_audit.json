@@ -1,0 +1,80 @@
+{
+  "status": "NONTRADING_ROWS_FOUND",
+  "source": "BaoStock query_trade_dates; independent of frozen proxy index and strategy accounts",
+  "proxy_sha256": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+  "engine_code_sha256": "21fe00ccebf44652a49ddf819e035d7d5ea470fd19714476501f01c24da97262",
+  "proxy_first": "2010-01-05",
+  "proxy_last": "2026-09-30",
+  "proxy_rows": 4067,
+  "nontrading_count": 1,
+  "nontrading_dates": [
+    "2018-06-18"
+  ],
+  "nontrading_by_year": {
+    "2018": 1
+  },
+  "first_nontrading_row": {
+    "date": "2018-06-18",
+    "close": "21681.37952505012",
+    "daily_return": "0.0",
+    "holding_count": "100",
+    "holding_effective": "True"
+  },
+  "previous_and_next_for_first": {
+    "previous": {
+      "date": "2018-06-15",
+      "close": "21681.37952505012",
+      "daily_return": "-0.0297423075014427",
+      "holding_count": "100",
+      "holding_effective": "True"
+    },
+    "synthetic": {
+      "date": "2018-06-18",
+      "close": "21681.37952505012",
+      "daily_return": "0.0",
+      "holding_count": "100",
+      "holding_effective": "True"
+    },
+    "next": {
+      "date": "2018-06-19",
+      "close": "19991.214978243566",
+      "daily_return": "-0.0779546589668693",
+      "holding_count": "100",
+      "holding_effective": "True"
+    }
+  },
+  "journal_counts": {
+    "daily_rows": 0,
+    "rights_rows": 0,
+    "signal_orders": 0,
+    "execution_orders": 0,
+    "booked_execution_orders": 0
+  },
+  "member_nontrading_dates": [],
+  "branches_against_trade_calendar": {
+    "prefunded": {
+      "first": "2010-02-22",
+      "last": "2018-06-20",
+      "observed_days": 2026,
+      "expected_trade_days": 2026,
+      "first_missing_trade_day": null,
+      "first_nontrading_daily_row": null
+    },
+    "netted": {
+      "first": "2010-02-22",
+      "last": "2018-06-20",
+      "observed_days": 2026,
+      "expected_trade_days": 2026,
+      "first_missing_trade_day": null,
+      "first_nontrading_daily_row": null
+    }
+  },
+  "journal_first_examples": {
+    "daily_rows": [],
+    "rights_rows": [],
+    "signal_orders": [],
+    "execution_orders": [],
+    "booked_execution_orders": []
+  },
+  "annualization_effect_if_252_day_count": "Adding non-trading daily rows inflates the observation denominator and changes 252-day annualization; exact performance effect requires a full corrected replay."
+}

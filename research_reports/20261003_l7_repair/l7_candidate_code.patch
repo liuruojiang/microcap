@@ -1,0 +1,374 @@
+diff --git a/microcap_top100_mom16_biweekly_live_v2_0.py b/microcap_top100_mom16_biweekly_live_v2_0.py
+index 6e720103..1aec0d40 100644
+--- a/microcap_top100_mom16_biweekly_live_v2_0.py
++++ b/microcap_top100_mom16_biweekly_live_v2_0.py
+@@ -2021,6 +2021,8 @@ TOP_N = 100
+ SECURITY_META_VERSION = 2
+ ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
+ CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
++# Both exchanges raised main-board ST limits from 5% to 10% on this date.
++MAINBOARD_ST_LIMIT_SWITCH = pd.Timestamp("2026-07-06")
+ LIMIT_PRICE_REL_EPS = 1e-4
+ SCHEDULES = {
+     "monthly": "month_start",
+@@ -3021,16 +3023,17 @@ def round_limit_price(value: float) -> float:
+ 
+ def get_price_limit_ratio(symbol: str, trade_date: pd.Timestamp, is_st: bool = False) -> float:
+     code = str(symbol).zfill(6)
++    day = pd.Timestamp(trade_date)
+     if code.startswith(("4", "8", "920")):
+         return 0.3
+-    if is_st and code.startswith(("300", "301")) and pd.Timestamp(trade_date) < CHINEXT_LIMIT_SWITCH:
++    if is_st and code.startswith(("300", "301")) and day < CHINEXT_LIMIT_SWITCH:
+         return 0.05
+     if code.startswith(("300", "301")):
+-        return 0.2 if pd.Timestamp(trade_date) >= CHINEXT_LIMIT_SWITCH else 0.1
++        return 0.2 if day >= CHINEXT_LIMIT_SWITCH else 0.1
+     if code.startswith("688"):
+         return 0.2
+     if is_st:
+-        return 0.05
++        return 0.1 if day >= MAINBOARD_ST_LIMIT_SWITCH else 0.05
+     return 0.1
+ 
+ 
+@@ -13889,7 +13892,7 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
+     if ret.empty:
+         raise ValueError("empty return series")
+     nav = (1.0 + ret).cumprod()
+-    years = (ret.index[-1] - ret.index[0]).days / 365.25
++    years = len(ret) / TARGET_VOL_TRADING_DAYS
+     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
+     vol = ret.std(ddof=1) * (TARGET_VOL_TRADING_DAYS**0.5)
+     sharpe = annual / vol if vol > 0 else 0.0
+@@ -13972,7 +13975,7 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
+         if part.empty:
+             continue
+         nav = (1.0 + part).cumprod()
+-        years = (part.index[-1] - part.index[0]).days / 365.25
++        years = len(part) / TARGET_VOL_TRADING_DAYS
+         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
+         vol = part.std(ddof=1) * (TARGET_VOL_TRADING_DAYS**0.5)
+         sharpe = annual / vol if vol > 0 else 0.0
+diff --git a/microcap_top100_mom16_biweekly_live_v2_3.py b/microcap_top100_mom16_biweekly_live_v2_3.py
+index ef087b71..0bf774ee 100644
+--- a/microcap_top100_mom16_biweekly_live_v2_3.py
++++ b/microcap_top100_mom16_biweekly_live_v2_3.py
+@@ -1253,7 +1253,7 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
+     if ret.empty:
+         raise ValueError("empty return series")
+     nav = (1.0 + ret).cumprod()
+-    years = (ret.index[-1] - ret.index[0]).days / 365.25
++    years = len(ret) / TRADING_DAYS
+     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
+     vol = ret.std(ddof=1) * (TRADING_DAYS**0.5)
+     sharpe = annual / vol if vol > 0 else 0.0
+@@ -1337,7 +1337,7 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
+         if part.empty:
+             continue
+         nav = (1.0 + part).cumprod()
+-        years = (part.index[-1] - part.index[0]).days / 365.25
++        years = len(part) / TRADING_DAYS
+         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
+         vol = part.std(ddof=1) * (TRADING_DAYS**0.5)
+         drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
+diff --git a/microcap_top100_mom16_biweekly_live_v2_5.py b/microcap_top100_mom16_biweekly_live_v2_5.py
+index f1f0096f..a342f958 100644
+--- a/microcap_top100_mom16_biweekly_live_v2_5.py
++++ b/microcap_top100_mom16_biweekly_live_v2_5.py
+@@ -1466,12 +1466,12 @@ def summarize_returns(ret: pd.Series) -> dict[str, float | str | int]:
+     if ret.empty:
+         raise ValueError("empty return series")
+     nav = (1.0 + ret).cumprod()
+-    years = (ret.index[-1] - ret.index[0]).days / 365.25
++    years = len(ret) / TRADING_DAYS
+     annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 else 0.0
+     vol = ret.std(ddof=1) * (TRADING_DAYS**0.5)
+     sharpe_cagr = annual / vol if vol > 0 else 0.0
+     sharpe_mean = ret.mean() * TRADING_DAYS / vol if vol > 0 else 0.0
+-    drawdown = nav.div(nav.cummax()).sub(1.0)
++    drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
+     return {
+         "start_date": str(pd.Timestamp(ret.index[0]).date()),
+         "end_date": str(pd.Timestamp(ret.index[-1]).date()),
+@@ -1549,10 +1549,10 @@ def summarize_yearly(ret: pd.Series) -> pd.DataFrame:
+         if part.empty:
+             continue
+         nav = (1.0 + part).cumprod()
+-        years = (part.index[-1] - part.index[0]).days / 365.25
++        years = len(part) / TRADING_DAYS
+         annual = nav.iloc[-1] ** (1.0 / years) - 1.0 if years > 0 and len(part) >= 60 else np.nan
+         vol = part.std(ddof=1) * (TRADING_DAYS**0.5)
+-        drawdown = nav.div(nav.cummax()).sub(1.0)
++        drawdown = nav.div(nav.cummax().clip(lower=1.0)).sub(1.0)
+         rows.append(
+             {
+                 "year": str(year),
+diff --git a/scripts/top100_delivery.py b/scripts/top100_delivery.py
+index b242dc2f..762cbdea 100644
+--- a/scripts/top100_delivery.py
++++ b/scripts/top100_delivery.py
+@@ -33,17 +33,23 @@ def plain_v23_identity(row: dict) -> bool:
+         return (row.get("strategy_revision") == V23_STRATEGY_REVISION
+                 and str(row.get("target_vol_enabled")) == "False"
+                 and str(row.get("r2_gate_enabled")) == "False"
++                and all(str(row[key]) == "True" for key in ("overheat_enabled", "overheat_overlay_enabled")
++                        if key in row)
+                 and str(row.get("cash_day_yield_enabled")) == "False"
+                 and str(row.get("financing_enabled")) == "False"
++                and float(row.get("lookback", -1)) == 25.
++                and float(row.get("halflife", -1)) == 2.5
+                 and float(row.get("r2_entry_gate", -1)) == 0.
+                 and float(row.get("signal_spread_hedge_ratio", -1)) == 1.
++                and float(row.get("execution_hedge_ratio", -1)) == .8
+                 and abs(float(row.get("momentum_gap_exit_buffer", -1)) - .08) < 1e-12
+                 # NAV and final signal use these two established entry aliases.
+                 and any(key in row for key in ("entry_threshold", "momentum_gap_entry_threshold"))
+                 and all(float(row[key]) == 0. for key in ("entry_threshold", "momentum_gap_entry_threshold")
+                         if key in row)
+                 and abs(float(row.get("overheat_trigger_threshold", -1)) - .26) < 1e-12
+-                and abs(float(row.get("overheat_recovery_threshold", -1)) - .20) < 1e-12)
++                and abs(float(row.get("overheat_recovery_threshold", -1)) - .20) < 1e-12
++                and float(row.get("overheat_feature_window", -1)) == 10.)
+     except (TypeError, ValueError):
+         return False
+ 
+@@ -54,6 +60,8 @@ def plain_v20_identity(row: dict) -> bool:
+         return (row.get("strategy_revision") == V20_STRATEGY_REVISION
+                 and str(row.get("target_vol_enabled")) == "False"
+                 and str(row.get("overheat_enabled")) == "False"
++                and ("lookback" not in row or float(row["lookback"]) == 16.)
++                and ("fixed_hedge_ratio" not in row or float(row["fixed_hedge_ratio"]) == .8)
+                 and float(row.get("current_execution_scale", -1)) in (0., 1.)
+                 and float(row.get("next_session_actionable_scale", -1)) in (0., 1.))
+     except (TypeError, ValueError):
+@@ -66,6 +74,8 @@ def plain_v25_identity(row: dict) -> bool:
+         return (
+             row.get("strategy_revision") == V25_STRATEGY_REVISION
+             and str(row.get("target_vol_enabled")) == "False"
++            and all(str(row[key]) == "False" for key in ("overheat_enabled", "overheat_overlay_enabled")
++                    if key in row)
+             and str(row.get("cash_day_yield_enabled")) == "False"
+             and str(row.get("financing_enabled")) == "False"
+             and float(row.get("lookback", -1)) == 20.0
+@@ -205,16 +215,25 @@ def inspect_outputs(root: Path, expected: str) -> dict:
+             if v == "0":
+                 params = summary.get("core_params", {})
+                 if (summary.get("strategy_revision") != V20_STRATEGY_REVISION or
++                        params.get("lookback") != 16 or
++                        params.get("fixed_hedge_ratio") != .8 or
+                         params.get("momentum_gap_exit_buffer") != 0 or
+                         params.get("target_volatility_scaling", {}).get("enabled") is not False or
+                         params.get("overheat_defense", {}).get("enabled") is not False):
+                     errors.append("v2.0 summary plain revision mismatch")
+             if v == "3":
+                 params = summary.get("core_params", {})
++                signal_model = params.get("signal_model", {})
++                overheat = params.get("overheat_defense", {})
+                 if (summary.get("strategy_revision") != V23_STRATEGY_REVISION or
+-                        params.get("signal_model", {}).get("r2_entry_gate") != 0 or
+-                        params.get("overheat_defense", {}).get("trigger_threshold") != .26 or
+-                        params.get("overheat_defense", {}).get("recovery_threshold") != .20):
++                        signal_model.get("lookback") != 25 or
++                        signal_model.get("halflife") != 2.5 or
++                        signal_model.get("r2_entry_gate") != 0 or
++                        params.get("execution_hedge_ratio") != .8 or
++                        overheat.get("enabled") is not True or
++                        overheat.get("feature_window") != 10 or
++                        overheat.get("trigger_threshold") != .26 or
++                        overheat.get("recovery_threshold") != .20):
+                     errors.append("v2.3 summary plain revision mismatch")
+             if v == "5":
+                 params = summary.get("core_params", {})
+@@ -224,6 +243,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
+                         signal_model.get("halflife") != 3.0 or
+                         params.get("entry_threshold") != 0.0 or
+                         params.get("exit_threshold") != 0.0 or
++                        params.get("overheat_overlay", {}).get("enabled") is not False or
+                         params.get("target_volatility_scaling", {}).get("enabled") is not False):
+                     errors.append("v2.5 plain revision mismatch")
+             if summary.get("historical_rewrite_audit", {}).get("status") != "clean":
+@@ -255,6 +275,13 @@ def inspect_outputs(root: Path, expected: str) -> dict:
+                 if name.endswith("latest_signal.csv"):
+                     if len(rows) != 1 or rows[0].get("version") != f"2.{v}":
+                         errors.append(f"v2.{v} final CSV identity mismatch")
++                    if v == "0" and (rows[0].get("lookback") != "16" or
++                                     float(rows[0].get("fixed_hedge_ratio", -1)) != .8):
++                        errors.append("v2.0 final lookback/hedge identity mismatch")
++                    if v == "3" and rows[0].get("overheat_enabled") != "True":
++                        errors.append("v2.3 final overheat enabled identity mismatch")
++                    if v == "5" and rows[0].get("overheat_enabled") != "False":
++                        errors.append("v2.5 final overheat disabled identity mismatch")
+                     # Member instructions must carry explicit dated action fields.
+                     if any(rows[0].get(key) not in ("True", "False") for key in (
+                             "member_rebalance_actionable", "member_rebalance_required", "member_rebalance_official")):
+diff --git a/tests/test_top100_delivery.py b/tests/test_top100_delivery.py
+index ba5f74fc..072eaeec 100644
+--- a/tests/test_top100_delivery.py
++++ b/tests/test_top100_delivery.py
+@@ -1,3 +1,4 @@
++import csv
+ import json
+ import subprocess
+ from datetime import datetime
+@@ -14,6 +15,19 @@ def write(root, name, content):
+     path.write_text(content, encoding="utf-8")
+ 
+ 
++def change_csv_cell(path, field, value):
++    with path.open(encoding="utf-8-sig", newline="") as handle:
++        reader = csv.DictReader(handle)
++        fieldnames = reader.fieldnames
++        rows = list(reader)
++    assert fieldnames and rows and field in fieldnames
++    rows[-1][field] = value
++    with path.open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=fieldnames)
++        writer.writeheader()
++        writer.writerows(rows)
++
++
+ @pytest.fixture
+ def workspace(tmp_path):
+     daily = "date,return_net,nav_net\n2026-09-02,0.01,1.01\n2026-09-03,0.02,1.0302\n"
+@@ -56,28 +70,32 @@ def workspace(tmp_path):
+                                             "expected_latest_rebalance_date": "2026-09-03"}}
+         if version == "0":
+             summary.update(strategy_revision=delivery.V20_STRATEGY_REVISION, core_params={
++                "lookback": 16, "fixed_hedge_ratio": .8,
+                 "momentum_gap_exit_buffer": 0., "target_volatility_scaling": {"enabled": False},
+                 "overheat_defense": {"enabled": False}})
+         if version == "3":
+             summary.update(strategy_revision=delivery.V23_STRATEGY_REVISION, core_params={
+-                "signal_model": {"r2_entry_gate": 0.},
+-                "overheat_defense": {"trigger_threshold": .26, "recovery_threshold": .20}})
++                "signal_model": {"lookback": 25, "halflife": 2.5, "r2_entry_gate": 0.},
++                "execution_hedge_ratio": .8,
++                "overheat_defense": {"enabled": True, "feature_window": 10,
++                                     "trigger_threshold": .26, "recovery_threshold": .20}})
+         if version == "5":
+             summary.update(strategy_revision=delivery.V25_STRATEGY_REVISION, core_params={
+                 "signal_model": {"lookback": 20, "halflife": 3.0},
+                 "entry_threshold": 0.0, "exit_threshold": 0.0,
++                "overheat_overlay": {"enabled": False},
+                 "target_volatility_scaling": {"enabled": False}})
+         write(tmp_path, f"outputs/{prefix}_summary.json", json.dumps(summary))
+-        identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,current_execution_scale,next_session_actionable_scale"
+-        identity = f",{delivery.V20_STRATEGY_REVISION},False,False,1.0,1.0"
++        identity_header = ",strategy_revision,target_vol_enabled,overheat_enabled,lookback,fixed_hedge_ratio,current_execution_scale,next_session_actionable_scale"
++        identity = f",{delivery.V20_STRATEGY_REVISION},False,False,16,0.8,1.0,1.0"
+         if version == "3":
+-            identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,r2_entry_gate,overheat_trigger_threshold,overheat_recovery_threshold"
+-                               ",signal_spread_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
+-            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,0.0,0.26,0.20,1.0,0.0,0.08,False,False"
++            identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,overheat_enabled,lookback,halflife,r2_entry_gate,overheat_feature_window,overheat_trigger_threshold,overheat_recovery_threshold"
++                               ",signal_spread_hedge_ratio,execution_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
++            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,True,25,2.5,0.0,10,0.26,0.20,1.0,0.8,0.0,0.08,False,False"
+         if version == "5":
+-            identity_header = (",strategy_revision,target_vol_enabled,cash_day_yield_enabled,financing_enabled,lookback,halflife"
++            identity_header = (",strategy_revision,target_vol_enabled,overheat_enabled,cash_day_yield_enabled,financing_enabled,lookback,halflife"
+                                ",entry_threshold,exit_threshold,signal_spread_hedge_ratio,execution_hedge_ratio")
+-            identity = f",{delivery.V25_STRATEGY_REVISION},False,False,False,20,3.0,0.0,0.0,0.0,0.0"
++            identity = f",{delivery.V25_STRATEGY_REVISION},False,False,False,False,20,3.0,0.0,0.0,0.0,0.0"
+         for name in (costed, f"{prefix}_nav.csv", f"{prefix}_performance_nav.csv"):
+             content = daily
+             if version in ("0", "3", "5") and not name.endswith("performance_nav.csv"):
+@@ -360,3 +378,31 @@ def test_same_day_proof_cannot_hide_changed_input(workspace):
+     path = workspace / "outputs" / delivery.BASE_PANEL
+     path.write_text(path.read_text() + "\n")
+     assert delivery.reusable_confirmed_today(workspace, datetime.fromisoformat("2026-09-03T15:36:00+08:00")) is None
++
++
++@pytest.mark.parametrize("version,suffix,field,bad", [
++    ("0", "latest_signal", "lookback", "17"),
++    ("3", "nav", "execution_hedge_ratio", "0.7"),
++    ("3", "latest_signal", "overheat_enabled", ""),
++    ("5", "latest_signal", "overheat_enabled", "True"),
++])
++def test_final_stream_rejects_parameter_identity_drift(workspace, version, suffix, field, bad):
++    certify(workspace)
++    path = workspace / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_{suffix}.csv"
++    change_csv_cell(path, field, bad)
++    assert not delivery.inspect_outputs(workspace, "2026-09-03")["ok"]
++
++
++@pytest.mark.parametrize("version,group,field,bad", [
++    ("0", "core_params", "fixed_hedge_ratio", 0.7),
++    ("3", "signal_model", "halflife", 3.0),
++    ("5", "overheat_overlay", "enabled", True),
++])
++def test_summary_rejects_parameter_identity_drift(workspace, version, group, field, bad):
++    certify(workspace)
++    path = workspace / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json"
++    summary = json.loads(path.read_text(encoding="utf-8"))
++    target = summary["core_params"] if group == "core_params" else summary["core_params"][group]
++    target[field] = bad
++    path.write_text(json.dumps(summary), encoding="utf-8")
++    assert not delivery.inspect_outputs(workspace, "2026-09-03")["ok"]
+diff --git a/tests/test_v23_identity_adversarial.py b/tests/test_v23_identity_adversarial.py
+index cc89d602..096ca688 100644
+--- a/tests/test_v23_identity_adversarial.py
++++ b/tests/test_v23_identity_adversarial.py
+@@ -9,14 +9,18 @@ from scripts import top100_delivery as delivery
+ 
+ def _identity():
+     return dict(strategy_revision=delivery.V23_STRATEGY_REVISION,
+-                target_vol_enabled="False", r2_gate_enabled="False", r2_entry_gate="0",
+-                overheat_trigger_threshold=".26", overheat_recovery_threshold=".20",
+-                signal_spread_hedge_ratio="1", momentum_gap_entry_threshold="0",
++                target_vol_enabled="False", r2_gate_enabled="False", overheat_enabled="True",
++                lookback="25", halflife="2.5", r2_entry_gate="0",
++                overheat_feature_window="10", overheat_trigger_threshold=".26",
++                overheat_recovery_threshold=".20", signal_spread_hedge_ratio="1",
++                execution_hedge_ratio=".8", momentum_gap_entry_threshold="0",
+                 momentum_gap_exit_buffer=".08", cash_day_yield_enabled="False", financing_enabled="False")
+ 
+ 
+ @pytest.mark.parametrize("field,bad", [
+     ("r2_gate_enabled", "True"), ("signal_spread_hedge_ratio", ".8"),
++    ("lookback", "26"), ("halflife", "3"), ("execution_hedge_ratio", ".7"),
++    ("overheat_feature_window", "9"), ("overheat_enabled", "False"),
+     ("momentum_gap_entry_threshold", ".9"), ("momentum_gap_exit_buffer", ".09"),
+     ("cash_day_yield_enabled", "True"), ("financing_enabled", "True"),
+ ])
+@@ -26,7 +30,11 @@ def test_missing_and_contradictory_v23_parameter_rejected(field, bad):
+     row[field] = bad
+     assert not delivery.plain_v23_identity(row)
+     row.pop(field)
+-    assert not delivery.plain_v23_identity(row)
++    if field == "overheat_enabled":
++        # NAV rows omit this flag; the final one-row signal is checked separately.
++        assert delivery.plain_v23_identity(row)
++    else:
++        assert not delivery.plain_v23_identity(row)
+ 
+ 
+ def test_nav_entry_alias_supported_but_contradiction_rejected():
+diff --git a/tests/test_v23_plain_promotion.py b/tests/test_v23_plain_promotion.py
+index 577c0de9..e04ae28f 100644
+--- a/tests/test_v23_plain_promotion.py
++++ b/tests/test_v23_plain_promotion.py
+@@ -19,8 +19,10 @@ def test_selected_parameters_and_identity():
+     ('target_vol_enabled', 'True')])
+ def test_old_or_contradictory_final_identity_rejected(field, bad):
+     row = dict(strategy_revision=v.STRATEGY_REVISION, target_vol_enabled='False',
+-               r2_gate_enabled='False', r2_entry_gate='0', overheat_trigger_threshold='.26',
++               r2_gate_enabled='False', overheat_enabled='True', lookback='25', halflife='2.5',
++               r2_entry_gate='0', overheat_feature_window='10', overheat_trigger_threshold='.26',
+                overheat_recovery_threshold='.20', signal_spread_hedge_ratio='1',
++               execution_hedge_ratio='.8',
+                momentum_gap_entry_threshold='0', momentum_gap_exit_buffer='.08',
+                cash_day_yield_enabled='False', financing_enabled='False')
+     assert delivery.plain_v23_identity(row)
+diff --git a/tests/test_v25_plain_promotion.py b/tests/test_v25_plain_promotion.py
+index 16c718a9..235017a8 100644
+--- a/tests/test_v25_plain_promotion.py
++++ b/tests/test_v25_plain_promotion.py
+@@ -35,6 +35,7 @@ def test_delivery_identity_rejects_retired_v25_line() -> None:
+     row = {
+         "strategy_revision": delivery.V25_STRATEGY_REVISION,
+         "target_vol_enabled": "False",
++            "overheat_enabled": "False",
+         "cash_day_yield_enabled": "False",
+         "financing_enabled": "False",
+         "lookback": 20,

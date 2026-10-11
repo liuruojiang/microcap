@@ -1,0 +1,863 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="20" skipped="0" tests="34" time="59.939" timestamp="2026-10-07T20:09:14.468485+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[0-wrong_version]" time="7.109"><failure message="RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000219094A1480&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x00000219089EBCB0&gt;
+version = '0', attack = 'wrong_version'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_round3_state_contract.py:138: in native_generation
+    v20.main()
+microcap_top100_mom16_biweekly_live_v2_0.py:15227: in main
+    _handle_query(query)
+microcap_top100_mom16_biweekly_live_v2_0.py:15216: in _handle_query
+    overlay_mod._handle_query(query)
+&lt;embedded_v2_overlay&gt;:2799: in _handle_query
+    ???
+&lt;embedded_v2_overlay&gt;:2699: in _print_signal_query
+    ???
+microcap_top100_mom16_biweekly_live_v2_0.py:15187: in generate_v2_0_outputs
+    return _generate_v2_0_outputs_unlocked()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_v2_overlay&gt;:2458: in generate_v2_0_outputs
+    ???
+&lt;embedded_v2_overlay&gt;:905: in assert_top100_candidate_fresh
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+files = {'base_costed_nav': {'date_column': 'date', 'exists': True, 'latest_date': '2026-09-30', 'mtime_ns': 17909266592978104...066800, ...}, 'base_panel_shadow': {'date_column': '', 'exists': False, 'latest_date': '', 'mtime_ns': None, ...}, ...}
+expected_latest_date = '2026-09-30', expected_latest_rebalance_date = ''
+daily_keys = ['base_panel_shadow', 'base_index_csv', 'base_costed_nav']
+
+&gt;   ???
+E   RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv
+
+&lt;embedded_v2_overlay&gt;:761: RuntimeError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[0-missing_anchor]" time="1.927"><failure message="RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not1')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021908B3E570&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x0000021908C2E710&gt;
+version = '0', attack = 'missing_anchor'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_round3_state_contract.py:138: in native_generation
+    v20.main()
+microcap_top100_mom16_biweekly_live_v2_0.py:15227: in main
+    _handle_query(query)
+microcap_top100_mom16_biweekly_live_v2_0.py:15216: in _handle_query
+    overlay_mod._handle_query(query)
+&lt;embedded_v2_overlay&gt;:2799: in _handle_query
+    ???
+&lt;embedded_v2_overlay&gt;:2699: in _print_signal_query
+    ???
+microcap_top100_mom16_biweekly_live_v2_0.py:15187: in generate_v2_0_outputs
+    return _generate_v2_0_outputs_unlocked()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_v2_overlay&gt;:2458: in generate_v2_0_outputs
+    ???
+&lt;embedded_v2_overlay&gt;:905: in assert_top100_candidate_fresh
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+files = {'base_costed_nav': {'date_column': 'date', 'exists': True, 'latest_date': '2026-09-30', 'mtime_ns': 17909266592978104...066800, ...}, 'base_panel_shadow': {'date_column': '', 'exists': False, 'latest_date': '', 'mtime_ns': None, ...}, ...}
+expected_latest_date = '2026-09-30', expected_latest_rebalance_date = ''
+daily_keys = ['base_panel_shadow', 'base_index_csv', 'base_costed_nav']
+
+&gt;   ???
+E   RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv
+
+&lt;embedded_v2_overlay&gt;:761: RuntimeError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[0-scale_conflict]" time="1.931"><failure message="RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not2')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021908A1B240&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002196AB2CB90&gt;
+version = '0', attack = 'scale_conflict'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_round3_state_contract.py:138: in native_generation
+    v20.main()
+microcap_top100_mom16_biweekly_live_v2_0.py:15227: in main
+    _handle_query(query)
+microcap_top100_mom16_biweekly_live_v2_0.py:15216: in _handle_query
+    overlay_mod._handle_query(query)
+&lt;embedded_v2_overlay&gt;:2799: in _handle_query
+    ???
+&lt;embedded_v2_overlay&gt;:2699: in _print_signal_query
+    ???
+microcap_top100_mom16_biweekly_live_v2_0.py:15187: in generate_v2_0_outputs
+    return _generate_v2_0_outputs_unlocked()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_v2_overlay&gt;:2458: in generate_v2_0_outputs
+    ???
+&lt;embedded_v2_overlay&gt;:905: in assert_top100_candidate_fresh
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+files = {'base_costed_nav': {'date_column': 'date', 'exists': True, 'latest_date': '2026-09-30', 'mtime_ns': 17909266592978104...066800, ...}, 'base_panel_shadow': {'date_column': '', 'exists': False, 'latest_date': '', 'mtime_ns': None, ...}, ...}
+expected_latest_date = '2026-09-30', expected_latest_rebalance_date = ''
+daily_keys = ['base_panel_shadow', 'base_index_csv', 'base_costed_nav']
+
+&gt;   ???
+E   RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv
+
+&lt;embedded_v2_overlay&gt;:761: RuntimeError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[3-missing_anchor]" time="2.211"><failure message="AssertionError: Native v2.3 信号 preserved malformed realtime: missing_anchor&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not3')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021908F01650&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002196AAFA520&gt;
+version = '3', attack = 'missing_anchor'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not3')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021908F01650&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002196AAFA520&gt;
+version = '3', attack = 'missing_anchor'
+
+    def native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack):
+        module = {"0": v20, "3": v23, "5": v25}[version]
+        output_dir = tmp_path / f"state_native_v2{version}"
+        output_dir.mkdir()
+        prefix = f"state_v2{version}"
+        realtime = output_dir / f"{prefix}_realtime_signal.csv"
+        real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
+        shutil.copy2(real_realtime, realtime)
+        if attack == "wrong_version":
+            mutate(realtime, "version", "9.9")
+        elif attack == "missing_anchor":
+            mutate(realtime, "latest_anchor_trade_date", "__DROP__")
+        elif attack == "scale_conflict":
+            mutate(realtime, "current_execution_scale", "9.0")
+        elif attack != "legal_dated_artifact":
+            raise AssertionError(attack)
+        shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / f"{prefix}_costed_nav.csv")
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+                     output_dir / f"{prefix}_summary.json")
+        corrupted = realtime.read_bytes()
+        old_v20_prefix = v20.OUTPUT_PREFIX
+        old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
+        try:
+            with monkeypatch.context() as isolated:
+                isolated.setattr(module, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
+                    copy.deepcopy(real_context["reference"]), real_context["base_gross"].copy(),
+                    real_context["turnover"].copy()))
+                if version == "0":
+                    isolated.setattr(v20.overlay_mod, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(v20, "_V2_RUNTIME_ARGS", v20.parse_v2_args(["--output-prefix", prefix, "信号"]))
+                    v20.main()
+                else:
+                    isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(module, "_load_official_v2_0_out", lambda: real_context["official"].copy())
+                    if version == "5":
+                        isolated.setattr(v25, "stale_v2_5_legacy_retest_outputs", lambda: [])
+                    module.main([f"--v2{version}-output-prefix", prefix, "信号"])
+                stdout = capsys.readouterr().out
+                costed = pd.read_csv(output_dir / f"{prefix}_costed_nav.csv", encoding="utf-8-sig")
+                formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+                assert costed["date"].tolist() == formal["date"].tolist()
+                pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
+                                              formal[["holding", "next_holding", "return_net"]],
+                                              check_exact=False, atol=1e-12, rtol=0)
+                retained = realtime.exists()
+                record("native_close_cli_realtime_cleanup", version=version, attack=attack,
+                       retained=retained, bytes_unchanged=retained and realtime.read_bytes() == corrupted,
+                       economics_match_formal=True, native_output_dir=str(output_dir),
+                       stdout_contains_signal=f"strategy_version: v2.{version}" in stdout)
+                if attack == "legal_dated_artifact":
+                    assert retained and realtime.read_bytes() == corrupted
+                else:
+&gt;                   assert not retained, f"Native v2.{version} 信号 preserved malformed realtime: {attack}"
+E                   AssertionError: Native v2.3 信号 preserved malformed realtime: missing_anchor
+E                   assert not True
+
+tests\test_round3_state_contract.py:160: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[3-scale_conflict]" time="2.168"><failure message="AssertionError: Native v2.3 信号 preserved malformed realtime: scale_conflict&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not4')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002190E10B020&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x0000021908B243E0&gt;
+version = '3', attack = 'scale_conflict'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not4')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002190E10B020&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x0000021908B243E0&gt;
+version = '3', attack = 'scale_conflict'
+
+    def native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack):
+        module = {"0": v20, "3": v23, "5": v25}[version]
+        output_dir = tmp_path / f"state_native_v2{version}"
+        output_dir.mkdir()
+        prefix = f"state_v2{version}"
+        realtime = output_dir / f"{prefix}_realtime_signal.csv"
+        real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
+        shutil.copy2(real_realtime, realtime)
+        if attack == "wrong_version":
+            mutate(realtime, "version", "9.9")
+        elif attack == "missing_anchor":
+            mutate(realtime, "latest_anchor_trade_date", "__DROP__")
+        elif attack == "scale_conflict":
+            mutate(realtime, "current_execution_scale", "9.0")
+        elif attack != "legal_dated_artifact":
+            raise AssertionError(attack)
+        shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / f"{prefix}_costed_nav.csv")
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+                     output_dir / f"{prefix}_summary.json")
+        corrupted = realtime.read_bytes()
+        old_v20_prefix = v20.OUTPUT_PREFIX
+        old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
+        try:
+            with monkeypatch.context() as isolated:
+                isolated.setattr(module, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
+                    copy.deepcopy(real_context["reference"]), real_context["base_gross"].copy(),
+                    real_context["turnover"].copy()))
+                if version == "0":
+                    isolated.setattr(v20.overlay_mod, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(v20, "_V2_RUNTIME_ARGS", v20.parse_v2_args(["--output-prefix", prefix, "信号"]))
+                    v20.main()
+                else:
+                    isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(module, "_load_official_v2_0_out", lambda: real_context["official"].copy())
+                    if version == "5":
+                        isolated.setattr(v25, "stale_v2_5_legacy_retest_outputs", lambda: [])
+                    module.main([f"--v2{version}-output-prefix", prefix, "信号"])
+                stdout = capsys.readouterr().out
+                costed = pd.read_csv(output_dir / f"{prefix}_costed_nav.csv", encoding="utf-8-sig")
+                formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+                assert costed["date"].tolist() == formal["date"].tolist()
+                pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
+                                              formal[["holding", "next_holding", "return_net"]],
+                                              check_exact=False, atol=1e-12, rtol=0)
+                retained = realtime.exists()
+                record("native_close_cli_realtime_cleanup", version=version, attack=attack,
+                       retained=retained, bytes_unchanged=retained and realtime.read_bytes() == corrupted,
+                       economics_match_formal=True, native_output_dir=str(output_dir),
+                       stdout_contains_signal=f"strategy_version: v2.{version}" in stdout)
+                if attack == "legal_dated_artifact":
+                    assert retained and realtime.read_bytes() == corrupted
+                else:
+&gt;                   assert not retained, f"Native v2.{version} 信号 preserved malformed realtime: {attack}"
+E                   AssertionError: Native v2.3 信号 preserved malformed realtime: scale_conflict
+E                   assert not True
+
+tests\test_round3_state_contract.py:160: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[5-missing_anchor]" time="1.969"><failure message="AssertionError: Native v2.5 信号 preserved malformed realtime: missing_anchor&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not5')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002190E0CF690&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002190AE2DD90&gt;
+version = '5', attack = 'missing_anchor'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not5')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002190E0CF690&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002190AE2DD90&gt;
+version = '5', attack = 'missing_anchor'
+
+    def native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack):
+        module = {"0": v20, "3": v23, "5": v25}[version]
+        output_dir = tmp_path / f"state_native_v2{version}"
+        output_dir.mkdir()
+        prefix = f"state_v2{version}"
+        realtime = output_dir / f"{prefix}_realtime_signal.csv"
+        real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
+        shutil.copy2(real_realtime, realtime)
+        if attack == "wrong_version":
+            mutate(realtime, "version", "9.9")
+        elif attack == "missing_anchor":
+            mutate(realtime, "latest_anchor_trade_date", "__DROP__")
+        elif attack == "scale_conflict":
+            mutate(realtime, "current_execution_scale", "9.0")
+        elif attack != "legal_dated_artifact":
+            raise AssertionError(attack)
+        shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / f"{prefix}_costed_nav.csv")
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+                     output_dir / f"{prefix}_summary.json")
+        corrupted = realtime.read_bytes()
+        old_v20_prefix = v20.OUTPUT_PREFIX
+        old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
+        try:
+            with monkeypatch.context() as isolated:
+                isolated.setattr(module, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
+                    copy.deepcopy(real_context["reference"]), real_context["base_gross"].copy(),
+                    real_context["turnover"].copy()))
+                if version == "0":
+                    isolated.setattr(v20.overlay_mod, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(v20, "_V2_RUNTIME_ARGS", v20.parse_v2_args(["--output-prefix", prefix, "信号"]))
+                    v20.main()
+                else:
+                    isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(module, "_load_official_v2_0_out", lambda: real_context["official"].copy())
+                    if version == "5":
+                        isolated.setattr(v25, "stale_v2_5_legacy_retest_outputs", lambda: [])
+                    module.main([f"--v2{version}-output-prefix", prefix, "信号"])
+                stdout = capsys.readouterr().out
+                costed = pd.read_csv(output_dir / f"{prefix}_costed_nav.csv", encoding="utf-8-sig")
+                formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+                assert costed["date"].tolist() == formal["date"].tolist()
+                pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
+                                              formal[["holding", "next_holding", "return_net"]],
+                                              check_exact=False, atol=1e-12, rtol=0)
+                retained = realtime.exists()
+                record("native_close_cli_realtime_cleanup", version=version, attack=attack,
+                       retained=retained, bytes_unchanged=retained and realtime.read_bytes() == corrupted,
+                       economics_match_formal=True, native_output_dir=str(output_dir),
+                       stdout_contains_signal=f"strategy_version: v2.{version}" in stdout)
+                if attack == "legal_dated_artifact":
+                    assert retained and realtime.read_bytes() == corrupted
+                else:
+&gt;                   assert not retained, f"Native v2.{version} 信号 preserved malformed realtime: {attack}"
+E                   AssertionError: Native v2.5 信号 preserved malformed realtime: missing_anchor
+E                   assert not True
+
+tests\test_round3_state_contract.py:160: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_does_not_preserve_malformed_realtime[5-scale_conflict]" time="1.996"><failure message="AssertionError: Native v2.5 信号 preserved malformed realtime: scale_conflict&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not6')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021909A22B10&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x00000219085408D0&gt;
+version = '5', attack = 'scale_conflict'
+
+    @pytest.mark.parametrize("version,attack", [
+        ("0", "wrong_version"), ("0", "missing_anchor"), ("0", "scale_conflict"),
+        ("3", "missing_anchor"), ("3", "scale_conflict"),
+        ("5", "missing_anchor"), ("5", "scale_conflict"),
+    ])
+    def test_native_close_cli_does_not_preserve_malformed_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version, attack
+    ):
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack)
+
+tests\test_round3_state_contract.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_does_not6')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000021909A22B10&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x00000219085408D0&gt;
+version = '5', attack = 'scale_conflict'
+
+    def native_generation(tmp_path, real_context, monkeypatch, capsys, version, attack):
+        module = {"0": v20, "3": v23, "5": v25}[version]
+        output_dir = tmp_path / f"state_native_v2{version}"
+        output_dir.mkdir()
+        prefix = f"state_v2{version}"
+        realtime = output_dir / f"{prefix}_realtime_signal.csv"
+        real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
+        shutil.copy2(real_realtime, realtime)
+        if attack == "wrong_version":
+            mutate(realtime, "version", "9.9")
+        elif attack == "missing_anchor":
+            mutate(realtime, "latest_anchor_trade_date", "__DROP__")
+        elif attack == "scale_conflict":
+            mutate(realtime, "current_execution_scale", "9.0")
+        elif attack != "legal_dated_artifact":
+            raise AssertionError(attack)
+        shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / f"{prefix}_costed_nav.csv")
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+                     output_dir / f"{prefix}_summary.json")
+        corrupted = realtime.read_bytes()
+        old_v20_prefix = v20.OUTPUT_PREFIX
+        old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
+        try:
+            with monkeypatch.context() as isolated:
+                isolated.setattr(module, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20, "OUTPUT_DIR", output_dir)
+                isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
+                    copy.deepcopy(real_context["reference"]), real_context["base_gross"].copy(),
+                    real_context["turnover"].copy()))
+                if version == "0":
+                    isolated.setattr(v20.overlay_mod, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "OUTPUT_DIR", output_dir)
+                    isolated.setitem(v20._overlay_ns, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(v20, "_V2_RUNTIME_ARGS", v20.parse_v2_args(["--output-prefix", prefix, "信号"]))
+                    v20.main()
+                else:
+                    isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
+                    isolated.setattr(module, "_load_official_v2_0_out", lambda: real_context["official"].copy())
+                    if version == "5":
+                        isolated.setattr(v25, "stale_v2_5_legacy_retest_outputs", lambda: [])
+                    module.main([f"--v2{version}-output-prefix", prefix, "信号"])
+                stdout = capsys.readouterr().out
+                costed = pd.read_csv(output_dir / f"{prefix}_costed_nav.csv", encoding="utf-8-sig")
+                formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+                assert costed["date"].tolist() == formal["date"].tolist()
+                pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
+                                              formal[["holding", "next_holding", "return_net"]],
+                                              check_exact=False, atol=1e-12, rtol=0)
+                retained = realtime.exists()
+                record("native_close_cli_realtime_cleanup", version=version, attack=attack,
+                       retained=retained, bytes_unchanged=retained and realtime.read_bytes() == corrupted,
+                       economics_match_formal=True, native_output_dir=str(output_dir),
+                       stdout_contains_signal=f"strategy_version: v2.{version}" in stdout)
+                if attack == "legal_dated_artifact":
+                    assert retained and realtime.read_bytes() == corrupted
+                else:
+&gt;                   assert not retained, f"Native v2.{version} 信号 preserved malformed realtime: {attack}"
+E                   AssertionError: Native v2.5 信号 preserved malformed realtime: scale_conflict
+E                   assert not True
+
+tests\test_round3_state_contract.py:160: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_preserves_legal_dated_realtime[0]" time="1.880"><failure message="RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_native_close_cli_preserve0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002190E0E6C50&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x00000219099DB020&gt;
+version = '0'
+
+    @pytest.mark.parametrize("version", ("0", "3", "5"))
+    def test_native_close_cli_preserves_legal_dated_realtime(
+        tmp_path, real_context, monkeypatch, capsys, version
+    ):
+        # Archived/current-version realtime is retained without claiming it is fresh
+        # today. Cleanup has no authority to relabel it or apply a wall-clock TTL.
+&gt;       native_generation(tmp_path, real_context, monkeypatch, capsys, version, "legal_dated_artifact")
+
+tests\test_round3_state_contract.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_round3_state_contract.py:138: in native_generation
+    v20.main()
+microcap_top100_mom16_biweekly_live_v2_0.py:15227: in main
+    _handle_query(query)
+microcap_top100_mom16_biweekly_live_v2_0.py:15216: in _handle_query
+    overlay_mod._handle_query(query)
+&lt;embedded_v2_overlay&gt;:2799: in _handle_query
+    ???
+&lt;embedded_v2_overlay&gt;:2699: in _print_signal_query
+    ???
+microcap_top100_mom16_biweekly_live_v2_0.py:15187: in generate_v2_0_outputs
+    return _generate_v2_0_outputs_unlocked()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;embedded_v2_overlay&gt;:2458: in generate_v2_0_outputs
+    ???
+&lt;embedded_v2_overlay&gt;:905: in assert_top100_candidate_fresh
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+files = {'base_costed_nav': {'date_column': 'date', 'exists': True, 'latest_date': '2026-09-30', 'mtime_ns': 17909266592978104...066800, ...}, 'base_panel_shadow': {'date_column': '', 'exists': False, 'latest_date': '', 'mtime_ns': None, ...}, ...}
+expected_latest_date = '2026-09-30', expected_latest_rebalance_date = ''
+daily_keys = ['base_panel_shadow', 'base_index_csv', 'base_costed_nav']
+
+&gt;   ???
+E   RuntimeError: Top100 freshness proof failed: base_panel_shadow does not exist: D:\动量策略\微盘股对冲策略\outputs\state_v20_panel_refreshed.csv
+
+&lt;embedded_v2_overlay&gt;:761: RuntimeError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_preserves_legal_dated_realtime[3]" time="2.438" /><testcase classname="tests.test_round3_state_contract" name="test_native_close_cli_preserves_legal_dated_realtime[5]" time="2.138" /><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[snapshot_time-__DROP__-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.009"><failure message="AssertionError: v2.3 realtime matcher accepted inconsistent snapshot_time&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req0')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'&gt;
+field = 'snapshot_time', value = '__DROP__'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent snapshot_time
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[snapshot_time-__DROP__-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.009"><failure message="AssertionError: v2.5 realtime matcher accepted inconsistent snapshot_time&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req1')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'&gt;
+field = 'snapshot_time', value = '__DROP__'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent snapshot_time
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[quote_trade_date-2099-01-01-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.009"><failure message="AssertionError: v2.3 realtime matcher accepted inconsistent quote_trade_date&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req2')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'&gt;
+field = 'quote_trade_date', value = '2099-01-01'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent quote_trade_date
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[quote_trade_date-2099-01-01-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.047"><failure message="AssertionError: v2.5 realtime matcher accepted inconsistent quote_trade_date&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req3')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'&gt;
+field = 'quote_trade_date', value = '2099-01-01'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent quote_trade_date
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[latest_anchor_trade_date-2099-01-01-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.009"><failure message="AssertionError: v2.3 realtime matcher accepted inconsistent latest_anchor_trade_date&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req4')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'&gt;
+field = 'latest_anchor_trade_date', value = '2099-01-01'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent latest_anchor_trade_date
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[latest_anchor_trade_date-2099-01-01-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.009"><failure message="AssertionError: v2.5 realtime matcher accepted inconsistent latest_anchor_trade_date&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req5')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'&gt;
+field = 'latest_anchor_trade_date', value = '2099-01-01'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent latest_anchor_trade_date
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[official_close_confirmed_signal-True-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.010"><failure message="AssertionError: v2.3 realtime matcher accepted inconsistent official_close_confirmed_signal&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req6')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'&gt;
+field = 'official_close_confirmed_signal', value = 'True'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent official_close_confirmed_signal
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[official_close_confirmed_signal-True-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.009"><failure message="AssertionError: v2.5 realtime matcher accepted inconsistent official_close_confirmed_signal&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req7')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'&gt;
+field = 'official_close_confirmed_signal', value = 'True'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent official_close_confirmed_signal
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[trade_state-close-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.009"><failure message="AssertionError: v2.3 realtime matcher accepted inconsistent trade_state&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req8')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'&gt;
+field = 'trade_state', value = 'close'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent trade_state
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[trade_state-close-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.010"><failure message="AssertionError: v2.5 realtime matcher accepted inconsistent trade_state&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req9')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'&gt;
+field = 'trade_state', value = 'close'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent trade_state
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[date-2026-01-05-3-microcap_top100_mom16_biweekly_live_v2_3]" time="0.009"><failure message="AssertionError: v2.3 realtime matcher accepted inconsistent date&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req10')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '3'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_3' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_3.py'&gt;
+field = 'date', value = '2026-01-05'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.3 realtime matcher accepted inconsistent date
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_realtime_preservation_requires_internal_time_and_state_consistency[date-2026-01-05-5-microcap_top100_mom16_biweekly_live_v2_5]" time="0.009"><failure message="AssertionError: v2.5 realtime matcher accepted inconsistent date&#10;assert not True">tmp_path = WindowsPath('D:/动量策略/微盘股对冲策略/research_reports/20261007_audit_round3/state_old_red_tmp/test_realtime_preservation_req11')
+real_context = {'base_gross':             return_raw  ... momentum_gap_exit_buffer
+date                    ...                       ..._base_frozen_tail_authority.json': 'edf169eba5fc37244b683f002e8555a7ace11cae86ae7fb136e40ba51291afc9', ...}, ...}, ...}
+version = '5'
+module = &lt;module 'microcap_top100_mom16_biweekly_live_v2_5' from 'D:\\动量策略\\微盘股对冲策略\\microcap_top100_mom16_biweekly_live_v2_5.py'&gt;
+field = 'date', value = '2026-01-05'
+
+    @pytest.mark.parametrize("version,module", [("3", v23), ("5", v25)])
+    @pytest.mark.parametrize("field,value", [
+        ("snapshot_time", "__DROP__"),
+        ("quote_trade_date", "2099-01-01"),
+        ("latest_anchor_trade_date", "2099-01-01"),
+        ("official_close_confirmed_signal", "True"),
+        ("trade_state", "close"),
+        ("date", "2026-01-05"),
+    ])
+    def test_realtime_preservation_requires_internal_time_and_state_consistency(
+        tmp_path, real_context, version, module, field, value
+    ):
+        path = tmp_path / "state_realtime.csv"
+        shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+        mutate(path, field, value)
+        accepted = getattr(module, f"realtime_signal_matches_current_v2_{version}")(path)
+        record("realtime_matcher", version=version, field=field, injected=value, accepted=accepted)
+&gt;       assert not accepted, f"v2.{version} realtime matcher accepted inconsistent {field}"
+E       AssertionError: v2.5 realtime matcher accepted inconsistent date
+E       assert not True
+
+tests\test_round3_state_contract.py:204: AssertionError</failure></testcase><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30 12:00:00-0]" time="4.033" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30 12:00:00-3]" time="2.750" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30 12:00:00-5]" time="2.422" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30T00:00:00+08:00-0]" time="2.361" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30T00:00:00+08:00-3]" time="2.226" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[date-2026-09-30T00:00:00+08:00-5]" time="2.139" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[momentum_gap--999.0-0]" time="2.162" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[momentum_gap--999.0-3]" time="2.155" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[momentum_gap--999.0-5]" time="2.157" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[microcap_mom-__DROP__-0]" time="2.182" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[microcap_mom-__DROP__-3]" time="2.214" /><testcase classname="tests.test_round3_state_contract" name="test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_fields[microcap_mom-__DROP__-5]" time="2.870" /></testsuite></testsuites>

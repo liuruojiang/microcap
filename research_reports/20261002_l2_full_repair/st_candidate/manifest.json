@@ -1,0 +1,91 @@
+{
+  "scope": "isolated_600543_metadata_candidate_only",
+  "formal_files_modified": false,
+  "old_source_sha256": {
+    ".microcap_index_cache\\security_meta\\600543.json": "446a5919cbe82c5483ab4d4c0c46bcfb83df3d03e836cd8b4ac08322f974fc93",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "research_reports\\20260926_l1_repair\\full_replay\\members_by_rebalance.csv": "7563fdab9b4a37f35fc2a8e54c967fc6bf6e3ad6a4dc6f298aec59f4beb58b1c",
+    "research_reports\\20261002_l2_full_repair\\adversary\\600543_20230428_stcn.pdf": "89251a8f76f8190db7c8937997b8d081aacbde4820117dd7646ccd9e2a7202c5",
+    "research_reports\\20261002_l2_full_repair\\adversary\\600543_20240705_MREZ_mirror.pdf": "9db7b121274a7d1cb2d7c0cc148048ce40cd60b1d861fb57fd50c52ff66cec62",
+    "research_reports\\20261002_l2_full_repair\\adversary\\600543_20260424_NEMZ.pdf": "e44b19fbb6bee6dde1eb8011b714fc278654595e5d2d795d44fd4732fef99fb1"
+  },
+  "additional_source_sha256": {
+    "research_reports\\20260926_l1_repair\\shadow_rank_gate\\summary.json": "9942c5393319a0cbbc9691aee440c82e0830d9364b946470784961597fe382cb",
+    ".microcap_index_cache\\security_master.csv": "5e44b53036c03f96b73768eb1e6ad82e6ede6afae1f94c0299d92b8ccec90554",
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": "1cd339a3aa173f705e8ce7b518579a90e9596ef62b7fecc8a711e19023e6e2e8"
+  },
+  "issuer_event_evidence": [
+    {
+      "kind": "ST_entry",
+      "announcement_date": "2023-04-28",
+      "effective_date": "2023-05-04",
+      "local_pdf": "research_reports\\20261002_l2_full_repair\\adversary\\600543_20230428_stcn.pdf",
+      "source_url": "https://epaper.stcn.com/att/202304/28/2abb1e5a-46dc-4930-980f-fd25cbab4944.pdf",
+      "local_pdf_sha256": "89251a8f76f8190db7c8937997b8d081aacbde4820117dd7646ccd9e2a7202c5",
+      "required_text_confirmed": "2023年5月4日"
+    },
+    {
+      "kind": "ST_exit",
+      "announcement_date": "2024-07-05",
+      "effective_date": "2024-07-08",
+      "local_pdf": "research_reports\\20261002_l2_full_repair\\adversary\\600543_20240705_MREZ_mirror.pdf",
+      "source_url": "https://static.sse.com.cn/disclosure/listedinfo/announcement/c/new/2024-07-05/600543_20240705_MREZ.pdf",
+      "local_pdf_origin": "https://www.cczq.com/home/uploads/2024/07-05/08-29-460171-1615289614.pdf",
+      "local_pdf_sha256": "9db7b121274a7d1cb2d7c0cc148048ce40cd60b1d861fb57fd50c52ff66cec62",
+      "required_text_confirmed": "2024年7月8日"
+    },
+    {
+      "kind": "ST_entry",
+      "announcement_date": "2026-04-24",
+      "effective_date": "2026-04-27",
+      "local_pdf": "research_reports\\20261002_l2_full_repair\\adversary\\600543_20260424_NEMZ.pdf",
+      "source_url": "https://static.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-04-24/600543_20260424_NEMZ.pdf",
+      "local_pdf_origin": "https://stockmc.xueqiu.com/202604/600543_20260424_NEMZ.pdf",
+      "local_pdf_sha256": "e44b19fbb6bee6dde1eb8011b714fc278654595e5d2d795d44fd4732fef99fb1",
+      "required_text_confirmed": "2026年4月27日"
+    }
+  ],
+  "proposed_metadata": "research_reports\\20261002_l2_full_repair\\st_candidate\\600543.proposed.json",
+  "proposed_metadata_sha256": "0aa827f771434450825766c2c69dc4b99965ddbd4ebb33a25a8f336beb480f3b",
+  "affected_old_target_rows": 28,
+  "affected_old_effective_rows": 27,
+  "affected_old_target_by_interval": {
+    "2023-05-04_to_2024-07-07": 18,
+    "2026-04-27_onward": 10
+  },
+  "affected_old_effective_by_interval": {
+    "2023-05-04_to_2024-07-07": 18,
+    "2026-04-27_onward": 9
+  },
+  "affected_csv_sha256": {
+    "affected_old_targets.csv": "a392224d30fad13197c07de79fa1da4ce2670622c399719322880fab09b74c1d",
+    "affected_old_effective.csv": "92bad3ef04d3da638b9fb56e339326b62aee9da7ee4e876fafb71155cec5f827"
+  },
+  "full_pool_replacement_status": "blocked_unproven_historical_security_master_ST_share_PIT",
+  "certified_corrected_top100_dates_in_existing_gate": 0,
+  "ranking_input_inventory": {
+    "security_master_rows": 5532,
+    "security_master_source_counts": {
+      "sz_current": 2889,
+      "sz_delist": 203,
+      "sh_current": 1703,
+      "sh_delist": 145,
+      "cache_fallback": 592
+    },
+    "delisted_rows_in_master": 348,
+    "symbols_with_both_cached_raw_prices_and_share_change": 4975,
+    "security_metadata_file_count": 4975,
+    "metadata_notice_query_status_counts": {
+      "missing": 3701,
+      "ok": 1186,
+      "error": 88
+    }
+  },
+  "required_before_approval": [
+    "Complete historical security master and every possibly ranking-eligible stock with point-in-time ST, share-count, raw-price and trading-status evidence for initial seed and affected rebalance dates.",
+    "Independent Top100 reranking on every affected date, including a proven replacement for rank 100; no 99-member shortcut.",
+    "Continuous executed-member, corporate-action, fixed-share cash-account, proxy and v2.0/v2.3/v2.5 reconstruction to the common latest completed close.",
+    "Exact source and old/new output hashes, dated deltas, zero ST-membership violations and clean second run without a migration override."
+  ],
+  "candidate_is_approved_migration_report": false
+}

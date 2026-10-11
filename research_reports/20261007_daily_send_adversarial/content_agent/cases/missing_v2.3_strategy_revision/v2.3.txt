@@ -1,0 +1,2 @@
+signal
+strategy_revision: plain_lb25_hl2p5_r2off_vol10_26_20_20260904

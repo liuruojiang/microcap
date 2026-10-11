@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "v23_rows": 3988,
+  "old_new_executed_holdings_costs_returns_nav_exact": true,
+  "old_recompute_matches_formal_file": true,
+  "score_max_absolute_change": 8.881784197001252e-16,
+  "real_score_sign_changes": 0,
+  "official_file_writes": false
+}

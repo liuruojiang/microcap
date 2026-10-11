@@ -1,0 +1,105 @@
+{
+  "total_count": 5,
+  "artifacts": [
+    {
+      "id": 11486831593,
+      "node_id": "MDg6QXJ0aWZhY3QxMTQ4NjgzMTU5Mw==",
+      "name": "microcap-whole-delivery-validation-state",
+      "size_in_bytes": 66242057,
+      "url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486831593",
+      "archive_download_url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486831593/zip",
+      "expired": false,
+      "digest": "sha256:fa96edf2f2c00c243e9e4270c09b0ccfa80961455828f805b02c03ae99a4b2a4",
+      "created_at": "2026-10-07T13:54:24Z",
+      "updated_at": "2026-10-07T13:54:24Z",
+      "expires_at": "2027-01-05T13:46:55Z",
+      "workflow_run": {
+        "id": 37631244056,
+        "repository_id": 1236131103,
+        "head_repository_id": 1236131103,
+        "head_branch": "main",
+        "head_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f"
+      }
+    },
+    {
+      "id": 11486821548,
+      "node_id": "MDg6QXJ0aWZhY3QxMTQ4NjgyMTU0OA==",
+      "name": "microcap-verified-state-validation",
+      "size_in_bytes": 62362507,
+      "url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486821548",
+      "archive_download_url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486821548/zip",
+      "expired": false,
+      "digest": "sha256:5d0d850b968b7ca4b7544c1854a8e05edfbc3952cd660261be9e9d55b1e25ffc",
+      "created_at": "2026-10-07T13:51:44Z",
+      "updated_at": "2026-10-07T13:51:44Z",
+      "expires_at": "2027-01-05T13:46:55Z",
+      "workflow_run": {
+        "id": 37631244056,
+        "repository_id": 1236131103,
+        "head_repository_id": 1236131103,
+        "head_branch": "main",
+        "head_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f"
+      }
+    },
+    {
+      "id": 11486661890,
+      "node_id": "MDg6QXJ0aWZhY3QxMTQ4NjY2MTg5MA==",
+      "name": "microcap-realtime-digest",
+      "size_in_bytes": 230602,
+      "url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486661890",
+      "archive_download_url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486661890/zip",
+      "expired": false,
+      "digest": "sha256:61dd39acc290a45bd425af6d926dac18447112e7df0e5af5b6229aa0e4b76aa8",
+      "created_at": "2026-10-07T13:54:26Z",
+      "updated_at": "2026-10-07T13:54:26Z",
+      "expires_at": "2026-11-06T13:54:24Z",
+      "workflow_run": {
+        "id": 37631244056,
+        "repository_id": 1236131103,
+        "head_repository_id": 1236131103,
+        "head_branch": "main",
+        "head_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f"
+      }
+    },
+    {
+      "id": 11486382756,
+      "node_id": "MDg6QXJ0aWZhY3QxMTQ4NjM4Mjc1Ng==",
+      "name": "strategy-regression-microcap-37631244056",
+      "size_in_bytes": 9052,
+      "url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486382756",
+      "archive_download_url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11486382756/zip",
+      "expired": false,
+      "digest": "sha256:b9283eb7582ef4edfad89acacba353426dc3d5a57c81f613343c0cfd04d676c3",
+      "created_at": "2026-10-07T13:47:58Z",
+      "updated_at": "2026-10-07T13:47:58Z",
+      "expires_at": "2027-01-05T13:46:55Z",
+      "workflow_run": {
+        "id": 37631244056,
+        "repository_id": 1236131103,
+        "head_repository_id": 1236131103,
+        "head_branch": "main",
+        "head_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f"
+      }
+    },
+    {
+      "id": 11485764769,
+      "node_id": "MDg6QXJ0aWZhY3QxMTQ4NTc2NDc2OQ==",
+      "name": "automation-regression-37631244056",
+      "size_in_bytes": 2898,
+      "url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11485764769",
+      "archive_download_url": "https://api.github.com/repos/liuruojiang/codex-daily-automation-probe/actions/artifacts/11485764769/zip",
+      "expired": false,
+      "digest": "sha256:29673511097185105328f578fcb10edce21324613b784c4d8c8b962b7a7319a4",
+      "created_at": "2026-10-07T13:47:07Z",
+      "updated_at": "2026-10-07T13:47:07Z",
+      "expires_at": "2027-01-05T13:46:55Z",
+      "workflow_run": {
+        "id": 37631244056,
+        "repository_id": 1236131103,
+        "head_repository_id": 1236131103,
+        "head_branch": "main",
+        "head_sha": "ed6005d16816ca7b84aa95f0a9aab73f13b6232f"
+      }
+    }
+  ]
+}

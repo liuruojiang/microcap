@@ -1,0 +1,39 @@
+{
+  "scope": "diagnostic_only",
+  "helper_sha256": "6c2303e6fa8298fe91320882d5cdd4436fd39fb2e8ca594a67cdec50f97b6288",
+  "in_release_files": true,
+  "in_input_hashes": true,
+  "in_cloud_source_files": true,
+  "release_files": [
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json",
+    "scripts/exchange_calendar.py",
+    "scripts/realtime_state_bundle.py",
+    "scripts/top100_cloud_delivery.py",
+    "scripts/top100_delivery.py",
+    "scripts/top100_data_contracts.py",
+    "microcap_top100_mom16_biweekly_live_v2_0.py",
+    "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "microcap_top100_mom16_biweekly_live_v2_5.py"
+  ],
+  "cloud_source_files": [
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json",
+    "scripts/top100_data_contracts.py",
+    "microcap_top100_mom16_biweekly_live_v2_0.py",
+    "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "microcap_top100_mom16_biweekly_live_v2_5.py"
+  ],
+  "input_hash_names": [
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json",
+    "microcap_top100_mom16_biweekly_live_v2_0.py",
+    "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "microcap_top100_mom16_biweekly_live_v2_5.py",
+    "scripts/top100_data_contracts.py"
+  ]
+}

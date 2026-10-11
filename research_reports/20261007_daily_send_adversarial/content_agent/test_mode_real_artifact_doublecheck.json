@@ -1,0 +1,230 @@
+{
+  "scope": "independent_delivery_test_mode_real_artifact_shape_and_workflow_doublecheck_no_smtp",
+  "builder_before_sha256": "5997ca28c1bf9cb2472377e15d95724f36197ac4ab1ff7a1349e15c32cba9056",
+  "builder_after_sha256": "59a117c2279ac4f40c457d312afa52ecec2bbbc33acdc2a53c77c4f9536a8a53",
+  "workflow_sha256": "3a6c1ca6f05daf0c4bc1de103caeabcf3c2904b3aa426a94ab771cceda7c1156",
+  "cases": [
+    {
+      "name": "duplicate_row_v2.0",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_row_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "contradictory_rows_v2.0",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\contradictory_rows_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_header_v2.0",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_header_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "extra_cell_v2.0",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\extra_cell_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_cell_v2.0",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_cell_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "bad_revision_v2.0",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\bad_revision_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_file_v2.0",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_file_v2.0\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_row_v2.3",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_row_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "contradictory_rows_v2.3",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\contradictory_rows_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_header_v2.3",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_header_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "extra_cell_v2.3",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\extra_cell_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_cell_v2.3",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_cell_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "bad_revision_v2.3",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\bad_revision_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_file_v2.3",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_file_v2.3\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_row_v2.5",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_row_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "contradictory_rows_v2.5",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\contradictory_rows_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_header_v2.5",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_header_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "extra_cell_v2.5",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\extra_cell_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_cell_v2.5",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_cell_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "bad_revision_v2.5",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\bad_revision_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_file_v2.5",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "",
+      "after_metadata_status": "FAILED",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_file_v2.5\\artifacts\\metadata.json"
+    },
+    {
+      "name": "control",
+      "before_send_step_allows": true,
+      "after_send_step_allows": true,
+      "after_builder_error": "",
+      "after_metadata_status": "OK",
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\control\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_spec",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "ValueError",
+      "after_metadata_status": null,
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_spec\\artifacts\\metadata.json"
+    },
+    {
+      "name": "missing_spec",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "ValueError",
+      "after_metadata_status": null,
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\missing_spec\\artifacts\\metadata.json"
+    },
+    {
+      "name": "extra_spec",
+      "before_send_step_allows": true,
+      "after_send_step_allows": false,
+      "after_builder_error": "ValueError",
+      "after_metadata_status": null,
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\extra_spec\\artifacts\\metadata.json"
+    },
+    {
+      "name": "duplicate_result",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "ValueError",
+      "after_metadata_status": null,
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\duplicate_result\\artifacts\\metadata.json"
+    },
+    {
+      "name": "realtime_test",
+      "before_send_step_allows": false,
+      "after_send_step_allows": false,
+      "after_builder_error": "ValueError",
+      "after_metadata_status": null,
+      "after_metadata_path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261007_daily_send_adversarial\\content_agent\\test_mode_cases\\test_shape_after\\realtime_test\\artifacts\\metadata.json"
+    }
+  ],
+  "cases_passed": 27,
+  "cases_failed": 0,
+  "before_bad_cases_send_step_allows": 17,
+  "after_bad_cases_send_step_allows": 0,
+  "test_artifact_cache_isolation_verified": true,
+  "sent_email": false
+}

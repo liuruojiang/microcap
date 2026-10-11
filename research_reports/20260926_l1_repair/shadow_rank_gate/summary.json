@@ -1,0 +1,28 @@
+{
+  "scope": "frozen_2026-09-24_L1_evidence_coverage_only",
+  "input_sha256": {
+    "old_targets": "04a851bb6e7e67f181607c499a0ca3264443b6e3b655817ac0933532517f7517",
+    "old_initial": "e667587245d9944950d858da78763ba6c4d06accdb083b799052828429acd9f4",
+    "initial_delisted_cap_probe": "e115892df1361b190560956462dd162898b0eab8e567b35f13751f31de027176",
+    "delisted_cap_probe": "914e16f122aab7ffe20751564337df92eeab424c604ef7dc683715ea635c2b65",
+    "two_date_closeout": "18f3609ea6fd0d9c3b8d271ca0cb7374f292d5f7b8a23dced7faa3e0fe5a5189",
+    "old_st_proof": "7c0f0cab78c93e70cf3c262c258b53e9740ac344a3fe66d7949927480e568da0",
+    "old_st_proof_expansion": "08c960ecfa59817c6610ee7191c48fa20d8ebc34e69a1736bab9bac05bf1ca5c"
+  },
+  "formal_rebalance_dates": 432,
+  "initial_seed_dates": 1,
+  "dates_with_certified_full_candidate_pool": 0,
+  "dates_with_certified_corrected_top100": 0,
+  "first_blocked_date": "2010-01-04",
+  "first_blocked_formal_rebalance": "2010-01-14",
+  "possible_delisted_below_old_cutoff_probe_rows": 8998,
+  "possible_delisted_below_old_cutoff_probe_dates": 421,
+  "formal_dates_with_any_delisted_probe_rows": 421,
+  "officially_proven_ST_old_target_rows": 287,
+  "limits": [
+    "Zero certified dates means missing exhaustive proof, not proof that every date's ranking differs.",
+    "Raw delisted-cap probes are not proven eligible constituents.",
+    "The 17/17 two-date closeout is source-limited and conditional, not a final Top100.",
+    "No corrected holdings, returns, NAV, costs, or performance were calculated."
+  ]
+}

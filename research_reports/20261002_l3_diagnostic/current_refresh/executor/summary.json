@@ -1,0 +1,163 @@
+{
+  "scope": "frozen old-input paper-path parity only; not executable or formal historical certification",
+  "cutoff": "2026-09-30",
+  "date_first": "2010-03-01",
+  "date_last": "2026-09-30",
+  "rows": 4033,
+  "file_sha256": {
+    "source": "4e20dea7fb79ccf1658e549ec881ff931d26fb9c1156badc5bf9f7aa5ea5bfb3",
+    "proxy": "bf880cd9fc630091e5a16ef32db7f5977b26e57e900941f819a09914a3e64973",
+    "panel": "3a1b80b14438f1582826a8643a058372f48ede2aae5193a39bf38958793df054",
+    "turnover": "602a23b38fe7a8274c6358e8ffdb4c78620b0c745be9dffea46cb7790bf3828d",
+    "base": "38555e86ea8ed754c0821b5aa54d34fb3265c546b966546cccbef1bbf8e87b45",
+    "official": "19447fc80b0c0b2422c47d6f73d31a2423bb178f154e5face8bb51aedcf19eca"
+  },
+  "file_full_rows": {
+    "proxy": 4067,
+    "panel": 8738,
+    "turnover": 432,
+    "base": 4050,
+    "official": 4033
+  },
+  "official_read_rows": 4033,
+  "signal_on_days": 2964,
+  "held_days": 2963,
+  "state_changes": 231,
+  "fee_days": 526,
+  "total_fee_rate_sum": 0.8846099999999955,
+  "member_turnover_fee_rate_sum": 0.19160999999999548,
+  "final_nav_diagnostic": 31.762459935243772,
+  "annualized_diagnostic": 0.23272756772458947,
+  "max_drawdown_diagnostic": -0.14804055047142783,
+  "parity": {
+    "microcap_close": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "hedge_close": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "microcap_ret": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.974659986866641e-17
+    },
+    "hedge_ret": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.993633524885137e-17
+    },
+    "microcap_mom": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.8879238130678e-17
+    },
+    "hedge_mom": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.974659986866641e-17
+    },
+    "momentum_gap": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.974659986866641e-17
+    },
+    "holding": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": null
+    },
+    "next_holding": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": null
+    },
+    "current_execution_scale": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "entry_exit_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "rebalance_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "total_cost": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 0.0
+    },
+    "base_pre_cost_return": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.985502008591496e-17
+    },
+    "return_net": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 9.98821251402271e-17
+    },
+    "nav_net": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": 3.552713678800501e-15
+    },
+    "strategy_revision": {
+      "mismatch_count": 0,
+      "first_date": null,
+      "actual": null,
+      "replay": null,
+      "max_abs": null
+    }
+  },
+  "fault_probes": {
+    "wrong_signal_hedge_0p8_instead_of_1": {
+      "rejected_days": 378,
+      "first_date": "2010-04-22"
+    },
+    "omitted_fees": {
+      "rejected_days": 526,
+      "first_date": "2010-03-01"
+    }
+  }
+}

@@ -1,0 +1,1197 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="17" skipped="0" tests="20" time="11.042" timestamp="2026-10-07T20:09:16.306008+08:00" hostname="DESKTOP-95I7VVU"><testcase classname="tests.test_round3_math_ledger" name="test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build[entry_exit_cost]" time="1.962"><failure message="Failed: v25_erase_entry_exit_cost: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C21BDD9A70&gt;
+component = 'entry_exit_cost'
+
+    @pytest.mark.parametrize("component", ["entry_exit_cost", "rebalance_cost"])
+    def test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build(authentic, monkeypatch, component):
+        costmod = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.apply_cost_model
+        baseline = authentic["normal"][25]
+        date = baseline.index[baseline[component].gt(0)][0]
+        original_rate = float(baseline.at[date, component])
+    
+        def erase(gross, events):
+            out = original(gross, events)
+            out.at[date, component] = 0.0
+            out["total_cost"] = out.entry_exit_cost + out.rebalance_cost
+            out["return_net"] = (1 + out["return"]) * (1 - out.total_cost) - 1
+            out["nav_net"] = (1 + out.return_net).cumprod()
+            return out
+    
+        monkeypatch.setattr(costmod, "apply_cost_model", erase)
+&gt;       _expect_block(f"v25_erase_{component}",
+            lambda: v25.build_v2_5_result(authentic["close"], authentic["events"], authentic["indices"][25]),
+            baseline, mutated_date=str(date.date()), erased_fee=original_rate)
+
+tests\test_round3_math_ledger.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v25_erase_entry_exit_cost'
+build = &lt;function test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C21BE8BD70&gt;
+normal =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+details = {'erased_fee': 0.003, 'mutated_date': '2010-05-28'}
+out =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.3123586608820119, 'return_net': 0.0030000000000000027, 'total_cost': 0.003}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v25_erase_entry_exit_cost: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build[rebalance_cost]" time="0.137"><failure message="Failed: v25_erase_rebalance_cost: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C23B16B6F0&gt;
+component = 'rebalance_cost'
+
+    @pytest.mark.parametrize("component", ["entry_exit_cost", "rebalance_cost"])
+    def test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build(authentic, monkeypatch, component):
+        costmod = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.apply_cost_model
+        baseline = authentic["normal"][25]
+        date = baseline.index[baseline[component].gt(0)][0]
+        original_rate = float(baseline.at[date, component])
+    
+        def erase(gross, events):
+            out = original(gross, events)
+            out.at[date, component] = 0.0
+            out["total_cost"] = out.entry_exit_cost + out.rebalance_cost
+            out["return_net"] = (1 + out["return"]) * (1 - out.total_cost) - 1
+            out["nav_net"] = (1 + out.return_net).cumprod()
+            return out
+    
+        monkeypatch.setattr(costmod, "apply_cost_model", erase)
+&gt;       _expect_block(f"v25_erase_{component}",
+            lambda: v25.build_v2_5_result(authentic["close"], authentic["events"], authentic["indices"][25]),
+            baseline, mutated_date=str(date.date()), erased_fee=original_rate)
+
+tests\test_round3_math_ledger.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v25_erase_rebalance_cost'
+build = &lt;function test_v25_self_consistent_fee_erasure_is_rejected_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C239DA2560&gt;
+normal =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+details = {'erased_fee': 0.00024, 'mutated_date': '2010-06-17'}
+out =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.024919707521178225, 'return_net': 0.00023929959790613964, 'total_cost': 0.00024}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v25_erase_rebalance_cost: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_mapped_fee_event_contract_is_checked_in_actual_build[erase_fee]" time="0.328"><failure message="Failed: v23_erase_fee: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C238EFD130&gt;
+attack = 'erase_fee'
+
+    @pytest.mark.parametrize("attack", ["erase_fee", "shift_fee"])
+    def test_v23_mapped_fee_event_contract_is_checked_in_actual_build(authentic, monkeypatch, attack):
+        costmod = v23.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.map_rebalance_apply_costs
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.rebalance_cost.gt(0)][0]
+        rate = float(baseline.at[date, "rebalance_cost"])
+        position = baseline.index.get_loc(date)
+    
+        def corrupt(index, events):
+            fees = original(index, events)
+            fees.at[date] = 0.0
+            if attack == "shift_fee":
+                fees.iloc[position + 1] += rate
+            return fees
+    
+        monkeypatch.setattr(costmod, "map_rebalance_apply_costs", corrupt)
+&gt;       _expect_block(f"v23_{attack}",
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), displaced_fee=rate)
+
+tests\test_round3_math_ledger.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_erase_fee'
+build = &lt;function test_v23_mapped_fee_event_contract_is_checked_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C239DA2090&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'displaced_fee': 0.00066, 'mutated_date': '2010-07-01'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.021648832768384807, 'return_net': 0.0006620683674802841, 'total_cost': 0.00066}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_erase_fee: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_mapped_fee_event_contract_is_checked_in_actual_build[shift_fee]" time="0.315"><failure message="Failed: v23_shift_fee: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239117570&gt;
+attack = 'shift_fee'
+
+    @pytest.mark.parametrize("attack", ["erase_fee", "shift_fee"])
+    def test_v23_mapped_fee_event_contract_is_checked_in_actual_build(authentic, monkeypatch, attack):
+        costmod = v23.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.map_rebalance_apply_costs
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.rebalance_cost.gt(0)][0]
+        rate = float(baseline.at[date, "rebalance_cost"])
+        position = baseline.index.get_loc(date)
+    
+        def corrupt(index, events):
+            fees = original(index, events)
+            fees.at[date] = 0.0
+            if attack == "shift_fee":
+                fees.iloc[position + 1] += rate
+            return fees
+    
+        monkeypatch.setattr(costmod, "map_rebalance_apply_costs", corrupt)
+&gt;       _expect_block(f"v23_{attack}",
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), displaced_fee=rate)
+
+tests\test_round3_math_ledger.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_shift_fee'
+build = &lt;function test_v23_mapped_fee_event_contract_is_checked_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C239DA3E20&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'displaced_fee': 0.00066, 'mutated_date': '2010-07-01'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.0006452059547791267, 'return_net': 0.000663862075511279, 'total_cost': 0.00066}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_shift_fee: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v25_cost_dependency_cannot_change_execution_state[holding]" time="0.141"><failure message="Failed: v25_cost_changes_holding: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239114AF0&gt;
+column = 'holding'
+
+    @pytest.mark.parametrize("column", ["holding", "next_holding", "signal_on"])
+    def test_v25_cost_dependency_cannot_change_execution_state(authentic, monkeypatch, column):
+        costmod = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.apply_cost_model
+        baseline = authentic["normal"][25]
+        # A genuine cash day makes changing holding to active bypass the cash-return
+        # leakage check while contradicting the actual source gross state.
+        date = baseline.index[baseline.holding.eq("cash") &amp; baseline.next_holding.eq("cash")][0]
+        value = True if column == "signal_on" else "long_microcap_top100"
+    
+        def corrupt(gross, events):
+            out = original(gross, events)
+            out.at[date, column] = value
+            return out
+    
+        monkeypatch.setattr(costmod, "apply_cost_model", corrupt)
+&gt;       _expect_block(f"v25_cost_changes_{column}",
+            lambda: v25.build_v2_5_result(authentic["close"], authentic["events"], authentic["indices"][25]),
+            baseline, mutated_date=str(date.date()))
+
+tests\test_round3_math_ledger.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v25_cost_changes_holding'
+build = &lt;function test_v25_cost_dependency_cannot_change_execution_state.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C38C510&gt;
+normal =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+details = {'mutated_date': '2010-05-05'}
+out =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.0, 'return_net': 0.0, 'total_cost': 0.0}
+state_changes = {'holding': 1, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v25_cost_changes_holding: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v25_cost_dependency_cannot_change_execution_state[next_holding]" time="0.149"><failure message="Failed: v25_cost_changes_next_holding: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239D8C950&gt;
+column = 'next_holding'
+
+    @pytest.mark.parametrize("column", ["holding", "next_holding", "signal_on"])
+    def test_v25_cost_dependency_cannot_change_execution_state(authentic, monkeypatch, column):
+        costmod = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.apply_cost_model
+        baseline = authentic["normal"][25]
+        # A genuine cash day makes changing holding to active bypass the cash-return
+        # leakage check while contradicting the actual source gross state.
+        date = baseline.index[baseline.holding.eq("cash") &amp; baseline.next_holding.eq("cash")][0]
+        value = True if column == "signal_on" else "long_microcap_top100"
+    
+        def corrupt(gross, events):
+            out = original(gross, events)
+            out.at[date, column] = value
+            return out
+    
+        monkeypatch.setattr(costmod, "apply_cost_model", corrupt)
+&gt;       _expect_block(f"v25_cost_changes_{column}",
+            lambda: v25.build_v2_5_result(authentic["close"], authentic["events"], authentic["indices"][25]),
+            baseline, mutated_date=str(date.date()))
+
+tests\test_round3_math_ledger.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v25_cost_changes_next_holding'
+build = &lt;function test_v25_cost_dependency_cannot_change_execution_state.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C38D170&gt;
+normal =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+details = {'mutated_date': '2010-05-05'}
+out =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.0, 'return_net': 0.0, 'total_cost': 0.0}
+state_changes = {'holding': 0, 'next_holding': 1}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v25_cost_changes_next_holding: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v25_cost_dependency_cannot_change_execution_state[signal_on]" time="0.154"><failure message="Failed: v25_cost_changes_signal_on: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239D8D950&gt;
+column = 'signal_on'
+
+    @pytest.mark.parametrize("column", ["holding", "next_holding", "signal_on"])
+    def test_v25_cost_dependency_cannot_change_execution_state(authentic, monkeypatch, column):
+        costmod = v25.v2_0.base_mod.freq_mod.cost_mod
+        original = costmod.apply_cost_model
+        baseline = authentic["normal"][25]
+        # A genuine cash day makes changing holding to active bypass the cash-return
+        # leakage check while contradicting the actual source gross state.
+        date = baseline.index[baseline.holding.eq("cash") &amp; baseline.next_holding.eq("cash")][0]
+        value = True if column == "signal_on" else "long_microcap_top100"
+    
+        def corrupt(gross, events):
+            out = original(gross, events)
+            out.at[date, column] = value
+            return out
+    
+        monkeypatch.setattr(costmod, "apply_cost_model", corrupt)
+&gt;       _expect_block(f"v25_cost_changes_{column}",
+            lambda: v25.build_v2_5_result(authentic["close"], authentic["events"], authentic["indices"][25]),
+            baseline, mutated_date=str(date.date()))
+
+tests\test_round3_math_ledger.py:177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v25_cost_changes_signal_on'
+build = &lt;function test_v25_cost_dependency_cannot_change_execution_state.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C38E2A0&gt;
+normal =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+details = {'mutated_date': '2010-05-05'}
+out =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.0, 'return_net': 0.0, 'total_cost': 0.0}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v25_cost_changes_signal_on: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[nan]" time="0.334"><failure message="Failed: v23_bad_spread_nav_nan: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C23C42B3E0&gt;
+bad = nan
+
+    @pytest.mark.parametrize("bad", [np.nan, 0.0, -1.0, np.inf, "damaged"])
+    def test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.overheat_exit_triggered][0]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out["spread_nav"] = out.spread_nav.astype(object)
+            out.at[date, "spread_nav"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_spread_nav_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_spread_nav_nan'
+build = &lt;function test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C38F270&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': 'nan', 'mutated_date': '2020-09-10'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.31507525563303496, 'return_net': 0.01675254302918816, 'total_cost': 0.00234}
+state_changes = {'holding': 10, 'next_holding': 10}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_spread_nav_nan: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[0.0]" time="0.288"><failure message="Failed: v23_bad_spread_nav_0.0: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C23C8C8140&gt;
+bad = 0.0
+
+    @pytest.mark.parametrize("bad", [np.nan, 0.0, -1.0, np.inf, "damaged"])
+    def test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.overheat_exit_triggered][0]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out["spread_nav"] = out.spread_nav.astype(object)
+            out.at[date, "spread_nav"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_spread_nav_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_spread_nav_0.0'
+build = &lt;function test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CC300&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': '0.0', 'mutated_date': '2020-09-10'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.03347703055613138, 'return_net': 0.0030000000000000027, 'total_cost': 0.003}
+state_changes = {'holding': 1, 'next_holding': 1}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_spread_nav_0.0: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[-1.0]" time="0.276"><failure message="Failed: v23_bad_spread_nav_-1.0: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C23B1297F0&gt;
+bad = -1.0
+
+    @pytest.mark.parametrize("bad", [np.nan, 0.0, -1.0, np.inf, "damaged"])
+    def test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.overheat_exit_triggered][0]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out["spread_nav"] = out.spread_nav.astype(object)
+            out.at[date, "spread_nav"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_spread_nav_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_spread_nav_-1.0'
+build = &lt;function test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CD220&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': '-1.0', 'mutated_date': '2020-09-10'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.03347703055613138, 'return_net': 0.0030000000000000027, 'total_cost': 0.003}
+state_changes = {'holding': 1, 'next_holding': 1}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_spread_nav_-1.0: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[inf]" time="0.308"><failure message="Failed: v23_bad_spread_nav_inf: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C23B12BA10&gt;
+bad = inf
+
+    @pytest.mark.parametrize("bad", [np.nan, 0.0, -1.0, np.inf, "damaged"])
+    def test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.overheat_exit_triggered][0]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out["spread_nav"] = out.spread_nav.astype(object)
+            out.at[date, "spread_nav"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_spread_nav_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_spread_nav_inf'
+build = &lt;function test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CE350&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': 'inf', 'mutated_date': '2020-09-10'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.31507525563303496, 'return_net': 0.01675254302918816, 'total_cost': 0.003}
+state_changes = {'holding': 11, 'next_holding': 11}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_spread_nav_inf: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build[damaged]" time="0.299"><failure message="Failed: v23_bad_spread_nav_damaged: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239C90C80&gt;
+bad = 'damaged'
+
+    @pytest.mark.parametrize("bad", [np.nan, 0.0, -1.0, np.inf, "damaged"])
+    def test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.overheat_exit_triggered][0]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out["spread_nav"] = out.spread_nav.astype(object)
+            out.at[date, "spread_nav"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_spread_nav_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_spread_nav_damaged'
+build = &lt;function test_v23_corrupt_spread_nav_cannot_disable_defense_in_actual_build.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CF320&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': 'damaged', 'mutated_date': '2020-09-10'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.31507525563303496, 'return_net': 0.01675254302918816, 'total_cost': 0.00234}
+state_changes = {'holding': 10, 'next_holding': 10}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_spread_nav_damaged: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[nan]" time="0.283"><failure message="Failed: v23_bad_next_state_nan: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239CFD910&gt;
+bad = nan
+
+    @pytest.mark.parametrize("bad", [np.nan, "damaged", "long_microcap_top100"])
+    def test_v23_foreign_or_missing_next_state_cannot_be_silently_executed(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.holding.eq("cash") &amp; baseline.next_holding.eq("cash")][10]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out.at[date, "next_holding"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_next_state_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_next_state_nan'
+build = &lt;function test_v23_foreign_or_missing_next_state_cannot_be_silently_executed.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23D3B43B0&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': 'nan', 'mutated_date': '2010-05-19'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.0, 'return_net': 0.0, 'total_cost': 0.0}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_next_state_nan: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[damaged]" time="0.317"><failure message="Failed: v23_bad_next_state_damaged: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C239E33AD0&gt;
+bad = 'damaged'
+
+    @pytest.mark.parametrize("bad", [np.nan, "damaged", "long_microcap_top100"])
+    def test_v23_foreign_or_missing_next_state_cannot_be_silently_executed(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.holding.eq("cash") &amp; baseline.next_holding.eq("cash")][10]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out.at[date, "next_holding"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_next_state_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_next_state_damaged'
+build = &lt;function test_v23_foreign_or_missing_next_state_cannot_be_silently_executed.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CEFB0&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': 'damaged', 'mutated_date': '2010-05-19'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.19638266110870006, 'return_net': 0.0030000000000000027, 'total_cost': 0.003}
+state_changes = {'holding': 1, 'next_holding': 1}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_next_state_damaged: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_foreign_or_missing_next_state_cannot_be_silently_executed[long_microcap_top100]" time="0.286"><failure message="Failed: v23_bad_next_state_long_microcap_top100: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001C23C8CD390&gt;
+bad = 'long_microcap_top100'
+
+    @pytest.mark.parametrize("bad", [np.nan, "damaged", "long_microcap_top100"])
+    def test_v23_foreign_or_missing_next_state_cannot_be_silently_executed(authentic, monkeypatch, bad):
+        original = v23.build_spread_log_wls_gross
+        baseline = authentic["normal"][23]
+        date = baseline.index[baseline.holding.eq("cash") &amp; baseline.next_holding.eq("cash")][10]
+    
+        def corrupt(close, index=None):
+            out = original(close, index)
+            out.at[date, "next_holding"] = bad
+            return out
+    
+        monkeypatch.setattr(v23, "build_spread_log_wls_gross", corrupt)
+&gt;       _expect_block("v23_bad_next_state_" + str(bad),
+            lambda: v23.build_v2_3_result(authentic["close"], authentic["events"], authentic["indices"][23]),
+            baseline, mutated_date=str(date.date()), bad_value=str(bad))
+
+tests\test_round3_math_ledger.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_bad_next_state_long_microcap_top100'
+build = &lt;function test_v23_foreign_or_missing_next_state_cannot_be_silently_executed.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CD220&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'bad_value': 'long_microcap_top100', 'mutated_date': '2010-05-19'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+common = DatetimeIndex(['2010-05-05', '2010-05-06', '2010-05-07', '2010-05-10',
+               '2010-05-11', '2010-05-12', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)
+numeric_change = {'nav_net': 0.19638266110870006, 'return_net': 0.0030000000000000027, 'total_cost': 0.003}
+state_changes = {'holding': 1, 'next_holding': 1}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_bad_next_state_long_microcap_top100: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_official_common_index_cannot_silently_drop_leading_valid_sessions[23]" time="0.319"><failure message="Failed: v23_missing_leading_official_session: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+version = 23
+
+    @pytest.mark.parametrize("version", [23, 25])
+    def test_official_common_index_cannot_silently_drop_leading_valid_sessions(authentic, version):
+        module = v23 if version == 23 else v25
+        get_index = module.build_v2_3_common_index if version == 23 else module.build_v2_5_common_index
+        build = module.build_v2_3_result if version == 23 else module.build_v2_5_result
+        damaged_official = authentic["indices"][version][1:]
+&gt;       _expect_block(f"v{version}_missing_leading_official_session",
+            lambda: build(authentic["close"], authentic["events"], get_index(authentic["close"], damaged_official)),
+            authentic["normal"][version], omitted_date=str(authentic["indices"][version][0].date()))
+
+tests\test_round3_math_ledger.py:223: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v23_missing_leading_official_session'
+build = &lt;function test_official_common_index_cannot_silently_drop_leading_valid_sessions.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CEAE0&gt;
+normal =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3988 rows x 76 columns]
+details = {'omitted_date': '2010-05-05'}
+out =             return_raw  ...                            return_column_semantics
+date                    ...            ... LB25 R2-OF...
+2026-09-30   -0.001092  ...  return equals return_net after v2.3 LB25 R2-OF...
+
+[3987 rows x 76 columns]
+common = DatetimeIndex(['2010-05-06', '2010-05-07', '2010-05-10', '2010-05-11',
+               '2010-05-12', '2010-05-13', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3987, freq=None)
+numeric_change = {'nav_net': 0.0, 'return_net': 0.0, 'total_cost': 0.0}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v23_missing_leading_official_session: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_official_common_index_cannot_silently_drop_leading_valid_sessions[25]" time="0.144"><failure message="Failed: v25_missing_leading_official_session: actual execution builder accepted the corrupted upstream result">authentic = {'close':                  microcap     hedge
+date                               
+2010-01-28     979.734772  4248.040
+...         '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3988, freq=None)}, ...}
+version = 25
+
+    @pytest.mark.parametrize("version", [23, 25])
+    def test_official_common_index_cannot_silently_drop_leading_valid_sessions(authentic, version):
+        module = v23 if version == 23 else v25
+        get_index = module.build_v2_3_common_index if version == 23 else module.build_v2_5_common_index
+        build = module.build_v2_3_result if version == 23 else module.build_v2_5_result
+        damaged_official = authentic["indices"][version][1:]
+&gt;       _expect_block(f"v{version}_missing_leading_official_session",
+            lambda: build(authentic["close"], authentic["events"], get_index(authentic["close"], damaged_official)),
+            authentic["normal"][version], omitted_date=str(authentic["indices"][version][0].date()))
+
+tests\test_round3_math_ledger.py:223: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+case = 'v25_missing_leading_official_session'
+build = &lt;function test_official_common_index_cannot_silently_drop_leading_valid_sessions.&lt;locals&gt;.&lt;lambda&gt; at 0x000001C23C8CD4E0&gt;
+normal =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3988 rows x 80 columns]
+details = {'omitted_date': '2010-05-05'}
+out =             return_raw    return  ... target_vol_max_leverage hedge_removed
+date                              ...     ...1.0          True
+2026-09-30   -0.003750 -0.003750  ...                     1.0          True
+
+[3987 rows x 80 columns]
+common = DatetimeIndex(['2010-05-06', '2010-05-07', '2010-05-10', '2010-05-11',
+               '2010-05-12', '2010-05-13', '201...
+               '2026-09-29', '2026-09-30'],
+              dtype='datetime64[ns]', name='date', length=3987, freq=None)
+numeric_change = {'nav_net': 0.0, 'return_net': 0.0, 'total_cost': 0.0}
+state_changes = {'holding': 0, 'next_holding': 0}
+
+    def _expect_block(case: str, build, normal: pd.DataFrame, **details: object) -&gt; None:
+        try:
+            out = build()
+        except (ValueError, RuntimeError, KeyError) as error:
+            _record(case, outcome="rejected", error_type=type(error).__name__, error=str(error), **details)
+            return
+        common = out.index.intersection(normal.index)
+        numeric_change = {column: float((pd.to_numeric(out.loc[common, column]) -
+                                         pd.to_numeric(normal.loc[common, column])).abs().max())
+                          for column in ("return_net", "total_cost", "nav_net")}
+        state_changes = {column: int(out.loc[common, column].ne(normal.loc[common, column]).sum())
+                         for column in ("holding", "next_holding")}
+        _record(case, outcome="accepted_wrong_dependency", rows=len(out), normal_rows=len(normal),
+                date_index_matches=out.index.equals(normal.index),
+                net_formula_self_consistent=bool(np.allclose(out.return_net,
+                    (1 + out.overlay_pre_cost_return) * (1 - out.total_cost) - 1, atol=1e-12, rtol=1e-10)),
+                nav_self_consistent=bool(np.allclose(out.nav_net, (1 + out.return_net).cumprod(), atol=1e-12, rtol=1e-10)),
+                max_absolute_changes=numeric_change, state_changes=state_changes,
+                end_nav_ratio=float(out.nav_net.iloc[-1] / normal.nav_net.iloc[-1]), **details)
+&gt;       pytest.fail(f"{case}: actual execution builder accepted the corrupted upstream result")
+E       Failed: v25_missing_leading_official_session: actual execution builder accepted the corrupted upstream result
+
+tests\test_round3_math_ledger.py:114: Failed</failure></testcase><testcase classname="tests.test_round3_math_ledger" name="test_v23_exact_hot_cool_thresholds_keep_lag_and_legal_cash_fees" time="0.011" /><testcase classname="tests.test_round3_math_ledger" name="test_v25_normal_cost_dependency_keeps_legitimate_cash_entry_exit_fees[close]" time="0.101" /><testcase classname="tests.test_round3_math_ledger" name="test_v25_normal_cost_dependency_keeps_legitimate_cash_entry_exit_fees[next_open]" time="0.079" /></testsuite></testsuites>

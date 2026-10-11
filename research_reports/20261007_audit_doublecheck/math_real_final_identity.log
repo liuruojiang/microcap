@@ -1,0 +1,40 @@
+{
+  "result": "PASS",
+  "official_artifacts_unchanged": true,
+  "versions": {
+    "v2.0": {
+      "rows": 4033,
+      "first_date": "2010-03-01",
+      "last_date": "2026-09-30",
+      "source_sha256": "bdf7d6fafc4230da4d2b248586837ea50204e49742dd67d8662b880261443171",
+      "original_source_sha256": "9e12b731fcce474234ffd5136288d20ce6ba19872f606ccf47e58816d07bd550",
+      "cash_pre_cost_zero": true
+    },
+    "v2.3": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30",
+      "source_sha256": "615cb400d827727f524f08ecf738b49bc237e41cfda5823c26d218beeb3b834c",
+      "original_source_sha256": "ce49dee8cc9d42f63ff4cca4f3bd7744c1331dfa62b54974756af1d0f63345aa",
+      "all_sample_pairwise_max_score_error": 1.7763568394002505e-15,
+      "score_sign_changes": 0,
+      "decimal_spots": 21,
+      "cash_fee_days": 94,
+      "cash_pre_cost_zero": true,
+      "costed_below_same_path_no_cost": true
+    },
+    "v2.5": {
+      "rows": 3988,
+      "first_date": "2010-05-05",
+      "last_date": "2026-09-30",
+      "source_sha256": "42b5ff2cbf455677312466250f3d06076a853f28becabf8b7209a42daf860267",
+      "original_source_sha256": "b5b90ed35dc06427050c6ba0b56535a7b9ace62242d3d8e9f139f25b754d9acc",
+      "all_sample_pairwise_max_score_error": 5.329070518200751e-15,
+      "score_sign_changes": 0,
+      "decimal_spots": 21,
+      "cash_fee_days": 126,
+      "cash_pre_cost_zero": true,
+      "costed_below_same_path_no_cost": true
+    }
+  }
+}

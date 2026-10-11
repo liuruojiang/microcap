@@ -1,0 +1,39 @@
+{
+  "stock_only_contract_arithmetic": "PASS",
+  "frozen_quantities": [
+    {
+      "symbol": "A",
+      "side": "sell",
+      "quantity": "1"
+    },
+    {
+      "symbol": "B",
+      "side": "buy",
+      "quantity": "0.05"
+    },
+    {
+      "symbol": "C",
+      "side": "buy",
+      "quantity": "1.05"
+    }
+  ],
+  "prefunded_booked": [
+    true,
+    true,
+    false
+  ],
+  "netted_booked": [
+    true,
+    true,
+    true
+  ],
+  "blocked_exit_booked": [
+    false,
+    true,
+    false
+  ],
+  "netted_same_close_proceeds_is_theoretical": true,
+  "netted_cash": "62.49900",
+  "netted_fees": "0.50100",
+  "missing_old_mark": "refused"
+}

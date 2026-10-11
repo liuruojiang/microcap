@@ -1,0 +1,38 @@
+[
+  {
+    "version": "2.0",
+    "field": "trade_state",
+    "injected": "close",
+    "old_gate_accepted": true
+  },
+  {
+    "version": "2.0",
+    "field": "signal_label",
+    "injected": "cash",
+    "old_gate_accepted": true
+  },
+  {
+    "version": "2.3",
+    "field": "trade_state",
+    "injected": "close",
+    "old_gate_accepted": true
+  },
+  {
+    "version": "2.3",
+    "field": "signal_label",
+    "injected": "cash",
+    "old_gate_accepted": true
+  },
+  {
+    "version": "2.5",
+    "field": "trade_state",
+    "injected": "close",
+    "old_gate_accepted": true
+  },
+  {
+    "version": "2.5",
+    "field": "signal_label",
+    "injected": "cash",
+    "old_gate_accepted": true
+  }
+]
