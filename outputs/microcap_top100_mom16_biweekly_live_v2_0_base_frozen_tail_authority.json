@@ -1,7 +1,7 @@
 {
   "version": "2026-10-12-session-st-share-lineage-v5",
   "seed_end_date": "2026-10-12",
-  "purpose": "Exact audited session/ST/share lineage correction plus verified strict one-session increment; future rewrites remain fail-closed.",
+  "purpose": "User-approved exact historical session/ST/share lineage repair and verified strict increment through 2026-10-12. Seed binds the primary formal Sina legacy close 7021.472; future historical rewrites remain fail-closed.",
   "approved_review_sha256": "d112e541b7a2000289cf89aa61b3ecda32b4e53e1865970413fca4ed3a3d9fe6",
   "security_meta_cache_fingerprint": {
     "present_count": 4975,
@@ -14,10 +14,10 @@
   },
   "seed_file_sha256": {
     "proxy_index": "ac1e94b15d728363fd580edd4fe7456e0c0f09621d47843eca4bf67afec58bb9",
-    "costed_nav": "24b0ae9072bd73047ab478cecc79a328882b41c62461a9aca7e6b8c4e6f7f33f",
-    "proxy_meta": "d7355191d85339e6ee26575f27377debb8235c352cdff7844f37a25ad7f7eb6c",
+    "costed_nav": "752bac11d7b18ff1e58b3961f07a068c07b14ef3dc6980320be65784d1a66774",
+    "proxy_meta": "1281e3e4a06951e187226f30befd25a28fca11cec0c58481fefd3f962bb4ea9e",
     "proxy_members": "ddc9a319dc2844babc19523ff224138dcedd7c92dcf045b123f38dc82320933e",
     "proxy_turnover": "1ae378f3a84ad4f3170aa493f9f22455529bfd369f84494f1b8dfa3dadf74edb",
-    "proxy_effective_members": "5fe356732a1bdc59db528a73c613559de8645089a7e696aab613692950ac15a0"
+    "proxy_effective_members": "1db93ec0bbe376c7770d54d438a5364cbe3cf0c2bb2e7c667c848935453fa470"
   }
 }
