@@ -47,15 +47,14 @@ def test_actual_metadata_builder_retains_certified_interval_and_exact_bytes(meta
     assert path.read_bytes() == before
 
 
-def test_actual_loader_does_not_relabel_old_snapshot_on_source_failure(meta_runtime):
+def test_actual_loader_fails_closed_on_unresolved_current_st_snapshot(meta_runtime):
     ns, path, previous = meta_runtime
     previous["current_st_history_resolved"] = False
     previous["st_intervals"] = [{"start": "2026-09-16", "end": None, "source": "current_name_snapshot"}]
     path.write_text(json.dumps(previous), encoding="utf-8")
     before = path.read_bytes()
-    result = ns["load_security_meta"]("002198")
-    assert result == previous
-    assert result["st_intervals"][0]["start"] == "2026-09-16"
+    with pytest.raises(ns["SecurityMetaHistoryEvidenceUnresolved"], match="002198"):
+        ns["load_security_meta"]("002198")
     assert path.read_bytes() == before
 
 

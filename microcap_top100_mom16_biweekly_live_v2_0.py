@@ -2846,6 +2846,25 @@ class SecurityMetaHistoryCorrectionRequired(RuntimeError):
     """A refresh cannot replace certified historical ST evidence implicitly."""
 
 
+class SecurityMetaHistoryEvidenceUnresolved(SecurityMetaHistoryCorrectionRequired):
+    """A current ST name cannot stand in for unresolved point-in-time history."""
+
+
+def _require_resolved_current_st_history(meta: dict[str, object]) -> None:
+    if not meta.get("current_st_snapshot_name") or meta.get("current_st_history_resolved") is True:
+        return
+    statuses = "; ".join(
+        f"{key}={meta.get(key)}"
+        for key in ("name_history_status", "notice_query_status")
+        if str(meta.get(key, "")).startswith("error:")
+    )
+    detail = f"; {statuses}" if statuses else "; current_st_history_resolved=false"
+    raise SecurityMetaHistoryEvidenceUnresolved(
+        f"point-in-time ST history is unresolved for {str(meta.get('symbol') or '').zfill(6)}: "
+        f"current ST snapshot {meta.get('current_st_snapshot_name')!r} has no verified historical interval{detail}"
+    )
+
+
 def _preserve_security_meta_evidence(previous: dict[str, object], candidate: dict[str, object]) -> dict[str, object]:
     identity = ("symbol", "meta_version", "st_notice_policy_version", "current_st_snapshot_name")
     if str(previous.get("symbol", "")).zfill(6) != str(candidate.get("symbol", "")).zfill(6):
@@ -2971,7 +2990,9 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         if isinstance(previous, dict):
             retained = _preserve_security_meta_evidence(previous, meta)
             if retained is previous:
+                _require_resolved_current_st_history(previous)
                 return previous
+    _require_resolved_current_st_history(meta)
     SECURITY_META_DIR.mkdir(parents=True, exist_ok=True)
     (SECURITY_META_DIR / f"{str(symbol).zfill(6)}.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2),
@@ -2997,21 +3018,30 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
             if payload.get("meta_version") == SECURITY_META_VERSION and identity_matches and policy_matches and name_matches:
                 if not current_st_name:
                     return payload
+                # A same-name/current-date cache hit is not enough to prove the
+                # historical start of a current ST interval. In particular, a
+                # failed notice query may leave only a current-name snapshot
+                # interval; reusing it would admit earlier ST dates into a
+                # point-in-time universe.
+                history_resolved = payload.get("current_st_history_resolved") is True
                 meta_last = pd.to_datetime(payload.get("last_trade_date"), errors="coerce")
                 price_last = latest_symbol_price_date(code)
                 policy_matches = payload.get("st_notice_policy_version") == ST_NOTICE_POLICY_VERSION
                 name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
                 date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
-                if policy_matches and name_matches and date_matches:
+                if history_resolved and policy_matches and name_matches and date_matches:
                     return payload
         except Exception:
             pass
     try:
-        return build_security_meta(symbol)
+        meta = build_security_meta(symbol)
     except SecurityMetaHistoryCorrectionRequired:
         raise
     except Exception:
         return None
+    if meta is not None:
+        _require_resolved_current_st_history(meta)
+    return meta
 
 
 def read_ohlc_cache(symbol: str, start_ts: pd.Timestamp, end_ts: pd.Timestamp) -> pd.DataFrame:
