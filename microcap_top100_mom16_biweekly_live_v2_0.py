@@ -4300,16 +4300,57 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
     return pd.Timestamp(dates.max()).normalize()
 
 
-def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
-    existing_shadow_end = read_csv_last_date(paths["panel_shadow"])
-    if panel_shadow_cache_is_reusable(paths["panel_shadow"], existing_shadow_end):
-        return paths["panel_shadow"], pd.Timestamp(existing_shadow_end)
+def validate_panel_exchange_sessions(panel: pd.DataFrame, panel_path: Path) -> None:
+    """Reject synthetic or misdated history before any source fetch or panel write."""
+    dates = pd.to_datetime(panel["date"], errors="coerce")
+    if dates.isna().any():
+        invalid_count = int(dates.isna().sum())
+        raise ValueError(
+            f"panel contains {invalid_count} invalid date value(s) before exchange-session validation: "
+            f"{panel_path}"
+        )
 
+    model_start = pd.Timestamp(freq_mod.START_DATE).normalize()
+    session_dates = dates.dt.normalize()
+    relevant = session_dates.loc[session_dates >= model_start]
+    if relevant.empty:
+        return
+
+    from scripts.exchange_calendar import sessions_for_day
+
+    exchange_sessions = set(sessions_for_day(pd.Timestamp(relevant.max()).date()))
+    invalid_days = sorted({day.date() for day in relevant if day.date() not in exchange_sessions})
+    if invalid_days:
+        preview = ", ".join(day.isoformat() for day in invalid_days[:20])
+        more = "" if len(invalid_days) <= 20 else f", ... (+{len(invalid_days) - 20} more)"
+        raise ValueError(
+            "panel contains non-exchange-session date(s) before refresh: "
+            f"source={panel_path} count={len(invalid_days)} dates={preview}{more}"
+        )
+
+
+def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
     panel = pd.read_csv(args.panel_path)
     if "date" not in panel.columns or HEDGE_COLUMN not in panel.columns:
         raise ValueError(f"Panel must contain columns 'date' and '{HEDGE_COLUMN}'")
-    panel["date"] = pd.to_datetime(panel["date"])
+    panel["date"] = pd.to_datetime(panel["date"], errors="coerce")
     panel = panel.sort_values("date").drop_duplicates(subset="date", keep="last")
+    validate_panel_exchange_sessions(panel, args.panel_path)
+
+    panel_shadow = paths["panel_shadow"]
+    if panel_shadow.is_file():
+        cached_panel = pd.read_csv(panel_shadow)
+        if "date" not in cached_panel.columns or HEDGE_COLUMN not in cached_panel.columns:
+            raise ValueError(
+                f"Cached panel shadow must contain columns 'date' and '{HEDGE_COLUMN}': {panel_shadow}"
+            )
+        cached_panel["date"] = pd.to_datetime(cached_panel["date"], errors="coerce")
+        cached_panel = cached_panel.sort_values("date").drop_duplicates(subset="date", keep="last")
+        validate_panel_exchange_sessions(cached_panel, panel_shadow)
+
+    existing_shadow_end = read_csv_last_date(panel_shadow)
+    if panel_shadow_cache_is_reusable(panel_shadow, existing_shadow_end):
+        return panel_shadow, pd.Timestamp(existing_shadow_end)
     latest_panel_date = pd.Timestamp(panel["date"].max())
     history_start = latest_panel_date - pd.Timedelta(days=HEDGE_HISTORY_LOOKBACK_BUFFER_DAYS)
     hedge_hist = fetch_eastmoney_index_history("1.000852", history_start)
@@ -5869,6 +5910,21 @@ def ensure_strategy_files(
             f"reason={reason}. Restore the verified state bundle or invoke the explicit cold-start recovery path."
         )
 
+    panel = pd.read_csv(panel_path, usecols=["date"])
+    panel["date"] = pd.to_datetime(panel["date"], errors="coerce")
+    if panel["date"].isna().any():
+        raise ValueError("full proxy rebuild panel contains invalid date values")
+    trading_dates = pd.DatetimeIndex(
+        panel.loc[panel["date"] <= pd.Timestamp(target_end_date), "date"].drop_duplicates().sort_values()
+    )
+    from scripts.exchange_calendar import sessions_for_day
+
+    exchange = set(sessions_for_day(pd.Timestamp(target_end_date).date()))
+    invalid = next((day for day in trading_dates
+                    if day >= pd.Timestamp(freq_mod.START_DATE) and day.date() not in exchange), None)
+    if invalid is not None:
+        raise ValueError(f"full proxy rebuild panel contains non-exchange-session date: {invalid.date()}")
+
     _log_price_cache_refresh(
         "full-rebuild authorized mode=explicit_recovery "
         f"target_end_date={pd.Timestamp(target_end_date).date().isoformat()}"
@@ -5878,19 +5934,6 @@ def ensure_strategy_files(
         args.max_workers,
         force_refresh=args.force_refresh,
     )
-
-    panel = pd.read_csv(panel_path, usecols=["date"])
-    panel["date"] = pd.to_datetime(panel["date"])
-    trading_dates = pd.DatetimeIndex(
-        panel.loc[panel["date"] <= pd.Timestamp(target_end_date), "date"].drop_duplicates().sort_values()
-    )
-    from scripts.exchange_calendar import sessions_for_day
-
-    exchange = set(sessions_for_day(pd.Timestamp(target_end_date).date()))
-    invalid = next((day for day in trading_dates
-                    if day >= pd.Timestamp(START_DATE) and day.date() not in exchange), None)
-    if invalid is not None:
-        raise ValueError(f"full proxy rebuild panel contains non-exchange-session date: {invalid.date()}")
 
     index_df, members_df, turnover_df, meta = build_local_proxy_bundle(args, trading_dates)
     args.index_csv.parent.mkdir(parents=True, exist_ok=True)
