@@ -1,23 +1,23 @@
 {
-  "version": "2026-09-17-executed-member-continuation-v4",
-  "seed_end_date": "2026-09-17",
-  "purpose": "User-approved exact-hash executed-member continuation correction from 2026-09-04; frozen prefix through 2026-09-03 preserved. Seed includes 2026-09-17 close execution. Future history rewrite remains fail-closed.",
-  "approved_review_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
+  "version": "2026-10-12-session-st-share-lineage-v5",
+  "seed_end_date": "2026-10-12",
+  "purpose": "Exact audited session/ST/share lineage correction plus verified strict one-session increment; future rewrites remain fail-closed.",
+  "approved_review_sha256": "d112e541b7a2000289cf89aa61b3ecda32b4e53e1865970413fca4ed3a3d9fe6",
   "security_meta_cache_fingerprint": {
     "present_count": 4975,
     "missing_count": 0,
-    "sha256": "464011f06d52b9e5856218f53ad6060507609915ec4b66ce5f10ac29e3270eb2"
+    "sha256": "6496cc1987da5f58d84e3f57761ea4030f4da758a93e21ccdc83b80304acce6d"
   },
   "seed_file_rows": {
-    "proxy_index": 4059,
-    "costed_nav": 4042
+    "proxy_index": 4069,
+    "costed_nav": 4052
   },
   "seed_file_sha256": {
-    "proxy_index": "9b04ba7b633be63c44b05399460005331150a8605116a79019004d07b3a9a148",
-    "costed_nav": "3f2b68c82ac5f5e8d8611918476a5739cd15e4be8426aa9285bce7bdd48e1bce",
-    "proxy_meta": "c2fcf3b109b26381f178990397f0def5a0a54825753981a7b331bf80a6136fff",
-    "proxy_members": "be964a54caa5b3f294ad3558b7860cadc44974df615aed7640fcac488b53d13a",
-    "proxy_turnover": "a064a6bbbe7442d335556058c732fec584e75e3eff2439e2feb041e5605388e7",
-    "proxy_effective_members": "2e6f7ed59718360e2ed7d4c50ca1c74fb4ec44310dd748490aa84e58a3f8d84f"
+    "proxy_index": "ac1e94b15d728363fd580edd4fe7456e0c0f09621d47843eca4bf67afec58bb9",
+    "costed_nav": "24b0ae9072bd73047ab478cecc79a328882b41c62461a9aca7e6b8c4e6f7f33f",
+    "proxy_meta": "d7355191d85339e6ee26575f27377debb8235c352cdff7844f37a25ad7f7eb6c",
+    "proxy_members": "ddc9a319dc2844babc19523ff224138dcedd7c92dcf045b123f38dc82320933e",
+    "proxy_turnover": "1ae378f3a84ad4f3170aa493f9f22455529bfd369f84494f1b8dfa3dadf74edb",
+    "proxy_effective_members": "5fe356732a1bdc59db528a73c613559de8645089a7e696aab613692950ac15a0"
   }
 }

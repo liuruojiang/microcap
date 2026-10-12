@@ -3811,7 +3811,7 @@ COMPATIBLE_PROXY_RESEARCH_STACK_VERSIONS = {
     "2026-04-11-p0-p1-history-meta-master-stv2",
 }
 STATIC_CONTEXT_CACHE_VERSION = "2026-08-20-live-st-name-guard-v3"
-FROZEN_TAIL_AUTHORITY_VERSION = "2026-09-17-executed-member-continuation-v4"
+FROZEN_TAIL_AUTHORITY_VERSION = "2026-10-12-session-st-share-lineage-v5"
 FROZEN_TAIL_AUTHORITY_PATH = (
     OUTPUT_DIR / "microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json"
 )
