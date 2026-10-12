@@ -91,9 +91,27 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
                 "files": len(packed["bundle_files"])}
 
 
+def _validate_no_date_rollback(root: Path, expected: str) -> None:
+    dated_files = {
+        f"outputs/{name}" for name in (
+            delivery.BASE_PANEL, delivery.BASE_FILES["proxy_index"],
+            delivery.BASE_FILES["costed_nav"],
+        )
+    }
+    dated_files.update(
+        name for version in delivery.COSTED for name in final_files(version)
+        if name.endswith(("_nav.csv", "_latest_signal.csv"))
+    )
+    for name in sorted(dated_files):
+        path = root / name
+        if path.exists() and delivery.csv_info(path)[0]["latest_date"] > expected:
+            raise ValueError("Refusing to roll back newer local state")
+
+
 def restore(root: Path, bundle: Path, expected: str) -> dict:
     """Validate in staging, back up every replacement, then use the formal restore."""
     root = root.resolve()
+    _validate_no_date_rollback(root, expected)
     lock = root / delivery.LOCK
     lock.parent.mkdir(parents=True, exist_ok=True)
     handle = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
@@ -128,11 +146,9 @@ def restore(root: Path, bundle: Path, expected: str) -> dict:
                 # Identical approved final streams can still have missing or
                 # mismatched metadata/cache legs. Verify staging and repair those
                 # legs through the normal backed-up restoration below.
-            for name in (delivery.BASE_PANEL, delivery.BASE_FILES["proxy_index"],
-                         delivery.BASE_FILES["costed_nav"]):
-                path = root / "outputs" / name
-                if path.exists() and delivery.csv_info(path)[0]["latest_date"] > expected:
-                    raise ValueError("Refusing to roll back newer local state")
+            # Recheck after acquiring the shared lock in case a refresh completed
+            # between the initial read-only guard and lock acquisition.
+            _validate_no_date_rollback(root, expected)
             with tempfile.TemporaryDirectory(prefix="top100-restore-") as directory:
                 staged = Path(directory)
                 for name in SOURCE_FILES:
