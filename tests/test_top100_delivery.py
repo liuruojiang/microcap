@@ -11,7 +11,9 @@ from scripts import top100_delivery as delivery
 
 def write(root, name, content):
     path = root / name
-    path.parent.mkdir(parents=True, exist_ok=True)
+    # The complete 100-member fixture writes many files into the same directories.
+    if not path.parent.is_dir():
+        path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
 
 

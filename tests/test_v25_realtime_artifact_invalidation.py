@@ -2,8 +2,16 @@ from contextlib import nullcontext
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 import microcap_top100_mom16_biweekly_live_v2_5 as v25
+from frozen_exchange_calendar import frozen_exchange_sessions  # noqa: F401
+
+
+@pytest.fixture(autouse=True)
+def _offline_calendar(frozen_exchange_sessions):
+    """Exercise native dated-row validation with a captured independent calendar."""
+    return frozen_exchange_sessions
 
 
 def _write_realtime(path: Path, **overrides: object) -> None:

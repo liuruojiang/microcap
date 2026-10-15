@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 from scripts import index_history_preflight as history
+from frozen_exchange_calendar import frozen_exchange_sessions  # noqa: F401
 
 START, END = date(2026, 9, 1), date(2026, 9, 4)
 SESSIONS = tuple(date(2026, 9, day) for day in range(1, 5))
@@ -154,7 +155,9 @@ def test_backup_new_session_kept_but_existing_prices_unchanged():
 
 
 @pytest.mark.parametrize("provider", ["eastmoney", "sina_legacy", "sina_static", "tencent"])
-def test_official_shadow_path_preserves_history_when_fallback_used(tmp_path, monkeypatch, provider):
+def test_official_shadow_path_preserves_history_when_fallback_used(
+    tmp_path, monkeypatch, provider, frozen_exchange_sessions,
+):
     import microcap_top100_mom16_biweekly_live_v2_0 as v20
     base = v20.base_mod
     original = good()[["date", "close"]].rename(columns={"close": base.HEDGE_COLUMN})
