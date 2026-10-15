@@ -17,6 +17,51 @@ def daily_session_date(value: object) -> date:
     return stamp.date()
 
 
+def validated_daily_dates(values: object, label: str) -> list[date]:
+    """Parse raw dates without silently dropping, sorting or normalizing them."""
+    days = [daily_session_date(value) for value in values]
+    if not days or days != sorted(set(days)):
+        raise ValueError(f"{label} requires nonempty, unique, increasing daily dates")
+    return days
+
+
+def validate_exchange_session_coverage(
+    values: object,
+    label: str,
+    *,
+    start: object | None = None,
+    end: object | None = None,
+    sessions: object | None = None,
+) -> None:
+    """Validate raw daily dates and every session within the declared sample.
+
+    Warmup may give different streams different start dates. Sparse event and
+    one-row signal files must not use this daily-stream completeness contract.
+    """
+    days = validated_daily_dates(values, label)
+    lower = max(days[0], daily_session_date(start)) if start is not None else days[0]
+    upper = daily_session_date(end) if end is not None else days[-1]
+    if lower > upper:
+        return
+    if sessions is None:
+        from scripts.exchange_calendar import sessions_for_day
+
+        sessions = sessions_for_day(upper)
+    exchange = {daily_session_date(value) for value in sessions}
+    if not exchange or min(exchange) > lower or max(exchange) < upper:
+        raise ValueError(f"{label} independent exchange calendar does not cover {lower}..{upper}")
+    observed = {day for day in days if lower <= day <= upper}
+    invalid = sorted(observed.difference(exchange))
+    if invalid:
+        preview = ", ".join(day.isoformat() for day in invalid[:20])
+        raise ValueError(f"{label} contains non-exchange-session date(s): {preview}")
+    expected = {day for day in exchange if lower <= day <= upper}
+    missing = sorted(expected.difference(observed))
+    if missing:
+        preview = ", ".join(day.isoformat() for day in missing[:20])
+        raise ValueError(f"{label} missing {len(missing)} exchange session(s): {preview}")
+
+
 def read_single_csv_row(path: Path) -> dict[str, str]:
     with path.open(encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)

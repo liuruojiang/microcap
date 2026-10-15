@@ -16,7 +16,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts import realtime_state_bundle as state
-from scripts.top100_data_contracts import daily_session_date
+from scripts.top100_data_contracts import daily_session_date, validate_exchange_session_coverage
 from scripts.restore_approved_top100_seed import BASE_FILES, COSTED
 
 MANIFEST = "outputs/top100_delivery_manifest.json"
@@ -281,12 +281,20 @@ def inspect_outputs(root: Path, expected: str) -> dict:
         _, proxy_date_rows = csv_info(root / "outputs" / BASE_FILES["proxy_index"])
         strategy_start = state._parse_date(proxy_date_rows[0]["date"])
 
-        def check_session_rows(name: str, rows: list[dict], column: str = "date") -> None:
+        def check_session_rows(name: str, rows: list[dict], column: str = "date", *, daily: bool = True) -> None:
             invalid = next((row[column] for row in rows
                             if state._parse_date(row[column]) >= strategy_start
                             and state._parse_date(row[column]) not in exchange_sessions), None)
             if invalid is not None:
                 errors.append(f"non-exchange-session date in {name}: {invalid}")
+            if daily:
+                try:
+                    validate_exchange_session_coverage(
+                        (row[column] for row in rows), name, start=strategy_start,
+                        end=target_day, sessions=exchange_sessions,
+                    )
+                except ValueError as exc:
+                    errors.append(str(exc))
 
         inputs = input_hashes(root)
         for name in (BASE_PANEL, BASE_FILES["proxy_index"], BASE_FILES["costed_nav"]):
@@ -297,7 +305,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                 errors.append(f"base date mismatch: {name}={info['latest_date']} expected={expected}")
         turnover, turnover_rows = csv_info(root / "outputs" / BASE_FILES["proxy_turnover"], "rebalance_date")
         streams[BASE_FILES["proxy_turnover"]] = turnover
-        check_session_rows(BASE_FILES["proxy_turnover"], turnover_rows, "rebalance_date")
+        check_session_rows(BASE_FILES["proxy_turnover"], turnover_rows, "rebalance_date", daily=False)
         if turnover["latest_date"] > expected:
             errors.append("turnover has a future rebalance")
         member_rebalance = canonical_member_rebalance(root, expected)
@@ -357,7 +365,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                 info, rows = csv_info(root / "outputs" / name)
                 streams[name] = info
                 final_rows[name] = rows
-                check_session_rows(name, rows)
+                check_session_rows(name, rows, daily=not name.endswith("latest_signal.csv"))
                 if not name.endswith("latest_signal.csv"):
                     validate_final_nav(rows, name)
                 if info["latest_date"] != expected:

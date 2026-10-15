@@ -23,15 +23,23 @@ import microcap_top100_mom16_biweekly_live_v2_0 as v20
 import microcap_top100_mom16_biweekly_live_v2_3 as v23
 import microcap_top100_mom16_biweekly_live_v2_5 as v25
 from scripts import top100_delivery as delivery
+from frozen_formal_baseline import data_root, redirect_native_base_paths
 
 
 ROOT = Path(__file__).resolve().parents[1]
-AUDIT = ROOT / "research_reports" / "20261007_audit_doublecheck"
-PROBE_LOG = AUDIT / "contract_probes.jsonl"
+DATA_ROOT = data_root()
+PROBE_LOG = None
+
+
+@pytest.fixture(scope="module", autouse=True)
+def isolated_probe_log(tmp_path_factory):
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setitem(globals(), "PROBE_LOG", tmp_path_factory.mktemp("contract_probes") / "probes.jsonl")
+        yield
 
 
 def record(case: str, **fields: object) -> None:
-    AUDIT.mkdir(exist_ok=True)
+    assert PROBE_LOG is not None, "Probe output must be isolated by the test fixture"
     with PROBE_LOG.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps({"case": case, **fields}, ensure_ascii=False, default=str) + "\n")
 
@@ -51,31 +59,30 @@ def write_rows(path: Path, fields: list[str], rows: list[dict[str, str]]) -> Non
 
 
 @pytest.fixture(scope="module")
-def authentic():
-    proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
-    assert proof["fresh_written_artifacts_rechecked_and_unchanged"] is True
-    target = proof["latest_completed_session"]
-    for name, item in proof["artifacts"].items():
-        assert hashlib.sha256(Path(item["path"]).read_bytes()).hexdigest() == item["raw_sha256"], name
-    report = delivery.inspect_outputs(ROOT, target)
-    assert report["ok"], report["errors"]
-    resolved = v20._resolve_base_paths()
+def authentic(frozen_formal_baseline, synthetic_realtime_artifacts):
+    baseline = frozen_formal_baseline
+    proof = baseline["snapshot"]
+    target, report = baseline["target"], baseline["report"]
+    paths = {name: Path(item["path"]) for name, item in proof["artifacts"].items()}
     close = v20.base_mod.load_close_df(
-        resolved.output_paths["panel_shadow"], resolved.index_csv, max_date=pd.Timestamp(target)
+        paths["panel"], paths["proxy_index"], max_date=pd.Timestamp(target)
     )
     base_gross = v20.base_mod.run_signal(close).sort_index()
-    turnover = pd.read_csv(resolved.output_paths["proxy_turnover"], encoding="utf-8-sig")
+    turnover = pd.read_csv(paths["turnover"], encoding="utf-8-sig")
     for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
         turnover[field] = pd.to_datetime(turnover[field], format="ISO8601", errors="raise")
-    official = pd.read_csv(ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+    official = pd.read_csv(paths["v20_nav"],
                            encoding="utf-8-sig", parse_dates=["date"]).set_index("date")
-    summary = json.loads((ROOT / delivery.state.REQUIRED_FILES[1]).read_text(encoding="utf-8"))
+    summary = json.loads((DATA_ROOT / delivery.state.REQUIRED_FILES[1]).read_text(encoding="utf-8"))
     before = {item["path"]: item["raw_sha256"] for item in proof["artifacts"].values()}
-    record("authentic_baseline", target=target, rows={k: x["rows"] for k, x in proof["artifacts"].items()},
+    record("authentic_baseline", target=target, scope=proof["scope"],
+           same_day_freshness_certified_by_this_fixture=False,
+           manifest_sha256=proof["manifest_sha256"], rows={k: x["rows"] for k, x in proof["artifacts"].items()},
            source_sha256={str(Path(mod.__file__).relative_to(ROOT)): hashlib.sha256(Path(mod.__file__).read_bytes()).hexdigest()
                           for mod in (v20, v23, v25, delivery)})
     yield {"target": target, "report": report, "base_gross": base_gross,
-           "turnover": turnover, "official": official, "summary": summary}
+           "turnover": turnover, "official": official, "summary": summary,
+           "realtime": synthetic_realtime_artifacts}
     for path, expected_hash in before.items():
         assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == expected_hash, path
 
@@ -88,7 +95,7 @@ def delivery_copy(tmp_path_factory, authentic):
     for name in names:
         destination = root / name
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / name, destination)
+        shutil.copy2(DATA_ROOT / name, destination)
     originals = {v: (root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv").read_bytes()
                  for v in ("0", "3", "5")}
     assert delivery.inspect_outputs(root, authentic["target"])["ok"]
@@ -106,7 +113,7 @@ FINAL_CORRUPTIONS = [
 ] + [
     (v, "target_position_scale", "9") for v in ("0", "3", "5")
 ] + [
-    (v, "position_transition", "False" if v == "3" else "True") for v in ("0", "3", "5")
+    (v, "position_transition", "__INVERT_BOOL__") for v in ("0", "3", "5")
 ] + [
     (v, "scale_trade_required", "True") for v in ("0", "3", "5")
  ] + [
@@ -132,6 +139,9 @@ def test_final_file_corruption_cannot_be_recertified_by_delivery_cli(
     fields, rows = read_rows(path)
     assert len(rows) == 1 and field in fields
     old = rows[0][field]
+    if bad_value == "__INVERT_BOOL__":
+        assert old in {"True", "False"}
+        bad_value = "False" if old == "True" else "True"
     assert old != bad_value
     if bad_value == "__DROP__":
         rows[0].pop(field)
@@ -155,8 +165,8 @@ def test_final_file_corruption_cannot_be_recertified_by_delivery_cli(
         monkeypatch.setattr(delivery, "__file__", str(root / "scripts" / "top100_delivery.py"))
         monkeypatch.setattr(delivery, "verify_release", lambda _root: "diagnostic_remote_gate_isolated")
         monkeypatch.setattr(delivery, "independent_target", lambda _root: authentic["target"])
-        # Base-state freshness was independently proven before this fault
-        # injection. This test targets written final-file semantics only.
+        # The immutable baseline has passed its recorded manifest. This
+        # regression isolates file semantics and does not recertify today's data.
         monkeypatch.setattr(delivery, "validate_base_state_for_session",
                             lambda _root, _day: {"ok": True, "errors": [], "diagnostic_gate_isolated": True})
         status = delivery.main(["check"])
@@ -215,7 +225,7 @@ def assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, version,
     output_dir.mkdir()
     prefix = f"contract_v2{version}"
     realtime_path = output_dir / f"{prefix}_realtime_signal.csv"
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", realtime_path)
+    shutil.copy2(authentic["realtime"][version], realtime_path)
     if attack == "disabled_native_overheat_alias":
         fields, rows = read_rows(realtime_path)
         assert rows[0]["overheat_enabled"] == rows[0]["overheat_overlay_enabled"] == "True"
@@ -223,17 +233,18 @@ def assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, version,
         write_rows(realtime_path, fields, rows)
     else:
         mutate_realtime(realtime_path, attack)
-    shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / f"{prefix}_costed_nav.csv")
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+    shutil.copy2(DATA_ROOT / "outputs" / delivery.COSTED[version], output_dir / f"{prefix}_costed_nav.csv")
+    shutil.copy2(DATA_ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
                  output_dir / f"{prefix}_summary.json")
     before_bytes = realtime_path.read_bytes()
-    writer_bytes = (ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv").read_bytes()
+    writer_bytes = authentic["realtime"][version].read_bytes()
     previous_v20_prefix = v20.OUTPUT_PREFIX
     previous_version_prefix, previous_version_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
     previous_v20_args = v20._V2_RUNTIME_ARGS
     previous_version_args = module._ACTIVE_RUNTIME_ARGS
     try:
         with monkeypatch.context() as isolated:
+            redirect_native_base_paths(isolated, DATA_ROOT, version)
             isolated.setattr(module, "OUTPUT_DIR", output_dir)
             isolated.setattr(v20, "OUTPUT_DIR", output_dir)
             isolated.setattr(module, "LEGACY_COSTED_NAV_CSVS", ())
@@ -260,7 +271,7 @@ def assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, version,
             module.main([f"--v2{version}-output-prefix", prefix, "信号"])
             captured = capsys.readouterr().out
             costed = pd.read_csv(output_dir / f"{prefix}_costed_nav.csv", encoding="utf-8-sig")
-            formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+            formal = pd.read_csv(DATA_ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
             assert costed["date"].tolist() == formal["date"].tolist()
             pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
                                           formal[["holding", "next_holding", "return_net"]],
@@ -306,7 +317,7 @@ def test_native_signal_cli_cleanup_keeps_current_concurrent_writer(
 def test_native_final_signal_accepts_all_four_fixed_one_transitions(
     authentic, version, module, current_active, next_active
 ):
-    frame = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version],
+    frame = pd.read_csv(DATA_ROOT / "outputs" / delivery.COSTED[version],
                         encoding="utf-8-sig", parse_dates=["date"]).set_index("date").tail(1).copy()
     active = "long_microcap_top100" if version == "5" else "long_microcap_short_zz1000"
     frame["holding"] = active if current_active else "cash"
@@ -377,9 +388,9 @@ def test_member_rank_header_cannot_have_two_incompatible_meanings(delivery_copy,
 
 
 @pytest.mark.parametrize("attack", V25_REALTIME_CORRUPTIONS[:4])
-def test_v23_realtime_identity_rejects_corresponding_faults(tmp_path, attack):
+def test_v23_realtime_identity_rejects_corresponding_faults(tmp_path, synthetic_realtime_artifacts, attack):
     path = tmp_path / "contract_v23_realtime.csv"
-    shutil.copy2(ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v2_3_realtime_signal.csv", path)
+    shutil.copy2(synthetic_realtime_artifacts["3"], path)
     fields, rows = read_rows(path)
     if attack == "wrong_version":
         rows[0]["version"] = "2.5"

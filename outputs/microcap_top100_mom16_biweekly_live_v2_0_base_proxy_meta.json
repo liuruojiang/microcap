@@ -1,15 +1,13 @@
 {
   "index_code": "TOP100_BIWEEKLY_THURSDAY_PROXY",
-  "source_used": "approved_executed_member_continuation",
-  "universe_source": "explicit_symbols",
-  "universe_symbol_count": 572,
+  "source_used": "local_cache_proxy",
+  "universe_source": "backtest_cache_security_master",
+  "universe_symbol_count": 4975,
   "symbol_load_stats": {
-    "requested_count": 572,
-    "loaded_count": 571,
-    "legitimately_unavailable_count": 1,
-    "legitimately_unavailable": [
-      "300391"
-    ],
+    "requested_count": 4975,
+    "loaded_count": 4975,
+    "legitimately_unavailable_count": 0,
+    "legitimately_unavailable": [],
     "failure_count": 0,
     "failures": {}
   },
@@ -38,28 +36,23 @@
     "security_meta_cache_fingerprint": {
       "present_count": 4975,
       "missing_count": 0,
-      "sha256": "464011f06d52b9e5856218f53ad6060507609915ec4b66ce5f10ac29e3270eb2"
+      "sha256": "6496cc1987da5f58d84e3f57761ea4030f4da758a93e21ccdc83b80304acce6d"
     },
     "security_master_enabled": true
   },
   "start_date": "2010-01-05",
-  "end_date": "2026-10-09",
+  "end_date": "2026-10-12",
   "rebalance_dates_count": 432,
   "effective_start_date": "2010-01-05",
-  "recent_extension_start": "2026-09-17",
-  "recent_candidate_symbols": 572,
-  "continuation_bridge_date": "2026-09-03",
-  "approved_migration_review_sha256": "ccdb1dde2466bdc12f16e080740f5602442301bea8e4a34a2736e9efee92c857",
-  "metadata_evidence_completion": "2026-09-17 official HTTPS query; ten legacy records completed; ST intervals unchanged",
   "tail_extension_method": "no_new_rebalance_saved_target_replay",
-  "tail_extension_start": "2026-09-17",
-  "tail_extension_end": "2026-10-09",
-  "tail_extension_rows": 10,
+  "tail_extension_start": "2026-10-09",
+  "tail_extension_end": "2026-10-12",
+  "tail_extension_rows": 1,
   "tail_extension_effective_member_count": 100,
   "tail_extension_replaced_flat_placeholder": false,
   "tail_extension_return_source_counts": {
     "adjusted": 0,
     "raw": 100
   },
-  "tail_extension_authority_sha256": "fbd302da73a013a172907c820f79f82bb9d2c59c6d5862635894acfb2b36d2e6"
+  "tail_extension_authority_sha256": "9de4a3a9a3329a1ba023ca1d7d3d63cdb82dbee0f55ef83fa839a139815c6ae9"
 }

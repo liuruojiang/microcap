@@ -20,7 +20,7 @@ def _realtime_identity(**overrides):
         "date": "2026-09-30",
         "quote_trade_date": "2026-09-30",
         "latest_anchor_trade_date": "2026-09-29",
-        "snapshot_time": "2026-09-30T15:00:25+08:00",
+        "snapshot_time": "2026-09-30T14:59:59+08:00",
         "signal_timing": "intraday_hypothetical_if_now_close",
         "official_close_confirmed_signal": False,
         "current_holding": ACTIVE,

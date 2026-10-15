@@ -1,7 +1,7 @@
 """Third-round diagnostic attacks on actual final CSVs and native entrypoints.
 
 Production inputs remain read only. Upstream write-capable loaders are replaced
-with contexts independently rebuilt from the freshness-proven real inputs.
+with contexts independently rebuilt from manifest-verified frozen real inputs.
 Delivery's remote/base gates are explicitly isolated; these tests certify only
 the written-file contract, never deployment, delivery, PIT history or fills.
 """
@@ -23,10 +23,19 @@ import microcap_top100_mom16_biweekly_live_v2_0 as v20
 import microcap_top100_mom16_biweekly_live_v2_3 as v23
 import microcap_top100_mom16_biweekly_live_v2_5 as v25
 from scripts import top100_delivery as delivery
+from frozen_formal_baseline import data_root, redirect_native_base_paths
 
 ROOT = Path(__file__).resolve().parents[1]
-AUDIT = ROOT / "research_reports" / "20261007_audit_round3"
+DATA_ROOT = data_root()
+PROBE_LOG = None
 TAG = os.environ.get("ROUND3_STATE_LOG_TAG", "probe")
+
+
+@pytest.fixture(scope="module", autouse=True)
+def isolated_probe_log(tmp_path_factory):
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setitem(globals(), "PROBE_LOG", tmp_path_factory.mktemp("state_probes") / "probes.jsonl")
+        yield
 
 
 def digest(path: Path) -> str:
@@ -34,8 +43,8 @@ def digest(path: Path) -> str:
 
 
 def record(case: str, **details: object) -> None:
-    AUDIT.mkdir(parents=True, exist_ok=True)
-    with (AUDIT / f"state_{TAG}_probes.jsonl").open("a", encoding="utf-8") as handle:
+    assert PROBE_LOG is not None, "Probe output must be isolated by the test fixture"
+    with PROBE_LOG.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps({"scope": "diagnostic_only", "case": case, **details},
                                 ensure_ascii=False, default=str) + "\n")
 
@@ -67,33 +76,24 @@ def mutate(path: Path, field: str, value: str) -> None:
 
 
 @pytest.fixture(scope="module")
-def real_context():
-    proof = json.loads((AUDIT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
-    assert proof["scope"] == "round3_diagnostic_only"
-    assert proof["formal_delivery_manifest_left_blocked"] is True
-    for item in proof["artifacts"].values():
-        assert item["matches_same_day_refreshed_input"] is True
-        assert digest(Path(item["path"])) == item["raw_sha256"]
-    target = proof["latest_completed_session"]
-    report = delivery.inspect_outputs(ROOT, target)
-    assert report["ok"], report["errors"]
+def real_context(frozen_formal_baseline, synthetic_realtime_artifacts):
+    proof = frozen_formal_baseline["snapshot"]
+    target, report = frozen_formal_baseline["target"], frozen_formal_baseline["report"]
     all_real_paths = set(Path(item["path"]) for item in proof["artifacts"].values())
-    all_real_paths.update(ROOT / name for name in report["inputs"] if not name.endswith(".py"))
-    all_real_paths.update(ROOT / name for name in report["artifacts"])
-    all_real_paths.add(ROOT / delivery.state.REQUIRED_FILES[1])
-    all_real_paths.update(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_realtime_signal.csv"
-                         for v in ("0", "3", "5"))
+    all_real_paths.update(DATA_ROOT / name for name in report["inputs"] if not name.endswith(".py"))
+    all_real_paths.update(DATA_ROOT / name for name in report["artifacts"])
+    all_real_paths.add(DATA_ROOT / delivery.state.REQUIRED_FILES[1])
     before = {str(path): digest(path) for path in all_real_paths}
-    paths = v20._resolve_base_paths()
-    close = v20.base_mod.load_close_df(paths.output_paths["panel_shadow"], paths.index_csv,
+    paths = {name: Path(item["path"]) for name, item in proof["artifacts"].items()}
+    close = v20.base_mod.load_close_df(paths["panel"], paths["proxy_index"],
                                      max_date=pd.Timestamp(target))
     base_gross = v20.base_mod.run_signal(close).sort_index()
-    turnover = pd.read_csv(paths.output_paths["proxy_turnover"], encoding="utf-8-sig")
+    turnover = pd.read_csv(paths["turnover"], encoding="utf-8-sig")
     for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
         turnover[field] = pd.to_datetime(turnover[field], format="ISO8601", errors="raise")
-    official = pd.read_csv(ROOT / "outputs" / "microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+    official = pd.read_csv(paths["v20_nav"],
                            encoding="utf-8-sig", parse_dates=["date"]).set_index("date")
-    reference = json.loads((ROOT / delivery.state.REQUIRED_FILES[1]).read_text(encoding="utf-8"))
+    reference = json.loads((DATA_ROOT / delivery.state.REQUIRED_FILES[1]).read_text(encoding="utf-8"))
     code = {str(Path(module.__file__).relative_to(ROOT)): digest(Path(module.__file__))
             for module in (v20, v23, v25, delivery)}
     contract_helper = ROOT / "scripts" / "top100_data_contracts.py"
@@ -103,9 +103,11 @@ def real_context():
         code[source_name] = digest(ROOT / source_name)
     code["tests/test_round3_state_contract.py"] = digest(Path(__file__))
     record("real_input_proof", latest_completed_session=target, sources=before,
-           code_sha256=code, formal_refresh=proof["formal_refresh"])
+           code_sha256=code, baseline_scope=proof["scope"],
+           manifest_sha256=proof["manifest_sha256"], same_day_freshness_certified_by_this_fixture=False)
     yield {"target": target, "report": report, "base_gross": base_gross,
-           "turnover": turnover, "official": official, "reference": reference}
+           "turnover": turnover, "official": official, "reference": reference,
+           "realtime": synthetic_realtime_artifacts}
     for path, expected in before.items():
         assert digest(Path(path)) == expected, f"Production input changed: {path}"
     for source_name, expected in code.items():
@@ -121,8 +123,7 @@ def native_generation(tmp_path, real_context, monkeypatch, capsys, version, atta
     prefix = v20.DEFAULT_OUTPUT_PREFIX if version == "0" else f"state_v2{version}"
     costed_name = delivery.COSTED[version] if version == "0" else f"{prefix}_costed_nav.csv"
     realtime = output_dir / f"{prefix}_realtime_signal.csv"
-    real_realtime = ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv"
-    shutil.copy2(real_realtime, realtime)
+    shutil.copy2(real_context["realtime"][version], realtime)
     legal_bytes = realtime.read_bytes()
     replacement_events = []
     replacement_bytes = []
@@ -134,8 +135,8 @@ def native_generation(tmp_path, real_context, monkeypatch, capsys, version, atta
         mutate(realtime, "current_execution_scale", "9.0")
     elif attack != "legal_dated_artifact":
         raise AssertionError(attack)
-    shutil.copy2(ROOT / "outputs" / delivery.COSTED[version], output_dir / costed_name)
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
+    shutil.copy2(DATA_ROOT / "outputs" / delivery.COSTED[version], output_dir / costed_name)
+    shutil.copy2(DATA_ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_summary.json",
                  output_dir / f"{prefix}_summary.json")
     corrupted = realtime.read_bytes()
     old_v20_prefix = v20.OUTPUT_PREFIX
@@ -145,6 +146,7 @@ def native_generation(tmp_path, real_context, monkeypatch, capsys, version, atta
     old_prefix, old_costed = module.OUTPUT_PREFIX, module.COSTED_NAV_CSV
     try:
         with monkeypatch.context() as isolated:
+            redirect_native_base_paths(isolated, DATA_ROOT, version)
             isolated.setattr(module, "OUTPUT_DIR", output_dir)
             isolated.setattr(v20, "OUTPUT_DIR", output_dir)
             isolated.setattr(v20.embedded_context, "_load_embedded_base_context", lambda: (
@@ -184,7 +186,7 @@ def native_generation(tmp_path, real_context, monkeypatch, capsys, version, atta
                 module.main([f"--v2{version}-output-prefix", prefix, "信号"])
             stdout = capsys.readouterr().out
             costed = pd.read_csv(output_dir / costed_name, encoding="utf-8-sig")
-            formal = pd.read_csv(ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
+            formal = pd.read_csv(DATA_ROOT / "outputs" / delivery.COSTED[version], encoding="utf-8-sig")
             assert costed["date"].tolist() == formal["date"].tolist()
             pd.testing.assert_frame_equal(costed[["holding", "next_holding", "return_net"]],
                                           formal[["holding", "next_holding", "return_net"]],
@@ -247,7 +249,7 @@ def test_realtime_preservation_accepts_equivalent_utc_snapshot(
     tmp_path, real_context, version, module
 ):
     path = tmp_path / "state_equivalent_utc.csv"
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+    shutil.copy2(real_context["realtime"][version], path)
     fields, rows = read_csv(path)
     rows[0]["snapshot_time"] = pd.Timestamp(rows[0]["snapshot_time"]).tz_convert("UTC").isoformat()
     write_csv(path, fields, rows)
@@ -264,7 +266,7 @@ def test_realtime_preservation_rejects_post_close_snapshot(
     from scripts.exchange_calendar import latest_completed_session
 
     path = tmp_path / "state_after_close_snapshot.csv"
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+    shutil.copy2(real_context["realtime"][version], path)
     fields, rows = read_csv(path)
     row = rows[0]
     row["snapshot_time"] = row["quote_trade_date"] + "T16:00:00+08:00"
@@ -292,9 +294,9 @@ def test_realtime_preservation_requires_internal_time_and_state_consistency(
     tmp_path, real_context, version, module, field, value
 ):
     path = tmp_path / "state_realtime.csv"
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+    shutil.copy2(real_context["realtime"][version], path)
     if field == "member_rebalance_actionable":
-        # This genuine intraday row is after an earlier member rebalance. The
+        # This explicitly synthetic dated row is after an earlier rebalance. The
         # native realtime generator marks only the immediate execution session
         # actionable, requiring member signal date == latest completed anchor.
         # A close-confirmed next-session plan has a separate contract.
@@ -321,7 +323,7 @@ def test_realtime_member_action_cannot_be_relabelled_with_execution_date(
     tmp_path, real_context, version, module
 ):
     path = tmp_path / "state_member_two_field_bypass.csv"
-    shutil.copy2(ROOT / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_realtime_signal.csv", path)
+    shutil.copy2(real_context["realtime"][version], path)
     fields, rows = read_csv(path)
     row = rows[0]
     assert row["member_rebalance_actionable"] == "False"
@@ -349,7 +351,7 @@ def isolated_delivery(tmp_path_factory, real_context):
     for name in names:
         destination = root / name
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / name, destination)
+        shutil.copy2(DATA_ROOT / name, destination)
     originals = {v: (root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{v}_latest_signal.csv").read_bytes()
                  for v in ("0", "3", "5")}
     assert delivery.inspect_outputs(root, real_context["target"])["ok"]
@@ -375,12 +377,13 @@ def test_native_delivery_check_accepts_authentic_copy(isolated_delivery, real_co
     assert status == 0, output["errors"]
 
 
-@pytest.mark.parametrize("value", ("2026-09-30 00:00:00", "2026-09-30T00:00:00"))
+@pytest.mark.parametrize("suffix", (" 00:00:00", "T00:00:00"))
 def test_final_csv_contract_accepts_naive_midnight_serialization(
-    isolated_delivery, real_context, monkeypatch, capsys, value
+    isolated_delivery, real_context, monkeypatch, capsys, suffix
 ):
     root, originals = isolated_delivery
     path = root / "outputs" / "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv"
+    value = real_context["target"] + suffix
     try:
         mutate(path, "date", value)
         report, status, output = diagnostic_delivery_check(root, real_context, monkeypatch, capsys)
@@ -393,8 +396,8 @@ def test_final_csv_contract_accepts_naive_midnight_serialization(
 
 @pytest.mark.parametrize("version", ("0", "3", "5"))
 @pytest.mark.parametrize("field,value", [
-    ("date", "2026-09-30 12:00:00"),
-    ("date", "2026-09-30T00:00:00+08:00"),
+    ("date", " 12:00:00"),
+    ("date", "T00:00:00+08:00"),
     ("momentum_gap", "-999.0"),
     ("microcap_mom", "__DROP__"),
 ])
@@ -403,6 +406,8 @@ def test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_field
 ):
     root, originals = isolated_delivery
     path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_latest_signal.csv"
+    if field == "date":
+        value = real_context["target"] + value
     try:
         mutate(path, field, value)
         report, status, output = diagnostic_delivery_check(root, real_context, monkeypatch, capsys)

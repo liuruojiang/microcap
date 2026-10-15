@@ -1,8 +1,8 @@
 """Third independent diagnostic audit of the actual Top100 execution builders.
 
 All dependency mutations are isolated and artificial.  Current formal artifacts,
-authority and caches are read-only.  The approved round-three freshness record is
-required even for diagnostic synthetic boundary cases.  No performance promotion.
+authority and caches are read-only. Regression inputs require an existing formal
+delivery manifest; their hashes do not certify today's freshness. No promotion.
 """
 
 from __future__ import annotations
@@ -50,10 +50,23 @@ def _record(case: str, **values: object) -> None:
 CONTEXT_SOURCES = {name: _sha(ROOT / name) for name in SOURCES}
 
 
+@pytest.fixture(scope="module", autouse=True)
+def isolated_probe_log(tmp_path_factory):
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setitem(globals(), "REPORT", tmp_path_factory.mktemp("math_probes"))
+        yield
+
+
 @lru_cache(maxsize=1)
 def _authentic() -> dict:
+    # Historical opt-in --real utility only. Pytest uses a separately validated
+    # immutable delivery snapshot and never mutates this old evidence.
     proof = json.loads((REPORT / "baseline_and_freshness.json").read_text(encoding="utf-8"))
     assert proof["scope"] == "round3_diagnostic_only"
+    return _context_from_snapshot(proof)
+
+
+def _context_from_snapshot(proof: dict) -> dict:
     paths = {key: Path(value["path"]) for key, value in proof["artifacts"].items()}
     frames = {}
     for key, path in paths.items():
@@ -93,8 +106,8 @@ def _build_v20(module, close, events):
 
 
 @pytest.fixture(scope="session")
-def authentic():
-    context = _authentic()
+def authentic(frozen_formal_baseline):
+    context = _context_from_snapshot(frozen_formal_baseline["snapshot"])
     yield context
     after = {key: _sha(path) for key, path in context["paths"].items()}
     expected = {key: row["raw_sha256"] for key, row in context["proof"]["artifacts"].items()}

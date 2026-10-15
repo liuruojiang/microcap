@@ -183,8 +183,11 @@ def _patch_native_realtime_builder(
         monkeypatch.setattr(v2_3, "apply_overheat_defense", lambda *args, **kwargs: passthrough)
         monkeypatch.setattr(v2_3, "build_signal_execution_mismatch_diagnostics", lambda *args, **kwargs: {})
         monkeypatch.setattr(v2_3, "apply_signal_execution_mismatch_columns", lambda *args, **kwargs: None)
-        monkeypatch.setattr(v2_3, "_build_signal_row", lambda *args, **kwargs: _base_signal_row())
-        monkeypatch.setattr(v2_3, "_atomic_write_text", lambda *args, **kwargs: None)
+        # Deadline tests patch these same globals through the builder namespace.
+        # Use one undo stack: mixing setattr and setitem on a module dictionary
+        # restores the helper stub after the original function at teardown.
+        monkeypatch.setitem(v2_3.__dict__, "_build_signal_row", lambda *args, **kwargs: _base_signal_row())
+        monkeypatch.setitem(v2_3.__dict__, "_atomic_write_text", lambda *args, **kwargs: None)
         return v2_3._build_realtime_v2_3_outputs_unlocked
 
     monkeypatch.setattr(v2_5, "_close_df_from_realtime", lambda *args, **kwargs: realtime_base.realtime_close_df)
@@ -193,10 +196,10 @@ def _patch_native_realtime_builder(
     monkeypatch.setattr(v2_5, "build_microcap_log_wls_gross", lambda *args, **kwargs: passthrough)
     monkeypatch.setattr(v2_5, "apply_cost", lambda *args, **kwargs: passthrough)
     monkeypatch.setattr(v2_5, "apply_no_target_vol", lambda *args, **kwargs: passthrough)
-    monkeypatch.setattr(v2_5, "_build_signal_row", lambda *args, **kwargs: _base_signal_row())
+    monkeypatch.setitem(v2_5.__dict__, "_build_signal_row", lambda *args, **kwargs: _base_signal_row())
     monkeypatch.setattr(v2_5, "current_base_fingerprint", lambda: {})
     monkeypatch.setattr(v2_5, "current_realtime_fingerprint", lambda: {})
-    monkeypatch.setattr(v2_5, "_atomic_write_text", lambda *args, **kwargs: None)
+    monkeypatch.setitem(v2_5.__dict__, "_atomic_write_text", lambda *args, **kwargs: None)
     return v2_5._build_realtime_v2_5_outputs_unlocked
 
 

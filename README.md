@@ -64,6 +64,7 @@ python -B -m py_compile microcap_top100_mom16_biweekly_live_v2_0.py microcap_top
 
 ## 文档
 
+- 2026-10-15 三版本脚本修复与发布要求：[修复记录](docs/microcap_script_bugfix_20261015.md)
 - 2026-10-07 审计修正与本地/云端日报同步验收：[同步记录](docs/microcap_audit_daily_sync_20261007.md)
 - 2026-10-07 多智能体复核、本地日报及实际邮件送达：[发送验收记录](docs/microcap_daily_delivery_adversarial_20261007.md)
 

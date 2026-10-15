@@ -1358,12 +1358,16 @@ def fetch_current_st_codes(force_refresh: bool = False) -> set[str]:
 def build_historical_st_status_series(symbol: str, trading_dates: pd.DatetimeIndex) -> pd.Series:
     mod = _FREQ_MOD_FOR_ST
     if mod is None:
-        return pd.Series(False, index=trading_dates, dtype=bool)
+        raise RuntimeError("Historical ST metadata runtime is unavailable")
     try:
         meta = mod.load_security_meta(str(symbol).zfill(6))
+        if meta is None:
+            raise ValueError("security metadata is unavailable")
         series = mod.build_st_status_series(meta, trading_dates)
-    except Exception:
-        series = pd.Series(False, index=trading_dates, dtype=bool)
+    except Exception as exc:
+        raise RuntimeError(
+            f"Historical ST metadata load failed for {str(symbol).zfill(6)}: {type(exc).__name__}: {exc}"
+        ) from exc
     return series.reindex(trading_dates).fillna(False).astype(bool)
 
 
@@ -1636,6 +1640,49 @@ def fetch_share_change(symbol: str, start_date: str, end_date: str, force_refres
     return merged[merged["change_date"] <= end_ts].copy()
 
 
+def select_return_close(
+    symbol: str,
+    raw_close: pd.Series,
+    return_price: pd.DataFrame | None,
+) -> pd.Series:
+    """Select one price basis; partial adjustments cannot be spliced into raw prices."""
+    raw_close = pd.to_numeric(raw_close.sort_index(), errors="coerce").astype(float)
+    if not np.isfinite(raw_close).all() or raw_close.le(0.0).any():
+        raise ValueError(f"raw return-price data for {symbol} must contain finite positive closes")
+    if raw_close.empty or return_price is None or return_price.empty:
+        return raw_close.copy()
+    return_col = next((col for col in ("close_qfq", "close_adj", "close_raw") if col in return_price.columns), None)
+    if "date" not in return_price.columns or return_col is None:
+        raise ValueError(f"return-price data for {symbol} lacks date or a supported close column")
+    adjusted = return_price[["date", return_col]].copy()
+    adjusted["date"] = pd.to_datetime(adjusted["date"], errors="coerce")
+    if adjusted["date"].isna().any():
+        raise ValueError(f"return-price data for {symbol} contains invalid dates")
+    adjusted = adjusted.loc[adjusted["date"].between(raw_close.index.min(), raw_close.index.max())]
+    if adjusted.empty:
+        return raw_close.copy()
+    if adjusted["date"].duplicated().any():
+        raise ValueError(f"return-price data for {symbol} contains duplicate dates")
+    adjusted_close = pd.to_numeric(adjusted.set_index("date")[return_col], errors="coerce").astype(float)
+    if not np.isfinite(adjusted_close).all() or adjusted_close.le(0.0).any():
+        raise ValueError(f"return-price data for {symbol} must contain finite positive closes")
+    aligned = adjusted_close.reindex(raw_close.index)
+    covered = aligned.notna()
+    if covered.all():
+        return adjusted_close.sort_index().rename(raw_close.name)
+    # Equal observations introduce no adjustment. A non-unit constant ratio is
+    # not proof of corporate-action coverage and must never justify a fallback.
+    raw_at_adjusted_dates = raw_close.reindex(raw_close.index.union(adjusted_close.index)).sort_index().ffill()
+    raw_at_adjusted_dates = raw_at_adjusted_dates.reindex(adjusted_close.index)
+    if covered.any() and adjusted_close.eq(raw_at_adjusted_dates).all():
+        return raw_close.copy()
+    missing_dates = [str(pd.Timestamp(dt).date()) for dt in raw_close.index[~covered][:5]]
+    raise ValueError(
+        f"incomplete adjusted return-price coverage for {symbol}; "
+        f"cannot mix adjusted and raw closes; missing dates={missing_dates}"
+    )
+
+
 def build_symbol_panel(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
     price = fetch_price_history(symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh)
     try:
@@ -1655,19 +1702,12 @@ def build_symbol_panel(symbol: str, start_date: str, end_date: str, force_refres
         right_on="change_date",
         direction="backward",
     )
-    if not adjusted_price.empty:
-        merged = pd.merge_asof(
-            merged.sort_values("date"),
-            adjusted_price[["date", "close_qfq"]].sort_values("date"),
-            on="date",
-            direction="backward",
-        )
-    else:
-        merged["close_qfq"] = np.nan
     merged["total_shares"] = merged["total_shares_10k"] * 10000.0
     merged["market_cap"] = merged["close_raw"] * merged["total_shares"]
-    return_close = merged["close_qfq"].where(merged["close_qfq"].notna(), merged["close_raw"])
-    merged["return"] = return_close.pct_change(fill_method=None)
+    return_close = select_return_close(
+        symbol, merged.set_index("date")["close_raw"], adjusted_price,
+    ).reindex(pd.DatetimeIndex(merged["date"]))
+    merged["return"] = return_close.pct_change(fill_method=None).to_numpy()
     merged["symbol"] = symbol
     return merged[["date", "symbol", "close_raw", "market_cap", "return"]].dropna(subset=["market_cap"])
 
@@ -2745,8 +2785,9 @@ def fetch_cninfo_org_map(force_refresh: bool = False) -> dict[str, str]:
 def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
     org_map = fetch_cninfo_org_map()
     org_id = org_map.get(str(symbol).zfill(6))
-    if not org_id:
-        return pd.DataFrame(columns=["notice_date", "title"])
+    if not isinstance(org_id, str) or not org_id.strip():
+        raise ValueError(f"CNInfo organization ID is unavailable for {str(symbol).zfill(6)}")
+    org_id = org_id.strip()
 
     rows: list[dict[str, object]] = []
     query_specs = [
@@ -2775,6 +2816,26 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
                 time.sleep(0.5 * (attempt + 1))
         raise RuntimeError(f"CNInfo announcement query failed for {symbol}: {last_error}") from last_error
 
+    def checked_page(page_data: object) -> tuple[int, list[object]]:
+        if not isinstance(page_data, dict):
+            raise ValueError(f"CNInfo announcement response is not an object for {symbol}")
+        raw_total = page_data.get("totalAnnouncement")
+        if (isinstance(raw_total, bool) or not isinstance(raw_total, (int, str))
+                or (isinstance(raw_total, str) and not raw_total.strip().isdigit())):
+            raise ValueError(f"CNInfo totalAnnouncement is missing or invalid for {symbol}")
+        total = int(raw_total)
+        if total < 0:
+            raise ValueError(f"CNInfo totalAnnouncement is negative for {symbol}")
+        items = page_data.get("announcements")
+        # The real API represents an explicitly empty result with null.
+        if total == 0 and items is None:
+            return total, []
+        if not isinstance(items, list) or (total > 0 and not items):
+            raise ValueError(f"CNInfo announcements are missing or empty despite total={total} for {symbol}")
+        if len(items) > total:
+            raise ValueError(f"CNInfo announcement count exceeds declared total for {symbol}")
+        return total, items
+
     for spec in query_specs:
         payload = {
             "pageNum": "1",
@@ -2793,26 +2854,40 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
             "isHLtitle": "true",
         }
         first_page = post_page(payload)
-        total = int(first_page.get("totalAnnouncement") or 0)
-        total_pages = max(1, (total + 29) // 30) if total > 0 else 0
+        total, first_items = checked_page(first_page)
+        page_size = int(payload["pageSize"])
+        total_pages = (total + page_size - 1) // page_size
+        query_items: list[object] = []
         for page in range(1, total_pages + 1):
-            page_data = first_page if page == 1 else post_page({**payload, "pageNum": str(page)})
-            for item in page_data.get("announcements") or []:
-                title = re.sub(r"<[^>]+>", "", str(item.get("announcementTitle") or ""))
-                rows.append(
-                    {
-                        "notice_date": pd.to_datetime(item.get("announcementTime"), unit="ms", utc=True, errors="coerce")
-                        .tz_convert("Asia/Shanghai")
-                        .tz_localize(None),
-                        "title": title,
-                    }
-                )
+            page_total, items = (total, first_items) if page == 1 else checked_page(
+                post_page({**payload, "pageNum": str(page)})
+            )
+            if page_total != total:
+                raise ValueError(f"CNInfo announcement total changed between pages for {symbol}")
+            query_items.extend(items)
+            if len(query_items) > total:
+                raise ValueError(f"CNInfo announcement count exceeds declared total for {symbol}")
+        if len(query_items) != total:
+            raise ValueError(
+                f"CNInfo incomplete announcement query for {symbol}: expected={total} received={len(query_items)}"
+            )
+        for item in query_items:
+            if not isinstance(item, dict) or not isinstance(item.get("announcementTitle"), str):
+                raise ValueError(f"CNInfo announcement has an invalid title or record for {symbol}")
+            title = re.sub(r"<[^>]+>", "", item["announcementTitle"]).strip()
+            if not title:
+                raise ValueError(f"CNInfo announcement has an empty title for {symbol}")
+            notice_time = pd.to_datetime(item.get("announcementTime"), unit="ms", utc=True, errors="raise")
+            if pd.isna(notice_time):
+                raise ValueError(f"CNInfo announcement has an invalid timestamp for {symbol}")
+            rows.append(
+                {"notice_date": notice_time.tz_convert("Asia/Shanghai").tz_localize(None), "title": title}
+            )
     frame = pd.DataFrame(rows)
     if frame.empty:
         return pd.DataFrame(columns=["notice_date", "title"])
     frame = (
-        frame.dropna(subset=["notice_date"])
-        .drop_duplicates(subset=["notice_date", "title"])
+        frame.drop_duplicates(subset=["notice_date", "title"])
         .sort_values("notice_date")
         .reset_index(drop=True)
     )
@@ -2847,7 +2922,49 @@ class SecurityMetaHistoryCorrectionRequired(RuntimeError):
 
 
 class SecurityMetaHistoryEvidenceUnresolved(SecurityMetaHistoryCorrectionRequired):
-    """A current ST name cannot stand in for unresolved point-in-time history."""
+    """Missing or failed metadata cannot certify point-in-time ST history."""
+
+
+def _security_meta_source_failures(meta: dict[str, object]) -> str:
+    return "; ".join(
+        f"{key}={meta.get(key)}"
+        for key in ("name_history_status", "notice_query_status")
+        if str(meta.get(key, "")).startswith("error:")
+    )
+
+
+def _security_meta_daily_date(value: object, field: str) -> pd.Timestamp:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} must be a valid daily date")
+    parsed = pd.Timestamp(value)
+    if pd.isna(parsed) or parsed.tzinfo is not None or parsed != parsed.normalize():
+        raise ValueError(f"{field} must be a valid daily date without time or timezone")
+    return parsed
+
+
+def _read_security_meta_payload(path: Path, symbol: str) -> dict[str, object]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict) or not isinstance(payload.get("st_intervals"), list):
+            raise ValueError("security metadata must be an object with an ST interval list")
+        for field in ("list_date", "delist_date", "first_trade_date", "last_trade_date"):
+            value = payload.get(field)
+            if value is not None and value != "":
+                _security_meta_daily_date(value, field)
+        for item in payload["st_intervals"]:
+            if not isinstance(item, dict):
+                raise ValueError("each ST interval must be an object")
+            start = _security_meta_daily_date(item.get("start"), "ST interval start")
+            end_value = item.get("end")
+            if end_value is not None:
+                end = _security_meta_daily_date(end_value, "ST interval end")
+                if end < start:
+                    raise ValueError("ST interval end precedes start")
+    except (OSError, ValueError, TypeError) as exc:
+        raise SecurityMetaHistoryEvidenceUnresolved(
+            f"Cannot read security metadata for {str(symbol).zfill(6)} from {path}: {type(exc).__name__}: {exc}"
+        ) from exc
+    return payload
 
 
 def _require_resolved_current_st_history(meta: dict[str, object]) -> None:
@@ -2983,16 +3100,17 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     }
     previous_path = resolve_security_meta_path(symbol)
     if previous_path is not None:
-        try:
-            previous = json.loads(previous_path.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            previous = None
-        if isinstance(previous, dict):
-            retained = _preserve_security_meta_evidence(previous, meta)
-            if retained is previous:
-                _require_resolved_current_st_history(previous)
-                return previous
+        previous = _read_security_meta_payload(previous_path, symbol)
+        retained = _preserve_security_meta_evidence(previous, meta)
+        if retained is previous:
+            _require_resolved_current_st_history(previous)
+            return previous
     _require_resolved_current_st_history(meta)
+    source_failures = _security_meta_source_failures(meta)
+    if source_failures:
+        raise SecurityMetaHistoryEvidenceUnresolved(
+            f"point-in-time ST history is unresolved for {str(symbol).zfill(6)}: {source_failures}"
+        )
     SECURITY_META_DIR.mkdir(parents=True, exist_ok=True)
     (SECURITY_META_DIR / f"{str(symbol).zfill(6)}.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2),
@@ -3001,13 +3119,13 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     return meta
 
 
-def load_security_meta(symbol: str) -> dict[str, object] | None:
+def load_security_meta(symbol: str) -> dict[str, object]:
     code = str(symbol).zfill(6)
     current_st_name = load_current_st_name_map().get(code, "")
     meta_path = resolve_security_meta_path(symbol)
     if meta_path is not None:
         try:
-            payload = json.loads(meta_path.read_text(encoding="utf-8"))
+            payload = _read_security_meta_payload(meta_path, symbol)
             identity_matches = str(payload.get("symbol") or "").zfill(6) == code
             # Legacy non-ST metadata omits the newer policy field; formal proxy
             # reuse additionally requires its approved content fingerprint.
@@ -3015,7 +3133,8 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
             policy = payload.get("st_notice_policy_version")
             policy_matches = policy == ST_NOTICE_POLICY_VERSION or (policy is None and not current_st_name)
             name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
-            if payload.get("meta_version") == SECURITY_META_VERSION and identity_matches and policy_matches and name_matches:
+            if (payload.get("meta_version") == SECURITY_META_VERSION and identity_matches
+                    and policy_matches and name_matches and not _security_meta_source_failures(payload)):
                 if not current_st_name:
                     return payload
                 # A same-name/current-date cache hit is not enough to prove the
@@ -3031,16 +3150,23 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
                 date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
                 if history_resolved and policy_matches and name_matches and date_matches:
                     return payload
-        except Exception:
-            pass
+        except SecurityMetaHistoryCorrectionRequired:
+            raise
+        except Exception as exc:
+            raise SecurityMetaHistoryEvidenceUnresolved(
+                f"Cannot validate security metadata for {code}: {type(exc).__name__}: {exc}"
+            ) from exc
     try:
         meta = build_security_meta(symbol)
     except SecurityMetaHistoryCorrectionRequired:
         raise
-    except Exception:
-        return None
-    if meta is not None:
-        _require_resolved_current_st_history(meta)
+    except Exception as exc:
+        raise SecurityMetaHistoryEvidenceUnresolved(
+            f"Cannot build security metadata for {code}: {type(exc).__name__}: {exc}"
+        ) from exc
+    if meta is None:
+        raise SecurityMetaHistoryEvidenceUnresolved(f"Security metadata is unavailable for {code}")
+    _require_resolved_current_st_history(meta)
     return meta
 
 
@@ -3165,24 +3291,9 @@ def build_tradeability_series(
     close_calendar = close_series.reindex(trading_dates)
     close_calendar = close_calendar.where(listed_mask)
     close_calendar = close_calendar.ffill().where(listed_mask)
-    raw_return_close_calendar = close_series.reindex(trading_dates)
-    raw_return_close_calendar = raw_return_close_calendar.where(listed_mask)
-    raw_return_close_calendar = raw_return_close_calendar.ffill().where(listed_mask)
-    return_close_calendar = raw_return_close_calendar.copy()
-    if return_price is not None and not return_price.empty:
-        return_col = next((col for col in ["close_qfq", "close_adj", "close_raw"] if col in return_price.columns), None)
-        if return_col is not None:
-            adjusted_close_series = return_price.set_index("date")[return_col].sort_index()
-            adjusted_listed_mask = pd.Series(
-                (trading_dates >= adjusted_close_series.index.min())
-                & (trading_dates <= adjusted_close_series.index.max()),
-                index=trading_dates,
-                dtype=bool,
-            )
-            adjusted_close_calendar = adjusted_close_series.reindex(trading_dates)
-            adjusted_close_calendar = adjusted_close_calendar.where(adjusted_listed_mask)
-            adjusted_close_calendar = adjusted_close_calendar.ffill().where(adjusted_listed_mask)
-            return_close_calendar = adjusted_close_calendar.combine_first(raw_return_close_calendar)
+    return_close_series = index_mod.select_return_close(symbol, close_series, return_price)
+    return_close_calendar = return_close_series.reindex(trading_dates)
+    return_close_calendar = return_close_calendar.where(listed_mask).ffill().where(listed_mask)
     ret_series = return_close_calendar.pct_change(fill_method=None).astype(float)
 
     ohlc = read_ohlc_cache(symbol, pd.Timestamp(trading_dates.min()), pd.Timestamp(trading_dates.max()))
@@ -3255,19 +3366,24 @@ def load_symbol_cache(
         end_ts = pd.Timestamp(trading_dates.max())
 
         price = pd.read_csv(price_path)
-        price["date"] = pd.to_datetime(price["date"])
+        price["date"] = pd.to_datetime(price["date"], errors="coerce")
+        if price["date"].isna().any():
+            raise ValueError(f"raw price cache for {symbol} contains invalid dates")
         price = price[(price["date"] >= start_ts) & (price["date"] <= end_ts)]
         if price.empty:
             return None
         price = price.sort_values("date")
         price["close_raw"] = pd.to_numeric(price["close_raw"], errors="coerce")
-        price = price.dropna(subset=["date", "close_raw"])
+        if price["close_raw"].isna().any():
+            raise ValueError(f"raw price cache for {symbol} contains missing or nonnumeric closes")
 
         adjusted_price: pd.DataFrame | None = None
         adjusted_path = resolve_cache_path(ADJ_PRICE_DIR, SHARED_ADJ_PRICE_DIR, symbol)
         if adjusted_path is not None:
             adjusted_price = pd.read_csv(adjusted_path)
-            adjusted_price["date"] = pd.to_datetime(adjusted_price["date"])
+            adjusted_price["date"] = pd.to_datetime(adjusted_price["date"], errors="coerce")
+            if adjusted_price["date"].isna().any():
+                raise ValueError(f"adjusted price cache for {symbol} contains invalid dates")
             adjusted_price = adjusted_price[(adjusted_price["date"] >= start_ts) & (adjusted_price["date"] <= end_ts)]
             if not adjusted_price.empty:
                 return_col = next(
@@ -3276,7 +3392,7 @@ def load_symbol_cache(
                 )
                 if return_col is not None:
                     adjusted_price[return_col] = pd.to_numeric(adjusted_price[return_col], errors="coerce")
-                    adjusted_price = adjusted_price.dropna(subset=["date", return_col]).sort_values("date")
+                    adjusted_price = adjusted_price.sort_values("date")
                 else:
                     raise ValueError(
                         f"adjusted price cache for {str(symbol).zfill(6)} has no supported adjusted close column"
@@ -4331,41 +4447,20 @@ def latest_closed_history_date(history_df: pd.DataFrame, now: pd.Timestamp | Non
 
 
 def validate_panel_exchange_sessions(panel: pd.DataFrame, panel_path: Path) -> None:
-    """Reject synthetic or misdated history before any source fetch or panel write."""
-    dates = pd.to_datetime(panel["date"], errors="coerce")
-    if dates.isna().any():
-        invalid_count = int(dates.isna().sum())
-        raise ValueError(
-            f"panel contains {invalid_count} invalid date value(s) before exchange-session validation: "
-            f"{panel_path}"
-        )
+    """Reject missing or malformed raw dates before source fetch or panel write."""
+    from scripts.top100_data_contracts import validate_exchange_session_coverage
 
-    model_start = pd.Timestamp(freq_mod.START_DATE).normalize()
-    session_dates = dates.dt.normalize()
-    relevant = session_dates.loc[session_dates >= model_start]
-    if relevant.empty:
-        return
-
-    from scripts.exchange_calendar import sessions_for_day
-
-    exchange_sessions = set(sessions_for_day(pd.Timestamp(relevant.max()).date()))
-    invalid_days = sorted({day.date() for day in relevant if day.date() not in exchange_sessions})
-    if invalid_days:
-        preview = ", ".join(day.isoformat() for day in invalid_days[:20])
-        more = "" if len(invalid_days) <= 20 else f", ... (+{len(invalid_days) - 20} more)"
-        raise ValueError(
-            "panel contains non-exchange-session date(s) before refresh: "
-            f"source={panel_path} count={len(invalid_days)} dates={preview}{more}"
-        )
+    validate_exchange_session_coverage(
+        panel["date"], f"panel {panel_path}", start=freq_mod.START_DATE
+    )
 
 
 def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path]) -> tuple[Path, pd.Timestamp]:
     panel = pd.read_csv(args.panel_path)
     if "date" not in panel.columns or HEDGE_COLUMN not in panel.columns:
         raise ValueError(f"Panel must contain columns 'date' and '{HEDGE_COLUMN}'")
-    panel["date"] = pd.to_datetime(panel["date"], errors="coerce")
-    panel = panel.sort_values("date").drop_duplicates(subset="date", keep="last")
     validate_panel_exchange_sessions(panel, args.panel_path)
+    panel["date"] = pd.to_datetime(panel["date"], errors="raise")
 
     panel_shadow = paths["panel_shadow"]
     if panel_shadow.is_file():
@@ -4374,8 +4469,6 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
             raise ValueError(
                 f"Cached panel shadow must contain columns 'date' and '{HEDGE_COLUMN}': {panel_shadow}"
             )
-        cached_panel["date"] = pd.to_datetime(cached_panel["date"], errors="coerce")
-        cached_panel = cached_panel.sort_values("date").drop_duplicates(subset="date", keep="last")
         validate_panel_exchange_sessions(cached_panel, panel_shadow)
 
     existing_shadow_end = read_csv_last_date(panel_shadow)
@@ -4404,6 +4497,7 @@ def build_refreshed_panel_shadow(args: argparse.Namespace, paths: dict[str, Path
             shadow.at[dt, HEDGE_COLUMN] = close
 
     shadow = shadow.sort_index().reset_index()
+    validate_panel_exchange_sessions(shadow, paths["panel_shadow"])
     _atomic_to_csv(shadow, paths["panel_shadow"], index=False, encoding="utf-8")
     return paths["panel_shadow"], latest_hedge_date
 
@@ -5941,19 +6035,11 @@ def ensure_strategy_files(
         )
 
     panel = pd.read_csv(panel_path, usecols=["date"])
-    panel["date"] = pd.to_datetime(panel["date"], errors="coerce")
-    if panel["date"].isna().any():
-        raise ValueError("full proxy rebuild panel contains invalid date values")
+    validate_panel_exchange_sessions(panel, panel_path)
+    panel["date"] = pd.to_datetime(panel["date"], errors="raise")
     trading_dates = pd.DatetimeIndex(
-        panel.loc[panel["date"] <= pd.Timestamp(target_end_date), "date"].drop_duplicates().sort_values()
+        panel.loc[panel["date"] <= pd.Timestamp(target_end_date), "date"]
     )
-    from scripts.exchange_calendar import sessions_for_day
-
-    exchange = set(sessions_for_day(pd.Timestamp(target_end_date).date()))
-    invalid = next((day for day in trading_dates
-                    if day >= pd.Timestamp(freq_mod.START_DATE) and day.date() not in exchange), None)
-    if invalid is not None:
-        raise ValueError(f"full proxy rebuild panel contains non-exchange-session date: {invalid.date()}")
 
     _log_price_cache_refresh(
         "full-rebuild authorized mode=explicit_recovery "
@@ -7072,7 +7158,15 @@ def apply_momentum_gap_peak_decay_derisk(
     rebalance_base = freq_mod.cost_mod.map_rebalance_apply_costs(out.index, turnover_df)
     from scripts.top100_data_contracts import validate_mapped_rebalance_costs
     validate_mapped_rebalance_costs(out.index, turnover_df, rebalance_base)
-    returns = pd.to_numeric(out["return"], errors="coerce").fillna(0.0)
+    returns = pd.to_numeric(out["return"], errors="coerce").astype(float)
+    invalid_active_return = out["base_holding"].ne("cash") & ~np.isfinite(returns)
+    if invalid_active_return.any():
+        invalid_date = out.index[invalid_active_return][0]
+        raise ValueError(
+            f"non-finite active return at {pd.Timestamp(invalid_date).date()}: "
+            f"{out.at[invalid_date, 'return']!r}"
+        )
+    returns = returns.fillna(0.0)
     momentum_gap_series = pd.to_numeric(out["momentum_gap"], errors="coerce")
 
     executed_holding: list[str] = []
@@ -13043,6 +13137,18 @@ def validate_daily_stream_continuity(
         raise RuntimeError(
             f"{label} missing {len(missing_dates)} trading dates versus refreshed panel: {sample}"
         )
+    from scripts.top100_data_contracts import validate_exchange_session_coverage
+
+    try:
+        model_start = pd.Timestamp(base_mod.freq_mod.START_DATE)
+        validate_exchange_session_coverage(
+            panel_dates, f"{label} reference panel", start=model_start
+        )
+        validate_exchange_session_coverage(
+            stream_dates, label, start=max(panel_index[0], model_start), end=panel_index[-1]
+        )
+    except ValueError as exc:
+        raise RuntimeError(f"{label} continuity guard: {exc}") from exc
 
 
 def _read_artifact_date_index(path: Path, date_column: object = "") -> pd.DatetimeIndex:
@@ -13053,15 +13159,18 @@ def _read_artifact_date_index(path: Path, date_column: object = "") -> pd.Dateti
         try:
             header = pd.read_csv(path, nrows=0, encoding="utf-8-sig")
             column = next((candidate for candidate in FRESHNESS_DATE_COLUMNS if candidate in header.columns), "")
-        except Exception:
-            return pd.DatetimeIndex([])
+        except Exception as exc:
+            raise RuntimeError(f"Cannot read daily artifact header: {path}") from exc
     if not column:
-        return pd.DatetimeIndex([])
+        raise RuntimeError(f"Daily artifact has no date column: {path}")
     try:
         dates = pd.read_csv(path, usecols=[column], encoding="utf-8-sig")[column]
-    except Exception:
-        return pd.DatetimeIndex([])
-    return _normalise_date_index(dates)
+    except Exception as exc:
+        raise RuntimeError(f"Cannot read daily artifact dates: {path}") from exc
+    # Do not erase invalid/duplicate/intraday dates before the continuity guard.
+    from scripts.top100_data_contracts import validated_daily_dates
+
+    return pd.DatetimeIndex(validated_daily_dates(dates, str(path)))
 
 
 def _latest_required_rebalance_date(panel_dates: pd.DatetimeIndex, expected_latest_date: object) -> str:
@@ -13161,7 +13270,9 @@ def assert_top100_candidate_fresh(
         daily_keys=base_keys,
     )
 
-    candidate_dates = _normalise_date_index(candidate_index)
+    from scripts.top100_data_contracts import validated_daily_dates
+
+    candidate_dates = pd.DatetimeIndex(validated_daily_dates(candidate_index, f"{label} candidate"))
     if candidate_dates.empty:
         raise RuntimeError(f"{label} candidate stream is empty")
     if pd.Timestamp(candidate_dates[-1]).normalize() != expected_ts:

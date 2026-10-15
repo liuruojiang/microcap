@@ -105,6 +105,25 @@ def test_close_confirmed_path_remains_available_in_evening(monkeypatch):
 
 
 @pytest.mark.parametrize("version", ["v2.0", "v2.3", "v2.5"])
+def test_native_builder_double_patch_restores_original_functions(version):
+    from test_realtime_member_action_contract import _fake_realtime_base, _patch_native_realtime_builder
+
+    builder = {"v2.0": v20._build_realtime_v2_0_outputs_unlocked,
+               "v2.3": v23._build_realtime_v2_3_outputs_unlocked,
+               "v2.5": v25._build_realtime_v2_5_outputs_unlocked}[version]
+    namespace = builder.__globals__
+    originals = {key: namespace[key] for key in ("_build_signal_row", "_atomic_write_text")}
+    base = _fake_realtime_base(latest_anchor_trade_date="2026-09-30",
+                               quote_trade_date="2026-10-08", official_rebalance=False)
+    with pytest.MonkeyPatch.context() as patch:
+        _patch_native_realtime_builder(patch, version, base)
+        for key in originals:
+            patch.setitem(namespace, key, lambda *args, **kwargs: None)
+    for key, original in originals.items():
+        assert namespace[key] is original, f"{version} leaked a helper stub: {key}"
+
+
+@pytest.mark.parametrize("version", ["v2.0", "v2.3", "v2.5"])
 @pytest.mark.parametrize("finish", ["2026-10-08T14:59:59+08:00", "2026-10-08T15:00:00+08:00"])
 def test_calculation_crossing_deadline_never_writes_live_csv(sessions, monkeypatch, tmp_path, version, finish):
     from test_realtime_member_action_contract import _fake_realtime_base, _patch_native_realtime_builder
