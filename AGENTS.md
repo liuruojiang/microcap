@@ -60,3 +60,7 @@ Use this repo-local file as the source of workspace guidance for the Top100 micr
 - The final CSV is the authority for strategy identity, holdings, and actions. Stdout may supply presentation fields but must never backfill a missing or contradictory final-CSV identity.
 - A member rebalance is actionable only on its dated execution session. Historical and preview changes may be reported as context but must not be rendered as a current trade instruction.
 - After the close, do not relabel a close-confirmed signal as realtime. A realtime publication must retain the previous-completed-session anchor invariant; use an explicitly close-confirmed correction when that invariant cannot hold.
+
+# Close Confirmation Time (2026-10-23 user approval)
+
+- Today is eligible for close-confirmed research at or after 15:00 Asia/Shanghai, replacing the prior 15:30 buffer. This does not prove market-data completeness: require the same-day complete source data, independent exchange calendar, 100 unique members with no ST overlap, and full v2.0/v2.3/v2.5 delivery gates. Intraday publication still ends strictly before 15:00. Do not relabel stale rows or change historical records.

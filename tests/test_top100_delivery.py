@@ -282,10 +282,10 @@ def test_parallel_group_refresh_cannot_overwrite_success(workspace):
 
 @pytest.mark.parametrize("clock,expected", [
     ("2026-09-04T14:30:00+08:00", "2026-09-03"),
-    ("2026-09-04T15:29:59+08:00", "2026-09-03"),
-    ("2026-09-04T15:30:00+08:00", "2026-09-04"),
+    ("2026-09-04T14:59:59+08:00", "2026-09-03"),
+    ("2026-09-04T15:00:00+08:00", "2026-09-04"),
     ("2026-10-08T14:30:00+08:00", "2026-09-30"),
-    ("2026-10-08T15:30:00+08:00", "2026-10-08"),
+    ("2026-10-08T15:00:00+08:00", "2026-10-08"),
 ])
 def test_independent_target_uses_exchange_sessions_not_market_prices(tmp_path, monkeypatch, clock, expected):
     from datetime import date, datetime

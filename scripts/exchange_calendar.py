@@ -13,7 +13,7 @@ from functools import lru_cache
 from zoneinfo import ZoneInfo
 
 BJ = ZoneInfo("Asia/Shanghai")
-CLOSE_CONFIRMED = time(15, 30)  # Existing Top100 CN_CLOSE_CONFIRM_TIME.
+CLOSE_CONFIRMED = time(15, 0)  # Existing Top100 CN_CLOSE_CONFIRM_TIME.
 CALENDAR_TIMEOUT_SECONDS = 30
 SOURCE = "akshare.tool_trade_date_hist_sina"
 
