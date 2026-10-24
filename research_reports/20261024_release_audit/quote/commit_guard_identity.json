@@ -1,0 +1,30 @@
+{
+  "microcap_top100_mom16_biweekly_live_v2_0.py": {
+    "backup_sha256": "9a80714f734124374ce88440ed6b138e489b118889ae2289a2c07651ffc89ded",
+    "final_sha256": "0c4ef8356d0a61c1690b9751d0b003d0121e24fe89d82df693bd1c1232e910c1",
+    "diff_lines": 56,
+    "embedded_changed": [
+      "OVERLAY_SOURCE"
+    ]
+  },
+  "microcap_top100_mom16_biweekly_live_v2_3.py": {
+    "backup_sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+    "final_sha256": "e3c2b01d544d89dadd628e2e4dd32d86d503a94352f2c3d5c13a354198e038f6",
+    "diff_lines": 41
+  },
+  "microcap_top100_mom16_biweekly_live_v2_5.py": {
+    "backup_sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+    "final_sha256": "c39b8fa5b4fe44142fb470944bf87c875c18dcc480cad0f705b4e653bba64f50",
+    "diff_lines": 41
+  },
+  "test_realtime_commit_guard_20261024.py": {
+    "sha256": "a77442a97c9af1c9f4ad848fd6c69ec82fd4af3005551079acebdf4e5003b51a"
+  },
+  "verification": {
+    "latest_junit": "commit_final_tests.xml",
+    "passed": 188,
+    "new_tests": 33,
+    "old_development_failure_junit": "commit_tests.xml",
+    "old_failure_superseded": true
+  }
+}

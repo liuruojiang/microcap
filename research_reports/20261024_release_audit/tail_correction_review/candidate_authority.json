@@ -1,0 +1,27 @@
+{
+  "version": "2026-10-12-session-st-share-lineage-v5",
+  "lineage_revision": "2026-10-24-600241-st-category",
+  "seed_end_date": "2026-10-23",
+  "purpose": "Exact seed with approved 600241 ST category history and complete real 2026-10-23 member prices; activation requires the separate exact review approval record.",
+  "approved_review_sha256": "f6a0e12f2fe2b9d381cb44cdad93d1deeac5f065fceced963b029faec02fb38f",
+  "previous_authority_sha256": "c8df15095a7894e18999c1457fa2dc882a2ff1be4aa9c32f4df67d9dcebfd5ea",
+  "security_meta_cache_fingerprint": {
+    "present_count": 4975,
+    "missing_count": 0,
+    "sha256": "0affc79539ead9de7eaea7f94115110f4559f968385c58d83a43368dc73a2bb9"
+  },
+  "seed_file_rows": {
+    "proxy_index": 4078,
+    "costed_nav": 4061
+  },
+  "seed_file_sha256": {
+    "proxy_index": "de17a39063f4e5772ebf3a357afa4ff65db2906710d517d62c864ae71e92fd94",
+    "costed_nav": "4c4f71cf30ab4304222040549f5b370f7f181b94a452d9a4968e85f76bca91fa",
+    "proxy_meta": "1a438a338710e0e45ededc544627d226f562fe40c95b6cc0463e0d0f29e86a74",
+    "proxy_members": "69f484e969c0f25815294e3fe939c85737252e566079153c59a01f20ef9a7580",
+    "proxy_turnover": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da",
+    "proxy_effective_members": "f9d3a3b15715e83370173acfbae3aff95e5fe1f69e095a72ec0e9e4bb0686549"
+  },
+  "data_tail_revision": "2026-10-24-complete-20261023-member-prices",
+  "data_tail_review_sha256": "e240a87b55de31b5e3ce0bcd79a605b48d96afeb6e787f845f4188582a99517d"
+}

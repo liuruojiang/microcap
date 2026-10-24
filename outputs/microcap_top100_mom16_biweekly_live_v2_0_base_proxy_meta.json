@@ -36,23 +36,12 @@
     "security_meta_cache_fingerprint": {
       "present_count": 4975,
       "missing_count": 0,
-      "sha256": "6496cc1987da5f58d84e3f57761ea4030f4da758a93e21ccdc83b80304acce6d"
+      "sha256": "0affc79539ead9de7eaea7f94115110f4559f968385c58d83a43368dc73a2bb9"
     },
     "security_master_enabled": true
   },
   "start_date": "2010-01-05",
-  "end_date": "2026-10-12",
-  "rebalance_dates_count": 432,
-  "effective_start_date": "2010-01-05",
-  "tail_extension_method": "no_new_rebalance_saved_target_replay",
-  "tail_extension_start": "2026-10-09",
-  "tail_extension_end": "2026-10-12",
-  "tail_extension_rows": 1,
-  "tail_extension_effective_member_count": 100,
-  "tail_extension_replaced_flat_placeholder": false,
-  "tail_extension_return_source_counts": {
-    "adjusted": 0,
-    "raw": 100
-  },
-  "tail_extension_authority_sha256": "9de4a3a9a3329a1ba023ca1d7d3d63cdb82dbee0f55ef83fa839a139815c6ae9"
+  "end_date": "2026-10-23",
+  "rebalance_dates_count": 433,
+  "effective_start_date": "2010-01-05"
 }

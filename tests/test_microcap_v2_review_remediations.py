@@ -4,6 +4,7 @@ import time
 import json
 import hashlib
 import subprocess
+import shutil
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -13,6 +14,13 @@ import pytest
 import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 import microcap_top100_mom16_biweekly_live_v2_3 as v2_3
 import microcap_top100_mom16_biweekly_live_v2_5 as v2_5
+from immutable_seed_baseline import (
+    assert_continuation_preserves_seed_economics,
+    immutable_seed_baseline,  # noqa: F401
+    validate_immutable_seed,
+)
+from frozen_formal_baseline import assert_frozen_baseline_unchanged
+from scripts import top100_delivery as delivery
 
 
 def _current_realtime_refresh_proof_fields() -> dict[str, str]:
@@ -189,7 +197,13 @@ def test_recent_proxy_extension_preserves_frozen_history_and_chains_new_returns(
     assert combined.loc[combined["date"].eq(pd.Timestamp("2026-07-06")), "close"].iloc[0] == pytest.approx(101.4747)
 
 
-def test_flat_fallback_quotes_do_not_count_as_actionable_coverage() -> None:
+def test_flat_fallback_quotes_do_not_count_as_actionable_coverage(monkeypatch) -> None:
+    # One synthetic genuine quote and one explicit last-close fallback. Freeze
+    # the source/use clocks so the case exercises fallback policy, not age.
+    clock = pd.Timestamp("2026-07-06T14:59:30+08:00")
+    namespace = v2_0.base_mod.add_last_close_flat_fallback_quotes.__globals__
+    original_clock = namespace["_cn_timestamp"]
+    monkeypatch.setitem(namespace, "_cn_timestamp", lambda value=None: clock if value is None else original_clock(value))
     members = ["000001", "000002"]
     quotes = pd.DataFrame(
         [
@@ -199,6 +213,9 @@ def test_flat_fallback_quotes_do_not_count_as_actionable_coverage() -> None:
                 "pre_close": 10.0,
                 "trade_date": "2026-07-06",
                 "quote_time": "14:59:00",
+                "quoted_at": "2026-07-06T14:59:00+08:00",
+                "fetched_at": clock.isoformat(),
+                "price_origin": "provider_latest",
             }
         ]
     )
@@ -1744,76 +1761,105 @@ def test_frozen_seed_hash_is_stable_across_git_newline_materialization(tmp_path:
     assert v2_0.base_mod._file_sha256(lf_path) == v2_0.base_mod._file_sha256(crlf_path)
 
 
-def test_manifest_verified_frozen_tail_authority_matches_seed(
-    tmp_path: Path, frozen_formal_baseline,
-) -> None:
-    # Generated current data need not equal old tracked exports. Bind this
-    # regression to the exact snapshot authenticated by the delivery manifest;
-    # Git/package acceptance is a separate check, not a freshness substitute.
-    authority_path = (frozen_formal_baseline["root"] / "outputs"
-                      / v2_0.base_mod.FROZEN_TAIL_AUTHORITY_PATH.name)
-
-    def frozen_bytes(path: Path) -> bytes:
-        return path.read_bytes()
-
-    # The authority identifies the frozen seed even after an append-only tail;
-    # never replace seed hashes with the latest full-file hashes.
-    authority = json.loads(frozen_bytes(authority_path))
-    output_dir = authority_path.parent
-    files = {
-        "proxy_index": output_dir / "wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
-        "costed_nav": (
-            output_dir
-            / "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv"
-        ),
-        "proxy_meta": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
-        "proxy_members": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv",
-        "proxy_turnover": output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv",
-        "proxy_effective_members": (
-            output_dir / "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv"
-        ),
-    }
-
-    for label, path in files.items():
-        snapshot_path = tmp_path / path.name
-        snapshot_path.write_bytes(frozen_bytes(path))
-        files[label] = snapshot_path
+def test_immutable_seed_matches_exact_authority(immutable_seed_baseline, frozen_formal_baseline) -> None:
+    seed = immutable_seed_baseline
+    authority = validate_immutable_seed(seed["root"], frozen_formal_baseline["root"] / delivery.AUTHORITY)
     assert authority["version"] == v2_0.base_mod.FROZEN_TAIL_AUTHORITY_VERSION
-    # The approved seed can advance independently of this regression. Validate
-    # its date against the exact authenticated prefix and effective-member snapshot
-    # below, instead of pinning a retired authority date.
-    assert pd.Timestamp(authority["seed_end_date"]).date().isoformat() == authority["seed_end_date"]
-    for label in ("proxy_members", "proxy_turnover", "proxy_effective_members"):
-        assert v2_0.base_mod._file_sha256(files[label]) == authority["seed_file_sha256"][label]
-    tails = []
-    for label in ("proxy_index", "costed_nav"):
-        seed_rows = authority["seed_file_rows"][label]
-        frame = pd.read_csv(files[label])
-        assert len(frame) >= seed_rows
-        assert v2_0.base_mod._csv_frozen_prefix_sha256(files[label], seed_rows) == authority["seed_file_sha256"][label]
-        assert frame.iloc[seed_rows - 1]["date"] == authority["seed_end_date"]
-        tail_dates = frame.iloc[seed_rows:]["date"].tolist()
-        assert tail_dates == sorted(set(tail_dates))
-        assert all(day > authority["seed_end_date"] for day in tail_dates)
-        tails.append(tail_dates)
-    assert tails[0] == tails[1]
-    meta = json.loads(files["proxy_meta"].read_text(encoding="utf-8"))
-    assert meta["core_params"]["security_meta_cache_fingerprint"] == authority["security_meta_cache_fingerprint"]
-    if tails[0]:
-        assert meta["tail_extension_method"] == "no_new_rebalance_saved_target_replay"
-        assert meta["tail_extension_start"] == authority["seed_end_date"]
-        assert meta["tail_extension_end"] == meta["end_date"] == tails[0][-1]
-        assert meta["tail_extension_rows"] == len(tails[0])
+    effective = pd.read_csv(seed["root"] / "outputs" / delivery.BASE_FILES["proxy_effective_members"],
+                            dtype={"symbol": str})
+    assert set(effective.as_of_date) == {authority["seed_end_date"]}
+    assert len(effective) == effective.symbol.nunique() == v2_0.base_mod.TOP_N
+
+
+def test_manifest_verified_current_continuation_preserves_seed_economics(
+    immutable_seed_baseline, frozen_formal_baseline,
+) -> None:
+    # Current members and metadata may have advanced after the immutable seed.
+    # Exact current identity belongs to its delivery manifest; economic history
+    # still goes through the real rewrite guard with NO mutable historical rows.
+    assert_frozen_baseline_unchanged(frozen_formal_baseline)
+    assert_continuation_preserves_seed_economics(
+        immutable_seed_baseline["root"], frozen_formal_baseline["root"])
+    root = frozen_formal_baseline["root"]
+    meta = json.loads((root / "outputs" / delivery.BASE_FILES["proxy_meta"]).read_text(encoding="utf-8"))
+    # Positive control for real post-seed rebalances and repeated continuation:
+    # these fields describe the LAST extension, not all history since the seed.
+    if meta.get("tail_extension_method") == "no_new_rebalance_saved_target_replay":
+        start, end = meta["tail_extension_start"], meta["tail_extension_end"]
+        assert immutable_seed_baseline["authority"]["seed_end_date"] <= start < end
+        assert end == meta["end_date"] == frozen_formal_baseline["target"]
+        for label in ("proxy_index", "costed_nav"):
+            dates = pd.read_csv(root / "outputs" / delivery.BASE_FILES[label], usecols=["date"]).date
+            assert int(((dates > start) & (dates <= end)).sum()) == meta["tail_extension_rows"]
         assert meta["tail_extension_effective_member_count"] == v2_0.base_mod.TOP_N
         assert sum(meta["tail_extension_return_source_counts"].values()) == v2_0.base_mod.TOP_N
-        assert meta["tail_extension_authority_sha256"] == hashlib.sha256(frozen_bytes(authority_path)).hexdigest()
-    else:
-        assert v2_0.base_mod._file_sha256(files["proxy_meta"]) == authority["seed_file_sha256"]["proxy_meta"]
+        assert meta["tail_extension_authority_sha256"] == hashlib.sha256(
+            (root / delivery.AUTHORITY).read_bytes()).hexdigest()
 
-    effective = pd.read_csv(files["proxy_effective_members"], dtype={"symbol": str})
-    assert set(effective["as_of_date"].astype(str)) == {authority["seed_end_date"]}
-    assert len(effective) == v2_0.base_mod.TOP_N
-    assert effective["symbol"].nunique() == v2_0.base_mod.TOP_N
+
+@pytest.mark.parametrize("label", list(delivery.BASE_FILES))
+def test_immutable_seed_rejects_one_byte_tampering(
+    tmp_path, immutable_seed_baseline, frozen_formal_baseline, label,
+) -> None:
+    target = tmp_path / "seed"
+    shutil.copytree(immutable_seed_baseline["root"], target)
+    path = target / "outputs" / delivery.BASE_FILES[label]
+    raw = bytearray(path.read_bytes())
+    raw[len(raw) // 2] ^= 1
+    path.write_bytes(raw)
+    with pytest.raises(AssertionError, match="Immutable seed hash mismatch"):
+        validate_immutable_seed(target, frozen_formal_baseline["root"] / delivery.AUTHORITY)
+
+
+def test_immutable_seed_rejects_rewritten_core_metadata_and_self_rehashed_authority(
+    tmp_path, immutable_seed_baseline, frozen_formal_baseline,
+) -> None:
+    target = tmp_path / "seed"
+    shutil.copytree(immutable_seed_baseline["root"], target)
+    path = target / "outputs" / delivery.BASE_FILES["proxy_meta"]
+    meta = json.loads(path.read_text(encoding="utf-8"))
+    meta["core_params"]["security_meta_cache_fingerprint"]["sha256"] = "0" * 64
+    path.write_text(json.dumps(meta), encoding="utf-8")
+    authority_path = target / delivery.AUTHORITY
+    authority = json.loads(authority_path.read_text(encoding="utf-8"))
+    authority["seed_file_sha256"]["proxy_meta"] = delivery.sha(path)
+    authority_path.write_text(json.dumps(authority), encoding="utf-8")
+    with pytest.raises(AssertionError, match="Seed authority differs"):
+        validate_immutable_seed(target, frozen_formal_baseline["root"] / delivery.AUTHORITY)
+
+
+@pytest.mark.parametrize("label", ["proxy_index", "costed_nav", "proxy_meta"])
+def test_authenticated_current_snapshot_rejects_tail_or_metadata_byte_change(
+    tmp_path, frozen_formal_baseline, label,
+) -> None:
+    baseline = frozen_formal_baseline
+    # Copy only the authenticated snapshot, not the mutable primary workspace.
+    for name in baseline["hashes"]:
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(baseline["root"] / name, path)
+    path = tmp_path / "outputs" / delivery.BASE_FILES[label]
+    path.write_bytes(path.read_bytes() + b" ")
+    with pytest.raises(AssertionError, match="Frozen baseline changed"):
+        assert_frozen_baseline_unchanged({**baseline, "root": tmp_path})
+
+
+@pytest.mark.parametrize("label,column", [("proxy_index", "close"), ("costed_nav", "return_net")])
+def test_current_economic_history_cannot_hide_rewrite_behind_a_new_snapshot(
+    tmp_path, immutable_seed_baseline, frozen_formal_baseline, label, column,
+) -> None:
+    # Even an otherwise internally consistent/newly hashed current package must
+    # not erase a real historical change. Exercise the native guard directly.
+    for name in delivery.BASE_FILES.values():
+        path = tmp_path / "outputs" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(frozen_formal_baseline["root"] / "outputs" / name, path)
+    path = tmp_path / "outputs" / delivery.BASE_FILES[label]
+    frame = pd.read_csv(path)
+    frame.loc[10, column] = float(frame.loc[10, column]) + 1.0
+    frame.to_csv(path, index=False)
+    with pytest.raises(RuntimeError, match="historical rewrite detected"):
+        assert_continuation_preserves_seed_economics(immutable_seed_baseline["root"], tmp_path)
 
 
 def test_frozen_tail_authority_requires_exact_seed_hashes_and_current_st_gate(

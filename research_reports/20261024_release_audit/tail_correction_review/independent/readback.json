@@ -1,0 +1,61 @@
+{
+  "checks": {
+    "review_hash": true,
+    "authority_hash": true,
+    "hash_graph_acyclic": true,
+    "pending": true,
+    "old_authority": true,
+    "seed_proxy_index": true,
+    "prefix_proxy_index": true,
+    "seed_costed_nav": true,
+    "prefix_costed_nav": true,
+    "seed_proxy_meta": true,
+    "seed_proxy_members": true,
+    "seed_proxy_turnover": true,
+    "seed_proxy_effective_members": true,
+    "600241_meta": true,
+    "all_metadata_unchanged": true,
+    "old_100_mean_matches": true,
+    "new_100_mean_matches": true,
+    "proxy_close_matches": true
+  },
+  "all_checks_pass": true,
+  "seed_records": {
+    "proxy_index": {
+      "old_hash": "c3a0682764f75df2c1d7e626e9bfcd373db1fa0f7747049e9d547cc71213f3d4",
+      "candidate_hash": "7941e4bd973ddcfd7d26dc0b08df579499d48d7d7994a6dcc35de5a488c19eb1",
+      "normalized_hash": "de17a39063f4e5772ebf3a357afa4ff65db2906710d517d62c864ae71e92fd94"
+    },
+    "costed_nav": {
+      "old_hash": "143d6e85b05a502dddea22624d19ba6c1bed426918e17e80ebd9d83ff795fab5",
+      "candidate_hash": "369d41b41660ef04b79c9fa10509ccc75be3f6841f46d70d5ed4d27e72ba7daf",
+      "normalized_hash": "4c4f71cf30ab4304222040549f5b370f7f181b94a452d9a4968e85f76bca91fa"
+    },
+    "proxy_meta": {
+      "old_hash": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+      "candidate_hash": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+      "normalized_hash": "1a438a338710e0e45ededc544627d226f562fe40c95b6cc0463e0d0f29e86a74"
+    },
+    "proxy_members": {
+      "old_hash": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+      "candidate_hash": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+      "normalized_hash": "69f484e969c0f25815294e3fe939c85737252e566079153c59a01f20ef9a7580"
+    },
+    "proxy_turnover": {
+      "old_hash": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+      "candidate_hash": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+      "normalized_hash": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da"
+    },
+    "proxy_effective_members": {
+      "old_hash": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227",
+      "candidate_hash": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227",
+      "normalized_hash": "f9d3a3b15715e83370173acfbae3aff95e5fe1f69e095a72ec0e9e4bb0686549"
+    }
+  },
+  "old100": 0.01897559571469154,
+  "new100": 0.019288244157668274,
+  "metadata_600241_sha256": "cbb9355860242f91e159ea7b203c70a3ac8270281e83ff67e047e9be09556a32",
+  "source_sha256": "0c4ef8356d0a61c1690b9751d0b003d0121e24fe89d82df693bd1c1232e910c1",
+  "package_sha256": "0e79f12ebcb3215c203f29f0627ccda356356a22bf02d87d08be95a603c906f9",
+  "scope": "read-only audit; no approval or activation"
+}

@@ -1,0 +1,3493 @@
+{
+  "scope": "two_ST_title_boundary_repairs_only",
+  "embedded_functions_AST_equal": true,
+  "real_notice_groups": 87,
+  "real_notice_changed_groups": [],
+  "real_notice_embedded_disagreements": [],
+  "scans": [
+    {
+      "symbol": "000010",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 8,
+      "before": {
+        "intervals": [
+          {
+            "start": "2019-04-25",
+            "end": "2020-07-21",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2019-04-25",
+            "end": "2020-07-21",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2019-04-25",
+            "end": "2020-07-21",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "000056",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2012-04-20",
+            "end": "2014-03-28",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2012-04-20",
+            "end": "2014-03-28",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2012-04-20",
+            "end": "2014-03-28",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "000610",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": []
+      },
+      "after": {
+        "intervals": []
+      },
+      "embedded": {
+        "intervals": []
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "000632",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "000639",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "000838",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 8,
+      "before": {
+        "intervals": [
+          {
+            "start": "2012-03-30",
+            "end": "2013-04-17",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2012-03-30",
+            "end": "2013-04-17",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2012-03-30",
+            "end": "2013-04-17",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "000911",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 18,
+      "before": {
+        "intervals": [
+          {
+            "start": "2019-04-03",
+            "end": "2020-09-03",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2019-04-03",
+            "end": "2020-09-03",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2019-04-03",
+            "end": "2020-09-03",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002102",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 82,
+      "before": {
+        "intervals": [
+          {
+            "start": "2012-04-25",
+            "end": "2012-05-03",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2018-10-15",
+            "end": "2018-11-16",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2012-04-25",
+            "end": "2012-05-03",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2018-10-15",
+            "end": "2018-11-16",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2012-04-25",
+            "end": "2012-05-03",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2018-10-15",
+            "end": "2018-11-16",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002175",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 13,
+      "before": {
+        "intervals": [
+          {
+            "start": "2019-04-26",
+            "end": "2022-04-08",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2019-04-26",
+            "end": "2022-04-08",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2019-04-26",
+            "end": "2022-04-08",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002193",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002198",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002207",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 9,
+      "before": {
+        "intervals": [
+          {
+            "start": "2017-04-27",
+            "end": "2020-06-30",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2017-04-27",
+            "end": "2020-06-30",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2017-04-27",
+            "end": "2020-06-30",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002227",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-21",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-21",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-21",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002323",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 11,
+      "before": {
+        "intervals": [
+          {
+            "start": "2018-07-05",
+            "end": "2022-06-01",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2018-07-05",
+            "end": "2022-06-01",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2018-07-05",
+            "end": "2022-06-01",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002360",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002514",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 2,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002598",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002634",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-25",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-25",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-25",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002667",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002691",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002694",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002719",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2020-04-30",
+            "end": "2021-12-17",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2020-04-30",
+            "end": "2021-12-17",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2020-04-30",
+            "end": "2021-12-17",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002743",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-09-05",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-09-05",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-09-05",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002759",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-07-14",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-07-14",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-07-14",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002856",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "002883",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300076",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300081",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-03",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-03",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-03",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300212",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300245",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300290",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-06-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-06-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-06-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300295",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-23",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-23",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-23",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300385",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-11",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-11",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-11",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300430",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300594",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "301030",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600080",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 14,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-04-26",
+            "end": "2012-06-11",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2020-06-01",
+            "end": "2021-05-11",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-04-26",
+            "end": "2012-06-11",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2020-06-01",
+            "end": "2021-05-11",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-04-26",
+            "end": "2012-06-11",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2020-06-01",
+            "end": "2021-05-11",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600082",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 2,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-11",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-11",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-11",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600119",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 12,
+      "before": {
+        "intervals": [
+          {
+            "start": "2019-04-30",
+            "end": "2021-05-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2019-04-30",
+            "end": "2021-05-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2019-04-30",
+            "end": "2021-05-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600180",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 10,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-05",
+            "end": "2011-12-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-05",
+            "end": "2011-12-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-05",
+            "end": "2011-12-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600187",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 20,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2010-08-25",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2010-08-25",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2010-08-25",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600302",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600423",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 14,
+      "before": {
+        "intervals": [
+          {
+            "start": "2017-04-29",
+            "end": "2021-05-19",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-25",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2017-04-29",
+            "end": "2021-05-19",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-25",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2017-04-29",
+            "end": "2021-05-19",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-25",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600476",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600491",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600543",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 11,
+      "before": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-07-05",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-07-05",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-07-05",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-24",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600678",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 10,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2013-02-01",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2013-02-01",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2013-02-01",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600818",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 8,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600965",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603189",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603272",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 2,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-28",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603359",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603378",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 3,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603729",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2021-04-30",
+            "end": "2022-05-30",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2021-04-30",
+            "end": "2022-05-30",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2021-04-30",
+            "end": "2022-05-30",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "688121",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 8,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-07-06",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-07-06",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-07-06",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "688189",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-06-10",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-06-10",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-06-10",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "688622",
+      "source": "cninfo_notice_evidence.csv",
+      "source_sha256": "1a0cafba88a5d5e926ad6f39c3b925b839a99c232f115aad7e463ecb194e5e7a",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300013",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2024-04-29",
+            "end": "2025-04-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2024-04-29",
+            "end": "2025-04-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2024-04-29",
+            "end": "2025-04-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300081",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-03",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-03",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-03",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300087",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 1,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-06-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-06-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-06-27",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300163",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2024-04-30",
+            "end": "2025-05-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2024-04-30",
+            "end": "2025-05-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2024-04-30",
+            "end": "2025-05-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300220",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 4,
+      "before": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-06-11",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-06-11",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-06-11",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "300594",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-29",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600137",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 5,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600156",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 3,
+      "before": {
+        "intervals": []
+      },
+      "after": {
+        "intervals": []
+      },
+      "embedded": {
+        "intervals": []
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600241",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 10,
+      "before": {
+        "intervals": [
+          {
+            "start": "2020-04-24",
+            "end": "2023-05-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2020-04-24",
+            "end": "2023-05-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2020-04-24",
+            "end": "2023-05-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600250",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 3,
+      "before": {
+        "intervals": [
+          {
+            "start": "2012-05-02",
+            "end": "2013-05-03",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2012-05-02",
+            "end": "2013-05-03",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2012-05-02",
+            "end": "2013-05-03",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600302",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2026-04-30",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600319",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 22,
+      "before": {
+        "intervals": [
+          {
+            "start": "2013-04-26",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2013-04-26",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2013-04-26",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600444",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 13,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-04-16",
+            "end": "2012-08-31",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2013-04-26",
+            "end": "2014-03-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2015-04-17",
+            "end": "2016-04-22",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-04-16",
+            "end": "2012-08-31",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2013-04-26",
+            "end": "2014-03-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2015-04-17",
+            "end": "2016-04-22",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-04-16",
+            "end": "2012-08-31",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2013-04-26",
+            "end": "2014-03-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2015-04-17",
+            "end": "2016-04-22",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600455",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 9,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-04-26",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-04-26",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-04-26",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600506",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 11,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2012-08-23",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2021-04-27",
+            "end": "2022-05-09",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2012-08-23",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2021-04-27",
+            "end": "2022-05-09",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2012-08-23",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2021-04-27",
+            "end": "2022-05-09",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600520",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2016-04-15",
+            "end": "2017-04-24",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2016-04-15",
+            "end": "2017-04-24",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2016-04-15",
+            "end": "2017-04-24",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600539",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 22,
+      "before": {
+        "intervals": [
+          {
+            "start": "2012-08-22",
+            "end": "2014-07-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2015-04-20",
+            "end": "2016-05-10",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2016-07-14",
+            "end": "2017-04-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2018-04-24",
+            "end": "2021-05-18",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2012-08-22",
+            "end": "2014-07-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2015-04-20",
+            "end": "2016-05-10",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2016-07-14",
+            "end": "2017-04-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2018-04-24",
+            "end": "2021-05-18",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2012-08-22",
+            "end": "2014-07-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2015-04-20",
+            "end": "2016-05-10",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2016-07-14",
+            "end": "2017-04-14",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2018-04-24",
+            "end": "2021-05-18",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600603",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 12,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2014-03-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2016-02-05",
+            "end": "2017-03-25",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2024-08-31",
+            "end": "2025-10-28",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2014-03-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2016-02-05",
+            "end": "2017-03-25",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2024-08-31",
+            "end": "2025-10-28",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": "2014-03-07",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2016-02-05",
+            "end": "2017-03-25",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2024-08-31",
+            "end": "2025-10-28",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600615",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 19,
+      "before": {
+        "intervals": [
+          {
+            "start": "2019-04-26",
+            "end": "2019-09-27",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2021-04-30",
+            "end": "2022-08-23",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2019-04-26",
+            "end": "2019-09-27",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2021-04-30",
+            "end": "2022-08-23",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2019-04-26",
+            "end": "2019-09-27",
+            "source": "cninfo_notice"
+          },
+          {
+            "start": "2021-04-30",
+            "end": "2022-08-23",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600689",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 8,
+      "before": {
+        "intervals": [
+          {
+            "start": "2014-04-14",
+            "end": "2015-03-02",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2014-04-14",
+            "end": "2015-03-02",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2014-04-14",
+            "end": "2015-03-02",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600706",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 4,
+      "before": {
+        "intervals": []
+      },
+      "after": {
+        "intervals": []
+      },
+      "embedded": {
+        "intervals": []
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600719",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 12,
+      "before": {
+        "intervals": [
+          {
+            "start": "2022-04-29",
+            "end": "2023-03-31",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2022-04-29",
+            "end": "2023-03-31",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2022-04-29",
+            "end": "2023-03-31",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600727",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 19,
+      "before": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2010-01-04",
+            "end": null,
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600768",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 2,
+      "before": {
+        "intervals": []
+      },
+      "after": {
+        "intervals": []
+      },
+      "embedded": {
+        "intervals": []
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600778",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2018-04-25",
+            "end": "2019-05-01",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2018-04-25",
+            "end": "2019-05-01",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2018-04-25",
+            "end": "2019-05-01",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600847",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 10,
+      "before": {
+        "intervals": [
+          {
+            "start": "2017-04-29",
+            "end": "2018-05-08",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2017-04-29",
+            "end": "2018-05-08",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2017-04-29",
+            "end": "2018-05-08",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "600980",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 6,
+      "before": {
+        "intervals": [
+          {
+            "start": "2013-04-02",
+            "end": "2014-03-25",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2013-04-02",
+            "end": "2014-03-25",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2013-04-02",
+            "end": "2014-03-25",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603879",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 3,
+      "before": {
+        "intervals": [
+          {
+            "start": "2024-04-30",
+            "end": "2025-04-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2024-04-30",
+            "end": "2025-04-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2024-04-30",
+            "end": "2025-04-30",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "603880",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 16,
+      "before": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-06-25",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-06-25",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2023-04-28",
+            "end": "2024-06-25",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    },
+    {
+      "symbol": "688309",
+      "source": "expansion_top30/notice_pdf_manifest.csv",
+      "source_sha256": "90ba37f3516fd1d22beaaaf28a98f3f7cec28fd4a66f744e02f0111ab56651c6",
+      "title_count": 7,
+      "before": {
+        "intervals": [
+          {
+            "start": "2022-04-27",
+            "end": "2023-05-05",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "after": {
+        "intervals": [
+          {
+            "start": "2022-04-27",
+            "end": "2023-05-05",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "embedded": {
+        "intervals": [
+          {
+            "start": "2022-04-27",
+            "end": "2023-05-05",
+            "source": "cninfo_notice"
+          }
+        ]
+      },
+      "unchanged": true,
+      "embedded_equal": true
+    }
+  ],
+  "approved_data_checks": [
+    {
+      "key": "proxy_index",
+      "sha256": "c3a0682764f75df2c1d7e626e9bfcd373db1fa0f7747049e9d547cc71213f3d4",
+      "expected": "c3a0682764f75df2c1d7e626e9bfcd373db1fa0f7747049e9d547cc71213f3d4",
+      "pass": true
+    },
+    {
+      "key": "costed_nav",
+      "sha256": "143d6e85b05a502dddea22624d19ba6c1bed426918e17e80ebd9d83ff795fab5",
+      "expected": "143d6e85b05a502dddea22624d19ba6c1bed426918e17e80ebd9d83ff795fab5",
+      "pass": true
+    },
+    {
+      "key": "proxy_meta",
+      "sha256": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+      "expected": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+      "pass": true
+    },
+    {
+      "key": "proxy_members",
+      "sha256": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+      "expected": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+      "pass": true
+    },
+    {
+      "key": "proxy_turnover",
+      "sha256": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+      "expected": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+      "pass": true
+    },
+    {
+      "key": "proxy_effective_members",
+      "sha256": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227",
+      "expected": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227",
+      "pass": true
+    },
+    {
+      "key": "v2.0",
+      "sha256": "76526c8ad95ea279eb8b6f2d0daa0152800a653b229291707e81c9e64aa169ad",
+      "expected": "76526c8ad95ea279eb8b6f2d0daa0152800a653b229291707e81c9e64aa169ad",
+      "pass": true
+    },
+    {
+      "key": "v2.3",
+      "sha256": "7e5f2f1ed92c6f4c077733055636af94daf88c317f342d7add3029d49a7bbe18",
+      "expected": "7e5f2f1ed92c6f4c077733055636af94daf88c317f342d7add3029d49a7bbe18",
+      "pass": true
+    },
+    {
+      "key": "v2.5",
+      "sha256": "8db20d528831754bd5b48bb6b916f5483970217f361004a36c539d750c331230",
+      "expected": "8db20d528831754bd5b48bb6b916f5483970217f361004a36c539d750c331230",
+      "pass": true
+    }
+  ],
+  "metadata_deltas_vs_pre_migration_baseline": [
+    "600241.json"
+  ],
+  "tests": [
+    {
+      "path": "st_release_tests.xml",
+      "sha256": "4306526049b60dcf044187ff437e5d11c72fbd4e188424999b953f800d9076f3",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "112",
+      "time": "4.707",
+      "timestamp": "2026-10-24T10:33:40.579269+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    },
+    {
+      "path": "st_existing_contract_tests.xml",
+      "sha256": "79c25da6aeda8dfc86503f3891222a8ab6ab02f03ed6f29d61872a9475d71085",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "11",
+      "time": "1.403",
+      "timestamp": "2026-10-24T10:34:01.398016+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    }
+  ],
+  "source_sha256": {
+    "analyze_top100_rebalance_frequency.py": "2cb9b05b0c963166000cde419152589ba8ec7696487d9d56cd8fb9c55c541a86",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "9a80714f734124374ce88440ed6b138e489b118889ae2289a2c07651ffc89ded",
+    "tests/test_st_notice_release_audit_20261024.py": "4187ff5b026113ccc66ead3cf86daecb68571f938f3244fd6affadd33896890a"
+  },
+  "authority_sha256": "c8df15095a7894e18999c1457fa2dc882a2ff1be4aa9c32f4df67d9dcebfd5ea"
+}

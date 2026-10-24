@@ -2585,6 +2585,77 @@ def merge_st_intervals(intervals: list[dict[str, str | None]]) -> list[dict[str,
     ]
 
 
+def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]:
+    """Resolve title-level risk categories without changing notice-date policy.
+
+    True means the category remains/turns active; False is a complete withdrawal
+    of that category. A generic historical 特别处理 entry has unknown subtype.
+    Requests and potential events are not effective evidence. Within one title
+    retained/affirmatively imposed risk takes precedence over a withdrawal of
+    another reason for the same risk category.
+    """
+    text = re.sub(r"\s+", "", str(title or "").upper())
+    if not text or "申请" in text:
+        return {}, False
+    actions: dict[str, bool] = {}
+    had_effective_withdrawal = False
+    inherited: bool | None = None
+    for clause in re.split(r"以及|同时|并且|并|暨|及|且|但|和|后|[，,。；;、]", text):
+        if not clause:
+            continue
+        categories = []
+        residual = clause
+        for token, category in [("退市风险警示", "delisting"), ("其他风险警示", "other"),
+                                ("其他特别处理", "other")]:
+            if token in clause:
+                categories.append(category)
+                # Older titles say 退市风险警示特别处理 as one subtype, not
+                # an additional unspecified warning that can never be exited.
+                residual = residual.replace(token + "的特别处理", "").replace(token + "特别处理", "").replace(token, "")
+        if "特别处理" in residual or "风险警示" in residual:
+            categories.append("unspecified")
+        if "摘帽" in clause:
+            categories = ["delisting", "other", "unspecified"]
+        if not categories:
+            continue
+        # A possible or rejected action must not become effective merely because
+        # it shares a title with an effective action on a different category.
+        if (any(token in clause for token in ["可能", "存在被实施", "存在实施", "不予", "尚未", "未获", "未被", "不会", "不撤销", "不再实施"])
+                or ("拟" in clause and any(token in clause for token in ["实施", "撤销", "摘帽"]))):
+            inherited = None
+            continue
+        withdrawal = any(token in clause for token in ["撤销", "摘帽"])
+        affirmative = any(token in clause for token in ["实施", "实行", "继续", "仍被", "转为", "改为", "变更为", "调整为"])
+        if withdrawal:
+            # Partial removal cannot establish absence of this risk category.
+            action = "部分" in clause
+            # It nevertheless proves that warning existed before this notice.
+            # Set this only after the effective-clause filters above.
+            had_effective_withdrawal = True
+        elif affirmative:
+            action = True
+        elif inherited is not None:
+            # An omitted repeated verb still carries a category-local modifier:
+            # 撤销退市风险警示及部分其他风险警示 leaves the other warning active.
+            action = inherited or "部分" in clause
+        else:
+            continue
+        inherited = action
+        if not action and "unspecified" in categories:
+            # Unqualified 摘帽/撤销特别处理/撤销风险警示 closes all categories.
+            categories = ["delisting", "other", "unspecified"]
+        for category in categories:
+            # A mixed same-title subtype/reason transition must retain ST.
+            actions[category] = actions.get(category, False) or action
+    return actions, had_effective_withdrawal
+
+
+def classify_st_notice_risk_actions(title: str) -> dict[str, bool]:
+    """Public category-action view; retain the existing dictionary contract."""
+    return _parse_st_notice_risk_transition(title)[0]
+
+
+
 def build_st_intervals_from_notices(
     first_trade_date: pd.Timestamp,
     last_trade_date: pd.Timestamp,
@@ -2593,85 +2664,55 @@ def build_st_intervals_from_notices(
     if notices.empty:
         return []
     work = notices.copy()
-    work["notice_date"] = pd.to_datetime(work["notice_date"], errors="coerce")
+    work["notice_date"] = pd.to_datetime(work["notice_date"], errors="coerce").dt.normalize()
     work = work.dropna(subset=["notice_date"]).sort_values("notice_date")
     if work.empty:
         return []
 
-    def infer_action(title: str) -> str | None:
-        text = str(title or "").upper().replace(" ", "")
-        if not text or "申请" in text:
-            return None
-        if "摘帽" in text or (
-            "撤销" in text
-            and any(token in text for token in ["退市风险警示", "其他特别处理", "其他风险警示", "特别处理"])
-        ):
-            return "exit"
-        definitive_text = text
-        for possible_phrase in [
-            "可能被实施退市风险警示",
-            "可能被实施其他风险警示",
-            "可能实施退市风险警示",
-            "可能实施其他风险警示",
-            "存在被实施退市风险警示",
-            "存在被实施其他风险警示",
-            "存在实施退市风险警示",
-            "存在实施其他风险警示",
-        ]:
-            definitive_text = definitive_text.replace(possible_phrase, "")
-        definitive_entry_tokens = [
-            "被实施退市风险警示",
-            "将被实施退市风险警示",
-            "实施退市风险警示",
-            "实行退市风险警示",
-            "被实施其他风险警示",
-            "将被实施其他风险警示",
-            "实施其他风险警示",
-            "实行其他风险警示",
-            "被实施特别处理",
-            "将被实施特别处理",
-            "实施特别处理",
-            "实行特别处理",
-        ]
-        if any(token in definitive_text for token in definitive_entry_tokens):
-            return "entry"
-        return None
-
     first_trade = pd.Timestamp(first_trade_date).normalize()
     last_trade = pd.Timestamp(last_trade_date).normalize()
     intervals: list[dict[str, str | None]] = []
-    active_at_start = False
+    risk_state: dict[str, bool] = {"delisting": False, "other": False, "unspecified": False}
+    history_known = False
+    active_start: pd.Timestamp | None = None
 
-    for row in work.loc[work["notice_date"] < first_trade].itertuples(index=False):
-        action = infer_action(getattr(row, "title", ""))
-        if action == "entry":
-            active_at_start = True
-        elif action == "exit":
-            active_at_start = False
-
-    active_start: pd.Timestamp | None = first_trade if active_at_start else None
-
-    for row in work.itertuples(index=False):
-        notice_date = pd.Timestamp(row.notice_date).normalize()
-        if notice_date < first_trade:
-            continue
+    for raw_date, group in work.groupby("notice_date", sort=True):
+        notice_date = pd.Timestamp(raw_date).normalize()
         if notice_date > last_trade:
             continue
-        action = infer_action(getattr(row, "title", ""))
-        if action == "exit":
-            if active_start is None:
-                active_start = first_trade
+        # Same-day distinct titles have no reliable intraday event ordering.
+        # Duplicate exits are idempotent; contradictory category evidence must
+        # fail closed, rather than depending on provider/input ordering.
+        day_actions: dict[str, bool] = {}
+        day_had_effective_withdrawal = False
+        for row in group.itertuples(index=False):
+            actions, had_withdrawal = _parse_st_notice_risk_transition(getattr(row, "title", ""))
+            day_had_effective_withdrawal |= had_withdrawal
+            for category, action in actions.items():
+                if category in day_actions and day_actions[category] != action:
+                    raise ValueError(f"Unresolved conflicting ST notice evidence on {notice_date.date()}: {category}")
+                day_actions[category] = action
+        if not day_actions:
+            continue
+        was_active = any(risk_state.values())
+        initial_withdrawal = not history_known and day_had_effective_withdrawal
+        risk_state.update(day_actions)
+        history_known = True
+        is_active = any(risk_state.values())
+        if notice_date < first_trade:
+            active_start = first_trade if is_active else None
+            continue
+        if is_active and active_start is None:
+            active_start = first_trade if initial_withdrawal else max(first_trade, notice_date)
+        elif not is_active and (was_active or initial_withdrawal):
             intervals.append(
                 {
-                    "start": str(active_start.date()),
+                    "start": str((active_start if active_start is not None else first_trade).date()),
                     "end": str(notice_date.date()),
                     "source": "cninfo_notice",
                 }
             )
             active_start = None
-        elif action == "entry":
-            if active_start is None:
-                active_start = max(first_trade, notice_date)
 
     if active_start is not None:
         intervals.append({"start": str(active_start.date()), "end": None, "source": "cninfo_notice"})
@@ -3933,6 +3974,13 @@ FROZEN_TAIL_AUTHORITY_PATH = (
 )
 MEMBER_FILTER_POLICY_VERSION = "empty-name-reject-v1"
 LIVE_MEMBER_FILTER_POLICY_VERSION = "exclude-current-st-name-v1"
+REALTIME_QUOTE_INTEGRITY_POLICY = "provider-clock-origin-v1"
+REALTIME_QUOTE_MAX_AGE_SECONDS = 120.0
+REALTIME_QUOTE_INTEGRITY_META_FIELDS = (
+    "quote_integrity_policy", "member_quote_integrity_count", "member_quote_integrity_bad_symbols",
+    "member_quoted_at_min", "member_quoted_at_max", "member_fetched_at_min", "member_fetched_at_max",
+    "hedge_quoted_at", "hedge_fetched_at", "hedge_price_origin",
+)
 REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
 PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
@@ -8175,6 +8223,7 @@ def assert_realtime_meta_is_actionable(meta: dict[str, object]) -> None:
 
 
     assert_realtime_anchor_precedes_quote_trade_date(meta)
+    assert_realtime_quote_integrity(meta)
 
 
 def _read_date_index_csv(path: Path, date_column: str = "date") -> pd.DatetimeIndex:
@@ -8288,6 +8337,7 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 
 
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
+    "Realtime quote integrity",
     "Realtime publication deadline",
     "synthetic last-close fallback quotes",
     "independent refresh proof",
@@ -9637,8 +9687,133 @@ def eastmoney_secid(symbol: str) -> str:
     return f"{market}.{code}"
 
 
+def parse_realtime_source_timestamp(value: object) -> pd.Timestamp | None:
+    """Parse provider epoch/14-digit/ISO time; a date alone proves no quote age."""
+    text = str(value if value is not None else "").strip()
+    try:
+        if re.fullmatch(r"\d{14}", text):
+            stamp = pd.to_datetime(text, format="%Y%m%d%H%M%S", errors="raise")
+        elif re.fullmatch(r"\d{10}(?:\.\d+)?", text):
+            stamp = pd.Timestamp(float(text), unit="s", tz="UTC")
+        elif re.fullmatch(r"\d{13}", text):
+            stamp = pd.Timestamp(int(text), unit="ms", tz="UTC")
+        elif ":" in text and ("T" in text or " " in text):
+            stamp = pd.Timestamp(text)
+        else:
+            return None
+        if pd.isna(stamp):
+            return None
+        return _cn_timestamp(stamp)
+    except (ValueError, TypeError, OverflowError):
+        return None
+
+def realtime_quote_active_age_seconds(quoted_at: pd.Timestamp, now: pd.Timestamp) -> float:
+    """Wall age minus only the same-day scheduled lunch break, not no-trade gaps."""
+    quoted_at, now = _cn_timestamp(quoted_at), _cn_timestamp(now)
+    age = (now - quoted_at).total_seconds()
+    if quoted_at.date() != now.date() or age < 0:
+        return float(age)
+    lunch_start = now.normalize() + pd.Timedelta(hours=11, minutes=30)
+    lunch_end = now.normalize() + pd.Timedelta(hours=13)
+    lunch_overlap = max(0.0, (min(now, lunch_end) - max(quoted_at, lunch_start)).total_seconds())
+    return float(age - lunch_overlap)
+
+def realtime_quote_clock_is_valid(quoted_at: object, fetched_at: object, trade_date: object, now: object = None) -> bool:
+    quoted = parse_realtime_source_timestamp(quoted_at)
+    fetched = parse_realtime_source_timestamp(fetched_at)
+    clock = _cn_timestamp() if now is None else _cn_timestamp(now)
+    if quoted is None or fetched is None:
+        return False
+    try:
+        day = pd.Timestamp(trade_date).date()
+    except (ValueError, TypeError):
+        return False
+    if day != clock.date() or quoted.date() != day or fetched.date() != day:
+        return False
+    if quoted > fetched or fetched > clock or quoted > clock:
+        return False
+    return 0.0 <= realtime_quote_active_age_seconds(quoted, clock) <= REALTIME_QUOTE_MAX_AGE_SECONDS
+
+def realtime_quote_row_is_genuine(row: object, now: object = None) -> bool:
+    price = pd.to_numeric(row.get("rt_price"), errors="coerce")
+    return bool(pd.notna(price) and np.isfinite(float(price)) and float(price) > 0
+                and str(row.get("price_origin") or "") == "provider_latest"
+                and realtime_quote_clock_is_valid(row.get("quoted_at"), row.get("fetched_at"), row.get("trade_date"), now))
+
+def realtime_quote_provenance(raw_time: object, fetched_at: object, source: str) -> dict[str, object]:
+    quoted = parse_realtime_source_timestamp(raw_time)
+    return {"quoted_at": "" if quoted is None else quoted.isoformat(),
+            "fetched_at": _cn_timestamp(fetched_at).isoformat(),
+            "price_origin": "provider_latest", "quote_source": source}
+
+def extract_member_quote_integrity_stats(quotes_df: pd.DataFrame, member_symbols: list[str], now: object = None) -> dict[str, object]:
+    clock = _cn_timestamp() if now is None else _cn_timestamp(now)
+    quoted, fetched, bad = [], [], []
+    for code in (str(symbol).zfill(6) for symbol in member_symbols):
+        if code not in quotes_df.index or isinstance(quotes_df.loc[code], pd.DataFrame):
+            bad.append(code)
+            continue
+        row = quotes_df.loc[code]
+        if not realtime_quote_row_is_genuine(row, clock):
+            bad.append(code)
+            continue
+        quoted.append(parse_realtime_source_timestamp(row.get("quoted_at")))
+        fetched.append(parse_realtime_source_timestamp(row.get("fetched_at")))
+    return {"quote_integrity_policy": REALTIME_QUOTE_INTEGRITY_POLICY,
+            "member_quote_integrity_count": len(quoted), "member_quote_integrity_bad_symbols": bad,
+            "member_quoted_at_min": min(quoted).isoformat() if quoted else "",
+            "member_quoted_at_max": max(quoted).isoformat() if quoted else "",
+            "member_fetched_at_min": min(fetched).isoformat() if fetched else "",
+            "member_fetched_at_max": max(fetched).isoformat() if fetched else ""}
+
+def assert_realtime_quote_integrity(meta: dict[str, object]) -> None:
+    """Revalidate source times at use/publication, including cached snapshots."""
+    if meta.get("quote_integrity_policy") != REALTIME_QUOTE_INTEGRITY_POLICY:
+        raise RuntimeError("Realtime quote integrity proof missing or obsolete; preview only.")
+    count = int(meta.get("member_count") or 0)
+    if count <= 0 or int(meta.get("member_quote_integrity_count") or 0) != count or meta.get("member_quote_integrity_bad_symbols"):
+        raise RuntimeError("Realtime quote integrity has missing, synthetic, stale or future member quotes; preview only.")
+    clock = _cn_timestamp()
+    for edge in ("min", "max"):
+        if not realtime_quote_clock_is_valid(meta.get(f"member_quoted_at_{edge}"), meta.get(f"member_fetched_at_{edge}"), meta.get("quote_trade_date"), clock):
+            raise RuntimeError("Realtime quote integrity member source clock expired or unverifiable; preview only.")
+    if str(meta.get("hedge_price_origin") or "") != "provider_latest" or not realtime_quote_clock_is_valid(
+        meta.get("hedge_quoted_at"), meta.get("hedge_fetched_at"), meta.get("hedge_quote_trade_date"), clock
+    ):
+        raise RuntimeError("Realtime quote integrity hedge source clock/origin is not actionable; preview only.")
+
+def apply_realtime_quote_integrity_to_signal(signal_df: pd.DataFrame, meta: dict[str, object]) -> None:
+    for key in REALTIME_QUOTE_INTEGRITY_META_FIELDS:
+        value = meta.get(key, "")
+        signal_df[key] = json.dumps(value, ensure_ascii=False) if isinstance(value, (list, dict)) else value
+
+def assert_realtime_quote_integrity_matches_signal(signal_df: pd.DataFrame, meta: dict[str, object]) -> None:
+    if signal_df.empty:
+        raise RuntimeError("Realtime quote integrity signal is empty.")
+    row = signal_df.iloc[0]
+    for key in REALTIME_QUOTE_INTEGRITY_META_FIELDS:
+        value = meta.get(key, "")
+        expected = json.dumps(value, ensure_ascii=False) if isinstance(value, (list, dict)) else str(value)
+        actual = str(row.get(key, ""))
+        if actual != expected:
+            raise RuntimeError(f"Realtime quote integrity CSV/meta mismatch: {key}")
+
+class RealtimeHedgeQuote(tuple):
+    """Keep legacy three-value unpacking while carrying verified quote provenance."""
+    def __new__(cls, price: float, source: str, trade_date: str, details: dict[str, object]):
+        value = super().__new__(cls, (float(price), str(source), str(trade_date)))
+        value.quote_details = dict(details)
+        return value
+
+def extract_hedge_quote_integrity_meta(result: object) -> dict[str, object]:
+    details = getattr(result, "quote_details", {})
+    return {"hedge_quoted_at": str(details.get("quoted_at") or ""),
+            "hedge_fetched_at": str(details.get("fetched_at") or ""),
+            "hedge_price_origin": str(details.get("price_origin") or "")}
+
 def _empty_realtime_quote_frame() -> pd.DataFrame:
-    return pd.DataFrame(columns=["code", "name", "rt_price", "pre_close", "trade_date", "quote_time"])
+    return pd.DataFrame(columns=["code", "name", "rt_price", "pre_close", "trade_date", "quote_time",
+                                 "quoted_at", "fetched_at", "price_origin", "quote_source"])
 
 
 def _normalize_realtime_quote_frame(frame: pd.DataFrame) -> pd.DataFrame:
@@ -9650,21 +9825,19 @@ def _normalize_realtime_quote_frame(frame: pd.DataFrame) -> pd.DataFrame:
     out["code"] = out["code"].astype(str).str.extract(r"(\d{6})", expand=False).fillna("").str.zfill(6)
     out = out.loc[out["code"].ne("")].copy()
     for column in ("rt_price", "pre_close"):
-        if column in out.columns:
-            out[column] = pd.to_numeric(out[column], errors="coerce")
-    for column in ("name", "trade_date", "quote_time"):
+        out[column] = pd.to_numeric(out[column], errors="coerce") if column in out.columns else float("nan")
+    for column in ("name", "trade_date", "quote_time", "quoted_at", "fetched_at", "price_origin", "quote_source"):
         if column not in out.columns:
             out[column] = ""
-    return out[["code", "name", "rt_price", "pre_close", "trade_date", "quote_time"]]
+    return out[list(_empty_realtime_quote_frame().columns)]
 
 
 def _valid_quote_code_set(frame: pd.DataFrame) -> set[str]:
     if frame.empty:
         return set()
     out = _normalize_realtime_quote_frame(frame)
-    valid_price = pd.to_numeric(out["rt_price"], errors="coerce").gt(0)
-    valid_date = out["trade_date"].fillna("").astype(str).str.strip().ne("")
-    return set(out.loc[valid_price & valid_date, "code"])
+    now = _cn_timestamp()
+    return {str(row["code"]) for _, row in out.iterrows() if realtime_quote_row_is_genuine(row, now)}
 
 
 def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 80) -> pd.DataFrame:
@@ -9693,15 +9866,14 @@ def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 
             )
             response.raise_for_status()
             diff = (response.json().get("data") or {}).get("diff") or []
+            fetched_at = _cn_timestamp()
         except Exception:
             continue
         for item in diff:
             code = str(item.get("f12") or "").zfill(6)
             latest = pd.to_numeric(item.get("f2"), errors="coerce")
             prev = pd.to_numeric(item.get("f18"), errors="coerce")
-            if pd.isna(latest) or float(latest) <= 0:
-                latest = prev
-            if not code or pd.isna(latest) or float(latest) <= 0:
+            if not code or pd.isna(latest) or not np.isfinite(float(latest)) or float(latest) <= 0:
                 continue
             trade_date = parse_eastmoney_trade_date(item.get("f297")) or parse_quote_epoch_trade_date(item.get("f124"))
             rows.append(
@@ -9712,6 +9884,7 @@ def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 
                     "pre_close": prev,
                     "trade_date": trade_date,
                     "quote_time": str(item.get("f124") or ""),
+                    **realtime_quote_provenance(item.get("f124"), fetched_at, "eastmoney_ulist_free"),
                 }
             )
     out = _normalize_realtime_quote_frame(pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame())
@@ -9752,6 +9925,7 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> p
             response.raise_for_status()
             response.encoding = response.encoding or "gbk"
             text = response.text
+            fetched_at = _cn_timestamp()
         except Exception:
             continue
         for line in text.split(";"):
@@ -9764,9 +9938,7 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> p
             code = str(parts[2] or "").zfill(6)
             latest = pd.to_numeric(parts[3], errors="coerce")
             prev = pd.to_numeric(parts[4], errors="coerce")
-            if pd.isna(latest) or float(latest) <= 0:
-                latest = prev
-            if not code or pd.isna(latest) or float(latest) <= 0:
+            if not code or pd.isna(latest) or not np.isfinite(float(latest)) or float(latest) <= 0:
                 continue
             quote_time = parts[30] if len(parts) > 30 else ""
             trade_date = parse_eastmoney_trade_date(quote_time)
@@ -9778,6 +9950,7 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> p
                     "pre_close": prev,
                     "trade_date": trade_date,
                     "quote_time": quote_time,
+                    **realtime_quote_provenance(quote_time, fetched_at, "tencent_batch_free"),
                 }
             )
     out = _normalize_realtime_quote_frame(pd.DataFrame(rows).drop_duplicates(subset="code") if rows else pd.DataFrame())
@@ -9801,22 +9974,24 @@ def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
         )
         response.raise_for_status()
         data = response.json().get("data") or {}
+        fetched_at = _cn_timestamp()
         latest = pd.to_numeric(data.get("f43"), errors="coerce")
         prev = pd.to_numeric(data.get("f60"), errors="coerce")
-        if pd.notna(latest) and latest > 0:
+        if pd.notna(latest) and np.isfinite(float(latest)) and latest > 0:
             rt_price = float(latest) / 100.0
-        elif pd.notna(prev) and prev > 0:
-            rt_price = float(prev) / 100.0
         else:
             return None
         row = {
             "code": str(data.get("f57") or code).zfill(6),
             "name": str(data.get("f58") or ""),
             "rt_price": rt_price,
+            "quote_time": str(data.get("f86") or ""),
+            **realtime_quote_provenance(data.get("f86"), fetched_at, "eastmoney_stock_get_member_only"),
         }
         if pd.notna(prev) and prev > 0:
             row["pre_close"] = float(prev) / 100.0
-        trade_date = parse_eastmoney_trade_date(data.get("f86"))
+        source_stamp = parse_realtime_source_timestamp(data.get("f86"))
+        trade_date = "" if source_stamp is None else str(source_stamp.date())
         if trade_date:
             row["trade_date"] = trade_date
         return row
@@ -9869,18 +10044,17 @@ def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24) -> p
         frames.append(eastmoney_df)
         source_parts.append("eastmoney_stock_get_member_only")
 
-    out = (
-        pd.concat(frames, ignore_index=True).drop_duplicates(subset="code", keep="first")
-        if frames
-        else _empty_realtime_quote_frame()
-    )
+    out = _normalize_realtime_quote_frame(pd.concat(frames, ignore_index=True) if frames else pd.DataFrame())
+    if not out.empty:
+        now = _cn_timestamp()
+        # Validate each row before deduplication: an old primary must not hide a fresh backup.
+        out = out.loc[out.apply(lambda row: realtime_quote_row_is_genuine(row, now), axis=1)]
+        out = out.drop_duplicates(subset="code", keep="first")
     out.attrs["quote_source"] = "+".join(source_parts or ["free_realtime_quotes_empty"])
     return out
 
 
 def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
-    eastmoney_price: float | None = None
-    eastmoney_source = "eastmoney_stock_get"
     url = (
         "https://push2.eastmoney.com/api/qt/stock/get"
         "?secid=1.000852"
@@ -9894,45 +10068,24 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
         )
         response.raise_for_status()
         data = response.json().get("data") or {}
+        fetched_at = _cn_timestamp()
         latest = pd.to_numeric(data.get("f43"), errors="coerce")
-        prev = pd.to_numeric(data.get("f60"), errors="coerce")
-        if pd.notna(latest) and latest > 0:
-            eastmoney_price = float(latest) / 100.0
-            trade_date = parse_quote_epoch_trade_date(data.get("f86")) or parse_eastmoney_trade_date(
-                data.get("f86")
-            )
-            if trade_date:
-                return eastmoney_price, eastmoney_source, trade_date
-        elif pd.notna(prev) and prev > 0:
-            eastmoney_price = float(prev) / 100.0
-            eastmoney_source = "eastmoney_prev_close_fallback"
+        stamp = parse_realtime_source_timestamp(data.get("f86"))
+        row = {"rt_price": latest / 100.0, "trade_date": "" if stamp is None else str(stamp.date()),
+               **realtime_quote_provenance(data.get("f86"), fetched_at, "eastmoney_stock_get")}
+        if realtime_quote_row_is_genuine(row):
+            return RealtimeHedgeQuote(row["rt_price"], "eastmoney_stock_get", row["trade_date"], row)
     except Exception:
         pass
     try:
         quotes = fetch_tencent_realtime_quotes(["sh000852"])
         if not quotes.empty:
             row = quotes.iloc[0]
-            price = pd.to_numeric(row.get("rt_price"), errors="coerce")
-            trade_date = str(row.get("trade_date") or "").strip()
-            if pd.notna(price) and price > 0 and trade_date:
-                return float(price), str(quotes.attrs.get("quote_source") or "tencent_batch_free"), trade_date
+            if realtime_quote_row_is_genuine(row):
+                return RealtimeHedgeQuote(row["rt_price"], "tencent_batch_free", row["trade_date"], row.to_dict())
     except Exception:
         pass
-    if eastmoney_price is not None:
-        return eastmoney_price, f"{eastmoney_source}_missing_trade_date", ""
-    index_spot = normalize_index_spot_columns(load_or_refresh_index_spot(cache_seconds=86400))
-    index_spot["代码"] = index_spot["代码"].astype(str).str.zfill(6)
-    hedge_row = index_spot.loc[index_spot["代码"] == "000852"]
-    if hedge_row.empty:
-        raise RuntimeError("无法获取中证1000实时价格")
-    hedge_row = hedge_row.iloc[0]
-    hedge_rt_close = pd.to_numeric(hedge_row.get("最新价"), errors="coerce")
-    hedge_prev = pd.to_numeric(hedge_row.get("昨收"), errors="coerce")
-    if pd.notna(hedge_rt_close) and hedge_rt_close > 0:
-        return float(hedge_rt_close), "index_spot_latest_cached_fallback", ""
-    if pd.notna(hedge_prev) and hedge_prev > 0:
-        return float(hedge_prev), "index_prev_close_cached_fallback", ""
-    raise RuntimeError("无法获取中证1000实时价格")
+    raise RuntimeError("Realtime quote integrity: no fresh genuine hedge quote after alternate providers; preview only.")
 
 
 def format_missing_realtime_symbols(missing_symbols: list[dict[str, object]], limit: int = 8) -> str:
@@ -10170,6 +10323,8 @@ def add_last_close_flat_fallback_quotes(
         return out, 0
     quoted_codes = _valid_quote_code_set(out)
     missing_symbols = [symbol for symbol in clean_symbols if symbol not in quoted_codes]
+    # An unusable primary row must not win keep="first" over the explicit preview row.
+    out = out.loc[out["code"].isin(quoted_codes)].copy()
     quoted_fraction = len(quoted_codes.intersection(clean_symbols)) / len(clean_symbols)
     if len(missing_symbols) > int(max_missing_count) or quoted_fraction < float(min_quoted_fraction):
         return out, 0
@@ -10193,6 +10348,9 @@ def add_last_close_flat_fallback_quotes(
                 "trade_date": fallback_trade_date,
                 "quote_time": "",
                 "quote_source": "latest_close_flat_fallback",
+                "quoted_at": "",
+                "fetched_at": _cn_timestamp().isoformat(),
+                "price_origin": "last_close_preview",
             }
         )
     if not rows:
@@ -10532,10 +10690,10 @@ def build_realtime_signal_fast(
     last_microcap_close = float(close_df["microcap"].iloc[-1])
     microcap_rt_close = last_microcap_close * (1.0 + float(np.mean(member_returns)))
 
+    hedge_result = None
     try:
-        hedge_rt_close, hedge_source, hedge_quote_trade_date = normalize_hedge_realtime_quote_result(
-            fetch_hedge_realtime_quote_fast()
-        )
+        hedge_result = fetch_hedge_realtime_quote_fast()
+        hedge_rt_close, hedge_source, hedge_quote_trade_date = normalize_hedge_realtime_quote_result(hedge_result)
     except Exception:
         hedge_rt_close = float(close_df["hedge"].iloc[-1])
         hedge_source = "latest_cached_close_fallback"
@@ -10543,6 +10701,8 @@ def build_realtime_signal_fast(
 
     snapshot_ts = _cn_timestamp()
     quote_stats = extract_member_quote_trade_date_stats(quotes_df, member_symbols, latest_trade_date)
+    integrity_meta = {**extract_member_quote_integrity_stats(quotes_df, member_symbols, snapshot_ts),
+                      **extract_hedge_quote_integrity_meta(hedge_result)}
     quote_trade_date = str(quote_stats["member_quote_trade_date_max"])
     snapshot_row_appended = realtime_snapshot_row_appended(
         latest_anchor_trade_date=latest_trade_date,
@@ -10622,6 +10782,7 @@ def build_realtime_signal_fast(
         "expected_latest_completed_trade_date_source": expected_latest_completed_trade_date_source,
         "expected_latest_completed_trade_date_verified_on": expected_latest_completed_trade_date_verified_on,
         **quote_stats,
+        **integrity_meta,
         "member_quote_flat_fallback_count": flat_fallback_count,
         "hedge_quote_trade_date": hedge_quote_trade_date,
         "snapshot_row_appended": snapshot_row_appended,
@@ -10636,6 +10797,7 @@ def build_realtime_signal_fast(
         meta["realtime_base_source"] = realtime_base_source
     if realtime_base_note:
         meta["realtime_base_note"] = realtime_base_note
+    apply_realtime_quote_integrity_to_signal(signal_df, meta)
     return signal_df, meta, rt_close_df, rt_result
 
 
@@ -10659,6 +10821,7 @@ def load_cached_fast_realtime_signal(
             return None
         assert_realtime_meta_is_actionable(meta)
         signal_df = pd.read_csv(signal_path)
+        assert_realtime_quote_integrity_matches_signal(signal_df, meta)
         signal_df["signal_timing"] = "intraday_hypothetical_if_now_close"
         signal_df["official_close_confirmed_signal"] = False
         return signal_df, meta, float(cache_age_seconds)
@@ -10668,6 +10831,7 @@ def load_cached_fast_realtime_signal(
 
 def save_cached_fast_realtime_signal(paths: dict[str, Path], signal_df: pd.DataFrame, meta: dict[str, object]) -> None:
     assert_realtime_meta_is_actionable(meta)
+    assert_realtime_quote_integrity_matches_signal(signal_df, meta)
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
     with _cache_write_lock(REALTIME_DIR / f"{paths['cache_fast_realtime_meta'].stem}.lock"):
         _atomic_to_csv(signal_df, paths["cache_fast_realtime_signal"], index=False, encoding="utf-8")
@@ -10934,6 +11098,8 @@ def compute_realtime_state_fast(
         "hedge_quote_trade_date": signal_meta.get("hedge_quote_trade_date", ""),
         "tail_jitter_risk": signal_meta.get("tail_jitter_risk"),
         "tail_jitter_note": signal_meta.get("tail_jitter_note"),
+        **{key: signal_meta.get(key, "") for key in REALTIME_QUOTE_INTEGRITY_META_FIELDS},
+        "member_quote_flat_fallback_count": signal_meta.get("member_quote_flat_fallback_count", 0),
     }
     if signal_meta.get("fallback_warning"):
         meta["fallback_warning"] = signal_meta["fallback_warning"]
@@ -10988,6 +11154,7 @@ def load_cached_realtime_state(
             return None
         assert_realtime_meta_is_actionable(meta)
         signal_df = pd.read_csv(signal_path)
+        assert_realtime_quote_integrity_matches_signal(signal_df, meta)
         members_df = pd.read_csv(members_path, dtype={"symbol": str})
         changes_df = pd.read_csv(changes_path, dtype={"symbol": str})
         assert_no_st_members(members_df, "cached realtime members")
@@ -11014,6 +11181,7 @@ def save_realtime_state_cache(
     changes_df: pd.DataFrame,
 ) -> None:
     assert_realtime_meta_is_actionable(meta)
+    assert_realtime_quote_integrity_matches_signal(signal_df, meta)
     meta["live_member_filter_policy_version"] = LIVE_MEMBER_FILTER_POLICY_VERSION
     assert_no_st_members(members_df, "realtime members before cache write")
     REALTIME_DIR.mkdir(parents=True, exist_ok=True)
@@ -12496,6 +12664,7 @@ MEMBER_REBALANCE_META_COLS = {
     "member_rebalance_official",
 }
 REALTIME_META_FORCE_COLS = {
+    *realtime_core.base_mod.REALTIME_QUOTE_INTEGRITY_META_FIELDS,
     "fallback_warning",
     "realtime_base_source",
     "realtime_base_note",
@@ -12723,9 +12892,11 @@ def _atomic_temp_path(path: Path) -> Path:
     return path.with_suffix(path.suffix + f".tmp.{os.getpid()}.{time.time_ns()}")
 
 
-def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05) -> None:
+def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05, before_replace=None) -> None:
     last_exc: OSError | None = None
     for attempt in range(max(1, int(attempts))):
+        if before_replace is not None:
+            before_replace()
         try:
             tmp.replace(path)
             return
@@ -12738,12 +12909,12 @@ def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds:
         raise last_exc
 
 
-def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
+def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8", before_replace=None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = _atomic_temp_path(path)
     try:
         tmp.write_text(text, encoding=encoding)
-        _replace_with_retry(tmp, path)
+        _replace_with_retry(tmp, path, before_replace=before_replace)
     finally:
         try:
             if tmp.exists():
@@ -12867,6 +13038,13 @@ def _apply_selected_realtime_meta_to_signal_row(
             signal_row[col] = _csv_safe_value(meta[col])
 
 
+def _assert_realtime_signal_ready_to_commit(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:
+    # Recheck after serialization and on each atomic-replace retry: elapsed work
+    # must not publish a now-expired quote or cross the intraday close deadline.
+    realtime_core.base_mod.assert_realtime_meta_is_actionable(meta)
+    realtime_core.base_mod.assert_realtime_quote_integrity_matches_signal(signal_row, meta)
+
+
 def _apply_realtime_meta_columns_to_signal_row(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:
     publication_fields = {
         "snapshot_time", "quote_trade_date", "latest_anchor_trade_date",
@@ -12875,13 +13053,15 @@ def _apply_realtime_meta_columns_to_signal_row(signal_row: pd.DataFrame, meta: d
     }
     if publication_fields.issubset(meta):
         # All three live versions use this helper just before writing their CSV.
-        realtime_core.base_mod.assert_realtime_anchor_precedes_quote_trade_date(meta)
+        realtime_core.base_mod.assert_realtime_meta_is_actionable(meta)
     for col in MEMBER_REBALANCE_META_COLS:
         if col in meta and col not in signal_row.columns:
             signal_row[col] = _csv_safe_value(meta[col])
     for col in REALTIME_META_FORCE_COLS:
         if col in meta:
             signal_row[col] = _csv_safe_value(meta[col])
+    if publication_fields.issubset(meta):
+        realtime_core.base_mod.assert_realtime_quote_integrity_matches_signal(signal_row, meta)
 
 
 def _normalize_holding_series(
@@ -15053,7 +15233,10 @@ def build_realtime_v2_0_outputs() -> tuple[pd.DataFrame, dict[str, object], pd.D
     signal_row["target_vol_signal_timing"] = signal_timing
     signal_row["signal_timing"] = signal_timing
     signal_row["official_close_confirmed_signal"] = not is_snapshot
-    _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
+    _atomic_write_text(
+        REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8",
+        before_replace=lambda: _assert_realtime_signal_ready_to_commit(signal_row, meta),
+    )
     return signal_row, meta, out
 
 

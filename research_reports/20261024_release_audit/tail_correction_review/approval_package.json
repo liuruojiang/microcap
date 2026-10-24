@@ -1,0 +1,15 @@
+{
+  "approved": false,
+  "review_sha256": "e240a87b55de31b5e3ce0bcd79a605b48d96afeb6e787f845f4188582a99517d",
+  "candidate_authority_sha256": "8905fc0e01f1814bd50274f76455bc8cceeada15cf484f96698e87abe42c416b",
+  "date": "2026-10-23",
+  "expected_new_seed_sha256": {
+    "proxy_index": "7941e4bd973ddcfd7d26dc0b08df579499d48d7d7994a6dcc35de5a488c19eb1",
+    "costed_nav": "369d41b41660ef04b79c9fa10509ccc75be3f6841f46d70d5ed4d27e72ba7daf",
+    "proxy_meta": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+    "proxy_members": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+    "proxy_turnover": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+    "proxy_effective_members": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227"
+  },
+  "scope": "Requires explicit exact seed rebinding approval; official three-version runs use ordinary tail audit, no migration option."
+}

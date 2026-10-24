@@ -14,7 +14,7 @@ import pytest
 from scripts import realtime_state_bundle as state
 from scripts import top100_cloud_delivery as cloud
 from scripts import top100_delivery as delivery
-from test_top100_delivery import workspace, certify  # noqa: F401
+from test_top100_delivery import workspace, certify, write  # noqa: F401
 from test_top100_cloud_delivery import prepare
 from test_realtime_member_snapshot_fallback import (
     _write_minimal_required_state, _write_current_v2_static_context, _proxy_member_rows,
@@ -184,6 +184,12 @@ def test_real_core_next_session_member_contract_is_accepted(workspace):
     members.loc[latest, "symbol"] = "000101"
     members.loc[latest, "name"] = "replacement"
     members.to_csv(proxy_members, index=False)
+    # Synthetic incoming target also needs complete transport legs; this test
+    # exercises a valid next-session action, not an incomplete member cache.
+    write(workspace, f"{delivery.state.PRICE_CACHE_DIR}/000101.csv",
+          "date,close_raw\n2026-09-03,10.0\n")
+    write(workspace, f"{delivery.state.SHARE_CACHE_DIR}/000101.csv",
+          "change_date,total_shares_10k\n2026-09-01,10000.0\n")
     signal = pd.read_csv(workspace / "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv")
     signal["member_rebalance_required"] = True
     row = v2.augment_close_confirmed_signal_with_member_contract(
