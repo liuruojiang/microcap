@@ -348,6 +348,9 @@ def isolated_delivery(tmp_path_factory, real_context):
     root = tmp_path_factory.mktemp("state_delivery")
     names = set(real_context["report"]["inputs"]) | set(real_context["report"]["artifacts"])
     names.add(delivery.state.REQUIRED_FILES[1])
+    # Copy authentic raw/share and available adjusted caches via the same
+    # inventory used by state transport; do not bypass the complete-data gate.
+    names.update(delivery.state._iter_current_member_cache_files(DATA_ROOT))
     for name in names:
         destination = root / name
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -382,6 +385,8 @@ def test_final_csv_contract_accepts_naive_midnight_serialization(
     isolated_delivery, real_context, monkeypatch, capsys, suffix
 ):
     root, originals = isolated_delivery
+    pristine = delivery.inspect_outputs(root, real_context["target"])
+    assert pristine["ok"], pristine["errors"]
     path = root / "outputs" / "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv"
     value = real_context["target"] + suffix
     try:
@@ -405,6 +410,8 @@ def test_final_csv_contract_cannot_recertify_intraday_or_mismatched_signal_field
     isolated_delivery, real_context, monkeypatch, capsys, version, field, value
 ):
     root, originals = isolated_delivery
+    pristine = delivery.inspect_outputs(root, real_context["target"])
+    assert pristine["ok"], pristine["errors"]
     path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_latest_signal.csv"
     if field == "date":
         value = real_context["target"] + value

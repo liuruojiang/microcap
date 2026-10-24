@@ -92,6 +92,9 @@ def delivery_copy(tmp_path_factory, authentic):
     root = tmp_path_factory.mktemp("contract_delivery")
     names = set(authentic["report"]["inputs"]) | set(authentic["report"]["artifacts"])
     names.add(delivery.state.REQUIRED_FILES[1])
+    # The whole-delivery contract also requires the authentic member/universe
+    # raw/share caches (and adjusted prices where present), beyond manifest CSVs.
+    names.update(delivery.state._iter_current_member_cache_files(DATA_ROOT))
     for name in names:
         destination = root / name
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -135,6 +138,8 @@ def test_final_file_corruption_cannot_be_recertified_by_delivery_cli(
     delivery_copy, authentic, monkeypatch, capsys, version, field, bad_value
 ):
     root, originals = delivery_copy
+    pristine = delivery.inspect_outputs(root, authentic["target"])
+    assert pristine["ok"], pristine["errors"]
     path = root / "outputs" / f"microcap_top100_mom16_biweekly_live_v2_{version}_latest_signal.csv"
     fields, rows = read_rows(path)
     assert len(rows) == 1 and field in fields

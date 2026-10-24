@@ -30,7 +30,11 @@ def isolated_probe_log(tmp_path_factory):
 def frozen_delivery(tmp_path_factory, frozen_formal_baseline):
     baseline = frozen_formal_baseline["report"]
     root = tmp_path_factory.mktemp("round3_delivery")
-    for name in set(baseline["inputs"]) | set(baseline["artifacts"]):
+    names = set(baseline["inputs"]) | set(baseline["artifacts"])
+    # Use the native transport inventory, including real raw/share caches and
+    # adjusted prices where present; a negative case must start fully valid.
+    names.update(delivery.state._iter_current_member_cache_files(DATA_ROOT))
+    for name in names:
         dest = root / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(DATA_ROOT / name, dest)
@@ -48,6 +52,8 @@ def workspace(frozen_delivery):
     root, date, originals = frozen_delivery
     for p, payload in originals.items():
         p.write_bytes(payload)
+    pristine = delivery.inspect_outputs(root, date)
+    assert pristine["ok"], pristine["errors"]
     yield root, date
     for p, payload in originals.items():
         p.write_bytes(payload)
