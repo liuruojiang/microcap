@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "strategy_production_pin": "e63d7bfa10a9d516494ba55076f47269ba3af86c",
+  "tested_source_and_fixture_commit": "6b03b57d306d90e8dcead414c1ce6443b9896e52",
+  "junit": {
+    "tests": 1725,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "elapsed_seconds": 1072.3574210999977,
+  "unchanged": {
+    "baseline_changed": [],
+    "seed_changed": [],
+    "source_changed": [],
+    "stage_source_changed": []
+  },
+  "junit_sha256": "d86f214a4f72bea1c50e8f565ed956c5e32e533020d92f0696b1a8ac098108b8",
+  "independent_cold_restore_checks": 273,
+  "approved_tail_readback_checks": 57,
+  "automation_tests": 373,
+  "automation_subtests": 38,
+  "bundle_sha256": "6fd1f598d68ad65939169af407ad8c9687b2921b99e9c5707d8de77316290078",
+  "boundary": "Real corrected 2026-10-23 closed-session data; no intraday quote certification or actual trade. Remote delivery is a separate acceptance."
+}
