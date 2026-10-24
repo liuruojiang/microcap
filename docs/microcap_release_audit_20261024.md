@@ -23,16 +23,32 @@
 
 本地完整同步必须由 `top100_delivery.py refresh-all` 和 `check` 实际通过。云端先运行不发邮件的完整验收，再使用独立 `delivery_test_id` 补发一封新版验收邮件。正常日报去重记录保留，本地不另发邮件。
 
-当前执行证据保存在 `research_reports/20261024_release_audit/`；最终发布提交、云端运行与邮件证据将在验收完成后补充。
+执行证据保存在 `research_reports/20261024_release_audit/`；最终发布和交付均已完成，见下文及 `delivery/final_release_delivery_acceptance.json`。
 
 ## 新增真实尾部数据修正
 
 状态包原生门禁发现 301512、688067、688096、688251 四只实际成员的原始价格只到 10/22。实际 100 成员重放证明，原 10/23 代理指数把四个缺失收益按 0 处理。真实新浪价格补齐后，proxy 日收益增加 3.12648 bp；v2.0、v2.3 当日净值分别修正为 29.74264329、30.09210540，v2.5 净值不变。10/22 以前原始字节、元数据、成员、参数和动作均不变。
 
-新的精确种子审查包为 `research_reports/20261024_release_audit/tail_correction_review/approval_package.json`，SHA-256 `0e79f12ebcb3215c203f29f0627ccda356356a22bf02d87d08be95a603c906f9`。用户已明确批准该精确包。主目录已完成四份真实缓存、proxy 与 authority 激活；base costed 及三版均由正式函数生成，精确匹配批准哈希，正常尾部检查 clean。独立最终回读 57 项全过，见 quote/approved_activation_readback.json。此时尚未远端发布、未发送验收邮件。
+新的精确种子审查包为 `research_reports/20261024_release_audit/tail_correction_review/approval_package.json`，SHA-256 `0e79f12ebcb3215c203f29f0627ccda356356a22bf02d87d08be95a603c906f9`。用户已明确批准该精确包。主目录已完成四份真实缓存、proxy 与 authority 激活；base costed 及三版均由正式函数生成，精确匹配批准哈希，正常尾部检查 clean。独立最终回读 57 项全过，见 quote/approved_activation_readback.json。该激活阶段尚未发布或发信；随后已完成下述远端发布和唯一验收投递。
 
 完整交付的两个检查入口已复用实际成员缓存完整性门禁；base-state-only 的有限读取语义保持。新代码隔离云流程复刻为 core29 716 项、release6 255 项，自动化微盘族 373 项及 38 子测试，均零失败、错误、跳过。此前 1712 项旧冻结输入完整回归仅证明加此门禁前的代码行为，不能证明已发现缺价的旧数据正确；新完整数据回归在此次真实生成后单独完成。缓存完整性本身也不证明 raw 与 proxy 的经济结果一致，本次必须执行审查包指定的重算与哈希核验。
 
 ## 发布前最终完整回归
 
 已批准的真实修正数据通过完整 1725 项测试，零失败、错误、跳过；基准、批准种子及测试源码前后哈希均未改变。三个旧测试夹具已补充真实成员缓存，并在破坏性反例前确认完整有效，未放宽生产门禁。独立完整包冷恢复 273 项及批准尾部读回 57 项通过。汇总见 `research_reports/20261024_release_audit/final_audit_pass.json`。生产不可变提交为 e63d7bfa；之后的 6b03b57 仅修复测试夹具，生产源码与完整包未变。
+
+## 最终发布与交付验收
+
+策略修复及测试通过 [PR #75](https://github.com/liuruojiang/microcap/pull/75) 合并；发布时 main 为 `2af008a9ab3a43b0318cd765601b4514a9a60686`。自动化通过 [PR #164](https://github.com/liuruojiang/codex-daily-automation-probe/pull/164) 合并，正式提交为 `48403ff025c158466f197d6b53a10ac7510d8df7`；三个策略 checkout 均绑定不可变生产提交 `e63d7bfa10a9d516494ba55076f47269ba3af86c`。
+
+[完整状态发布包](https://github.com/liuruojiang/microcap/releases/tag/microcap-daily-sync-20261024-e63d7bfa) 已上传并重新下载核验。文件 `microcap-whole-state-20261023-20261024.zip` 共 71,312,359 字节，SHA-256 为 `6fd1f598d68ad65939169af407ad8c9687b2921b99e9c5707d8de77316290078`。
+
+主工作区已保留备份和原有无关修改，完成正式 `refresh-all` 与独立 `check`。本地定时日报已更新并回读核验，原有调度与本地不发邮件约束保留；10/23 本地日报已生成。查询会更新 summary 的 freshness proof，因此查询完成后再次实际执行整组刷新与检查，没有手改 manifest 或复制单份 NAV 绕过门禁。
+
+[云端不发送验证 40063360379](https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/40063360379) 成功；[唯一验收投递 40064033166](https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/40064033166) 随后成功。两次均通过 373 项自动化测试和 971 项策略测试，零失败、错误、跳过；完整交付门禁均覆盖全部三版。验收运行的六个原始产物 ZIP 已分别与 GitHub 摘要核对。
+
+本地与两次云端运行的三版最终 CSV 逐字段一致：v2.0 为 90 字段，v2.3 为 134 字段，v2.5 为 118 字段。日报生成器内容 SHA-256 同为 `72f6a77fc95e7f909d7a31a11062f7854cedbe7ea15a8eefd2b63d60481a3753`。三版成员调仓信号日期均为 10/15、执行日期 10/16，10/23 的 actionable 均为 False，历史名单变更未被当成当前调仓指令。
+
+唯一邮件使用验收编号 `mc24-lineage-acceptance-20261024`，主题明确包含“发送验收测试、收盘确认、新版验收”，正文明确为历史收盘样本、不作为今日交易指令。北京时间 2026-10-24 13:00:38 获得 SMTP 接受回执；Gmail INBOX 中已核对同一 Message-ID、完整主题和正文。发送意图、SMTP 回执及送达标记均仅有一份且指向该验收运行；正常日报三类全局记录与验收前完全一致。本地未另发邮件，未提交实际交易。
+
+脱敏汇总见 [最终交付证据](../research_reports/20261024_release_audit/delivery/final_release_delivery_acceptance.json)。原始回执与收件箱证据保留在本地审计目录，未把邮箱地址或原始邮件头写入公开汇总。

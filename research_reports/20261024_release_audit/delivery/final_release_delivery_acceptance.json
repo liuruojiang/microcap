@@ -1,0 +1,110 @@
+{
+  "status": "PASS_RELEASE_AND_DELIVERY_COMPLETE",
+  "data_date": "2026-10-23",
+  "approved_package_sha256": "0e79f12ebcb3215c203f29f0627ccda356356a22bf02d87d08be95a603c906f9",
+  "strategy_production_pin": "e63d7bfa10a9d516494ba55076f47269ba3af86c",
+  "strategy_main_at_publication": "2af008a9ab3a43b0318cd765601b4514a9a60686",
+  "automation_main": "48403ff025c158466f197d6b53a10ac7510d8df7",
+  "release_url": "https://github.com/liuruojiang/microcap/releases/tag/microcap-daily-sync-20261024-e63d7bfa",
+  "whole_state_bundle_sha256": "6fd1f598d68ad65939169af407ad8c9687b2921b99e9c5707d8de77316290078",
+  "release_asset_download_hash_verified": true,
+  "full_regression": {
+    "tests": 1725,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 1072.3574210999977
+  },
+  "independent_cold_restore_checks_passed": 273,
+  "approved_tail_readback_checks_passed": 57,
+  "cloud_validation_run": 40063360379,
+  "cloud_acceptance_run": 40064033166,
+  "cloud_acceptance_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/40064033166",
+  "cloud_tests": {
+    "automation-regression-40064033166": {
+      "tests": 373,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "strategy-regression-microcap-40064033166": {
+      "tests": 971,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "six_acceptance_archives_digest_verified": true,
+  "local_refresh_all_and_check_passed": true,
+  "local_automation_updated_and_readback_verified": true,
+  "local_report": "research_reports/20261024_release_audit/delivery/local_daily_complete/preview/microcap_realtime_signal_digest_2026-10-23.md",
+  "local_cloud_final_csv_field_parity": {
+    "v2.0": 90,
+    "v2.3": 134,
+    "v2.5": 118
+  },
+  "consumer_sha256": "72f6a77fc95e7f909d7a31a11062f7854cedbe7ea15a8eefd2b63d60481a3753",
+  "member_actions": {
+    "v2.0": {
+      "date": "2026-10-23",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-10-15",
+      "member_rebalance_execution_date": "2026-10-16"
+    },
+    "v2.3": {
+      "date": "2026-10-23",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-10-15",
+      "member_rebalance_execution_date": "2026-10-16"
+    },
+    "v2.5": {
+      "date": "2026-10-23",
+      "member_rebalance_required": "True",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_signal_date": "2026-10-15",
+      "member_rebalance_execution_date": "2026-10-16"
+    }
+  },
+  "acceptance_test_id": "mc24-lineage-acceptance-20261024",
+  "smtp_accepted": true,
+  "smtp_accepted_at": "2026-10-24T05:00:38+00:00",
+  "gmail_inbox_verified": true,
+  "email_subject": "[发送验收测试][收盘确认][新版验收] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-10-23 - mc24-lineage-acceptance-20261024",
+  "gmail_body_matches_cloud_metadata": true,
+  "receipt_and_gmail_message_id_sha256": "f59247996a0ad6bc852c2119e8901b60b2ddc4308c5b39e2364eb9ac3a826d20",
+  "unique_acceptance_delivery_records": {
+    "microcap-v2-close_confirmed-delivery-test-mc24-lineage-acceptance-20261024": {
+      "total_count": 1,
+      "id": 12549120917,
+      "digest": "sha256:61d48d264a171f32123d8d935ffc4b147a31e06a9dfe950cadae2c957625ab76",
+      "run_id": 40064033166
+    },
+    "microcap-v2-close_confirmed-delivery-test-mc24-lineage-acceptance-20261024-send-intent": {
+      "total_count": 1,
+      "id": 12548842063,
+      "digest": "sha256:7ebc26c38dcb5d3f44c9e2a77561738d32bcd9603bc95614dec8f98e4aaba019",
+      "run_id": 40064033166
+    },
+    "microcap-v2-close_confirmed-delivery-test-mc24-lineage-acceptance-20261024-smtp-accepted": {
+      "total_count": 1,
+      "id": 12548936476,
+      "digest": "sha256:c78b1e8f581a5de486e04cfe1d2101e6f9cbd700a56fe6a3845099a2ed0857f5",
+      "run_id": 40064033166
+    }
+  },
+  "normal_global_delivery_records_exactly_unchanged": true,
+  "local_smtp_called": false,
+  "actual_trades_submitted": false,
+  "local_backups_and_unrelated_changes_preserved": true,
+  "evidence_files": {
+    "gmail_inbox_verified.json": "8ddf59467b3aa5cbf78042be4e2462f4eec4fec96b5bd0f1fab5e838e09044b9",
+    "global_marker_preservation_verified.json": "e1deddc42901747c802e1e64f9e64a1023946fb77ef88a30c200d853a31d78a3",
+    "local_daily_complete/local_daily_readback.json": "cda522ce699e3cc2601802b19db14a7fae196aa8ae2915443f6548b4364b8244",
+    "local_cloud_final_csv_parity.json": "85a8b4038c01839337a507d674a8510060dd3ef212c807a3fbfbbab1340e10f9",
+    "cloud_acceptance_40064033166/acceptance_readback.json": "33fb106bc1a4cecc0d2ddecc602f3714de8cf88a656163c4272a6290d98a218b",
+    "cloud_acceptance_40064033166/acceptance_whole_gate_and_regression.json": "9fde758d2e31876e1a7d87a06bd212b3cb6c32ee2cb33a14cbafd1afa3941e43",
+    "cloud_acceptance_40064033166/download_verification.json": "fe51ddf5fbfba5e4054bf6897579e3b2669b40cf7b8057325b1e097cc326ff80"
+  }
+}
