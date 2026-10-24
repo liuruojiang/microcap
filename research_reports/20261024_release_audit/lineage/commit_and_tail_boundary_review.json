@@ -1,0 +1,71 @@
+{
+  "scope": "read_only_independent_commit_guard_and_tail_helper_review",
+  "source_review": [
+    {
+      "version": "2_0",
+      "source_sha256": "0c4ef8356d0a61c1690b9751d0b003d0121e24fe89d82df693bd1c1232e910c1",
+      "before_sha256": "9a80714f734124374ce88440ed6b138e489b118889ae2289a2c07651ffc89ded",
+      "changed_top_level_nodes": [
+        "assign:OVERLAY_SOURCE"
+      ],
+      "changed_overlay_nodes": [
+        "_assert_realtime_signal_ready_to_commit",
+        "_atomic_write_text",
+        "_replace_with_retry",
+        "build_realtime_v2_0_outputs"
+      ],
+      "only_authorized_ST_and_realtime_commit_changes": true
+    },
+    {
+      "version": "2_3",
+      "source_sha256": "e3c2b01d544d89dadd628e2e4dd32d86d503a94352f2c3d5c13a354198e038f6",
+      "before_sha256": "b933287913acec63f4e0027fd71ce4af4f4e72cc012bba7d58db7d89624eb48f",
+      "changed_top_level_nodes": [
+        "_atomic_write_text",
+        "_build_realtime_v2_3_outputs_unlocked",
+        "_replace_with_retry"
+      ],
+      "changed_overlay_nodes": [],
+      "only_authorized_ST_and_realtime_commit_changes": true
+    },
+    {
+      "version": "2_5",
+      "source_sha256": "c39b8fa5b4fe44142fb470944bf87c875c18dcc480cad0f705b4e653bba64f50",
+      "before_sha256": "a5675e6d9a10379fd3f0ab7ffaac738d9983fa1a4413588b03fc2876667765db",
+      "changed_top_level_nodes": [
+        "_atomic_write_text",
+        "_build_realtime_v2_5_outputs_unlocked",
+        "_replace_with_retry"
+      ],
+      "changed_overlay_nodes": [],
+      "only_authorized_ST_and_realtime_commit_changes": true
+    }
+  ],
+  "independent_actual_writer_tests": {
+    "tests": "33",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "4.348"
+  },
+  "callback_review": {
+    "after_serialization_and_temp_file_write": true,
+    "before_each_replace_attempt": true,
+    "guard_outside_OSError_retry_handler": true,
+    "unconditional_real_meta_actionability_and_CSV_proof_checks": true,
+    "historical_writers_receive_no_callback": true,
+    "strategy_parameter_or_historical_return_function_changes": false,
+    "limit": "Pre-replace validation cannot create an atomic transaction with wall-clock time; no artificial wait remains between callback and filesystem replace. This is the stated publication contract, not a claim of hard-real-time kernel commit timing."
+  },
+  "tail_helper_scope": {
+    "original_counterexamples_preserved_in": "independent_results.json",
+    "real_current_cache_and_meta_pass_outer_execution_model_check": true,
+    "corrupt_fingerprint_rejected_by_outer_execution_model_check": true,
+    "native_state_validate_security_metadata_also_binds_all_cache_bytes": true,
+    "base_costed_return_not_used_as_final_strategy_return_source": true,
+    "code_basis": "v20 _load_embedded_base_context loads panel+proxy via load_close_df and run_signal; costed NAV is checked for freshness/hedge ratio. Final costed streams are regenerated from that gross path and turnover. A standalone corrupted base_costed tail return is not carried into final strategy returns.",
+    "conclusion": "Helper alone is not a complete data-integrity validator. The tested metadata mutation is rejected by the real outer guard; the isolated costed-tail mutation is not a demonstrated whole-publication economic bypass. Do not list these helper-only probes as an unfixed release blocker.",
+    "not_tested": "No fabricated future 2026-10-26 data was sent through whole-delivery or certified as market data; no general claim that every conceivable proxy-tail corruption is detected."
+  },
+  "remote_release_verified": false
+}

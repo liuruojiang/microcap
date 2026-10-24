@@ -10,6 +10,7 @@ import microcap_top100_mom16_biweekly_live_v2_3 as v23
 import microcap_top100_mom16_biweekly_live_v2_5 as v25
 from scripts import exchange_calendar as calendar
 from scripts.top100_data_contracts import realtime_row_is_consistent
+from synthetic_quote_provenance import quote_integrity_fixture
 
 
 @pytest.fixture
@@ -28,6 +29,7 @@ def set_clock(monkeypatch, guard, stamp):
 
 def meta(stamp):
     return {
+        **quote_integrity_fixture(v20.base_mod, stamp),
         "member_count": 100, "member_price_count": 100,
         "member_quote_bad_symbols": [], "member_quote_trade_date_count": 100,
         "member_quote_trade_date_min": "2026-10-08", "member_quote_trade_date_max": "2026-10-08",

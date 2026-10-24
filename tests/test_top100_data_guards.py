@@ -714,7 +714,10 @@ def test_v2_5_official_params_are_selected_no_target_vol() -> None:
 
 
 def _actionable_realtime_meta(anchor: str, quote: str) -> dict[str, object]:
+    from synthetic_quote_provenance import quote_integrity_fixture
+
     return {
+        **quote_integrity_fixture(v2_0.base_mod, f"{quote} 14:30:00+08:00", count=2),
         "member_count": 2,
         "member_price_count": 2,
         "member_quote_bad_symbols": [],

@@ -440,8 +440,10 @@ def _atomic_temp_path(path: Path) -> Path:
     return path.with_suffix(path.suffix + f".tmp.{time.time_ns()}")
 
 
-def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05) -> None:
+def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds: float = 0.05, before_replace=None) -> None:
     for attempt in range(int(attempts)):
+        if before_replace is not None:
+            before_replace()
         try:
             tmp.replace(path)
             return
@@ -451,12 +453,12 @@ def _replace_with_retry(tmp: Path, path: Path, attempts: int = 5, delay_seconds:
             time.sleep(float(delay_seconds) * (2**attempt))
 
 
-def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8") -> None:
+def _atomic_write_text(path: Path, text: str, encoding: str = "utf-8", before_replace=None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = _atomic_temp_path(path)
     try:
         tmp.write_text(text, encoding=encoding)
-        _replace_with_retry(tmp, path)
+        _replace_with_retry(tmp, path, before_replace=before_replace)
     finally:
         try:
             if tmp.exists():
@@ -2176,7 +2178,10 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     signal_row["target_vol_signal_timing"] = ""
     signal_row["signal_timing"] = signal_timing
     signal_row["official_close_confirmed_signal"] = not is_snapshot
-    _atomic_write_text(REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8")
+    _atomic_write_text(
+        REALTIME_SIGNAL_CSV, signal_row.to_csv(index=False), encoding="utf-8",
+        before_replace=lambda: v2_0.overlay_mod._assert_realtime_signal_ready_to_commit(signal_row, realtime_base.meta),
+    )
     return signal_row, realtime_base.meta, out
 
 

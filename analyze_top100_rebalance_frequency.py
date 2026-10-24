@@ -559,6 +559,76 @@ def merge_st_intervals(intervals: list[dict[str, str | None]]) -> list[dict[str,
     ]
 
 
+def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]:
+    """Resolve title-level risk categories without changing notice-date policy.
+
+    True means the category remains/turns active; False is a complete withdrawal
+    of that category. A generic historical 特别处理 entry has unknown subtype.
+    Requests and potential events are not effective evidence. Within one title
+    retained/affirmatively imposed risk takes precedence over a withdrawal of
+    another reason for the same risk category.
+    """
+    text = re.sub(r"\s+", "", str(title or "").upper())
+    if not text or "申请" in text:
+        return {}, False
+    actions: dict[str, bool] = {}
+    had_effective_withdrawal = False
+    inherited: bool | None = None
+    for clause in re.split(r"以及|同时|并且|并|暨|及|且|但|和|后|[，,。；;、]", text):
+        if not clause:
+            continue
+        categories = []
+        residual = clause
+        for token, category in [("退市风险警示", "delisting"), ("其他风险警示", "other"),
+                                ("其他特别处理", "other")]:
+            if token in clause:
+                categories.append(category)
+                # Older titles say 退市风险警示特别处理 as one subtype, not
+                # an additional unspecified warning that can never be exited.
+                residual = residual.replace(token + "的特别处理", "").replace(token + "特别处理", "").replace(token, "")
+        if "特别处理" in residual or "风险警示" in residual:
+            categories.append("unspecified")
+        if "摘帽" in clause:
+            categories = ["delisting", "other", "unspecified"]
+        if not categories:
+            continue
+        # A possible or rejected action must not become effective merely because
+        # it shares a title with an effective action on a different category.
+        if (any(token in clause for token in ["可能", "存在被实施", "存在实施", "不予", "尚未", "未获", "未被", "不会", "不撤销", "不再实施"])
+                or ("拟" in clause and any(token in clause for token in ["实施", "撤销", "摘帽"]))):
+            inherited = None
+            continue
+        withdrawal = any(token in clause for token in ["撤销", "摘帽"])
+        affirmative = any(token in clause for token in ["实施", "实行", "继续", "仍被", "转为", "改为", "变更为", "调整为"])
+        if withdrawal:
+            # Partial removal cannot establish absence of this risk category.
+            action = "部分" in clause
+            # It nevertheless proves that warning existed before this notice.
+            # Set this only after the effective-clause filters above.
+            had_effective_withdrawal = True
+        elif affirmative:
+            action = True
+        elif inherited is not None:
+            # An omitted repeated verb still carries a category-local modifier:
+            # 撤销退市风险警示及部分其他风险警示 leaves the other warning active.
+            action = inherited or "部分" in clause
+        else:
+            continue
+        inherited = action
+        if not action and "unspecified" in categories:
+            # Unqualified 摘帽/撤销特别处理/撤销风险警示 closes all categories.
+            categories = ["delisting", "other", "unspecified"]
+        for category in categories:
+            # A mixed same-title subtype/reason transition must retain ST.
+            actions[category] = actions.get(category, False) or action
+    return actions, had_effective_withdrawal
+
+
+def classify_st_notice_risk_actions(title: str) -> dict[str, bool]:
+    """Public category-action view; retain the existing dictionary contract."""
+    return _parse_st_notice_risk_transition(title)[0]
+
+
 def build_st_intervals_from_notices(
     first_trade_date: pd.Timestamp,
     last_trade_date: pd.Timestamp,
@@ -567,85 +637,55 @@ def build_st_intervals_from_notices(
     if notices.empty:
         return []
     work = notices.copy()
-    work["notice_date"] = pd.to_datetime(work["notice_date"], errors="coerce")
+    work["notice_date"] = pd.to_datetime(work["notice_date"], errors="coerce").dt.normalize()
     work = work.dropna(subset=["notice_date"]).sort_values("notice_date")
     if work.empty:
         return []
 
-    def infer_action(title: str) -> str | None:
-        text = str(title or "").upper().replace(" ", "")
-        if not text or "申请" in text:
-            return None
-        if "摘帽" in text or (
-            "撤销" in text
-            and any(token in text for token in ["退市风险警示", "其他特别处理", "其他风险警示", "特别处理"])
-        ):
-            return "exit"
-        definitive_text = text
-        for possible_phrase in [
-            "可能被实施退市风险警示",
-            "可能被实施其他风险警示",
-            "可能实施退市风险警示",
-            "可能实施其他风险警示",
-            "存在被实施退市风险警示",
-            "存在被实施其他风险警示",
-            "存在实施退市风险警示",
-            "存在实施其他风险警示",
-        ]:
-            definitive_text = definitive_text.replace(possible_phrase, "")
-        definitive_entry_tokens = [
-            "被实施退市风险警示",
-            "将被实施退市风险警示",
-            "实施退市风险警示",
-            "实行退市风险警示",
-            "被实施其他风险警示",
-            "将被实施其他风险警示",
-            "实施其他风险警示",
-            "实行其他风险警示",
-            "被实施特别处理",
-            "将被实施特别处理",
-            "实施特别处理",
-            "实行特别处理",
-        ]
-        if any(token in definitive_text for token in definitive_entry_tokens):
-            return "entry"
-        return None
-
     first_trade = pd.Timestamp(first_trade_date).normalize()
     last_trade = pd.Timestamp(last_trade_date).normalize()
     intervals: list[dict[str, str | None]] = []
-    active_at_start = False
+    risk_state: dict[str, bool] = {"delisting": False, "other": False, "unspecified": False}
+    history_known = False
+    active_start: pd.Timestamp | None = None
 
-    for row in work.loc[work["notice_date"] < first_trade].itertuples(index=False):
-        action = infer_action(getattr(row, "title", ""))
-        if action == "entry":
-            active_at_start = True
-        elif action == "exit":
-            active_at_start = False
-
-    active_start: pd.Timestamp | None = first_trade if active_at_start else None
-
-    for row in work.itertuples(index=False):
-        notice_date = pd.Timestamp(row.notice_date).normalize()
-        if notice_date < first_trade:
-            continue
+    for raw_date, group in work.groupby("notice_date", sort=True):
+        notice_date = pd.Timestamp(raw_date).normalize()
         if notice_date > last_trade:
             continue
-        action = infer_action(getattr(row, "title", ""))
-        if action == "exit":
-            if active_start is None:
-                active_start = first_trade
+        # Same-day distinct titles have no reliable intraday event ordering.
+        # Duplicate exits are idempotent; contradictory category evidence must
+        # fail closed, rather than depending on provider/input ordering.
+        day_actions: dict[str, bool] = {}
+        day_had_effective_withdrawal = False
+        for row in group.itertuples(index=False):
+            actions, had_withdrawal = _parse_st_notice_risk_transition(getattr(row, "title", ""))
+            day_had_effective_withdrawal |= had_withdrawal
+            for category, action in actions.items():
+                if category in day_actions and day_actions[category] != action:
+                    raise ValueError(f"Unresolved conflicting ST notice evidence on {notice_date.date()}: {category}")
+                day_actions[category] = action
+        if not day_actions:
+            continue
+        was_active = any(risk_state.values())
+        initial_withdrawal = not history_known and day_had_effective_withdrawal
+        risk_state.update(day_actions)
+        history_known = True
+        is_active = any(risk_state.values())
+        if notice_date < first_trade:
+            active_start = first_trade if is_active else None
+            continue
+        if is_active and active_start is None:
+            active_start = first_trade if initial_withdrawal else max(first_trade, notice_date)
+        elif not is_active and (was_active or initial_withdrawal):
             intervals.append(
                 {
-                    "start": str(active_start.date()),
+                    "start": str((active_start if active_start is not None else first_trade).date()),
                     "end": str(notice_date.date()),
                     "source": "cninfo_notice",
                 }
             )
             active_start = None
-        elif action == "entry":
-            if active_start is None:
-                active_start = max(first_trade, notice_date)
 
     if active_start is not None:
         intervals.append({"start": str(active_start.date()), "end": None, "source": "cninfo_notice"})
