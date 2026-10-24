@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-24",
+  "scope": "local preview reliability fixes and workspace cleanup",
+  "realtime_path_user_accepted_unchanged": true,
+  "remote_query_timeout_seconds": 60,
+  "targeted_tests_passed": 10,
+  "independent_review_passed": true,
+  "real_local_preview": {
+    "status": "PASS",
+    "data_date": "2026-10-23",
+    "strategy_sha": "53934177b795f21de25fb1f3dffddb1eee3672cc",
+    "automation_sha": "48403ff025c158466f197d6b53a10ac7510d8df7",
+    "approved_csv_bytes_equal": 22,
+    "whole_refresh_and_check_passed": true,
+    "smtp_called": false,
+    "normal_marker_changes": false,
+    "initial_calendar_failure_recorded": true,
+    "retry_used_authenticated_prior_queries": true,
+    "local_readback_sha256": "a37e30ee36c56a3b0f4b34da127c815469502347160d89859accef81ef92ccdf"
+  },
+  "archives": [
+    {
+      "name": "untracked_evidence.zip",
+      "sha256": "c834979c1a3e9f322cf32e586869cb337112aeb39459c683affd21522662f985",
+      "verified_entries": 10501
+    },
+    {
+      "name": "ignored_research_evidence.zip",
+      "sha256": "2b0d2a855cf4e2ba740dd742b72eb6d5363c2b15cd0d8f4b5b20d07f3cdd5d69",
+      "verified_entries": 65722
+    }
+  ],
+  "archive_root": "D:\\Codex\\archives\\microcap-cleanup-20261024",
+  "removed_archived_files": 76222,
+  "formal_inputs_and_csvs_preserved": true,
+  "cleanup_status": "archived_files_removed_cache_and_empty_directory_cleanup_blocked_by_policy",
+  "blocked_cache_files": 10,
+  "blocked_cache_bytes": 1009169,
+  "blocked_empty_leaf_directories": 2486,
+  "blocked_details": "D:\\Codex\\archives\\microcap-cleanup-20261024\\blocked_cleanup.json",
+  "local_smtp_called": false,
+  "cloud_configuration_changed": false
+}

@@ -52,10 +52,10 @@
     "member_enter_count": 11,
     "member_exit_count": 11,
     "member_rebalance_label": "名单调仓（调入 11，调出 11）",
-    "microcap_mom": -0.078488207296604,
+    "microcap_mom": -0.07820546330510414,
     "hedge_mom": -0.13052768295642925,
-    "momentum_gap": 0.05203947565982525,
-    "microcap_close": 210707.8492821961,
+    "momentum_gap": 0.05232221965132511,
+    "microcap_close": 210772.49997773592,
     "hedge_close": 6734.55
   },
   "target_members": {

@@ -1,5 +1,9 @@
 # 日报交付链独立审计（2026-10-24）
 
+> 本文保留各阶段原始审计结论。后续批准修正、远端发布及实际邮件验收已完成，最终状态见 `docs/microcap_release_audit_20261024.md`。2026-10-24 辅助脚本修复及旧证据归档索引见 `docs/microcap_delivery_maintenance_20261024.md`；下文“尚未发布”等措辞均属于当时阶段，不是当前状态。
+
+**后续发现的重要阻塞：四只成员10/23原始收益缺失被零值填补。此前旧whole-state通过记录不能继续作为当前正式数据验收。修正候选 exact approval package SHA `0e79f12ebcb3215c203f29f0627ccda356356a22bf02d87d08be95a603c906f9` 已获用户精确批准，正式激活、发布及真实数据读回由主任务继续；本agent未执行发布。** 独立regression agent已在 `scripts/top100_delivery.py` 两处复用真实 `validate_member_cache_transport`，新增 `tests/test_whole_delivery_member_cache_gate_20261024.py`，并修复core组正常fixture以提供真实所需raw/share。本文旧阶段通过记录保留溯源；以新增rawgate结果与后续获批真实数据读回为准，不mock旧whole baseline为通过。
+
 结论：存在发布配置待同步项，当前不能称为“本地/远端日报均已采用本轮最新版”。未发现本次真实旧整包反例能绕过当前完整状态门禁。仅修改策略远端不足以完成发布；新提交、完整状态包、自动化 pin/seed、测试清单和本地任务覆盖条款必须一起更新。本审计未 push、修改生产任务或发送邮件。
 
 ## 当前真实入口与证据
@@ -86,3 +90,23 @@
 先独立完成validation_only无发送验收，再执行上述唯一test ID。主题格式为 `[发送验收测试][收盘确认][新版验收] 微盘股 v2.0/v2.3/v2.5 日报 - <实际数据日> - mc24-lineage-acceptance-20261024`。正文首段保留“历史收盘日报样本，不作为今日交易指令”。
 
 其marker为 `microcap-v2-close_confirmed-delivery-test-mc24-lineage-acceptance-20261024`，intent和SMTP receipt使用该前缀独立派生。normal `microcap-v2-close_confirmed-digest-delivered-2026-10-23` 不改动；相同test ID重试继续去重。验收模式不写普通verified-state缓存，whole-state工件也用validation名称，避免测试覆盖日常恢复链。实际发送、SMTP receipt内容绑定与INBOX需由主agent执行后另行报告，本agent没有发送。
+
+## 补充实际验证完成
+
+- **云core组本地隔离复刻：716项通过，62.19秒，零失败/错误/skip，180秒硬限内。** 新短路径 `D:/t/m24core-buv6ra43` 只复制203份当时冻结源码/tests/必要tracked输入，不复制完整cache。按真实cloud workflow验证并安装10/09 v2.3两份原始fixture，NAV SHA `c5f379c3f09cbbd7648b48f438b77040ffd51f2174259089cef07e3cf540584c`、signal SHA `484a61ecc89962b637f158e3db0eb8ad0da0afbbefa7ea5beef8b1b02cf2c012`。使用新authority SHA `c8df15095a7894e18999c1457fa2dc882a2ff1be4aa9c32f4df67d9dcebfd5ea`。主目录源和隔离源运行期间均未变化，证据 `cloud_core_snapshot.json`、`cloud_core_result.json`、`cloud_core.xml`、`cloud_core.log`。这排除了当前核心组中新authority/seed与旧真实identity fixture的冲突，不冒充已在GitHub runner运行。
+- **全自动化微盘族：373项与38项subtests通过，15.70秒，零失败/错误/skip。** 完整执行workflow现有微盘18文件族，没有扩展到无关IC/IM；新版验收文案与发送、去重、状态恢复合同兼容。证据 `automation_family_result.json`、`automation_family.xml`、`automation_family.log`，包含精确命令和sourcehash。
+- 独立quote审计agent已确认commit-guard文件冻结，33新用例及相关188项通过。release5组由主/quote agent运行，本报告不替其签发通过。
+
+## 四成员raw完整性门禁后的最新验证
+
+原“release5”现已扩为 **release6**，加入 `tests/test_whole_delivery_member_cache_gate_20261024.py`；对应自动化contract已同步，完整文件表以 `regression_groups.json` 为准。原两组180秒硬限保持，pin/config未改变。
+
+冻结 `scripts/top100_delivery.py` raw SHA `29dc6d2d4ff3c9d9fdc6a20f80fe77d120b0a10d8bdd5651b6b295a8c464b34a` 后的实际结果：
+
+| 独立验证 | 结果 | 实际墙钟 | 证据前缀 |
+| --- | --- | --- | --- |
+| core29，云端真实v23 fixture安装，当前源码及必要tracked inputs | 716 passed，零失败/错误/skip | 78.00秒 | `cloud_core_rawgate` |
+| release6，包括13项raw完整性门禁 | 255 passed，零失败/错误/skip | 23.17秒 | `cloud_release_rawgate` |
+| 完整自动化微盘族18文件 | 373 passed及38 subtests，零失败/错误/skip | 13.91秒 | `automation_family_rawgate` |
+
+两个策略隔离根运行前后主源与隔离源均无变更。每组都保留命令、JUnit、sourcehash、真实v23 fixture哈希与结果JSON；没有复制完整cache，没有变更主outputs，没有使用旧whole baseline伪造通过。测试正常对照按新合同提供完整raw/share，仅证明代码合同和云端fixture兼容；实际四成员数据修正、精确seed审批、13项真实baseline依赖验证仍是发布前独立阻塞，本agent没有将它们判为通过。
