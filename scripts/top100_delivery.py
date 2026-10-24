@@ -277,6 +277,9 @@ def inspect_outputs(root: Path, expected: str) -> dict:
         target_day = state._parse_date(expected)
         if target_day is None:
             raise ValueError(f"invalid expected exchange session: {expected}")
+        # Whole delivery needs the actual-position price/share legs through
+        # the target session; base-state structural readability is insufficient.
+        errors.extend(state.validate_member_cache_transport(root, target_day))
         exchange_sessions = set(sessions_for_day(target_day))
         _, proxy_date_rows = csv_info(root / "outputs" / BASE_FILES["proxy_index"])
         strategy_start = state._parse_date(proxy_date_rows[0]["date"])
@@ -527,6 +530,11 @@ def validate_base_state_for_session(root: Path, expected_date: str) -> dict:
     """Require current proof and exact latest-session anchors without a calendar-age cap."""
     report = state.validate_state(root, max_anchor_age_days=None)
     errors = list(report.get("errors") or [])
+    target_day = state._parse_date(expected_date)
+    if target_day is None:
+        errors.append(f"invalid expected exchange session: {expected_date}")
+    else:
+        errors.extend(state.validate_member_cache_transport(root, target_day))
     anchors = report.get("anchor_dates")
     if not isinstance(anchors, dict):
         errors.append("base state has no daily anchor dates")

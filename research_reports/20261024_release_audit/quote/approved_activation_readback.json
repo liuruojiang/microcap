@@ -1,0 +1,147 @@
+{
+  "scope": "approved_local_activation_readback_only; not remote or email acceptance",
+  "approved_package_sha256": "0e79f12ebcb3215c203f29f0627ccda356356a22bf02d87d08be95a603c906f9",
+  "ok": true,
+  "checks": {
+    "approved_package_hash": true,
+    "review_hash": true,
+    "authority_raw_hash": true,
+    "authority_review_binding": true,
+    "authority_seed_date": true,
+    "authority_600241_binding": true,
+    "raw_hash_301512": true,
+    "raw_date_301512": true,
+    "raw_prefix_301512": true,
+    "raw_hash_688067": true,
+    "raw_date_688067": true,
+    "raw_prefix_688067": true,
+    "raw_hash_688096": true,
+    "raw_date_688096": true,
+    "raw_prefix_688096": true,
+    "raw_hash_688251": true,
+    "raw_date_688251": true,
+    "raw_prefix_688251": true,
+    "seed_raw_proxy_index": true,
+    "seed_LF_proxy_index": true,
+    "seed_date_proxy_index": true,
+    "seed_prefix_proxy_index": true,
+    "seed_raw_costed_nav": true,
+    "seed_LF_costed_nav": true,
+    "seed_date_costed_nav": true,
+    "seed_prefix_costed_nav": true,
+    "seed_raw_proxy_meta": true,
+    "seed_LF_proxy_meta": true,
+    "seed_unchanged_proxy_meta": true,
+    "seed_raw_proxy_members": true,
+    "seed_LF_proxy_members": true,
+    "seed_unchanged_proxy_members": true,
+    "seed_raw_proxy_turnover": true,
+    "seed_LF_proxy_turnover": true,
+    "seed_unchanged_proxy_turnover": true,
+    "seed_raw_proxy_effective_members": true,
+    "seed_LF_proxy_effective_members": true,
+    "seed_unchanged_proxy_effective_members": true,
+    "final_hash_v2.0": true,
+    "final_date_v2.0": true,
+    "final_prefix_v2.0": true,
+    "normal_rewrite_clean_v2.0": true,
+    "final_hash_v2.3": true,
+    "final_date_v2.3": true,
+    "final_prefix_v2.3": true,
+    "normal_rewrite_clean_v2.3": true,
+    "final_hash_v2.5": true,
+    "final_date_v2.5": true,
+    "final_prefix_v2.5": true,
+    "normal_rewrite_clean_v2.5": true,
+    "current_members_unique100": true,
+    "current_members_ranks": true,
+    "current_members_asof": true,
+    "current_ST_overlap_zero": true,
+    "metadata_ST_overlap_zero": true,
+    "600241_metadata_unchanged": true,
+    "all_metadata_preserved": true
+  },
+  "errors": [],
+  "identities": {
+    ".microcap_index_cache\\prices_raw\\301512.csv": {
+      "sha256": "000246befc938611ee3585dd462028d26c6faabed01c053320fc234454468054",
+      "rows": 789,
+      "last_date": "2026-10-23"
+    },
+    ".microcap_index_cache\\prices_raw\\688067.csv": {
+      "sha256": "97a6275655659e54b060b3f6fc43d615a49961df233eb5a129e4ec6d282888b2",
+      "rows": 1298,
+      "last_date": "2026-10-23"
+    },
+    ".microcap_index_cache\\prices_raw\\688096.csv": {
+      "sha256": "9f75f5e0d2bad2dadd2c96187188bf4f128d70b22c403fd38cee2ee22be9e591",
+      "rows": 1585,
+      "last_date": "2026-10-23"
+    },
+    ".microcap_index_cache\\prices_raw\\688251.csv": {
+      "sha256": "5e9ec3e34b84236100eea52ca2bdc6b24b03066b7b5f804249cff22755b3a8db",
+      "rows": 1064,
+      "last_date": "2026-10-23"
+    },
+    "outputs\\wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "sha256": "7941e4bd973ddcfd7d26dc0b08df579499d48d7d7994a6dcc35de5a488c19eb1",
+      "LF_sha256": "de17a39063f4e5772ebf3a357afa4ff65db2906710d517d62c864ae71e92fd94"
+    },
+    "outputs\\microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "sha256": "369d41b41660ef04b79c9fa10509ccc75be3f6841f46d70d5ed4d27e72ba7daf",
+      "LF_sha256": "4c4f71cf30ab4304222040549f5b370f7f181b94a452d9a4968e85f76bca91fa"
+    },
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": {
+      "sha256": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+      "LF_sha256": "1a438a338710e0e45ededc544627d226f562fe40c95b6cc0463e0d0f29e86a74"
+    },
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": {
+      "sha256": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+      "LF_sha256": "69f484e969c0f25815294e3fe939c85737252e566079153c59a01f20ef9a7580"
+    },
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "sha256": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+      "LF_sha256": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da"
+    },
+    "outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": {
+      "sha256": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227",
+      "LF_sha256": "f9d3a3b15715e83370173acfbae3aff95e5fe1f69e095a72ec0e9e4bb0686549"
+    },
+    "outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "sha256": "7099e7cec63f2da2c9bfffd65984d6798c9c5c5548f0d7d7cb2de07fea32429a",
+      "rows": 4044,
+      "last_date": "2026-10-23",
+      "summary_sha256": "ce50628a5cc1c45b0fde3e1e5eece29f29b20823c76709f560b7e80f4470f2dd",
+      "historical_rewrite_audit": {
+        "status": "clean",
+        "allowed_tail_rows": 95,
+        "audit_csv": null
+      }
+    },
+    "outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv": {
+      "sha256": "2b5f9e8d512b553373c6e8cccdbf16f5ff191d2be88f5a5ef0c687467177dbb0",
+      "rows": 3999,
+      "last_date": "2026-10-23",
+      "summary_sha256": "a9876cf9362970307bb04574c6d14f722f0c7eec611ed66fd10b35d66029e287",
+      "historical_rewrite_audit": {
+        "status": "clean",
+        "audit_csv": null
+      }
+    },
+    "outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "sha256": "78b94941b575bfc14ae5e6c48f5d89c9fbb578fbdc6baf6fd05c23abeb8b28be",
+      "rows": 3999,
+      "last_date": "2026-10-23",
+      "summary_sha256": "c8eee8a220feaf193dd16ae48c95a4041ec0a50486e426a27bcd907891feaef6",
+      "historical_rewrite_audit": {
+        "status": "clean",
+        "audit_csv": null
+      }
+    }
+  },
+  "authority_sha256": "8905fc0e01f1814bd50274f76455bc8cceeada15cf484f96698e87abe42c416b",
+  "current_ST_cache_sha256": "b93d797befe507bbda2f4e4f697a4b6828134ee1071abd54e015deeace2fe9ad",
+  "current_ST_overlap": [],
+  "metadata_ST_overlap": [],
+  "metadata_600241_sha256": "cbb9355860242f91e159ea7b203c70a3ac8270281e83ff67e047e9be09556a32"
+}

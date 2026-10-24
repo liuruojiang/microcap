@@ -1,0 +1,74 @@
+{
+  "scope": "member_cache_whole_delivery_gate_only",
+  "source_frozen": true,
+  "files": {
+    "scripts/top100_delivery.py": "29dc6d2d4ff3c9d9fdc6a20f80fe77d120b0a10d8bdd5651b6b295a8c464b34a",
+    "tests/test_top100_delivery.py": "1b90404a6a3e68da9fac0a7accfeb34ec317d8cf6012ffbc8fc59eb9fe30a7c6",
+    "tests/test_adversarial_microcap_delivery.py": "ada1236471119906d54dcac151cbc2d258f70f409274f9e266cce7f4f856e7ab",
+    "tests/test_whole_delivery_member_cache_gate_20261024.py": "b0e1cd8e3f37b1ea7b2ccd536ff8bd7185bd563786c05b08af2f949b0c3bfcd5"
+  },
+  "test_trials": {
+    "member_gate_tests.xml": {
+      "name": "pytest",
+      "errors": "13",
+      "failures": "1",
+      "skipped": "7",
+      "tests": "191",
+      "time": "66.553",
+      "timestamp": "2026-10-24T10:51:36.016827+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    },
+    "member_gate_available_final_tests.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "7",
+      "tests": "178",
+      "time": "65.221",
+      "timestamp": "2026-10-24T10:53:16.096108+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    },
+    "member_gate_new_tests_final.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "13",
+      "time": "4.875",
+      "timestamp": "2026-10-24T10:53:46.290869+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    },
+    "member_gate_fixture_fix_test.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "1.817",
+      "timestamp": "2026-10-24T10:54:15.493366+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    },
+    "member_gate_digest_tests.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "7",
+      "time": "0.265",
+      "timestamp": "2026-10-24T10:55:00.846150+08:00",
+      "hostname": "DESKTOP-95I7VVU"
+    }
+  },
+  "current_unique_available_cases_passed": 179,
+  "remaining_skips": 0,
+  "remaining_real_baseline_tests_blocked": 13,
+  "classification": "Initial 1 missing synthetic target cache fixed, follow-up NameError fixed and rerun passed; seven missing-digest skips rerun against D:/t/m24automation true source and passed; 13 real wholebaseline tests remain blocked because primary manifest is not complete. No waived assertions.",
+  "primary_formal_costed_files_unchanged": {
+    "base_costed": true,
+    "v2.0": true,
+    "v2.3": true,
+    "v2.5": true
+  },
+  "state_base_only_source_changed": false,
+  "historical_fillna_semantics_changed": false
+}

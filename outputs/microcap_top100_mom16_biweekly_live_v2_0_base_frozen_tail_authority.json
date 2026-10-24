@@ -2,9 +2,9 @@
   "version": "2026-10-12-session-st-share-lineage-v5",
   "lineage_revision": "2026-10-24-600241-st-category",
   "seed_end_date": "2026-10-23",
-  "purpose": "User-approved exact-hash 600241 ST category history correction. Current runtime v5 compatibility identifier retained; all three official streams rerun without migration options and clean. No remote deployment authorized.",
+  "purpose": "Exact seed with approved 600241 ST category history and complete real 2026-10-23 member prices; activation requires the separate exact review approval record.",
   "approved_review_sha256": "f6a0e12f2fe2b9d381cb44cdad93d1deeac5f065fceced963b029faec02fb38f",
-  "previous_authority_sha256": "fc31a919f494d1bf0ef5dffcb3fd6a3fb2be01b5f6e3ea3460565097143bdc1a",
+  "previous_authority_sha256": "c8df15095a7894e18999c1457fa2dc882a2ff1be4aa9c32f4df67d9dcebfd5ea",
   "security_meta_cache_fingerprint": {
     "present_count": 4975,
     "missing_count": 0,
@@ -15,11 +15,13 @@
     "costed_nav": 4061
   },
   "seed_file_sha256": {
-    "proxy_index": "d7bd53437f528d495b8a211ff88681d6e1915721d236eed0489821e9c38cf576",
-    "costed_nav": "90516120079bac82d6f1263e330d004d365055107e1dfab73728f01175924b25",
+    "proxy_index": "de17a39063f4e5772ebf3a357afa4ff65db2906710d517d62c864ae71e92fd94",
+    "costed_nav": "4c4f71cf30ab4304222040549f5b370f7f181b94a452d9a4968e85f76bca91fa",
     "proxy_meta": "1a438a338710e0e45ededc544627d226f562fe40c95b6cc0463e0d0f29e86a74",
     "proxy_members": "69f484e969c0f25815294e3fe939c85737252e566079153c59a01f20ef9a7580",
     "proxy_turnover": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da",
     "proxy_effective_members": "f9d3a3b15715e83370173acfbae3aff95e5fe1f69e095a72ec0e9e4bb0686549"
-  }
+  },
+  "data_tail_revision": "2026-10-24-complete-20261023-member-prices",
+  "data_tail_review_sha256": "e240a87b55de31b5e3ce0bcd79a605b48d96afeb6e787f845f4188582a99517d"
 }

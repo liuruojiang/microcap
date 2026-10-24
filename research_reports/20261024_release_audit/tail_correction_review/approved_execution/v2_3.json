@@ -1,0 +1,18 @@
+{
+  "command": [
+    "C:\\Python314\\python.exe",
+    "-B",
+    "-X",
+    "utf8",
+    "microcap_top100_mom16_biweekly_live_v2_3.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 20.438814099999945,
+  "costed_raw_sha256": "2b5f9e8d512b553373c6e8cccdbf16f5ff191d2be88f5a5ef0c687467177dbb0",
+  "expected_raw_sha256": "2b5f9e8d512b553373c6e8cccdbf16f5ff191d2be88f5a5ef0c687467177dbb0",
+  "rewrite_audit": {
+    "status": "clean",
+    "audit_csv": null
+  },
+  "latest_nav_date": "2026-10-23"
+}

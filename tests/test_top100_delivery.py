@@ -343,6 +343,11 @@ def test_base_state_uses_completed_session_across_long_calendar_gap(workspace, m
     today = date.fromisoformat("2026-10-08")
     completed = date.fromisoformat("2026-09-30")
     assert (today - completed).days == 8
+    # This fixture represents a completed 09/30 state, including actual member
+    # prices. A 09/03 raw cache cannot certify a 09/30 whole delivery.
+    for rank in range(1, 101):
+        write(workspace, f"{delivery.state.PRICE_CACHE_DIR}/{rank:06d}.csv",
+              "date,close_raw\n2026-09-30,10.0\n")
 
     report = delivery.validate_base_state_for_session(workspace, completed.isoformat())
 

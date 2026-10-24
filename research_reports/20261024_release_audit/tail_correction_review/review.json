@@ -1,0 +1,222 @@
+{
+  "approved": false,
+  "scope": "exact_seed_rebinding_for_real_20261023_tail_correction",
+  "prior_approved_600241_review_sha256": "f6a0e12f2fe2b9d381cb44cdad93d1deeac5f065fceced963b029faec02fb38f",
+  "unchanged_before": "2026-10-23",
+  "only_changed_date": "2026-10-23",
+  "reason": "Four held securities had missing raw prices and their NaN returns became zero in the old proxy. Genuine Sina rows now complete those four prices. No ST metadata, members, parameters or prior-day history change.",
+  "raw_price_evidence_sha256": "b4b2ba534d15dd252c18a06375ca3d95d4bb086b6dd323536616b7a0f6d319d3",
+  "old_authority_raw_sha256": "c8df15095a7894e18999c1457fa2dc882a2ff1be4aa9c32f4df67d9dcebfd5ea",
+  "old_seed_raw_sha256": {
+    "proxy_index": "c3a0682764f75df2c1d7e626e9bfcd373db1fa0f7747049e9d547cc71213f3d4",
+    "costed_nav": "143d6e85b05a502dddea22624d19ba6c1bed426918e17e80ebd9d83ff795fab5",
+    "proxy_meta": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+    "proxy_members": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+    "proxy_turnover": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+    "proxy_effective_members": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227"
+  },
+  "new_seed_raw_sha256": {
+    "proxy_index": "7941e4bd973ddcfd7d26dc0b08df579499d48d7d7994a6dcc35de5a488c19eb1",
+    "costed_nav": "369d41b41660ef04b79c9fa10509ccc75be3f6841f46d70d5ed4d27e72ba7daf",
+    "proxy_meta": "21ae6d650bf84aaa5db13efdc77d2f3f1bb31a360b9064bd1410036530eb0dd6",
+    "proxy_members": "d21725b34881d51f43d4779ef90d32267ab5cd568904757fccba28caa28c246b",
+    "proxy_turnover": "c6ee52206f43e832b41b2111738c04d7a30a6d7c53b2d58f0f5bc4017aafcb6b",
+    "proxy_effective_members": "3625581c033ff3a01a2fd0f1343880a3a32ef130968637819faf390e0df0a227"
+  },
+  "new_seed_normalized_sha256": {
+    "proxy_index": "de17a39063f4e5772ebf3a357afa4ff65db2906710d517d62c864ae71e92fd94",
+    "costed_nav": "4c4f71cf30ab4304222040549f5b370f7f181b94a452d9a4968e85f76bca91fa",
+    "proxy_meta": "1a438a338710e0e45ededc544627d226f562fe40c95b6cc0463e0d0f29e86a74",
+    "proxy_members": "69f484e969c0f25815294e3fe939c85737252e566079153c59a01f20ef9a7580",
+    "proxy_turnover": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da",
+    "proxy_effective_members": "f9d3a3b15715e83370173acfbae3aff95e5fe1f69e095a72ec0e9e4bb0686549"
+  },
+  "streams": {
+    "base_costed": {
+      "previous_approved_raw_sha256": "143d6e85b05a502dddea22624d19ba6c1bed426918e17e80ebd9d83ff795fab5",
+      "candidate_raw_sha256": "369d41b41660ef04b79c9fa10509ccc75be3f6841f46d70d5ed4d27e72ba7daf",
+      "before_20261023_raw_bytes_exactly_equal": true,
+      "holding_action_scale_changes": [],
+      "final": {
+        "return_net": {
+          "before": -0.0002700091023803,
+          "after": 4.263934059633989e-05,
+          "delta": 0.0003126484429766399
+        },
+        "nav_net": {
+          "before": 30.770363122718614,
+          "after": 30.77998602711054,
+          "delta": 0.009622904391925147
+        }
+      },
+      "native_rewrite_contract": {
+        "classification": "base_rebuild_helper_has_no_historical_rewrite_guard"
+      }
+    },
+    "v2.0": {
+      "previous_approved_raw_sha256": "76526c8ad95ea279eb8b6f2d0daa0152800a653b229291707e81c9e64aa169ad",
+      "candidate_raw_sha256": "7099e7cec63f2da2c9bfffd65984d6798c9c5c5548f0d7d7cb2de07fea32429a",
+      "before_20261023_raw_bytes_exactly_equal": true,
+      "holding_action_scale_changes": [],
+      "final": {
+        "return_net": {
+          "before": -0.0002700091023803,
+          "after": 4.263934059633989e-05,
+          "delta": 0.0003126484429766399
+        },
+        "nav_net": {
+          "before": 29.733344700139845,
+          "after": 29.742643294770023,
+          "delta": 0.009298594630177348
+        }
+      },
+      "native_rewrite_contract": {
+        "allowed_tail_rows": 95,
+        "column_allowed_tail_rows": {
+          "holding": 21,
+          "next_holding": 21,
+          "base_pre_cost_return": 21
+        },
+        "classification": "ordinary_tail_revision_passes_native_guard_without_migration"
+      }
+    },
+    "v2.3": {
+      "previous_approved_raw_sha256": "7e5f2f1ed92c6f4c077733055636af94daf88c317f342d7add3029d49a7bbe18",
+      "candidate_raw_sha256": "2b5f9e8d512b553373c6e8cccdbf16f5ff191d2be88f5a5ef0c687467177dbb0",
+      "before_20261023_raw_bytes_exactly_equal": true,
+      "holding_action_scale_changes": [],
+      "final": {
+        "return_net": {
+          "before": -0.0032691990750732,
+          "after": -0.0029574885774255,
+          "delta": 0.0003117104976476997
+        },
+        "nav_net": {
+          "before": 30.08269755241326,
+          "after": 30.09210540116836,
+          "delta": 0.00940784875509948
+        }
+      },
+      "native_rewrite_contract": {
+        "allowed_tail_rows": 60,
+        "column_allowed_tail_rows": {
+          "holding": 40,
+          "next_holding": 40,
+          "base_holding": 40,
+          "base_next_holding": 40,
+          "base_pre_cost_return": 40,
+          "annualized_log_wls_score": 40,
+          "log_wls_r2": 40,
+          "overheat_feature_value": 40,
+          "overheat_risk_off": 40,
+          "overheat_exit_triggered": 40,
+          "overheat_reentry_triggered": 40,
+          "overheat_block_entry_triggered": 40
+        },
+        "classification": "ordinary_tail_revision_passes_native_guard_without_migration"
+      }
+    },
+    "v2.5": {
+      "previous_approved_raw_sha256": "8db20d528831754bd5b48bb6b916f5483970217f361004a36c539d750c331230",
+      "candidate_raw_sha256": "78b94941b575bfc14ae5e6c48f5d89c9fbb578fbdc6baf6fd05c23abeb8b28be",
+      "before_20261023_raw_bytes_exactly_equal": true,
+      "holding_action_scale_changes": [],
+      "final": {
+        "return_net": {
+          "before": 0.0,
+          "after": 0.0,
+          "delta": 0.0
+        },
+        "nav_net": {
+          "before": 99.66965441268805,
+          "after": 99.66965441268805,
+          "delta": 0.0
+        }
+      },
+      "native_rewrite_contract": {
+        "allowed_tail_rows": 40,
+        "column_allowed_tail_rows": {
+          "holding": 25,
+          "next_holding": 25,
+          "base_pre_cost_return": 25,
+          "annualized_log_wls_score": 25
+        },
+        "classification": "ordinary_tail_revision_passes_native_guard_without_migration"
+      }
+    }
+  },
+  "raw_prices": [
+    {
+      "symbol": "301512",
+      "rank": 16,
+      "old_path": "D:\\t\\stcand20261024_a\\r\\.microcap_index_cache\\prices_raw\\301512.csv",
+      "old_raw_sha256": "a34de5c5b82b2c7ba26887cb3d0d4a80f9bd0d3a70a098513ab8b99e08fb95b5",
+      "new_path": "D:\\t\\m24release\\.microcap_index_cache\\prices_raw\\301512.csv",
+      "new_raw_sha256": "000246befc938611ee3585dd462028d26c6faabed01c053320fc234454468054",
+      "old_last_date": "2026-10-22",
+      "new_last_date": "2026-10-23",
+      "old_close": 27.89,
+      "new_close": 28.89,
+      "qfq_path": null,
+      "old_native_return_missing": true,
+      "old_simulator_contribution": 0.0,
+      "new_native_return": 0.03585514521333821,
+      "new_proxy_contribution": 0.00035855145213338214,
+      "prior_raw_rows_unchanged": true
+    },
+    {
+      "symbol": "688067",
+      "rank": 17,
+      "old_path": "D:\\t\\stcand20261024_a\\r\\.microcap_index_cache\\prices_raw\\688067.csv",
+      "old_raw_sha256": "ec8be29c7b89c57819cc61dacb8d1f467f6d13e24ff656ae941c543842015ef8",
+      "new_path": "D:\\t\\m24release\\.microcap_index_cache\\prices_raw\\688067.csv",
+      "new_raw_sha256": "97a6275655659e54b060b3f6fc43d615a49961df233eb5a129e4ec6d282888b2",
+      "old_last_date": "2026-10-22",
+      "new_last_date": "2026-10-23",
+      "old_close": 20.99,
+      "new_close": 21.64,
+      "qfq_path": null,
+      "old_native_return_missing": true,
+      "old_simulator_contribution": 0.0,
+      "new_native_return": 0.0309671272034302,
+      "new_proxy_contribution": 0.000309671272034302,
+      "prior_raw_rows_unchanged": true
+    },
+    {
+      "symbol": "688096",
+      "rank": 68,
+      "old_path": "D:\\t\\stcand20261024_a\\r\\.microcap_index_cache\\prices_raw\\688096.csv",
+      "old_raw_sha256": "f3faf2d7cce5f594f2b1beb730baeb75454c39b8510eabdead9104a843495bb4",
+      "new_path": "D:\\t\\m24release\\.microcap_index_cache\\prices_raw\\688096.csv",
+      "new_raw_sha256": "9f75f5e0d2bad2dadd2c96187188bf4f128d70b22c403fd38cee2ee22be9e591",
+      "old_last_date": "2026-10-22",
+      "new_last_date": "2026-10-23",
+      "old_close": 7.32,
+      "new_close": 6.94,
+      "qfq_path": null,
+      "old_native_return_missing": true,
+      "old_simulator_contribution": 0.0,
+      "new_native_return": -0.051912568306010876,
+      "new_proxy_contribution": -0.0005191256830601087,
+      "prior_raw_rows_unchanged": true
+    },
+    {
+      "symbol": "688251",
+      "rank": 59,
+      "old_path": "D:\\t\\stcand20261024_a\\r\\.microcap_index_cache\\prices_raw\\688251.csv",
+      "old_raw_sha256": "df19a1650781ac72093efdd75c6e556636e14c0f1202eb320d119893d7d6e3da",
+      "new_path": "D:\\t\\m24release\\.microcap_index_cache\\prices_raw\\688251.csv",
+      "new_raw_sha256": "5e9ec3e34b84236100eea52ca2bdc6b24b03066b7b5f804249cff22755b3a8db",
+      "old_last_date": "2026-10-22",
+      "new_last_date": "2026-10-23",
+      "old_close": 17.12,
+      "new_close": 17.4,
+      "qfq_path": null,
+      "old_native_return_missing": true,
+      "old_simulator_contribution": 0.0,
+      "new_native_return": 0.01635514018691575,
+      "new_proxy_contribution": 0.0001635514018691575,
+      "prior_raw_rows_unchanged": true
+    }
+  ]
+}
