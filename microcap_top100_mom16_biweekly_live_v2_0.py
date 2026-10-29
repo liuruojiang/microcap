@@ -2376,6 +2376,7 @@ def list_backtest_universe_symbols() -> list[str]:
     price_symbols = _existing_symbols(PRICE_DIR, SHARED_PRICE_DIR)
     share_symbols = _existing_symbols(SHARE_DIR, SHARED_SHARE_DIR)
     cached_symbols = price_symbols & share_symbols
+    cached_symbols = {symbol for symbol in cached_symbols if not symbol.startswith(("200", "900"))}
     master = load_security_master()
     if master.empty or "symbol" not in master.columns:
         return sorted(cached_symbols)
