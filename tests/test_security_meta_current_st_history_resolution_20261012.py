@@ -1,3 +1,4 @@
+from scripts.st_notice_evidence import evidence_fingerprint
 """Unresolved current-ST cache entries must not enter PIT membership builds."""
 
 import json
@@ -15,6 +16,8 @@ def unresolved_688496(tmp_path, monkeypatch):
     old = {
         "meta_version": ns["SECURITY_META_VERSION"],
         "st_notice_policy_version": ns["ST_NOTICE_POLICY_VERSION"],
+        "st_notice_parser_revision": ns["ST_NOTICE_PARSER_REVISION"],
+        "st_notice_evidence_sha256": evidence_fingerprint(ns["ROOT"]),
         "symbol": "688496",
         "first_trade_date": "2022-12-28",
         "last_trade_date": "2026-09-10",

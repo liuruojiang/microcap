@@ -1,3 +1,4 @@
+from scripts.st_notice_evidence import evidence_fingerprint
 """F1 fault injections use real metadata builders and temporary local inputs.
 
 These are failure-path regressions, not strategy returns or a freshness proof.
@@ -49,6 +50,8 @@ def _metadata_payload(ns, symbol="600000"):
         "symbol": symbol,
         "meta_version": ns["SECURITY_META_VERSION"],
         "st_notice_policy_version": ns["ST_NOTICE_POLICY_VERSION"],
+        "st_notice_parser_revision": ns["ST_NOTICE_PARSER_REVISION"],
+        "st_notice_evidence_sha256": evidence_fingerprint(ns["ROOT"]),
         "first_trade_date": "2026-09-02",
         "last_trade_date": "2026-09-03",
         "current_st_snapshot_name": None,

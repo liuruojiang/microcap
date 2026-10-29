@@ -1,3 +1,4 @@
+from scripts.st_notice_evidence import evidence_fingerprint
 """Source outages cannot erase already certified ST intervals."""
 import copy
 import json
@@ -13,11 +14,13 @@ def meta_runtime(tmp_path, monkeypatch):
     ns = v2.base_mod.freq_mod.build_security_meta.__globals__
     price = tmp_path / "price.csv"
     price.write_text("date\n2026-01-05\n2026-09-17\n", encoding="utf-8")
-    meta = tmp_path / "002198.json"
+    meta = tmp_path / "002199.json"
     previous = {
         "meta_version": ns["SECURITY_META_VERSION"],
         "st_notice_policy_version": ns["ST_NOTICE_POLICY_VERSION"],
-        "symbol": "002198", "first_trade_date": "2026-01-05",
+        "st_notice_parser_revision": ns["ST_NOTICE_PARSER_REVISION"],
+        "st_notice_evidence_sha256": evidence_fingerprint(ns["ROOT"]),
+        "symbol": "002199", "first_trade_date": "2026-01-05",
         "last_trade_date": "2026-09-16", "current_st_snapshot_name": "ST测试",
         "current_st_history_resolved": True,
         "name_history_status": "ok", "notice_query_status": "error:HTTPError:403",
@@ -28,7 +31,7 @@ def meta_runtime(tmp_path, monkeypatch):
     monkeypatch.setitem(ns, "resolve_security_meta_path", lambda *args: meta)
     monkeypatch.setitem(ns, "SECURITY_META_DIR", tmp_path)
     monkeypatch.setitem(ns, "load_security_master", lambda: pd.DataFrame())
-    monkeypatch.setitem(ns, "load_current_st_name_map", lambda: {"002198": "ST测试"})
+    monkeypatch.setitem(ns, "load_current_st_name_map", lambda: {"002199": "ST测试"})
     monkeypatch.setitem(ns, "latest_symbol_price_date", lambda code: pd.Timestamp("2026-09-17"))
     def failed(*args, **kwargs):
         raise RuntimeError("source outage")
@@ -40,7 +43,7 @@ def meta_runtime(tmp_path, monkeypatch):
 def test_actual_metadata_builder_retains_certified_interval_and_exact_bytes(meta_runtime):
     ns, path, previous = meta_runtime
     before = path.read_bytes()
-    result = ns["build_security_meta"]("002198")
+    result = ns["build_security_meta"]("002199")
     assert result == previous
     assert result["current_st_history_resolved"] is True
     assert result["st_intervals"][0]["start"] == "2026-05-06"
@@ -53,8 +56,8 @@ def test_actual_loader_fails_closed_on_unresolved_current_st_snapshot(meta_runti
     previous["st_intervals"] = [{"start": "2026-09-16", "end": None, "source": "current_name_snapshot"}]
     path.write_text(json.dumps(previous), encoding="utf-8")
     before = path.read_bytes()
-    with pytest.raises(ns["SecurityMetaHistoryEvidenceUnresolved"], match="002198"):
-        ns["load_security_meta"]("002198")
+    with pytest.raises(ns["SecurityMetaHistoryEvidenceUnresolved"], match="002199"):
+        ns["load_security_meta"]("002199")
     assert path.read_bytes() == before
 
 
@@ -75,11 +78,11 @@ def test_failed_history_source_cannot_replace_same_security_after_identity_drift
 def test_successful_source_correction_fails_before_overwriting_existing_history(meta_runtime, monkeypatch):
     ns, path, previous = meta_runtime
     before = path.read_bytes()
-    changes = pd.DataFrame([{"symbol": "002198", "change_date": pd.Timestamp("2026-06-01"), "old_name": "测试", "new_name": "ST测试"}])
+    changes = pd.DataFrame([{"symbol": "002199", "change_date": pd.Timestamp("2026-06-01"), "old_name": "测试", "new_name": "ST测试"}])
     monkeypatch.setitem(ns, "fetch_sz_name_change_history", lambda: changes)
     monkeypatch.setitem(ns, "fetch_cninfo_st_notices", lambda **kwargs: pd.DataFrame())
     with pytest.raises(RuntimeError, match="exact-hash lineage review"):
-        ns["load_security_meta"]("002198")
+        ns["load_security_meta"]("002199")
     assert path.read_bytes() == before
 
 def test_cninfo_official_https_transport_preserves_all_notice_queries(monkeypatch):

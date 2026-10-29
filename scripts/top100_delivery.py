@@ -18,6 +18,7 @@ if __package__ in (None, ""):
 from scripts import realtime_state_bundle as state
 from scripts.top100_data_contracts import daily_session_date, validate_exchange_session_coverage
 from scripts.restore_approved_top100_seed import BASE_FILES, COSTED
+from scripts.st_notice_evidence import evidence_source_files
 
 MANIFEST = "outputs/top100_delivery_manifest.json"
 LOCK = "outputs/top100_delivery.lock"
@@ -34,6 +35,7 @@ RELEASE_FILES = [
     "scripts/top100_delivery.py",
     "scripts/top100_data_contracts.py",
 ] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
+RELEASE_FILES += evidence_source_files(Path(__file__).resolve().parents[1])
 V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
 V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_no_overheat_20261029"
 V25_STRATEGY_REVISION = "plain_lb20_hl3_entry0_exit0_20260905"
@@ -127,7 +129,10 @@ def input_hashes(root: Path) -> dict:
     names = [f"outputs/{name}" for name in (*BASE_FILES.values(), BASE_PANEL)]
     names += [AUTHORITY] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
     names += ["scripts/top100_data_contracts.py"]
-    return {name: sha(root / name) for name in names}
+    names += evidence_source_files(root)
+    return {name: (hashlib.sha256((root / name).read_bytes()).hexdigest()
+                   if name.startswith("data/st_notice_evidence/") else sha(root / name))
+            for name in names}
 
 
 def canonical_member_rebalance(root: Path, expected: str) -> dict[str, object]:

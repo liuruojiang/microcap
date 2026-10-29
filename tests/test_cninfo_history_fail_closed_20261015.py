@@ -113,7 +113,7 @@ def test_explicit_zero_is_a_valid_result_for_all_six_queries(cninfo_runtime, bod
     state["body"] = body
     result = _call(ns, "fetcher")
     assert result.empty
-    assert list(result.columns) == ["notice_date", "title"]
+    assert list(result.columns) == ["notice_date", "title", "announcement_id", "issuer_symbol", "source_url"]
     assert len(state["calls"]) == 6
     assert {call["searchkey"] for call in state["calls"]} == {
         "", "风险警示", "特别处理", "撤销风险警示", "撤销特别处理", "摘帽",

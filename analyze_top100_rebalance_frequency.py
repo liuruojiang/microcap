@@ -42,6 +42,7 @@ LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
 ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
+ST_NOTICE_PARSER_REVISION = "category-state-body-evidence-20261029-v1"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
 LIMIT_PRICE_REL_EPS = 1e-6
 SCHEDULES = {
@@ -571,6 +572,9 @@ def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]
     text = re.sub(r"\s+", "", str(title or "").upper())
     if not text or "申请" in text:
         return {}, False
+    if any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司")):
+        from scripts.st_notice_evidence import StNoticeEvidenceError
+        raise StNoticeEvidenceError("ST title requires verified issuer/body evidence: " + text)
     actions: dict[str, bool] = {}
     had_effective_withdrawal = False
     inherited: bool | None = None
@@ -633,6 +637,7 @@ def build_st_intervals_from_notices(
     first_trade_date: pd.Timestamp,
     last_trade_date: pd.Timestamp,
     notices: pd.DataFrame,
+    *, verified_events: dict[str, dict] | None = None,
 ) -> list[dict[str, str | None]]:
     if notices.empty:
         return []
@@ -659,11 +664,20 @@ def build_st_intervals_from_notices(
         day_actions: dict[str, bool] = {}
         day_had_effective_withdrawal = False
         for row in group.itertuples(index=False):
-            actions, had_withdrawal = _parse_st_notice_risk_transition(getattr(row, "title", ""))
+            verified = (verified_events or {}).get(str(getattr(row, "announcement_id", "")))
+            if verified is not None:
+                if verified["notice_date"] != str(notice_date.date()):
+                    from scripts.st_notice_evidence import StNoticeEvidenceError
+                    raise StNoticeEvidenceError("Verified ST event date mismatch")
+                actions = verified["risk_actions"]
+                had_withdrawal = any(value is False for value in actions.values())
+            else:
+                actions, had_withdrawal = _parse_st_notice_risk_transition(getattr(row, "title", ""))
             day_had_effective_withdrawal |= had_withdrawal
             for category, action in actions.items():
                 if category in day_actions and day_actions[category] != action:
-                    raise ValueError(f"Unresolved conflicting ST notice evidence on {notice_date.date()}: {category}")
+                    from scripts.st_notice_evidence import StNoticeEvidenceError
+                    raise StNoticeEvidenceError(f"Unresolved conflicting ST notice evidence on {notice_date.date()}: {category}")
                 day_actions[category] = action
         if not day_actions:
             continue
@@ -800,7 +814,7 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
     org_map = fetch_cninfo_org_map()
     org_id = org_map.get(str(symbol).zfill(6))
     if not org_id:
-        return pd.DataFrame(columns=["notice_date", "title"])
+        return pd.DataFrame(columns=["notice_date", "title", "announcement_id", "issuer_symbol", "source_url"])
 
     rows: list[dict[str, object]] = []
     query_specs = [
@@ -858,17 +872,28 @@ def fetch_cninfo_st_notices(symbol: str, start_date: str, end_date: str) -> pd.D
                         .tz_convert("Asia/Shanghai")
                         .tz_localize(None),
                         "title": title,
+                        "announcement_id": str(item.get("announcementId") or ""),
+                        "issuer_symbol": str(item.get("secCode") or (symbol if not item.get("announcementId") else "")).zfill(6),
+                        "source_url": ("https://static.cninfo.com.cn/" + str(item.get("adjunctUrl") or "").lstrip("/")),
                     }
                 )
     frame = pd.DataFrame(rows)
     if frame.empty:
-        return pd.DataFrame(columns=["notice_date", "title"])
+        return pd.DataFrame(columns=["notice_date", "title", "announcement_id", "issuer_symbol", "source_url"])
     frame = (
         frame.dropna(subset=["notice_date"])
-        .drop_duplicates(subset=["notice_date", "title"])
+        .drop_duplicates()
         .sort_values("notice_date")
         .reset_index(drop=True)
     )
+    if not frame.empty and frame["issuer_symbol"].ne(str(symbol).zfill(6)).any():
+        from scripts.st_notice_evidence import StNoticeEvidenceError
+        raise StNoticeEvidenceError(f"CNInfo notice issuer differs from requested symbol {symbol}")
+    identified = frame.loc[frame["announcement_id"].ne("")]
+    for event_id, group in identified.groupby("announcement_id"):
+        if len(group[["notice_date", "title", "issuer_symbol", "source_url"]].drop_duplicates()) != 1:
+            from scripts.st_notice_evidence import StNoticeEvidenceError
+            raise StNoticeEvidenceError(f"Conflicting CNInfo identity for announcement {event_id}")
     return frame
 
 
@@ -930,6 +955,7 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
             name_intervals = []
             name_history_status = f"error:{type(exc).__name__}:{exc}"
 
+    from scripts.st_notice_evidence import StNoticeEvidenceError, load_verified_events, evidence_fingerprint
     try:
         notices = fetch_cninfo_st_notices(
             symbol=str(symbol).zfill(6),
@@ -937,8 +963,11 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
             end_date=last_trade.strftime("%Y%m%d"),
         )
         notice_count = int(len(notices))
-        notice_intervals = build_st_intervals_from_notices(first_trade, last_trade, notices)
+        verified_events = load_verified_events(ROOT, str(symbol).zfill(6), first_trade, last_trade, notices)
+        notice_intervals = build_st_intervals_from_notices(first_trade, last_trade, notices, verified_events=verified_events)
         notice_query_status = "ok"
+    except StNoticeEvidenceError:
+        raise
     except Exception as exc:
         notice_intervals = []
         notice_query_status = f"error:{type(exc).__name__}:{exc}"
@@ -961,6 +990,8 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     meta = {
         "meta_version": SECURITY_META_VERSION,
         "st_notice_policy_version": ST_NOTICE_POLICY_VERSION,
+        "st_notice_parser_revision": ST_NOTICE_PARSER_REVISION,
+        "st_notice_evidence_sha256": evidence_fingerprint(ROOT),
         "symbol": str(symbol).zfill(6),
         "first_trade_date": str(first_trade.date()),
         "last_trade_date": str(last_trade.date()),
@@ -992,12 +1023,19 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
 
 
 def load_security_meta(symbol: str) -> dict[str, object] | None:
+    from scripts.st_notice_evidence import StNoticeEvidenceError, evidence_fingerprint
     code = str(symbol).zfill(6)
     current_st_name = load_current_st_name_map().get(code, "")
     meta_path = resolve_security_meta_path(symbol)
     if meta_path is not None:
         try:
             payload = json.loads(meta_path.read_text(encoding="utf-8"))
+            if payload.get("st_intervals") or current_st_name:
+                if (payload.get("st_notice_parser_revision") != ST_NOTICE_PARSER_REVISION
+                        or payload.get("st_notice_evidence_sha256") != evidence_fingerprint(ROOT)):
+                    raise StNoticeEvidenceError(
+                        f"Security metadata parser provenance is unverified for {code}; "
+                        "an exact-hash lineage review is required before reuse")
             if payload.get("meta_version") == SECURITY_META_VERSION:
                 if not current_st_name:
                     return payload
@@ -1008,10 +1046,14 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
                 date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
                 if policy_matches and name_matches and date_matches:
                     return payload
+        except StNoticeEvidenceError:
+            raise
         except Exception:
             pass
     try:
         return build_security_meta(symbol)
+    except StNoticeEvidenceError:
+        raise
     except Exception:
         return None
 

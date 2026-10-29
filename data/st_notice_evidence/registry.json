@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "rules_revision": "st-body-evidence-20261029-v1",
+  "date_policy": "notice_date_exclusion_inclusive_exit_unchanged",
+  "events": [
+    {
+      "symbol": "000677",
+      "notice_date": "2016-03-24",
+      "announcement_id": "1202069696",
+      "title": "关于公司撤销股票交易退市风险的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2016-03-24/1202069696.PDF",
+      "relative_pdf_path": "000677_20160324_exit.pdf",
+      "sha256": "8e0da5f84e6b31d621960c4d080e59973dc776d4c1e75b4ff18027a3367e9a0f",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2016-03-25",
+      "pages": [
+        1,
+        36
+      ],
+      "reason": "原文确认撤销退市获深交所同意，简称从*ST海龙恢复恒天海龙、涨跌幅恢复10%；第1页还明确不存在其他风险警示情形。不能保留2015至今连续ST。"
+    },
+    {
+      "symbol": "000677",
+      "notice_date": "2026-04-30",
+      "announcement_id": "1225266382",
+      "title": "恒天海龙股份有限公司关于公司股票将被实施其他风险警示暨停牌并变更证券简称的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225266382.PDF",
+      "relative_pdf_path": "000677_20260430_entry.pdf",
+      "sha256": "c3c27939abdff48064fcc1fc43af5b0ce993307c8f0a315ac27e337f73851801",
+      "risk_actions": {
+        "other": true
+      },
+      "actual_effective_date": "2026-05-06",
+      "pages": [
+        1,
+        2
+      ],
+      "reason": "否定意见内控审计已确认；明确停复牌日和ST海龙简称，属于已决定实施而非可能实施。"
+    },
+    {
+      "symbol": "000677",
+      "notice_date": "2026-04-30",
+      "announcement_id": "1225266411",
+      "title": "恒天海龙股份有限公司关于公司股票交易可能被实施退市风险警示的风险提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225266411.PDF",
+      "relative_pdf_path": "000677_20260430_possible.pdf",
+      "sha256": "d4e3741b9837fd8457441dbc913fe4bb0c37cc32860425c261cbf54b30968f20",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "pages": [
+        1,
+        2
+      ],
+      "reason": "退市风险取决于下一年度内控报告再触发；当前仅other已确认，不能从可能退市产生delisting=True或覆盖同日other。"
+    },
+    {
+      "symbol": "600180",
+      "notice_date": "2011-12-14",
+      "announcement_id": "60321567",
+      "title": "关于公司撤销退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2011-12-14/60321567.PDF",
+      "relative_pdf_path": "600180_20111214.pdf",
+      "sha256": "bd64cbf11a24ee51aead57e4103f36f8c81f6a265c1857a363aaafb223e062e0",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "actual_effective_date": "2011-12-15",
+      "pages": [
+        1
+      ],
+      "reason": "正文撤销退市同时实施其他特别处理；简称仍为ST九发，不能整体退出。"
+    },
+    {
+      "symbol": "600180",
+      "notice_date": "2012-08-31",
+      "announcement_id": "61512277",
+      "title": "关于股票交易撤销其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2012-08-31/61512277.PDF",
+      "relative_pdf_path": "600180_20120831.pdf",
+      "sha256": "0a054aa85bf99603ea47bff54ccf03d49a400ebbca6ad5a11803d667b5833a50",
+      "risk_actions": {
+        "other": false
+      },
+      "actual_effective_date": "2012-09-03",
+      "pages": [
+        2,
+        3
+      ],
+      "reason": "上交所批准撤销其他风险警示；8月31日停牌，9月3日复牌简称九发股份。"
+    },
+    {
+      "symbol": "002193",
+      "notice_date": "2026-04-30",
+      "announcement_id": "1225263624",
+      "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告(4)",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225263624.PDF",
+      "relative_pdf_path": "002193_20260430.pdf",
+      "sha256": "60fb3c2a7e3ce65d29a51711ad453b0c377b76571c2b77c40868adcb981d7922",
+      "risk_actions": {
+        "other": true
+      },
+      "actual_effective_date": "2026-05-06",
+      "pages": [
+        1,
+        2
+      ],
+      "reason": "正式实施其他风险警示，简称ST如意；行政处罚事先告知不等同于仅风险提示。"
+    },
+    {
+      "symbol": "002198",
+      "notice_date": "2026-04-30",
+      "announcement_id": "1225265919",
+      "title": "关于公司股票将被实施其他风险警示暨停复牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225265919.PDF",
+      "relative_pdf_path": "002198_20260430_entry.pdf",
+      "sha256": "db3834fde6c188e082715453bc733e425b324698f7e264d12ee58d6b3fa1643e",
+      "risk_actions": {
+        "other": true
+      },
+      "actual_effective_date": "2026-05-06",
+      "pages": [
+        1
+      ],
+      "reason": "已决定实施其他风险警示；不可因同日可能退市公告抵消。"
+    },
+    {
+      "symbol": "002198",
+      "notice_date": "2026-04-30",
+      "announcement_id": "1225265950",
+      "title": "关于公司股票交易可能被实施退市风险警示的风险提示公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225265950.PDF",
+      "relative_pdf_path": "002198_20260430_possible.pdf",
+      "sha256": "3831079e52beb8c0bea51982207b10569a12cd6e7d9ce68c6722de6cd6dfdbb7",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "pages": [
+        1
+      ],
+      "reason": "退市风险取决于下一年度再次触发内控条件，并未实施退市风险；正文复述同日其他风险已确定，正式other事件见另份公告。该标题本身不应产生delisting=True或delisting=False。"
+    },
+    {
+      "symbol": "002514",
+      "notice_date": "2026-04-28",
+      "announcement_id": "1225220915",
+      "title": "关于公司股票交易可能被实施退市风险警示及其他风险警示的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-28/1225220915.PDF",
+      "relative_pdf_path": "002514_20260428_possible.pdf",
+      "sha256": "6dd8b136be0af3506967f70b1845532e06d73b0f47cac6fbbaf31b42c357de93",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "pages": [
+        1,
+        2,
+        3
+      ],
+      "reason": "预测财务值及年度审计未完成，正文对退市和其他风险均为可能，不能把并列其他类别继承为已实施。"
+    },
+    {
+      "symbol": "002514",
+      "notice_date": "2026-04-30",
+      "announcement_id": "1225266381",
+      "title": "关于公司股票交易被实施退市风险警示及其他风险警示暨股票停牌的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225266381.PDF",
+      "relative_pdf_path": "002514_20260430_entry.pdf",
+      "sha256": "4f963fae89f3e4dbcd0fcbb82e00d60543465f6a1e399f03350a8cf2dfa9767f",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "actual_effective_date": "2026-05-06",
+      "pages": [
+        1,
+        2
+      ],
+      "reason": "审计确认后正式实施退市及其他风险警示，简称*ST宝馨。"
+    }
+  ]
+}

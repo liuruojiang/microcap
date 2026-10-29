@@ -58,11 +58,15 @@ def test_same_session_metadata_damage_is_repaired_from_identical_bundle(workspac
     assert (Path(result["backup"]) / name).read_bytes() == b"damaged"
 
 
-@pytest.mark.parametrize("failure", ["date", "code", "newer", "lock"])
+@pytest.mark.parametrize("failure", ["date", "code", "evidence", "newer", "lock"])
 def test_restore_rejects_before_replacing_local_files(workspace, monkeypatch, failure):
     bundle, target = prepare(workspace, monkeypatch)
     if failure == "code":
         (target / cloud.SOURCE_FILES[1]).write_text("# different strategy")
+    if failure == "evidence":
+        pdf_name = next(name for name in cloud.SOURCE_FILES if name.endswith(".pdf"))
+        with (target / pdf_name).open("ab") as handle:
+            handle.write(b"tampered source evidence")
     if failure == "newer":
         cloud.copy_file(workspace / "outputs" / delivery.BASE_PANEL,
                         target / "outputs" / delivery.BASE_PANEL)

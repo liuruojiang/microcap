@@ -34,6 +34,12 @@ def change_csv_cell(path, field, value):
 def workspace(tmp_path, monkeypatch):
     from scripts import exchange_calendar
 
+    source_root = Path(__file__).resolve().parents[1]
+    for name in delivery.evidence_source_files(source_root):
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((source_root / name).read_bytes())
+
     monkeypatch.setattr(exchange_calendar, "sessions_for_day",
                         lambda _day: (date(2026, 8, 20), date(2026, 9, 2),
                                       date(2026, 9, 3), date(2026, 9, 4)))
@@ -261,6 +267,8 @@ def test_newline_transport_does_not_invalidate_content(workspace):
     # Transport normalization invariant: preserve all bytes except CRLF versus LF.
     certify(workspace)
     for name in delivery.input_hashes(workspace):
+        if name.startswith("data/st_notice_evidence/"):
+            continue  # Archived source evidence is byte-exact, never text-normalized.
         path = workspace / name
         path.write_bytes(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
     assert delivery.validate_manifest(workspace, delivery.inspect_outputs(workspace, "2026-09-03"))["ok"]

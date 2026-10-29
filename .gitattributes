@@ -4,4 +4,6 @@ research_reports/** -text
 outputs/** -text
 quant_param_scan_runs/** -text
 quant_research_runs/** -text
+data/st_notice_evidence/*.pdf -text
+data/st_notice_evidence/registry.json -text
 docs/microcap_lineage_repair_20261012_review.md -text whitespace=cr-at-eol
