@@ -43,6 +43,12 @@ def test_retired_revision_cannot_certify_no_overheat_identity():
     assert not plain_v23_identity(row)
     row.update(overheat_enabled="False")
     assert plain_v23_identity(row)
+    row.pop("overheat_enabled")
+    assert not plain_v23_identity(row)
+    row["overheat_overlay_enabled"] = "False"
+    assert plain_v23_identity(row)
+    row["overheat_enabled"] = "True"
+    assert not plain_v23_identity(row)
 
 
 def test_realtime_builder_also_removes_volatility_constraint(monkeypatch):

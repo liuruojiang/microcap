@@ -30,11 +30,7 @@ def test_missing_and_contradictory_v23_parameter_rejected(field, bad):
     row[field] = bad
     assert not delivery.plain_v23_identity(row)
     row.pop(field)
-    if field == "overheat_enabled":
-        # NAV rows omit this flag; the final one-row signal is checked separately.
-        assert delivery.plain_v23_identity(row)
-    else:
-        assert not delivery.plain_v23_identity(row)
+    assert not delivery.plain_v23_identity(row)
 
 
 def test_nav_entry_alias_supported_but_contradiction_rejected():

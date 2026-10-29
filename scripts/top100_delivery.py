@@ -45,6 +45,7 @@ def plain_v23_identity(row: dict) -> bool:
         return (row.get("strategy_revision") == V23_STRATEGY_REVISION
                 and str(row.get("target_vol_enabled")) == "False"
                 and str(row.get("r2_gate_enabled")) == "False"
+                and any(key in row for key in ("overheat_enabled", "overheat_overlay_enabled"))
                 and all(str(row[key]) == "False" for key in ("overheat_enabled", "overheat_overlay_enabled")
                         if key in row)
                 and str(row.get("cash_day_yield_enabled")) == "False"
