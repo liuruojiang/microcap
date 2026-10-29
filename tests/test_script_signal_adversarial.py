@@ -42,7 +42,7 @@ def _realtime_identity(**overrides):
         "overheat_feature_window": v23.OVERHEAT_FEATURE_WINDOW,
         "overheat_trigger_threshold": v23.OVERHEAT_TRIGGER_THRESHOLD,
         "overheat_recovery_threshold": v23.OVERHEAT_RECOVERY_THRESHOLD,
-        "overheat_enabled": True,
+        "overheat_enabled": False,
         "r2_gate_enabled": False,
         "target_vol_enabled": False,
         "cash_day_yield_enabled": False,
@@ -106,7 +106,7 @@ def test_retired_realtime_artifact_is_not_unconditionally_protected(tmp_path, mo
     ("momentum_gap_entry_threshold", .1), ("momentum_gap_exit_buffer", .09),
     ("signal_spread_hedge_ratio", .8), ("execution_hedge_ratio", 1.),
     ("overheat_feature_window", 60), ("overheat_trigger_threshold", .23),
-    ("overheat_recovery_threshold", .19), ("overheat_enabled", False),
+    ("overheat_recovery_threshold", .19), ("overheat_enabled", True),
     ("r2_gate_enabled", True), ("target_vol_enabled", True),
     ("cash_day_yield_enabled", True), ("financing_enabled", True),
 ])

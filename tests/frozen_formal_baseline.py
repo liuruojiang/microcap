@@ -147,7 +147,7 @@ def write_synthetic_realtime(path: Path, version: str) -> None:
         "version": module.VERSION, "strategy_version": f"v{module.VERSION}",
         "strategy_revision": module.STRATEGY_REVISION,
         "target_vol_enabled": False, "cash_day_yield_enabled": False, "financing_enabled": False,
-        "overheat_enabled": version == "3", "overheat_overlay_enabled": version == "3",
+        "overheat_enabled": False, "overheat_overlay_enabled": False,
     }
     if version == "0":
         row.update(lookback=16, fixed_hedge_ratio=.8)

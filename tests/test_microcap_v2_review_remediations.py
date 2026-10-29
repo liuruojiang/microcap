@@ -1136,7 +1136,7 @@ def test_v2_3_signal_schema_overwrites_inherited_v2_0_overlay_fields() -> None:
     )
     row = v2_3._build_signal_row(frame, {}).iloc[0]
 
-    assert row["overheat_enabled"] is True or bool(row["overheat_enabled"]) is True
+    assert bool(row["overheat_enabled"]) is False
     assert int(row["overheat_window"]) == v2_3.OVERHEAT_FEATURE_WINDOW
     assert float(row["overheat_threshold"]) == pytest.approx(v2_3.OVERHEAT_TRIGGER_THRESHOLD)
     assert bool(row["overheat_require_positive_trade_return"]) is False

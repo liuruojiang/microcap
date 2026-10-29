@@ -470,7 +470,7 @@ def test_target_versions_register_their_costed_streams_with_shared_freshness_gua
     assert "v2_5_costed_nav" in inspect.getsource(v2_5._generate_v2_5_outputs_unlocked)
 
 
-def test_v2_3_official_params_are_lb25_overheat_without_target_vol() -> None:
+def test_v2_3_official_params_are_lb25_without_overheat_or_target_vol() -> None:
     assert v2_3.LOOKBACK == 25
     assert v2_3.HALFLIFE == 2.5
     assert v2_3.R2_WINDOW == 25
@@ -492,7 +492,7 @@ def test_v2_3_official_params_are_lb25_overheat_without_target_vol() -> None:
     assert fingerprint["signal_model"]["r2_entry_gate"] == 0.0
     assert fingerprint["signal_model"]["momentum_gap_exit_buffer"] == 0.08
     assert fingerprint["overheat_defense"] == {
-        "enabled": True,
+        "enabled": False,
         "kind": "vol",
         "feature_window": 10,
         "trigger_threshold": 0.26,
@@ -1214,7 +1214,7 @@ def test_v2_3_v2_5_combo50_comparison_has_replayable_script() -> None:
 
     assert script.exists()
     text = script.read_text(encoding="utf-8")
-    assert "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv" in text
+    assert "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv" in text
     assert "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv" in text
     assert "additional_combo_rebalance_cost" in text
     assert "20260602" not in text

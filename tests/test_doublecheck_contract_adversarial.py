@@ -231,10 +231,10 @@ def assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, version,
     prefix = f"contract_v2{version}"
     realtime_path = output_dir / f"{prefix}_realtime_signal.csv"
     shutil.copy2(authentic["realtime"][version], realtime_path)
-    if attack == "disabled_native_overheat_alias":
+    if attack == "enabled_native_overheat_alias":
         fields, rows = read_rows(realtime_path)
-        assert rows[0]["overheat_enabled"] == rows[0]["overheat_overlay_enabled"] == "True"
-        rows[0]["overheat_overlay_enabled"] = "False"
+        assert rows[0]["overheat_enabled"] == rows[0]["overheat_overlay_enabled"] == "False"
+        rows[0]["overheat_overlay_enabled"] = "True"
         write_rows(realtime_path, fields, rows)
     else:
         mutate_realtime(realtime_path, attack)
@@ -301,7 +301,7 @@ def assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, version,
 
 def test_native_v23_signal_cli_rejects_disabled_overheat_alias(tmp_path, authentic, monkeypatch, capsys):
     assert_native_cli_cleanup(tmp_path, authentic, monkeypatch, capsys, "3", v23,
-                              "disabled_native_overheat_alias")
+                              "enabled_native_overheat_alias")
 
 
 def test_native_v23_signal_cli_rejects_duplicate_version_header(tmp_path, authentic, monkeypatch, capsys):

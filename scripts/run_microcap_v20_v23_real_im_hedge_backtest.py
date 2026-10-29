@@ -48,7 +48,7 @@ V20_NAV = ROOT / "outputs" / "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav
 V23_NAV = (
     ROOT
     / "outputs"
-    / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv"
+    / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv"
 )
 RUN = (
     ROOT
@@ -74,7 +74,7 @@ VERSIONS = {
     "v2_3": {
         "path": V23_NAV,
         "version": "2.3",
-        "revision": "plain_lb25_hl2p5_r2off_vol10_26_20_20260904",
+        "revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
     },
 }
 WINDOWS: tuple[tuple[str, int | None], ...] = (

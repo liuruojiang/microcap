@@ -88,7 +88,7 @@ def workspace(tmp_path, monkeypatch):
             summary.update(strategy_revision=delivery.V23_STRATEGY_REVISION, core_params={
                 "signal_model": {"lookback": 25, "halflife": 2.5, "r2_entry_gate": 0.},
                 "execution_hedge_ratio": .8,
-                "overheat_defense": {"enabled": True, "feature_window": 10,
+                "overheat_defense": {"enabled": False, "feature_window": 10,
                                      "trigger_threshold": .26, "recovery_threshold": .20}})
         if version == "5":
             summary.update(strategy_revision=delivery.V25_STRATEGY_REVISION, core_params={
@@ -102,7 +102,7 @@ def workspace(tmp_path, monkeypatch):
         if version == "3":
             identity_header = (",strategy_revision,target_vol_enabled,r2_gate_enabled,overheat_enabled,lookback,halflife,r2_entry_gate,overheat_feature_window,overheat_trigger_threshold,overheat_recovery_threshold"
                                ",signal_spread_hedge_ratio,execution_hedge_ratio,momentum_gap_entry_threshold,momentum_gap_exit_buffer,cash_day_yield_enabled,financing_enabled")
-            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,True,25,2.5,0.0,10,0.26,0.20,1.0,0.8,0.0,0.08,False,False"
+            identity = f",{delivery.V23_STRATEGY_REVISION},False,False,False,25,2.5,0.0,10,0.26,0.20,1.0,0.8,0.0,0.08,False,False"
         if version == "5":
             identity_header = (",strategy_revision,target_vol_enabled,overheat_enabled,cash_day_yield_enabled,financing_enabled,lookback,halflife"
                                ",entry_threshold,exit_threshold,signal_spread_hedge_ratio,execution_hedge_ratio")

@@ -32,14 +32,14 @@ RUN_FOLDER = (
 NAV_PATHS = {
     "v2_0": OUTPUT_DIR / "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
     "v2_3": OUTPUT_DIR
-    / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv",
+    / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
     "v2_5": OUTPUT_DIR
     / "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
 }
 
 EXPECTED_IDENTITIES = {
     "v2_0": ("2.0", "plain_mom16_fixed1_20260904"),
-    "v2_3": ("2.3", "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"),
+    "v2_3": ("2.3", "plain_lb25_hl2p5_r2off_no_overheat_20261029"),
     "v2_5": ("2.5", "plain_lb20_hl3_entry0_exit0_20260905"),
 }
 

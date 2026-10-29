@@ -108,8 +108,8 @@ SUMMARY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_summary.json"
 LATEST_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_latest_signal.csv"
 REALTIME_SIGNAL_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_realtime_signal.csv"
 NAV_CSV = OUTPUT_DIR / f"{OUTPUT_PREFIX}_nav.csv"
-PREVIOUS_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2w25_g0p08_eb0p08_vol10_oh_t0p26_rr0p75_exec0p8_v2_3_costed_nav.csv"
-COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv"
+PREVIOUS_COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_vol10_oh26_recovery20_exec0p8_v2_3_costed_nav.csv"
+COSTED_NAV_CSV = OUTPUT_DIR / "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv"
 DEFAULT_COSTED_NAV_CSV = COSTED_NAV_CSV
 LEGACY_COSTED_NAV_CSVS = [
     OUTPUT_DIR / "microcap_top100_mom16_exp_h3_lb17_signal1p0_exec0p8_gap13_nodecay_targetvol25_scale030_v2_3_costed_nav.csv",
@@ -128,15 +128,17 @@ PERF_QUERY_JSON = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_summary.json"
 PERF_QUERY_PNG = OUTPUT_DIR / f"{OUTPUT_PREFIX}_performance_query_curve.png"
 
 VERSION = "2.3"
-STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"
-EXPECTED_VERSION_ROLE = "spread_nav_log_wls_lb25_r2off_vol10_overheat"
-EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense."
+STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_no_overheat_20261029"
+EXPECTED_VERSION_ROLE = "spread_nav_log_wls_lb25_r2off_no_overheat"
+EXPECTED_VERSION_NOTE_PREFIX = "Formal v2.3 spread-NAV log-WLS LB25 without overheat defense."
 LOOKBACK = 25
 HALFLIFE = 2.5
 R2_WINDOW = 25
 R2_ENTRY_GATE = 0.0  # OFF; R2_WINDOW is retained for diagnostic compatibility only.
 MOMENTUM_GAP_ENTRY_THRESHOLD = 0.0
 MOMENTUM_GAP_EXIT_BUFFER = 0.08
+OVERHEAT_ENABLED = False
+# Retained diagnostic/research settings; they do not constrain the formal strategy.
 OVERHEAT_KIND = "vol"
 OVERHEAT_FEATURE_WINDOW = 10
 OVERHEAT_TRIGGER_THRESHOLD = 0.26
@@ -763,7 +765,12 @@ def _overheat_feature_series(gross: pd.DataFrame) -> pd.Series:
     raise ValueError(f"unknown v2.3 overheat kind: {kind}")
 
 
-def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd.DataFrame:
+def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame, *, enabled: bool = True) -> pd.DataFrame:
+    """Costed state machine; explicit enabled=False removes all overheat decisions.
+
+    The default retains the historical overlay API for research callers. The
+    formal builder always supplies OVERHEAT_ENABLED explicitly.
+    """
     trigger_threshold = float(OVERHEAT_TRIGGER_THRESHOLD)
     recovery_threshold = float(OVERHEAT_RECOVERY_THRESHOLD)
     if recovery_threshold >= trigger_threshold:
@@ -814,7 +821,7 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
     for dt in out.index:
         base_next_active = bool(base_next_holding.loc[dt] != "cash")
         value = feature.loc[dt]
-        is_hot = pd.notna(value) and float(value) >= trigger_threshold
+        is_hot = enabled and pd.notna(value) and float(value) >= trigger_threshold
         is_cool = pd.notna(value) and float(value) <= recovery_threshold
         exit_trigger = False
         reentry_trigger = False
@@ -892,6 +899,8 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
     out["next_holding"] = executed_next_holding
     out["signal_on"] = executed_signal_on
     out["overheat_kind"] = OVERHEAT_KIND
+    out["overheat_enabled"] = bool(enabled)
+    out["overheat_overlay_enabled"] = bool(enabled)
     out["overheat_feature_window"] = int(OVERHEAT_FEATURE_WINDOW)
     out["overheat_trigger_threshold"] = trigger_threshold
     out["overheat_recovery_threshold"] = recovery_threshold
@@ -931,7 +940,7 @@ def apply_overheat_defense(gross: pd.DataFrame, turnover_df: pd.DataFrame) -> pd
     out["cash_day_yield_enabled"] = CASH_DAY_YIELD_ENABLED
     out["financing_enabled"] = FINANCING_ENABLED
     out["return_column_semantics"] = (
-        "return equals return_net after v2.3 LB25 R2-OFF signal, vol10 overheat defense, "
+        f"return equals return_net after v2.3 LB25 R2-OFF signal, overheat enabled={bool(enabled)}, "
         "and base entry/exit/rebalance costs; no target-vol, cash-day yield, or financing overlay"
     )
     return out
@@ -1199,7 +1208,7 @@ def build_v2_3_result(
     gross = build_spread_log_wls_gross(close_df, common_index)
     if not gross.index.equals(common_index):
         raise RuntimeError("v2.3 gross dependency changed the requested common session index")
-    out = apply_overheat_defense(gross, turnover_df)
+    out = apply_overheat_defense(gross, turnover_df, enabled=OVERHEAT_ENABLED)
     if out.empty:
         raise ValueError(
             "v2.3 output is empty: check close_df, official_v2_0_out.index, "
@@ -1243,7 +1252,7 @@ def current_base_fingerprint() -> dict[str, object]:
         "momentum_gap_exit_buffer": MOMENTUM_GAP_EXIT_BUFFER,
         "signal_quality_derisk_enabled": False,
         "overheat_defense": {
-            "enabled": True,
+            "enabled": OVERHEAT_ENABLED,
             "kind": OVERHEAT_KIND,
             "feature_window": OVERHEAT_FEATURE_WINDOW,
             "trigger_threshold": OVERHEAT_TRIGGER_THRESHOLD,
@@ -1281,13 +1290,13 @@ def realtime_signal_matches_current_v2_3(path: Path | None = None) -> bool:
             return False
         expected_flags = {
             "r2_gate_enabled": R2_ENTRY_GATE > 0,
-            "overheat_enabled": True,
+            "overheat_enabled": OVERHEAT_ENABLED,
             "target_vol_enabled": TARGET_VOL_ENABLED,
             "cash_day_yield_enabled": CASH_DAY_YIELD_ENABLED,
             "financing_enabled": FINANCING_ENABLED,
         }
         if "overheat_overlay_enabled" in row:
-            expected_flags["overheat_overlay_enabled"] = True
+            expected_flags["overheat_overlay_enabled"] = OVERHEAT_ENABLED
         for field, expected in expected_flags.items():
             text = str(row.get(field, "")).strip().lower()
             if text not in ({"true", "1", "1.0"} if expected else {"false", "0", "0.0"}):
@@ -1538,7 +1547,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["overlay_type"] = STRATEGY_REVISION
     row["strategy_revision"] = STRATEGY_REVISION
     row["r2_gate_enabled"] = R2_ENTRY_GATE > 0
-    row["signal_model"] = "spread_nav_log_wls_exp_halflife_2p5_lb25_r2off_signal1p0_exec0p8_vol10_overheat26_recovery20"
+    row["signal_model"] = "spread_nav_log_wls_exp_halflife_2p5_lb25_r2off_signal1p0_exec0p8_no_overheat"
     row["signal_spread_hedge_ratio"] = SIGNAL_SPREAD_HEDGE_RATIO
     row["execution_hedge_ratio"] = EXECUTION_HEDGE_RATIO
     row["halflife"] = HALFLIFE
@@ -1570,8 +1579,8 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["blocked_until_signal_reset"] = False
     row["signal_reset_seen"] = False
     row["overheat_kind"] = OVERHEAT_KIND
-    row["overheat_enabled"] = True
-    row["overheat_overlay_enabled"] = True
+    row["overheat_enabled"] = OVERHEAT_ENABLED
+    row["overheat_overlay_enabled"] = OVERHEAT_ENABLED
     row["overheat_window"] = OVERHEAT_FEATURE_WINDOW
     row["overheat_threshold"] = OVERHEAT_TRIGGER_THRESHOLD
     row["overheat_metric_name"] = "spread_nav_realized_vol"
@@ -1599,7 +1608,7 @@ def _build_signal_row(net_df: pd.DataFrame, reference_summary: dict[str, object]
     row["financing_enabled"] = FINANCING_ENABLED
     _apply_fixed_exposure_next_session_cost_fields(row, latest, hedge_ratio=EXECUTION_HEDGE_RATIO)
     row["return_column_semantics"] = (
-        "return equals return_net after LB25 R2-OFF signal, vol10 overheat defense, "
+        "return equals return_net after LB25 R2-OFF signal, without overheat defense, "
         "and base entry/exit/rebalance costs; no target-vol, cash-day yield, or financing overlay"
     )
     return row
@@ -2049,10 +2058,9 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["strategy_revision"] = STRATEGY_REVISION
     summary["version_role"] = EXPECTED_VERSION_ROLE
     summary["version_note"] = (
-        "Formal v2.3 spread-NAV log-WLS LB25 vol10 overheat defense. Uses exp half-life 2.5 weighted log slope on "
+        "Formal v2.3 spread-NAV log-WLS LB25 without overheat defense. Uses exp half-life 2.5 weighted log slope on "
         "25 trading days of always-on 1.0x hedged signal spread NAV, R2 entry filter OFF, executes with "
-        "0.8x CSI1000 hedge, exits when score falls below -8%, applies close-executed vol10 overheat defense at "
-        "26% annualized realized volatility with 20% recovery threshold, and has no target-vol, cash-day-yield, "
+        "0.8x CSI1000 hedge, exits when score falls below -8%, and has no overheat defense, target-vol, cash-day-yield, "
         "financing, peak-decay, static NAV defense, or CSI2000 volume filter."
     )
     summary.setdefault("core_params", {})
@@ -2076,14 +2084,14 @@ def _generate_v2_3_outputs_unlocked() -> tuple[dict[str, object], pd.DataFrame, 
     summary["core_params"]["momentum_gap_exit_buffer"] = MOMENTUM_GAP_EXIT_BUFFER
     summary["core_params"]["signal_quality_derisk"] = {"enabled": False, "type": "removed_no_peak_decay"}
     summary["core_params"]["overheat_defense"] = {
-        "enabled": True,
+        "enabled": OVERHEAT_ENABLED,
         "kind": OVERHEAT_KIND,
         "feature_window": OVERHEAT_FEATURE_WINDOW,
         "feature_definition": "annualized rolling standard deviation of always-on 1.0x hedged spread NAV returns",
         "trigger_threshold": OVERHEAT_TRIGGER_THRESHOLD,
         "recovery_ratio": OVERHEAT_RECOVERY_RATIO,
         "recovery_threshold": OVERHEAT_RECOVERY_THRESHOLD,
-        "execution": "close-executed risk-off; cash days have zero return before costs",
+        "execution": "disabled; volatility fields are diagnostic only; momentum controls holdings",
     }
     summary["core_params"]["target_volatility_scaling"] = {"enabled": TARGET_VOL_ENABLED}
     summary["core_params"]["cash_day_yield"] = {"enabled": CASH_DAY_YIELD_ENABLED}
@@ -2162,7 +2170,7 @@ def _build_realtime_v2_3_outputs_unlocked() -> tuple[pd.DataFrame, dict[str, obj
     if not gross.index.equals(common_index):
         raise RuntimeError("v2.3 realtime gross dependency changed the requested common session index")
     signal_timing = "intraday_hypothetical_if_now_close" if is_snapshot else "close_confirmed_anchor"
-    out = apply_overheat_defense(gross, realtime_base.turnover_df)
+    out = apply_overheat_defense(gross, realtime_base.turnover_df, enabled=OVERHEAT_ENABLED)
     mismatch_diagnostics = build_signal_execution_mismatch_diagnostics(close_df, out)
     signal_row = _build_signal_row(out, realtime_base.reference_summary)
     apply_signal_execution_mismatch_columns(signal_row, mismatch_diagnostics)
@@ -2217,7 +2225,7 @@ def _print_signal_query() -> None:
     )
     print(
         f"overlay: entry score > {MOMENTUM_GAP_ENTRY_THRESHOLD:.2f}, exit buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, "
-        f"vol10 overheat trigger {OVERHEAT_TRIGGER_THRESHOLD:.0%}, recovery {OVERHEAT_RECOVERY_THRESHOLD:.1%}, "
+        "overheat OFF, "
         "no target-vol/cash-yield/financing"
     )
     print(f"current_holding: {row['current_holding']}")
@@ -2248,7 +2256,7 @@ def _print_realtime_signal_query() -> None:
         )
         print(
             f"overlay: entry score > {MOMENTUM_GAP_ENTRY_THRESHOLD:.2f}, exit buffer {MOMENTUM_GAP_EXIT_BUFFER:.2f}, "
-            f"vol10 overheat trigger {OVERHEAT_TRIGGER_THRESHOLD:.0%}, recovery {OVERHEAT_RECOVERY_THRESHOLD:.1%}, "
+            "overheat OFF, "
             "no target-vol/cash-yield/financing"
         )
         print(f"snapshot_time: {meta.get('snapshot_time')}")

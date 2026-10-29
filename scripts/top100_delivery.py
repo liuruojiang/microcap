@@ -35,7 +35,7 @@ RELEASE_FILES = [
     "scripts/top100_data_contracts.py",
 ] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
 V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
-V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_vol10_26_20_20260904"
+V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_no_overheat_20261029"
 V25_STRATEGY_REVISION = "plain_lb20_hl3_entry0_exit0_20260905"
 DAILY_STATE_ANCHORS = ("proxy_index", "costed_nav", "panel_shadow")
 
@@ -45,7 +45,7 @@ def plain_v23_identity(row: dict) -> bool:
         return (row.get("strategy_revision") == V23_STRATEGY_REVISION
                 and str(row.get("target_vol_enabled")) == "False"
                 and str(row.get("r2_gate_enabled")) == "False"
-                and all(str(row[key]) == "True" for key in ("overheat_enabled", "overheat_overlay_enabled")
+                and all(str(row[key]) == "False" for key in ("overheat_enabled", "overheat_overlay_enabled")
                         if key in row)
                 and str(row.get("cash_day_yield_enabled")) == "False"
                 and str(row.get("financing_enabled")) == "False"
@@ -339,7 +339,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                         signal_model.get("halflife") != 2.5 or
                         signal_model.get("r2_entry_gate") != 0 or
                         params.get("execution_hedge_ratio") != .8 or
-                        overheat.get("enabled") is not True or
+                        overheat.get("enabled") is not False or
                         overheat.get("feature_window") != 10 or
                         overheat.get("trigger_threshold") != .26 or
                         overheat.get("recovery_threshold") != .20):
@@ -390,7 +390,7 @@ def inspect_outputs(root: Path, expected: str) -> dict:
                     if v == "0" and (rows[0].get("lookback") != "16" or
                                      float(rows[0].get("fixed_hedge_ratio", -1)) != .8):
                         errors.append("v2.0 final lookback/hedge identity mismatch")
-                    if v == "3" and rows[0].get("overheat_enabled") != "True":
+                    if v == "3" and rows[0].get("overheat_enabled") != "False":
                         errors.append("v2.3 final overheat enabled identity mismatch")
                     if v == "5" and rows[0].get("overheat_enabled") != "False":
                         errors.append("v2.5 final overheat disabled identity mismatch")

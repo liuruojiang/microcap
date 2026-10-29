@@ -10,6 +10,7 @@ def test_selected_parameters_and_identity():
     assert (v.LOOKBACK, v.HALFLIFE, v.R2_ENTRY_GATE) == (25, 2.5, 0.)
     assert (v.OVERHEAT_TRIGGER_THRESHOLD, v.OVERHEAT_RECOVERY_THRESHOLD) == (.26, .20)
     assert v.OVERHEAT_RECOVERY_RATIO == pytest.approx(.20 / .26)
+    assert v.OVERHEAT_ENABLED is False
     assert v.STRATEGY_REVISION == delivery.V23_STRATEGY_REVISION
     assert v.COSTED_NAV_CSV.name == delivery.COSTED['3']
 
@@ -19,7 +20,7 @@ def test_selected_parameters_and_identity():
     ('target_vol_enabled', 'True')])
 def test_old_or_contradictory_final_identity_rejected(field, bad):
     row = dict(strategy_revision=v.STRATEGY_REVISION, target_vol_enabled='False',
-               r2_gate_enabled='False', overheat_enabled='True', lookback='25', halflife='2.5',
+               r2_gate_enabled='False', overheat_enabled='False', lookback='25', halflife='2.5',
                r2_entry_gate='0', overheat_feature_window='10', overheat_trigger_threshold='.26',
                overheat_recovery_threshold='.20', signal_spread_hedge_ratio='1',
                execution_hedge_ratio='.8',

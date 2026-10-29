@@ -9,7 +9,7 @@ from scripts import top100_delivery as delivery
 
 def _identity():
     return dict(strategy_revision=delivery.V23_STRATEGY_REVISION,
-                target_vol_enabled="False", r2_gate_enabled="False", overheat_enabled="True",
+                target_vol_enabled="False", r2_gate_enabled="False", overheat_enabled="False",
                 lookback="25", halflife="2.5", r2_entry_gate="0",
                 overheat_feature_window="10", overheat_trigger_threshold=".26",
                 overheat_recovery_threshold=".20", signal_spread_hedge_ratio="1",
@@ -20,7 +20,7 @@ def _identity():
 @pytest.mark.parametrize("field,bad", [
     ("r2_gate_enabled", "True"), ("signal_spread_hedge_ratio", ".8"),
     ("lookback", "26"), ("halflife", "3"), ("execution_hedge_ratio", ".7"),
-    ("overheat_feature_window", "9"), ("overheat_enabled", "False"),
+    ("overheat_feature_window", "9"), ("overheat_enabled", "True"),
     ("momentum_gap_entry_threshold", ".9"), ("momentum_gap_exit_buffer", ".09"),
     ("cash_day_yield_enabled", "True"), ("financing_enabled", "True"),
 ])
