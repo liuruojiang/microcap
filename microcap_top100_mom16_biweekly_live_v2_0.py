@@ -2061,7 +2061,7 @@ LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
 ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
-ST_NOTICE_PARSER_REVISION = "category-state-body-evidence-20261029-v1"
+ST_NOTICE_PARSER_REVISION = "category-state-body-evidence-20261029-v2"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
 # Both exchanges raised main-board ST limits from 5% to 10% on this date.
 MAINBOARD_ST_LIMIT_SWITCH = pd.Timestamp("2026-07-06")
@@ -2599,7 +2599,7 @@ def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]
     text = re.sub(r"\s+", "", str(title or "").upper())
     if not text or "申请" in text:
         return {}, False
-    if any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司")):
+    if any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司", "债券", "可转债")):
         from scripts.st_notice_evidence import StNoticeEvidenceError
         raise StNoticeEvidenceError("ST title requires verified issuer/body evidence: " + text)
     actions: dict[str, bool] = {}

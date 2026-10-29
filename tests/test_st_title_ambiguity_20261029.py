@@ -24,6 +24,8 @@ def funcs(request):
  '关于公司股票将于下月实施退市风险警示的公告',
  '关于回复撤销其他风险警示事项问询函的公告',
  '关于控股子公司股票被实施其他风险警示的公告',
+ '关于2012年公司债券复牌暨实行风险警示公告',
+ '关于可转债实施风险警示的公告',
 ])
 def test_title_alone_cannot_prove_effective_issuer_event(funcs,title):
     # Ambiguous prospective/question/other-issuer title must not mutate issuer

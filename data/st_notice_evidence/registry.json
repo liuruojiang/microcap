@@ -4,6 +4,225 @@
   "date_policy": "notice_date_exclusion_inclusive_exit_unchanged",
   "events": [
     {
+      "symbol": "000010",
+      "announcement_id": "1225251716",
+      "notice_date": "2026-04-29",
+      "title": "关于公司股票交易将被实施退市风险警示及其他风险警示暨停牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225251716.PDF",
+      "sha256": "12ab155026c70a73a940fd3effb744db087181c1891c624309ab38537fa432e1",
+      "relative_pdf_path": "000010_20260429_1225251716.pdf",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "actual_effective_date": "2026-04-30",
+      "pages": [
+        1,
+        2
+      ],
+      "reason": "正文明确4月30日起同时实行退市风险警示和其他风险警示，简称美丽生态变为*ST美丽；不是仅可能事件。"
+    },
+    {
+      "symbol": "000035",
+      "announcement_id": "59795446",
+      "notice_date": "2011-08-10",
+      "title": "股票交易撤消退市风险警示并实行其他特别处理的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2011-08-10/59795446.PDF",
+      "sha256": "2714049e730f7420a56f6b12c5ce18de705c12c87eaa1f2517ad2edec101e765",
+      "relative_pdf_path": "000035_20110810_59795446.pdf",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "actual_effective_date": "2011-08-11",
+      "pages": [
+        1
+      ],
+      "reason": "正式撤消退市并实行其他特别处理，仍ST科健；7/27仅申请，不替代正式公告。"
+    },
+    {
+      "symbol": "000035",
+      "announcement_id": "60040359",
+      "notice_date": "2011-10-11",
+      "title": "关于对公司股票交易实施退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2011-10-11/60040359.PDF",
+      "sha256": "564e95479b8773dc7fcf9c69a8941232cf261f3f487699e82b3b7782d14d593c",
+      "relative_pdf_path": "000035_20111011_60040359.pdf",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2011-10-12",
+      "pages": [
+        1
+      ],
+      "reason": "法院受理重整后再次实施退市风险；未声明撤销其他类别，不猜测other=False。"
+    },
+    {
+      "symbol": "000035",
+      "announcement_id": "63872302",
+      "notice_date": "2014-04-21",
+      "title": "关于撤销股票交易退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2014-04-21/63872302.PDF",
+      "sha256": "cf6a4c7ec58c56e5127025e1ec7bb65baf9573563cdfd8934ebf940d09d3fd37",
+      "relative_pdf_path": "000035_20140421_63872302.pdf",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2014-04-22",
+      "pages": [
+        3
+      ],
+      "reason": "明确不存在其他风险警示，批准撤销退市并恢复中科健简称及10%涨跌幅；全部退出。"
+    },
+    {
+      "symbol": "000037",
+      "announcement_id": "1202123377",
+      "notice_date": "2016-04-01",
+      "title": "关于公司股票将被实行退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2016-04-01/1202123377.PDF",
+      "sha256": "afd887207f84ab40b7370bd503a72271079e9ce1d0b80b27a0c34628270307ca",
+      "relative_pdf_path": "000037_20160401_1202123377.pdf",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2016-04-05",
+      "pages": [
+        1
+      ],
+      "reason": "正文明确2016年4月5日起退市风险警示，000037由深南电A改*ST南电A；虽同时涉及200037 B股，本文明确覆盖000037本发行人。未判定或撤销other类别。"
+    },
+    {
+      "symbol": "000059",
+      "announcement_id": "1200461752",
+      "notice_date": "2014-12-15",
+      "title": "关于2012年公司债券复牌暨实行风险警示公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2014-12-15/1200461752.PDF",
+      "risk_actions": {},
+      "actual_effective_date": "2014-12-16",
+      "reason": "公司债券112129的风险，不影响股票000059；不得因页眉股票代码误归股权风险。",
+      "relative_pdf_path": "000059_20141215_1200461752.pdf",
+      "sha256": "962b8ecfbc676ec59ea4ed0d2f1b256a445549526913066c66af54c7a2803ba0",
+      "pages": [
+        1
+      ],
+      "security_scope": "bond_112129_only"
+    },
+    {
+      "symbol": "000059",
+      "announcement_id": "1200828268",
+      "notice_date": "2015-04-14",
+      "title": "关于公司股票实行退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-14/1200828268.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2015-04-15",
+      "reason": "股票退市风险正式实施。",
+      "relative_pdf_path": "000059_20150414_1200828268.pdf",
+      "sha256": "a5da4259dd4a62113b1b849bab0e7e7e23243d9a17457bf12f0a4a187a887a42",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000059",
+      "announcement_id": "1202194101",
+      "notice_date": "2016-04-19",
+      "title": "关于公司撤销股票交易退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2016-04-19/1202194101.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2016-04-20",
+      "reason": "不存在其他风险，恢复华锦股份及10%涨跌幅。",
+      "relative_pdf_path": "000059_20160419_1202194101.pdf",
+      "sha256": "ba777384a919593ca24f04ee395485f8cca19af2cf3ca326be99910e4e78821d",
+      "pages": [
+        1,
+        2,
+        12
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000068",
+      "announcement_id": "1200732981",
+      "notice_date": "2015-03-24",
+      "title": "关于公司股票将被实行退市风险警示特别处理公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-03-24/1200732981.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2015-03-25",
+      "reason": "将被为已决定未来生效，原文明确*ST华赛及生效日。",
+      "relative_pdf_path": "000068_20150324_1200732981.pdf",
+      "sha256": "f3560174b5f92519e3e16b89f4da8553996cb1a1061161391bbe618bb0f46248",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000576",
+      "announcement_id": "57953827",
+      "notice_date": "2010-05-17",
+      "title": "关于股票交易撤销退市风险警示并实行其他特别处理的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2010-05-17/57953827.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "actual_effective_date": "2010-05-18",
+      "reason": "撤销退市并实行其他特别处理，仍ST甘化。",
+      "relative_pdf_path": "000576_20100517_57953827.pdf",
+      "sha256": "c3b0802d93f3e122c46272b73b47d3fd17d26d9faa4b45a78fea47d689607fd8",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000576",
+      "announcement_id": "60593064",
+      "notice_date": "2012-02-28",
+      "title": "关于股票交易实施退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2012-02-28/60593064.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2012-02-29",
+      "reason": "再次退市风险，未声明撤销其他类别。",
+      "relative_pdf_path": "000576_20120228_60593064.pdf",
+      "sha256": "c179fb1d78275161bb7e656e6fe91263d7d629c4698f6b4705e5eef7be583251",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000576",
+      "announcement_id": "62350998",
+      "notice_date": "2013-04-12",
+      "title": "关于撤销股票交易退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2013-04-12/62350998.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2013-04-15",
+      "reason": "恢复正常交易、广东甘化简称、10%涨跌幅证明全部退出。",
+      "relative_pdf_path": "000576_20130412_62350998.pdf",
+      "sha256": "8dcaf8424c717044f59e8b06870c570234378d4af391ab6166d667b2a3cd6fe3",
+      "pages": [
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
       "symbol": "000677",
       "notice_date": "2016-03-24",
       "announcement_id": "1202069696",
@@ -55,42 +274,6 @@
         2
       ],
       "reason": "退市风险取决于下一年度内控报告再触发；当前仅other已确认，不能从可能退市产生delisting=True或覆盖同日other。"
-    },
-    {
-      "symbol": "600180",
-      "notice_date": "2011-12-14",
-      "announcement_id": "60321567",
-      "title": "关于公司撤销退市风险警示的公告",
-      "source_url": "https://static.cninfo.com.cn/finalpage/2011-12-14/60321567.PDF",
-      "relative_pdf_path": "600180_20111214.pdf",
-      "sha256": "bd64cbf11a24ee51aead57e4103f36f8c81f6a265c1857a363aaafb223e062e0",
-      "risk_actions": {
-        "delisting": false,
-        "other": true
-      },
-      "actual_effective_date": "2011-12-15",
-      "pages": [
-        1
-      ],
-      "reason": "正文撤销退市同时实施其他特别处理；简称仍为ST九发，不能整体退出。"
-    },
-    {
-      "symbol": "600180",
-      "notice_date": "2012-08-31",
-      "announcement_id": "61512277",
-      "title": "关于股票交易撤销其他风险警示的公告",
-      "source_url": "https://static.cninfo.com.cn/finalpage/2012-08-31/61512277.PDF",
-      "relative_pdf_path": "600180_20120831.pdf",
-      "sha256": "0a054aa85bf99603ea47bff54ccf03d49a400ebbca6ad5a11803d667b5833a50",
-      "risk_actions": {
-        "other": false
-      },
-      "actual_effective_date": "2012-09-03",
-      "pages": [
-        2,
-        3
-      ],
-      "reason": "上交所批准撤销其他风险警示；8月31日停牌，9月3日复牌简称九发股份。"
     },
     {
       "symbol": "002193",
@@ -177,6 +360,42 @@
         2
       ],
       "reason": "审计确认后正式实施退市及其他风险警示，简称*ST宝馨。"
+    },
+    {
+      "symbol": "600180",
+      "notice_date": "2011-12-14",
+      "announcement_id": "60321567",
+      "title": "关于公司撤销退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2011-12-14/60321567.PDF",
+      "relative_pdf_path": "600180_20111214.pdf",
+      "sha256": "bd64cbf11a24ee51aead57e4103f36f8c81f6a265c1857a363aaafb223e062e0",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "actual_effective_date": "2011-12-15",
+      "pages": [
+        1
+      ],
+      "reason": "正文撤销退市同时实施其他特别处理；简称仍为ST九发，不能整体退出。"
+    },
+    {
+      "symbol": "600180",
+      "notice_date": "2012-08-31",
+      "announcement_id": "61512277",
+      "title": "关于股票交易撤销其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2012-08-31/61512277.PDF",
+      "relative_pdf_path": "600180_20120831.pdf",
+      "sha256": "0a054aa85bf99603ea47bff54ccf03d49a400ebbca6ad5a11803d667b5833a50",
+      "risk_actions": {
+        "other": false
+      },
+      "actual_effective_date": "2012-09-03",
+      "pages": [
+        2,
+        3
+      ],
+      "reason": "上交所批准撤销其他风险警示；8月31日停牌，9月3日复牌简称九发股份。"
     }
   ]
 }

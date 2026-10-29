@@ -50,6 +50,22 @@ def test_all_seven_real_events_produce_order_independent_day_states(funcs,symbol
         assert funcs['build_st_status_series']({'st_intervals':result},dates).tolist()==[False,False,True,True]
 
 
+@pytest.mark.parametrize('symbol,days,expected',[
+    ('000035',['2011-08-11','2011-10-12','2014-04-21','2014-04-22','2026-10-28'],[True,True,True,False,False]),
+    ('000010',['2026-04-28','2026-04-29','2026-04-30'],[False,True,True]),
+    ('000037',['2016-03-31','2016-04-01','2016-04-05'],[False,True,True]),
+    ('000059',['2014-12-15','2014-12-16','2015-04-14','2016-04-19','2016-04-20'],[False,False,True,True,False]),
+    ('000068',['2015-03-23','2015-03-24','2015-03-25'],[False,True,True]),
+    ('000576',['2010-05-18','2013-04-12','2013-04-13','2026-10-28'],[True,True,False,False]),
+])
+def test_reviewed_canary_bodies_prevent_permanent_st_and_resolve_announced_entries(funcs,symbol,days,expected):
+    rows=notices(symbol)
+    first,last=pd.Timestamp('2010-01-04'),pd.Timestamp('2026-10-28')
+    verified=load_verified_events(ROOT,symbol,first,last,rows)
+    intervals=funcs['build_st_intervals_from_notices'](first,last,rows,verified_events=verified)
+    assert funcs['build_st_status_series']({'st_intervals':intervals},pd.DatetimeIndex(days)).tolist()==expected
+
+
 @pytest.mark.parametrize('fault',['wrong_issuer','wrong_date','missing_certified','ambiguous_unreviewed','same_day_conflict'])
 def test_builder_does_not_swallow_evidence_error_or_preserve_old_metadata(tmp_path,monkeypatch,fault):
     import microcap_top100_mom16_biweekly_live_v2_0 as v20
