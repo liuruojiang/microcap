@@ -8,7 +8,7 @@ import pandas as pd
 import pytest
 
 from scripts.st_notice_evidence import (
-    DATE_POLICY, RULES_REVISION, StNoticeEvidenceError,
+    DATE_POLICY, RULES_REVISION, SCHEMA_VERSION, StNoticeEvidenceError,
     evidence_fingerprint, load_verified_events,
 )
 
@@ -35,7 +35,7 @@ def isolated(tmp_path):
              'title':'fixture announcement','source_url':'https://static.cninfo.com.cn/finalpage/2011-12-14/60321567.PDF',
              'relative_pdf_path':'fixture.pdf','sha256':hashlib.sha256(raw).hexdigest(),
              'risk_actions':{'delisting':False,'other':True}}
-    registry = {'schema_version':1,'rules_revision':RULES_REVISION,'date_policy':DATE_POLICY,'events':[event]}
+    registry = {'schema_version':SCHEMA_VERSION,'rules_revision':RULES_REVISION,'date_policy':DATE_POLICY,'events':[event]}
     save(tmp_path,registry)
     return tmp_path,registry
 
@@ -100,7 +100,7 @@ def test_outside_range_is_not_required_and_boundary_inclusive(isolated):
 
 
 @pytest.mark.parametrize('field,value',[
-    ('schema_version',True),('schema_version',2),('rules_revision','old-v3'),
+    ('schema_version',True),('schema_version',1),('rules_revision','old-v3'),
     ('date_policy','implementation_date'),('events',[]),('events',None),
 ])
 def test_registry_header_fail_closed(isolated,field,value):

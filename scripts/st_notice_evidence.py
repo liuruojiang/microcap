@@ -15,8 +15,8 @@ from typing import Any
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
-RULES_REVISION = "st-body-evidence-20261029-v1"
-SCHEMA_VERSION = 1
+RULES_REVISION = "st-body-evidence-20261030-v2"
+SCHEMA_VERSION = 2
 DATE_POLICY = "notice_date_exclusion_inclusive_exit_unchanged"
 RISK_CATEGORIES = frozenset({"delisting", "other", "unspecified"})
 
@@ -55,6 +55,80 @@ def _text(record: dict, key: str) -> str:
     if not isinstance(value, str) or not value or value != value.strip():
         _fail(f"Evidence field {key} is missing or malformed")
     return value
+
+
+def _artifact(directory: Path, spec: dict, suffix: str) -> bytes:
+    """Authenticate an auxiliary artifact without following escaped paths."""
+    if not isinstance(spec, dict):
+        _fail("Missing conflict evidence artifact")
+    relative = Path(_text(spec, "relative_path"))
+    path = (directory / relative).resolve()
+    if relative.is_absolute() or not path.is_relative_to(directory) or path.suffix.lower() != suffix:
+        _fail("Conflict evidence path escapes evidence directory or has wrong type")
+    digest = _text(spec, "sha256")
+    raw = path.read_bytes()
+    if re.fullmatch(r"[0-9a-f]{64}", digest) is None or hashlib.sha256(raw).hexdigest() != digest:
+        _fail("Conflict evidence content hash mismatch")
+    if suffix == ".pdf" and not raw.startswith(b"%PDF-"):
+        _fail("Conflict evidence is not a PDF")
+    return raw
+
+
+def _conflict_evidence(directory: Path, record: dict) -> None:
+    """Validate an explicitly reviewed mirror, retaining the CNInfo row identity."""
+    if record.get("source_type") != "reviewed_cninfo_body_conflict":
+        if record.get("source_type") is not None or any(key in record for key in ("body_source_url", "source_conflict", "conflict_evidence")):
+            _fail("Unreviewed body source override")
+        return
+    if record.get("source_conflict") is not True:
+        _fail("Reviewed source conflict flag missing")
+    if re.fullmatch(r"\d{4}-\d+", _text(record, "body_notice_number")) is None:
+        _fail("Reviewed body notice number malformed")
+    url = urlsplit(_text(record, "body_source_url"))
+    if (url.scheme != "https" or url.netloc != "pdf.dfcfw.com" or url.query or url.fragment
+            or re.fullmatch(r"/pdf/H2_AN\d+_1\.pdf", url.path) is None):
+        _fail("Unsupported reviewed mirror URL")
+    evidence = record.get("conflict_evidence")
+    if not isinstance(evidence, dict) or set(evidence) != {"provider_response", "conflicting_pdf", "crosscheck", "review"}:
+        _fail("Incomplete source conflict evidence")
+    original = _artifact(directory, evidence["conflicting_pdf"], ".pdf")
+    if evidence["conflicting_pdf"].get("source_url") != record["source_url"]:
+        _fail("Conflicting PDF source differs from provider identity")
+    if hashlib.sha256(original).hexdigest() == record["sha256"]:
+        _fail("Conflicting PDF cannot certify the corrected body")
+    # A serialized API response archive, not an attestation of raw HTTP bytes.
+    api = json.loads(_artifact(directory, evidence["provider_response"], ".json"))
+    notices = api.get("announcements") if isinstance(api, dict) else None
+    if not isinstance(notices, list):
+        _fail("Conflict provider response has no announcements")
+    matches = [r for r in notices if str(r.get("announcementId")) == record["announcement_id"]]
+    if len(matches) != 1:
+        _fail("Conflict provider response announcement identity missing or duplicated")
+    row = matches[0]
+    stamp = row.get("announcementTime")
+    if type(stamp) not in (int, float):
+        _fail("Conflict provider timestamp malformed")
+    published = datetime.fromtimestamp(stamp / 1000, ZoneInfo("Asia/Shanghai")).date().isoformat()
+    if (row.get("secCode") != record["symbol"] or row.get("announcementTitle") != record["title"]
+            or published != record["notice_date"]
+            or "/" + str(row.get("adjunctUrl")) != urlsplit(record["source_url"]).path):
+        _fail("Conflict provider response identity mismatch")
+    cross = evidence["crosscheck"]
+    cross_url = urlsplit(_text(cross, "source_url"))
+    day = record["notice_date"]
+    if (cross_url.scheme != "https" or cross_url.netloc != "paper.cnstock.com"
+            or cross_url.query or cross_url.fragment
+            or re.fullmatch(rf"/html/{day[:7]}/{day[8:]}/content_\d+\.htm", cross_url.path) is None):
+        _fail("Unsupported independent disclosure crosscheck URL")
+    _artifact(directory, cross, ".html")
+    review = json.loads(_artifact(directory, evidence["review"], ".json"))
+    binding = {key: record.get(key) for key in (
+        "symbol", "announcement_id", "notice_date", "title", "source_url", "body_source_url",
+        "body_notice_number", "relative_pdf_path", "sha256", "risk_actions", "actual_effective_date")}
+    if (not isinstance(review, dict) or review.get("status") != "body_and_independent_disclosure_verified"
+            or review.get("event") != binding
+            or review.get("evidence") != {k: v for k, v in evidence.items() if k != "review"}):
+        _fail("Reviewed conflict binding differs from event or evidence")
 
 
 def _registry(root: Path | str) -> tuple[dict[str, dict], str]:
@@ -103,6 +177,7 @@ def _registry(root: Path | str) -> tuple[dict[str, dict], str]:
         pdf_bytes = pdf.read_bytes()
         if not pdf_bytes.startswith(b"%PDF-") or hashlib.sha256(pdf_bytes).hexdigest() != expected_hash:
             _fail(f"Evidence PDF content hash mismatch for {event_id}")
+        _conflict_evidence(directory, record)
         actions = record.get("risk_actions")
         # Empty is a reviewed no-event decision (e.g. only a possible warning).
         if (not isinstance(actions, dict) or any(k not in RISK_CATEGORIES or type(v) is not bool
@@ -127,10 +202,14 @@ def evidence_fingerprint(root: Path | str) -> str:
 def evidence_source_files(root: Path | str) -> list[str]:
     """Files whose exact content is required by release and state transport."""
     records, _ = _registry(root)
-    return ["scripts/st_notice_evidence.py", "data/st_notice_evidence/registry.json"] + sorted({
+    paths = {
         "data/st_notice_evidence/" + Path(record["relative_pdf_path"]).as_posix()
         for record in records.values()
-    })
+    }
+    for record in records.values():
+        for artifact in record.get("conflict_evidence", {}).values():
+            paths.add("data/st_notice_evidence/" + Path(artifact["relative_path"]).as_posix())
+    return ["scripts/st_notice_evidence.py", "data/st_notice_evidence/registry.json"] + sorted(paths)
 
 
 def load_verified_events(root: Path | str, symbol: str, first_trade: Any,

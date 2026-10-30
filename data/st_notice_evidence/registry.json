@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "rules_revision": "st-body-evidence-20261029-v1",
+  "schema_version": 2,
+  "rules_revision": "st-body-evidence-20261030-v2",
   "date_policy": "notice_date_exclusion_inclusive_exit_unchanged",
   "events": [
     {
@@ -166,6 +166,131 @@
       "security_scope": "equity"
     },
     {
+      "symbol": "000155",
+      "announcement_id": "60911957",
+      "notice_date": "2012-04-26",
+      "title": "关于公司股票交易实行退市风险警示的特别处理的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2012-04-26/60911957.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2012-04-27",
+      "reason": "由普通川化股份转*ST；旧2010起无源不能沿用。",
+      "relative_pdf_path": "000155_20120426_60911957.pdf",
+      "sha256": "e37f8ee8e7bdf7f0df3745abc682c98baad53dae4753461d0768cc8b66aecbb5",
+      "pages": [
+        1
+      ]
+    },
+    {
+      "symbol": "000155",
+      "announcement_id": "62558701",
+      "notice_date": "2013-06-05",
+      "title": "关于撤销股票交易退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2013-06-05/62558701.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2013-06-06",
+      "reason": "恢复正常交易、普通简称及10%。",
+      "relative_pdf_path": "000155_20130605_62558701.pdf",
+      "sha256": "5de498218c5d96b4cfb6bbc4682d69df67e68629318d5638208d2b4255dd6ec6",
+      "pages": [
+        2
+      ]
+    },
+    {
+      "symbol": "000155",
+      "announcement_id": "1200774940",
+      "notice_date": "2015-04-01",
+      "title": "关于股票实施其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-01/1200774940.PDF",
+      "risk_actions": {
+        "other": true
+      },
+      "actual_effective_date": "2015-04-02",
+      "reason": "主要生产装置暂停且三个月无法恢复，开始其他风险。",
+      "relative_pdf_path": "000155_20150401_1200774940.pdf",
+      "sha256": "c315747ba54420e6adecbfc01fb2e2d247760959337f6ecf43c299beb8109a5e",
+      "pages": [
+        1
+      ]
+    },
+    {
+      "symbol": "000155",
+      "announcement_id": "1200947404",
+      "notice_date": "2015-04-30",
+      "title": "关于股票交易实施退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-30/1200947404.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2015-05-04",
+      "reason": "ST川化转*ST川化，未撤销其他风险。",
+      "relative_pdf_path": "000155_20150430_1200947404.pdf",
+      "sha256": "62cd3dcea2632e70e829976e4b87b2dafe2462063f6d6a72a0ed9e254ad85aa3",
+      "pages": [
+        1
+      ]
+    },
+    {
+      "symbol": "000155",
+      "announcement_id": "1204216972",
+      "notice_date": "2017-12-13",
+      "title": "关于撤销公司股票交易退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2017-12-13/1204216972.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2017-12-18",
+      "reason": "无其他风险，恢复上市及普通简称；首日无涨跌幅，12/19起10%。",
+      "relative_pdf_path": "000155_20171213_1204216972.pdf",
+      "sha256": "570e276249b026bb6959e4f4cd2fdac67da957440fbb43f45c9ebaa487f3a058",
+      "pages": [
+        2,
+        3
+      ]
+    },
+    {
+      "symbol": "000505",
+      "announcement_id": "63840336",
+      "notice_date": "2014-04-15",
+      "title": "关于公司股票撤消退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2014-04-15/63840336.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2014-04-16",
+      "reason": "明确无其他风险，普通简称及10%；因重大重组继续停牌，不等于仍ST。",
+      "relative_pdf_path": "000505_20140415_63840336.pdf",
+      "sha256": "7e92b0f2ccc71c7be08de57857fed75103c54d3d456988b0713aee9ab39aea5a",
+      "pages": [
+        1,
+        2
+      ]
+    },
+    {
+      "symbol": "000505",
+      "announcement_id": "1203531676",
+      "notice_date": "2017-05-18",
+      "title": "关于公司股票交易撤销退市风险警示及变更证券简称的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2017-05-18/1203531676.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2017-05-19",
+      "reason": "不存在其他风险，恢复普通简称及10%。",
+      "relative_pdf_path": "000505_20170518_1203531676.pdf",
+      "sha256": "c7b8b1a95306aac7c34334df87440c0d4104e34abbb957b69369c5b7d2bf530b",
+      "pages": [
+        2
+      ]
+    },
+    {
       "symbol": "000576",
       "announcement_id": "57953827",
       "notice_date": "2010-05-17",
@@ -223,6 +348,41 @@
       "security_scope": "equity"
     },
     {
+      "symbol": "000629",
+      "announcement_id": "59170874",
+      "notice_date": "2011-03-25",
+      "title": "关于公司债券恢复上市的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2011-03-25/59170874.PDF",
+      "risk_actions": {},
+      "actual_effective_date": "2011-04-06",
+      "reason": "债券115001恢复上市，正文全部针对债券，不是股票撤销特别处理。",
+      "relative_pdf_path": "000629_20110325_59170874.pdf",
+      "sha256": "1c010d57278ee67d0627748dff2f551f760f30240c71704955c1a0a6ae7f9e31",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "bond_only"
+    },
+    {
+      "symbol": "000676",
+      "announcement_id": "64001441",
+      "notice_date": "2014-05-09",
+      "title": "关于股票交易撤销退市风险警示的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2014-05-09/64001441.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2014-05-12",
+      "reason": "正文明确经深交所批准撤销退市风险警示及其他风险警示。",
+      "relative_pdf_path": "000676_20140509_64001441.pdf",
+      "sha256": "48566deb1e984189a204d8837e0a43338e3ea2cbd86097379c07f5e6bcf55b12",
+      "pages": [
+        2
+      ]
+    },
+    {
       "symbol": "000677",
       "notice_date": "2016-03-24",
       "announcement_id": "1202069696",
@@ -274,6 +434,401 @@
         2
       ],
       "reason": "退市风险取决于下一年度内控报告再触发；当前仅other已确认，不能从可能退市产生delisting=True或覆盖同日other。"
+    },
+    {
+      "symbol": "000796",
+      "announcement_id": "1216704370",
+      "notice_date": "2023-04-29",
+      "title": "关于公司股票交易将被实施退市风险警示及实施其他风险警示暨停复牌公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-29/1216704370.PDF",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "actual_effective_date": "2023-05-05",
+      "reason": "正式双类别实施。",
+      "relative_pdf_path": "000796_20230429_1216704370.pdf",
+      "sha256": "3f7e46ad85ef36fa496cb74b3388771994a8fbec353794962c815042cd98d4b4",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000796",
+      "announcement_id": "1218817918",
+      "notice_date": "2024-01-06",
+      "title": "关于撤销公司股票因重整而被实施退市风险警示暨继续实施财务类退市风险警示及其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-01-06/1218817918.PDF",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "actual_effective_date": "2024-01-08",
+      "reason": "仅撤销重整这一触发原因，财务类退市及其他风险继续；不可清delisting。",
+      "relative_pdf_path": "000796_20240106_1218817918.pdf",
+      "sha256": "dd18aaebb2c931e24033ed01d5efa7f80ca11ade9ec1a794c3e2b03289eb4b5c",
+      "pages": [
+        2,
+        4
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000796",
+      "announcement_id": "1220378276",
+      "notice_date": "2024-06-18",
+      "title": "关于申请撤销退市风险警示并继续实施其他风险警示暨停复牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-06-18/1220378276.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "actual_effective_date": "2024-06-19",
+      "reason": "已获批准撤退市、保留其他；标题含申请但正文已批准。使用东方财富原件镜像，巨潮链接此次错配。",
+      "relative_pdf_path": "000796_20240618_1220378276.pdf",
+      "sha256": "88aea204e41d5fe7a7f1c1ebc8484c965e55b46a81ef00f0a6d28de436def43c",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity",
+      "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202406171636569663_1.pdf",
+      "source_type": "reviewed_cninfo_body_conflict",
+      "source_conflict": true,
+      "body_notice_number": "2024-056",
+      "conflict_evidence": {
+        "provider_response": {
+          "relative_path": "000796_20240618_provider_response.json",
+          "sha256": "5d62fde227a7ea1768f76627fea14e53c1b0b50586f8af53c83f5984ef2c9e7f"
+        },
+        "conflicting_pdf": {
+          "relative_path": "000796_20240618_1220378276_conflicting.pdf",
+          "sha256": "3b264e5af65aa202f7a75f4a1f3c71f95dbdca13f6cfbcf649b8353ff5c86c68",
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-06-18/1220378276.PDF"
+        },
+        "crosscheck": {
+          "relative_path": "000796_20240618_cnstock.html",
+          "sha256": "af2a4fd5b3575f693923c06750a87f03f54208d746e6240ac07ed0ddc66008e6",
+          "source_url": "https://paper.cnstock.com/html/2024-06/18/content_1932054.htm"
+        },
+        "review": {
+          "relative_path": "000796_20240618_source_review.json",
+          "sha256": "deb528ac5bc015b6133039c9e28db77d41d9647ea04f0c642139cb508cc95749"
+        }
+      }
+    },
+    {
+      "symbol": "000796",
+      "announcement_id": "1221526180",
+      "notice_date": "2024-10-26",
+      "title": "关于撤销其他风险警示暨停复牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-26/1221526180.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2024-10-29",
+      "reason": "撤其他并明确无任何退市/其他风险。",
+      "relative_pdf_path": "000796_20241026_1221526180.pdf",
+      "sha256": "2d81b6f9d1c496f26d82c41611700a9c129117dbcc398ad438dd1ba3c4905a32",
+      "pages": [
+        1,
+        3
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000809",
+      "announcement_id": "1213163296",
+      "notice_date": "2022-04-28",
+      "title": "关于公司股票交易将被实施其他风险警示暨股票和债券停牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2022-04-28/1213163296.PDF",
+      "risk_actions": {
+        "other": true
+      },
+      "actual_effective_date": "2022-04-29",
+      "reason": "混合股票债券公告，股票000809正式实施其他风险，不能整体按债券排除。",
+      "relative_pdf_path": "000809_20220428_1213163296.pdf",
+      "sha256": "fa0ce05a175e589e31de2ae6024a84db9b6a04d50864cf2e1e7e2db00194a245",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000809",
+      "announcement_id": "1219566837",
+      "notice_date": "2024-04-11",
+      "title": "关于公司股票交易将被实施退市风险警示的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-11/1219566837.PDF",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "reason": "审计未完、年度业绩预计，将被仅预告，不提前实施。",
+      "relative_pdf_path": "000809_20240411_1219566837.pdf",
+      "sha256": "02f39432258386538c743d64e4c8c6e93a29fe8c41814924b6d0fd293b7e64ea",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000809",
+      "announcement_id": "1219690213",
+      "notice_date": "2024-04-20",
+      "title": "关于公司股票交易将被实施退市风险警示的第二次提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-20/1219690213.PDF",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "reason": "第二次预测，审计未完，不改变状态。",
+      "relative_pdf_path": "000809_20240420_1219690213.pdf",
+      "sha256": "8677661a435891e1e25e35991ed779313440f6dcc246d401c291194bb0ccbc04",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000809",
+      "announcement_id": "1219763730",
+      "notice_date": "2024-04-24",
+      "title": "关于公司股票交易将被实施退市风险警示的第三次提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-24/1219763730.PDF",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "reason": "第三次预测，财务以审计为准，不改变状态。",
+      "relative_pdf_path": "000809_20240424_1219763730.pdf",
+      "sha256": "4b0d66d4b64c0cd91120e0994939f30bfe5d76d780007611d9232fab9bd2be0b",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000809",
+      "announcement_id": "1219830936",
+      "notice_date": "2024-04-26",
+      "title": "2024-028关于公司股票交易被实施退市风险警示暨股票停牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-26/1219830936.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2024-04-29",
+      "reason": "审计已确认、正式停复牌及*ST简称，退市风险正式实施。",
+      "relative_pdf_path": "000809_20240426_1219830936.pdf",
+      "sha256": "51d832d7ec3c666e98ac5f16f14e8512ba05a2342db213365d682d555fade5db",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000950",
+      "announcement_id": "1200541470",
+      "notice_date": "2015-01-14",
+      "title": "关于2012年公司债券可能被实行风险警示的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-01-14/1200541470.PDF",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "reason": "仅公司债券112122可能实行风险警示；无股票ST动作。",
+      "relative_pdf_path": "000950_20150114_1200541470.pdf",
+      "sha256": "f279a7bfafebb752e842cfa22e52291abf21a6fd8f29a0d2f8b1fe22556f0b43",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "bond_only"
+    },
+    {
+      "symbol": "000950",
+      "announcement_id": "1200695267",
+      "notice_date": "2015-03-13",
+      "title": "关于公司2012年公司债券风险警示公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-03-13/1200695267.PDF",
+      "risk_actions": {},
+      "actual_effective_date": "2015-03-16",
+      "reason": "明确公司债券112122自3月16日实行风险警示；无股票ST动作。",
+      "relative_pdf_path": "000950_20150313_1200695267.pdf",
+      "sha256": "5ea40e23c962f4a66e7372b7957f8feb322b93ce4f5ccb98ba131717d5ce59e9",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "bond_only"
+    },
+    {
+      "symbol": "000968",
+      "announcement_id": "1200590707",
+      "notice_date": "2015-01-30",
+      "title": "关于公司债券可能被实行风险警示的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2015-01-30/1200590707.PDF",
+      "risk_actions": {},
+      "actual_effective_date": null,
+      "reason": "仅公司债券112023、112024可能实行风险警示；无股票ST动作。",
+      "relative_pdf_path": "000968_20150130_1200590707.pdf",
+      "sha256": "930174a2086bd9056b2c12433fec482be5a9c3503e53ee2e0fb7d49af2a37575",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "bond_only"
+    },
+    {
+      "symbol": "000989",
+      "announcement_id": "1219799682",
+      "notice_date": "2024-04-25",
+      "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-25/1219799682.PDF",
+      "risk_actions": {
+        "other": true
+      },
+      "actual_effective_date": "2024-04-26",
+      "reason": "内控审计否定意见已确认，正式公告明确4月26日实施其他风险；不是仅预测。",
+      "relative_pdf_path": "000989_20240425_1219799682.pdf",
+      "sha256": "b3aad78a7a954fc1650f21ae3fb78f142a7033f55335f6517225af991e19a599",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "000989",
+      "announcement_id": "1223446023",
+      "notice_date": "2025-05-01",
+      "title": "关于撤销其他风险警示暨停复牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-05-01/1223446023.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2025-05-07",
+      "reason": "正文明确已获批准撤其他，并确认不存在退市及其他风险。日期交叉核验：财联社2025-04-30 21:19:31已报道且链接本公告，中国基金报5月1日00:03亦称4月30日晚公告；provider公告日5月1日保留，PDF落款5月6日不等于首次公开日，实际撤销生效5月7日。深交所独立PDF与巨潮当前字节一致；未声称拥有4月30日历史PDF字节快照或证明精确首次发布时间。",
+      "relative_pdf_path": "000989_20250501_1223446023.pdf",
+      "sha256": "ae023fd8bd58f31fbb879d1b98a7aa6f80af970475b0d8e5de697eab9e88a331",
+      "pages": [
+        1,
+        2,
+        3
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "002021",
+      "announcement_id": "1206120474",
+      "notice_date": "2019-04-27",
+      "title": "关于公司股票交易实行退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2019-04-27/1206120474.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2019-04-30",
+      "reason": "2017及2018连续亏损，公告明确4月30日起实施退市风险。",
+      "relative_pdf_path": "002021_20190427_1206120474.pdf",
+      "sha256": "76519c9d3d46d7562ad6291097c29e219a39e1c8de6303cd4dc3332abf01047f",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "002021",
+      "announcement_id": "1207915752",
+      "notice_date": "2020-06-11",
+      "title": "关于股票撤销退市风险警示并被实施其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2020-06-11/1207915752.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "actual_effective_date": "2020-06-12",
+      "reason": "撤退市风险但因主营盈利弱继续其他风险。",
+      "relative_pdf_path": "002021_20200611_1207915752.pdf",
+      "sha256": "971f49993a0d0bac32f8fba51299216076dfef223f4f82a9d63763f5f37b91ef",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "002021",
+      "announcement_id": "1216658009",
+      "notice_date": "2023-04-28",
+      "title": "关于公司股票将被实施退市风险警示及继续实施其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216658009.PDF",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "actual_effective_date": "2023-05-04",
+      "reason": "正式退市风险警示并继续其他风险。",
+      "relative_pdf_path": "002021_20230428_1216658009.pdf",
+      "sha256": "581067c451c93b7bd020a621f71167c6a04a3ebdab4f5b11c53d0fd60a52e459",
+      "pages": [
+        1,
+        2
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "002021",
+      "announcement_id": "1218433916",
+      "notice_date": "2023-11-25",
+      "title": "关于法院裁定受理公司重整、启动债权申报及召开第一次债权人会议暨公司股票交易将被叠加实施退市风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2023-11-25/1218433916.PDF",
+      "risk_actions": {
+        "delisting": true
+      },
+      "actual_effective_date": "2023-11-27",
+      "reason": "法院已受理重整，11月27日叠加退市风险。",
+      "relative_pdf_path": "002021_20231125_1218433916.pdf",
+      "sha256": "0e7a4816c998eacff7bf5b9515ab24556eb26f4acf40a73aa89cc6442f68f888",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "002021",
+      "announcement_id": "1218817771",
+      "notice_date": "2024-01-06",
+      "title": "关于撤销公司股票因重整而被实施退市风险警示暨继续被实施退市风险警示及其他风险警示的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-01-06/1218817771.PDF",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "actual_effective_date": null,
+      "reason": "只撤重整原因；财务类退市及其他风险仍在，不能清delisting。正文未给该原因撤销的独立实施日，不推断。",
+      "relative_pdf_path": "002021_20240106_1218817771.pdf",
+      "sha256": "40c3ad942aa7ae78b9d263da71f722e0531b77ace3505d1fc90d281c19c8a777",
+      "pages": [
+        1,
+        2,
+        3
+      ],
+      "security_scope": "equity"
+    },
+    {
+      "symbol": "002021",
+      "announcement_id": "1220213452",
+      "notice_date": "2024-05-31",
+      "title": "关于公司股票交易撤销退市风险警示及其他风险警示暨停复牌的公告",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-05-31/1220213452.PDF",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "actual_effective_date": "2024-06-03",
+      "reason": "明确6月3日撤销两类风险并恢复中捷资源简称。",
+      "relative_pdf_path": "002021_20240531_1220213452.pdf",
+      "sha256": "044e7a81c02fae76c18d94405c43a12b7e1a89a14b7c58b13eb8bb5576b21f24",
+      "pages": [
+        1
+      ],
+      "security_scope": "equity"
     },
     {
       "symbol": "002193",

@@ -57,6 +57,11 @@ def test_all_seven_real_events_produce_order_independent_day_states(funcs,symbol
     ('000059',['2014-12-15','2014-12-16','2015-04-14','2016-04-19','2016-04-20'],[False,False,True,True,False]),
     ('000068',['2015-03-23','2015-03-24','2015-03-25'],[False,True,True]),
     ('000576',['2010-05-18','2013-04-12','2013-04-13','2026-10-28'],[True,True,False,False]),
+    ('000155',['2012-04-25','2012-04-26','2013-06-05','2013-06-06','2015-04-01','2017-12-13','2017-12-14'],[False,True,True,False,True,True,False]),
+    ('000505',['2014-04-15','2014-04-16','2017-05-19','2026-10-28'],[True,False,False,False]),
+    ('000676',['2014-05-09','2014-05-12','2026-10-28'],[True,False,False]),
+    ('000989',['2024-04-24','2024-04-25','2025-05-01','2025-05-07'],[False,True,True,False]),
+    ('002021',['2019-04-26','2019-04-27','2020-06-12','2024-01-08','2024-05-31','2024-06-03'],[False,True,True,True,True,False]),
 ])
 def test_reviewed_canary_bodies_prevent_permanent_st_and_resolve_announced_entries(funcs,symbol,days,expected):
     rows=notices(symbol)

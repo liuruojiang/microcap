@@ -6,4 +6,6 @@ quant_param_scan_runs/** -text
 quant_research_runs/** -text
 data/st_notice_evidence/*.pdf -text
 data/st_notice_evidence/registry.json -text
+data/st_notice_evidence/*.json -text -whitespace
+data/st_notice_evidence/*.html -text -whitespace
 docs/microcap_lineage_repair_20261012_review.md -text whitespace=cr-at-eol

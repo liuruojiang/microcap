@@ -519,7 +519,11 @@ def verify_release(root: Path) -> str:
         subprocess.run(["git", "fetch", "--no-tags", "origin", remote], cwd=root, check=True)
     for name in RELEASE_FILES:
         payload = subprocess.check_output(["git", "show", f"{remote}:{name}"], cwd=root)
-        if hashlib.sha256(payload.replace(b"\r\n", b"\n")).hexdigest() != sha(root / name):
+        if name.startswith("data/st_notice_evidence/"):
+            matches = payload == (root / name).read_bytes()
+        else:
+            matches = hashlib.sha256(payload.replace(b"\r\n", b"\n")).hexdigest() == sha(root / name)
+        if not matches:
             raise ValueError(f"Local core/authority differs from remote release: {name}")
     return remote
 

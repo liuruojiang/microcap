@@ -1,0 +1,37 @@
+{
+  "status": "body_and_independent_disclosure_verified",
+  "review_date": "2026-10-30",
+  "event": {
+    "symbol": "000796",
+    "announcement_id": "1220378276",
+    "notice_date": "2024-06-18",
+    "title": "关于申请撤销退市风险警示并继续实施其他风险警示暨停复牌的公告",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2024-06-18/1220378276.PDF",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202406171636569663_1.pdf",
+    "body_notice_number": "2024-056",
+    "relative_pdf_path": "000796_20240618_1220378276.pdf",
+    "sha256": "88aea204e41d5fe7a7f1c1ebc8484c965e55b46a81ef00f0a6d28de436def43c",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2024-06-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "000796_20240618_provider_response.json",
+      "sha256": "5d62fde227a7ea1768f76627fea14e53c1b0b50586f8af53c83f5984ef2c9e7f"
+    },
+    "conflicting_pdf": {
+      "relative_path": "000796_20240618_1220378276_conflicting.pdf",
+      "sha256": "3b264e5af65aa202f7a75f4a1f3c71f95dbdca13f6cfbcf649b8353ff5c86c68",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-06-18/1220378276.PDF"
+    },
+    "crosscheck": {
+      "relative_path": "000796_20240618_cnstock.html",
+      "sha256": "af2a4fd5b3575f693923c06750a87f03f54208d746e6240ac07ed0ddc66008e6",
+      "source_url": "https://paper.cnstock.com/html/2024-06/18/content_1932054.htm"
+    }
+  },
+  "conclusion": "Issuer 000796 notice 2024-056: delisting risk removed on 2024-06-19, other risk retained. Original CNInfo URL returns conflicting 2024-057 bytes; no assertion on CDN/backend cause."
+}

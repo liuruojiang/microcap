@@ -501,3 +501,24 @@ def test_release_identity_rejects_modified_delivery_guard(tmp_path, monkeypatch)
     monkeypatch.setattr(delivery.subprocess, "check_output", fake_git)
     with pytest.raises(ValueError, match="scripts/top100_delivery.py"):
         delivery.verify_release(tmp_path)
+
+
+@pytest.mark.parametrize('suffix', ['pdf', 'json', 'html'])
+def test_release_evidence_requires_exact_bytes_across_line_endings(tmp_path, monkeypatch, suffix):
+    name = f'data/st_notice_evidence/example.{suffix}'
+    path = tmp_path / name
+    path.parent.mkdir(parents=True)
+    path.write_bytes(b'archived\r\nbytes\r\n')
+    monkeypatch.setattr(delivery, 'RELEASE_FILES', [name])
+
+    def fake_git(args, **kwargs):
+        if args[1] == 'ls-remote': return 'a' * 40 + '\trefs/heads/main\n'
+        if args[1] == 'cat-file': return b''
+        if args[1] == 'show': return b'archived\nbytes\n'
+        raise AssertionError(args)
+
+    monkeypatch.setattr(delivery.subprocess, 'check_output', fake_git)
+    with pytest.raises(ValueError, match='Local core/authority differs'):
+        delivery.verify_release(tmp_path)
+    path.write_bytes(b'archived\nbytes\n')
+    assert delivery.verify_release(tmp_path) == 'a' * 40
