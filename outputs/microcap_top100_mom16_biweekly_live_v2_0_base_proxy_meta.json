@@ -277,7 +277,7 @@
         "scripts/st_notice_archive.py": "625483138aebda935a852953a1645ec95eeff9fdf10ab259c463af198c7b7c9c",
         "scripts/st_history_scope.py": "1365b7c0aa289efc30537ef2ede5a1bd7126952bd29c6a026a69d9d25659e47b",
         "scripts/st_notice_incremental.py": "d1b0f043137e0627f0510b95be42722e1018f0d40bcf59d8655687f63ceafae8",
-        "scripts/st_notice_refresh.py": "202c411294b19620207168247e30ff654c03fdc39714869bc34575eb688e0202",
+        "scripts/st_notice_refresh.py": "fcd2a0c7b7884f05f680871b6fa7eb3b063d4e163a5c4a575bdd1d7ebe84ef5c",
         "scripts/st_metadata_refresh.py": "9d9f31a0f3223d997920adf4fadeb924d03c19c4701ed279b318ec78d1dee995",
         "scripts/stock_tail_returns.py": "fc5875bdb53ed1786c7c851b8e3c9b8028f79f49a71c72cd4eb22c8f1c14d5c6",
         "scripts/share_change_source.py": "522b49cf595b9f647229678c11ae50d17ab3de1f83747a51c1cac263833c5571",

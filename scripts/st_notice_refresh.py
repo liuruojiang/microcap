@@ -9,7 +9,7 @@ import uuid
 
 from scripts.st_history_scope import POINTER_PATH, resolve_archive_reference, source_closure
 from scripts.st_notice_evidence import StNoticeEvidenceError
-from scripts.st_notice_incremental import collect_days, verify_day
+from scripts.st_notice_incremental import collect_days, verify_day, _provider_time
 
 PREFIX = '.microcap_index_cache/st_notice_sources'
 FRESHNESS = PREFIX + '/freshness.json'
@@ -47,6 +47,34 @@ def _native(folder, day):
         for row in json.loads((folder / page['response']).read_bytes())['data']['list']:
             rows[row['art_code']] = row
     return rows
+
+
+def _boundary_precision_drift(previous, current):
+    """Only tolerate sub-second same-day provider display-time precision drift."""
+    error = 'ST boundary native events changed; exact-hash history review required; pointer preserved'
+    if previous.keys() != current.keys():
+        raise StNoticeEvidenceError(error)
+    changed, maximum, crossed = [], 0, 0
+    for identity, old in previous.items():
+        new = current[identity]
+        if old == new:
+            continue
+        if ({k: value for k, value in old.items() if k != 'display_time'}
+                != {k: value for k, value in new.items() if k != 'display_time'}):
+            raise StNoticeEvidenceError(error)
+        before, after = _provider_time(old.get('display_time')), _provider_time(new.get('display_time'))
+        delta = abs(after - before)
+        close = before.replace(hour=15, minute=0, second=0, microsecond=0)
+        if before.date() != after.date() or delta >= timedelta(seconds=1) or (before < close) != (after < close):
+            raise StNoticeEvidenceError(error)
+        micros = delta // timedelta(microseconds=1)
+        changed.append(identity)
+        maximum = max(maximum, micros)
+        crossed += before.replace(microsecond=0) != after.replace(microsecond=0)
+    return dict(policy='display_time_same_day_lt_1s_no_close_crossing_v1',
+                changed_event_count=len(changed), maximum_delta_microseconds=maximum,
+                crossed_integer_second_count=crossed,
+                changed_event_ids_sha256=_sha(json.dumps(sorted(changed), separators=(',', ':')).encode()))
 
 
 def freshness_source_files(root):
@@ -106,8 +134,12 @@ def freshness_source_files(root):
             raise StNoticeEvidenceError('ST freshness proof omits queried source files')
         if day['date'] == boundary.isoformat():
             old_folder = _bound(root, old['daily_increments'][-1]['manifest']['path']).parent
-            if _native(old_folder, day['date']) != _native(folder, day['date']):
-                raise StNoticeEvidenceError('ST freshness boundary content changed')
+            drift = _boundary_precision_drift(_native(old_folder, day['date']), _native(folder, day['date']))
+            recorded = proof.get('boundary_display_time_precision_drift')
+            if ((recorded is None and drift['changed_event_count'])
+                    or (recorded is not None and recorded != drift)
+                    or proof.get('boundary_native_content_unchanged') is not (drift['changed_event_count'] == 0)):
+                raise StNoticeEvidenceError('ST freshness boundary precision summary differs from source')
         else:
             expected_authority['daily_increments'].append(dict(date=day['date'], manifest=dict(
                 path=day['manifest_path'], sha256=verified['manifest_sha256'])))
@@ -159,8 +191,8 @@ def refresh_notice_archive(*, root, target, session=None):
         generation.mkdir()
         collect_days(generation, boundary.isoformat(), target.isoformat(), session=session, required_asof=started)
         boundary_folder = _bound(root, daily[-1]['manifest']['path']).parent
-        if _native(boundary_folder, boundary.isoformat()) != _native(generation / boundary.isoformat(), boundary.isoformat()):
-            raise StNoticeEvidenceError('ST boundary native events changed; exact-hash history review required; pointer preserved')
+        boundary_drift = _boundary_precision_drift(
+            _native(boundary_folder, boundary.isoformat()), _native(generation / boundary.isoformat(), boundary.isoformat()))
         candidate = copy.deepcopy(old)
         queried, files = [], {}
         day = boundary
@@ -197,7 +229,8 @@ def refresh_notice_archive(*, root, target, session=None):
         proof = dict(schema='st_notice_refresh_v1', required_asof=started.isoformat(),
                      completed_at=datetime.now(timezone.utc).isoformat(), target=target.isoformat(),
                      previous_authority=list(reference), authority=list(new_reference),
-                     boundary_native_content_unchanged=True, queried_days=queried, source_files=files)
+                     boundary_native_content_unchanged=boundary_drift['changed_event_count'] == 0,
+                     boundary_display_time_precision_drift=boundary_drift, queried_days=queried, source_files=files)
         proof_raw = _bytes(proof)
         (generation / 'proof.json').write_bytes(proof_raw)
         new_pointer = _bytes(dict(manifest_path=new_reference[0], manifest_sha256=new_reference[1]))

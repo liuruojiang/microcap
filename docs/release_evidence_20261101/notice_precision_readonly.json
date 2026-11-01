@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "scope": "independent_read_only_daily_notice_boundary_precision_audit",
+  "date": "2026-10-30",
+  "same_unique_ids": 5671,
+  "added": 0,
+  "removed": 0,
+  "changed_display_time_only": 4080,
+  "other_field_changes": 0,
+  "max_absolute_seconds": 0.239,
+  "integer_second_crossings": 8,
+  "date_crossings": 0,
+  "close_1500_crossings": 0,
+  "legacy_1530_crossings": 0,
+  "inputs": {
+    "pointer_sha256": "e791c3d38eb9ba8e500e424c2d666961ce2f66cf78fba3acd58588a14f2d1a5a",
+    "archive_sha256": "37be554e4fc4f215dabc61fe2203dc3cad25117e67b846a9ee79e7124d3eafe2",
+    "old_manifest": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\st_notice_sources\\daily\\2026-10-30\\manifest.json",
+    "old_manifest_sha256": "ae0477e0d652c145251feb68c80429479ecc9b76433f9035bb7916c6d71645df",
+    "new_manifest": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\st_notice_sources\\refresh_20261101T055722856010Z_1976c700cc80\\2026-10-30\\manifest.json",
+    "new_manifest_sha256": "969c12c117db1e7fb31281cfe28584fa14534e4808c05aa71ebf84748f3306db"
+  },
+  "changed_examples": [
+    {
+      "art_code": "AN202610301831247398",
+      "old": "2026-10-30 19:04:57:417",
+      "new": "2026-10-30 19:04:57:314",
+      "absolute_seconds": 0.103
+    },
+    {
+      "art_code": "AN202610301831240756",
+      "old": "2026-10-30 17:49:12:404",
+      "new": "2026-10-30 17:49:12:301",
+      "absolute_seconds": 0.103
+    },
+    {
+      "art_code": "AN202610301831245401",
+      "old": "2026-10-30 18:30:11:304",
+      "new": "2026-10-30 18:30:11:202",
+      "absolute_seconds": 0.102
+    },
+    {
+      "art_code": "AN202610301831245062",
+      "old": "2026-10-30 18:22:47:254",
+      "new": "2026-10-30 18:22:47:152",
+      "absolute_seconds": 0.102
+    },
+    {
+      "art_code": "AN202610301831238059",
+      "old": "2026-10-30 17:32:03:620",
+      "new": "2026-10-30 17:32:03:519",
+      "absolute_seconds": 0.101
+    }
+  ],
+  "archive_written": false
+}

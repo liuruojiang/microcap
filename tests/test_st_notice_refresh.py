@@ -11,8 +11,9 @@ from scripts.st_notice_evidence import StNoticeEvidenceError
 
 
 class Session:
-    def __init__(self, *, changed=False, fail_day=None):
+    def __init__(self, *, changed=False, fail_day=None, display_fraction="100"):
         self.changed, self.fail_day, self.calls = changed, fail_day, []
+        self.display_fraction = display_fraction
 
     def get(self, url, *, params, timeout):
         day = params['begin_time']
@@ -20,7 +21,7 @@ class Session:
         if day == self.fail_day:
             raise ConnectionError('fixture provider unavailable')
         rows = [dict(art_code='AN' + day.replace('-', '') + '01', notice_date=day,
-                     title='fixture ordinary notice', codes=[dict(stock_code='600000', market_code='1', ann_type='A')])]
+                     title='fixture ordinary notice', display_time=day+' 12:00:00.'+self.display_fraction, codes=[dict(stock_code='600000', market_code='1', ann_type='A')])]
         if self.changed and day == '2026-10-29':
             rows.append(dict(rows[0], art_code='AN2026102902', title='fixture late risk notice'))
         raw = json.dumps(dict(success=1, data=dict(page_index=1, page_size=100,
@@ -271,3 +272,49 @@ def test_refresh_module_is_in_both_release_code_contracts():
     from scripts.top100_delivery import RETURN_BASIS_FILES
     assert 'scripts/st_notice_refresh.py' in SOURCE_FILES
     assert 'scripts/st_notice_refresh.py' in RETURN_BASIS_FILES
+
+
+@pytest.mark.parametrize('before,after,count', [
+    ('2026-10-30 12:00:00.100','2026-10-30 12:00:00.100',0),
+    ('2026-10-30 12:00:00.100','2026-10-30 12:00:00.339',1),
+    ('2026-10-30 12:00:00.999','2026-10-30 12:00:01.010',1),
+])
+def test_only_provider_subsecond_display_drift_is_accepted(before,after,count):
+    old={'AN1':dict(art_code='AN1',title='unchanged',codes=[{'stock_code':'600000'}],display_time=before)}
+    new={'AN1':dict(old['AN1'],display_time=after)}
+    report=m._boundary_precision_drift(old,new)
+    assert report['changed_event_count']==count
+    assert old['AN1']['display_time']==before
+
+@pytest.mark.parametrize('fault', ['day','second','over_second','close','title','issuer','added','deleted','missing_time','malformed_time'])
+def test_boundary_drift_never_masks_material_or_boundary_changes(fault):
+    import copy
+    old={'AN1':dict(art_code='AN1',title='unchanged',codes=[{'stock_code':'600000'}],display_time='2026-10-30 23:59:59.900')}
+    new=copy.deepcopy(old)
+    if fault=='day':new['AN1']['display_time']='2026-10-31 00:00:00.100'
+    elif fault=='second':new['AN1']['display_time']='2026-10-30 23:59:58.900'
+    elif fault=='over_second':new['AN1']['display_time']='2026-10-30 23:59:58.899'
+    elif fault=='close':
+        old['AN1']['display_time']='2026-10-30 14:59:59.999';new['AN1']['display_time']='2026-10-30 15:00:00.001'
+    elif fault=='title':new['AN1']['title']='different title'
+    elif fault=='issuer':new['AN1']['codes'][0]['stock_code']='600001'
+    elif fault=='added':new['AN2']=dict(new['AN1'],art_code='AN2')
+    elif fault=='deleted':new={}
+    elif fault=='missing_time':new['AN1'].pop('display_time')
+    elif fault=='malformed_time':new['AN1']['display_time']='unknown'
+    with pytest.raises(StNoticeEvidenceError):m._boundary_precision_drift(old,new)
+
+
+def test_freshness_records_and_reverifies_precision_drift_without_authority_rewrite(seed):
+    root,pointer,before=seed
+    result=m.refresh_notice_archive(root=root,target='2026-10-29',session=Session(display_fraction='339'))
+    assert result['authority_changed'] is False and pointer.read_bytes()==before
+    path=root/m.FRESHNESS;proof=json.loads(path.read_bytes())
+    assert proof['boundary_native_content_unchanged'] is False
+    assert proof['boundary_display_time_precision_drift']['changed_event_count']==1
+    assert proof['boundary_display_time_precision_drift']['maximum_delta_microseconds']==239000
+    assert m.freshness_source_files(root)
+    proof['boundary_display_time_precision_drift']['changed_event_count']=0
+    path.write_bytes(m._bytes(proof))
+    with pytest.raises(StNoticeEvidenceError,match='precision summary'):
+        m.freshness_source_files(root)

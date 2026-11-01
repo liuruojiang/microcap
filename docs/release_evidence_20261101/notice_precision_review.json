@@ -1,0 +1,15 @@
+{
+  "scope": "publication freshness precision comparison only; unchanged historical inputs and numerical rules",
+  "approved_by": "assistant executing existing user repair and deployment authorization",
+  "user_separately_reviewed_generated_hashes": false,
+  "previous_review_path": "docs/release_evidence_20261101/combined_review.json",
+  "previous_review_sha256": "01ec5a65083507979d702df219340c3230c3a03b44f4c3b30b2e8718006a2fe7",
+  "previous_authority_sha256": "c1c5938c28f0824203daaa0ec1b4d3469afe196e0684f3a2365bb2422c7fdb38",
+  "before_meta_sha256": "dd854fae45f16609ddf7fa36bd019aa7427d647b809e40306fa82e4f65a9e2fc",
+  "after_meta_sha256": "c5fb6a69335201b4a808045fab546049d82b092264263e7bae6db29e2f486f64",
+  "code_sha256": "30507d22c901159e0554aa911d082f8bb3aabfa1f22fed20b82f45c64c9f96ff",
+  "data_fingerprint_unchanged": true,
+  "final_navs_written": false,
+  "comparison": "All native fields remain exact except display_time drift strictly below one second on the same date without crossing the close boundary; bound raw evidence remains untouched.",
+  "whole_delivery_status": "pending normal refresh-all and check"
+}
