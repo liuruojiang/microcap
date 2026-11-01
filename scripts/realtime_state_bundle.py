@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import copy
 import hashlib
 import json
 import math
@@ -528,6 +529,105 @@ def validate_member_cache_transport(root: Path, anchor: date | None) -> list[str
     return errors
 
 
+# Process-local successes only. Every lookup rehashes the complete dependency
+# trees; no disk certificate or mtime-based shortcut is used.
+_RETURN_BASIS_SUCCESS_MEMO: dict[str, tuple] = {}
+
+
+def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...]):
+    from scripts import stock_return_pipeline as pipeline
+    from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar
+    root = _extended(root)
+    calendar = tuple(day.isoformat() for day in pipeline.sessions_for_day(date.fromisoformat(target)))
+    fixed = [".microcap_index_cache/security_master.csv",
+             "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv"]
+    prefix = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_"
+    fixed += [prefix + suffix for suffix in ("meta.json", "effective_members.csv", "members.csv", "turnover.csv")]
+    trees = [".microcap_index_cache/" + name for name in ("prices_raw", "return_basis", "trade_status")]
+
+    def linked(path):
+        return path.is_symlink() or getattr(path, "is_junction", lambda: False)()
+
+    def inventory():
+        entries = []
+        for relative in fixed:
+            path = root / relative
+            # Linked ancestors can redirect an otherwise identical relative tree.
+            if any(linked(parent) for parent in (path, *path.parents) if parent != root):
+                return None
+            entries.append((relative, "file" if path.is_file() else "missing"))
+        for relative in trees:
+            base = root / relative
+            if linked(base):
+                return None
+            if not base.exists():
+                entries.append((relative, "missing")); continue
+            for folder, dirs, files in os.walk(base, followlinks=False):
+                path = Path(folder)
+                if linked(path) or any(linked(path / name) for name in dirs + files):
+                    return None
+                entries.append((path.relative_to(root).as_posix(), "directory"))
+                entries.extend(((path / name).relative_to(root).as_posix(), "file") for name in files)
+        return sorted(entries)
+
+    before = inventory()
+    if before is None:
+        return None, False
+    digest = hashlib.sha256()
+    digest.update(json.dumps([target, symbols, calendar], separators=(",", ":")).encode())
+    unlocked = True
+    for relative, kind in before:
+        digest.update((relative + "\0" + kind + "\0").encode())
+        if kind == "file":
+            digest.update(_sha256(root / relative).encode())
+            if relative.startswith(".microcap_index_cache/return_basis/locks/"):
+                unlocked = False
+    modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
+    for module in modules:
+        digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
+        # Also invalidate test/runtime replacements of the functions actually used.
+        for name, value in sorted(vars(module).items()):
+            if hasattr(value, "__code__"):
+                digest.update((name + ":" + str(id(value))).encode())
+    if inventory() != before:
+        raise RuntimeError("Return-basis inputs changed during fingerprint scan")
+    return digest.hexdigest(), unlocked
+
+
+def _verify_return_basis_transport_memoized(root: Path, anchor, symbols):
+    from scripts.stock_return_pipeline import verify_return_basis_transport
+    from scripts import stock_return_pipeline as pipeline
+    target = pipeline.pd.Timestamp(anchor).strftime("%Y-%m-%d")
+    requested = tuple(str(symbol).zfill(6) for symbol in symbols)
+    key = str(Path(root).resolve())
+    try:
+        before, unlocked = _return_basis_input_fingerprint(root, target, requested)
+    except Exception:
+        _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
+        raise
+    now = datetime.now(timezone.utc)
+    cached = _RETURN_BASIS_SUCCESS_MEMO.get(key)
+    if before is not None and unlocked and cached is not None and cached[0] == before and now >= cached[1]:
+        _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
+        after, still_unlocked = _return_basis_input_fingerprint(root, target, requested)
+        if after == before and still_unlocked:
+            _RETURN_BASIS_SUCCESS_MEMO[key] = cached
+            return copy.deepcopy(cached[2])
+        # A concurrent change invalidates reuse; verify the new content fully.
+        before, unlocked = after, still_unlocked
+    _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
+    result = verify_return_basis_transport(root, anchor, requested)
+    if before is not None and unlocked:
+        after, still_unlocked = _return_basis_input_fingerprint(root, target, requested)
+        if after != before or not still_unlocked:
+            raise RuntimeError("Return-basis inputs changed during full verification")
+        if result.get("read_only") is True and result.get("verified_count") == len(requested):
+            if len(_RETURN_BASIS_SUCCESS_MEMO) >= 8:
+                _RETURN_BASIS_SUCCESS_MEMO.pop(next(iter(_RETURN_BASIS_SUCCESS_MEMO)))
+            _RETURN_BASIS_SUCCESS_MEMO[key] = (before, datetime.now(timezone.utc), copy.deepcopy(result))
+    return result
+
+
 def validate_state(
     root: Path,
     max_anchor_age_days: int | None = None,
@@ -664,13 +764,12 @@ def validate_state(
         proxy_meta_path = root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json"
         proxy_meta = json.loads(proxy_meta_path.read_text(encoding="utf-8"))
         if proxy_meta.get("core_params", {}).get("stock_return_basis_revision") is not None:
-            from scripts.stock_return_pipeline import verify_return_basis_transport
             from scripts.stock_return_basis import RETURN_BASIS_REVISION
             if proxy_meta["core_params"]["stock_return_basis_revision"] != RETURN_BASIS_REVISION:
                 raise ValueError("Unsupported proxy return-basis revision")
             if price_anchor is None:
                 raise ValueError("Ratio basis has no proxy anchor")
-            verify_return_basis_transport(root, price_anchor, _transport_universe_symbols(root))
+            _verify_return_basis_transport_memoized(root, price_anchor, _transport_universe_symbols(root))
             from scripts.share_change_source import verify_share_cache
             for symbol in _transport_member_symbols(root, require_effective=True):
                 verify_share_cache(root=root, symbol=symbol, as_of=price_anchor)
