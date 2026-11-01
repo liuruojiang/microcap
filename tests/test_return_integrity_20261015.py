@@ -236,6 +236,14 @@ def test_cache_loader_rejects_unverified_legacy_basis_or_invalid_raw(raw_price, 
         paths["SHARE_DIR"], index=False,
     )
     namespace = v20.freq_mod.load_symbol_cache.__globals__
+    # Isolate the rejection stage from the machine's live master/source cache.
+    monkeypatch.setitem(namespace, "ROOT", tmp_path)
+    monkeypatch.setitem(namespace, "load_security_master", lambda: pd.DataFrame({
+        "symbol": ["600000"], "list_date": [pd.Timestamp("1999-11-10")], "delist_date": [pd.NaT],
+    }))
+    from scripts import stock_return_pipeline
+    monkeypatch.setattr(stock_return_pipeline, "sessions_for_day",
+                        lambda cutoff: tuple(pd.bdate_range("2026-01-05", cutoff).date))
     monkeypatch.setitem(namespace, "resolve_cache_path",
                         lambda local, shared, symbol: paths[next(name for name in paths if namespace[name] == local)])
     monkeypatch.setitem(namespace, "load_security_meta", lambda _symbol: {})
@@ -302,6 +310,14 @@ def test_no_adjustment_loader_cannot_launder_unverified_prices_into_a_valid_prox
     pd.DataFrame({"date": dates, "close_raw": prices}).to_csv(raw_path, index=False)
     pd.DataFrame({"change_date": [dates[0]], "total_shares_10k": [1.0]}).to_csv(share_path, index=False)
     namespace = v20.freq_mod.load_symbol_cache.__globals__
+    # Isolate the rejection stage from the machine's live master/source cache.
+    monkeypatch.setitem(namespace, "ROOT", tmp_path)
+    monkeypatch.setitem(namespace, "load_security_master", lambda: pd.DataFrame({
+        "symbol": ["600000"], "list_date": [pd.Timestamp("1999-11-10")], "delist_date": [pd.NaT],
+    }))
+    from scripts import stock_return_pipeline
+    monkeypatch.setattr(stock_return_pipeline, "sessions_for_day",
+                        lambda cutoff: tuple(pd.bdate_range("2026-01-05", cutoff).date))
     monkeypatch.setitem(namespace, "resolve_cache_path", lambda local, shared, symbol:
                         raw_path if local == namespace["PRICE_DIR"] else
                         share_path if local == namespace["SHARE_DIR"] else None)
