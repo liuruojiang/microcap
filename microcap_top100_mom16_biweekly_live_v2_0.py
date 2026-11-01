@@ -12290,7 +12290,7 @@ def _safe_bool(value: object, default: bool = False) -> bool:
 def _apply_terminal_loss_policy(signal_df: pd.DataFrame) -> None:
     # Read the actual base authority; old/unrebuilt histories must never acquire
     # the new valuation label merely because the reporting code was upgraded.
-    meta = _load_v2_base_proxy_meta()
+    meta = overlay_mod._load_v2_base_proxy_meta()
     policy = "delist_zero_writeoff_equal_survivors_v1"
     if (meta.get("delisting_valuation_policy") != policy
             or meta.get("core_params", {}).get("delisting_valuation_policy") != policy):

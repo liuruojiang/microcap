@@ -245,3 +245,13 @@ def test_security_metadata_content_changes_fingerprint(tmp_path, monkeypatch):
     after = v2.base_mod.security_meta_cache_fingerprint()
     assert before["present_count"] == after["present_count"] == 1
     assert before["sha256"] != after["sha256"]
+
+
+@pytest.fixture(autouse=True)
+def rebuilt_terminal_policy_authority(monkeypatch):
+    # These member-action tests assume a rebuilt base; missing-policy rejection
+    # is exercised separately by test_terminal_policy_publication_20261101.
+    import microcap_top100_mom16_biweekly_live_v2_0 as strategy
+    policy = "delist_zero_writeoff_equal_survivors_v1"
+    monkeypatch.setattr(strategy.overlay_mod, "_load_v2_base_proxy_meta",
+            lambda: {"delisting_valuation_policy": policy, "core_params": {"delisting_valuation_policy": policy}})

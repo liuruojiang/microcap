@@ -285,3 +285,13 @@ def test_close_confirmed_member_counts_ignore_stale_static_cache_metadata(tmp_pa
     assert result["member_rebalance_label"] == "名单调仓（调入 13，调出 13）"
     assert result["member_rebalance_signal_date"] == "2026-09-03"
     assert bool(result["member_rebalance_actionable"]) is False
+
+
+@pytest.fixture(autouse=True)
+def rebuilt_terminal_policy_authority(monkeypatch):
+    # These member-action tests assume a rebuilt base; missing-policy rejection
+    # is exercised separately by test_terminal_policy_publication_20261101.
+    import microcap_top100_mom16_biweekly_live_v2_0 as strategy
+    policy = "delist_zero_writeoff_equal_survivors_v1"
+    monkeypatch.setattr(strategy.overlay_mod, "_load_v2_base_proxy_meta",
+            lambda: {"delisting_valuation_policy": policy, "core_params": {"delisting_valuation_policy": policy}})
