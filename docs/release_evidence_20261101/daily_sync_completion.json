@@ -1,0 +1,452 @@
+{
+  "status": "PASS",
+  "scope": "local_and_cloud_daily_deployment_no_new_email",
+  "verified_at": "2026-11-01T13:41:44.540440+00:00",
+  "completed_session": "2026-10-30",
+  "production_core_sha": "1559dba5f0b3349f66e631ac5cc2e83390c3f615",
+  "strategy_checkout_sha": "600286d6db41feeef980a91c0169fa85496bdb86",
+  "automation_sha": "78de9a15361b1e90473cbe45ee1ba35415307be9",
+  "workflow_run": 41304793756,
+  "workflow_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/41304793756",
+  "workflow_conclusion": "success",
+  "workflow_state": "active",
+  "runtime_certificate_sha256": "1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9",
+  "approved_seed_sha256": "8d6af3322aeb693f0bcee2e61281d6389c21b496b8305f3e1f1c27834fdc8664",
+  "local_gates": [
+    {
+      "command": "refresh-all",
+      "ok": true,
+      "expected_date": "2026-10-30",
+      "release_sha": "c8d7f0b254ca0734da0a22b5c6af453a90d5e888",
+      "date_proof_source": null
+    },
+    {
+      "command": "check",
+      "ok": true,
+      "expected_date": "2026-10-30",
+      "release_sha": "c8d7f0b254ca0734da0a22b5c6af453a90d5e888",
+      "date_proof_source": "live_official_history_loader"
+    }
+  ],
+  "local_streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8754,
+      "latest_date": "2026-10-30",
+      "sha256": "4145b9b13a7db7849fc77bc4581880aa9b30c94c415a3dcc5c95e001c5642640"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4083,
+      "latest_date": "2026-10-30",
+      "sha256": "80fc67bf9475f16140d89bb33df43f667587f180c2e122540d023d53442332d1"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4066,
+      "latest_date": "2026-10-30",
+      "sha256": "58d7410fb0f635bf1a15d1add8cb4fae050a43a256b6e085d4ff5951e6e46d72"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 434,
+      "latest_date": "2026-10-29",
+      "sha256": "6aa7ad8e8d825da5c7516b96abc17d95c2da60a6eddfb32620ec24bc36b0d000"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4049,
+      "latest_date": "2026-10-30",
+      "sha256": "a4143b6e9d41a61a7fd61bbd29d92a9be9f3a54ab0b060729333b49dd365b807"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4049,
+      "latest_date": "2026-10-30",
+      "sha256": "a4143b6e9d41a61a7fd61bbd29d92a9be9f3a54ab0b060729333b49dd365b807"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4049,
+      "latest_date": "2026-10-30",
+      "sha256": "cb2451813947e897e9a3641bea5dd640604a5fdd9f191270d9942f627235417a"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-10-30",
+      "sha256": "cfad2a22566043189d3311d898c7415731235809f4193e64486b5bb814294dee"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 4004,
+      "latest_date": "2026-10-30",
+      "sha256": "97f1e5b2995459bd29d975c91bf04c3e7f3b8a88235e71e59fa5ea64bc5b4e18"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 4004,
+      "latest_date": "2026-10-30",
+      "sha256": "97f1e5b2995459bd29d975c91bf04c3e7f3b8a88235e71e59fa5ea64bc5b4e18"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 4004,
+      "latest_date": "2026-10-30",
+      "sha256": "626dfab74ed6b4e08584290bca68ee7aa7625b2ba3a4d0f4327a0da109ea062c"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-10-30",
+      "sha256": "9db7adaf6a07515d2a54b8118339292a74bdfffb99db88765edf59ad555fdf35"
+    },
+    "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 4004,
+      "latest_date": "2026-10-30",
+      "sha256": "b59c8d400ff623116836d62af6578daf0f0271a52c935edb4046fc19ecc02de2"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 4004,
+      "latest_date": "2026-10-30",
+      "sha256": "b59c8d400ff623116836d62af6578daf0f0271a52c935edb4046fc19ecc02de2"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 4004,
+      "latest_date": "2026-10-30",
+      "sha256": "258e63d2ba0aa7b19dbd05c6a0d40ec56fb6d42cbef6d80f27d0b8202be23794"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-10-30",
+      "sha256": "e7bd878e2d1a8de85eb2b0d9e7d0f5b7045ef8eb55f6cccd64825a187663c84a"
+    }
+  },
+  "cloud_whole_delivery": {
+    "ok": true,
+    "expected_date": "2026-10-30",
+    "release_sha": "600286d6db41feeef980a91c0169fa85496bdb86",
+    "bundle": "/home/runner/work/_temp/microcap-whole-delivery-state.zip",
+    "scope": "whole_workspace_delivery",
+    "files": 98844
+  },
+  "versions": {
+    "2_0": {
+      "identity_and_actions_match": true,
+      "identity": {
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "date": "2026-10-30",
+        "signal_timing": "close_confirmed",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "terminal_loss_policy": "delist_zero_writeoff_equal_survivors_v1",
+        "terminal_loss_policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+        "member_rebalance_signal_date": "2026-10-29",
+        "member_rebalance_execution_date": "2026-10-30",
+        "member_rebalance_actionable": "False"
+      },
+      "member_action_fields": {
+        "member_rebalance_state": "rebalance",
+        "member_rebalance_required": "True",
+        "member_rebalance_label": "名单调仓（调入 14，调出 14）",
+        "member_rebalance_signal_date": "2026-10-29",
+        "member_rebalance_execution_date": "2026-10-30",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True"
+      },
+      "local_csv_sha256": "23aa756f9f465cb13deaabd3588320b064599e5307028d7f6a2cc981275a1d1f",
+      "cloud_csv_sha256": "cfad2a22566043189d3311d898c7415731235809f4193e64486b5bb814294dee"
+    },
+    "2_3": {
+      "identity_and_actions_match": true,
+      "identity": {
+        "version": "2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+        "date": "2026-10-30",
+        "signal_timing": "close_confirmed",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "terminal_loss_policy": "delist_zero_writeoff_equal_survivors_v1",
+        "terminal_loss_policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+        "member_rebalance_signal_date": "2026-10-29",
+        "member_rebalance_execution_date": "2026-10-30",
+        "member_rebalance_actionable": "False"
+      },
+      "member_action_fields": {
+        "member_rebalance_state": "rebalance",
+        "member_rebalance_required": "True",
+        "member_rebalance_label": "名单调仓（调入 14，调出 14）",
+        "member_rebalance_signal_date": "2026-10-29",
+        "member_rebalance_execution_date": "2026-10-30",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True"
+      },
+      "local_csv_sha256": "2be81db75d259eed79bd239bb5e42c69726fadfbd272068b18409f928a7b22e8",
+      "cloud_csv_sha256": "9db7adaf6a07515d2a54b8118339292a74bdfffb99db88765edf59ad555fdf35"
+    },
+    "2_5": {
+      "identity_and_actions_match": true,
+      "identity": {
+        "version": "2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "date": "2026-10-30",
+        "signal_timing": "close_confirmed",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "terminal_loss_policy": "delist_zero_writeoff_equal_survivors_v1",
+        "terminal_loss_policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+        "member_rebalance_signal_date": "2026-10-29",
+        "member_rebalance_execution_date": "2026-10-30",
+        "member_rebalance_actionable": "False"
+      },
+      "member_action_fields": {
+        "member_rebalance_state": "rebalance",
+        "member_rebalance_required": "True",
+        "member_rebalance_label": "名单调仓（调入 14，调出 14）",
+        "member_rebalance_signal_date": "2026-10-29",
+        "member_rebalance_execution_date": "2026-10-30",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_official": "True"
+      },
+      "local_csv_sha256": "09d895552fefcb7cd99f8421a580da955a94e7fe4fa80daf6b8dab8805296c6b",
+      "cloud_csv_sha256": "e7bd878e2d1a8de85eb2b0d9e7d0f5b7045ef8eb55f6cccd64825a187663c84a"
+    }
+  },
+  "digest_status": "OK",
+  "mail": {
+    "current_run": "validation_only; Send Gmail skipped; no new SMTP or inbox claim",
+    "additional_acceptance_email_sent": false,
+    "prior_transport_test": {
+      "workflow_run": 40831593852,
+      "delivery_id": "microcap-20261029-noheat-01",
+      "gmail_message_id": "1a18678165c2e298",
+      "scope": "Earlier transport evidence, before the terminal-loss repair; not a new-model inbox proof"
+    }
+  },
+  "trades_placed": false,
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Record workflow start time",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check out automation repository",
+      "conclusion": "success"
+    },
+    {
+      "name": "Set up Python",
+      "conclusion": "success"
+    },
+    {
+      "name": "Resolve publication mode",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check delivery marker",
+      "conclusion": "success"
+    },
+    {
+      "name": "Recover delivery marker from accepted SMTP receipt",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Mark recovered digest delivered",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Check out microcap repository",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check out isolated v2.3 close-confirmed workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check out isolated v2.5 close-confirmed workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Record microcap strategy SHA",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install runtime dependencies",
+      "conclusion": "success"
+    },
+    {
+      "name": "Resolve independent completed session",
+      "conclusion": "success"
+    },
+    {
+      "name": "Restore persistent full rebalance cache",
+      "conclusion": "success"
+    },
+    {
+      "name": "Bootstrap full rebalance cache on cold start",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Validate full rebalance cache",
+      "conclusion": "success"
+    },
+    {
+      "name": "Restore explicitly approved whole state",
+      "conclusion": "success"
+    },
+    {
+      "name": "Restore verified production state bundle",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Validate and restore cached production state",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Restore durable verified production state bundle",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Restore verified production state",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Restore approved release fallback",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Validate recovered full rebalance cache",
+      "conclusion": "success"
+    },
+    {
+      "name": "Resolve same-day static refresh mode",
+      "conclusion": "success"
+    },
+    {
+      "name": "Clear stale signal outputs",
+      "conclusion": "success"
+    },
+    {
+      "name": "Refresh Top100 realtime state",
+      "conclusion": "success"
+    },
+    {
+      "name": "Record refresh failure for digest",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Pack validated production state",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stage validated state bundle for same-day recovery",
+      "conclusion": "success"
+    },
+    {
+      "name": "Preserve validated state bundle for long-gap recovery",
+      "conclusion": "success"
+    },
+    {
+      "name": "Persist validated state bundle for same-day recovery",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Restore state into isolated v2.3 workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Restore state into isolated v2.5 workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Save refreshed full rebalance cache",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Run v2.0 selected signal",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run v2.3 selected signal",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run v2.5 selected signal",
+      "conclusion": "success"
+    },
+    {
+      "name": "Verify and pack all three final deliveries",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build Markdown digest",
+      "conclusion": "success"
+    },
+    {
+      "name": "Persist normal-send intent before SMTP",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Send Gmail",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Preserve accepted SMTP receipt",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Prepare delivery marker",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Preserve verified whole delivery for the next trading day",
+      "conclusion": "success"
+    },
+    {
+      "name": "Mark digest delivered",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Upload signal outputs",
+      "conclusion": "success"
+    },
+    {
+      "name": "Add signal result to job summary",
+      "conclusion": "success"
+    },
+    {
+      "name": "Fail job when signal publication failed",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Post Check out isolated v2.5 close-confirmed workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Check out isolated v2.3 close-confirmed workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Check out microcap repository",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Set up Python",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Check out automation repository",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "pre_handoff_heads": {
+    "strategy": {
+      "local_main": "c8d7f0b254ca0734da0a22b5c6af453a90d5e888",
+      "remote_main": "c8d7f0b254ca0734da0a22b5c6af453a90d5e888"
+    },
+    "automation": {
+      "local_main": "78de9a15361b1e90473cbe45ee1ba35415307be9",
+      "remote_main": "78de9a15361b1e90473cbe45ee1ba35415307be9"
+    },
+    "workflow_strategy_is_reachable_on_remote_main": true
+  }
+}
