@@ -3,9 +3,9 @@
   "lineage_revision": "2026-11-01-st-ratio-delisting-repair",
   "seed_end_date": "2026-10-30",
   "purpose": "Exact migrated 2026-10-30 seed for no-new-rebalance continuation only. Formal numeric/signal replay is verified; whole-delivery/cloud acceptance is separate.",
-  "approved_review_path": "docs/release_evidence_20261101/current100_share_provenance_review.json",
-  "approved_review_sha256": "ab0cd0f57c96b402174c6b7542bc39c2cca8087d2b75183c2a97830c909871d8",
-  "previous_authority_sha256": "0296d24e8891d6f5e76c47b2a656e81339f6a5b57674dfd8efaa1665d95a45b0",
+  "approved_review_path": "docs/release_evidence_20261101/required_union_share_provenance_review.json",
+  "approved_review_sha256": "422ad5b015e88a9024c85c33dde167890b05c5287801a6befe850b3e936a6f2e",
+  "previous_authority_sha256": "48df1ef679a5c87a220a464ab3dd50bb0dc10ddaecd7bc2641f18ff2e5949a33",
   "security_meta_cache_fingerprint": {
     "present_count": 5438,
     "missing_count": 0,
@@ -21,7 +21,7 @@
   "seed_file_sha256": {
     "proxy_index": "80fc67bf9475f16140d89bb33df43f667587f180c2e122540d023d53442332d1",
     "costed_nav": "58d7410fb0f635bf1a15d1add8cb4fae050a43a256b6e085d4ff5951e6e46d72",
-    "proxy_meta": "32c258ad950a6c2d8f80fc4c2f80e7302f32beb7f22bc681c9090984c4eaabef",
+    "proxy_meta": "05b516b74896a73911d7de72a8aa5c84e5de726f34cebc232316640a6175c568",
     "proxy_members": "13fc2763e5eba10fad728ce9ed0d780393d569be748b63f107ddffac35267a70",
     "proxy_turnover": "6aa7ad8e8d825da5c7516b96abc17d95c2da60a6eddfb32620ec24bc36b0d000",
     "proxy_effective_members": "9aba4fd77e037d78fc5673791ef8eb9eab27aa6c67b2e9aad341bd1dc15befdd"

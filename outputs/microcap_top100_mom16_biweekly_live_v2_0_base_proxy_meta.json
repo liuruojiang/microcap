@@ -266,8 +266,8 @@
     "security_master_enabled": true,
     "stock_return_basis_revision": "sina_ratio_ex_reference_v1",
     "stock_input_evidence_fingerprint": {
-      "file_count": 10977,
-      "sha256": "7800f9f04f48b8f72c1f14995407a81fdbb07ef6a4be6151fa61d498d6cffc81",
+      "file_count": 10979,
+      "sha256": "897a4cfe048815016cdb1f72b63e727bf631bee5a2578e2e30378777c18ec034",
       "code": {
         "scripts/stock_input_contract.py": "c2adedc18633f2d5853ea086da95eac52d1877dda64c33a1e346dbb7a6601393",
         "scripts/stock_return_basis.py": "725c07cda707e59ccb62e297ada9a544cf24133fdca9b1d5c69f3f7d6bbb499c",
