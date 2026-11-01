@@ -417,93 +417,83 @@ def fetch_price_history(symbol: str, start_date: str, end_date: str, force_refre
 
 
 def fetch_adjusted_price_history(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
-    cache_path = ADJ_PRICE_CACHE_DIR / f"{symbol}.csv"
-    start_ts = pd.Timestamp(start_date)
-    end_ts = pd.Timestamp(end_date)
-    cached = _read_local_or_shared_cache(cache_path, "date", SHARED_ADJ_PRICE_CACHE_DIR)
-    if (
-        not force_refresh
-        and cached is not None
-        and not cached.empty
-        and cached["date"].min() <= start_ts
-        and cached["date"].max() >= end_ts
-    ):
-        return cached[(cached["date"] >= start_ts) & (cached["date"] <= end_ts)].copy()
-
-    fetch_start_ts = start_ts
-    if cached is not None and not cached.empty and not force_refresh:
-        overlap_start = pd.Timestamp(cached["date"].max()) - pd.Timedelta(days=10)
-        fetch_start_ts = max(start_ts, overlap_start)
-
-    try:
-        frame = _fetch_adjusted_price_history_tx(symbol, fetch_start_ts, end_ts)
-    except Exception:
-        ak = get_akshare()
-        frame = ak.stock_zh_a_hist(
-            symbol=symbol,
-            period="daily",
-            start_date=fetch_start_ts.strftime("%Y%m%d"),
-            end_date=end_date.replace("-", ""),
-            adjust="qfq",
-        )
-        if frame.empty and cached is not None and not cached.empty:
-            return cached[(cached["date"] >= start_ts) & (cached["date"] <= end_ts)].copy()
-        if frame.empty:
-            raise ValueError(f"empty adjusted price history for {symbol}")
-        frame = frame[[COL_DATE, COL_CLOSE]].copy()
-        frame.columns = ["date", "close_qfq"]
-        frame["date"] = pd.to_datetime(frame["date"])
-        frame["close_qfq"] = pd.to_numeric(frame["close_qfq"], errors="coerce")
-        frame = frame.dropna(subset=["close_qfq"]).sort_values("date")
-    merged = _merge_cache_frames(cached, frame, "date")
-    merged.to_csv(cache_path, index=False, encoding="utf-8")
-    return merged[(merged["date"] >= start_ts) & (merged["date"] <= end_ts)].copy()
+    from scripts.stock_return_pipeline import load_return_prices
+    raw_path = PRICE_CACHE_DIR / f"{symbol}.csv"
+    if not raw_path.exists() and SHARED_PRICE_CACHE_DIR is not None:
+        raw_path = SHARED_PRICE_CACHE_DIR / f"{symbol}.csv"
+    master_path = CACHE_DIR / "security_master.csv"
+    if not master_path.exists() and SHARED_CACHE_DIR is not None:
+        master_path = SHARED_CACHE_DIR / "security_master.csv"
+    master = pd.read_csv(master_path, dtype={"symbol": str})
+    frame = load_return_prices(root=ROOT, symbol=symbol, raw_path=raw_path,
+                               master=master, as_of=end_date, allow_network=True)
+    return frame.loc[frame.date.between(pd.Timestamp(start_date), pd.Timestamp(end_date))].copy()
 
 
 def fetch_share_change(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
+    from scripts.share_change_source import refresh_share_change
     cache_path = SHARE_CACHE_DIR / f"{symbol}.csv"
-    start_ts = pd.Timestamp(start_date)
-    end_ts = pd.Timestamp(end_date)
-    cached = _read_local_or_shared_cache(cache_path, "change_date", SHARED_SHARE_CACHE_DIR)
-    if not force_refresh and cached is not None and not cached.empty and cached["change_date"].min() <= end_ts:
-        return cached[cached["change_date"] <= end_ts].copy()
+    if not cache_path.exists() and SHARED_SHARE_CACHE_DIR is not None:
+        shared = SHARED_SHARE_CACHE_DIR / f"{symbol}.csv"
+        if shared.exists():
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            with cache_path.open("xb") as destination:
+                destination.write(shared.read_bytes())
+    return refresh_share_change(root=ROOT, symbol=symbol, cache_path=cache_path,
+                                as_of=end_date, allow_network=True)
 
-    fetch_start_ts = pd.Timestamp("1990-01-01")
-    if cached is not None and not cached.empty and not force_refresh:
-        overlap_start = pd.Timestamp(cached["change_date"].max()) - pd.Timedelta(days=30)
-        fetch_start_ts = max(fetch_start_ts, overlap_start)
 
-    ak = get_akshare()
-    frame = ak.stock_share_change_cninfo(
-        symbol=symbol,
-        start_date=fetch_start_ts.strftime("%Y%m%d"),
-        end_date=end_date.replace("-", ""),
+def select_return_close(
+    symbol: str,
+    raw_close: pd.Series,
+    return_price: pd.DataFrame | None,
+) -> pd.Series:
+    """Select one price basis; partial adjustments cannot be spliced into raw prices."""
+    raw_close = pd.to_numeric(raw_close.sort_index(), errors="coerce").astype(float)
+    if not np.isfinite(raw_close).all() or raw_close.le(0.0).any():
+        raise ValueError(f"raw return-price data for {symbol} must contain finite positive closes")
+    if raw_close.empty:
+        return raw_close.copy()
+    if return_price is None or return_price.empty:
+        raise ValueError(f"Missing verified adjusted return prices for {symbol}")
+    from scripts.stock_return_basis import RETURN_BASIS_REVISION
+    manifest = return_price.attrs.get("return_basis_manifest", {})
+    if (manifest.get("return_basis_revision") != RETURN_BASIS_REVISION
+            or manifest.get("symbol") != str(symbol).zfill(6)
+            or any(len(str(manifest.get(key, ""))) != 64 for key in
+                   ("raw_sha256", "qfq_sha256", "hfq_sha256"))):
+        raise ValueError(f"Unverified return-basis identity for {symbol}")
+    return_col = "close_adj" if "close_adj" in return_price.columns else None
+    if "date" not in return_price.columns or return_col is None:
+        raise ValueError(f"return-price data for {symbol} lacks date or a supported close column")
+    adjusted = return_price[["date", return_col]].copy()
+    adjusted["date"] = pd.to_datetime(adjusted["date"], errors="coerce")
+    if adjusted["date"].isna().any():
+        raise ValueError(f"return-price data for {symbol} contains invalid dates")
+    adjusted = adjusted.loc[adjusted["date"].between(raw_close.index.min(), raw_close.index.max())]
+    if adjusted.empty:
+        raise ValueError(f"No adjusted return prices in range for {symbol}")
+    if adjusted["date"].duplicated().any():
+        raise ValueError(f"return-price data for {symbol} contains duplicate dates")
+    adjusted_close = pd.to_numeric(adjusted.set_index("date")[return_col], errors="coerce").astype(float)
+    if not np.isfinite(adjusted_close).all() or adjusted_close.le(0.0).any():
+        raise ValueError(f"return-price data for {symbol} must contain finite positive closes")
+    aligned = adjusted_close.reindex(raw_close.index)
+    covered = aligned.notna()
+    if covered.all():
+        return adjusted_close.sort_index().rename(raw_close.name)
+    missing_dates = [str(pd.Timestamp(dt).date()) for dt in raw_close.index[~covered][:5]]
+    raise ValueError(
+        f"incomplete adjusted return-price coverage for {symbol}; "
+        f"cannot mix adjusted and raw closes; missing dates={missing_dates}"
     )
-    if frame.empty and cached is not None and not cached.empty:
-        return cached[cached["change_date"] <= end_ts].copy()
-    if frame.empty:
-        raise ValueError(f"empty share change for {symbol}")
-    frame = frame[[COL_CHANGE_DATE, COL_TOTAL_SHARES, COL_REASON]].copy()
-    frame.columns = ["change_date", "total_shares_10k", "reason"]
-    frame["change_date"] = pd.to_datetime(frame["change_date"])
-    frame["total_shares_10k"] = pd.to_numeric(frame["total_shares_10k"], errors="coerce")
-    frame = frame.dropna(subset=["total_shares_10k"]).sort_values("change_date")
-    merged = _merge_cache_frames(cached, frame, "change_date")
-    merged.to_csv(cache_path, index=False, encoding="utf-8")
-    return merged[merged["change_date"] <= end_ts].copy()
 
 
 def build_symbol_panel(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
     price = fetch_price_history(symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh)
-    try:
-        adjusted_price = fetch_adjusted_price_history(
-            symbol=symbol,
-            start_date=start_date,
-            end_date=end_date,
-            force_refresh=force_refresh,
-        )
-    except Exception:
-        adjusted_price = pd.DataFrame(columns=["date", "close_qfq"])
+    adjusted_price = fetch_adjusted_price_history(
+        symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh,
+    )
     shares = fetch_share_change(symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh)
     merged = pd.merge_asof(
         price.sort_values("date"),
@@ -512,19 +502,12 @@ def build_symbol_panel(symbol: str, start_date: str, end_date: str, force_refres
         right_on="change_date",
         direction="backward",
     )
-    if not adjusted_price.empty:
-        merged = pd.merge_asof(
-            merged.sort_values("date"),
-            adjusted_price[["date", "close_qfq"]].sort_values("date"),
-            on="date",
-            direction="backward",
-        )
-    else:
-        merged["close_qfq"] = np.nan
     merged["total_shares"] = merged["total_shares_10k"] * 10000.0
     merged["market_cap"] = merged["close_raw"] * merged["total_shares"]
-    return_close = merged["close_qfq"].where(merged["close_qfq"].notna(), merged["close_raw"])
-    merged["return"] = return_close.pct_change(fill_method=None)
+    return_close = select_return_close(
+        symbol, merged.set_index("date")["close_raw"], adjusted_price,
+    ).reindex(pd.DatetimeIndex(merged["date"]))
+    merged["return"] = return_close.pct_change(fill_method=None).to_numpy()
     merged["symbol"] = symbol
     return merged[["date", "symbol", "close_raw", "market_cap", "return"]].dropna(subset=["market_cap"])
 
@@ -618,6 +601,9 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
                         symbol_panels[key] = panel
                 except Exception as exc:
                     failures[symbol] = str(exc)
+
+    if failures:
+        raise RuntimeError(f"Incomplete price/return-basis universe: {failures}")
 
     if not symbol_panels:
         sample = dict(list(failures.items())[:10])

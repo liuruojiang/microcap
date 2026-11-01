@@ -1,0 +1,38 @@
+{
+  "status": "mirror_body_and_independent_disclosure_verified",
+  "event": {
+    "symbol": "000968",
+    "announcement_id": "1200827048",
+    "notice_date": "2015-04-14",
+    "title": "关于公司债券实行风险警示的公告",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-14/1200827048.PDF",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504130009176195_1.pdf",
+    "body_notice_number": "2015-023",
+    "body_announcement_id": "AN201504130009176195",
+    "body_provider_title": "煤气化:关于公司债券实行风险警示的公告",
+    "relative_pdf_path": "000968_1200827048_eastmoney.pdf",
+    "sha256": "9900ece2337a2acd0ca31e5b71a6e5327beee3ffc0a94e091aa1eaeafd577c4e",
+    "risk_actions": {},
+    "actual_effective_date": "2015-04-15"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "000968_20150414_cninfo_response.json",
+      "sha256": "09f770211db6139d82e262312ac2211d8abf9401fcbd1b607cf922891bcdf8fa"
+    },
+    "mirror_response": {
+      "relative_path": "000968_20150414_eastmoney_response.json",
+      "sha256": "115e44b22d984d3e0688f814a348339598f4ce101d262077759e1b2cc12b529d"
+    },
+    "crosscheck": {
+      "relative_path": "000968_2015_annual_report.pdf",
+      "sha256": "adfcb5ef1067aef04104611651c61017bd9055883b091a648db0efab2b07ea7a",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2016-03-18/1202055233.PDF"
+    },
+    "failure_record": {
+      "relative_path": "000968_20150414_original_failure.json",
+      "sha256": "29cac791935e8ebdbd48727996f25552b3ecfaac729374da5296f5c950675468"
+    }
+  },
+  "review_notes": "Mirror PDF pages 1-2 identify 000968, notice 2015-023, and bonds only. Annual report page 30 confirms title and disclosure date. Provider identities remain distinct."
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000156",
+    "announcement_id": "AN201210110005526883",
+    "notice_date": "2012-10-12",
+    "title": "关于公司股票撤销退市风险警示的公告",
+    "provider_title": "*ST嘉瑞：关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST嘉瑞：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201210110005526883_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201210110005526883_1.pdf",
+    "body_notice_number": "2012-094",
+    "relative_pdf_path": "AN201210110005526883.pdf",
+    "sha256": "d9cc2b334cbd8141f74aebe0966953b7a64745b95932dc46cd25afd950d4a8dc",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-10-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201210110005526883_api.json",
+      "sha256": "fcdaf91f43e2270f76a6baa675274dd89318fee6c87624fb3e47288dce0cc592",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文末段明确不存在其他特别处理，交易所核准10月19日撤退市风险并恢复普通华数传媒。"
+}

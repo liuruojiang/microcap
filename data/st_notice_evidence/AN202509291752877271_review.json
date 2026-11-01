@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300506",
+    "announcement_id": "AN202509291752877271",
+    "notice_date": "2025-09-30",
+    "title": "关于法院裁定受理公司重整及公司股票停牌一天暨将被实施退市风险警示的公告",
+    "provider_title": "ST名家汇:关于法院裁定受理公司重整及公司股票停牌一天暨将被实施退市风险警示的公告",
+    "removed_issuer_prefix": "ST名家汇:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202509291752877271_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202509291752877271_1.pdf",
+    "body_notice_number": "2025-079",
+    "relative_pdf_path": "AN202509291752877271.pdf",
+    "sha256": "98512351077692d8552765e5464f44d72286ee8783f6d965319808effe09c737",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2025-10-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202509291752877271_api.json",
+      "sha256": "ffd6fe48d9d1e9db8c91f30584c53c36852c26a61fb6eb30968c3226a0669959",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：重整受理后10/9复牌实施退市风险；风险提示第三节仍已实施其他风险，未获撤销。"
+}

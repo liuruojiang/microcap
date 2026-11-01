@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600265",
+    "announcement_id": "AN202603301820856824",
+    "notice_date": "2026-03-31",
+    "title": "关于公司股票将被实施退市风险警示的第三次风险提示公告",
+    "provider_title": "ST景谷:关于公司股票将被实施退市风险警示的第三次风险提示公告",
+    "removed_issuer_prefix": "ST景谷:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603301820856824_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603301820856824_1.pdf",
+    "body_notice_number": "2026-009",
+    "relative_pdf_path": "AN202603301820856824.pdf",
+    "sha256": "cb482f7973f5e4d633487b18d0730207952350a2a684dd6fd94c53a845bb3a73",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202603301820856824_api.json",
+      "sha256": "fdf6a5370f0f1579b2951bc2bb833994d53372e8463bd2e7b29d36227df65c09",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：初步测算，原文如年度经审计数据触及条件，将于年报后实施；并非当前决定。"
+}

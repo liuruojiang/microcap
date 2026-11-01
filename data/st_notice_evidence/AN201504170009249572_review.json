@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002123",
+    "announcement_id": "AN201504170009249572",
+    "notice_date": "2015-04-18",
+    "title": "关于2013年公司债券(13荣信01)实行风险警示的公告",
+    "provider_title": "荣信股份:关于2013年公司债券(13荣信01)实行风险警示的公告",
+    "removed_issuer_prefix": "荣信股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504170009249572_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504170009249572_1.pdf",
+    "body_notice_number": "2015-034",
+    "relative_pdf_path": "AN201504170009249572.pdf",
+    "sha256": "43f63a3dca64a2f8a765295f709b1e728001370c71976682a44072292d035014",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504170009249572_api.json",
+      "sha256": "023eecc57e15d37b628f857e986a01f54d2256e8446704b3e9a924d0fa4e1440",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份核对债券112145、13荣信01风险警示或可能风险；措施只作用公司债券，不改变002123股票状态。"
+}

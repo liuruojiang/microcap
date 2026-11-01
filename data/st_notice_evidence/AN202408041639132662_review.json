@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002316",
+    "announcement_id": "AN202408041639132662",
+    "notice_date": "2024-08-05",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "亚联发展:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "亚联发展:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202408041639132662_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202408041639132662_1.pdf",
+    "body_notice_number": "2024-034",
+    "relative_pdf_path": "AN202408041639132662.pdf",
+    "sha256": "dcaab0a4141fbd79bbfadb17fe8b19d547426fe58e05c050d4ed8033b76a9ba1",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-08-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202408041639132662_api.json",
+      "sha256": "7854a37d0dc24150c1134a173ef26eb8c9c4001a9a904692393ec879447febf9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确亚联发展8月6日起改ST亚联，实施其他风险。"
+}

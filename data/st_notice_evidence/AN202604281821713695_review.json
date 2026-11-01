@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300594",
+    "announcement_id": "AN202604281821713695",
+    "notice_date": "2026-04-29",
+    "title": "山东朗进科技股份有限公司关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "朗进科技:山东朗进科技股份有限公司关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "朗进科技:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604281821713695_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604281821713695_1.pdf",
+    "body_notice_number": "2026-031",
+    "relative_pdf_path": "AN202604281821713695.pdf",
+    "sha256": "83ef4c290b9ec53140ec1aae3f3b501757cef1cacd9203fbbf47cca5a8bc7f7a",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604281821713695_api.json",
+      "sha256": "19e201a1b03456e7d5c569aa8c072fea262abadf11e34497c7336a342b6af397",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月30日other，ST朗进20%。"
+}

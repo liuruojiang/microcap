@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000750",
+    "announcement_id": "AN201203020004883426",
+    "notice_date": "2011-08-06",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "SST集琦：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "SST集琦：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004883426_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004883426_1.pdf",
+    "body_notice_number": "2011-040",
+    "relative_pdf_path": "AN201203020004883426.pdf",
+    "sha256": "5c2fe66be787259cad6949c1835a23f211e53096c51e236317488eb6d7e12fc6",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-08-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004883426_api.json",
+      "sha256": "eda6163ffee3722665a65a9130c82037912ce6e805a1a22a4365a5a09e572d48",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文回溯已于2010年撤销退市风险，此次获准撤销其他特别处理，8月9日复牌及SST集琦改普通国海证券，所有风险状态退出。"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000979",
+    "announcement_id": "AN201202290004552669",
+    "notice_date": "2010-03-16",
+    "title": "关于撤销股票交易退市风险警示及变更股票简称的公告",
+    "provider_title": "*ST科苑：关于撤销股票交易退市风险警示及变更股票简称的公告",
+    "removed_issuer_prefix": "*ST科苑：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202290004552669_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202290004552669_1.pdf",
+    "body_notice_number": "2010-21",
+    "relative_pdf_path": "AN201202290004552669.pdf",
+    "sha256": "b69829044f8c56b3946e6c95a2868d6488e9ffb4e993d653eb8be6afb989a1e3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2010-03-17"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202290004552669_api.json",
+      "sha256": "518e2964b4b849ef93dac4707887fc9a6e40b4c82ac63cf95925428a93c4e477",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Explicit absence of other treatment, actual normal name and 10% limit; clear both. Date missing 日 in original literal sentence corroborated by explicit resumption date. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_long34_price17_candidates_20261101.json"
+}

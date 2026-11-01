@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300446",
+    "announcement_id": "AN202009071408895394",
+    "notice_date": "2020-09-07",
+    "title": "关于公司股票将被实施其他风险警示(ST)的提示公告",
+    "provider_title": "乐凯新材:关于公司股票将被实施其他风险警示(ST)的提示公告",
+    "removed_issuer_prefix": "乐凯新材:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009071408895394_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009071408895394_1.pdf",
+    "body_notice_number": "2020-063",
+    "relative_pdf_path": "AN202009071408895394.pdf",
+    "sha256": "09d9931b105dcb6af38177d0f16b11d871ee938c59a2f9da21319f9065db363e",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202009071408895394_api.json",
+      "sha256": "ccff56cfdef008e6b9f588cfd2aedc6546c1c9e579184ee9ae67c66aeccd25b5",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文已明确生产经营停产触及other情形，且新规则9月12日实施后公司将被实施ST，并非未来财报是否亏损的条件预警；公告日口径记other入场，但原件未列精确实施交易日，actual_effective_date=null。后续9月14日另有正式实施公告，未将其日期反填本条。"
+}

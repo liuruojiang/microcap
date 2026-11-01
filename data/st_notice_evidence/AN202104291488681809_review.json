@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300269",
+    "announcement_id": "AN202104291488681809",
+    "notice_date": "2021-04-30",
+    "title": "关于公司股票将被实施其他风险警示的提示性公告暨停牌公告",
+    "provider_title": "联建光电:关于公司股票将被实施其他风险警示的提示性公告暨停牌公告",
+    "removed_issuer_prefix": "联建光电:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104291488681809_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104291488681809_1.pdf",
+    "body_notice_number": "2021-048",
+    "relative_pdf_path": "AN202104291488681809.pdf",
+    "sha256": "36f5b2195dfe1a6af9daf46142be09511a5051fb8b7726e40e10b45ea6a50f01",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2021-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202104291488681809_api.json",
+      "sha256": "2b06f3aaeed7de1fc030fc50cdd7f7b4386bbae20eb8076a5c68d6a9d974a3cb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月6日其他风险改ST联建；明细代码多印一位3000269，页首/特别提示/API均300269，保留原字节。"
+}

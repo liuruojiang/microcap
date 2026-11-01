@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600817",
+    "announcement_id": "AN201702200353969827",
+    "notice_date": "2017-02-21",
+    "title": "*ST宏盛:立信会计师对《关于对西安宏盛科技发展股份有限公司未及时披露将被实施退市风险警示提示公告事项的问询函》有关问题的专项说明",
+    "provider_title": "600817:*ST宏盛:立信会计师对《关于对西安宏盛科技发展股份有限公司未及时披露将被实施退市风险警示提示公告事项的问询函》有关问题的专项说明",
+    "removed_issuer_prefix": "600817:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702200353969827_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702200353969827_1.pdf",
+    "body_notice_number": "信会师函字[2017]第ZA116号",
+    "relative_pdf_path": "AN201702200353969827.pdf",
+    "sha256": "5080292829cec423d4f8bb109f164aec3f92b683ae2e2ebe7700cd1238344cfc",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201702200353969827_api.json",
+      "sha256": "9024f3092a2c112f6baa62705799a42daa56c4d1c3c0cd7ea723f97017d23c58",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "扫描PDF三页已逐页目视核验：立信对上证公函[2017]0174号的问题二、三回复，解释2016营收差异和未完成审计；第二页明确最终审计结果及意见尚未形成，第三页盖章落款2017年2月17日。非股票实施/撤销公告，无状态动作，API公开日2月21日保留。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000037",
+    "announcement_id": "AN201603310014180518",
+    "notice_date": "2016-04-01",
+    "title": "关于公司股票将被实行退市风险警示的公告",
+    "provider_title": "深南电A:关于公司股票将被实行退市风险警示的公告",
+    "removed_issuer_prefix": "深南电A:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603310014180518_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603310014180518_1.pdf",
+    "body_notice_number": "2016-015",
+    "relative_pdf_path": "AN201603310014180518.pdf",
+    "sha256": "6ad59e818e39737afebbdbd1ecd64ef2ed82274238dc97fc2f147f9a6e6dd243",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2016-04-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201603310014180518_api.json",
+      "sha256": "4707937cf0e7d417b116179bdbe9f047365da1b1bb5e070f3985af942c21bfb7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐页全文与已审CNInfo 1202123377 原件完全相同，PDF字节不同单独保留；沿用经全文核验动作。"
+}

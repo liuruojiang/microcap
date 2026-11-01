@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300965",
+    "announcement_id": "AN202404241631185490",
+    "notice_date": "2024-04-25",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌一天的公告",
+    "provider_title": "恒宇信通:关于公司股票交易将被实施退市风险警示暨股票停牌一天的公告",
+    "removed_issuer_prefix": "恒宇信通:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404241631185490_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404241631185490_1.pdf",
+    "body_notice_number": "2024-028",
+    "relative_pdf_path": "AN202404241631185490.pdf",
+    "sha256": "6801fe4d22d4c95a124828e2c4765f6f5c4db2693780343e752f2406e0267d4d",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2024-04-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404241631185490_api.json",
+      "sha256": "f610eb65443da2e42ff7893a087f8fb24795b31cb5968bd716a62bf124435090",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月26日退市风险，*ST恒宇20%。"
+}

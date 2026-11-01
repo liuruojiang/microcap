@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600532",
+    "announcement_id": "AN201212060005634937",
+    "notice_date": "2012-12-07",
+    "title": "关于申请撤销股票退市风险警示的公告",
+    "provider_title": "*ST华科：关于申请撤销股票退市风险警示的公告",
+    "removed_issuer_prefix": "*ST华科：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201212060005634937_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201212060005634937_1.pdf",
+    "body_notice_number": "2012-044",
+    "relative_pdf_path": "AN201212060005634937.pdf",
+    "sha256": "f2a34dacf615e18283be95e35dd35a3483aa6478f891592ac5b3646311526ff3",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201212060005634937_api.json",
+      "sha256": "c923fd3ee71851a5f53a69d04f7a458b4e4e7fa7cddd97fef2be6d70c0e6e3c6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际公告正文逐项核对；申请待批不作撤销。600145虽标题含申请，正文已有批准及实施安排；600209关键决定在原件第一页，后附财务报告。公告日保留原始接口字段，正文落款及实施日分别记录。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_long34_root17_bodies_20261101/adjudication.json"
+}

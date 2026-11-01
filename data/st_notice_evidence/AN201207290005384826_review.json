@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000863",
+    "announcement_id": "AN201207290005384826",
+    "notice_date": "2012-07-30",
+    "title": "关于公司股票撤销退市风险警示的公告",
+    "provider_title": "*ST 商务：关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST 商务：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201207290005384826_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201207290005384826_1.pdf",
+    "body_notice_number": "2012-034",
+    "relative_pdf_path": "AN201207290005384826.pdf",
+    "sha256": "32afd9946b7b947f628e0dd23ecfea73425ad06e86131025719d406984c96c6f",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201207290005384826_api.json",
+      "sha256": "548d39e987f157e11475427b249d1f9ca57f7e9fbdc8ab9c6a6bb54add2fd662",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确不存在其他特别处理，交易所核准撤退市风险改普通三湘股份。"
+}

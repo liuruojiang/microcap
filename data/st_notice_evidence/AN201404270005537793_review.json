@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000953",
+    "announcement_id": "AN201404270005537793",
+    "notice_date": "2014-04-28",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST河化:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST河化:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404270005537793_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404270005537793_1.pdf",
+    "body_notice_number": "2014-021",
+    "relative_pdf_path": "AN201404270005537793.pdf",
+    "sha256": "5523cd5919482dc939647c19985b3d34daec1181cda9ddb8982436104c353b0f",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404270005537793_api.json",
+      "sha256": "32ecc95a622e91655b85b87393720ad7c4554210fe237cf188147a335616a179",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "已核原文对应股票代码/发行人、核准段和实施段：交易所已批准撤销，恢复普通名称及10%涨跌幅，完整退出ST风险；不将标题未提其他风险误解为保留旧类别。正文回顾不倒填历史公开日期。"
+}

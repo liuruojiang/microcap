@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600136",
+    "announcement_id": "AN202603201820669490",
+    "notice_date": "2026-03-21",
+    "title": "公司关于公司股票将被继续实施其他风险警示的公告",
+    "provider_title": "ST明诚:公司关于公司股票将被继续实施其他风险警示的公告",
+    "removed_issuer_prefix": "ST明诚:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603201820669490_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603201820669490_1.pdf",
+    "body_notice_number": "2026-007",
+    "relative_pdf_path": "AN202603201820669490.pdf",
+    "sha256": "9646b98f4ec65aa2eed3aafa2afa1feed14b8aa26e17e399418c51df9685130b",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-03-20"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202603201820669490_api.json",
+      "sha256": "d6b2873dc6887c8088a0dfb43a1e5562f9ee871d7c3bf21a6513b280a61a0e9d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：正文明确自收到2026-03-20处罚决定日起继续其他警示。"
+}

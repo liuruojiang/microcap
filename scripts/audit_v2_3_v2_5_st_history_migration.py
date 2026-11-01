@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import argparse
+from datetime import date
 import json
 import sys
 from pathlib import Path
@@ -14,7 +16,7 @@ if str(ROOT) not in sys.path:
 import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
 import microcap_top100_mom16_biweekly_live_v2_3 as v2_3
 import microcap_top100_mom16_biweekly_live_v2_5 as v2_5
-from scripts.audit_v2_st_history_migration import member_st_audit, performance_windows, sha256_path
+from scripts.audit_v2_st_history_migration import member_st_audit, performance_windows, preparation_decision, sha256_path
 
 
 OUTPUT_DIR = ROOT / "outputs"
@@ -28,7 +30,7 @@ def build_candidate(module, version: str) -> pd.DataFrame:
     return getattr(module, f"build_v2_{version[-1]}_result")(close_df, turnover, common_index)
 
 
-def audit_version(module, version: str) -> dict[str, object]:
+def audit_version(module, version: str, expected_date: str) -> dict[str, object]:
     suffix = version.split(".", 1)[1]
     previous_path = module.COSTED_NAV_CSV
     previous = module._read_costed_nav_csv(parse_dates=["date"])
@@ -50,8 +52,9 @@ def audit_version(module, version: str) -> dict[str, object]:
                 f"V2_{suffix}_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN",
             ),
         )
-    except RuntimeError:
-        pass
+    except RuntimeError as exc:
+        if "historical rewrite detected on frozen dates" not in str(exc):
+            raise
     if not audit_path.exists():
         raise RuntimeError(f"v{version} migration audit CSV was not written")
 
@@ -67,13 +70,14 @@ def audit_version(module, version: str) -> dict[str, object]:
         v2_0.overlay_mod._read_costed_nav_csv(v2_0.COSTED_NAV_CSV),
         "v2.0 official migration anchor",
     )
-    approved = bool(
+    ready = bool(
         new_member_audit["st_violations"] == 0
         and new_member_audit["bad_policy_count"] == 0
+        and new_member_audit["invalid_member_period_count"] == 0
         and proxy_meta_matches
-        and candidate_norm.index.max() == pd.Timestamp("2026-08-20")
+        and candidate_norm.index.max() == pd.Timestamp(expected_date)
         and len(previous_norm.index.difference(candidate_norm.index)) == 0
-        and pd.Timestamp(v2_0_official.index.max()) == pd.Timestamp("2026-08-20")
+        and pd.Timestamp(v2_0_official.index.max()) == pd.Timestamp(expected_date)
     )
     candidate_path = OUTPUT_DIR / f"microcap_top100_v2_{suffix}_audited_history_migration_candidate.csv"
     report_path = OUTPUT_DIR / f"microcap_top100_v2_{suffix}_audited_history_migration_report.json"
@@ -81,8 +85,8 @@ def audit_version(module, version: str) -> dict[str, object]:
     report = {
         "schema_version": 1,
         "version": version,
-        "approved": approved,
-        "approval_reason": "Exact-hash downstream migration after the fully audited v2.0 ST and historical-universe rebuild.",
+        **preparation_decision(ready),
+        "expected_date": expected_date,
         "previous_costed_nav": str(previous_path),
         "previous_costed_nav_sha256": sha256_path(previous_path),
         "candidate_csv": str(candidate_path),
@@ -114,13 +118,17 @@ def audit_version(module, version: str) -> dict[str, object]:
 
 
 def main() -> None:
-    results = [audit_version(v2_3, "2.3"), audit_version(v2_5, "2.5")]
+    parser = argparse.ArgumentParser(description="Prepare downstream exact-hash reports without granting approval")
+    parser.add_argument("--expected-date", type=lambda value: date.fromisoformat(value).isoformat(), required=True)
+    args = parser.parse_args()
+    results = [audit_version(v2_3, "2.3", args.expected_date), audit_version(v2_5, "2.5", args.expected_date)]
     print(
         json.dumps(
             [
                 {
                     "version": item["version"],
                     "approved": item["approved"],
+                    "ready_for_review": item["ready_for_review"],
                     "previous_row_count": item["previous_row_count"],
                     "candidate_row_count": item["candidate_row_count"],
                     "candidate_latest_date": item["candidate_latest_date"],
@@ -134,7 +142,7 @@ def main() -> None:
             indent=2,
         )
     )
-    if not all(bool(item["approved"]) for item in results):
+    if not all(bool(item["ready_for_review"]) for item in results):
         raise SystemExit(2)
 
 

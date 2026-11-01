@@ -1,0 +1,221 @@
+[
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000008/page_001.json",
+      "index": 86
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003001",
+        "column_name": "实施其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202270004175035",
+    "issuer_symbol": "000008",
+    "notice_date": "2007-03-29",
+    "provider_notice_date": "2007-03-29 00:00:00",
+    "provider_title": "宝 利 来：董事会关于股票交易实行退市风险警示特别处理的公告",
+    "title": "董事会关于股票交易实行退市风险警示特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "宝 利 来："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004175035_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004175035_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000008/page_002.json",
+      "index": 13
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202260003878310",
+    "issuer_symbol": "000008",
+    "notice_date": "2005-02-21",
+    "provider_notice_date": "2005-02-21 00:00:00",
+    "provider_title": "ST 亿 安：董事会关于撤销股票交易特别处理的公告",
+    "title": "董事会关于撤销股票交易特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST 亿 安："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003878310_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003878310_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000008/page_002.json",
+      "index": 40
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202260003781182",
+    "issuer_symbol": "000008",
+    "notice_date": "2004-02-19",
+    "provider_notice_date": "2004-02-19 00:00:00",
+    "provider_title": "*ST 亿安：董事会关于撤销退市风险警示的公告",
+    "title": "董事会关于撤销退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST 亿安："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003781182_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003781182_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000008/page_002.json",
+      "index": 64
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202250003687870",
+    "issuer_symbol": "000008",
+    "notice_date": "2003-04-30",
+    "provider_notice_date": "2003-04-30 00:00:00",
+    "provider_title": "ST 亿 安：关于股票交易实行退市风险警示特别处理的公告",
+    "title": "关于股票交易实行退市风险警示特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST 亿 安："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003687870_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003687870_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000008/page_002.json",
+      "index": 91
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002002001001",
+        "column_name": "分配预案"
+      },
+      {
+        "column_code": "001002004003",
+        "column_name": "特别处理"
+      },
+      {
+        "column_code": "001002005001002",
+        "column_name": "公司名称变更"
+      },
+      {
+        "column_code": "001002005001009",
+        "column_name": "公司章程修正"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202250003626503",
+    "issuer_symbol": "000008",
+    "notice_date": "2002-04-28",
+    "provider_notice_date": "2002-04-28 00:00:00",
+    "provider_title": "亿安科技：通过2001年度利润分配方案等",
+    "title": "通过2001年度利润分配方案等",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "亿安科技："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003626503_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003626503_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000008/page_023.json",
+      "index": 62
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003005",
+        "column_name": "撤销退市风险警示"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201304170003183007",
+    "issuer_symbol": "000008",
+    "notice_date": "2013-04-18",
+    "provider_notice_date": "2013-04-18 00:00:00",
+    "provider_title": "ST宝利来:董事会关于撤销公司股票交易其他风险警示的提示性公告",
+    "title": "董事会关于撤销公司股票交易其他风险警示的提示性公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST宝利来:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304170003183007_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304170003183007_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000008/page_023.json",
+      "index": 73
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201303280005817804",
+    "issuer_symbol": "000008",
+    "notice_date": "2013-03-29",
+    "provider_notice_date": "2013-03-29 00:00:00",
+    "provider_title": "ST宝利来：关于提交撤销股票交易特别处理申请的公告",
+    "title": "关于提交撤销股票交易特别处理申请的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST宝利来："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303280005817804_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303280005817804_1.pdf"
+  },
+  {
+    "notice_date": "2013-03-29",
+    "title": "关于提交撤销股票交易特别处理申请的公告",
+    "announcement_id": "62296782",
+    "issuer_symbol": "000008",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2013-03-29/62296782.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000008_11.json",
+      "index": 0
+    }
+  },
+  {
+    "notice_date": "2013-04-18",
+    "title": "董事会关于撤销公司股票交易其他风险警示的提示性公告",
+    "announcement_id": "62377551",
+    "issuer_symbol": "000008",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2013-04-18/62377551.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000008_10.json",
+      "index": 0
+    }
+  }
+]

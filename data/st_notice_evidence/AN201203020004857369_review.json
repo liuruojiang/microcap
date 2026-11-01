@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600080",
+    "announcement_id": "AN201203020004857369",
+    "notice_date": "2011-07-05",
+    "title": "关于撤销退市风险警示并实施其他特别处理的公告",
+    "provider_title": "*ST金花：关于撤销退市风险警示并实施其他特别处理的公告",
+    "removed_issuer_prefix": "*ST金花：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004857369_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004857369_1.pdf",
+    "body_notice_number": "2011-017",
+    "relative_pdf_path": "AN201203020004857369.pdf",
+    "sha256": "b12cb14e0d7c44a0ab9227ce3adf94b5604ccc93f3012aaee039e079a2707389",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-07-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004857369_api.json",
+      "sha256": "d69b2c905e3e5f87aa1fc3ad31517e010e01d499603994e3696beb5b87965771",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

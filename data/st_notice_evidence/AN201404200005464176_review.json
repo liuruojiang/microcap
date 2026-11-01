@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000035",
+    "announcement_id": "AN201404200005464176",
+    "notice_date": "2014-04-21",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST科健:关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST科健:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404200005464176_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404200005464176_1.pdf",
+    "body_notice_number": "KJ2014-13",
+    "relative_pdf_path": "AN201404200005464176.pdf",
+    "sha256": "64c2e1f926582a7e8060ebfc288aff7d737c8b0c317dcf1fcd2f927cbd4f7109",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-04-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404200005464176_api.json",
+      "sha256": "a3d898a492e2c6ece96c82793766bd6fec8667afd7c1eab2aeebd6dac5472da1",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐页全文与已审CNInfo 63872302 原件完全相同，PDF字节不同单独保留；沿用经全文核验动作。"
+}

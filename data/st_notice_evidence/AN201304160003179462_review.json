@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000971",
+    "announcement_id": "AN201304160003179462",
+    "notice_date": "2013-04-17",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST迈亚:关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST迈亚:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304160003179462_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304160003179462_1.pdf",
+    "body_notice_number": "2013-31",
+    "relative_pdf_path": "AN201304160003179462.pdf",
+    "sha256": "f20caeff72cd64c6bdf3ec7d04b6b86afbbb5055dbd3c726701f7f9d454298fd",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304160003179462_api.json",
+      "sha256": "1918937d662f49e3516f8870a868de2852191642a81ea356d20c1da35171b580",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

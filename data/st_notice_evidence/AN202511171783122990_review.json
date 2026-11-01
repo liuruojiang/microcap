@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300159",
+    "announcement_id": "AN202511171783122990",
+    "notice_date": "2025-11-18",
+    "title": "关于法院裁定受理公司及子公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST新研:关于法院裁定受理公司及子公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST新研:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202511171783122990_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202511171783122990_1.pdf",
+    "body_notice_number": "2025-065",
+    "relative_pdf_path": "AN202511171783122990.pdf",
+    "sha256": "60784c2a9661672964bb0b3145060049c28f75482a578125d462cafa1bb88f87",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2025-11-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202511171783122990_api.json",
+      "sha256": "54dd26c2eafce5ba987c79208ddcc77e063613d553441e97824d6cdcc7f264cb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：特别提示明确11/18叠加退市风险，原年度净资产负已退市风险；未推断其他类别。"
+}

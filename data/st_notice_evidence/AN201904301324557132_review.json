@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600654",
+    "announcement_id": "AN201904301324557132",
+    "notice_date": "2019-04-30",
+    "title": "ST中安关于公司股票将被实施退市风险警示暨停牌的公告",
+    "provider_title": "600654:ST中安关于公司股票将被实施退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600654:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904301324557132_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904301324557132_1.pdf",
+    "body_notice_number": "2019-023",
+    "relative_pdf_path": "AN201904301324557132.pdf",
+    "sha256": "781e7c45e70d791231897625c65e5880d11900253ae52f692ea5164e2c9d3256",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2019-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201904301324557132_api.json",
+      "sha256": "3e3eb7f0f1182fccc3189b83c17df4e77469759f1e65aa2b01b7cac2b1ff9ee2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "经审计连续两年亏损已确认，正文多处明确2019年5月6日实施退市风险，保留API公告4月30日而非落款4月29日。"
+}

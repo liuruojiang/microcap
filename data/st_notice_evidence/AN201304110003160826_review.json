@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600301",
+    "announcement_id": "AN201304110003160826",
+    "notice_date": "2013-04-12",
+    "title": " 南化股份关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "provider_title": "600301 : 南化股份关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "removed_issuer_prefix": "600301 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304110003160826_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304110003160826_1.pdf",
+    "body_notice_number": "临2013-08",
+    "relative_pdf_path": "AN201304110003160826.pdf",
+    "sha256": "90f1a3202f84f95ad0c8c3e36183466caee6864d204ee46b042ea3b8c07501ce",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304110003160826_api.json",
+      "sha256": "873cae3acc3bec844b491db1c5b25ecabde197db8a41de612ca8f43c36829a22",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "第三次提示仍是若2012年度亏损、年报后将实施的条件预警，不作动作。"
+}

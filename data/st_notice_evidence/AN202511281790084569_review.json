@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002689",
+    "announcement_id": "AN202511281790084569",
+    "notice_date": "2025-11-29",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "远大智能:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "远大智能:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202511281790084569_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202511281790084569_1.pdf",
+    "body_notice_number": "2025-050",
+    "relative_pdf_path": "AN202511281790084569.pdf",
+    "sha256": "4e930d4e75d95564185033bfa788b109284961e3547e76295c04558240b111ea",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-12-02"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202511281790084569_api.json",
+      "sha256": "b578e78881cd05907805e36807ec1163f62e1a83e2390dae526d2f271313a110",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

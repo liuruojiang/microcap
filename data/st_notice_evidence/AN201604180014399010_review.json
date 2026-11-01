@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000059",
+    "announcement_id": "AN201604180014399010",
+    "notice_date": "2016-04-19",
+    "title": "关于公司撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST华锦:关于公司撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST华锦:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604180014399010_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604180014399010_1.pdf",
+    "body_notice_number": "2016-025",
+    "relative_pdf_path": "AN201604180014399010.pdf",
+    "sha256": "3809d8c6cb361dbb6882f875a5ed3b80449f72a0e3791d981be48670086ce7d1",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2016-04-20"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201604180014399010_api.json",
+      "sha256": "47b1590104718edef285582629fb388ec09bf9558ee80cb76d8cc4a06db052fe",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐页全文与已审CNInfo 1202194101 原件完全相同，PDF字节不同单独保留；沿用经全文核验动作。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600397",
+    "announcement_id": "AN201804171124571495",
+    "notice_date": "2018-04-18",
+    "title": "安源煤业关于公司股票被实施退市风险警示和公司债券可能被暂停交易的公告",
+    "provider_title": "600397:安源煤业关于公司股票被实施退市风险警示和公司债券可能被暂停交易的公告",
+    "removed_issuer_prefix": "600397:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201804171124571495_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201804171124571495_1.pdf",
+    "body_notice_number": "2018-023",
+    "relative_pdf_path": "AN201804171124571495.pdf",
+    "sha256": "ad867c9d8406fa9a05ae411bbedd4a42391d8333bc4f23bb8470f593072ec403",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2018-04-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201804171124571495_api.json",
+      "sha256": "45a8b5247a0c785e6c81de17aeeb3a450f4687752a492d75a940cbc67b0531eb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "经审计连续亏损已确认，正文明确4月19日股票退市风险；债券暂停可能性不混为股票主体。"
+}

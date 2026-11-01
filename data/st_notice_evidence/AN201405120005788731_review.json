@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000017",
+    "announcement_id": "AN201405120005788731",
+    "notice_date": "2014-05-13",
+    "title": "关于股票交易撤销退市风险警示的公告",
+    "provider_title": "*ST中华A:关于股票交易撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST中华A:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201405120005788731_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201405120005788731_1.pdf",
+    "body_notice_number": "2014-015",
+    "relative_pdf_path": "AN201405120005788731.pdf",
+    "sha256": "b7ced66e69a8968e93b9cdfca93ef70c053792938cffb2cbd56a3ec1dafe44b3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-05-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201405120005788731_api.json",
+      "sha256": "3ede36bb69b9d800640cc02b088620ca394c947b86025342fed22fbacc9a4486",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "全文明确不存在13.3.1其他风险警示情形；撤销后为普通深中华A/B、涨跌幅恢复10%，因此全部ST风险清零。公告日保持2014-05-13，实际生效5/14另存。"
+}

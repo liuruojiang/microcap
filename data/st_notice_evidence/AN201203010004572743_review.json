@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000517",
+    "announcement_id": "AN201203010004572743",
+    "notice_date": "2010-04-13",
+    "title": "关于撤销股票交易其他特别处理及变更股票简称的公告",
+    "provider_title": "ST成功：关于撤销股票交易其他特别处理及变更股票简称的公告",
+    "removed_issuer_prefix": "ST成功：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004572743_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004572743_1.pdf",
+    "body_notice_number": "2010-016",
+    "relative_pdf_path": "AN201203010004572743.pdf",
+    "sha256": "d269a3b5b1738d220eb08d4e7d03c14b8a85e7f87fb34d4136ef1afd6a120dc3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-04-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004572743_api.json",
+      "sha256": "a132f48797ce37a6d5af2466f5a0ad4c8c914cac93571e241d92b1050e52c7f7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤其他特别处理并恢复普通荣安地产10%。"
+}

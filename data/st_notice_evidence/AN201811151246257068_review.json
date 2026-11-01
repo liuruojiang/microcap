@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002102",
+    "announcement_id": "AN201811151246257068",
+    "notice_date": "2018-11-16",
+    "title": "关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+    "provider_title": "ST冠福:关于争取撤销其他风险警示所采取的措施及有关工作进展情况的公告",
+    "removed_issuer_prefix": "ST冠福:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201811151246257068_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201811151246257068_1.pdf",
+    "body_notice_number": "2018-186",
+    "relative_pdf_path": "AN201811151246257068.pdf",
+    "sha256": "e3a2985af5354995dbc2498564b435cbf60269fddd1f43f5b1c6e7e254aa0fd3",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201811151246257068_api.json",
+      "sha256": "d5f5554e67aa0a2022c30301479f71317092d72d984c5eebbe5e26eee3239c48",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：争取撤销措施进展，正文确认自2018-10-16已ST且仍未获撤销。"
+}

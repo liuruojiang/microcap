@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000806",
+    "announcement_id": "AN202204291562372796",
+    "notice_date": "2022-04-30",
+    "title": "关于公司股票将被实施退市风险警示及继续实施其他风险警示暨股票停复牌的公告",
+    "provider_title": "ST银河:关于公司股票将被实施退市风险警示及继续实施其他风险警示暨股票停复牌的公告",
+    "removed_issuer_prefix": "ST银河:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562372796_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562372796_1.pdf",
+    "body_notice_number": "2022-040",
+    "relative_pdf_path": "AN202204291562372796.pdf",
+    "sha256": "d7286f9cf476e1ba932aefc2cf0eb72cf9a96322a21f35314799eed330222be5",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2022-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204291562372796_api.json",
+      "sha256": "24e3d852edf213c9bcd4d08c1c85cff5833f05ffc311e52b55e72fa575cc98d2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

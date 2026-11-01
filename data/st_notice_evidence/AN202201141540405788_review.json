@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002766",
+    "announcement_id": "AN202201141540405788",
+    "notice_date": "2022-01-15",
+    "title": "关于撤销公司股票因法院裁定受理公司重整而被实施的退市风险警示情形暨继续被实施退市风险警示及其他风险警示的提示性公告(已取消)",
+    "provider_title": "*ST索菱:关于撤销公司股票因法院裁定受理公司重整而被实施的退市风险警示情形暨继续被实施退市风险警示及其他风险警示的提示性公告(已取消)",
+    "removed_issuer_prefix": "*ST索菱:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202201141540405788_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202201141540405788_1.pdf",
+    "body_notice_number": "2022-009",
+    "relative_pdf_path": "AN202201141540405788.pdf",
+    "sha256": "f405785acd4c6af409a813272bee487308b21a35bcc0fa51ba500955d6a0e873",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202201141540405788_api.json",
+      "sha256": "70488a9958959ce61cd4bb92a364017073f82f241e0f8cb60a63a98b9106ce54",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原始API标题明确已取消，正文含ST/*ST简称内部不一致；保留取消身份，不将被撤销公告计作有效状态改变。"
+}

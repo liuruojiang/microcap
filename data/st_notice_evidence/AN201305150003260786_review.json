@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000720",
+    "announcement_id": "AN201305150003260786",
+    "notice_date": "2013-05-16",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST能山:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST能山:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305150003260786_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305150003260786_1.pdf",
+    "body_notice_number": "2013-020",
+    "relative_pdf_path": "AN201305150003260786.pdf",
+    "sha256": "6cc5a73748115b575238b207ce065db22eaea2e707cec51024cc9d7082cc1a46",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-17"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305150003260786_api.json",
+      "sha256": "ecd970e8fcfb7dafec7c0b5f18611b65e93afbe3f99772be46987d04f8e684fa",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确不存在其他风险，核准撤退市风险，普通新能泰山10%。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600710",
+    "announcement_id": "AN201803261110887292",
+    "notice_date": "2018-03-27",
+    "title": "ST常林关于公司股票撤销其他风险警示的公告",
+    "provider_title": "600710:ST常林关于公司股票撤销其他风险警示的公告",
+    "removed_issuer_prefix": "600710:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201803261110887292_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201803261110887292_1.pdf",
+    "body_notice_number": "2018-024",
+    "relative_pdf_path": "AN201803261110887292.pdf",
+    "sha256": "9b38983cb42b5b83598a1fdd0d1d75460000025ae94b6512b5f489a2eaae7333",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2018-03-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201803261110887292_api.json",
+      "sha256": "41a1ea61fd571078badcafeb0579efc4997fa2b11c372289004202136edece2d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准/实施段确认普通简称及10%涨跌幅、全部退出ST风险；保留源公告日，历史回顾不倒填。"
+}

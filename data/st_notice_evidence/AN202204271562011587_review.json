@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300309",
+    "announcement_id": "AN202204271562011587",
+    "notice_date": "2022-04-28",
+    "title": "关于公司股票交易将被实施退市风险警示及其他风险警示暨股票停牌的公告",
+    "provider_title": "吉艾科技:关于公司股票交易将被实施退市风险警示及其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "吉艾科技:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204271562011587_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204271562011587_1.pdf",
+    "body_notice_number": "2022-024",
+    "relative_pdf_path": "AN202204271562011587.pdf",
+    "sha256": "f7af8b03bc092294c8c6ea830cb4ccfd0f6beb5faa620434fc9b5a230224a646",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2022-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204271562011587_api.json",
+      "sha256": "aeee9d5c3c63a624d1838e8d8d2c823d4b1634d4ee34d9f09beecf8b90b5663b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

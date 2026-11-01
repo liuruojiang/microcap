@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000716",
+    "announcement_id": "AN201203030004933893",
+    "notice_date": "2011-10-26",
+    "title": "关于申请撤销退市风险警示及其他特别处理的公告",
+    "provider_title": "*ST南方：关于申请撤销退市风险警示及其他特别处理的公告",
+    "removed_issuer_prefix": "*ST南方：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004933893_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004933893_1.pdf",
+    "body_notice_number": "2011-061",
+    "relative_pdf_path": "AN201203030004933893.pdf",
+    "sha256": "2b33e2fabd99d02bc70a945cd0e83bde278c82ae5e23bc1908ea61088932471f",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-10-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004933893_api.json",
+      "sha256": "4aa4f15675798d9bf8edb546358a341b94268d74804fc2f8c9aabda218e580e9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：标题申请但正文已获批准10/27撤两类，简称南方食品，复牌10%。"
+}

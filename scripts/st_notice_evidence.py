@@ -15,8 +15,8 @@ from typing import Any
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
-RULES_REVISION = "st-body-evidence-20261030-v2"
-SCHEMA_VERSION = 2
+RULES_REVISION = "st-body-evidence-20261030-v5"
+SCHEMA_VERSION = 5
 DATE_POLICY = "notice_date_exclusion_inclusive_exit_unchanged"
 RISK_CATEGORIES = frozenset({"delisting", "other", "unspecified"})
 
@@ -27,6 +27,18 @@ class StNoticeEvidenceError(ValueError):
 
 def _fail(message: str) -> None:
     raise StNoticeEvidenceError(message)
+
+
+def is_equity_issuer(row: dict, symbol: str) -> bool:
+    """Index and equity six-digit codes overlap; bind both asset class and venue."""
+    venue = "1" if symbol.startswith("6") else "0" if symbol.startswith(("0", "3")) else None
+    codes = row.get("codes")
+    return venue is not None and isinstance(codes, list) and any(
+        isinstance(code, dict) and code.get("stock_code") == symbol
+        and code.get("market_code") == venue
+        and "A" in str(code.get("ann_type", "")).split(",")
+        for code in codes
+    )
 
 
 def _day(value: Any, *, strict: bool = False) -> str:
@@ -76,8 +88,14 @@ def _artifact(directory: Path, spec: dict, suffix: str) -> bytes:
 
 def _conflict_evidence(directory: Path, record: dict) -> None:
     """Validate an explicitly reviewed mirror, retaining the CNInfo row identity."""
+    if record.get("source_type") == "reviewed_eastmoney_original":
+        _eastmoney_evidence(directory, record)
+        return
+    if record.get("source_type") == "reviewed_cninfo_body_unavailable":
+        _unavailable_evidence(directory, record)
+        return
     if record.get("source_type") != "reviewed_cninfo_body_conflict":
-        if record.get("source_type") is not None or any(key in record for key in ("body_source_url", "source_conflict", "conflict_evidence")):
+        if record.get("source_type") is not None or any(key in record for key in ("body_source_url", "source_conflict", "conflict_evidence", "unavailable_evidence", "body_unavailable", "native_evidence")):
             _fail("Unreviewed body source override")
         return
     if record.get("source_conflict") is not True:
@@ -131,6 +149,155 @@ def _conflict_evidence(directory: Path, record: dict) -> None:
         _fail("Reviewed conflict binding differs from event or evidence")
 
 
+def _unavailable_evidence(directory: Path, record: dict) -> None:
+    """A missing original body can use a separately identified, reviewed mirror."""
+    if record.get("body_unavailable") is not True or "source_conflict" in record or "conflict_evidence" in record:
+        _fail("Unavailable body must not claim a conflicting original PDF")
+    if re.fullmatch(r"\d{4}-\d+", _text(record, "body_notice_number")) is None:
+        _fail("Reviewed body notice number malformed")
+    body = urlsplit(_text(record, "body_source_url"))
+    art = _text(record, "body_announcement_id")
+    if (re.fullmatch(r"AN\d+", art) is None or body.scheme != "https" or body.netloc != "pdf.dfcfw.com"
+            or body.query or body.fragment or body.path != f"/pdf/H2_{art}_1.pdf"):
+        _fail("Unavailable body mirror identity malformed")
+    evidence = record.get("unavailable_evidence")
+    expected = {"provider_response", "mirror_response", "crosscheck", "failure_record", "review"}
+    if not isinstance(evidence, dict) or set(evidence) != expected:
+        _fail("Incomplete unavailable-body evidence")
+    api = json.loads(_artifact(directory, evidence["provider_response"], ".json"))
+    rows = api.get("announcements") if isinstance(api, dict) else None
+    if not isinstance(rows, list):
+        _fail("Unavailable-body provider response malformed")
+    matched = [r for r in rows if isinstance(r, dict) and str(r.get("announcementId")) == record["announcement_id"]]
+    if len(matched) != 1:
+        _fail("Unavailable-body provider identity missing or duplicated")
+    row = matched[0]
+    stamp = row.get("announcementTime")
+    if type(stamp) not in (int, float):
+        _fail("Unavailable-body provider timestamp malformed")
+    published = datetime.fromtimestamp(stamp / 1000, ZoneInfo("Asia/Shanghai")).date().isoformat()
+    # Identical to the real fetch_cninfo_st_notices HTML-highlight cleanup.
+    title = re.sub(r"<[^>]+>", "", str(row.get("announcementTitle", ""))).strip()
+    if (row.get("secCode") != record["symbol"] or title != record["title"] or published != record["notice_date"]
+            or "/" + str(row.get("adjunctUrl")) != urlsplit(record["source_url"]).path):
+        _fail("Unavailable-body provider identity mismatch")
+    mirror = json.loads(_artifact(directory, evidence["mirror_response"], ".json"))
+    if not isinstance(mirror, dict) or mirror.get("success") != 1:
+        _fail("Mirror response was not successful")
+    rows = mirror.get("data", {}).get("list")
+    if not isinstance(rows, list):
+        _fail("Mirror response has no notices")
+    matched = [r for r in rows if isinstance(r, dict) and r.get("art_code") == art]
+    if len(matched) != 1:
+        _fail("Mirror announcement identity missing or duplicated")
+    row = matched[0]
+    codes = row.get("codes")
+    if (not is_equity_issuer(row, record["symbol"])
+            or _day(row.get("notice_date")) != record["notice_date"]
+            or row.get("title") != record.get("body_provider_title")
+            or record["body_provider_title"].split(":", 1)[-1] != record["title"]):
+        _fail("Mirror issuer, date or title mismatch")
+    cross = evidence["crosscheck"]
+    url = urlsplit(_text(cross, "source_url"))
+    if (url.scheme != "https" or url.netloc != "static.cninfo.com.cn" or url.query or url.fragment
+            or re.fullmatch(r"/finalpage/\d{4}-\d{2}-\d{2}/\d+\.(?i:pdf)", url.path) is None):
+        _fail("Unavailable-body independent crosscheck URL invalid")
+    _artifact(directory, cross, ".pdf")
+    failure = json.loads(_artifact(directory, evidence["failure_record"], ".json"))
+    if (not isinstance(failure, dict) or failure.get("source_url") != record["source_url"]
+            or failure.get("status") != "original_body_unavailable" or failure.get("original_pdf_obtained") is not False
+            or failure.get("record_type") not in {"recorded_tool_failure", "operator_recorded_failure"}):
+        _fail("Original-body failure record missing or mismatched")
+    review = json.loads(_artifact(directory, evidence["review"], ".json"))
+    keys = ("symbol", "announcement_id", "notice_date", "title", "source_url", "body_source_url",
+            "body_notice_number", "body_announcement_id", "body_provider_title", "relative_pdf_path", "sha256",
+            "risk_actions", "actual_effective_date")
+    if (not isinstance(review, dict) or review.get("status") != "mirror_body_and_independent_disclosure_verified"
+            or review.get("event") != {key: record.get(key) for key in keys}
+            or review.get("evidence") != {k: v for k, v in evidence.items() if k != "review"}):
+        _fail("Unavailable-body review binding mismatch")
+
+
+def _eastmoney_evidence(directory: Path, record: dict) -> None:
+    if record.get("source_provider") != "eastmoney" or any(k in record for k in ("source_conflict", "body_unavailable", "conflict_evidence", "unavailable_evidence")):
+        _fail("Native Eastmoney provider/exception identity mismatch")
+    event_id = record["announcement_id"]
+    expected_url = f"https://pdf.dfcfw.com/pdf/H2_{event_id}_1.pdf"
+    if record.get("source_url") != expected_url or record.get("body_source_url") != expected_url:
+        _fail("Native Eastmoney body URL differs from original AN identity")
+    evidence = record.get("native_evidence")
+    if not isinstance(evidence, dict) or set(evidence) not in (
+            {"provider_response", "review"}, {"provider_response", "review", "issuer_corroboration"}):
+        _fail("Native Eastmoney evidence incomplete")
+    corroboration = evidence.get("issuer_corroboration")
+    if corroboration is not None:
+        if (not isinstance(corroboration, dict) or re.fullmatch(
+                r"https://static\.cninfo\.com\.cn/finalpage/\d{4}-\d{2}-\d{2}/\d+\.PDF",
+                str(corroboration.get("source_url", ""))) is None):
+            _fail("Native issuer corroboration must identify an official CNInfo PDF")
+        if not _artifact(directory, corroboration, ".pdf").startswith(b"%PDF-"):
+            _fail("Native issuer corroboration is not PDF bytes")
+    spec = evidence["provider_response"]
+    if spec.get("source_url") != "https://np-anotice-stock.eastmoney.com/api/security/ann":
+        _fail("Native Eastmoney API source mismatch")
+    api = json.loads(_artifact(directory, spec, ".json"))
+    if not isinstance(api, dict) or api.get("success") != 1:
+        _fail("Native Eastmoney API failure")
+    rows = api.get("data", {}).get("list")
+    if not isinstance(rows, list):
+        _fail("Native Eastmoney API rows missing")
+    matched = [r for r in rows if isinstance(r, dict) and r.get("art_code") == event_id]
+    if len(matched) != 1:
+        _fail("Native Eastmoney ID missing or duplicated")
+    row = matched[0]
+    prefix = record.get("removed_issuer_prefix")
+    if not isinstance(prefix, str) or (prefix and not prefix.endswith((":", "："))):
+        _fail("Native issuer prefix transform invalid")
+    if (row.get("title") != record.get("provider_title") or row.get("title") != prefix + record["title"]
+            or _day(row.get("notice_date")) != record["notice_date"]
+            or not is_equity_issuer(row, record["symbol"])):
+        _fail("Native Eastmoney issuer/date/title identity mismatch")
+    review = json.loads(_artifact(directory, evidence["review"], ".json"))
+    keys = ("symbol", "announcement_id", "notice_date", "title", "provider_title", "removed_issuer_prefix",
+            "source_provider", "source_url", "body_source_url", "body_notice_number", "relative_pdf_path",
+            "sha256", "risk_actions", "actual_effective_date")
+    if (not isinstance(review, dict) or review.get("status") != "native_provider_and_body_verified"
+            or review.get("event") != {k: record.get(k) for k in keys}
+            or review.get("evidence") != {key: value for key, value in evidence.items() if key != "review"}):
+        _fail("Native Eastmoney human review binding mismatch")
+
+
+def _exchange_html_evidence(directory: Path, record: dict, raw: bytes) -> None:
+    """An exchange original need not be PDF; bind HTML, publication and issuer independently."""
+    import html
+    if record.get("source_provider") != "sse" or any(k in record for k in ("native_evidence", "source_conflict", "body_unavailable")):
+        _fail("Exchange HTML provider identity mismatch")
+    day=record["notice_date"];url=record["source_url"]
+    if record["announcement_id"] != "SSE_"+day.replace("-", "")+"_"+record["symbol"]:
+        _fail("Exchange HTML event identity mismatch")
+    if re.fullmatch(r"https://www\.sse\.com\.cn/disclosure/credibility/supervision/dynamic/c/c_"+day.replace("-", "")+r"_\d+\.shtml",url) is None:
+        _fail("Exchange HTML URL/publication date mismatch")
+    text=html.unescape(re.sub(r"<[^>]+>"," ",raw.decode("utf-8")))
+    compact=re.sub(r"\s+","",text)
+    if any(str(record.get(k) or "") not in compact or not record.get(k) for k in ("title","issuer_name","issuer_short_name")) or day not in text:
+        _fail("Exchange HTML title/issuer/publication mismatch")
+    evidence=record.get("exchange_evidence")
+    if not isinstance(evidence,dict) or set(evidence)!={"provider_response","receipt","review"}:
+        _fail("Exchange HTML evidence incomplete")
+    receipt=json.loads(_artifact(directory,evidence["receipt"],".json"))
+    if receipt.get("status")!=200 or receipt.get("url")!=url or receipt.get("sha256")!=hashlib.sha256(raw).hexdigest():
+        _fail("Exchange HTML receipt mismatch")
+    if evidence["provider_response"].get("source_url") != "https://np-anotice-stock.eastmoney.com/api/security/ann":
+        _fail("Exchange issuer corroboration source mismatch")
+    api=json.loads(_artifact(directory,evidence["provider_response"],".json"))
+    if api.get("success")!=1 or not any(is_equity_issuer(row,record["symbol"]) and record["issuer_short_name"] in row.get("title","") for row in api.get("data",{}).get("list",[])):
+        _fail("Exchange HTML lacks actual equity issuer corroboration")
+    review=json.loads(_artifact(directory,evidence["review"],".json"))
+    binding={k:record.get(k) for k in ("symbol","announcement_id","notice_date","title","issuer_name","issuer_short_name","source_provider","source_url","relative_html_path","sha256","risk_actions","actual_effective_date")}
+    if review.get("status")!="official_exchange_html_and_equity_identity_verified" or review.get("event")!=binding or review.get("evidence")!={k:v for k,v in evidence.items() if k!="review"}:
+        _fail("Exchange HTML review binding mismatch")
+
+
 def _registry(root: Path | str) -> tuple[dict[str, dict], str]:
     directory = (Path(root) / "data" / "st_notice_evidence").resolve()
     registry_path = directory / "registry.json"
@@ -155,29 +322,42 @@ def _registry(root: Path | str) -> tuple[dict[str, dict], str]:
             _fail("Evidence event must be an object")
         symbol = _text(record, "symbol")
         event_id = _text(record, "announcement_id")
-        if re.fullmatch(r"\d{6}", symbol) is None or re.fullmatch(r"\d+", event_id) is None:
+        is_html = record.get("source_type") == "reviewed_exchange_html"
+        event_pattern = r"SSE_\d{8}_\d{6}" if is_html else r"AN\d+" if record.get("source_type") == "reviewed_eastmoney_original" else r"\d+"
+        if re.fullmatch(r"\d{6}", symbol) is None or re.fullmatch(event_pattern, event_id) is None:
             _fail("Evidence symbol or announcement_id is malformed")
         notice_date = _day(record.get("notice_date"), strict=True)
-        _text(record, "title")
+        if record.get("source_type") == "reviewed_eastmoney_original":
+            # Preserve provider whitespace exactly. Native identity below binds
+            # raw_title == removed_prefix + title; trimming would lose evidence.
+            native_title = record.get("title")
+            if not isinstance(native_title, str) or not native_title.strip():
+                _fail("Native evidence title is missing or malformed")
+        else:
+            _text(record, "title")
         source_url = _text(record, "source_url")
         url = urlsplit(source_url)
-        if (url.scheme not in {"https", "http"} or url.hostname not in {"static.cninfo.com.cn", "www.cninfo.com.cn"}
-                or url.username is not None or url.password is not None or url.fragment or url.query):
-            _fail("Evidence source_url is not an authenticated CNInfo source")
-        expected_path = rf"/finalpage/{re.escape(notice_date)}/{re.escape(event_id)}\.(?i:pdf)"
-        if re.fullmatch(expected_path, url.path) is None:
-            _fail("Evidence source_url path disagrees with its notice date or announcement_id")
-        relative = Path(_text(record, "relative_pdf_path"))
+        if record.get("source_type") != "reviewed_eastmoney_original" and not is_html:
+            if (url.scheme not in {"https", "http"} or url.hostname not in {"static.cninfo.com.cn", "www.cninfo.com.cn"}
+                    or url.username is not None or url.password is not None or url.fragment or url.query):
+                _fail("Evidence source_url is not an authenticated CNInfo source")
+            expected_path = rf"/finalpage/{re.escape(notice_date)}/{re.escape(event_id)}\.(?i:pdf)"
+            if re.fullmatch(expected_path, url.path) is None:
+                _fail("Evidence source_url path disagrees with its notice date or announcement_id")
+        relative = Path(_text(record, "relative_html_path" if is_html else "relative_pdf_path"))
         pdf = (directory / relative).resolve()
-        if relative.is_absolute() or not pdf.is_relative_to(directory) or pdf.suffix.lower() != ".pdf":
+        if relative.is_absolute() or not pdf.is_relative_to(directory) or pdf.suffix.lower() != (".html" if is_html else ".pdf"):
             _fail("Evidence PDF path escapes the evidence directory or is not a PDF")
         expected_hash = _text(record, "sha256")
         if re.fullmatch(r"[0-9a-f]{64}", expected_hash) is None:
             _fail("Evidence SHA256 is malformed")
         pdf_bytes = pdf.read_bytes()
-        if not pdf_bytes.startswith(b"%PDF-") or hashlib.sha256(pdf_bytes).hexdigest() != expected_hash:
+        if (not is_html and not pdf_bytes.startswith(b"%PDF-")) or hashlib.sha256(pdf_bytes).hexdigest() != expected_hash:
             _fail(f"Evidence PDF content hash mismatch for {event_id}")
-        _conflict_evidence(directory, record)
+        if is_html:
+            _exchange_html_evidence(directory, record, pdf_bytes)
+        else:
+            _conflict_evidence(directory, record)
         actions = record.get("risk_actions")
         # Empty is a reviewed no-event decision (e.g. only a possible warning).
         if (not isinstance(actions, dict) or any(k not in RISK_CATEGORIES or type(v) is not bool
@@ -203,13 +383,14 @@ def evidence_source_files(root: Path | str) -> list[str]:
     """Files whose exact content is required by release and state transport."""
     records, _ = _registry(root)
     paths = {
-        "data/st_notice_evidence/" + Path(record["relative_pdf_path"]).as_posix()
+        "data/st_notice_evidence/" + Path(record.get("relative_html_path") or record["relative_pdf_path"]).as_posix()
         for record in records.values()
     }
     for record in records.values():
-        for artifact in record.get("conflict_evidence", {}).values():
-            paths.add("data/st_notice_evidence/" + Path(artifact["relative_path"]).as_posix())
-    return ["scripts/st_notice_evidence.py", "data/st_notice_evidence/registry.json"] + sorted(paths)
+        for evidence_key in ("conflict_evidence", "unavailable_evidence", "native_evidence", "exchange_evidence"):
+            for artifact in record.get(evidence_key, {}).values():
+                paths.add("data/st_notice_evidence/" + Path(artifact["relative_path"]).as_posix())
+    return ["scripts/st_notice_evidence.py", "scripts/st_notice_archive.py", "data/st_notice_evidence/registry.json"] + sorted(paths)
 
 
 def load_verified_events(root: Path | str, symbol: str, first_trade: Any,
@@ -238,6 +419,8 @@ def load_verified_events(root: Path | str, symbol: str, first_trade: Any,
             if not isinstance(event_id, str) or event_id not in registry:
                 continue
             event = registry[event_id]
+            if event.get("source_provider") in {"eastmoney","sse"} and row.get("source_provider") != event["source_provider"]:
+                _fail("Native notice row provider identity missing or mismatched")
             if (row.get("issuer_symbol") != event["symbol"] or event["symbol"] != symbol
                     or _day(row.get("notice_date")) != event["notice_date"]
                     or row.get("source_url") != event["source_url"] or row.get("title") != event["title"]):

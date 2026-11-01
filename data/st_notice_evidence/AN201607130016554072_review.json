@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600539",
+    "announcement_id": "AN201607130016554072",
+    "notice_date": "2016-07-14",
+    "title": "狮头股份关于主要控股子公司银行账户被冻结暨股票实施其他风险警示的公告",
+    "provider_title": "600539:狮头股份关于主要控股子公司银行账户被冻结暨股票实施其他风险警示的公告",
+    "removed_issuer_prefix": "600539:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201607130016554072_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201607130016554072_1.pdf",
+    "body_notice_number": "临2016－064",
+    "relative_pdf_path": "AN201607130016554072.pdf",
+    "sha256": "4a2a672cef2ced5f02e51f587749f17ad59c05e88cd5f361b9cebe6719cd75f9",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2016-07-15"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201607130016554072_api.json",
+      "sha256": "5e6816ca41e21eaad7612c24af456643c944beef8df1e2a8036e9b34475c4720",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确上交所决定对发行人股票实施其他风险警示，虽冻结发生于主要控股子公司，发行人股票起始日7月15日；重大资产重组停牌另行处理。"
+}

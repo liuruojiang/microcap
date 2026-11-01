@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000605",
+    "announcement_id": "AN201303200005793370",
+    "notice_date": "2013-03-21",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST四环：关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST四环：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303200005793370_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303200005793370_1.pdf",
+    "body_notice_number": "2013-013",
+    "relative_pdf_path": "AN201303200005793370.pdf",
+    "sha256": "8f5f424334168abf98381b8a307c0c78d525d7576279af7d9151a4f242b9b3c0",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-03-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201303200005793370_api.json",
+      "sha256": "e9c24a29a0015e7a4b2c40c58ef54eae632d36ed79b092ecd7909013af707984",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确不存在13.3.1其他风险，核准撤退市风险，普通四环药业10%。"
+}

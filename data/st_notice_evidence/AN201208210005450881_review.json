@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600539",
+    "announcement_id": "AN201208210005450881",
+    "notice_date": "2012-08-22",
+    "title": "关于2012年公司股票仍将被实施其他风险警示的公告",
+    "provider_title": "ST狮头：关于2012年公司股票仍将被实施其他风险警示的公告",
+    "removed_issuer_prefix": "ST狮头：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208210005450881_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208210005450881_1.pdf",
+    "body_notice_number": "临2012—016",
+    "relative_pdf_path": "AN201208210005450881.pdf",
+    "sha256": "86d60ccde556b103a4c3c2efff558d50b8d557cd3d485b14bfb8cfcc4e68e2d5",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208210005450881_api.json",
+      "sha256": "9885c343ba497ebf72dbc837dbca6f37af37a5ca4c74a67d5314aae36eb5b7d4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确截至2012年8月生产线仍关停、其他风险警示继续；不将历史回顾2011年6月30日倒填为本公告新动作生效日。"
+}

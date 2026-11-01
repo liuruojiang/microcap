@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300256",
+    "announcement_id": "AN202108201511266281",
+    "notice_date": "2021-08-21",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "provider_title": "星星科技:关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "星星科技:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202108201511266281_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202108201511266281_1.pdf",
+    "body_notice_number": "2021-0089",
+    "relative_pdf_path": "AN202108201511266281.pdf",
+    "sha256": "2e2be4c13b2616abbef2c1b755b4edf8dd6f714adc78811705ee4551baef23ed",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2021-08-24"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202108201511266281_api.json",
+      "sha256": "4d52057040a50ec822221a696dca679e2f85650a1aa8d477342e7ad84ea4de5d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确追溯负净资产导致8月24日退市风险，改*ST星星。"
+}

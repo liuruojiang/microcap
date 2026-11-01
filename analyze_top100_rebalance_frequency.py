@@ -42,7 +42,7 @@ LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
 ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
-ST_NOTICE_PARSER_REVISION = "category-state-body-evidence-20261029-v2"
+ST_NOTICE_PARSER_REVISION = "category-state-presample-anchor-20261101-v7-sample-start"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
 LIMIT_PRICE_REL_EPS = 1e-6
 SCHEDULES = {
@@ -570,16 +570,22 @@ def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]
     retained/affirmatively imposed risk takes precedence over a withdrawal of
     another reason for the same risk category.
     """
-    text = re.sub(r"\s+", "", str(title or "").upper())
+    text = re.sub(r"\s+", "", str(title or "").upper()).replace("撤消", "撤销")
     if not text or "申请" in text:
         return {}, False
-    if any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司", "债券", "可转债")):
+    if not any(token in text for token in ("风险警示", "特别处理", "摘帽")):
+        return {}, False
+    # Remediation progress describes efforts toward withdrawal, not an exchange decision.
+    if re.search(r"(?:为|争取)撤销(?:股票交易)?(?:退市风险警示|其他风险警示|风险警示|特别处理).*采取.*措施.*(?:进展|情况)", text):
+        return {}, False
+    if (("撤销" in text and "提示性公告" in text)
+            or any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司", "债券", "可转债"))):
         from scripts.st_notice_evidence import StNoticeEvidenceError
         raise StNoticeEvidenceError("ST title requires verified issuer/body evidence: " + text)
     actions: dict[str, bool] = {}
     had_effective_withdrawal = False
     inherited: bool | None = None
-    for clause in re.split(r"以及|同时|并且|并|暨|及|且|但|和|后|[，,。；;、]", text):
+    for clause in re.split(r"以及|同时|并且|并|暨|及|且|但|和|后|[，,。；;、]|(?=继续(?:被)?(?:实施|实行))", text):
         if not clause:
             continue
         categories = []
@@ -599,12 +605,13 @@ def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]
             continue
         # A possible or rejected action must not become effective merely because
         # it shares a title with an effective action on a different category.
-        if (any(token in clause for token in ["可能", "存在被实施", "存在实施", "不予", "尚未", "未获", "未被", "不会", "不撤销", "不再实施"])
+        if (any(token in clause for token in ["可能", "存在被实施", "存在实施", "不予", "尚未", "未获", "未被", "不会", "不撤销", "不能撤销", "免于被实施", "不再实施"])
+                or re.search(r"存在(?:被)?.{0,8}(?:实施|实行)", clause)
                 or ("拟" in clause and any(token in clause for token in ["实施", "撤销", "摘帽"]))):
             inherited = None
             continue
         withdrawal = any(token in clause for token in ["撤销", "摘帽"])
-        affirmative = any(token in clause for token in ["实施", "实行", "继续", "仍被", "转为", "改为", "变更为", "调整为"])
+        affirmative = any(token in clause for token in ["实施", "实行", "继续", "仍被", "仍处于", "转为", "改为", "变更为", "调整为"])
         if withdrawal:
             # Partial removal cannot establish absence of this risk category.
             action = "部分" in clause
@@ -634,18 +641,61 @@ def classify_st_notice_risk_actions(title: str) -> dict[str, bool]:
     return _parse_st_notice_risk_transition(title)[0]
 
 
+def build_st_presample_name_anchor(first_trade_date, changes, *, verified_events=None):
+    """Use only historical exchange name events strictly before the price sample.
+
+    A risk name establishes risk presence, not its complete category set. Only
+    a reviewed body effective on that exact change date may resolve categories.
+    """
+    from scripts.st_notice_evidence import StNoticeEvidenceError
+    if changes is None or changes.empty:
+        return None
+    work = changes.copy()
+    work["change_date"] = pd.to_datetime(work["change_date"], errors="coerce").dt.normalize()
+    work = work.loc[work["change_date"] < pd.Timestamp(first_trade_date).normalize()]
+    if work.empty:
+        return None
+    anchor_date = work["change_date"].max()
+    latest = work.loc[work["change_date"] == anchor_date]
+    names = set(latest["new_name"].astype(str))
+    if len(names) != 1:
+        raise StNoticeEvidenceError("Conflicting historical names on pre-sample anchor date")
+    name = next(iter(names))
+    active = is_st_name(name)
+    state = {"delisting": False, "other": False, "unspecified": active}
+    bodies = [event for event in (verified_events or {}).values()
+              if event.get("actual_effective_date") == str(anchor_date.date())
+              and pd.Timestamp(event["notice_date"]) <= anchor_date]
+    body_actions = {}
+    for event in bodies:
+        for category, value in event["risk_actions"].items():
+            if category in body_actions and body_actions[category] != value:
+                raise StNoticeEvidenceError("Conflicting reviewed bodies at pre-sample name anchor")
+            body_actions[category] = value
+    # Explicit coverage of both named categories is needed to clear unknown.
+    if {"delisting", "other"} <= body_actions.keys():
+        state.update(body_actions)
+        state["unspecified"] = False
+        if any(state.values()) != active:
+            raise StNoticeEvidenceError("Historical name and reviewed body disagree at anchor")
+    return {"date": str(anchor_date.date()), "name": name,
+            "risk_state": state, "source": "exchange_historical_name_change",
+            "category_status": "unknown" if state["unspecified"] else "resolved"}
+
+
 def build_st_intervals_from_notices(
     first_trade_date: pd.Timestamp,
     last_trade_date: pd.Timestamp,
     notices: pd.DataFrame,
     *, verified_events: dict[str, dict] | None = None,
+    initial_name_anchor: dict | None = None,
 ) -> list[dict[str, str | None]]:
-    if notices.empty:
+    if notices.empty and initial_name_anchor is None:
         return []
     work = notices.copy()
     work["notice_date"] = pd.to_datetime(work["notice_date"], errors="coerce").dt.normalize()
     work = work.dropna(subset=["notice_date"]).sort_values("notice_date")
-    if work.empty:
+    if work.empty and initial_name_anchor is None:
         return []
 
     first_trade = pd.Timestamp(first_trade_date).normalize()
@@ -654,16 +704,29 @@ def build_st_intervals_from_notices(
     risk_state: dict[str, bool] = {"delisting": False, "other": False, "unspecified": False}
     history_known = False
     active_start: pd.Timestamp | None = None
+    anchor_date = None
+    anchor_unknown = False
+    if initial_name_anchor is not None:
+        from scripts.st_notice_evidence import StNoticeEvidenceError
+        anchor_date = pd.Timestamp(initial_name_anchor["date"]).normalize()
+        if anchor_date >= first_trade:
+            raise StNoticeEvidenceError("Name anchor must precede the sample; future names are forbidden")
+        risk_state = dict(initial_name_anchor["risk_state"])
+        anchor_unknown = bool(risk_state.get("unspecified"))
+        history_known = True
+        active_start = first_trade if any(risk_state.values()) else None
 
     for raw_date, group in work.groupby("notice_date", sort=True):
         notice_date = pd.Timestamp(raw_date).normalize()
-        if notice_date > last_trade:
+        if notice_date > last_trade or (anchor_date is not None and notice_date < anchor_date):
             continue
         # Same-day distinct titles have no reliable intraday event ordering.
         # Duplicate exits are idempotent; contradictory category evidence must
         # fail closed, rather than depending on provider/input ordering.
         day_actions: dict[str, bool] = {}
         day_had_effective_withdrawal = False
+        day_verified_complete = False
+        day_verified_keeps_unknown = False
         for row in group.itertuples(index=False):
             verified = (verified_events or {}).get(str(getattr(row, "announcement_id", "")))
             if verified is not None:
@@ -671,6 +734,8 @@ def build_st_intervals_from_notices(
                     from scripts.st_notice_evidence import StNoticeEvidenceError
                     raise StNoticeEvidenceError("Verified ST event date mismatch")
                 actions = verified["risk_actions"]
+                day_verified_complete |= {"delisting", "other"} <= actions.keys()
+                day_verified_keeps_unknown |= actions.get("unspecified") is True
                 had_withdrawal = any(value is False for value in actions.values())
             else:
                 actions, had_withdrawal = _parse_st_notice_risk_transition(getattr(row, "title", ""))
@@ -682,6 +747,18 @@ def build_st_intervals_from_notices(
                 day_actions[category] = action
         if not day_actions:
             continue
+        if anchor_date is not None and notice_date == anchor_date:
+            same_day_state = {**risk_state, **day_actions}
+            category_conflict = not anchor_unknown and any(risk_state.get(category) != value for category, value in day_actions.items())
+            if category_conflict or any(same_day_state.values()) != any(risk_state.values()):
+                from scripts.st_notice_evidence import StNoticeEvidenceError
+                raise StNoticeEvidenceError("Same-day historical name and notice conflict at anchor")
+        if anchor_unknown and not day_verified_keeps_unknown and any(value is False for value in day_actions.values()):
+            if not day_verified_complete and not all(day_actions.get(category) is False for category in ("delisting", "other")):
+                from scripts.st_notice_evidence import StNoticeEvidenceError
+                raise StNoticeEvidenceError("Pre-sample risk category unknown; reviewed body required before category withdrawal")
+            day_actions["unspecified"] = False
+            anchor_unknown = False
         was_active = any(risk_state.values())
         initial_withdrawal = not history_known and day_had_effective_withdrawal
         risk_state.update(day_actions)
@@ -740,7 +817,7 @@ def build_active_status_series(meta: dict[str, object] | None, dates: pd.Datetim
     if pd.notna(list_date):
         series &= dates >= pd.Timestamp(list_date).normalize()
     if pd.notna(delist_date):
-        series &= dates <= pd.Timestamp(delist_date).normalize()
+        series &= dates < pd.Timestamp(delist_date).normalize()
     return series
 
 
@@ -921,7 +998,7 @@ def latest_symbol_price_date(symbol: str) -> pd.Timestamp | None:
         return None
 
 
-def build_security_meta(symbol: str) -> dict[str, object] | None:
+def build_security_meta(symbol: str, *, as_of: pd.Timestamp | str | None = None) -> dict[str, object] | None:
     price_path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, symbol)
     if price_path is None:
         return None
@@ -932,6 +1009,7 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         return None
 
     first_trade = pd.Timestamp(price["date"].min()).normalize()
+    sample_start = max(first_trade, pd.Timestamp(START_DATE).normalize())
     last_trade = pd.Timestamp(price["date"].max()).normalize()
     master = load_security_master()
     master_row: pd.Series | None = None
@@ -939,18 +1017,30 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         matched = master.loc[master["symbol"].astype(str).str.zfill(6) == str(symbol).zfill(6)]
         if not matched.empty:
             master_row = matched.iloc[-1]
+    notice_start = pd.Timestamp("1990-01-01")
+    if master_row is not None and pd.notna(master_row.get("list_date")):
+        notice_start = max(notice_start, min(first_trade, pd.Timestamp(master_row["list_date"]).normalize()))
+    notice_end = last_trade if as_of is None else pd.Timestamp(as_of).normalize()
+    if pd.isna(notice_end) or notice_end < first_trade:
+        raise ValueError("Notice as_of must be a valid date on/after first observed trade")
+    if master_row is not None and pd.notna(master_row.get("delist_date")):
+        notice_end = min(notice_end, pd.Timestamp(master_row["delist_date"]).normalize())
     name_intervals: list[dict[str, str | None]] = []
     notice_intervals: list[dict[str, str | None]] = []
-    current_name_intervals: list[dict[str, str | None]] = []
+    symbol_changes = pd.DataFrame(columns=["change_date", "old_name", "new_name"])
     name_history_status = "not_applicable"
     notice_query_status = "not_started"
     notice_count = 0
+    archived = None
+    name_anchor = None
 
-    if str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
+    from scripts.st_notice_archive import load_notice_archive
+    archived = load_notice_archive(ROOT, str(symbol).zfill(6), notice_start.strftime("%Y%m%d"), notice_end.strftime("%Y%m%d"))
+    if (archived is None or "name_changes" not in archived) and str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
         try:
             changes = fetch_sz_name_change_history()
             symbol_changes = changes.loc[changes["symbol"] == str(symbol).zfill(6), ["change_date", "old_name", "new_name"]]
-            name_intervals = build_st_intervals_from_name_changes(first_trade, last_trade, symbol_changes)
+            name_intervals = build_st_intervals_from_name_changes(sample_start, notice_end, symbol_changes)
             name_history_status = "ok"
         except Exception as exc:
             name_intervals = []
@@ -958,14 +1048,21 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
 
     from scripts.st_notice_evidence import StNoticeEvidenceError, load_verified_events, evidence_fingerprint
     try:
-        notices = fetch_cninfo_st_notices(
-            symbol=str(symbol).zfill(6),
-            start_date=first_trade.strftime("%Y%m%d"),
-            end_date=last_trade.strftime("%Y%m%d"),
-        )
+        if archived is not None and "name_changes" in archived:
+            symbol_changes = pd.DataFrame(archived["name_changes"])
+            name_intervals = []  # Effective name dates cross-check notice policy; never replace announcement dates.
+            name_history_status = "ok:source_bounded_historical_names"
+        notices = (pd.DataFrame(archived["rows"], columns=["notice_date", "title", "announcement_id", "issuer_symbol", "source_url", "source_provider"])
+                   if archived is not None else fetch_cninfo_st_notices(
+                       symbol=str(symbol).zfill(6), start_date=notice_start.strftime("%Y%m%d"), end_date=notice_end.strftime("%Y%m%d")))
         notice_count = int(len(notices))
-        verified_events = load_verified_events(ROOT, str(symbol).zfill(6), first_trade, last_trade, notices)
-        notice_intervals = build_st_intervals_from_notices(first_trade, last_trade, notices, verified_events=verified_events)
+        verified_events = load_verified_events(ROOT, str(symbol).zfill(6), notice_start, notice_end, notices)
+        name_anchor = build_st_presample_name_anchor(sample_start, symbol_changes, verified_events=verified_events)
+        if name_anchor is not None and archived is not None and archived.get("name_history_source"):
+            name_anchor["source"] = archived["name_history_source"]
+        notice_intervals = build_st_intervals_from_notices(sample_start, notice_end, notices, verified_events=verified_events, initial_name_anchor=name_anchor)
+        if archived is not None:
+            notice_intervals = [dict(item, source="archived_mixed_provider_notice") for item in notice_intervals]
         notice_query_status = "ok"
     except StNoticeEvidenceError:
         raise
@@ -974,17 +1071,9 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         notice_query_status = f"error:{type(exc).__name__}:{exc}"
 
     current_st_name = load_current_st_name_map().get(str(symbol).zfill(6), "")
-    current_name = current_st_name
-    if not current_name and master_row is not None and not pd.isna(master_row.get("name")):
-        current_name = str(master_row.get("name"))
-    if current_name:
-        current_name_intervals = build_st_interval_from_current_name_snapshot(
-            first_trade,
-            last_trade,
-            current_name,
-        )
-
-    st_intervals = merge_st_intervals([*name_intervals, *notice_intervals, *current_name_intervals])
+    # A current snapshot has no historical announcement date. Never seed a
+    # historical interval at last_trade (which can precede the snapshot date).
+    st_intervals = merge_st_intervals([*name_intervals, *notice_intervals])
     evidence_intervals = [*name_intervals, *notice_intervals]
     current_st_history_resolved = (not current_st_name) or any(item.get("end") is None for item in evidence_intervals)
 
@@ -995,7 +1084,15 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         "st_notice_evidence_sha256": evidence_fingerprint(ROOT),
         "symbol": str(symbol).zfill(6),
         "first_trade_date": str(first_trade.date()),
+        "st_history_sample_start": str(sample_start.date()),
         "last_trade_date": str(last_trade.date()),
+        "st_presample_name_anchor": name_anchor,
+        "notice_query_start_date": str(notice_start.date()),
+        "notice_query_end_date": str(notice_end.date()),
+        "st_notice_archive_sha256": None if archived is None else archived["manifest_sha256"],
+        "st_notice_archive_manifest_path": None if archived is None else archived.get("manifest_path"),
+        "st_source_boundary": None if archived is None else archived.get("source_boundary"),
+        "st_notice_source_providers": ["cninfo"] if archived is None else archived["source_providers"],
         "list_date": (
             None
             if master_row is None or pd.isna(master_row.get("list_date"))
@@ -1011,10 +1108,16 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         "current_st_snapshot_name": current_st_name or None,
         "name_history_status": name_history_status,
         "notice_query_status": notice_query_status,
+        "notice_source_complete": notice_query_status == "ok",
         "notice_count": notice_count,
         "current_st_history_resolved": bool(current_st_history_resolved),
         "st_intervals": st_intervals,
     }
+    if not current_st_history_resolved:
+        raise StNoticeEvidenceError(
+            f"Current ST snapshot has no verified historical interval for {str(symbol).zfill(6)}; "
+            f"name_history_status={name_history_status}; notice_query_status={notice_query_status}"
+        )
     SECURITY_META_DIR.mkdir(parents=True, exist_ok=True)
     (SECURITY_META_DIR / f"{str(symbol).zfill(6)}.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2),
@@ -1023,8 +1126,28 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     return meta
 
 
-def load_security_meta(symbol: str) -> dict[str, object] | None:
+def _notice_horizon_covers(payload: dict[str, object], requested_end: pd.Timestamp | None) -> bool:
+    if requested_end is None:
+        return True
+    end = requested_end
+    delist = pd.to_datetime(payload.get("delist_date"), errors="coerce")
+    if pd.notna(delist):
+        end = min(end, pd.Timestamp(delist).normalize())
+    available = pd.to_datetime(payload.get("notice_query_end_date"), errors="coerce")
+    required_start = pd.to_datetime(payload.get("list_date"), errors="coerce")
+    required_start = pd.Timestamp("1990-01-01") if pd.isna(required_start) else max(pd.Timestamp("1990-01-01"), pd.Timestamp(required_start).normalize())
+    available_start = pd.to_datetime(payload.get("notice_query_start_date"), errors="coerce")
+    return bool(payload.get("notice_source_complete") is True and pd.notna(available_start)
+                and pd.Timestamp(available_start).normalize() <= required_start
+                and pd.notna(available) and pd.Timestamp(available).normalize() >= end)
+
+
+def load_security_meta(symbol: str, *, as_of: pd.Timestamp | str | None = None) -> dict[str, object] | None:
     from scripts.st_notice_evidence import StNoticeEvidenceError, evidence_fingerprint
+    from scripts.st_notice_archive import notice_archive_cache_matches
+    requested_end = None if as_of is None else pd.Timestamp(as_of).normalize()
+    if requested_end is not None and pd.isna(requested_end):
+        raise ValueError("Notice as_of is invalid")
     code = str(symbol).zfill(6)
     current_st_name = load_current_st_name_map().get(code, "")
     meta_path = resolve_security_meta_path(symbol)
@@ -1039,20 +1162,22 @@ def load_security_meta(symbol: str) -> dict[str, object] | None:
                         "an exact-hash lineage review is required before reuse")
             if payload.get("meta_version") == SECURITY_META_VERSION:
                 if not current_st_name:
-                    return payload
+                    if _notice_horizon_covers(payload, requested_end) and notice_archive_cache_matches(payload, ROOT):
+                        return payload
                 meta_last = pd.to_datetime(payload.get("last_trade_date"), errors="coerce")
                 price_last = latest_symbol_price_date(code)
                 policy_matches = payload.get("st_notice_policy_version") == ST_NOTICE_POLICY_VERSION
                 name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
                 date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
                 if policy_matches and name_matches and date_matches:
-                    return payload
+                    if _notice_horizon_covers(payload, requested_end) and notice_archive_cache_matches(payload, ROOT):
+                        return payload
         except StNoticeEvidenceError:
             raise
         except Exception:
             pass
     try:
-        return build_security_meta(symbol)
+        return build_security_meta(symbol, as_of=as_of)
     except StNoticeEvidenceError:
         raise
     except Exception:
@@ -1178,7 +1303,13 @@ def build_tradeability_series(
         index=trading_dates,
         dtype=bool,
     )
-    actual_price_dates = pd.DatetimeIndex(close_series.index)
+    if "tradestatus" in price.columns:
+        status = pd.to_numeric(price["tradestatus"], errors="coerce")
+        if status.isna().any() or not status.isin([0, 1]).all():
+            raise ValueError("invalid explicit trading status")
+        actual_price_dates = pd.DatetimeIndex(price.loc[status.eq(1), "date"])
+    else:
+        actual_price_dates = pd.DatetimeIndex(close_series.index)
     close_calendar = close_series.reindex(trading_dates)
     close_calendar = close_calendar.where(listed_mask)
     close_calendar = close_calendar.ffill().where(listed_mask)
@@ -1190,9 +1321,11 @@ def build_tradeability_series(
         return_col = next((col for col in ["close_qfq", "close_adj", "close_raw"] if col in return_price.columns), None)
         if return_col is not None:
             adjusted_close_series = return_price.set_index("date")[return_col].sort_index()
+            if "tradestatus" in price.columns:
+                adjusted_close_series = adjusted_close_series.reindex(actual_price_dates)
             adjusted_listed_mask = pd.Series(
                 (trading_dates >= adjusted_close_series.index.min())
-                & (trading_dates <= adjusted_close_series.index.max()),
+                & (trading_dates <= (close_series.index.max() if "tradestatus" in price.columns else adjusted_close_series.index.max())),
                 index=trading_dates,
                 dtype=bool,
             )
@@ -1266,7 +1399,7 @@ def load_symbol_cache(
         price_path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, symbol)
         share_path = resolve_cache_path(SHARE_DIR, SHARED_SHARE_DIR, symbol)
         if price_path is None or share_path is None:
-            return None
+            raise FileNotFoundError(f"Missing required price/share history for {symbol}")
 
         start_ts = pd.Timestamp(trading_dates.min())
         end_ts = pd.Timestamp(trading_dates.max())
@@ -1280,36 +1413,30 @@ def load_symbol_cache(
         price["close_raw"] = pd.to_numeric(price["close_raw"], errors="coerce")
         price = price.dropna(subset=["date", "close_raw"])
 
-        adjusted_price: pd.DataFrame | None = None
-        adjusted_path = resolve_cache_path(ADJ_PRICE_DIR, SHARED_ADJ_PRICE_DIR, symbol)
-        if adjusted_path is not None:
-            adjusted_price = pd.read_csv(adjusted_path)
-            adjusted_price["date"] = pd.to_datetime(adjusted_price["date"])
-            adjusted_price = adjusted_price[(adjusted_price["date"] >= start_ts) & (adjusted_price["date"] <= end_ts)]
-            if not adjusted_price.empty:
-                return_col = next(
-                    (col for col in ["close_qfq", "close_adj", "close_raw"] if col in adjusted_price.columns),
-                    None,
-                )
-                if return_col is not None:
-                    adjusted_price[return_col] = pd.to_numeric(adjusted_price[return_col], errors="coerce")
-                    adjusted_price = adjusted_price.dropna(subset=["date", return_col]).sort_values("date")
-                else:
-                    adjusted_price = None
+        from scripts.stock_return_pipeline import load_return_prices
+        adjusted_price = load_return_prices(
+            root=ROOT, symbol=symbol, raw_path=price_path, master=load_security_master(),
+            as_of=end_ts.strftime("%Y-%m-%d"), allow_network=False,
+        )
 
         shares = pd.read_csv(share_path)
         shares["change_date"] = pd.to_datetime(shares["change_date"])
         shares["total_shares_10k"] = pd.to_numeric(shares["total_shares_10k"], errors="coerce")
         shares = shares.dropna(subset=["total_shares_10k"]).sort_values("change_date")
         if shares.empty:
-            return None
+            raise ValueError(f"Empty required share history for {symbol}")
 
-        meta = load_security_meta(symbol)
+        meta = load_security_meta(symbol, as_of=trading_dates.max())
+        from scripts.tradeability_evidence import enrich_price_with_trade_status
+        price = enrich_price_with_trade_status(
+            root=ROOT, symbol=symbol, raw_path=price_path, price=price,
+            master=load_security_master(), trading_dates=trading_dates, require_evidence=True,
+        )
         st_series = build_st_status_series(meta, trading_dates)
         active_series = build_active_status_series(meta, trading_dates)
         ret_series, tradeable_series, buyable_series, sellable_series = build_tradeability_series(
             symbol=symbol,
-            price=price[["date", "close_raw"]].copy(),
+            price=price.copy(),
             trading_dates=trading_dates,
             return_price=None if adjusted_price is None or adjusted_price.empty else adjusted_price,
             st_series=st_series,
@@ -1344,8 +1471,8 @@ def load_symbol_cache(
             cap_series = cap_series.where(~cap_st, np.nan)
 
         return symbol, ret_series, cap_series, buyable_series, sellable_series
-    except Exception:
-        return None
+    except Exception as exc:
+        raise RuntimeError(f"symbol cache load failed for {symbol}: {exc}") from exc
 
 
 def load_cache_panels(
@@ -1473,6 +1600,25 @@ def apply_trade_constraints(
     }
 
 
+DELISTING_VALUATION_POLICY = "delist_zero_writeoff_equal_survivors_v1"
+
+
+def delist_dates_from_master(master: pd.DataFrame) -> dict[str, pd.Timestamp]:
+    if not {"symbol", "delist_date"}.issubset(master.columns):
+        raise ValueError("Delisting valuation requires the historical security master")
+    if master["symbol"].astype(str).str.zfill(6).duplicated().any():
+        raise ValueError("Ambiguous issuer lifecycle")
+    result = {}
+    for row in master.itertuples(index=False):
+        if pd.isna(row.delist_date) or str(row.delist_date).strip() == "":
+            continue
+        day = pd.Timestamp(row.delist_date).normalize()
+        if pd.isna(day):
+            raise ValueError("Invalid delisting date")
+        result[str(row.symbol).zfill(6)] = day
+    return result
+
+
 def simulate_rebalance_path(
     trading_dates: pd.DatetimeIndex,
     returns_df: pd.DataFrame,
@@ -1483,10 +1629,16 @@ def simulate_rebalance_path(
     one_side_cost_rate: float,
     top_n: int = TOP_N,
     execution_timing: str = EXECUTION_TIMING_NEXT_OPEN,
+    delist_dates: dict[str, pd.Timestamp] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[pd.Timestamp, list[str]]]:
     if execution_timing not in {EXECUTION_TIMING_NEXT_OPEN, EXECUTION_TIMING_CLOSE}:
         raise ValueError(f"unsupported execution_timing: {execution_timing}")
 
+    lifecycle = {str(symbol).zfill(6): pd.Timestamp(day).normalize()
+                 for symbol, day in (delist_dates or {}).items()}
+    if any(pd.isna(day) for day in lifecycle.values()):
+        raise ValueError("Unproven delisting date")
+    writeoff_events: list[dict[str, object]] = []
     rebalance_set = set(rebalance_dates)
     turnover_rows: list[dict[str, object]] = []
     effective_members_map: dict[pd.Timestamp, list[str]] = {}
@@ -1499,11 +1651,17 @@ def simulate_rebalance_path(
             index_rows.append({"date": dt, "close": current_level, "daily_return": np.nan, "holding_count": 0})
             continue
 
+        opening_writeoffs = []
+        opening_count = len(current_members)
+        if execution_timing == EXECUTION_TIMING_NEXT_OPEN:
+            opening_writeoffs = [s for s in current_members if s in lifecycle and lifecycle[s] <= pd.Timestamp(dt)]
+            current_members = [s for s in current_members if s not in opening_writeoffs]
         prev_dt = pd.Timestamp(trading_dates[i - 1])
         if prev_dt in rebalance_set:
             constraint_trade_date = prev_dt if execution_timing == EXECUTION_TIMING_CLOSE else pd.Timestamp(dt)
             execution_date = prev_dt if execution_timing == EXECUTION_TIMING_CLOSE else pd.Timestamp(dt)
-            target_members = target_members_map.get(prev_dt, [])
+            target_members = [s for s in target_members_map.get(prev_dt, [])
+                              if s not in lifecycle or lifecycle[s] > execution_date]
             trade_result = apply_trade_constraints(
                 current_members=current_members,
                 target_members=target_members,
@@ -1536,11 +1694,34 @@ def simulate_rebalance_path(
                 }
             )
 
+        closing_writeoffs = [s for s in current_members if s in lifecycle and lifecycle[s] <= pd.Timestamp(dt)]
+        denominator = opening_count if opening_writeoffs else len(current_members)
+        writeoffs = opening_writeoffs or closing_writeoffs
+        for symbol in writeoffs:
+            writeoff_events.append({"date": str(pd.Timestamp(dt).date()), "symbol": symbol,
+                "delist_date": str(lifecycle[symbol].date()), "writeoff_weight": 1.0 / denominator,
+                "security_return": -1.0, "portfolio_return_contribution": -1.0 / denominator,
+                "event_type": "conservative_valuation_writeoff_not_trade", "is_trade": False,
+                "sell_count": 0, "transaction_cost": 0.0, "policy": DELISTING_VALUATION_POLICY})
         if current_members:
             day_ret = returns_df.loc[dt, current_members].reindex(current_members)
-            portfolio_ret = float(day_ret.fillna(0.0).mean()) if len(day_ret) else 0.0
+            day_ret = day_ret.copy()
+            if closing_writeoffs:
+                day_ret.loc[closing_writeoffs] = -1.0
+            invalid = ~np.isfinite(day_ret.to_numpy(dtype=float))
+            if invalid.any():
+                symbols = ",".join(day_ret.index[invalid].astype(str))
+                raise RuntimeError(
+                    f"Unvalued held securities on {pd.Timestamp(dt).date()}: {symbols}; "
+                    "missing or terminal returns require explicit source-backed treatment"
+                )
+            portfolio_ret = float(day_ret.mean())
         else:
             portfolio_ret = 0.0
+        if opening_writeoffs:
+            loss_weight = len(opening_writeoffs) / opening_count
+            portfolio_ret = -loss_weight + (1.0 - loss_weight) * portfolio_ret
+        current_members = [s for s in current_members if s not in closing_writeoffs]
         current_level *= 1.0 + portfolio_ret
         index_rows.append(
             {
@@ -1551,7 +1732,13 @@ def simulate_rebalance_path(
             }
         )
 
-    return pd.DataFrame(index_rows), pd.DataFrame(turnover_rows), effective_members_map
+    index_frame = pd.DataFrame(index_rows)
+    index_frame.attrs["terminal_effective_members"] = list(current_members)
+    index_frame.attrs["terminal_as_of"] = None if not len(trading_dates) else str(pd.Timestamp(trading_dates[-1]).date())
+    index_frame.attrs["delisting_valuation_policy"] = DELISTING_VALUATION_POLICY
+    if writeoff_events:
+        index_frame.attrs["delisting_writeoff_events"] = writeoff_events
+    return index_frame, pd.DataFrame(turnover_rows), effective_members_map
 
 
 def build_index_and_turnover(
@@ -1574,6 +1761,7 @@ def build_index_and_turnover(
         one_side_cost_rate=cost_mod.MONTHLY_REBALANCE_ONE_SIDE,
         top_n=TOP_N,
         execution_timing=execution_timing,
+        delist_dates=delist_dates_from_master(load_security_master()),
     )
     return index_df, turnover_df
 

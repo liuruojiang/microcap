@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600425",
+    "announcement_id": "AN201703010372337271",
+    "notice_date": "2017-03-02",
+    "title": "青松建化关于公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600425:青松建化关于公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600425:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201703010372337271_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201703010372337271_1.pdf",
+    "body_notice_number": "临2017-010",
+    "relative_pdf_path": "AN201703010372337271.pdf",
+    "sha256": "c9c9d9ed578be10eb98193cb1779352e75304b855695670e07ffb2b61343bc92",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201703010372337271_api.json",
+      "sha256": "06ecf458f3e48d37217daea0f725b13bc52818ceffe6540ec9606c0a807f91d3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文为2016年报4月8日披露前预亏提示，若审计亏损才于年报后实施，非当前实施公告。"
+}

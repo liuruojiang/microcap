@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002766",
+    "announcement_id": "AN202011011425454438",
+    "notice_date": "2020-11-02",
+    "title": "关于撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "provider_title": "*ST索菱:关于撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST索菱:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202011011425454438_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202011011425454438_1.pdf",
+    "body_notice_number": "2020-100",
+    "relative_pdf_path": "AN202011011425454438.pdf",
+    "sha256": "25b69b52493f73dcc36e503443f68f7cd6de7b36cae05be6b0db14921590c379",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2020-11-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202011011425454438_api.json",
+      "sha256": "38c54e545dac08ceade0db2d1ffd6f5bd56e82dc6be61fe1f885fc0f9879ceb9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销退市风险警示，但仍实施其他风险警示，简称ST且5%限制，不作为全部退出。"
+}

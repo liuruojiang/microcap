@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000610",
+    "announcement_id": "AN202604231821518883",
+    "notice_date": "2026-04-24",
+    "title": "关于公司股票交易可能被实施退市风险警示暨停牌的公告",
+    "provider_title": "西安旅游:关于公司股票交易可能被实施退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "西安旅游:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604231821518883_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604231821518883_1.pdf",
+    "body_notice_number": "2026-33",
+    "relative_pdf_path": "AN202604231821518883.pdf",
+    "sha256": "4dd0700d4a1bd4cf7b15f13bcda06c975268607484145a3952fcf91dd20cf22d",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2026-04-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604231821518883_api.json",
+      "sha256": "dc06e0569fa1496eee31e04037c2fda5ac5056a334419f3dd7ecd571eebb2d8b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：API/正文标题可能但正文特别提示明确4/27起*ST西旅，净资产负触发退市警示。"
+}

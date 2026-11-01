@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600539",
+    "announcement_id": "AN201203020004860675",
+    "notice_date": "2011-06-29",
+    "title": "关于公司股票被特别处理的公告",
+    "provider_title": "狮头股份：关于公司股票被特别处理的公告",
+    "removed_issuer_prefix": "狮头股份：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004860675_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004860675_1.pdf",
+    "body_notice_number": "2011-014",
+    "relative_pdf_path": "AN201203020004860675.pdf",
+    "sha256": "2dad7f47c2c8f34978356f5be0913501c938250f6f33743dd240a54f997bd855",
+    "risk_actions": {
+      "unspecified": true
+    },
+    "actual_effective_date": "2011-06-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004860675_api.json",
+      "sha256": "9885c343ba497ebf72dbc837dbca6f37af37a5ca4c74a67d5314aae36eb5b7d4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：正文明确6/30特别处理ST狮头5%；仅特别处理未知子类，不凭名称猜other。"
+}

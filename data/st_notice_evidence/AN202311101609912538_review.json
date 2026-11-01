@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600306",
+    "announcement_id": "AN202311101609912538",
+    "notice_date": "2023-11-11",
+    "title": "沈阳商业城股份有限公司关于法院裁定受理公司重整并指定管理人暨公司股票将被叠加实施退市风险警示并继续实施其他风险警示的公告",
+    "provider_title": "*ST商城:沈阳商业城股份有限公司关于法院裁定受理公司重整并指定管理人暨公司股票将被叠加实施退市风险警示并继续实施其他风险警示的公告",
+    "removed_issuer_prefix": "*ST商城:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202311101609912538_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202311101609912538_1.pdf",
+    "body_notice_number": "2023-093",
+    "relative_pdf_path": "AN202311101609912538.pdf",
+    "sha256": "1ca1adf16edb64e60e606d493ad7ad2a72dda0373fbdf08373004eeb2d768c22",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202311101609912538_api.json",
+      "sha256": "06321dc66dd561a46cb3549cd0b29b57d235ef3e484b982a088a5c73e151daab",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院受理重整确定叠加delisting/继续other；正文写下一个交易日，需独立交易日历才能填具体日。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002418",
+    "announcement_id": "AN201501300008252928",
+    "notice_date": "2015-01-31",
+    "title": "关于公司债券可能被实行风险警示的提示性公告",
+    "provider_title": "康盛股份:关于公司债券可能被实行风险警示的提示性公告",
+    "removed_issuer_prefix": "康盛股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201501300008252928_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201501300008252928_1.pdf",
+    "body_notice_number": "2015-007",
+    "relative_pdf_path": "AN201501300008252928.pdf",
+    "sha256": "23459e2a0730fe67003ecb4fc30e50896cccb5d912a85ad2287eddacaba438d9",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201501300008252928_api.json",
+      "sha256": "76ebc281fd9b12c3e04a5d6596f9b9320a0f4e697020177fe9c30d5c9cec221a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "仅12康盛债112095可能实施债券风险警示，不是股票动作。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000430",
+    "announcement_id": "AN202511031774477646",
+    "notice_date": "2025-11-04",
+    "title": "张家界旅游集团股份有限公司关于法院裁定受理公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "ST张家界:张家界旅游集团股份有限公司关于法院裁定受理公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "ST张家界:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202511031774477646_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202511031774477646_1.pdf",
+    "body_notice_number": "2025-048",
+    "relative_pdf_path": "AN202511031774477646.pdf",
+    "sha256": "8523f4b72c80c677b0539e634cf5a19900be589ac7d2dfbacefe0b86bacc13a9",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2025-11-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202511031774477646_api.json",
+      "sha256": "eb511342d866b6c5719e026f5cc8498afbd6d59727acb06da4241c7b530d630c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "完整核读原PDF：法院已受理重整，特别提示和第五节明确11/5实施退市风险；不猜其他类别。"
+}

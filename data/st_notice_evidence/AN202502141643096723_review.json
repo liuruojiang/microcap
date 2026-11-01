@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000615",
+    "announcement_id": "AN202502141643096723",
+    "notice_date": "2025-02-15",
+    "title": "关于公司银行账户及控股子公司主要银行账户被冻结暨公司股票交易被叠加实施其他风险警示的公告",
+    "provider_title": "ST美谷:关于公司银行账户及控股子公司主要银行账户被冻结暨公司股票交易被叠加实施其他风险警示的公告",
+    "removed_issuer_prefix": "ST美谷:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202502141643096723_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202502141643096723_1.pdf",
+    "body_notice_number": "2025-008",
+    "relative_pdf_path": "AN202502141643096723.pdf",
+    "sha256": "2fc461bd46440e29067a835ad60aada375222dff695adda28a6d6d659e51b893",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202502141643096723_api.json",
+      "sha256": "dbcf6f9d2002a334859bd1927f825b44f09756f2b1a52d6f4d475d81cde694da",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Definite additional other risk, no explicit effective date; leave null. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600539",
+    "announcement_id": "AN201407060006247789",
+    "notice_date": "2014-07-07",
+    "title": " ST狮头关于公司股票撤销其他风险警示的公告",
+    "provider_title": "600539 : ST狮头关于公司股票撤销其他风险警示的公告",
+    "removed_issuer_prefix": "600539 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201407060006247789_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201407060006247789_1.pdf",
+    "body_notice_number": "2014-024",
+    "relative_pdf_path": "AN201407060006247789.pdf",
+    "sha256": "1a303ba96e46120a7160227fdc419c919596de755d72819479a18b4916a3417a",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-07-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201407060006247789_api.json",
+      "sha256": "a0648127579915240e83d40e5ea1cd917a0159f268eaca932fb8c2dfa2937950",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际原PDF重要提示和第一节明确2014-07-08撤其他恢复狮头股份10%，此前2011笼统特别处理已完整结束。"
+}

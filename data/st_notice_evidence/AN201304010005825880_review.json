@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600691",
+    "announcement_id": "AN201304010005825880",
+    "notice_date": "2013-04-02",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST东碳：关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST东碳：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005825880_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005825880_1.pdf",
+    "body_notice_number": "2013-018",
+    "relative_pdf_path": "AN201304010005825880.pdf",
+    "sha256": "8c4fd6ec07a830972c2bca39be5c00ffaaaaa345de052a691208f0a5749ed713",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304010005825880_api.json",
+      "sha256": "9bbf299f9af8138569797a4559ff3b9d5acd8f067f819947c83b880a23adc936",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所批准及实施段确认撤风险、普通简称和10%涨跌幅，完整清零ST类别。虽题为提示性但原文4月1日已获准，区别于申请阶段提示。"
+}

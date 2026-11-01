@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600546",
+    "announcement_id": "AN201601290013322208",
+    "notice_date": "2016-01-30",
+    "title": "山煤国际关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的风险提示公告",
+    "provider_title": "600546:山煤国际关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的风险提示公告",
+    "removed_issuer_prefix": "600546:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201601290013322208_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201601290013322208_1.pdf",
+    "body_notice_number": "临2016-012",
+    "relative_pdf_path": "AN201601290013322208.pdf",
+    "sha256": "1e854ebf583a0dca4ada2c25297bb209f3d6753cd97bb819f33dc90ab72c5c78",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201601290013322208_api.json",
+      "sha256": "4e1cd7a81b1440762d52980aa21fe9a3a63e9516826e92995d1d4e8ca21775c9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "股票部分为初步测算亏损，明确如果经审计净利润仍负才在年报后实施；债券也为条件风险且拟先兑付，不认证股票状态变更。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600157",
+    "announcement_id": "AN202009251417370514",
+    "notice_date": "2020-09-26",
+    "title": "永泰能源临时停牌公告",
+    "provider_title": "600157:永泰能源临时停牌公告",
+    "removed_issuer_prefix": "600157:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009251417370514_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009251417370514_1.pdf",
+    "body_notice_number": "2020-075",
+    "relative_pdf_path": "AN202009251417370514.pdf",
+    "sha256": "3199ad5ad724df3649f56c776b0d49264d35d1862afed6a4c2df269176ff5553",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2020-09-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202009251417370514_api.json",
+      "sha256": "550ad022d24b38f0ebf34494f949b2c4964b60022eaae8cca28e4610f0cdd802",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：临时停牌标题不含ST，实际正文明确法院受理重整9/29起*ST永泰。"
+}

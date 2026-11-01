@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000760",
+    "announcement_id": "AN201203010004590970",
+    "notice_date": "2010-04-26",
+    "title": "实施退市风险警示公告",
+    "provider_title": "博盈投资：实施退市风险警示公告",
+    "removed_issuer_prefix": "博盈投资：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004590970_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004590970_1.pdf",
+    "body_notice_number": "2010-012",
+    "relative_pdf_path": "AN201203010004590970.pdf",
+    "sha256": "749cda9e7f9bd4a4d5e2f92802b2dd372ee1fbc5f5200107578c4e619bee55a5",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2010-04-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004590970_api.json",
+      "sha256": "48cce068a62240fcfab9cec023104ba15b9802533e571e1dbb23d1b665d6a30c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_long34_price17_candidates_20261101.json"
+}

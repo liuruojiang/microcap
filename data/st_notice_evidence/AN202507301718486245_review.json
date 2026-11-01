@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300527",
+    "announcement_id": "AN202507301718486245",
+    "notice_date": "2025-07-31",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票及可转债停复牌的提示性公告",
+    "provider_title": "中船应急:关于公司股票交易将被实施其他风险警示暨股票及可转债停复牌的提示性公告",
+    "removed_issuer_prefix": "中船应急:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202507301718486245_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202507301718486245_1.pdf",
+    "body_notice_number": "2025-050",
+    "relative_pdf_path": "AN202507301718486245.pdf",
+    "sha256": "4f7c0c1879819667c641637d15af31ebad8161cbe6585ad33a46ea5945c3569f",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-08-01"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202507301718486245_api.json",
+      "sha256": "5ff33df667c7ea9073c5fca05f3d21ac48d1c955c71d5d21b8aab13290ba16d2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

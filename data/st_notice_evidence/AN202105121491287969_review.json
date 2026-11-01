@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600462",
+    "announcement_id": "AN202105121491287969",
+    "notice_date": "2021-05-13",
+    "title": "湖北九有投资股份有限公司关于撤销退市风险警示并实施其他风险警示暨停牌的公告",
+    "provider_title": "600462:湖北九有投资股份有限公司关于撤销退市风险警示并实施其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600462:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202105121491287969_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202105121491287969_1.pdf",
+    "body_notice_number": "2021-032",
+    "relative_pdf_path": "AN202105121491287969.pdf",
+    "sha256": "a3dc325d60e7189e53ffa629aed6929f7bfa1d24fc4bb66f3ed777d2660448fc",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2021-05-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202105121491287969_api.json",
+      "sha256": "4b6404ada5b2c063a1fcb00b7bf998bb29614b89be4ecd9db312fa2ce4e7955e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

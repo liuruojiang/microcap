@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600721",
+    "announcement_id": "AN201203020004841600",
+    "notice_date": "2011-06-02",
+    "title": "关于撤销其他特别处理的公告",
+    "provider_title": "ST百花：关于撤销其他特别处理的公告",
+    "removed_issuer_prefix": "ST百花：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004841600_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004841600_1.pdf",
+    "body_notice_number": "临2011-015",
+    "relative_pdf_path": "AN201203020004841600.pdf",
+    "sha256": "fc269e4dcbb4dd4cfa6c90fc15599b8f13b60564845397b3d7970dff2c9e2c4d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-06-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004841600_api.json",
+      "sha256": "c929054141ed883897458c0e5d2e9c749d6083ed962beca33f343c5058ced3e8",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐读原文：交易所已核准撤其他特别处理并恢复普通证券简称及10%涨跌幅，确认此时全部ST风险消失；正文对先前年份退市转其他的回顾仅辅助解释，不据本公告倒填历史首次公开日期。完整清零避免归档中未选中间类别转换造成旧风险残留。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000688",
+    "announcement_id": "AN201304180003187648",
+    "notice_date": "2013-04-19",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST朝华:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST朝华:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304180003187648_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304180003187648_1.pdf",
+    "body_notice_number": "2013-022",
+    "relative_pdf_path": "AN201304180003187648.pdf",
+    "sha256": "cc49061d019b422197985dda7ac6f2941ad72c21c4e2e222fcc4f22f7c6d6dca",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304180003187648_api.json",
+      "sha256": "91def1923da0bee1e702f94ddefe8a6e501cc8baef94e11bdcfb58578edcda8f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤退市风险改普通朝华集团，复牌首日无涨跌幅、后10%；清全部ST风险。"
+}

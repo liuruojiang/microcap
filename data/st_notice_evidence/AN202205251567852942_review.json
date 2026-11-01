@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300256",
+    "announcement_id": "AN202205251567852942",
+    "notice_date": "2022-05-26",
+    "title": "关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST星星:关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST星星:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202205251567852942_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202205251567852942_1.pdf",
+    "body_notice_number": "2022-055",
+    "relative_pdf_path": "AN202205251567852942.pdf",
+    "sha256": "f853988c7b61b65a4572ed59059623391263c95bca9e526688125e9c80a1da09",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2022-05-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202205251567852942_api.json",
+      "sha256": "02e1dfc1bfe4bd79fb5555e488706e7ecaf4450c9f203c5f57cddb258e46477d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "发行人法院重整5月26日起叠加退市风险，原other不清除。"
+}

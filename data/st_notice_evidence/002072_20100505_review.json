@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002072",
+    "announcement_id": "AN201203010004601977",
+    "notice_date": "2010-05-05",
+    "title": "关于为撤销退市风险警示采取的措施及有关工作进展情况的公告",
+    "provider_title": "*ST德棉：关于为撤销退市风险警示采取的措施及有关工作进展情况的公告",
+    "removed_issuer_prefix": "*ST德棉：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004601977_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004601977_1.pdf",
+    "body_notice_number": "2010-L025",
+    "relative_pdf_path": "AN201203010004601977.pdf",
+    "sha256": "6709e4c2fbf9a1993b58df5b07fe7f63fafdd5bec24f3a8ae48ee38722ea6e8e",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "002072_20100505_eastmoney_response.json",
+      "sha256": "9ced090e805c6ea6bdd4b49d5d9d78d12662ad592dcadfc67321c7e0b0cbe546",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Original two-page PDF issuer 002072, notice 2010-L025, signed 2010-05-05. Page 1 states continued risk warning since 2010-04-29; pages 1-2 discuss restructuring and operating improvements only. No withdrawal approval."
+}

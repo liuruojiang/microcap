@@ -27,6 +27,8 @@ SOURCE_FILES = [delivery.AUTHORITY, "scripts/top100_data_contracts.py"] + [
     f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in delivery.COSTED
 ]
 SOURCE_FILES += delivery.evidence_source_files(Path(__file__).resolve().parents[1])
+SOURCE_FILES += delivery.RETURN_BASIS_FILES
+SOURCE_FILES = list(dict.fromkeys(SOURCE_FILES))
 
 
 def copy_file(source: Path, target: Path) -> None:

@@ -9,3 +9,13 @@ data/st_notice_evidence/registry.json -text
 data/st_notice_evidence/*.json -text -whitespace
 data/st_notice_evidence/*.html -text -whitespace
 docs/microcap_lineage_repair_20261012_review.md -text whitespace=cr-at-eol
+
+# Exact-byte real-data fixtures added for the ST/share/return-basis repair.
+tests/fixtures/share_change_real/** -text
+tests/fixtures/st_archive_inv_real/** -text
+tests/fixtures/st_equity_identity_real/** -text
+tests/fixtures/st_presample_20261030/** -text
+tests/fixtures/st_recovery_listing_real/** -text
+tests/fixtures/stock_return_basis_real/** -text
+tests/fixtures/stock_return_basis_transport_real/** -text
+tests/fixtures/delisting_parity_actual/** -text

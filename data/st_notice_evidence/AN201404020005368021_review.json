@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600769",
+    "announcement_id": "AN201404020005368021",
+    "notice_date": "2014-04-03",
+    "title": " *ST祥龙关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600769 : *ST祥龙关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600769 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404020005368021_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404020005368021_1.pdf",
+    "body_notice_number": "临2014-020",
+    "relative_pdf_path": "AN201404020005368021.pdf",
+    "sha256": "3819dcaa835c4415abab5f0ce997e5b75d6c327910de7af86aebc29d92a8a0fe",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-04-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404020005368021_api.json",
+      "sha256": "6e92fa33b7caa771df400dd90352d6e42b3ac822a01cce319da7fe46efc591d2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段确定普通名称和10%涨跌幅，退出全部ST类别；保留提供方公开日，不用历史回顾或落款提前公告日。"
+}

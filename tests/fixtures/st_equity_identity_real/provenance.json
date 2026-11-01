@@ -1,0 +1,23 @@
+{
+  "source_page": "research_reports\\20261029_st_history_repair\\source_recovery\\global_risk_years_20261029\\2021\\page_054.json",
+  "source_page_sha256": "3375a8cb4a5ebaa3013032d793c94067a075b67dced5d61856ec419957dbefba",
+  "source_receipt": {
+    "url": "https://np-anotice-stock.eastmoney.com/api/security/ann",
+    "params": {
+      "sr": -1,
+      "page_size": 100,
+      "page_index": 54,
+      "ann_type": "A",
+      "client_source": "web",
+      "f_node": 3,
+      "s_node": 0,
+      "stock_list": "",
+      "begin_time": "2021-01-01",
+      "end_time": "2021-12-31"
+    },
+    "status": 200,
+    "sha256": "3375a8cb4a5ebaa3013032d793c94067a075b67dced5d61856ec419957dbefba",
+    "collected_at": "2026-10-30T06:00:32.346090+00:00"
+  },
+  "extraction": "Unmodified real API row, retained all codes including Index 000001 and A,SHA 600593"
+}

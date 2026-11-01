@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000017",
+    "announcement_id": "AN201202270004188446",
+    "notice_date": "2007-02-08",
+    "title": "关于撤销公司股票“退市风险警示”的公告",
+    "provider_title": "S*ST中华：关于撤销公司股票“退市风险警示”的公告",
+    "removed_issuer_prefix": "S*ST中华：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004188446_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004188446_1.pdf",
+    "body_notice_number": "2007-015",
+    "relative_pdf_path": "AN201202270004188446.pdf",
+    "sha256": "4881f064e2028f3181f17ad072616a8da7b5097efd2a34521f96a2e50149bb0e",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2007-02-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202270004188446_api.json",
+      "sha256": "695e855f07e0b34ea8f84db689e8825d1a80e18fd019e242014f17253ddf4740",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "2007-015正文明确撤销退市风险警示并继续实施其他特别处理；A股仍处股改停牌，ST风险状态延续。首日前事件必须传入状态机。"
+}

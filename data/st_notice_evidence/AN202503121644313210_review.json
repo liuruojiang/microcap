@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300268",
+    "announcement_id": "AN202503121644313210",
+    "notice_date": "2025-03-13",
+    "title": "关于公司股票交易将被实施退市风险警示并继续被实施其他风险警示暨股票停牌的公告",
+    "provider_title": "ST佳沃:关于公司股票交易将被实施退市风险警示并继续被实施其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "ST佳沃:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503121644313210_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503121644313210_1.pdf",
+    "body_notice_number": "2025-051",
+    "relative_pdf_path": "AN202503121644313210.pdf",
+    "sha256": "5b9ba1fa7607ac57ae6a3058a3c0cc29690675d1680f6aeefd63607f7264aaea",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2025-03-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202503121644313210_api.json",
+      "sha256": "1f25549187fb25c99b61e387ef69fd1d5a1e974a1b924b64107b4ed9a6704e22",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：特别提示3/14退市并继续其他，*ST佳沃。"
+}

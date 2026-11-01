@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600069",
+    "announcement_id": "AN201503020008628907",
+    "notice_date": "2015-03-03",
+    "title": "银鸽投资关于公司股票将被实施退市风险警示、公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600069:银鸽投资关于公司股票将被实施退市风险警示、公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600069:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503020008628907_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503020008628907_1.pdf",
+    "body_notice_number": "2015-015",
+    "relative_pdf_path": "AN201503020008628907.pdf",
+    "sha256": "951232082365b3f84c2ef8a2ca6fcc9d6e75195bfe3ab79c9f0fe9d1c00464d6",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503020008628907_api.json",
+      "sha256": "17057518988d25cd394c33753dbf1430e353173f4bc40979546bc6cc109c186e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "2014业绩初步测算/未经审计，年报披露后预期实施；公司债券暂停风险不是股票ST行动。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

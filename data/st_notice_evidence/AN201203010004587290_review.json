@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600253",
+    "announcement_id": "AN201203010004587290",
+    "notice_date": "2010-04-26",
+    "title": "关于撤销退市风险警示及其他特别处理的公告",
+    "provider_title": "*ST天方：关于撤销退市风险警示及其他特别处理的公告",
+    "removed_issuer_prefix": "*ST天方：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004587290_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004587290_1.pdf",
+    "body_notice_number": "2010-020",
+    "relative_pdf_path": "AN201203010004587290.pdf",
+    "sha256": "cb01b15d53808d7012409ef01860a2ab7db8aecb99bf4fc4b10dc81f117bf3e6",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-04-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004587290_api.json",
+      "sha256": "cc8fd993dcaa2df0976f60bbf4340d3073bb97188a1a239ae3eaaca0bc171b63",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际公告正文逐项核对；申请待批不作撤销。600145虽标题含申请，正文已有批准及实施安排；600209关键决定在原件第一页，后附财务报告。公告日保留原始接口字段，正文落款及实施日分别记录。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_long34_root17_bodies_20261101/adjudication.json"
+}

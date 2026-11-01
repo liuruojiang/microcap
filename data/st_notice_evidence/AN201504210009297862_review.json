@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002127",
+    "announcement_id": "AN201504210009297862",
+    "notice_date": "2015-04-22",
+    "title": "关于撤消股票交易退市风险警示的提示性公告",
+    "provider_title": "*ST新民:关于撤消股票交易退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST新民:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504210009297862_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504210009297862_1.pdf",
+    "body_notice_number": "2015-031",
+    "relative_pdf_path": "AN201504210009297862.pdf",
+    "sha256": "22771fa3115646472714da8aafaa52dbf1b5dc1e57dd5456d2ed3f41031b8a26",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-04-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504210009297862_api.json",
+      "sha256": "d35334ef6be9ffae962f6e7296d0b89564f0e527825d4a37ac5f64e3cb03477c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：正文特别提示明确4/23恢复新民科技10%，仍因重组停牌不改变更名生效。"
+}

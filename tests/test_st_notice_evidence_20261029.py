@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def rows(events):
     return [{"announcement_id": e["announcement_id"], "issuer_symbol": e["symbol"],
-             "notice_date": e["notice_date"], "title": e["title"], "source_url": e["source_url"]}
+             "notice_date": e["notice_date"], "title": e["title"], "source_url": e["source_url"],
+             "source_provider": e.get("source_provider", "cninfo")}
             for e in events]
 
 
@@ -51,7 +52,8 @@ def test_real_reviewed_pdf_bytes_and_event_actions(symbol):
     assert events
     result=load_verified_events(ROOT,symbol,'2010-01-01','2026-10-29',pd.DataFrame(rows(events)))
     assert {k:v['risk_actions'] for k,v in result.items()}=={e['announcement_id']:e['risk_actions'] for e in events}
-    assert all(v['registry_sha256']==evidence_fingerprint(ROOT) for v in result.values())
+    verified_registry_sha = evidence_fingerprint(ROOT)
+    assert all(v['registry_sha256']==verified_registry_sha for v in result.values())
     if symbol=='600180':
         assert result['60321567']['risk_actions']=={'delisting':False,'other':True}
     if symbol in {'002198','002514'}:

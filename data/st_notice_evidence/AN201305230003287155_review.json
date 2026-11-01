@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000613",
+    "announcement_id": "AN201305230003287155",
+    "notice_date": "2013-05-24",
+    "title": "关于撤销公司股票交易其他风险警示的公告",
+    "provider_title": "ST东海A:关于撤销公司股票交易其他风险警示的公告",
+    "removed_issuer_prefix": "ST东海A:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305230003287155_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305230003287155_1.pdf",
+    "body_notice_number": "2013-013",
+    "relative_pdf_path": "AN201305230003287155.pdf",
+    "sha256": "0487c852a2314421052e2e790033660f35e20c9dbf0633298232dbcd881f1be0",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305230003287155_api.json",
+      "sha256": "f24a4f42b00c4fd661d9bf9218fb0aa3bacb0bd1bf3565bce2b478c759dddd34",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

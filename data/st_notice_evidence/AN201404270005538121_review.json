@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600579",
+    "announcement_id": "AN201404270005538121",
+    "notice_date": "2014-04-28",
+    "title": " *ST黄海关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600579 : *ST黄海关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600579 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404270005538121_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404270005538121_1.pdf",
+    "body_notice_number": "2014-017",
+    "relative_pdf_path": "AN201404270005538121.pdf",
+    "sha256": "dda61a9ba0111b84850f7ae4e0c8d8af06b61721a1cec57692d425499ba67a16",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404270005538121_api.json",
+      "sha256": "66bf65abc8c4e07c3d0f5c28477250359f9bac95ac60b8ba2b208419f5193953",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer approval and dated new name read in full body; no prior-day announcement date inferred. 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：reviewed_presample18_price_candidates.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002145",
+    "announcement_id": "AN201212250005664439",
+    "notice_date": "2012-12-26",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST钛白：关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST钛白：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201212250005664439_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201212250005664439_1.pdf",
+    "body_notice_number": "2012—133",
+    "relative_pdf_path": "AN201212250005664439.pdf",
+    "sha256": "5769819a434260c9b5c187a4af2cf679f6c97fe8ef68efe8c48ababe727d73c3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-12-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201212250005664439_api.json",
+      "sha256": "c4423324c4d6b676d33fea459eaad65869e1e616118e31ca723e7edec05a2c9a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确不存在其他退市及其他风险情形，12月27日普通中核钛白10%。"
+}

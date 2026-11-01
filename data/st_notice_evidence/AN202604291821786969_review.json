@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "603843",
+    "announcement_id": "AN202604291821786969",
+    "notice_date": "2026-04-30",
+    "title": "正平股份关于暂不提交撤销股票退市风险警示的提示性公告",
+    "provider_title": "*ST正平:正平股份关于暂不提交撤销股票退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST正平:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821786969_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821786969_1.pdf",
+    "body_notice_number": "2026-063",
+    "relative_pdf_path": "AN202604291821786969.pdf",
+    "sha256": "c341491be2b349a4be1d334baa5a94ec9ae18ff2bdc0c479513285ba8ea53b6e",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604291821786969_api.json",
+      "sha256": "694684fac0448f8a0e5328a438e748e9ce5ae9f0228c6ca8a46c44a7e24e7bef",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "暂不申请撤销，退市风险与其他风险继续存在；无新增或撤销动作，actions={}不是false。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

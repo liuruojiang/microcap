@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002217",
+    "announcement_id": "AN201504120009167322",
+    "notice_date": "2015-04-13",
+    "title": "关于申请撤销股票交易退市风险警示的提示性公告",
+    "provider_title": "*ST合泰:关于申请撤销股票交易退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST合泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504120009167322_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504120009167322_1.pdf",
+    "body_notice_number": "2015-040",
+    "relative_pdf_path": "AN201504120009167322.pdf",
+    "sha256": "6849bbd06fcc25d13aa60e9a361b076aee67155995499d0f6634e9e9c2957bbc",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-04-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504120009167322_api.json",
+      "sha256": "72a45f8a9d6ac867466bbe31e6c8f108fbf9a8a7608fb30bd9baa07e71124676",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：标题申请但正文第六节已获深交所审核同意，4/14合力泰10%，不存在其他风险。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000048",
+    "announcement_id": "AN201205290005265002",
+    "notice_date": "2012-05-30",
+    "title": "关于公司股票交易撤销其他特别处理的公告",
+    "provider_title": "ST康达尔：关于公司股票交易撤销其他特别处理的公告",
+    "removed_issuer_prefix": "ST康达尔：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205290005265002_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205290005265002_1.pdf",
+    "body_notice_number": "2012-025",
+    "relative_pdf_path": "AN201205290005265002.pdf",
+    "sha256": "455d848627b45284855967d5b1a29b70a30a8f17e5dece02fdaa9b9b8567d6f4",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-05-31"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201205290005265002_api.json",
+      "sha256": "94119ebb847f0ada46d1996f84cca677af37c7e4b7fb98032e757618249666e3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所核准撤其他特别处理，恢复普通康达尔及10%；不把2008回顾倒填初始类别。"
+}

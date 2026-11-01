@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002506",
+    "announcement_id": "AN201301300005720153",
+    "notice_date": "2013-01-31",
+    "title": "关于公司股票交易实施其他风险警示暨股票和债券交易复牌的公告",
+    "provider_title": "超日太阳：关于公司股票交易实施其他风险警示暨股票和债券交易复牌的公告",
+    "removed_issuer_prefix": "超日太阳：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301300005720153_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301300005720153_1.pdf",
+    "body_notice_number": "2013-013",
+    "relative_pdf_path": "AN201301300005720153.pdf",
+    "sha256": "184502213163f9bb8ac9ac756b45f6a911bd4d07b066ef47bae5c23db64f3a68",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2013-02-01"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201301300005720153_api.json",
+      "sha256": "782be4f86e36d1b6f469909a15548152573802f00320dfbce29a1343791158f9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "股票002506于2月1日实施其他风险，11超日债本次仅复牌且名称不变；未来两年亏损提示并非本次退市风险动作。"
+}

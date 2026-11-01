@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300198",
+    "announcement_id": "AN202604271821646838",
+    "notice_date": "2026-04-28",
+    "title": "关于公司股票交易将被实施退市风险警示并继续叠加其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "ST纳川:关于公司股票交易将被实施退市风险警示并继续叠加其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "ST纳川:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604271821646838_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604271821646838_1.pdf",
+    "body_notice_number": "2026-089",
+    "relative_pdf_path": "AN202604271821646838.pdf",
+    "sha256": "5ea829fa3d9e6e9a9daba92545d305c6bf5bb2126a319b406120d0d5b0d8afc3",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2026-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604271821646838_api.json",
+      "sha256": "43dfca89bd74ac89be027e547c55ca0123c7889abda920809d07a5b527b72c3f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：特别提示4/29退市并继续其他，*ST纳川。"
+}

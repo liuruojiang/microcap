@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600419",
+    "announcement_id": "AN201208260005463385",
+    "notice_date": "2012-08-27",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST天宏：关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST天宏：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208260005463385_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208260005463385_1.pdf",
+    "body_notice_number": "2012-029",
+    "relative_pdf_path": "AN201208260005463385.pdf",
+    "sha256": "1e88bd5a56f6bc93993f4a78b1c7855e51972aa2efae89c4ba45fafde2d8df24",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2012-08-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208260005463385_api.json",
+      "sha256": "5fb25b93d0d8d26e41d669a6951ac6a92c944d2e3184c3f13a2c1665ec8c35dd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer approval and dated new name read in full body; no prior-day announcement date inferred. 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：reviewed_presample18_price_candidates.json"
+}

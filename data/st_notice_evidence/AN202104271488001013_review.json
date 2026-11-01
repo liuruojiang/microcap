@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300071",
+    "announcement_id": "AN202104271488001013",
+    "notice_date": "2021-04-27",
+    "title": "关于公司将被实施退市风险警示及其他风险警示暨股票停牌的公告",
+    "provider_title": "华谊嘉信:关于公司将被实施退市风险警示及其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "华谊嘉信:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104271488001013_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104271488001013_1.pdf",
+    "body_notice_number": "2021-145",
+    "relative_pdf_path": "AN202104271488001013.pdf",
+    "sha256": "76bdac8e07c9d3a6e51558870ee76517daa2e709bbea6283c669b5600dfa2de5",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202104271488001013_api.json",
+      "sha256": "53cac789d817aa1911e5602fcd8078af7b87f1f06080d614cc15a33696ea236c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确双风险；特别提示为4月28日实施、明细起始日为4月27日，原件日期内部不一致，actual_effective_date保留null。4月27日公告已明确两类动作，公告日政策不受此实际日未定影响。"
+}

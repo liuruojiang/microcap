@@ -17,7 +17,7 @@ EVENTS=json.loads((ROOT/'data/st_notice_evidence/registry.json').read_text(encod
 
 def notices(symbol):
     return pd.DataFrame([{'announcement_id':e['announcement_id'],'issuer_symbol':e['symbol'],
-                          'notice_date':e['notice_date'],'title':e['title'],'source_url':e['source_url']}
+                          'notice_date':e['notice_date'],'title':e['title'],'source_url':e['source_url'], 'source_provider':e.get('source_provider','cninfo')}
                          for e in EVENTS if e['symbol']==symbol])
 
 

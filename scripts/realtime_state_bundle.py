@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import math
+import os
 import shutil
 import sys
 import tempfile
@@ -29,6 +30,14 @@ REQUIRED_FILES = (
 )
 
 OPTIONAL_GLOBS = (
+    ".microcap_index_cache/security_master.csv",
+    ".microcap_index_cache/return_basis/prices_adj/*.csv",
+    ".microcap_index_cache/return_basis/manifests/*.json",
+    ".microcap_index_cache/return_basis/sources/*/*.js",
+    ".microcap_index_cache/return_basis/sources/*/*.json",
+    ".microcap_index_cache/trade_status/*.json",
+    ".microcap_index_cache/trade_status/**/*",
+    ".microcap_index_cache/share_sources/??????.json",
     ".microcap_index_cache/security_meta/*.json",
     ".microcap_index_cache/realtime/*.json",
     ".microcap_index_cache/realtime/*.csv",
@@ -62,15 +71,24 @@ def _repo_path(path: str) -> PurePosixPath:
     return pure
 
 
+def _extended(path: Path) -> Path:
+    path = Path(path).resolve()
+    value = str(path)
+    if os.name == "nt" and not value.startswith("\\\\?\\"):
+        value = "\\\\?\\UNC\\" + value[2:] if value.startswith("\\\\") else "\\\\?\\" + value
+    return Path(value)
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
-    with path.open("rb") as handle:
+    with _extended(path).open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
 
 
 def _iter_bundle_files(root: Path) -> list[str]:
+    root = _extended(root)
     found: set[str] = set()
     for rel in REQUIRED_FILES:
         if (root / rel).is_file():
@@ -79,12 +97,66 @@ def _iter_bundle_files(root: Path) -> list[str]:
         for path in root.glob(pattern):
             if path.is_file():
                 found.add(path.relative_to(root).as_posix())
+    # Carry only the active immutable raw snapshot, not every prior bundle.
+    for path in (root / ".microcap_index_cache/return_basis/manifests").glob("*.json"):
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        identity = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()
+        snapshot = root / ".microcap_index_cache/return_basis/bundles" / path.stem / identity / "raw.csv"
+        if not snapshot.is_file():
+            raise ValueError(f"Missing immutable return-basis raw snapshot for {path.stem}")
+        found.add(snapshot.relative_to(root).as_posix())
+    share_root = root / ".microcap_index_cache/share_sources"
+    for path in share_root.glob("??????.json"):
+        if not path.stem.isascii() or not path.stem.isdigit():
+            continue
+        manifest = json.loads(path.read_bytes())
+        from scripts.share_change_source import verify_share_cache
+        proof = verify_share_cache(root=root, symbol=path.stem, as_of=manifest["query_end"])
+        for relative, digest in proof["source_files"].items():
+            response = (share_root / relative).resolve()
+            if not response.is_relative_to(share_root.resolve()) or _sha256(response) != digest:
+                raise ValueError(f"Invalid share source closure for {path.stem}")
+            found.add(response.relative_to(root.resolve()).as_posix())
+    found.update(_st_source_transport_files(root))
     if (root / PROXY_EFFECTIVE_MEMBERS_REL).is_file():
         found.add(PROXY_EFFECTIVE_MEMBERS_REL)
     for rel in _iter_current_member_cache_files(root):
         if (root / rel).is_file():
             found.add(rel)
     return sorted(found)
+
+
+def _st_source_transport_files(root: Path) -> list[str]:
+    """A metadata hash is not portable without its authenticated notice sources."""
+    root = _extended(root)
+    archive_hashes = set()
+    unbound = []
+    for path in (root / ".microcap_index_cache/security_meta").glob("*.json"):
+        payload = json.loads(path.read_bytes())
+        value = payload.get("st_notice_archive_sha256")
+        if value:
+            archive_hashes.add(value)
+        else:
+            unbound.append(path.stem)
+    pointer = root / ".microcap_index_cache/st_notice_archive_pointer.json"
+    configured = bool(pointer.exists() or os.environ.get("MICROCAP_ST_NOTICE_ARCHIVE")
+                      or os.environ.get("MICROCAP_ST_NOTICE_ARCHIVE_SHA256"))
+    if not archive_hashes and not configured:
+        return []  # Existing live-source metadata does not claim an archive.
+    if len(archive_hashes) != 1 or unbound:
+        raise ValueError("ST metadata archive identity is missing or mixed across universe")
+    from scripts.st_history_scope import source_closure
+    closure = source_closure(root)
+    if not closure or not archive_hashes.issubset(set(closure.values())):
+        raise ValueError("ST metadata archive has no matching portable source closure")
+    files = set(closure)
+    from scripts.st_notice_refresh import freshness_source_files
+    files.update(freshness_source_files(root))
+    if pointer.is_file():
+        files.add(pointer.relative_to(root).as_posix())
+    else:
+        raise ValueError("ST archive requires a portable pointer for cloud restoration")
+    return sorted(files)
 
 
 def _read_csv_header_and_rows(path: Path) -> tuple[list[str], int, dict[str, str] | None]:
@@ -588,6 +660,22 @@ def validate_state(
     current_symbols = _current_member_symbols(root)
     price_cache_files: list[dict[str, object]] = []
     price_anchor = anchor_dates.get("proxy_index")
+    try:
+        proxy_meta_path = root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json"
+        proxy_meta = json.loads(proxy_meta_path.read_text(encoding="utf-8"))
+        if proxy_meta.get("core_params", {}).get("stock_return_basis_revision") is not None:
+            from scripts.stock_return_pipeline import verify_return_basis_transport
+            from scripts.stock_return_basis import RETURN_BASIS_REVISION
+            if proxy_meta["core_params"]["stock_return_basis_revision"] != RETURN_BASIS_REVISION:
+                raise ValueError("Unsupported proxy return-basis revision")
+            if price_anchor is None:
+                raise ValueError("Ratio basis has no proxy anchor")
+            verify_return_basis_transport(root, price_anchor, _transport_universe_symbols(root))
+            from scripts.share_change_source import verify_share_cache
+            for symbol in _transport_member_symbols(root, require_effective=True):
+                verify_share_cache(root=root, symbol=symbol, as_of=price_anchor)
+    except (OSError, ValueError, KeyError, RuntimeError) as exc:
+        errors.append(f"stock return basis transport: {exc}")
     if not current_symbols:
         errors.append("cannot identify current effective member symbols for realtime price-cache validation")
     elif len(current_symbols) != TOP_N:
@@ -766,11 +854,24 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
     actual = {"present_count": len(paths), "missing_count": 0, "sha256": digest.hexdigest()}
     if actual != expected:
         raise ValueError(f"proxy metadata fingerprint mismatch: expected={expected}, actual={actual}")
+    _st_source_transport_files(root)
+    if meta.get("core_params", {}).get("stock_return_basis_revision") is not None:
+        stock_paths = [root / ".microcap_index_cache/security_master.csv"]
+        for folder in ("return_basis/manifests", "trade_status", "share_sources"):
+            stock_paths.extend(sorted((root / ".microcap_index_cache" / folder).glob("*.json")))
+        stock_digest = hashlib.sha256()
+        for path in sorted(stock_paths):
+            stock_digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+        from scripts.stock_input_contract import source_fingerprint
+        stock_actual = {"file_count": len(stock_paths), "sha256": stock_digest.hexdigest(), "code": source_fingerprint(root)}
+        if meta["core_params"].get("stock_input_evidence_fingerprint") != stock_actual:
+            raise ValueError("Proxy stock return/trading-state evidence fingerprint mismatch")
     return records
 
 
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
                extra_files: Iterable[str] = ()) -> dict[str, object]:
+    root, bundle = _extended(root), _extended(bundle)
     report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
     anchor = _parse_date(str(report.get("anchor_dates", {}).get("proxy_index", "")))
     if anchor is not None:
@@ -952,12 +1053,38 @@ def refresh_state(
     args.allow_full_rebuild = bool(allow_full_rebuild)
     base_paths = v2_0.base_mod.build_output_paths(v2_0.base_mod.DEFAULT_OUTPUT_PREFIX)
     target_end_date: date | None = None
+    notice_refresh_required = bool((root / ".microcap_index_cache/st_notice_archive_pointer.json").exists()
+                                   or os.environ.get("MICROCAP_ST_NOTICE_ARCHIVE")
+                                   or os.environ.get("MICROCAP_ST_NOTICE_ARCHIVE_SHA256"))
+    notice_refresh_completed = False
     try:
         _log_refresh_phase("refresh_market_panel")
         panel_path, target_end_ts = v2_0.base_mod.build_refreshed_panel_shadow(args, base_paths)
         target_end_date = _parse_date(str(target_end_ts))
         if target_end_date is None:
             raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
+        if notice_refresh_required:
+            from scripts.st_notice_refresh import refresh_notice_archive
+            _log_refresh_phase("refresh_notice_archive")
+            from scripts.st_metadata_refresh import MARKER as ST_METADATA_MARKER
+            metadata_marker = root / ST_METADATA_MARKER
+            if metadata_marker.exists():
+                pending_metadata = json.loads(metadata_marker.read_bytes())
+                if pending_metadata["status"] != "complete":
+                    from scripts.st_history_scope import resolve_archive_reference
+                    if (pending_metadata["target"] != target_end_date.isoformat()
+                            or pending_metadata["authority"] != list(resolve_archive_reference(root))):
+                        raise RuntimeError("Unfinished ST metadata refresh must resume its exact target and authority before notice mutation")
+            notice_result = refresh_notice_archive(root=root, target=target_end_date.isoformat())
+            from scripts.st_metadata_refresh import refresh_metadata_after_notice
+            metadata_result = refresh_metadata_after_notice(
+                root=root, freq_mod=v2_0.base_mod.freq_mod,
+                target=target_end_date.isoformat(), notice_result=notice_result,
+                consumed_through=v2_0.base_mod.read_csv_last_date(args.index_csv),
+            )
+            if metadata_result["requires_full_rebuild"]:
+                args.allow_full_rebuild = True
+            notice_refresh_completed = True
         _log_refresh_phase("rebuild_or_extend_proxy_state")
         v2_0.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_ts)
         _log_refresh_phase("build_realtime_context")
@@ -1003,6 +1130,8 @@ def refresh_state(
         _log_refresh_phase("completed")
         return report
     except Exception as exc:
+        if target_end_date is not None and notice_refresh_required and not notice_refresh_completed:
+            raise RuntimeError("state refresh failed closed: current ST notice refresh did not complete") from exc
         if target_end_date is None:
             report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
             report.setdefault("errors", []).append(
@@ -1029,6 +1158,7 @@ def refresh_state(
 
 
 def restore_state(root: Path, bundle: Path, max_anchor_age_days: int | None) -> dict[str, object]:
+    root, bundle = _extended(root), _extended(bundle)
     if not bundle.is_file():
         return {"ok": False, "errors": [f"missing bundle: {bundle}"], "warnings": []}
     root = root.resolve()

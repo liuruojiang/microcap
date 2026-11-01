@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000681",
+    "announcement_id": "AN201308150004210805",
+    "notice_date": "2013-08-16",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST远东:关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST远东:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201308150004210805_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201308150004210805_1.pdf",
+    "body_notice_number": "2013-049",
+    "relative_pdf_path": "AN201308150004210805.pdf",
+    "sha256": "721ea923340fb9028e15ff80c2fef99348241df4f28bc21e31ea2795da08b271",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-08-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201308150004210805_api.json",
+      "sha256": "921ddc9143305f1ecff42f5a35b6e65182ff34878ef3d36c22692abe175d7627",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确不存在其他风险，8月19日撤退市风险改普通远东股份；仍因重组停牌，ST退出不等同复牌。"
+}

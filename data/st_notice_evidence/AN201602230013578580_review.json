@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000892",
+    "announcement_id": "AN201602230013578580",
+    "notice_date": "2016-02-24",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST星美:关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST星美:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201602230013578580_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201602230013578580_1.pdf",
+    "body_notice_number": "2016-17",
+    "relative_pdf_path": "AN201602230013578580.pdf",
+    "sha256": "21d7192e7b378897338497ec926723a468c9cdcfa17ce4c62eeff5b47250e9f2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2016-02-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201602230013578580_api.json",
+      "sha256": "63f339e2ba303d259ab1510400495f77ae50d63adc829f2029399305ea595205",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "已核原文对应股票代码/发行人、核准段和实施段：交易所已批准撤销，恢复普通名称及10%涨跌幅，完整退出ST风险；不将标题未提其他风险误解为保留旧类别。正文回顾不倒填历史公开日期。"
+}

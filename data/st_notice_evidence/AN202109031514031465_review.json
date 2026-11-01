@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002668",
+    "announcement_id": "AN202109031514031465",
+    "notice_date": "2021-09-04",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "奥马电器:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "奥马电器:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202109031514031465_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202109031514031465_1.pdf",
+    "body_notice_number": "2021-103",
+    "relative_pdf_path": "AN202109031514031465.pdf",
+    "sha256": "1d3e2c707b864b9fdb826e84bb84b69cd40f40f76b254f69933e91922304560f",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2021-09-07"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202109031514031465_api.json",
+      "sha256": "9ffbe7c0c8af9fae3490849aaba987037b736bd455995af3c504d228d6751b92",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确子公司违规担保触发发行人002668股票其他风险，9月7日起奥马电器改ST奥马。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300300",
+    "announcement_id": "AN202405121632917384",
+    "notice_date": "2024-05-13",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "海峡创新:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "海峡创新:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405121632917384_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405121632917384_1.pdf",
+    "body_notice_number": "2024-031",
+    "relative_pdf_path": "AN202405121632917384.pdf",
+    "sha256": "eda66eeb9b93ae025a64052d0140e0cd3c170d83df55df9b48e358a063a3b6c6",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-05-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202405121632917384_api.json",
+      "sha256": "1eb41b7511e7d57f566c605caa5a1ddd8e4d267f0c419291d7c6199eba5afc2d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月14日其他风险改ST峡创。"
+}

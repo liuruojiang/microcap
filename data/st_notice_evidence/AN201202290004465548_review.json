@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600751",
+    "announcement_id": "AN201202290004465548",
+    "notice_date": "2009-08-26",
+    "title": "关于撤销退市风险警示特别处理公告",
+    "provider_title": "S*ST天海：关于撤销退市风险警示特别处理公告",
+    "removed_issuer_prefix": "S*ST天海：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202290004465548_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202290004465548_1.pdf",
+    "body_notice_number": "临2009-043",
+    "relative_pdf_path": "AN201202290004465548.pdf",
+    "sha256": "4e84c3fb173254873ebf2407011b91d0a79ceec516c5371bf37ffde2e72cec47",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2009-08-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202290004465548_api.json",
+      "sha256": "ac70da27f844ac3add2c2c87ba850147ab819dc9c9aa915bb6dcfa937d8f3eb3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市并实行其他特别处理，仍ST/SST及5%，保留other；不是依据简称猜类别。"
+}

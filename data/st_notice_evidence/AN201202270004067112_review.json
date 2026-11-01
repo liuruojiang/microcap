@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600759",
+    "announcement_id": "AN201202270004067112",
+    "notice_date": "2007-12-03",
+    "title": "撤销退市风险警示公告",
+    "provider_title": "*ST华 侨：撤销退市风险警示公告",
+    "removed_issuer_prefix": "*ST华 侨：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004067112_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004067112_1.pdf",
+    "body_notice_number": "临2007-075",
+    "relative_pdf_path": "AN201202270004067112.pdf",
+    "sha256": "384abd09ddc638ae8cd61f6f5cb83b069813014056d3010310c6a1819cf94a56",
+    "risk_actions": {
+      "delisting": false,
+      "unspecified": true
+    },
+    "actual_effective_date": "2007-12-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202270004067112_api.json",
+      "sha256": "ea92249606958e1d9232dd6e8c81082c7281ac016ccd7e45352a9ebd18488d6e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文批准撤退市但明确仍特别处理即ST；未明确类别，保留unknown而不猜other，12月4日仍ST华侨。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600080",
+    "announcement_id": "AN201206100005282518",
+    "notice_date": "2012-06-11",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "ST金花：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "ST金花：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201206100005282518_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201206100005282518_1.pdf",
+    "body_notice_number": "2012-012",
+    "relative_pdf_path": "AN201206100005282518.pdf",
+    "sha256": "1fcb12fe1dba56ebb5ef9ed3d6690f0c25df30daf85b24cb74f29ba5aa68e1ea",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-06-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201206100005282518_api.json",
+      "sha256": "83f1471075cdd484647d5bb2c717609c54397d99daaf0d9b2ff62e6334ad4a1f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文逐项审阅，申请未批不退出；600633公司名称变更无风险动作，恢复上市公告才含获批撤销，9/29首日N浙传媒，第二交易日浙报传媒。全部公告日期保持API字段，不用落款或实际实施日倒填。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_round3_root9_bodies_20261101/adjudication.json"
+}

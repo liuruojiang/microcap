@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "601005",
+    "announcement_id": "AN201702100334427643",
+    "notice_date": "2017-02-11",
+    "title": "重庆钢铁:中诚信证评关于关注“重庆钢铁股份有限公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易”的公告",
+    "provider_title": "601005:重庆钢铁:中诚信证评关于关注“重庆钢铁股份有限公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易”的公告",
+    "removed_issuer_prefix": "601005:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702100334427643_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702100334427643_1.pdf",
+    "body_notice_number": "信评委函字[2017]跟踪004L号",
+    "relative_pdf_path": "AN201702100334427643.pdf",
+    "sha256": "7693759bb8f6f5b64171051f6488a70e0959cdfb7fdf2723b44f8876ba290f5a",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201702100334427643_api.json",
+      "sha256": "d5ea62154eb5c2f49a4aff832c9d571ee02dc29391d02fb83d6c67b110f264cf",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原PDF为扫描件，实际渲染阅读第1页：中诚信评级关注引用公司1月25日可能风险公告，持续关注后续进展，不是交易所实施决定。"
+}

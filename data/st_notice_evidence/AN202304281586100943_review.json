@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002118",
+    "announcement_id": "AN202304281586100943",
+    "notice_date": "2023-04-29",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "provider_title": "紫鑫药业:关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "紫鑫药业:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586100943_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586100943_1.pdf",
+    "body_notice_number": "2023-040",
+    "relative_pdf_path": "AN202304281586100943.pdf",
+    "sha256": "723875ceecf9ac345859562d1298db486a27ed7e542a138ba71ac7262d572ad7",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2023-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304281586100943_api.json",
+      "sha256": "bed5b46e9e8ad7ec5fb284c54c19963e0d6fccafe1d7c88c5a81af0c231dcda3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "One body sentence misprints 2022-05-05; repeated special notice and explicit start field both 2023-05-05. Preserve discrepancy; source owner must crosscheck. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

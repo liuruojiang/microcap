@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000908",
+    "announcement_id": "AN202510211766424167",
+    "notice_date": "2025-10-22",
+    "title": "关于法院裁定受理公司重整并指定管理人及公司股票交易将被实施退市风险警示暨公司股票停复牌并变更证券简称的公告",
+    "provider_title": "ST景峰:关于法院裁定受理公司重整并指定管理人及公司股票交易将被实施退市风险警示暨公司股票停复牌并变更证券简称的公告",
+    "removed_issuer_prefix": "ST景峰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202510211766424167_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202510211766424167_1.pdf",
+    "body_notice_number": "2025-075",
+    "relative_pdf_path": "AN202510211766424167.pdf",
+    "sha256": "4e591789c38d3744ccb06299e641b6797b77d66bcc3936480737206f5d34c7e2",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2025-10-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202510211766424167_api.json",
+      "sha256": "333c3be64fc9a09c3b3d0f5f977950ca9491a84cc32eb03e0492c5ec3f425a4e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

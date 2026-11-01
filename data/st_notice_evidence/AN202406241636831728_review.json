@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600759",
+    "announcement_id": "AN202406241636831728",
+    "notice_date": "2024-06-25",
+    "title": "洲际油气股份有限公司关于公司股票撤销其他风险警示暨停牌的公告",
+    "provider_title": "ST洲际:洲际油气股份有限公司关于公司股票撤销其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "ST洲际:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202406241636831728_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202406241636831728_1.pdf",
+    "body_notice_number": "2024-029",
+    "relative_pdf_path": "AN202406241636831728.pdf",
+    "sha256": "43dbc1310fd9cd767652d820be1f8548e9eb7e0996b6792dbfc9a70337cc4f6c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2024-06-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202406241636831728_api.json",
+      "sha256": "8e48b7e09f3aaca77a8d68c3a1a4b9848e4668f304289013976267f44232009a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段确定普通名称和10%涨跌幅，退出全部ST类别；保留提供方公开日，不用历史回顾或落款提前公告日。"
+}

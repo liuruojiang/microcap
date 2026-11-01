@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002423",
+    "announcement_id": "AN201904291324361438",
+    "notice_date": "2019-04-30",
+    "title": "关于公司股票交易免于被实施退市风险警示的公告",
+    "provider_title": "中原特钢:关于公司股票交易免于被实施退市风险警示的公告",
+    "removed_issuer_prefix": "中原特钢:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904291324361438_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904291324361438_1.pdf",
+    "body_notice_number": "2019-035",
+    "relative_pdf_path": "AN201904291324361438.pdf",
+    "sha256": "3e22e5dff5e7cd51eff11d099e9f9760c29cd8cc37fb550bb23a97b87e0939ff",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201904291324361438_api.json",
+      "sha256": "bc1f36c87638ae0e1837372029b39221018e151fe50467633c37f45d7cf2afc2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：经书面申请免于实施退市警示，不是入口。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600179",
+    "announcement_id": "AN202105061490105530",
+    "notice_date": "2021-05-07",
+    "title": "关于公司股票撤销退市风险警示暨停牌的公告",
+    "provider_title": "600179:关于公司股票撤销退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600179:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202105061490105530_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202105061490105530_1.pdf",
+    "body_notice_number": "2021-032",
+    "relative_pdf_path": "AN202105061490105530.pdf",
+    "sha256": "f97de8229980e8d804742fda1cbe74a5e26502ee1291a9be49c0f16f2c85f6e2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2021-05-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202105061490105530_api.json",
+      "sha256": "ca91d84d9a6a6f8280027a71d31157f1e389abd095ace523f4657935c6180d00",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

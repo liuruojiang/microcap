@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600155",
+    "announcement_id": "AN201403060005214241",
+    "notice_date": "2014-03-07",
+    "title": " *ST宝硕关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600155 : *ST宝硕关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600155 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403060005214241_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403060005214241_1.pdf",
+    "body_notice_number": "2014-020",
+    "relative_pdf_path": "AN201403060005214241.pdf",
+    "sha256": "cf05e088faa8077dca688f7fb6545d07bc229dafab530a17ad16880ab7dd63a2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-03-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403060005214241_api.json",
+      "sha256": "fac3758e55cb63f0d3d17f71149ff471e530670e13b5434ecb0ce21b9109aa68",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer approval and dated new name read in full body; no prior-day announcement date inferred. 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：reviewed_presample18_price_candidates.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600860",
+    "announcement_id": "AN201208210005450887",
+    "notice_date": "2012-08-22",
+    "title": "关于A股股票交易撤销其他风险警示的公告",
+    "provider_title": "ST北人：关于A股股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST北人：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208210005450887_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208210005450887_1.pdf",
+    "body_notice_number": "临2012-033",
+    "relative_pdf_path": "AN201208210005450887.pdf",
+    "sha256": "ebd8eb95d284f806e043b810a865f6e835fc3d6534aa259085e04c14eedef68b",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208210005450887_api.json",
+      "sha256": "9a65f2205113c38292e36da55a6937c965aed29d9669c0392535500e78aae4c5",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段明确全部退出ST、普通简称和10%涨跌幅。"
+}

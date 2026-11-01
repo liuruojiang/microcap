@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002634",
+    "announcement_id": "AN202604241821569202",
+    "notice_date": "2026-04-25",
+    "title": "关于公司股票将被实施退市风险警示和其他风险警示暨停牌的公告",
+    "provider_title": "棒杰股份:关于公司股票将被实施退市风险警示和其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "棒杰股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604241821569202_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604241821569202_1.pdf",
+    "body_notice_number": "2026-052",
+    "relative_pdf_path": "AN202604241821569202.pdf",
+    "sha256": "4e95656ad5bc0773d12292daf1dcb16fa96177fdadc856f3fd2aaf3bd15784d8",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2026-04-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604241821569202_api.json",
+      "sha256": "504292455d21dae127c23c234947fe2004e103433829b539e4c26774274d6192",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确净资产负值及连续亏损持续经营双风险，4月28日起棒杰股份改*ST棒杰。预重整尚未法院受理不作为额外已实施动作。"
+}

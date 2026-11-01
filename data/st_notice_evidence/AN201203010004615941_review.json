@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000955",
+    "announcement_id": "AN201203010004615941",
+    "notice_date": "2010-06-03",
+    "title": "关于撤销退市风险警示并实行其他特别处理的公告",
+    "provider_title": "*ST欣龙：关于撤销退市风险警示并实行其他特别处理的公告",
+    "removed_issuer_prefix": "*ST欣龙：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004615941_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004615941_1.pdf",
+    "body_notice_number": "2009-016",
+    "relative_pdf_path": "AN201203010004615941.pdf",
+    "sha256": "540571c282c388bec3bbdfaf3ed1753b546c4b793a0e3facf9a80ca1deb4b588",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-06-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004615941_api.json",
+      "sha256": "53bf80e153c7f49b42844b722533c657458dbb7b3bae2cdd805009ac21bbf3f2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤退市风险仍其他特别处理，ST欣龙5%。原件公告号印2009-016，实际正文/落款均2010年，保留原号不改provider公告日。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000751",
+    "announcement_id": "AN201407290006465824",
+    "notice_date": "2014-07-30",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST锌业:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST锌业:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201407290006465824_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201407290006465824_1.pdf",
+    "body_notice_number": "2014-048",
+    "relative_pdf_path": "AN201407290006465824.pdf",
+    "sha256": "c2f192be7d3331ed5fab895a3742ae86b2512d4625158266312c12374d9f2040",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-08-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201407290006465824_api.json",
+      "sha256": "0441987ad476c9d6add6b55d6680a2065d5b261e00bd161c6c677b955765a573",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确无其他特别处理，8月6日撤退市风险并恢复上市，普通锌业股份。"
+}

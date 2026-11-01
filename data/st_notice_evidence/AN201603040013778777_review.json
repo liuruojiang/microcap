@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600725",
+    "announcement_id": "AN201603040013778777",
+    "notice_date": "2016-03-05",
+    "title": "云维股份关于股票可能被实施退市风险警示及公司债券可能被暂停上市交易的第二次风险提示公告",
+    "provider_title": "600725:云维股份关于股票可能被实施退市风险警示及公司债券可能被暂停上市交易的第二次风险提示公告",
+    "removed_issuer_prefix": "600725:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603040013778777_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603040013778777_1.pdf",
+    "body_notice_number": "临2016－003",
+    "relative_pdf_path": "AN201603040013778777.pdf",
+    "sha256": "ca33ea357e494c992b45e12356168048e0c3ffc1f6c27eb36708ff216950734b",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201603040013778777_api.json",
+      "sha256": "ef5d368e36fb7f1fb5d3d80c1243144a28d65b6de0404f3619c7937cf34a8509",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。"
+}

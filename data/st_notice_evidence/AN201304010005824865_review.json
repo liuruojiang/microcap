@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000995",
+    "announcement_id": "AN201304010005824865",
+    "notice_date": "2013-04-02",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST皇台：关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST皇台：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005824865_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005824865_1.pdf",
+    "body_notice_number": "2013—07",
+    "relative_pdf_path": "AN201304010005824865.pdf",
+    "sha256": "86f11e350e96971cc8f4ec9725c319e1bd137fe707cd6cd3d49060b66a0a872c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304010005824865_api.json",
+      "sha256": "1261efceea2b69e8a95cdc4a9dd478d741bb25be2eff2b8881fb8d17da5d695b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他风险，普通皇台酒业10%。"
+}

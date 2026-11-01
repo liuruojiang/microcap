@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002006",
+    "announcement_id": "AN201502260008596265",
+    "notice_date": "2015-02-27",
+    "title": "关于撤销股票交易退市风险警示的提示性公告",
+    "provider_title": "*ST精功:关于撤销股票交易退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST精功:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201502260008596265_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201502260008596265_1.pdf",
+    "body_notice_number": "2015－025",
+    "relative_pdf_path": "AN201502260008596265.pdf",
+    "sha256": "c2f343d69b1763d3f6f07f2b19c1a7441e2ff7c3e32bb226da0b603f7a760c14",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-03-02"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201502260008596265_api.json",
+      "sha256": "9291e3bba59f3909fdb352d015769861103d6b23494f109ae7cf91e5735eb8d6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原件明确交易所已批准撤销并恢复普通简称及10%，无其他风险；重大资产重组仍停牌不等同仍ST，风险实际生效日不是可交易日承诺。"
+}

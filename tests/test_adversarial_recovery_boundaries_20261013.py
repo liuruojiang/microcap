@@ -76,6 +76,10 @@ def test_actual_unresolved_builder_blocks_official_cache_panel_loader(
 ):
     ns, cache, before = _unavailable_official_history(unresolved_688496, tmp_path, monkeypatch)
     dates = pd.DatetimeIndex([pd.Timestamp("2026-09-10")])
+    # This counterexample isolates unavailable ST evidence. Return-basis source
+    # validation has its own entrypoint tests and must not mask this exception.
+    from scripts import stock_return_pipeline
+    monkeypatch.setattr(stock_return_pipeline, "load_return_prices", lambda **kwargs: None)
     with pytest.raises(RuntimeError, match="symbol cache panel load failed") as exc:
         v20.base_mod.freq_mod.load_cache_panels(
             ["688496"], trading_dates=dates, cap_dates=dates, max_workers=1

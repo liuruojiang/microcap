@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600282",
+    "announcement_id": "AN201403210005296733",
+    "notice_date": "2014-03-22",
+    "title": " 南钢股份关于公司股票将被实施退市风险警示、公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600282 : 南钢股份关于公司股票将被实施退市风险警示、公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600282 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403210005296733_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403210005296733_1.pdf",
+    "body_notice_number": "临2014—006",
+    "relative_pdf_path": "AN201403210005296733.pdf",
+    "sha256": "b64d07411268de23d54e6914c8f8ff4541ac7070b5a6bdb89b869b967396e462",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403210005296733_api.json",
+      "sha256": "2192ca899c5844db430eebf4dafb3d0a29bd3224fbd73ded4c63495fc146003a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "第二次预警基于未经审计业绩快报和未来年报披露，未正式确定股票实施日，不作动作。"
+}

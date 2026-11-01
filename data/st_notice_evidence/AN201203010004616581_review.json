@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000505",
+    "announcement_id": "AN201203010004616581",
+    "notice_date": "2010-06-02",
+    "title": "关于撤销公司股票交易退市风险警示并实行其他特别处理的公告",
+    "provider_title": "*ST珠江：关于撤销公司股票交易退市风险警示并实行其他特别处理的公告",
+    "removed_issuer_prefix": "*ST珠江：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004616581_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004616581_1.pdf",
+    "body_notice_number": "2010-023",
+    "relative_pdf_path": "AN201203010004616581.pdf",
+    "sha256": "56b8cd2bcaa1bfd67002e8e951fda1dd30d05af3f44f7c1ea11fb0e5c2b00961",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-06-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004616581_api.json",
+      "sha256": "744205f89ffd1b1dd1ee72bbe399d23c058e1a93bffacfe7f3ce9197a8c93642",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市风险并继续其他特别处理，6月3日ST珠江及ST珠江B，非普通退出。"
+}

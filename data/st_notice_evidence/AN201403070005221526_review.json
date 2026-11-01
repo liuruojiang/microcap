@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600178",
+    "announcement_id": "AN201403070005221526",
+    "notice_date": "2014-03-08",
+    "title": " 东安动力关于公司股票将被实施退市风险警示的第二次提示性公告",
+    "provider_title": "600178 : 东安动力关于公司股票将被实施退市风险警示的第二次提示性公告",
+    "removed_issuer_prefix": "600178 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403070005221526_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403070005221526_1.pdf",
+    "body_notice_number": "临2014-010",
+    "relative_pdf_path": "AN201403070005221526.pdf",
+    "sha256": "f00c59f4121117595579df23581137901a7f1306b002b7ecd66b9713665e0862",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403070005221526_api.json",
+      "sha256": "2e8df13d685130fbc6f718034ff37380bfc82d0c015f5ce9ce6f58d0f3e563de",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确2013年报预约2014年4月29日披露，若亏损则年报后实施，本件为事前提示，没有当前实施动作。"
+}

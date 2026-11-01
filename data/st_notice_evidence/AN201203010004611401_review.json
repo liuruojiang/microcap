@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000004",
+    "announcement_id": "AN201203010004611401",
+    "notice_date": "2010-05-28",
+    "title": "关于撤销股票退市风险警示并实施其他特别处理的公告",
+    "provider_title": "*ST国农：关于撤销股票退市风险警示并实施其他特别处理的公告",
+    "removed_issuer_prefix": "*ST国农：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004611401_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004611401_1.pdf",
+    "body_notice_number": "2010-028",
+    "relative_pdf_path": "AN201203010004611401.pdf",
+    "sha256": "841d6b9b5c61a21a76b3bc3b3c20f2a60a00117b91462d823d696b880b54ed46",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-05-31"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004611401_api.json",
+      "sha256": "a80b77eb1dab1e2a681efb12a7c32a586506422fca6ad80875f5c45180b5fe40",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

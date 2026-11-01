@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300068",
+    "announcement_id": "AN202605061821996144",
+    "notice_date": "2026-05-06",
+    "title": "关于公司及子公司银行账户被冻结暨股票交易叠加实施其他风险警示的公告",
+    "provider_title": "ST南都:关于公司及子公司银行账户被冻结暨股票交易叠加实施其他风险警示的公告",
+    "removed_issuer_prefix": "ST南都:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202605061821996144_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202605061821996144_1.pdf",
+    "body_notice_number": "2026-048",
+    "relative_pdf_path": "AN202605061821996144.pdf",
+    "sha256": "a5a9cf2edc6506adfa374dd819069e8e7f2439211c7f06ab098ff28126161c5b",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202605061821996144_api.json",
+      "sha256": "c0ab94bf744bfa62919689f918dedc2a57f28d564db3612175d15c1e61dea878",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认发行人及子公司银行冻结导致叠加other，股票不停牌；没有明确列出本次叠加具体生效日，actual_effective_date保留null，不猜日期。公告日动作保持5月6日。"
+}

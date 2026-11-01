@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600462",
+    "announcement_id": "AN201303280005815531",
+    "notice_date": "2013-03-29",
+    "title": "关于申请撤销股票退市风险警示的公告",
+    "provider_title": "*ST石岘：关于申请撤销股票退市风险警示的公告",
+    "removed_issuer_prefix": "*ST石岘：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303280005815531_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303280005815531_1.pdf",
+    "body_notice_number": "2013-012",
+    "relative_pdf_path": "AN201303280005815531.pdf",
+    "sha256": "3059cb3a83a5637d0b9c88a8bf373e9b258539f94c1acd685a621040466a8b7f",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201303280005815531_api.json",
+      "sha256": "566a64b096535613583dafa9fac22261c5347ea0733667872f1aa2557b22b15e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文逐项审阅，申请未批不退出；600633公司名称变更无风险动作，恢复上市公告才含获批撤销，9/29首日N浙传媒，第二交易日浙报传媒。全部公告日期保持API字段，不用落款或实际实施日倒填。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_round3_root9_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002134",
+    "announcement_id": "AN201504140009195577",
+    "notice_date": "2015-04-15",
+    "title": "关于撤销股票交易退市风险警示的提示性公告",
+    "provider_title": "*ST普林:关于撤销股票交易退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST普林:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504140009195577_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504140009195577_1.pdf",
+    "body_notice_number": "2015-010",
+    "relative_pdf_path": "AN201504140009195577.pdf",
+    "sha256": "09dee19ae726505f16dcf5774ca562bd478298486546f8863ad981bc806f62d7",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-04-16"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504140009195577_api.json",
+      "sha256": "23e3fa5e1cd8c5b77165365886627b7d3c9965f7a845e66bc1842e10f873e163",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文核验交易所已经审核批准，实施段明确普通简称、10%及无其他风险；提示性标题在本件属于已批准实施，退出全部ST类别。"
+}

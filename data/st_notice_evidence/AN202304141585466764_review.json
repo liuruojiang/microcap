@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "688272",
+    "announcement_id": "AN202304141585466764",
+    "notice_date": "2023-04-15",
+    "title": "华英证券有限责任公司关于北京富吉瑞光电科技股份有限公司股票可能被实施退市风险警示事项的问询函回复的核查意见",
+    "provider_title": "富吉瑞:华英证券有限责任公司关于北京富吉瑞光电科技股份有限公司股票可能被实施退市风险警示事项的问询函回复的核查意见",
+    "removed_issuer_prefix": "富吉瑞:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304141585466764_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304141585466764_1.pdf",
+    "body_notice_number": "上证科创公函【2023】0049号回复",
+    "relative_pdf_path": "AN202304141585466764.pdf",
+    "sha256": "76ce5d9ed809dbced30839c932f112bdd110b21e1ee9a0ae23de4e0ef8fdb758",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304141585466764_api.json",
+      "sha256": "5ce3110d78bfc266cd20f3984820e9166c7d49b92c6e2aee047531f354b4bb80",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核对正文题名、问询内容及第6.2.3条对应说明，明确目前公司未被上海证券交易所正式实施退市风险警示；保荐问询回复不构成实施决定，无状态动作。"
+}

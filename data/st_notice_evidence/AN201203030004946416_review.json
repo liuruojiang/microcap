@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600984",
+    "announcement_id": "AN201203030004946416",
+    "notice_date": "2011-11-14",
+    "title": "关于撤销退市风险警示的公告",
+    "provider_title": "*ST建机：关于撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST建机：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004946416_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004946416_1.pdf",
+    "body_notice_number": "2011-020",
+    "relative_pdf_path": "AN201203030004946416.pdf",
+    "sha256": "e336ed8e673bf3b36cd1675a81942d39cd2e783ac6c2abe4ae00bf51e84b8bfc",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-11-15"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004946416_api.json",
+      "sha256": "70f54e39e16bb65242031b57d575a39dad4fb33ec103c930ad6ccf55f33f3dfe",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确实施日及新简称；无ST新简称及10%幅度支持完全撤销，ST简称及5%幅度支持退市风险撤销但其他风险继续。 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

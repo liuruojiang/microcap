@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600733",
+    "announcement_id": "AN201203030004986935",
+    "notice_date": "2012-01-31",
+    "title": "2011年度业绩预亏及将被实行退市风险警示处理的公告",
+    "provider_title": "S前锋：2011年度业绩预亏及将被实行退市风险警示处理的公告",
+    "removed_issuer_prefix": "S前锋：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004986935_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004986935_1.pdf",
+    "body_notice_number": "临2012-001",
+    "relative_pdf_path": "AN201203030004986935.pdf",
+    "sha256": "2fc15cef8b3dbc1549eedfc3f424bcce0ff3723ca05cf9f4e1de183008634f54",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004986935_api.json",
+      "sha256": "0fc8e9235cedda4e98a263dc5c1120d51c804c33cd882a508c36da961cd5c440",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原稿同样业绩未经审计、如果2011年度亏损的条件性风险提示；未将强语气标题当已实施。"
+}

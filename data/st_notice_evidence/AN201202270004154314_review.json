@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600807",
+    "announcement_id": "AN201202270004154314",
+    "notice_date": "2007-05-25",
+    "title": "关于撤销股票其他特别处理的公告",
+    "provider_title": "*ST济 百：关于撤销股票其他特别处理的公告",
+    "removed_issuer_prefix": "*ST济 百：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004154314_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004154314_1.pdf",
+    "body_notice_number": "2007-017",
+    "relative_pdf_path": "AN201202270004154314.pdf",
+    "sha256": "318093a3dd8c9be6373ded44b1499df86c626c734c783d5e615a28163adfad76",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2007-05-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202270004154314_api.json",
+      "sha256": "628f275ef2c3dd1b5ed1ff4401700adb7b026c31d4fb5e591d6f59cd28208d98",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段确定普通名称和10%涨跌幅，退出全部ST类别；保留提供方公开日，不用历史回顾或落款提前公告日。"
+}

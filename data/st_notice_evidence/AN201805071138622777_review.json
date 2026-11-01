@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600275",
+    "announcement_id": "AN201805071138622777",
+    "notice_date": "2018-05-08",
+    "title": "*ST昌鱼关于撤销公司股票退市风险警示及实施其他风险警示的提示性公告",
+    "provider_title": "600275:*ST昌鱼关于撤销公司股票退市风险警示及实施其他风险警示的提示性公告",
+    "removed_issuer_prefix": "600275:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201805071138622777_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201805071138622777_1.pdf",
+    "body_notice_number": "2018-019",
+    "relative_pdf_path": "AN201805071138622777.pdf",
+    "sha256": "445f02d0d3d552952faceafa8ce9bf256699029b5dd1a0f73ea163916be0f34f",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2018-05-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201805071138622777_api.json",
+      "sha256": "341ccee72f0f26a1794c9e49d0da052e1b2c40ddbbc8d5a62c89b1183aeeb4a0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：重要提示明确5/9退市撤销且实施其他，ST昌鱼5%。"
+}

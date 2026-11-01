@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600698",
+    "announcement_id": "AN201404290005597804",
+    "notice_date": "2014-04-30",
+    "title": " ST轻骑关于撤销其他风险警示和变更证券简称的公告",
+    "provider_title": "600698 : ST轻骑关于撤销其他风险警示和变更证券简称的公告",
+    "removed_issuer_prefix": "600698 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404290005597804_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404290005597804_1.pdf",
+    "body_notice_number": "临2014-015",
+    "relative_pdf_path": "AN201404290005597804.pdf",
+    "sha256": "e9f2ba55d7a92ea2c87fd65a12248492dd57b31e3f0d047d230681114285ed26",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404290005597804_api.json",
+      "sha256": "17fd4daac05536a4438169f3d46e39d73be369c2a82861a4f2e6217cb2136847",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准/实施段确认普通简称及10%涨跌幅、全部退出ST风险；保留源公告日，历史回顾不倒填。"
+}

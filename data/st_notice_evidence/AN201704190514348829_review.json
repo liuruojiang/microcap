@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "601106",
+    "announcement_id": "AN201704190514348829",
+    "notice_date": "2017-04-20",
+    "title": "中国一重关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+    "provider_title": "601106:中国一重关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+    "removed_issuer_prefix": "601106:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704190514348829_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704190514348829_1.pdf",
+    "body_notice_number": "2017-014",
+    "relative_pdf_path": "AN201704190514348829.pdf",
+    "sha256": "76ad2b4b880efe95ac3de2f800711eb38c34f2582082e1916d382e9cf5cea523",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2017-04-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201704190514348829_api.json",
+      "sha256": "52272348abac99af0336e48a2fe8a395bcb2a695a7d76f05417939260b353b86",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "股票已实际决定4月21日退市风险、4月20日停牌；债券122184只是可能暂停交易，不能将债券可能状态抹掉股票真实实施。"
+}

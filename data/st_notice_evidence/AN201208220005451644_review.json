@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600860",
+    "announcement_id": "AN201208220005451644",
+    "notice_date": "2012-08-22",
+    "title": "关於A股股票交易撤销其他风险警示的公告",
+    "provider_title": "北人印刷机械股份：关於A股股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "北人印刷机械股份：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208220005451644_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208220005451644_1.pdf",
+    "body_notice_number": "原文未列公告编号（H股0187版）",
+    "relative_pdf_path": "AN201208220005451644.pdf",
+    "sha256": "d3d230c5e80090a111a952d0eac29d0feb8840858ff247b3d7ead19d4d079235",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208220005451644_api.json",
+      "sha256": "9a65f2205113c38292e36da55a6937c965aed29d9669c0392535500e78aae4c5",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段明确全部退出ST、普通简称和10%涨跌幅。此为同发行人H股版关于A股公告，三页乱码抽取已逐页渲染目视核验，第三页明确A股600860及8月23日、10%，不把0187伪作A股代码；原文没有公告编号，不借A股版编号冒填。"
+}

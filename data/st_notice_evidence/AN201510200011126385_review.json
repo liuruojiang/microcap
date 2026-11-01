@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600725",
+    "announcement_id": "AN201510200011126385",
+    "notice_date": "2015-10-21",
+    "title": "云维股份关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的风险提示公告",
+    "provider_title": "600725:云维股份关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的风险提示公告",
+    "removed_issuer_prefix": "600725:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201510200011126385_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201510200011126385_1.pdf",
+    "body_notice_number": "临2015－079",
+    "relative_pdf_path": "AN201510200011126385.pdf",
+    "sha256": "bb1a523938e1459be7c7c45831d4c818fdc728fcab948dff8f61d774571a904f",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201510200011126385_api.json",
+      "sha256": "ef5d368e36fb7f1fb5d3d80c1243144a28d65b6de0404f3619c7937cf34a8509",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。"
+}

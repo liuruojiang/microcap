@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300338",
+    "announcement_id": "AN202204291562223994",
+    "notice_date": "2022-04-29",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌1天的公告",
+    "provider_title": "开元教育:关于公司股票交易将被实施其他风险警示暨股票停牌1天的公告",
+    "removed_issuer_prefix": "开元教育:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562223994_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562223994_1.pdf",
+    "body_notice_number": "2022-024",
+    "relative_pdf_path": "AN202204291562223994.pdf",
+    "sha256": "d0352e7c30e795ba033a1d223bf06b4dfb32e87c2b319fdab71cc440836c6e5f",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2022-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204291562223994_api.json",
+      "sha256": "dacb37a72aa50fe48699e3a255e65d8398fbfe4fc4b3a053e3413dd40afa9c23",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "只确定other实施；对未来净资产导致退市风险的条件预告不作delisting=True。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

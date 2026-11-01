@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002427",
+    "announcement_id": "AN202210301579631795",
+    "notice_date": "2022-10-31",
+    "title": "关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST尤夫:关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST尤夫:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202210301579631795_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202210301579631795_1.pdf",
+    "body_notice_number": "2022-087",
+    "relative_pdf_path": "AN202210301579631795.pdf",
+    "sha256": "a3e582f2e33c5fae79bf92f68d970597e1572176bee0cc790354dfeea47fadad",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2022-10-31"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202210301579631795_api.json",
+      "sha256": "173ae6e1bd0746f7fa2405d36db4d58cd2620a5a9c74fbb9b523f232d8878a8c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院受理发行人重整，10月31日起叠加退市风险，不取消原有风险。"
+}

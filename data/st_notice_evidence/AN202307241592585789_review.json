@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002482",
+    "announcement_id": "AN202307241592585789",
+    "notice_date": "2023-07-25",
+    "title": "关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST广田:关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST广田:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307241592585789_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307241592585789_1.pdf",
+    "body_notice_number": "2023-056",
+    "relative_pdf_path": "AN202307241592585789.pdf",
+    "sha256": "340c480bb9a09c3dc7dfe1fad293b399ec7f7ab75c3342597e051686826432e8",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2023-07-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202307241592585789_api.json",
+      "sha256": "8b7f468b9b046bdfb3ada8a4cb72e2ed22d6037717269a9c9bff21441edc331b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院受理发行人重整，7月25日起叠加退市风险。"
+}

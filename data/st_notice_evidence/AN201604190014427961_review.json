@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600691",
+    "announcement_id": "AN201604190014427961",
+    "notice_date": "2016-04-20",
+    "title": "*ST阳化关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600691:*ST阳化关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600691:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604190014427961_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604190014427961_1.pdf",
+    "body_notice_number": "临2016-042",
+    "relative_pdf_path": "AN201604190014427961.pdf",
+    "sha256": "b00ba72aad86e3f75644e2f54cff9614c722ad2187ae6b449394cc1eea853b63",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2016-04-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201604190014427961_api.json",
+      "sha256": "ae5ee45c174d4a896df9eb8eeb39b89d16f97dbdc79f886ec73b7f1033b94e4b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所批准及实施段确认撤风险、普通简称和10%涨跌幅，完整清零ST类别。"
+}

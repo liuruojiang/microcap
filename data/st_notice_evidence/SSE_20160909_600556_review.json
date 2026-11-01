@@ -1,0 +1,32 @@
+{
+  "status": "official_exchange_html_and_equity_identity_verified",
+  "event": {
+    "symbol": "600556",
+    "announcement_id": "SSE_20160909_600556",
+    "notice_date": "2016-09-09",
+    "title": "关于对慧球科技股票实施ST处理的通报",
+    "issuer_name": "广西慧球科技股份有限公司",
+    "issuer_short_name": "慧球科技",
+    "source_provider": "sse",
+    "source_url": "https://www.sse.com.cn/disclosure/credibility/supervision/dynamic/c/c_20160909_4176394.shtml",
+    "relative_html_path": "SSE_20160909_600556.html",
+    "sha256": "d6437b929533db3fe13ed5268b0b7770447c5049349d90ad84cef1280980576f",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2016-09-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "SSE_20160909_600556_issuer_api.json",
+      "sha256": "729f0bd9a8db399fb25732c75b4d50f5b70e56cdf0a213016c5f738d8ab48b04",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    },
+    "receipt": {
+      "relative_path": "SSE_20160909_600556_receipt.json",
+      "sha256": "2ad08a888b186e0431d9bde39f433a9bda1756072c2aa35f9c87cbb5518c60e1",
+      "source_url": "https://www.sse.com.cn/disclosure/credibility/supervision/dynamic/c/c_20160909_4176394.shtml"
+    }
+  },
+  "review_notes": "上交所2016-09-09官方通报原文明确实施其他风险警示，自9/13ST慧球；原HTML无数字代码，以真实Eastmoney公告API600556 A股发行人+慧球科技名称联合绑定。原监管工作函332字非PDF未冒用为实际决定。"
+}

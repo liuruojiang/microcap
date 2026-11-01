@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "603810",
+    "announcement_id": "AN201911121370672979",
+    "notice_date": "2019-11-13",
+    "title": "ST丰山关于公司股票停牌暨撤销其他风险警示的提示性公告",
+    "provider_title": "603810:ST丰山关于公司股票停牌暨撤销其他风险警示的提示性公告",
+    "removed_issuer_prefix": "603810:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201911121370672979_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201911121370672979_1.pdf",
+    "body_notice_number": "2019-073",
+    "relative_pdf_path": "AN201911121370672979.pdf",
+    "sha256": "baa7a04ea0d4dc7ab672f6ae9b8be4acce8738ba8baa44b266ab06108839955c",
+    "risk_actions": {
+      "other": false
+    },
+    "actual_effective_date": "2019-11-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201911121370672979_api.json",
+      "sha256": "853d3d6f79e46c4b524692e029c15c212c2def5331384a2c736ef43dd90e3d85",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确11月14日撤销其他风险警示、普通丰山集团及10%恢复；提示性标题此处为已核准实际退出。"
+}

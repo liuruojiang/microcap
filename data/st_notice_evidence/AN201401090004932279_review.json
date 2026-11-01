@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002047",
+    "announcement_id": "AN201401090004932279",
+    "notice_date": "2014-01-10",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST成霖:关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST成霖:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201401090004932279_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201401090004932279_1.pdf",
+    "body_notice_number": "2014-002",
+    "relative_pdf_path": "AN201401090004932279.pdf",
+    "sha256": "e8e9b04a584c6621802394035544c9633024af515ac5a3aec72dfad8bc669ae3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-01-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201401090004932279_api.json",
+      "sha256": "74811a2c935d87c1405dc58f72d07f50fe871493d5786327150350c40ce1e4a7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

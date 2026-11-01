@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600771",
+    "announcement_id": "AN201304240003208772",
+    "notice_date": "2013-04-25",
+    "title": " ST东盛关于撤销股票交易其他风险警示的公告",
+    "provider_title": "600771 : ST东盛关于撤销股票交易其他风险警示的公告",
+    "removed_issuer_prefix": "600771 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304240003208772_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304240003208772_1.pdf",
+    "body_notice_number": "2013-019",
+    "relative_pdf_path": "AN201304240003208772.pdf",
+    "sha256": "7b90de5fcb6e6122a8db935cfe14e8623d849cbd6929a02e8a1593fe58d16b6c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304240003208772_api.json",
+      "sha256": "871c64181fb6ebfd3fb89a8e8a6e075afca64e9d59b5691b88d1bc98b2f2e2b8",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确实施日及新简称；无ST新简称及10%幅度支持完全撤销，ST简称及5%幅度支持退市风险撤销但其他风险继续。 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

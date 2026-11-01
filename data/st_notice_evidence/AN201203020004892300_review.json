@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000981",
+    "announcement_id": "AN201203020004892300",
+    "notice_date": "2011-08-19",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST兰光：关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST兰光：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004892300_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004892300_1.pdf",
+    "body_notice_number": "2011-047",
+    "relative_pdf_path": "AN201203020004892300.pdf",
+    "sha256": "c05422360ebbe9a4338acef490307a679c10a1ffa1eeb996504711fc50b88200",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-08-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004892300_api.json",
+      "sha256": "8a667153dbe50b76a44f0fc887269461e048a76b97e4cb0348c431b224ec5b15",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确仍其他特别处理，撤退市风险改ST兰光；首日无涨跌幅不代表ST退出。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600715",
+    "announcement_id": "AN202410211640391026",
+    "notice_date": "2024-10-22",
+    "title": "文投控股股份有限公司关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST文投:文投控股股份有限公司关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST文投:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202410211640391026_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202410211640391026_1.pdf",
+    "body_notice_number": "2024-095",
+    "relative_pdf_path": "AN202410211640391026.pdf",
+    "sha256": "fb93b3272ce30a9bfd5d013ba989802e32f67acd66d3e4e503203f7a987cb8b3",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2024-10-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202410211640391026_api.json",
+      "sha256": "5f8c13e71aed9d356bad91d7bb4c353e4f868b388bc1927df58dc26601782448",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院已裁定受理发行人重整，正文提示和第五节均明确2024年10月22日起叠加退市风险；已存其他风险继续而非撤销。"
+}

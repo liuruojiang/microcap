@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "603959",
+    "announcement_id": "AN202604241821558018",
+    "notice_date": "2026-04-25",
+    "title": "百利科技关于公司股票将被实施其他风险警示暨停牌的公告",
+    "provider_title": "百利科技:百利科技关于公司股票将被实施其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "百利科技:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604241821558018_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604241821558018_1.pdf",
+    "body_notice_number": "2026-042",
+    "relative_pdf_path": "AN202604241821558018.pdf",
+    "sha256": "fa7c20520ecc0493939eda5fcdc506a6167a27a96dd17d8616a2c4257345be39",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604241821558018_api.json",
+      "sha256": "ec404c2050919d23b68f53f1065058f50419d9750d9125cb131f18ef416cd0df",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月27日停牌、4月28日实施其他风险警示变更为ST百利；实际决定不是可能风险提示。"
+}

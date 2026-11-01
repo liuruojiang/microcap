@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600550",
+    "announcement_id": "AN201402180005126077",
+    "notice_date": "2014-02-19",
+    "title": " 天威保变关于公司股票将被实施退市风险警示的第二次提示性公告",
+    "provider_title": "600550 : 天威保变关于公司股票将被实施退市风险警示的第二次提示性公告",
+    "removed_issuer_prefix": "600550 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201402180005126077_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201402180005126077_1.pdf",
+    "body_notice_number": "临2014-016",
+    "relative_pdf_path": "AN201402180005126077.pdf",
+    "sha256": "6d41cd24626ffde16b27fe016b9a4c495cf2e34b0e49a00fd7155ac42bb7e684",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201402180005126077_api.json",
+      "sha256": "e6270b2514202a0ec4804278104623856b48d1481b458f90f25a8a0176517920",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文2013年度业绩如亏损才在年报披露后实施，财务仅初步测算；第二/第三次条件预警不是已确认股票实施。原PDF解析提示EOF尾标不完整，页面正文及署名日期完整保留，未改原字节。"
+}

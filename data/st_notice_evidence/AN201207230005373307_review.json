@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000697",
+    "announcement_id": "AN201207230005373307",
+    "notice_date": "2012-07-24",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST炼石：关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST炼石：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201207230005373307_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201207230005373307_1.pdf",
+    "body_notice_number": "2012-032",
+    "relative_pdf_path": "AN201207230005373307.pdf",
+    "sha256": "bbde13daade435285a82a59ed2538a71c10215cc901e7fa557f578ed91a7dd7a",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-07-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201207230005373307_api.json",
+      "sha256": "021c6d59ec7775bfcd8e84a0a3a7176baaea3e67ffa9e1850a5af61fe6e58516",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

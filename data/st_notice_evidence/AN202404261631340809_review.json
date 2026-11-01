@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300117",
+    "announcement_id": "AN202404261631340809",
+    "notice_date": "2024-04-26",
+    "title": "关于公司股票交易将被实施退市风险警示和其他风险警示暨股票停牌一天的公告",
+    "provider_title": "嘉寓股份:关于公司股票交易将被实施退市风险警示和其他风险警示暨股票停牌一天的公告",
+    "removed_issuer_prefix": "嘉寓股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404261631340809_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404261631340809_1.pdf",
+    "body_notice_number": "2024-037",
+    "relative_pdf_path": "AN202404261631340809.pdf",
+    "sha256": "43137e73fd8c27d5d835670cdf0c2a5911a6a8a90c7dd29fc5433a048aa0acf9",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2024-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404261631340809_api.json",
+      "sha256": "6cdf78587c90b22983a3cfec31c3679365ec272557dec794eea5ba783d1187eb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600136",
+    "announcement_id": "AN202306051590428173",
+    "notice_date": "2023-06-06",
+    "title": "武汉当代明诚文化体育集团股份有限公司关于法院裁定受理公司重整暨公司股票将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST明诚:武汉当代明诚文化体育集团股份有限公司关于法院裁定受理公司重整暨公司股票将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST明诚:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202306051590428173_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202306051590428173_1.pdf",
+    "body_notice_number": "2023-061",
+    "relative_pdf_path": "AN202306051590428173.pdf",
+    "sha256": "2ce571ac6d2f05d178200ab30a26699c520f452f106e9390e2ec57b0db37a427",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202306051590428173_api.json",
+      "sha256": "360c42b3ebc8901e096d5d7bef85d0c8824c40406d3fce88467fe7dc587a1493",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院已受理重整，确定叠加delisting并继续other；正文未给具体叠加日期，effective_date=None，不自行推算。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600793",
+    "announcement_id": "AN201611170107306580",
+    "notice_date": "2016-11-18",
+    "title": "ST宜纸关于公司股票撤销其他风险警示的公告",
+    "provider_title": "600793:ST宜纸关于公司股票撤销其他风险警示的公告",
+    "removed_issuer_prefix": "600793:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201611170107306580_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201611170107306580_1.pdf",
+    "body_notice_number": "2016-076",
+    "relative_pdf_path": "AN201611170107306580.pdf",
+    "sha256": "51a4546bcdc8a19f7ec58a22bac95d507390a130c58248d91a461b2ec8fa4890",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2016-11-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201611170107306580_api.json",
+      "sha256": "0d44b6c62e9fe0f6b5317409dde727a86c331d6b19dedf9db8c67f9c23bc7e1f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": " 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

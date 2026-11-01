@@ -34,8 +34,15 @@ COMBO50_FRESHNESS_DATE_COLUMNS = {
         "关于公司股票交易将被实施其他风险警示暨股票停复牌、可能被实施退市风险警示的提示性公告",
     ],
 )
-def test_definitive_st_implementation_notice_is_entry_even_when_advisory(title: str) -> None:
+def test_implementation_title_requires_definite_present_action_or_body(title: str) -> None:
     notices = pd.DataFrame({"notice_date": ["2026-04-30"], "title": [title]})
+
+    if "将被" in title:
+        from scripts.st_notice_evidence import StNoticeEvidenceError
+        with pytest.raises(StNoticeEvidenceError, match="verified issuer/body evidence"):
+            v2_0.freq_mod.build_st_intervals_from_notices(
+                pd.Timestamp("2025-01-01"), pd.Timestamp("2026-08-19"), notices)
+        return
 
     intervals = v2_0.freq_mod.build_st_intervals_from_notices(
         pd.Timestamp("2025-01-01"),
@@ -230,41 +237,23 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
     assert meta["universe_symbol_count"] == 2
 
 
-def test_refresh_price_cache_tail_uses_backtest_universe_when_symbols_are_omitted(monkeypatch: pytest.MonkeyPatch) -> None:
-    refreshed: list[str] = []
-
+def test_refresh_price_cache_tail_uses_backtest_universe_when_symbols_are_omitted(monkeypatch, capsys):
+    from scripts import stock_daily_inputs
+    calls, shares, basis = [], [], []
+    symbols = ['000001', '000002']
     monkeypatch.setattr(v2_0.freq_mod, "load_current_universe", lambda: ["999999"])
-    monkeypatch.setattr(v2_0.freq_mod, "load_universe", lambda: ["000001", "000002"])
-    monkeypatch.setattr(v2_0.fetch_mod, "ensure_dirs", lambda: None)
-    monkeypatch.setattr(
-        v2_0.fetch_mod,
-        "fetch_price_history",
-        lambda symbol, start_date, end_date, force_refresh: refreshed.append(symbol),
-    )
-    monkeypatch.setattr(v2_0.fetch_mod, "fetch_share_change", lambda *_args, **_kwargs: None)
-    monkeypatch.setitem(
-        v2_0.base_mod.refresh_price_cache_tail.__globals__,
-        "price_cache_refresh_preflight",
-        lambda end_date, symbols, force_refresh=False: {
-            "symbol_count": len(symbols),
-            "stale_or_missing_count": len(symbols),
-            "missing_count": 0,
-            "stale_count": len(symbols),
-            "current_count": 0,
-            "force_refresh": force_refresh,
-            "stale_or_missing_symbols": list(symbols),
-            "sample_stale_or_missing_symbols": list(symbols)[:10],
-        },
-    )
-
-    v2_0.base_mod.refresh_price_cache_tail(
-        pd.Timestamp("2026-06-26"),
-        max_workers=1,
-        symbols=None,
-        force_refresh=False,
-    )
-
-    assert refreshed == ["000001", "000002"]
+    monkeypatch.setattr(v2_0.freq_mod, "load_universe", lambda: symbols)
+    monkeypatch.setattr(stock_daily_inputs, "refresh_daily_inputs", lambda **kwargs: calls.append(kwargs))
+    monkeypatch.setattr(v2_0.fetch_mod, "fetch_share_change", lambda symbol, *args: shares.append(symbol))
+    monkeypatch.setitem(v2_0.base_mod.refresh_price_cache_tail.__globals__, "refresh_return_basis_sources", lambda codes, day: basis.append((codes, day)))
+    v2_0.base_mod.refresh_price_cache_tail(pd.Timestamp("2026-06-26"), max_workers=1, progress_interval=2)
+    assert calls[0]["symbols"] == symbols
+    assert calls[0]["as_of"] == "2026-06-26" and calls[0]["allow_network"] is True
+    assert sorted(shares) == symbols
+    assert basis == [(symbols, "2026-06-26")]
+    captured = capsys.readouterr()
+    assert "verified stock-input refresh end_date=2026-06-26 symbols=2" in captured.err
+    assert "price-cache refresh complete 2/2 failures=0" in captured.err
 
 
 def test_file_state_fingerprint_reads_turnover_dates_and_json_meta(tmp_path: Path) -> None:
@@ -588,47 +577,23 @@ def test_price_cache_refresh_preflight_counts_missing_stale_and_current(tmp_path
     assert preflight["sample_stale_or_missing_symbols"] == ["000002", "000003"]
 
 
-def test_refresh_price_cache_tail_emits_preflight_and_progress(capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch) -> None:
-    refreshed: list[str] = []
-
-    monkeypatch.setattr(v2_0.freq_mod, "load_universe", lambda: ["000001", "000002", "000003"])
-    monkeypatch.setattr(v2_0.fetch_mod, "ensure_dirs", lambda: None)
-    monkeypatch.setattr(
-        v2_0.fetch_mod,
-        "fetch_price_history",
-        lambda symbol, start_date, end_date, force_refresh: refreshed.append(symbol),
-    )
-    monkeypatch.setattr(v2_0.fetch_mod, "fetch_share_change", lambda *_args, **_kwargs: None)
-    monkeypatch.setitem(
-        v2_0.base_mod.refresh_price_cache_tail.__globals__,
-        "price_cache_refresh_preflight",
-        lambda end_date, symbols, force_refresh=False: {
-            "symbol_count": len(symbols),
-            "stale_or_missing_count": 2,
-            "missing_count": 1,
-            "stale_count": 1,
-            "current_count": 1,
-            "force_refresh": False,
-            "stale_or_missing_symbols": ["000001", "000002"],
-            "sample_stale_or_missing_symbols": ["000001", "000002"],
-        },
-    )
-
-    v2_0.base_mod.refresh_price_cache_tail(
-        pd.Timestamp("2026-06-26"),
-        max_workers=1,
-        symbols=None,
-        force_refresh=False,
-        progress_interval=2,
-    )
-
+def test_refresh_price_cache_tail_emits_preflight_and_progress(monkeypatch, capsys):
+    from scripts import stock_daily_inputs
+    calls, shares, basis = [], [], []
+    symbols = ['000001', '000002', '000003']
+    monkeypatch.setattr(v2_0.freq_mod, "load_current_universe", lambda: ["999999"])
+    monkeypatch.setattr(v2_0.freq_mod, "load_universe", lambda: symbols)
+    monkeypatch.setattr(stock_daily_inputs, "refresh_daily_inputs", lambda **kwargs: calls.append(kwargs))
+    monkeypatch.setattr(v2_0.fetch_mod, "fetch_share_change", lambda symbol, *args: shares.append(symbol))
+    monkeypatch.setitem(v2_0.base_mod.refresh_price_cache_tail.__globals__, "refresh_return_basis_sources", lambda codes, day: basis.append((codes, day)))
+    v2_0.base_mod.refresh_price_cache_tail(pd.Timestamp("2026-06-26"), max_workers=1, progress_interval=2)
+    assert calls[0]["symbols"] == symbols
+    assert calls[0]["as_of"] == "2026-06-26" and calls[0]["allow_network"] is True
+    assert sorted(shares) == symbols
+    assert basis == [(symbols, "2026-06-26")]
     captured = capsys.readouterr()
-    assert refreshed == ["000001", "000002"]
-    assert "price-cache refresh preflight" in captured.err
-    assert "symbols=3" in captured.err
-    assert "stale_or_missing=2" in captured.err
-    assert "price-cache refresh progress 2/2 (100.0%)" in captured.err
-    assert "price-cache refresh complete 2/2" in captured.err
+    assert "verified stock-input refresh end_date=2026-06-26 symbols=3" in captured.err
+    assert "price-cache refresh complete 3/3 failures=0" in captured.err
 
 
 def test_v2_0_promoted_defaults_match_selected_low_drawdown_line() -> None:

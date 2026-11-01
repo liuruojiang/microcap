@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000928",
+    "announcement_id": "AN201409280007150607",
+    "notice_date": "2014-09-29",
+    "title": "关于股票交易撤销退市风险警示的提示性公告",
+    "provider_title": "*ST吉炭:关于股票交易撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST吉炭:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201409280007150607_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201409280007150607_1.pdf",
+    "body_notice_number": "2014—46",
+    "relative_pdf_path": "AN201409280007150607.pdf",
+    "sha256": "2554250edacb3940c24041a57fd1a4071b83c97d84fbc6f8abda781afdb59034",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-09-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201409280007150607_api.json",
+      "sha256": "bd5575b1665601809d1303f1f4d1b5eec90925a26d4dd44efd41076e9aa37f53",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文第四节明确批准9月30日退出全部ST、普通简称及10%；第一页已渲染目视核实页眉公告编号2014—46（抽取文本遗漏页眉），分别保留两个提供方原件。"
+}

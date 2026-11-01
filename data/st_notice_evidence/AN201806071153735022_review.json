@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000809",
+    "announcement_id": "AN201806071153735022",
+    "notice_date": "2018-06-08",
+    "title": "关于撤消公司股票交易退市风险警示的公告",
+    "provider_title": "*ST新城:关于撤消公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST新城:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201806071153735022_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201806071153735022_1.pdf",
+    "body_notice_number": "2018-033",
+    "relative_pdf_path": "AN201806071153735022.pdf",
+    "sha256": "3aa3df897a9b74efa1162d68987819562c116b2992113c082c31a06750fae52d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2018-06-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201806071153735022_api.json",
+      "sha256": "1b7b340fb3513de215e3c748ed0defcbbbd3b64807d28943c5b74aa51e57f723",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：撤消异体字；正文6/11恢复铁岭新城10%，无其他/退市警示。"
+}

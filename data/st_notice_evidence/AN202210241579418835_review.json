@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300370",
+    "announcement_id": "AN202210241579418835",
+    "notice_date": "2022-10-25",
+    "title": "关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST安控:关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST安控:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202210241579418835_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202210241579418835_1.pdf",
+    "body_notice_number": "2022-104",
+    "relative_pdf_path": "AN202210241579418835.pdf",
+    "sha256": "a174206c5177568d609bde94048a4d4195a69c6093f9ce5ad0b838c972c8eabf",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2022-10-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202210241579418835_api.json",
+      "sha256": "2d639e4310b0f58abab62197a0900238a8b17e04c86fef7ef2ce3bec78c7cab4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院受理发行人重整，正文明确10月25日叠加退市风险，无需停牌，不清除原other。"
+}

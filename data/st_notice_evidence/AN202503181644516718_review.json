@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300159",
+    "announcement_id": "AN202503181644516718",
+    "notice_date": "2025-03-19",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌一天的公告",
+    "provider_title": "新研股份:关于公司股票交易将被实施退市风险警示暨股票停牌一天的公告",
+    "removed_issuer_prefix": "新研股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503181644516718_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503181644516718_1.pdf",
+    "body_notice_number": "2025-019",
+    "relative_pdf_path": "AN202503181644516718.pdf",
+    "sha256": "4f1e09f23e0eb2bfc78a7f1d32714060edb12689613a07ba90534ab7464ea98b",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2025-03-20"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202503181644516718_api.json",
+      "sha256": "e4186b78177bfa4243242d3529f4bde704ade8a9ab8d99541459a9c6e75ff2e4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300396",
+    "announcement_id": "AN202604291821772685",
+    "notice_date": "2026-04-30",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌、可能被实施退市风险警示的提示性公告",
+    "provider_title": "迪瑞医疗:关于公司股票交易将被实施其他风险警示暨股票停复牌、可能被实施退市风险警示的提示性公告",
+    "removed_issuer_prefix": "迪瑞医疗:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821772685_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821772685_1.pdf",
+    "body_notice_number": "2026-019",
+    "relative_pdf_path": "AN202604291821772685.pdf",
+    "sha256": "a021da7fa4830adc656044edb753fc9475275572f7e9f4dc87b3b351c1fe1508",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604291821772685_api.json",
+      "sha256": "ab3327cb899f1c9d332c662a1f668754c35dc85647b694146c085c6acf4414ea",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月6日other；退市风险属于下一年度内控再次否定时的未来可能，不能置delisting。"
+}

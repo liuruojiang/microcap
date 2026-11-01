@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600617",
+    "announcement_id": "AN201403230005299692",
+    "notice_date": "2014-03-24",
+    "title": " *ST联华关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600617 : *ST联华关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600617 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403230005299692_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403230005299692_1.pdf",
+    "body_notice_number": "2014-026",
+    "relative_pdf_path": "AN201403230005299692.pdf",
+    "sha256": "a8e1d8c6cee0f84ee1ef4bb0e8421529f2af53ae1503208f5e073a8fb93816fc",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-03-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403230005299692_api.json",
+      "sha256": "7d0898138b5e4d2083ec172dd03b66937fcb4a1e93793ba6aac4cf2844c29ae6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所批准及实施段确认撤风险、普通简称和10%涨跌幅，完整清零ST类别。"
+}

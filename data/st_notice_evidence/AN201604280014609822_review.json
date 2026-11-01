@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600234",
+    "announcement_id": "AN201604280014609822",
+    "notice_date": "2016-04-29",
+    "title": "山水文化关于公司股票将被实行退市风险警示暨停牌的公告",
+    "provider_title": "600234:山水文化关于公司股票将被实行退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600234:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604280014609822_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604280014609822_1.pdf",
+    "body_notice_number": "临2016--039",
+    "relative_pdf_path": "AN201604280014609822.pdf",
+    "sha256": "b7fb784be185270600c11cb157b56e997874447d26e940fab90ce0a015b2a154",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2016-05-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201604280014609822_api.json",
+      "sha256": "9d0589eef5ebfc25fe6b73c566270acf6a9521c5f941b8edd1c73341f610405f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月3日退市风险，*ST山水。"
+}

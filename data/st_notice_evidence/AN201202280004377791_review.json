@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000750",
+    "announcement_id": "AN201202280004377791",
+    "notice_date": "2009-04-20",
+    "title": "关于公司股票实施退市风险警示的公告",
+    "provider_title": "S ST集琦：关于公司股票实施退市风险警示的公告",
+    "removed_issuer_prefix": "S ST集琦：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004377791_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004377791_1.pdf",
+    "body_notice_number": "2009-021",
+    "relative_pdf_path": "AN201202280004377791.pdf",
+    "sha256": "0a5dabdb311307b2f2c436eeaaa85a20747d1b4f0ddea37dad3400de10205068",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2009-04-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202280004377791_api.json",
+      "sha256": "d41f9474fc76c64864b8848f95ee7187c87a58b201566c017d156e07b0c4cb57",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月21日实施退市风险SST变S*ST，仅确认退市类别，不推断正文未明确撤销的其他类别。"
+}

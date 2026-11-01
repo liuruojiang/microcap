@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000155",
+    "announcement_id": "AN201504290009434362",
+    "notice_date": "2015-04-30",
+    "title": "关于股票交易实施退市风险警示的公告",
+    "provider_title": "ST川化:关于股票交易实施退市风险警示的公告",
+    "removed_issuer_prefix": "ST川化:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504290009434362_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504290009434362_1.pdf",
+    "body_notice_number": "2015-026",
+    "relative_pdf_path": "AN201504290009434362.pdf",
+    "sha256": "9db00a78025016023690d0a805542666a88a29f198d15ef3194af02515720974",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2015-05-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504290009434362_api.json",
+      "sha256": "bf9d2cec91403149d227e1f8169b9b3615e6c62c0c71e851612c97f0c522f21d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐页全文与已审CNInfo 1200947404 原件完全相同，PDF字节不同单独保留；沿用经全文核验动作。"
+}

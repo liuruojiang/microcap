@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300052",
+    "announcement_id": "AN202503161644420444",
+    "notice_date": "2025-03-17",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "中青宝:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "中青宝:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503161644420444_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503161644420444_1.pdf",
+    "body_notice_number": "2025-006",
+    "relative_pdf_path": "AN202503161644420444.pdf",
+    "sha256": "e3a077ec6930ce192c0f1103aececf8d6791ad4e434e930964682d8cca1ce7d8",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-03-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202503161644420444_api.json",
+      "sha256": "c39ca6a53ca39609327705228ae019fd8f14a8c3a5514333bbef66856bdd5640",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000587",
+    "announcement_id": "AN202204121558892847",
+    "notice_date": "2022-04-13",
+    "title": "公司股票将被实施退市风险警示补充公告",
+    "provider_title": "*ST金洲:公司股票将被实施退市风险警示补充公告",
+    "removed_issuer_prefix": "*ST金洲:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204121558892847_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204121558892847_1.pdf",
+    "body_notice_number": "2022-027",
+    "relative_pdf_path": "AN202204121558892847.pdf",
+    "sha256": "5926a07feb5f4789bfb757a35f0f333ba7dd7e30b543ef13a8f6192942ccd269",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204121558892847_api.json",
+      "sha256": "cfe7861db5e618f5a023c8239fd0706a2f504d2a20326d085396ded00ba7c3f9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "完整核读原PDF：债务豁免存疑预计年度审计净资产负，预计年报披露后将触及；本次仅补充预计风险及已有风险信息，未宣布新的即时实施动作。"
+}

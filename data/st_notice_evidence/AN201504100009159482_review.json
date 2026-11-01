@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002314",
+    "announcement_id": "AN201504100009159482",
+    "notice_date": "2015-04-11",
+    "title": "关于公司2012年公司债券停牌及实行风险警示的公告",
+    "provider_title": "雅致股份:关于公司2012年公司债券停牌及实行风险警示的公告",
+    "removed_issuer_prefix": "雅致股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504100009159482_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504100009159482_1.pdf",
+    "body_notice_number": "2015-031",
+    "relative_pdf_path": "AN201504100009159482.pdf",
+    "sha256": "c6416a27de4eb61aec83029d00619ac4ced59859f094005e6bdc66e079996332",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504100009159482_api.json",
+      "sha256": "e6c31ac3dfe9f2b16487d9497ad52d7760719759a19055f15f8019341ea0139d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份核对债券112075/112076、12雅致01/02风险警示或可能风险；措施只作用公司债券，002314股票无ST动作。"
+}

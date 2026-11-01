@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000007",
+    "announcement_id": "AN201202270004166809",
+    "notice_date": "2007-04-20",
+    "title": "董事会关于股票交易实行其他特别处理的公告",
+    "provider_title": "深达声Ａ：董事会关于股票交易实行其他特别处理的公告",
+    "removed_issuer_prefix": "深达声Ａ：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004166809_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004166809_1.pdf",
+    "body_notice_number": "2007-010",
+    "relative_pdf_path": "AN201202270004166809.pdf",
+    "sha256": "7ff9d7056493d0a4e56fbfd1567ffecd51d85c9839ebbb7880de7a1b57349a87",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2007-04-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202270004166809_api.json",
+      "sha256": "200f91276419de1f39637d43d35d92de85cec5e61549c0663f2cd53339a4b0b8",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "全文确认由正常深达声A变ST达声；其他特别处理原因系2006年度净资产负值。该正文与2007-04-23真实名称事件绑定，明确other风险且非退市风险。"
+}

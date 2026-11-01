@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600760",
+    "announcement_id": "AN201303150005783084",
+    "notice_date": "2013-03-16",
+    "title": "关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "provider_title": "中航黑豹：关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "removed_issuer_prefix": "中航黑豹：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303150005783084_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303150005783084_1.pdf",
+    "body_notice_number": "临2013-007",
+    "relative_pdf_path": "AN201303150005783084.pdf",
+    "sha256": "44f44626a6545529040753a431161e88e69dab230530c09c07d5e2847fe6f6ef",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201303150005783084_api.json",
+      "sha256": "2fe6c0ac23d4a25181257417073e77fccf1b33ae53a3c81f1b0325ec6d1d99cc",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。"
+}

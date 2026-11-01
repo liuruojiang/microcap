@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002598",
+    "announcement_id": "AN202604031821017804",
+    "notice_date": "2026-04-04",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票及可转换公司债券停复牌的提示性公告",
+    "provider_title": "山东章鼓:关于公司股票交易将被实施其他风险警示暨股票及可转换公司债券停复牌的提示性公告",
+    "removed_issuer_prefix": "山东章鼓:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604031821017804_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604031821017804_1.pdf",
+    "body_notice_number": "2026010",
+    "relative_pdf_path": "AN202604031821017804.pdf",
+    "sha256": "438365e04f0c695f4fee7939811e8252f0231f7e8ff715ecf1797d2e4842b1df",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604031821017804_api.json",
+      "sha256": "8541515ba1438da585b19430c2f1668f6a615f9224cbd8ca931628ce49ed666c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "股票002598于4月8日起其他风险；可转债127093同时停复牌不改变股票动作主体。"
+}

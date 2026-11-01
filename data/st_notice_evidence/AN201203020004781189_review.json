@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002075",
+    "announcement_id": "AN201203020004781189",
+    "notice_date": "2011-03-30",
+    "title": "关于公司股票恢复上市暨撤销退市风险警示的公告",
+    "provider_title": "*ST张铜：关于公司股票恢复上市暨撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST张铜：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004781189_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004781189_1.pdf",
+    "body_notice_number": "临2011-032",
+    "relative_pdf_path": "AN201203020004781189.pdf",
+    "sha256": "06d9f9a41ad21e2b6abbc0893b8ab27e3a0eb7dce169cce6130e9f4dfebebd76",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-04-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004781189_api.json",
+      "sha256": "b38ea728c6395c6953c09d0727e402d5a6caff74166f0c8014a82a6ad4865f0a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "恢复上市暨撤风险正文确认深交所决定，4月8日简称普通沙钢股份；不是仅恢复上市标题推断。"
+}

@@ -86,7 +86,7 @@ def test_same_category_reason_transition_retains_warning(funcs):
 @pytest.mark.parametrize("second_date", ["2016-05-20", "2016-05-23"])
 @pytest.mark.parametrize("reverse", [False, True])
 def test_repeated_exit_never_refills_known_nonST_history(funcs, second_date, reverse):
-    events = [("2014-12-13", ENTRY_D), ("2016-05-20", EXIT_D), (second_date, "关于撤销退市风险警示的提示性公告")]
+    events = [("2014-12-13", ENTRY_D), ("2016-05-20", EXIT_D), (second_date, "关于撤销退市风险警示的公告")]
     if reverse:
         events.reverse()
     assert spans(intervals(funcs, events)) == [("2014-12-13", "2016-05-20")]

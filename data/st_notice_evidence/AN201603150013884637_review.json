@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600866",
+    "announcement_id": "AN201603150013884637",
+    "notice_date": "2016-03-16",
+    "title": "星湖科技关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600866:星湖科技关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600866:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603150013884637_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603150013884637_1.pdf",
+    "body_notice_number": "临2016-010",
+    "relative_pdf_path": "AN201603150013884637.pdf",
+    "sha256": "287c5c373614791ade55695bf4389787cfa41c0528a7b856de511342d2ec056f",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201603150013884637_api.json",
+      "sha256": "78dcbe9a35fd6efd41cc786b17577d49ccb92fc77064e9a88e089e8d0f3db932",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。"
+}

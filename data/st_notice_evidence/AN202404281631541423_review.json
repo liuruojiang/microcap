@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300208",
+    "announcement_id": "AN202404281631541423",
+    "notice_date": "2024-04-29",
+    "title": "关于公司股票将被实施退市风险警示、叠加其他风险警示暨股票停复牌的公告",
+    "provider_title": "青岛中程:关于公司股票将被实施退市风险警示、叠加其他风险警示暨股票停复牌的公告",
+    "removed_issuer_prefix": "青岛中程:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404281631541423_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404281631541423_1.pdf",
+    "body_notice_number": "2024-031",
+    "relative_pdf_path": "AN202404281631541423.pdf",
+    "sha256": "e86f5b0caf1e7af511584fd01ec547ae3aa540e4d695d4f27b097af16feac42d",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2024-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404281631541423_api.json",
+      "sha256": "6829587d7f9071c9f595e654aba2aff7c0a1bfcd400b25c7340390cf987d2be2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

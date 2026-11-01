@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000586",
+    "announcement_id": "AN201203010004602450",
+    "notice_date": "2010-05-05",
+    "title": "关于股票交易撤销退市风险警示并实行其他特别处理的提示性公告",
+    "provider_title": "*ST汇源：关于股票交易撤销退市风险警示并实行其他特别处理的提示性公告",
+    "removed_issuer_prefix": "*ST汇源：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004602450_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004602450_1.pdf",
+    "body_notice_number": "2010-011",
+    "relative_pdf_path": "AN201203010004602450.pdf",
+    "sha256": "30041b48b67e522d20eb6d655842445a85c125a1f35e23a70a0c97192a9a4890",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004602450_api.json",
+      "sha256": "b154e23779281ad93225dd453734145d272d6c7ece5501c5c3299b32ae9dfb42",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤退市风险并其他特别处理，仍ST汇源5%。"
+}

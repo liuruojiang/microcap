@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600760",
+    "announcement_id": "AN201603280014099486",
+    "notice_date": "2016-03-29",
+    "title": "中航黑豹关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "provider_title": "600760:中航黑豹关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "removed_issuer_prefix": "600760:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603280014099486_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201603280014099486_1.pdf",
+    "body_notice_number": "临2016-010",
+    "relative_pdf_path": "AN201603280014099486.pdf",
+    "sha256": "5c9eb819101c1bf97343f24563b73f050cc7dbebd8ab6d222fa00b23e2444ff8",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201603280014099486_api.json",
+      "sha256": "88e36d687c8141b37448e3d6052502ecc06efd6fe8a0e04829ea59a7619f7e86",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。原PDF解析提示EOF尾标不完整但正文、落款完整，保留原始字节。"
+}

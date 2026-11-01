@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600817",
+    "announcement_id": "AN201805071138611259",
+    "notice_date": "2018-05-08",
+    "title": "*ST宏盛关于公司股票撤销退市风险警示及实施其他风险警示的公告",
+    "provider_title": "600817:*ST宏盛关于公司股票撤销退市风险警示及实施其他风险警示的公告",
+    "removed_issuer_prefix": "600817:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201805071138611259_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201805071138611259_1.pdf",
+    "body_notice_number": "2018-014",
+    "relative_pdf_path": "AN201805071138611259.pdf",
+    "sha256": "2224d841dcd5fa9a54f71cffcba4517bfe806151da6f2b7aeb3ddf52164c9a22",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2018-05-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201805071138611259_api.json",
+      "sha256": "8667fc9c562503e98045f15517f3715277d65061f49f4f32eea330df06702788",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确实施日及新简称；无ST新简称及10%幅度支持完全撤销，ST简称及5%幅度支持退市风险撤销但其他风险继续。 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

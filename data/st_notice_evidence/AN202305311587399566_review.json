@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000809",
+    "announcement_id": "AN202305311587399566",
+    "notice_date": "2023-06-01",
+    "title": "关于撤消其他风险警示暨停复牌的公告",
+    "provider_title": "ST新城:关于撤消其他风险警示暨停复牌的公告",
+    "removed_issuer_prefix": "ST新城:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202305311587399566_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202305311587399566_1.pdf",
+    "body_notice_number": "2023-023",
+    "relative_pdf_path": "AN202305311587399566.pdf",
+    "sha256": "7bc32c2b018da8504db1b2e63da73f0aca565c47dfca24225d478e0dfbcb9cd3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2023-06-02"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202305311587399566_api.json",
+      "sha256": "0ffd69bd7bc8389663ae405598adac877da61bcf4f34a8ad5293c334212acf56",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：正文6/2撤其他恢复铁岭新城10%，无其他或退市警示。"
+}

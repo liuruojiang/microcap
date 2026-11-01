@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002388",
+    "announcement_id": "AN202411111640822775",
+    "notice_date": "2024-11-12",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "新亚制程:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "新亚制程:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411111640822775_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411111640822775_1.pdf",
+    "body_notice_number": "2024-087",
+    "relative_pdf_path": "AN202411111640822775.pdf",
+    "sha256": "df7c662bcf1307a52c6f5e9d9120f4c6b3710f9a00efa5dcd426efc0ac3ad722",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-11-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202411111640822775_api.json",
+      "sha256": "8b04863fd4d7f19001e3a889b419d53d95705fee104265f940625eedb023cba3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确新亚制程11月13日起改ST新亚。"
+}

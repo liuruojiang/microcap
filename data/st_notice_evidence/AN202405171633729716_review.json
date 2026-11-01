@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002092",
+    "announcement_id": "AN202405171633729716",
+    "notice_date": "2024-05-18",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "中泰化学:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "中泰化学:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405171633729716_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405171633729716_1.pdf",
+    "body_notice_number": "2024-051",
+    "relative_pdf_path": "AN202405171633729716.pdf",
+    "sha256": "5d658096900ed72867b81022955705f8f718daa75d4c2260f82566e89db43e36",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-05-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202405171633729716_api.json",
+      "sha256": "cfd9f7c6cebc531d20279fd2d9dc7a42ed812eea7e9b252f3a05988173b520d6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "发行人2024-051正文明确2024-05-21股票实施其他风险警示，保留公告日2024-05-18政策。"
+}

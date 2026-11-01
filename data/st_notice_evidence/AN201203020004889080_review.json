@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000415",
+    "announcement_id": "AN201203020004889080",
+    "notice_date": "2011-08-12",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "ST汇通：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "ST汇通：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004889080_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004889080_1.pdf",
+    "body_notice_number": "2011-022",
+    "relative_pdf_path": "AN201203020004889080.pdf",
+    "sha256": "041a0dcb6a2205dbe33c513bdac69d4a24a0b45853bea4c6f357618c106d3964",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004889080_api.json",
+      "sha256": "dfd0970a04735aec2b144b5c22b53519f7b3a5ed740051833d194d5abb78bae6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：标题为撤销但正文最后明确申请尚需深交所核准，不能作为退出。"
+}

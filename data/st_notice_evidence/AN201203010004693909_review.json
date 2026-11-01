@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000935",
+    "announcement_id": "AN201203010004693909",
+    "notice_date": "2010-10-29",
+    "title": "关于股票交易撤销其他特别处理并变更股票简称的公告",
+    "provider_title": "ST 双 马：关于股票交易撤销其他特别处理并变更股票简称的公告",
+    "removed_issuer_prefix": "ST 双 马：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004693909_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004693909_1.pdf",
+    "body_notice_number": "2010-31",
+    "relative_pdf_path": "AN201203010004693909.pdf",
+    "sha256": "7b69294eced93d174ad48baf5090152d7bc40df0b69ef7e3fee6a785fbe6c763",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-11-01"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004693909_api.json",
+      "sha256": "f9ebff132fbc12f2f4fd64880e56286ce63f747955c1ebfc10a8b2e3ab49a25f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他特别处理，普通四川双马10%。"
+}

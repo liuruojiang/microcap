@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002247",
+    "announcement_id": "AN202106021495561593",
+    "notice_date": "2021-06-03",
+    "title": "关于撤销对公司股票交易实施退市风险警示的公告",
+    "provider_title": "*ST聚力:关于撤销对公司股票交易实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST聚力:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202106021495561593_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202106021495561593_1.pdf",
+    "body_notice_number": "2021-028",
+    "relative_pdf_path": "AN202106021495561593.pdf",
+    "sha256": "ade5c81ca948c2538bf4e36adcc89e361ef4480979410011d6659b84c4debc92",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2021-06-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202106021495561593_api.json",
+      "sha256": "5734c841803114e88d8db7db190ae384e3cce22851a4d4d801b73bf2c6fec889",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准段明确批准撤销且普通简称恢复；明确无其他风险或同时撤销两类，普通交易10%（恢复上市首日例外不改变ST状态），完整清零旧类别。"
+}

@@ -1,0 +1,13 @@
+{
+  "record_type": "operator_recorded_failure",
+  "source_url": "https://static.cninfo.com.cn/finalpage/2015-04-14/1200827048.PDF",
+  "status": "original_body_unavailable",
+  "original_pdf_obtained": false,
+  "exception": "requests.exceptions.ReadTimeout",
+  "timeout_seconds": 20,
+  "trust_env": false,
+  "tool_session_id": 58028,
+  "script": "research_reports/20261029_st_history_repair/source_review/review_bond_notices.py",
+  "script_sha256": "5178547ce0964e8d4fd203198df88ffb178f1df9560e02f7e647d45bb1e5ff4b",
+  "note": "Parent agent recorded the executed request failure. No HTTP status, response bytes or precise request timestamp was retained. This record is not evidence of the event action."
+}

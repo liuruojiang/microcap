@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002164",
+    "announcement_id": "AN201503120008743869",
+    "notice_date": "2015-03-13",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST东力:关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST东力:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503120008743869_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503120008743869_1.pdf",
+    "body_notice_number": "2015-019",
+    "relative_pdf_path": "AN201503120008743869.pdf",
+    "sha256": "74735bf869f62b585238fd01fb0d5dc21519ee44ae72da12af1af168b944a065",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-03-16"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503120008743869_api.json",
+      "sha256": "c761118f318d9a67b778b5ab52d992d359d2f0dcdaef40e425fbea94f2a66966",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文核验交易所已经审核批准，实施段明确普通简称、10%及无其他风险；提示性标题在本件属于已批准实施，退出全部ST类别。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300367",
+    "announcement_id": "AN202204061557678524",
+    "notice_date": "2022-04-07",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "provider_title": "ST网力:关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "ST网力:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204061557678524_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204061557678524_1.pdf",
+    "body_notice_number": "2022-023",
+    "relative_pdf_path": "AN202204061557678524.pdf",
+    "sha256": "2f70a5871acd60ace87148a5b8e32edd5573a9963bec9ce17810a210dd382a64",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2022-04-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204061557678524_api.json",
+      "sha256": "d083ee852bbc162be2f4274fd83b071f6cd6bf49c64ef29820094da17a3499cd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：会计差错追溯净资产负，正文明确4/8实施退市风险；未推断其他类别。"
+}

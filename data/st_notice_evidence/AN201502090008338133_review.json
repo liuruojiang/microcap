@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600984",
+    "announcement_id": "AN201502090008338133",
+    "notice_date": "2015-02-10",
+    "title": "建设机械关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "provider_title": "600984:建设机械关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "removed_issuer_prefix": "600984:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201502090008338133_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201502090008338133_1.pdf",
+    "body_notice_number": "2015-016",
+    "relative_pdf_path": "AN201502090008338133.pdf",
+    "sha256": "0f2a1be5612ed4c428fe7c7349a94ddd738394bc90274a6895a38722fd114987",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201502090008338133_api.json",
+      "sha256": "409187c16d2e9265e7f2066e5aaadd7ddd60dcf0d83903b327006ad1213a0885",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。原PDF解析提示EOF尾标不完整但正文、落款完整，保留原始字节。"
+}

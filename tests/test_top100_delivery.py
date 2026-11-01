@@ -35,10 +35,33 @@ def workspace(tmp_path, monkeypatch):
     from scripts import exchange_calendar
 
     source_root = Path(__file__).resolve().parents[1]
-    for name in delivery.evidence_source_files(source_root):
+    # Delivery tests exercise closure/identity, not all historical adjudications.
+    # Preserve real CNInfo and Eastmoney records and every referenced original;
+    # full-registry source tests independently cover the production registry.
+    registry_path = "data/st_notice_evidence/registry.json"
+    registry = json.loads((source_root / registry_path).read_bytes())
+    chosen = {"1225251716", "AN201203010004601977"}
+    registry["events"] = [event for event in registry["events"] if event["announcement_id"] in chosen]
+    assert {event["announcement_id"] for event in registry["events"]} == chosen
+    source_files = {"scripts/st_notice_evidence.py", "scripts/st_notice_archive.py"}
+    for event in registry["events"]:
+        source_files.add("data/st_notice_evidence/" + (event.get("relative_html_path") or event["relative_pdf_path"]))
+        for key in ("conflict_evidence", "unavailable_evidence", "native_evidence", "exchange_evidence"):
+            source_files.update("data/st_notice_evidence/" + artifact["relative_path"] for artifact in event.get(key, {}).values())
+    for name in sorted(source_files | set(delivery.RETURN_BASIS_FILES)):
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes((source_root / name).read_bytes())
+    write(tmp_path, registry_path, json.dumps(registry, ensure_ascii=False, indent=2))
+    # Real validator verifies hashes, native issuer binding, and complete closure.
+    assert set(delivery.evidence_source_files(tmp_path)) == source_files | {registry_path}
+    from scripts import top100_cloud_delivery as cloud
+    # SOURCE_FILES is assembled for the production root at module import. Bind
+    # this fixture's actual registry closure while retaining every code contract.
+    fixture_sources = [name for name in cloud.SOURCE_FILES
+                       if not name.startswith("data/st_notice_evidence/")]
+    fixture_sources += delivery.evidence_source_files(tmp_path)
+    monkeypatch.setattr(cloud, "SOURCE_FILES", list(dict.fromkeys(fixture_sources)))
 
     monkeypatch.setattr(exchange_calendar, "sessions_for_day",
                         lambda _day: (date(2026, 8, 20), date(2026, 9, 2),

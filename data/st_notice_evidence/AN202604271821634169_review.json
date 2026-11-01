@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002360",
+    "announcement_id": "AN202604271821634169",
+    "notice_date": "2026-04-28",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "同德化工:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "同德化工:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604271821634169_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604271821634169_1.pdf",
+    "body_notice_number": "2026-050",
+    "relative_pdf_path": "AN202604271821634169.pdf",
+    "sha256": "040c47de983f631f6824307b695edc499fdfdb00acf1be269eb3556035d44adc",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604271821634169_api.json",
+      "sha256": "7d919ffcf62fdffa944e1f77882438c881a050583607727c0916821eb8fb7cc7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确同德化工4月29日起改ST同德，实施其他风险。"
+}

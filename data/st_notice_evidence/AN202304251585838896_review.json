@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300209",
+    "announcement_id": "AN202304251585838896",
+    "notice_date": "2023-04-26",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌一天的提示性公告",
+    "provider_title": "有棵树:关于公司股票交易将被实施其他风险警示暨股票停牌一天的提示性公告",
+    "removed_issuer_prefix": "有棵树:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304251585838896_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304251585838896_1.pdf",
+    "body_notice_number": "2023-029",
+    "relative_pdf_path": "AN202304251585838896.pdf",
+    "sha256": "a8b6141de4c9db6c5f5254473ef9f601e827d7818c01c540c4a4b872dc11c292",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2023-04-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304251585838896_api.json",
+      "sha256": "b5a57edc32084de61474b65e441c6f549f7f2f705ec709c02d47d2b65d0a75b3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月27日其他风险改ST有棵树。"
+}

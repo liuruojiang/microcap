@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600815",
+    "announcement_id": "AN201702280369805685",
+    "notice_date": "2017-03-01",
+    "title": "厦工股份关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600815:厦工股份关于公司股票可能被实施退市风险警示及公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600815:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702280369805685_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702280369805685_1.pdf",
+    "body_notice_number": "临2017-008",
+    "relative_pdf_path": "AN201702280369805685.pdf",
+    "sha256": "f9822579f663de0c168fd8b3f1a8addbfbb52f5e67a2642bd60fb0937c64ae57",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201702280369805685_api.json",
+      "sha256": "fd0969d95bdcfe4cf2eaab8b589e7328ffd983c9b1773ac794299671a26c0d51",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份原文核验：为预计亏损/净资产条件预警，仍须经审计年度数据及后续实施公告，未确定本公告日股票状态变更；公司债券可能暂停也不充当股票动作。"
+}

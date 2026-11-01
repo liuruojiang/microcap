@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300297",
+    "announcement_id": "AN202307091592121613",
+    "notice_date": "2023-07-10",
+    "title": "关于公司股票及可转换公司债券进入退市整理期交易首日的风险提示公告",
+    "provider_title": "*ST蓝盾:关于公司股票及可转换公司债券进入退市整理期交易首日的风险提示公告",
+    "removed_issuer_prefix": "*ST蓝盾:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307091592121613_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307091592121613_1.pdf",
+    "body_notice_number": "2023-083",
+    "relative_pdf_path": "AN202307091592121613.pdf",
+    "sha256": "c0093a7e3764b6f613e533cd7a582eae1087ed3cb2d44e133613bff9a2d4237e",
+    "risk_actions": {},
+    "actual_effective_date": "2023-07-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202307091592121613_api.json",
+      "sha256": "a09464a639da84de25dafd2c82394517b199333d0aa35acc64c18e589d7ac82e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "退市整理期首日及可转债安排，不是新的ST类别实施/撤销；不得由名称蓝盾退推断解除历史ST。日期为退市整理开始。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

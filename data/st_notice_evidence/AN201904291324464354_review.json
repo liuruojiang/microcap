@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002766",
+    "announcement_id": "AN201904291324464354",
+    "notice_date": "2019-04-30",
+    "title": "关于公司股票交易将被实施退市风险警示暨停牌的公告",
+    "provider_title": "索菱股份:关于公司股票交易将被实施退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "索菱股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904291324464354_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904291324464354_1.pdf",
+    "body_notice_number": "2019-048",
+    "relative_pdf_path": "AN201904291324464354.pdf",
+    "sha256": "6a90b9ffd7112964c0437eabeb3a7691205319b4f4560546a31354724f817255",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2019-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201904291324464354_api.json",
+      "sha256": "d209d404bb3d63615d21f59b604c785af5c3d61262a4730131177b2e79451e2c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月6日退市风险；其他风险段仅称深交所有权实施，未确认已实施，不把权限措辞追加为other动作。"
+}

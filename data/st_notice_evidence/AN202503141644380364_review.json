@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000622",
+    "announcement_id": "AN202503141644380364",
+    "notice_date": "2025-03-15",
+    "title": "关于公司及全资子公司银行账户被冻结暨股票交易叠加实施其他风险警示的公告",
+    "provider_title": "*ST恒立:关于公司及全资子公司银行账户被冻结暨股票交易叠加实施其他风险警示的公告",
+    "removed_issuer_prefix": "*ST恒立:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503141644380364_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503141644380364_1.pdf",
+    "body_notice_number": "2025-26",
+    "relative_pdf_path": "AN202503141644380364.pdf",
+    "sha256": "5219c40a61b736c48bb22af20fdb34f78127a901278704b4d45fd15439e0b4d1",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202503141644380364_api.json",
+      "sha256": "c39ca6a53ca39609327705228ae019fd8f14a8c3a5514333bbef66856bdd5640",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Definite additional other risk but no explicit implementation date; null, not prior-day inferred. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600733",
+    "announcement_id": "AN201609120017603162",
+    "notice_date": "2016-09-13",
+    "title": "S前锋关于公司股票被实施退市风险警示及暂停上市事项影响消除的公告",
+    "provider_title": "600733:S前锋关于公司股票被实施退市风险警示及暂停上市事项影响消除的公告",
+    "removed_issuer_prefix": "600733:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201609120017603162_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201609120017603162_1.pdf",
+    "body_notice_number": "2016-048",
+    "relative_pdf_path": "AN201609120017603162.pdf",
+    "sha256": "3f070a0ed2e480934556660b5ad6039ecb76919fe85ff6d3e1f2ab4b86a17a19",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201609120017603162_api.json",
+      "sha256": "b1e62aeee644552cbbaf006b02e82fdc4cdff43c4d58a42938a3a838d02fecb5",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：正文明确不会因处罚被实施退市警示，相关潜在风险事项消除，不是入口。"
+}

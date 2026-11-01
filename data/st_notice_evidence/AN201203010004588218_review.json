@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000692",
+    "announcement_id": "AN201203010004588218",
+    "notice_date": "2010-04-22",
+    "title": "关于股票交易撤销其他特别处理及证券简称变更的公告",
+    "provider_title": "ST 惠 天：关于股票交易撤销其他特别处理及证券简称变更的公告",
+    "removed_issuer_prefix": "ST 惠 天：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004588218_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004588218_1.pdf",
+    "body_notice_number": "2010-14",
+    "relative_pdf_path": "AN201203010004588218.pdf",
+    "sha256": "713eaca732d4c78fbe7bae01dfc584b40396d515c9a82ff4e4ed5351b7ab9ebb",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-04-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004588218_api.json",
+      "sha256": "6cbcd86170bd9507aa9d4919d09a7c84dbeab8f32ae4222843fb99c14886046b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他特别处理，普通惠天热电10%。"
+}

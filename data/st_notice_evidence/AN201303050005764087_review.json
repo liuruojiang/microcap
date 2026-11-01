@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600076",
+    "announcement_id": "AN201303050005764087",
+    "notice_date": "2013-03-06",
+    "title": "关于撤销股票退市风险警示的公告",
+    "provider_title": "*ST华光：关于撤销股票退市风险警示的公告",
+    "removed_issuer_prefix": "*ST华光：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303050005764087_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303050005764087_1.pdf",
+    "body_notice_number": "临2013-008",
+    "relative_pdf_path": "AN201303050005764087.pdf",
+    "sha256": "2b8f3df9d87f3fd8477a9b7362933cc08d7e47af3f317491cb26e487f090a61f",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-03-07"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201303050005764087_api.json",
+      "sha256": "a47620b0116bd19c2d10a8920212d7c95061069c1069c0772b982724d70d8f8b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

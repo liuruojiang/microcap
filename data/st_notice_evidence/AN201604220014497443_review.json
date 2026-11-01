@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600401",
+    "announcement_id": "AN201604220014497443",
+    "notice_date": "2016-04-23",
+    "title": "*ST海润关于申请撤销公司退市风险警示的公告",
+    "provider_title": "600401:*ST海润关于申请撤销公司退市风险警示的公告",
+    "removed_issuer_prefix": "600401:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604220014497443_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604220014497443_1.pdf",
+    "body_notice_number": "2016-079",
+    "relative_pdf_path": "AN201604220014497443.pdf",
+    "sha256": "d61cf767d84f2a8b96c7ce8e6debd0ff1ff4a00ed1e03d11502c0ac7ab13f917",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201604220014497443_api.json",
+      "sha256": "c35cb88233ba3315c70c3b13ac42d2d06012ceea157f926e2a7fdebcd1f7a292",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文逐项审阅，申请未批不退出；600633公司名称变更无风险动作，恢复上市公告才含获批撤销，9/29首日N浙传媒，第二交易日浙报传媒。全部公告日期保持API字段，不用落款或实际实施日倒填。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_round3_root9_bodies_20261101/adjudication.json"
+}

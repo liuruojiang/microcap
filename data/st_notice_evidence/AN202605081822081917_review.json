@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "301139",
+    "announcement_id": "AN202605081822081917",
+    "notice_date": "2026-05-09",
+    "title": "关于公司股票交易将被实施退市风险警示暨停复牌的公告",
+    "provider_title": "元道通信:关于公司股票交易将被实施退市风险警示暨停复牌的公告",
+    "removed_issuer_prefix": "元道通信:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202605081822081917_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202605081822081917_1.pdf",
+    "body_notice_number": "2026-032",
+    "relative_pdf_path": "AN202605081822081917.pdf",
+    "sha256": "703e08e7ca1548f001b94adfe6288feb0a3e246818247fb93ce986154292fa57",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2026-05-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202605081822081917_api.json",
+      "sha256": "07d1d356f7cae41df42ef06f9b75207140e6f7177c4fea51a3de87410a371543",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月12日退市风险；重大违法最终强制退市仍属可能，不当作已退市。"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002490",
+    "announcement_id": "AN201505200009687200",
+    "notice_date": "2015-05-21",
+    "title": "关于2012年公司债券停牌暨实行风险警示的公告",
+    "provider_title": "山东墨龙:关于2012年公司债券停牌暨实行风险警示的公告",
+    "removed_issuer_prefix": "山东墨龙:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201505200009687200_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201505200009687200_1.pdf",
+    "body_notice_number": "2015-013",
+    "relative_pdf_path": "AN201505200009687200.pdf",
+    "sha256": "da519fda65b8b55857b4f40225e4256b528da630d6d46d71d5cb56c8461b016d",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201505200009687200_api.json",
+      "sha256": "60b28f4c23ed141f260e2916bb9acc4a648e4fb7ecec34326d945826a1a12df0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "仅112178债券改ST墨龙01，非股票002490。"
+}

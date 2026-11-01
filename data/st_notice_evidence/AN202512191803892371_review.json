@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300173",
+    "announcement_id": "AN202512191803892371",
+    "notice_date": "2025-12-20",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "福能东方:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "福能东方:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202512191803892371_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202512191803892371_1.pdf",
+    "body_notice_number": "2025-060",
+    "relative_pdf_path": "AN202512191803892371.pdf",
+    "sha256": "ef6b07fc9c98a9154106d447d0f533b3718440c6d73906de2f54f8ea42a0a518",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-12-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202512191803892371_api.json",
+      "sha256": "5e33cfd79c872302af1ce51561c2f316e7e52d9f221aa19207007186ee9679df",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

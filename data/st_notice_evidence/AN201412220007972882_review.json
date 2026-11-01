@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002115",
+    "announcement_id": "AN201412220007972882",
+    "notice_date": "2014-12-23",
+    "title": "关于2012年公司债券(12三维债)实行风险警示的公告",
+    "provider_title": "三维通信:关于2012年公司债券(12三维债)实行风险警示的公告",
+    "removed_issuer_prefix": "三维通信:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201412220007972882_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201412220007972882_1.pdf",
+    "body_notice_number": "2014-042",
+    "relative_pdf_path": "AN201412220007972882.pdf",
+    "sha256": "ad07c79b6356dc4a0fc26de422de776550677a193e081c360e00ee6f3a84532e",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201412220007972882_api.json",
+      "sha256": "7e8d7c9b92054a5d6cc715b90d6f1dd248901d2dec58d8fc22b6f4947427fe0c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文证券代码112168、12三维债变ST三维债，2014年12月24日风险措施仅针对公司债券，不改变002115股票ST状态。"
+}

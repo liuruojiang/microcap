@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002200",
+    "announcement_id": "AN201403030005192273",
+    "notice_date": "2014-03-04",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST大地:关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST大地:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403030005192273_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403030005192273_1.pdf",
+    "body_notice_number": "2014-017",
+    "relative_pdf_path": "AN201403030005192273.pdf",
+    "sha256": "0782857d6ba00da69b0af355f7b89d377bd59437d026e97a4694029da80cccc8",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-03-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403030005192273_api.json",
+      "sha256": "5d3c2747b4435e5f5845d80ae6fe344631bc18bc8aa352c6915e8cf1a9905601",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

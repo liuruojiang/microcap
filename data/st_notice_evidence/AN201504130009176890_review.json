@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600550",
+    "announcement_id": "AN201504130009176890",
+    "notice_date": "2015-04-14",
+    "title": "保变电气关于2011年公司债券(11天威债)实施风险警示的公告",
+    "provider_title": "600550:保变电气关于2011年公司债券(11天威债)实施风险警示的公告",
+    "removed_issuer_prefix": "600550:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504130009176890_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504130009176890_1.pdf",
+    "body_notice_number": "临2015-047",
+    "relative_pdf_path": "AN201504130009176890.pdf",
+    "sha256": "cb8217082b2ab81e3bb977331cc4053e93ef140073ca03778b2833be5071b842",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504130009176890_api.json",
+      "sha256": "14c8fe54f8331cc1a2f9164997fb44a78a1029ddbb02ef153413f57c8f1bc4c1",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "全文对象为122083公司债11天威债/ST天威债，4月15日是债券风险起始，不属于600550股票风险动作。"
+}

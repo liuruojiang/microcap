@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000995",
+    "announcement_id": "AN202012081438130493",
+    "notice_date": "2020-12-09",
+    "title": "关于公司股票恢复上市暨撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST皇台:关于公司股票恢复上市暨撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST皇台:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202012081438130493_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202012081438130493_1.pdf",
+    "body_notice_number": "2020-085",
+    "relative_pdf_path": "AN202012081438130493.pdf",
+    "sha256": "f678fb73136269f336b8f3a63024f301869a24a04f32cea2b280630e8ac21266",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2020-12-16"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202012081438130493_api.json",
+      "sha256": "14055ff2bbe27cda28b19cf1fa07c72f0ae33f9e0923fbbda0846673f8a99c52",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "恢复上市及撤退市确定12月16日；正文其他风险2018已实行且仍在补撤销材料，ST皇台保持其他风险，首日无涨跌幅也不意味着非ST。"
+}

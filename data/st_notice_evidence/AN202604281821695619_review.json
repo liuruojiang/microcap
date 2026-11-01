@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300147",
+    "announcement_id": "AN202604281821695619",
+    "notice_date": "2026-04-29",
+    "title": "关于股票交易将被实施退市风险警示并继续叠加其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "ST香雪:关于股票交易将被实施退市风险警示并继续叠加其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "ST香雪:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604281821695619_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604281821695619_1.pdf",
+    "body_notice_number": "2026-015",
+    "relative_pdf_path": "AN202604281821695619.pdf",
+    "sha256": "7bc9f1c121c8a9c95f87fb63644b257ec08c18038133acbf41436c3974235d2d",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2026-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604281821695619_api.json",
+      "sha256": "cd4a515ca5129688b38bff08f65c828d35c9198338884d537b2114e2a1d3e032",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000698",
+    "announcement_id": "AN202509301753541219",
+    "notice_date": "2025-10-01",
+    "title": "沈阳化工股份有限公司关于公司股票将被实施其他风险警示暨停复牌的公告",
+    "provider_title": "沈阳化工:沈阳化工股份有限公司关于公司股票将被实施其他风险警示暨停复牌的公告",
+    "removed_issuer_prefix": "沈阳化工:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202509301753541219_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202509301753541219_1.pdf",
+    "body_notice_number": "2025-038",
+    "relative_pdf_path": "AN202509301753541219.pdf",
+    "sha256": "c244079594c4f51aea30c142c88de942b61a444c6bf462fff8cf684e3ba93e39",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-10-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202509301753541219_api.json",
+      "sha256": "00b2c92a739a8476a16df3fda7f7fa6e4aef825e225ae6903b96948162e16b8c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

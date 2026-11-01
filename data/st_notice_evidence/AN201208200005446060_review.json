@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600868",
+    "announcement_id": "AN201208200005446060",
+    "notice_date": "2012-08-21",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST梅雁：关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST梅雁：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208200005446060_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208200005446060_1.pdf",
+    "body_notice_number": "2012-015",
+    "relative_pdf_path": "AN201208200005446060.pdf",
+    "sha256": "a198e0ab03e4fa3f0668991d8b62d7ae906752fb7cc2e305b7f5fcba2d842567",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208200005446060_api.json",
+      "sha256": "53e21aa266a2c46e491744f6bffe0ae8c076574afee5cef981bd9d5cff92d980",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确实施日及新简称；无ST新简称及10%幅度支持完全撤销，ST简称及5%幅度支持退市风险撤销但其他风险继续。 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600575",
+    "announcement_id": "AN201503160008774635",
+    "notice_date": "2015-03-17",
+    "title": "皖江物流关于公司股票可能被实施退市风险警示和公司债券可能暂停上市的提示性公告(第四次)",
+    "provider_title": "600575:皖江物流关于公司股票可能被实施退市风险警示和公司债券可能暂停上市的提示性公告(第四次)",
+    "removed_issuer_prefix": "600575:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503160008774635_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503160008774635_1.pdf",
+    "body_notice_number": "临2015-030",
+    "relative_pdf_path": "AN201503160008774635.pdf",
+    "sha256": "4289822c5cce18ff1444160927e04ad307d932d543c727b786ce6e4730d08d84",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503160008774635_api.json",
+      "sha256": "5df21a10a8d162acbdb378d879c82ef3a0a92e6b9cb04009bfa48d2c6924bc89",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文均为2014业绩预亏且需追溯审计调整的条件性提示，明确尚存在不确定性；股票风险警示与债券暂停上市均未实际决定。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300630",
+    "announcement_id": "AN202501051641811634",
+    "notice_date": "2025-01-05",
+    "title": "关于公司股票将被实施退市风险警示暨股票停复牌的公告",
+    "provider_title": "普利制药:关于公司股票将被实施退市风险警示暨股票停复牌的公告",
+    "removed_issuer_prefix": "普利制药:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202501051641811634_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202501051641811634_1.pdf",
+    "body_notice_number": "2025-004",
+    "relative_pdf_path": "AN202501051641811634.pdf",
+    "sha256": "43314423f8ea9b3043458abc1c907f035cde75f5b12e06113dc0717bc3557dba",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2025-01-07"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202501051641811634_api.json",
+      "sha256": "f1661d04d8d31f116335da90a2653c75e66ad2be758eabb44d3e83c99fbf866d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

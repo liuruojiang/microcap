@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600759",
+    "announcement_id": "AN201202280004330712",
+    "notice_date": "2008-02-21",
+    "title": "董事会关于撤销股票交易“其他特别处理”的公告",
+    "provider_title": "ST华  侨：董事会关于撤销股票交易“其他特别处理”的公告",
+    "removed_issuer_prefix": "ST华  侨：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004330712_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004330712_1.pdf",
+    "body_notice_number": "临2008-015",
+    "relative_pdf_path": "AN201202280004330712.pdf",
+    "sha256": "c90cd8f79f3a1c0a81641e6fb59ee5826523ae5edc175ac86ea388090c048191",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2008-02-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202280004330712_api.json",
+      "sha256": "1a3b56b847c5b4a68841d124bff20fb8e4463b58f74cae3a47e3c654b66be25b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段确定普通名称和10%涨跌幅，退出全部ST类别；保留提供方公开日，不用历史回顾或落款提前公告日。"
+}

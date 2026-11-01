@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002217",
+    "announcement_id": "AN202606181823675026",
+    "notice_date": "2026-06-18",
+    "title": "关于公司股票交易将被实施其他风险警示暨停复牌的公告",
+    "provider_title": "合力泰:关于公司股票交易将被实施其他风险警示暨停复牌的公告",
+    "removed_issuer_prefix": "合力泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202606181823675026_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202606181823675026_1.pdf",
+    "body_notice_number": "2026-026",
+    "relative_pdf_path": "AN202606181823675026.pdf",
+    "sha256": "e63dd91ed839a68fa10a68bb06a5cb9e7df06d49d7ebd685b10e3a77b9a60c65",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-06-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202606181823675026_api.json",
+      "sha256": "d9a34f229d638ba188eee6763e8e1c3ba7d02e972337ba2dc2e83d67e3ae80ae",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确合力泰6月22日停牌、6月23日改ST合力泰；非强制退市。"
+}

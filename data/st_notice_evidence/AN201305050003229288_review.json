@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002102",
+    "announcement_id": "AN201305050003229288",
+    "notice_date": "2013-05-06",
+    "title": "关于撤销公司退市风险警示的提示性公告",
+    "provider_title": "*ST冠福:关于撤销公司退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST冠福:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305050003229288_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305050003229288_1.pdf",
+    "body_notice_number": "2013-037",
+    "relative_pdf_path": "AN201305050003229288.pdf",
+    "sha256": "9a79c9471b46f690b9d6e40eb9c0065c888c07fae548abdb60c59fe8b96bddd2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-07"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305050003229288_api.json",
+      "sha256": "27b3ee086643dad341b3ee34fcb88a94bc0f1891120eded339731a9630d906a3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文核验交易所已经审核批准，实施段明确普通简称、10%及无其他风险；提示性标题在本件属于已批准实施，退出全部ST类别。"
+}

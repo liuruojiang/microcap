@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600145",
+    "announcement_id": "AN201203010004596842",
+    "notice_date": "2010-04-30",
+    "title": "关于股票被实施退市风险警示公告",
+    "provider_title": "四维控股：关于股票被实施退市风险警示公告",
+    "removed_issuer_prefix": "四维控股：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004596842_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004596842_1.pdf",
+    "body_notice_number": "2010-22",
+    "relative_pdf_path": "AN201203010004596842.pdf",
+    "sha256": "cdca3e3cb023b51d6a38edebeca20d3d6d027aef8dc0761c7b960c2acd17515d",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2010-05-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004596842_api.json",
+      "sha256": "bef91cb4a25b44d03e41b92300dce74df2ff0d2cc7e11b1dac2d30b4685fb9fc",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际公告正文逐项核对；申请待批不作撤销。600145虽标题含申请，正文已有批准及实施安排；600209关键决定在原件第一页，后附财务报告。公告日保留原始接口字段，正文落款及实施日分别记录。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_long34_root17_bodies_20261101/adjudication.json"
+}

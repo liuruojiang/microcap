@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300097",
+    "announcement_id": "AN202412101641250470",
+    "notice_date": "2024-12-11",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "智云股份:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "智云股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202412101641250470_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202412101641250470_1.pdf",
+    "body_notice_number": "2024-053",
+    "relative_pdf_path": "AN202412101641250470.pdf",
+    "sha256": "23cfb303ce7185bc7fd1ebb7d777b79f2d335b4b5a5065c9cb64ede9a9faffe2",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-12-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202412101641250470_api.json",
+      "sha256": "9b57c36872bf9504862b98f00ad47541ed726e4451feea283dcd441ca316a379",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

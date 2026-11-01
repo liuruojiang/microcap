@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600392",
+    "announcement_id": "AN201304250003214652",
+    "notice_date": "2013-04-26",
+    "title": " *ST天成关于撤销股票交易风险警示和变更股票简称的提示性公告",
+    "provider_title": "600392 : *ST天成关于撤销股票交易风险警示和变更股票简称的提示性公告",
+    "removed_issuer_prefix": "600392 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304250003214652_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304250003214652_1.pdf",
+    "body_notice_number": "临2013-042",
+    "relative_pdf_path": "AN201304250003214652.pdf",
+    "sha256": "b81ab5f6aa6b23d5396eb40d2e5a841670317455fc86b1ecb01a41e044a81fa2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-02"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304250003214652_api.json",
+      "sha256": "c34723e0e26d87c4fe5b479a6a22c280fed9885b4b6bef3e6fc45180e70997ef",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销，恢复普通简称及10%涨跌幅，全部退出风险；保留提供方公告日与正文生效日差异。"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300326",
+    "announcement_id": "AN202504291664136030",
+    "notice_date": "2025-04-29",
+    "title": "上海凯利泰医疗科技股份有限公司关于公司将被实施其他风险警示的提示性公告",
+    "provider_title": "凯利泰:上海凯利泰医疗科技股份有限公司关于公司将被实施其他风险警示的提示性公告",
+    "removed_issuer_prefix": "凯利泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202504291664136030_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202504291664136030_1.pdf",
+    "body_notice_number": "2025-016",
+    "relative_pdf_path": "AN202504291664136030.pdf",
+    "sha256": "59bc733d2f78ebe1e8e8fe59a1682711da5da418a3d71d4ed5adfd5e824246d7",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202504291664136030_api.json",
+      "sha256": "0b01c0dcc6d6f1632ca089b754ee701e25a02313d66ddb9f4dbfb6c794972f4f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "与审计机构沟通预告，年度报告披露后将实施；尚无具体实施日，actions为空。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

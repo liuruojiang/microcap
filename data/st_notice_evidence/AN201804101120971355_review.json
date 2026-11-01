@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600321",
+    "announcement_id": "AN201804101120971355",
+    "notice_date": "2018-04-11",
+    "title": "正源股份关于公司股票将被实施退市风险警示的风险提示性公告",
+    "provider_title": "600321:正源股份关于公司股票将被实施退市风险警示的风险提示性公告",
+    "removed_issuer_prefix": "600321:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201804101120971355_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201804101120971355_1.pdf",
+    "body_notice_number": "2018-010",
+    "relative_pdf_path": "AN201804101120971355.pdf",
+    "sha256": "04a0771eac5c63022ec522118fca4d364f9589ea7274c80aa3fc44abe93d83e7",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201804101120971355_api.json",
+      "sha256": "b3abbb05c39d089c01974d7dcb8f1904791481767cc85dd5070dea52d5898757",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "会计调整将导致连续亏损，年报披露后才实施；无当前确定实施日。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300029",
+    "announcement_id": "AN202009131411572897",
+    "notice_date": "2020-09-14",
+    "title": "关于公司股票交易被实施其他风险警示的公告",
+    "provider_title": "天龙光电:关于公司股票交易被实施其他风险警示的公告",
+    "removed_issuer_prefix": "天龙光电:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009131411572897_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009131411572897_1.pdf",
+    "body_notice_number": "2020-090",
+    "relative_pdf_path": "AN202009131411572897.pdf",
+    "sha256": "baa087780a2e8218c783f55fa2d1ed49a566b3808c62eacb4934f84733a2127f",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2020-09-15"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202009131411572897_api.json",
+      "sha256": "310a6fdcd1611998f044ddb123205f6cc7e50f2d19282f31f6527a91d78b0b80",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual subsequent implementation notice, independent f_node0 bounded full page; not risk-category index. Replaces missing implementation evidence, does not alter earlier warning classification. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

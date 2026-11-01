@@ -1,0 +1,340 @@
+[
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000034/page_001.json",
+      "index": 53
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003001",
+        "column_name": "实施其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202280004364905",
+    "issuer_symbol": "000034",
+    "notice_date": "2009-04-28",
+    "provider_notice_date": "2009-04-28 00:00:00",
+    "provider_title": "ST 深 泰：关于公司股票实施退市风险警示的公告",
+    "title": "关于公司股票实施退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST 深 泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004364905_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004364905_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000034/page_002.json",
+      "index": 37
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003002",
+        "column_name": "撤销其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202270004115788",
+    "issuer_symbol": "000034",
+    "notice_date": "2007-08-20",
+    "provider_notice_date": "2007-08-20 00:00:00",
+    "provider_title": "S*ST深泰：关于撤销退市风险警示的公告",
+    "title": "关于撤销退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "S*ST深泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004115788_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004115788_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000034/page_003.json",
+      "index": 5
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202260003964970",
+    "issuer_symbol": "000034",
+    "notice_date": "2006-04-27",
+    "provider_notice_date": "2006-04-27 00:00:00",
+    "provider_title": "ST 深 泰：关于股票交易实行退市风险警示的公告",
+    "title": "关于股票交易实行退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST 深 泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003964970_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003964970_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000034/page_003.json",
+      "index": 57
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003",
+        "column_name": "特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202260003852965",
+    "issuer_symbol": "000034",
+    "notice_date": "2005-05-09",
+    "provider_notice_date": "2005-05-09 00:00:00",
+    "provider_title": "深信泰丰：关于股票交易实行其它特别处理的公告",
+    "title": "关于股票交易实行其它特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "深信泰丰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003852965_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003852965_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000034/page_004.json",
+      "index": 51
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003",
+        "column_name": "特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202250003521051",
+    "issuer_symbol": "000034",
+    "notice_date": "2001-01-17",
+    "provider_notice_date": "2001-01-17 00:00:00",
+    "provider_title": "深圳市华宝(集团)股份有限公司关于撤销股票交易特别处理的公告",
+    "title": "深圳市华宝(集团)股份有限公司关于撤销股票交易特别处理的公告",
+    "title_transform": {
+      "operation": "identity",
+      "removed_prefix": ""
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003521051_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003521051_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000034/page_005.json",
+      "index": 52
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003",
+        "column_name": "特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202240003300905",
+    "issuer_symbol": "000034",
+    "notice_date": "1999-04-29",
+    "provider_notice_date": "1999-04-29 00:00:00",
+    "provider_title": "深圳市华宝(集团)股份有限公司董事会关于股票交易实行特别处理的公告",
+    "title": "深圳市华宝(集团)股份有限公司董事会关于股票交易实行特别处理的公告",
+    "title_transform": {
+      "operation": "identity",
+      "removed_prefix": ""
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202240003300905_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202240003300905_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000034/page_032.json",
+      "index": 29
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003002",
+        "column_name": "撤销其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201203020004783893",
+    "issuer_symbol": "000034",
+    "notice_date": "2011-03-31",
+    "provider_notice_date": "2011-03-31 00:00:00",
+    "provider_title": "ST深泰：关于撤销股票交易其他特别处理的公告",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST深泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004783893_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004783893_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000034/page_032.json",
+      "index": 30
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003002",
+        "column_name": "撤销其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201203020004753042",
+    "issuer_symbol": "000034",
+    "notice_date": "2011-03-01",
+    "provider_notice_date": "2011-03-01 00:00:00",
+    "provider_title": "ST深泰：关于申请撤销股票交易其他特别处理的公告",
+    "title": "关于申请撤销股票交易其他特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST深泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004753042_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004753042_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000034/page_032.json",
+      "index": 61
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003",
+        "column_name": "特别处理"
+      },
+      {
+        "column_code": "001002004003001",
+        "column_name": "实施其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201203010004671072",
+    "issuer_symbol": "000034",
+    "notice_date": "2010-09-13",
+    "provider_notice_date": "2010-09-13 00:00:00",
+    "provider_title": "*ST深泰：关于撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "title": "关于撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST深泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004671072_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004671072_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000034/page_032.json",
+      "index": 63
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003001",
+        "column_name": "实施其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201203010004668117",
+    "issuer_symbol": "000034",
+    "notice_date": "2010-09-03",
+    "provider_notice_date": "2010-09-03 00:00:00",
+    "provider_title": "*ST深泰：关于申请撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "title": "关于申请撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST深泰："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004668117_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004668117_1.pdf"
+  },
+  {
+    "notice_date": "2010-09-03",
+    "title": "关于申请撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "announcement_id": "58395360",
+    "issuer_symbol": "000034",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2010-09-03/58395360.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000034_37.json",
+      "index": 3
+    }
+  },
+  {
+    "notice_date": "2010-09-13",
+    "title": "关于撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "announcement_id": "58427659",
+    "issuer_symbol": "000034",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2010-09-13/58427659.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000034_37.json",
+      "index": 2
+    }
+  },
+  {
+    "notice_date": "2011-03-01",
+    "title": "关于申请撤销股票交易其他特别处理的公告",
+    "announcement_id": "59058611",
+    "issuer_symbol": "000034",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2011-03-01/59058611.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000034_37.json",
+      "index": 1
+    }
+  },
+  {
+    "notice_date": "2011-03-31",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "announcement_id": "59207005",
+    "issuer_symbol": "000034",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2011-03-31/59207005.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000034_37.json",
+      "index": 0
+    }
+  }
+]

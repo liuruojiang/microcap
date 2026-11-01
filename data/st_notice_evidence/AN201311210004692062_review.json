@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000657",
+    "announcement_id": "AN201311210004692062",
+    "notice_date": "2013-11-22",
+    "title": "关于撤销退市风险警示的公告",
+    "provider_title": "*ST中钨:关于撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST中钨:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201311210004692062_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201311210004692062_1.pdf",
+    "body_notice_number": "2013-56",
+    "relative_pdf_path": "AN201311210004692062.pdf",
+    "sha256": "844ea15003cf8f34f9058685792b34e0c1fa106e6fbe5b4417eb432dd4711888",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-11-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201311210004692062_api.json",
+      "sha256": "a08ef414caeb290cf3b806abd521a9f2b92e39a887cda0fcae92143fd1f504a6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市及其他风险，普通中钨高新10%。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600815",
+    "announcement_id": "AN201704280537187539",
+    "notice_date": "2017-04-28",
+    "title": "厦工股份关于公司股票被实施退市风险警示和公司债券可能被暂停交易的公告",
+    "provider_title": "600815:厦工股份关于公司股票被实施退市风险警示和公司债券可能被暂停交易的公告",
+    "removed_issuer_prefix": "600815:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704280537187539_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704280537187539_1.pdf",
+    "body_notice_number": "临2017-044",
+    "relative_pdf_path": "AN201704280537187539.pdf",
+    "sha256": "62e966db6ca361a9899b856de4223be895baa100e68db89f6ef6e0551640ff8b",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2017-05-02"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201704280537187539_api.json",
+      "sha256": "17719d73a9a2c414bdc4c61870bb7eb2b5406d8225ffcadd1ece93e971da28a6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认2015及2016已审净利润均负，重要提示及三节均明确5月2日起股票退市风险；公司债券只是可能暂停，不混淆主体和确定程度。"
+}

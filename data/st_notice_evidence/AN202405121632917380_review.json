@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300368",
+    "announcement_id": "AN202405121632917380",
+    "notice_date": "2024-05-13",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "汇金股份:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "汇金股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405121632917380_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405121632917380_1.pdf",
+    "body_notice_number": "2024-052",
+    "relative_pdf_path": "AN202405121632917380.pdf",
+    "sha256": "764bdebf0528f30f4bd983da78f61defed973e9cfcf52b730a55acb61a4d97c1",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-05-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202405121632917380_api.json",
+      "sha256": "f192cbbbc9b4bc002190ca86308e3374d0bf396b67d1899735f0339b091e89b4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月14日其他风险改ST汇金；落款5月10日与API公告日5月13日分列。"
+}

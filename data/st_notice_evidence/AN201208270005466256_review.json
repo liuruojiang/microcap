@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600275",
+    "announcement_id": "AN201208270005466256",
+    "notice_date": "2012-08-28",
+    "title": "关于撤销股票其他风险警示的公告",
+    "provider_title": "ST昌鱼：关于撤销股票其他风险警示的公告",
+    "removed_issuer_prefix": "ST昌鱼：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208270005466256_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208270005466256_1.pdf",
+    "body_notice_number": null,
+    "relative_pdf_path": "AN201208270005466256.pdf",
+    "sha256": "d1762c9e70a9bb2cb5aa31ac91db3773d4b065c0d643003eca632d6add3ea132",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208270005466256_api.json",
+      "sha256": "a61a145704de6cec3fc840a48f24848e2a720c7547e27443123c2879b8bbe59b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

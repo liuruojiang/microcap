@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300278",
+    "announcement_id": "AN202204221560940625",
+    "notice_date": "2022-04-23",
+    "title": "关于撤销退市风险警示情形的公告",
+    "provider_title": "*ST华昌:关于撤销退市风险警示情形的公告",
+    "removed_issuer_prefix": "*ST华昌:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204221560940625_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204221560940625_1.pdf",
+    "body_notice_number": "2022-042",
+    "relative_pdf_path": "AN202204221560940625.pdf",
+    "sha256": "1699fed980cde5ebc7875ab2e6947eacb7e355a06aa322b4319a153e014a8de8",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204221560940625_api.json",
+      "sha256": "6613e2f95019662f68761b5512bbdcdefb1a509ddd3416b77f0195e2cf672114",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：API标题省略申请，原PDF标题及特别提示均明确申请尚需核准。"
+}

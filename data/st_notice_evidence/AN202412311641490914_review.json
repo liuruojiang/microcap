@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002647",
+    "announcement_id": "AN202412311641490914",
+    "notice_date": "2024-12-31",
+    "title": "关于法院裁定受理公司重整并指定管理人暨公司股票交易将被实施退市风险警示的公告",
+    "provider_title": "仁东控股:关于法院裁定受理公司重整并指定管理人暨公司股票交易将被实施退市风险警示的公告",
+    "removed_issuer_prefix": "仁东控股:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202412311641490914_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202412311641490914_1.pdf",
+    "body_notice_number": "2024-087",
+    "relative_pdf_path": "AN202412311641490914.pdf",
+    "sha256": "10a79528f0441414d0c3968bd77f37e3bed0fe0b3574fba96efb0726318b7f2a",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2025-01-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202412311641490914_api.json",
+      "sha256": "4d97d61be77df1de0972975e149772af0578bc377b8524ec39eacf35e143b17c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only delisting action established; no other=False inferred from ordinary previous name. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

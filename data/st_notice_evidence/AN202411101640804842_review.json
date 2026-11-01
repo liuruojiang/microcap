@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300137",
+    "announcement_id": "AN202411101640804842",
+    "notice_date": "2024-11-11",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "先河环保:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "先河环保:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411101640804842_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411101640804842_1.pdf",
+    "body_notice_number": "2024-081",
+    "relative_pdf_path": "AN202411101640804842.pdf",
+    "sha256": "4bfa5d887b17f42cec19ba3ef9674c7cac8f7364a686f9857be7d7dbfc811139",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-11-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202411101640804842_api.json",
+      "sha256": "223a44784b7aa376e035ba180f23ad1f609571ec0ed0af5af2030eaf79d38c8b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确11月12日其他风险改ST先河；落款11月8日与API公告日11月11日分列，未宣称11月8日已公开。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600234",
+    "announcement_id": "AN201404170005452664",
+    "notice_date": "2014-04-18",
+    "title": " *ST山水关于撤销退市风险警示的公告",
+    "provider_title": "600234 : *ST山水关于撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600234 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404170005452664_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404170005452664_1.pdf",
+    "body_notice_number": "临2014--043",
+    "relative_pdf_path": "AN201404170005452664.pdf",
+    "sha256": "53fb88aa200d36b675df45404aff03c64a996e59da7230631783529ded67c3b4",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-04-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404170005452664_api.json",
+      "sha256": "2937daa11e64da8e785b5dbf9eb6a5043bac5fd4e10b4adf78d87100a71900fc",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

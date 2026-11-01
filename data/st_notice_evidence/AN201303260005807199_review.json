@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600455",
+    "announcement_id": "AN201303260005807199",
+    "notice_date": "2013-03-27",
+    "title": "关于公司股票被撤销其他风险警示的公告",
+    "provider_title": "ST博通：关于公司股票被撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST博通：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303260005807199_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303260005807199_1.pdf",
+    "body_notice_number": "2013-008",
+    "relative_pdf_path": "AN201303260005807199.pdf",
+    "sha256": "8fddd1774da5d474f80e579e325a03f0679121f6028f97e5cb017a9db14a025d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-03-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201303260005807199_api.json",
+      "sha256": "50b0dcd1c677b562231d7521d686691913706f6a980ad12d8ede02918d4494cd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准与实施段确认恢复普通简称及10%涨跌幅，完整退出ST类别，历史回顾不倒填首次公开日。"
+}

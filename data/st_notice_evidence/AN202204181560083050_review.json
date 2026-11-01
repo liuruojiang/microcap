@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300446",
+    "announcement_id": "AN202204181560083050",
+    "notice_date": "2022-04-19",
+    "title": "致同会计师事务所关于保定乐凯新材料股份有限公司符合撤销退市风险警示和其他风险警示条件的专项说明",
+    "provider_title": "*ST乐材:致同会计师事务所关于保定乐凯新材料股份有限公司符合撤销退市风险警示和其他风险警示条件的专项说明",
+    "removed_issuer_prefix": "*ST乐材:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204181560083050_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204181560083050_1.pdf",
+    "body_notice_number": "致同专字（2022）第110A006968号",
+    "relative_pdf_path": "AN202204181560083050.pdf",
+    "sha256": "91da6414b23b0369e98aaf2fea76e6e3637baac5ee4d0b091e02de930daff09a",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204181560083050_api.json",
+      "sha256": "17bedc3429ebd3f1b5f19cc94be601782c4e4060bbc6d09f49a961e17abec68d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：会计师专项说明仅供撤销申请目的，不是交易所撤销决定。"
+}

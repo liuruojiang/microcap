@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000408",
+    "announcement_id": "AN201211260005616788",
+    "notice_date": "2012-11-27",
+    "title": "关于撤销股票交易其他风险警示及变更证券简称的公告",
+    "provider_title": "ST金谷源：关于撤销股票交易其他风险警示及变更证券简称的公告",
+    "removed_issuer_prefix": "ST金谷源：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201211260005616788_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201211260005616788_1.pdf",
+    "body_notice_number": "2012-29",
+    "relative_pdf_path": "AN201211260005616788.pdf",
+    "sha256": "93bcb2dc3973be5665658bea6e7ad87e33a64e97a9872ad68137deb5cb2bcca9",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-11-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201211260005616788_api.json",
+      "sha256": "79fc808391c75bd97808a608bd99395d83caac09dfc8d6b3a180609a452f04a1",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤销其他风险，普通金谷源恢复正常交易及10%；清此前仍未知的风险，不倒填2011类别。"
+}

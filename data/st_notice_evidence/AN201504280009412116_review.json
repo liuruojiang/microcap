@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002608",
+    "announcement_id": "AN201504280009412116",
+    "notice_date": "2015-04-29",
+    "title": "关于对公司债券实行风险警示的公告",
+    "provider_title": "舜天船舶:关于对公司债券实行风险警示的公告",
+    "removed_issuer_prefix": "舜天船舶:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504280009412116_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504280009412116_1.pdf",
+    "body_notice_number": "2015-056",
+    "relative_pdf_path": "AN201504280009412116.pdf",
+    "sha256": "c1016873671d9234f071572843f4bc14c9767b26470a79bba18361d5deab19c7",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504280009412116_api.json",
+      "sha256": "5be9ef1e5a5e598542183533d4b6c865c163be87b3d2cc3bf15b2c97ace2e098",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "仅112108公司债12舜天债4月30日起改ST舜天债，非股票002608。"
+}

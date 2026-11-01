@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300051",
+    "announcement_id": "AN202104221487091239",
+    "notice_date": "2021-04-23",
+    "title": "关于公司股票将被实施其他风险警示的提示性公告暨停牌公告",
+    "provider_title": "三五互联:关于公司股票将被实施其他风险警示的提示性公告暨停牌公告",
+    "removed_issuer_prefix": "三五互联:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104221487091239_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104221487091239_1.pdf",
+    "body_notice_number": "2021-090",
+    "relative_pdf_path": "AN202104221487091239.pdf",
+    "sha256": "4699dabc9b854da90bb7561e866ae4c259bac8ab5daa715865e71267fe46361c",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2021-04-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202104221487091239_api.json",
+      "sha256": "fa8505084724923c408419c23eb0a172cd1de02ec8b1baf4ad23096865a8371b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月26日其他风险改ST三五，20%。"
+}

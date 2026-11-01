@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002019",
+    "announcement_id": "AN201305080003241693",
+    "notice_date": "2013-05-09",
+    "title": "关于公司股票交易撤销退市风险警示的提示性公告",
+    "provider_title": "*ST鑫富:关于公司股票交易撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST鑫富:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305080003241693_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305080003241693_1.pdf",
+    "body_notice_number": "2013-030",
+    "relative_pdf_path": "AN201305080003241693.pdf",
+    "sha256": "9f1607cf06b6442a07430cfc4a20c18f86134d1f4d1c8d88d66843acbcf0d6da",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305080003241693_api.json",
+      "sha256": "879c3f26736b3cea1dcd1daa0eac0e5e702f356502968a02dc6ac6f725783ca0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原件明确交易所已批准撤销并恢复普通简称及10%，无其他风险；重大资产重组仍停牌不等同仍ST，风险实际生效日不是可交易日承诺。"
+}

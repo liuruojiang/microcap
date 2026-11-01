@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000757",
+    "announcement_id": "AN201304170003183030",
+    "notice_date": "2013-04-18",
+    "title": "关于撤销退市风险警示的公告",
+    "provider_title": "*ST浩物:关于撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST浩物:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304170003183030_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304170003183030_1.pdf",
+    "body_notice_number": "2013-38",
+    "relative_pdf_path": "AN201304170003183030.pdf",
+    "sha256": "d6161172e61670b91eebff90611bc6913bc3cf5199e7f1412e2ee4750f2d6b80",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304170003183030_api.json",
+      "sha256": "23b5aa29f7677a89d6db9aea990940b567ed528122070920fa9f409d4226b015",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤退市风险恢复普通浩物股份10%。"
+}

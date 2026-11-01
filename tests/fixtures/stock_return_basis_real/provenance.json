@@ -1,0 +1,12 @@
+{
+  "symbol": "000418",
+  "raw_parent_sha256": "bb6e4e5d5a0927db2d6563e93b0664a14c41d53a2f780024c1f301e6b80bc238",
+  "raw_parent_path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261029_st_history_repair\\cross_source_prices\\normalized_raw\\000418.csv",
+  "fixture_raw_sha256": "87cbb042bb478d3eb834bd7885a40106d72ea910e46c22ae5ddd2d69d2555192",
+  "dates": [
+    "2012-06-08",
+    "2012-06-11",
+    "2012-06-12"
+  ],
+  "primary_cash_dividend_evidence_sha256": "ee5df3118e1450e5b7056dfe88ad7691cde0dd9b0826ab022847cba1e73c3216"
+}

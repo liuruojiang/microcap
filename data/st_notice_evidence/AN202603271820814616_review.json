@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002538",
+    "announcement_id": "AN202603271820814616",
+    "notice_date": "2026-03-27",
+    "title": "关于公司股票将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "司尔特:关于公司股票将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "司尔特:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603271820814616_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603271820814616_1.pdf",
+    "body_notice_number": "2026-3",
+    "relative_pdf_path": "AN202603271820814616.pdf",
+    "sha256": "eec37181693a281bbca4ea60ed6b0da9a1e1b6f7d464e9d5b9b848a7b3960546",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-03-31"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202603271820814616_api.json",
+      "sha256": "b59f77fc34de2af2c512ba946dc46f06449ef09ddbc7fdbb4f8ea2ac10fb0cf0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确3月31日起司尔特改ST司特，其他风险。"
+}

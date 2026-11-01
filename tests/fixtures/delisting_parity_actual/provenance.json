@@ -1,0 +1,12 @@
+{
+  "standalone": {
+    "origin_backup": "research_reports\\20261029_st_history_repair\\delisting_writeoff_model_20261101\\analyze_top100_rebalance_frequency.py",
+    "original_file_sha256": "83453070ed1102c42c0aca368915f1481d52c6ba7217e83591ef1b935259085d",
+    "extracted_function_sha256": "1877ff5d0d607d166fef11cc1f089b3cfaed44081db39c1205fccd6437300c5d"
+  },
+  "embedded": {
+    "origin_backup": "research_reports\\20261029_st_history_repair\\delisting_writeoff_model_20261101\\microcap_top100_mom16_biweekly_live_v2_0.py",
+    "original_file_sha256": "ce2b087310ec069c672ebf569773d41527e1efb6331d50938a5e99ad8a942b9a",
+    "extracted_function_sha256": "1d7fce32a173ea93d85e3728702b259faa6dc62d2ac43b93cc1fbd95ae7ec8b5"
+  }
+}

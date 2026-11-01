@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300301",
+    "announcement_id": "AN202206301575664104",
+    "notice_date": "2022-06-30",
+    "title": "关于公司股票交易被实施其他风险警示相关事项的进展及控股子公司分红的进展公告",
+    "provider_title": "*ST长方:关于公司股票交易被实施其他风险警示相关事项的进展及控股子公司分红的进展公告",
+    "removed_issuer_prefix": "*ST长方:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206301575664104_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206301575664104_1.pdf",
+    "body_notice_number": "2022-076",
+    "relative_pdf_path": "AN202206301575664104.pdf",
+    "sha256": "4650c526fb3b270caf57b442a11ba4bc70e8323318339ca0c4a6846665dd932d",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202206301575664104_api.json",
+      "sha256": "8d8af3e6f99926a735147a1c14084b313aa4688f97ea90e9c86b2642d6e6f97b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "月度进展无当前新增动作；正文确认other自2022-05-06实施，仅可另作历史旁证，不能回填为本公告日新实施。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

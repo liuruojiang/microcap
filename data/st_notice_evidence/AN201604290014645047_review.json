@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000611",
+    "announcement_id": "AN201604290014645047",
+    "notice_date": "2016-04-30",
+    "title": "关于公司股票仍将被实行退市风险警示的公告",
+    "provider_title": "*ST蒙发:关于公司股票仍将被实行退市风险警示的公告",
+    "removed_issuer_prefix": "*ST蒙发:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604290014645047_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201604290014645047_1.pdf",
+    "body_notice_number": null,
+    "relative_pdf_path": "AN201604290014645047.pdf",
+    "sha256": "7be872e873be9066a1179586dbcbe66bab9af142e7c3be42403abbc80a20f013",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201604290014645047_api.json",
+      "sha256": "5650f58068980a77d8e702d6e55d4ba5a174a019feb84f002169b2af3a288c7a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Continuation of existing delisting risk; no new transition or inferred start. Current known delisting=True. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

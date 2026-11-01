@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "601106",
+    "announcement_id": "AN201703100398924445",
+    "notice_date": "2017-03-11",
+    "title": "中国一重关于公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "601106:中国一重关于公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "601106:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201703100398924445_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201703100398924445_1.pdf",
+    "body_notice_number": "2017-004",
+    "relative_pdf_path": "AN201703100398924445.pdf",
+    "sha256": "bd4568c3b7dc8b94485344379ba7cca7589a0b27876daf3422fd7db903920dda",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201703100398924445_api.json",
+      "sha256": "52272348abac99af0336e48a2fe8a395bcb2a695a7d76f05417939260b353b86",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文是年报前预计亏损及如审计亏损的股票/债券风险提示，本件尚无实施决定。"
+}

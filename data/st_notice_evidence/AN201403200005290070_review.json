@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000958",
+    "announcement_id": "AN201403200005290070",
+    "notice_date": "2014-03-21",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST东热:关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST东热:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403200005290070_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403200005290070_1.pdf",
+    "body_notice_number": "2014-014",
+    "relative_pdf_path": "AN201403200005290070.pdf",
+    "sha256": "4716b97c43154600d1ec246ff161b4c3330fb6823039672df638809afaa8ddfc",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403200005290070_api.json",
+      "sha256": "1ad99385d04a9f26b9a894ae911b543e2ed8072d77a34d4412ae8f3f4dd987bb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文仅提交申请，第三节尚需深交所核准；撤销提示性标题不代表批准。"
+}

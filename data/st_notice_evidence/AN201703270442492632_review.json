@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "601005",
+    "announcement_id": "AN201703270442492632",
+    "notice_date": "2017-03-28",
+    "title": "重庆钢铁股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第三次提示性公告",
+    "provider_title": "601005:重庆钢铁股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第三次提示性公告",
+    "removed_issuer_prefix": "601005:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201703270442492632_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201703270442492632_1.pdf",
+    "body_notice_number": "2017-022",
+    "relative_pdf_path": "AN201703270442492632.pdf",
+    "sha256": "dec4e42909147c3a48e029842ee656d5c96b6936ec30dc2bb2b0400e47f0a61d",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201703270442492632_api.json",
+      "sha256": "d5ea62154eb5c2f49a4aff832c9d571ee02dc29391d02fb83d6c67b110f264cf",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份核对正文，2016年报披露前预计亏损，若审计亏损则年报后实施，属于股票与债券可能风险提示，无当前状态动作。"
+}

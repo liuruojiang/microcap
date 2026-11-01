@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600847",
+    "announcement_id": "AN201205160005246040",
+    "notice_date": "2012-05-17",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "ST渝万里：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "ST渝万里：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205160005246040_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205160005246040_1.pdf",
+    "body_notice_number": "2012-10",
+    "relative_pdf_path": "AN201205160005246040.pdf",
+    "sha256": "0664dc66fb0fe714d0a3d9f2242093f094eaab588671edacabac2d5569ee6e23",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-05-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201205160005246040_api.json",
+      "sha256": "bf098e14aa61bf4733afc88f835a38d56e3546971c0bc4f9b43b4b07daa0aa85",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段明确全部退出ST、普通简称和10%涨跌幅。"
+}

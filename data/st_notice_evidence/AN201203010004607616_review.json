@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000751",
+    "announcement_id": "AN201203010004607616",
+    "notice_date": "2010-05-21",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST锌业：关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST锌业：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004607616_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004607616_1.pdf",
+    "body_notice_number": "2010-012",
+    "relative_pdf_path": "AN201203010004607616.pdf",
+    "sha256": "00605d4fd9fb60ca7be633fd56b27bae1ec173500554cfe749f5215cf17fac06",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-05-24"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004607616_api.json",
+      "sha256": "d59d3d9feb17cbc884ccd900c801868fe32a70df3289bf96e18a12cbdc973748",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确无其他特别处理，撤退市风险恢复普通锌业股份10%。"
+}

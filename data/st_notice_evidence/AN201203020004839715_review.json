@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000732",
+    "announcement_id": "AN201203020004839715",
+    "notice_date": "2011-05-27",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "ST三农：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "ST三农：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004839715_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004839715_1.pdf",
+    "body_notice_number": "2011-25",
+    "relative_pdf_path": "AN201203020004839715.pdf",
+    "sha256": "d02524359cbc3117d3ee90b3ac5711a3713347dd96eaa275ff9670a977f20f51",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2011-05-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004839715_api.json",
+      "sha256": "7cfe0f1dcd04471c048325daee3834fc04943883985eb5baceb741de6b3beeee",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual ordinary name plus restored10% limit after explicit other withdrawal; both risks absent. Subsequent normal renamings do not require fake exit events. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round3_price9_11events_20261101.json"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600675",
+    "announcement_id": "AN201602220013563337",
+    "notice_date": "2016-02-23",
+    "title": "中华企业可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600675:中华企业可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600675:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201602220013563337_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201602220013563337_1.pdf",
+    "body_notice_number": "临2016-007",
+    "relative_pdf_path": "AN201602220013563337.pdf",
+    "sha256": "04d8c6099d2dc96e5290dcd4d4a79dd41b200e0162b6f8cbd4564495d336c499",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201602220013563337_api.json",
+      "sha256": "9c80143bc64acc3aba66d41ff2d9e91a9c60b33f504aaeeeec0d6876851fe1bb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文为2015年报前预亏提示，若审计仍亏损则年报后实施股票风险并暂停债券；尚无实施决定。"
+}

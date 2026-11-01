@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600087",
+    "announcement_id": "AN201204110005120882",
+    "notice_date": "2012-04-12",
+    "title": "实施退市风险警示公告",
+    "provider_title": "长航油运：实施退市风险警示公告",
+    "removed_issuer_prefix": "长航油运：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201204110005120882_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201204110005120882_1.pdf",
+    "body_notice_number": "2012-010",
+    "relative_pdf_path": "AN201204110005120882.pdf",
+    "sha256": "0b1655e49cb6dfa6a670b3a6fbc2ca619ccf53616ffc5f59a7709343f50396de",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2012-04-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201204110005120882_api.json",
+      "sha256": "ef606354fc368b5c328d05d542749b157bd99fd09570bad36d473eef3a14483f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际公告正文逐项核对；申请待批不作撤销。600145虽标题含申请，正文已有批准及实施安排；600209关键决定在原件第一页，后附财务报告。公告日保留原始接口字段，正文落款及实施日分别记录。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_long34_root17_bodies_20261101/adjudication.json"
+}

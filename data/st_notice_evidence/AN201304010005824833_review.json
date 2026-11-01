@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000806",
+    "announcement_id": "AN201304010005824833",
+    "notice_date": "2013-04-02",
+    "title": "关于撤销公司股票交易退市风险警示进展的提示性公告",
+    "provider_title": "*ST银河：关于撤销公司股票交易退市风险警示进展的提示性公告",
+    "removed_issuer_prefix": "*ST银河：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005824833_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005824833_1.pdf",
+    "body_notice_number": "2013-016",
+    "relative_pdf_path": "AN201304010005824833.pdf",
+    "sha256": "41752ec52548ce45271736674c2dfbe39c6bd566a0d62500aaed10c8229cedbc",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304010005824833_api.json",
+      "sha256": "10f7ce5efa81125b0b34fa2041cf9e360a2be20e0996ac4d4cf5b878367d83c2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000561",
+    "announcement_id": "AN201203010004707790",
+    "notice_date": "2010-12-07",
+    "title": "关于撤销公司股票交易退市风险警示及股票简称变更为“烽火电子”的公告",
+    "provider_title": "*ST烽火：关于撤销公司股票交易退市风险警示及股票简称变更为“烽火电子”的公告",
+    "removed_issuer_prefix": "*ST烽火：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004707790_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004707790_1.pdf",
+    "body_notice_number": "2010—045",
+    "relative_pdf_path": "AN201203010004707790.pdf",
+    "sha256": "cb40d99f5b7bbe32bda3833cc9614099e703166e4975fcb1db0655951845c251",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-12-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004707790_api.json",
+      "sha256": "5cdcb1e69e1bb6eed97fadfad59c0701101392c641c640859a22c6e323cc550d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确无13.3.1情形，交易所核准12月8日撤退市风险恢复普通烽火电子10%。"
+}

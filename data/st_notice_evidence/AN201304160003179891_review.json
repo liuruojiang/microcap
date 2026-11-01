@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002114",
+    "announcement_id": "AN201304160003179891",
+    "notice_date": "2013-04-17",
+    "title": "关于撤销公司退市风险警示的提示性公告",
+    "provider_title": "*ST锌电:关于撤销公司退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST锌电:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304160003179891_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304160003179891_1.pdf",
+    "body_notice_number": "2013-30",
+    "relative_pdf_path": "AN201304160003179891.pdf",
+    "sha256": "94f24542dfc13590e69d1dfd13e96cfc83ff02f1e40b600d6a0383752cf64ec7",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304160003179891_api.json",
+      "sha256": "d1522573c1be766679a07e545877f0cb41b4d08b8fbba738f7b1f11288f584be",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文核验交易所已经审核批准，实施段明确普通简称、10%及无其他风险；提示性标题在本件属于已批准实施，退出全部ST类别。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000603",
+    "announcement_id": "AN201205070005180431",
+    "notice_date": "2012-05-07",
+    "title": "关于撤销公司股票其他特别处理的公告",
+    "provider_title": "ST盛达：关于撤销公司股票其他特别处理的公告",
+    "removed_issuer_prefix": "ST盛达：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205070005180431_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205070005180431_1.pdf",
+    "body_notice_number": "2012-035",
+    "relative_pdf_path": "AN201205070005180431.pdf",
+    "sha256": "1fde2ae6c80d207c7e5672ba80e12afc2a451986f35503a16e0b12b294fced3d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-05-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201205070005180431_api.json",
+      "sha256": "450bccb98fc6e1dd99537e155e809dea04f0dccfdaeb0fa6f67bb64a29247ddc",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他特别处理，普通盛达矿业恢复正常10%。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300123",
+    "announcement_id": "AN202604171821307427",
+    "notice_date": "2026-04-18",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "亚光科技:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "亚光科技:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604171821307427_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604171821307427_1.pdf",
+    "body_notice_number": "2026-028",
+    "relative_pdf_path": "AN202604171821307427.pdf",
+    "sha256": "a822ed008b8bcdd6c42ae43947780377ca470fd2cd46d951c62b9c50b318b146",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604171821307427_api.json",
+      "sha256": "e7b416d5edd7fa80d376337474430db9324da4b2ac0c7e4c773e2311d8901a50",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月21日其他风险改ST亚光。"
+}

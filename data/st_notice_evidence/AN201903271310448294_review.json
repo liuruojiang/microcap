@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000806",
+    "announcement_id": "AN201903271310448294",
+    "notice_date": "2019-03-28",
+    "title": "关于公司股票交易实行其他风险警示的公告",
+    "provider_title": "银河生物:关于公司股票交易实行其他风险警示的公告",
+    "removed_issuer_prefix": "银河生物:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201903271310448294_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201903271310448294_1.pdf",
+    "body_notice_number": "2019-015",
+    "relative_pdf_path": "AN201903271310448294.pdf",
+    "sha256": "d4ec85d57ca0298999afe787a3b0521bf55bb352c6ec6b0a99734678b4962432",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2019-03-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201903271310448294_api.json",
+      "sha256": "3ede0e8f468433db91815154fc3ce4ff2fa42b0312a43a3d0a5dba6ef9989c21",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round3_price9_11events_20261101.json"
+}

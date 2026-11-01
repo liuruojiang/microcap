@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002015",
+    "announcement_id": "AN201602230013580851",
+    "notice_date": "2016-02-24",
+    "title": "关于公司股票交易撤销退市风险警示的公告",
+    "provider_title": "*ST霞客:关于公司股票交易撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST霞客:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201602230013580851_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201602230013580851_1.pdf",
+    "body_notice_number": "2016-028",
+    "relative_pdf_path": "AN201602230013580851.pdf",
+    "sha256": "d96ae8a31640f0a79c7de21bf82704ac2e967c4b5f7329517136eb23ae514603",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2016-02-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201602230013580851_api.json",
+      "sha256": "207999e5a385d1e563250359712f0ddf57754890bd5fc02e462f3de9d323e122",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准段明确批准撤销且普通简称恢复；明确无其他风险或同时撤销两类，普通交易10%（恢复上市首日例外不改变ST状态），完整清零旧类别。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002598",
+    "announcement_id": "AN202604291821715197",
+    "notice_date": "2026-04-29",
+    "title": "关于公司股票交易将被叠加实施其他风险警示和可能被实施退市风险警示的提示性公告",
+    "provider_title": "ST章鼓:关于公司股票交易将被叠加实施其他风险警示和可能被实施退市风险警示的提示性公告",
+    "removed_issuer_prefix": "ST章鼓:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821715197_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821715197_1.pdf",
+    "body_notice_number": "2026033",
+    "relative_pdf_path": "AN202604291821715197.pdf",
+    "sha256": "16783d9ebbd284c6fc75a2a28bd1c8f45759fce55310d836bd5ad531436f7909",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604291821715197_api.json",
+      "sha256": "feae617dc55a177fbc35516a28fcfcc9ab97ddb094b2312a7275854a5b3e2f10",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "本次4月29日起叠加其他风险；退市风险仅2026年度再次内控否定意见的未来条件，不能置delisting=True。"
+}

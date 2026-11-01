@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000693",
+    "announcement_id": "AN201401020004860314",
+    "notice_date": "2014-01-03",
+    "title": "关于撤销公司股票交易退市风险警示、变更公司证券简称及行业类别的公告",
+    "provider_title": "*ST聚友:关于撤销公司股票交易退市风险警示、变更公司证券简称及行业类别的公告",
+    "removed_issuer_prefix": "*ST聚友:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201401020004860314_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201401020004860314_1.pdf",
+    "body_notice_number": "2014-005",
+    "relative_pdf_path": "AN201401020004860314.pdf",
+    "sha256": "bb6563e6e54f5fa31b4f04f7ed2f30c4187b70e85ca25d7d0885b731fc84d6cd",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-01-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201401020004860314_api.json",
+      "sha256": "64e586e943df714acaed0b136a75fe5929ac1e18f4270b7f1eb161fcba515de6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

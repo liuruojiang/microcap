@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000633",
+    "announcement_id": "AN201305090003244776",
+    "notice_date": "2013-05-10",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST合金:关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST合金:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305090003244776_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305090003244776_1.pdf",
+    "body_notice_number": "2013-012",
+    "relative_pdf_path": "AN201305090003244776.pdf",
+    "sha256": "002f99cd83d275cafcc38a906414698965d6fcd235e201dd8b6b88549e46741d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305090003244776_api.json",
+      "sha256": "cb52da48a6a368fdf32fa383d3bbd1cdded2abcdc9ae5315b9868acbc250b9f8",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他风险，普通合金投资10%。"
+}

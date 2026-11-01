@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000036",
+    "announcement_id": "AN201203010004615758",
+    "notice_date": "2010-06-03",
+    "title": "关于撤销对公司股票交易实施的其他特别处理的提示性公告",
+    "provider_title": "*ST华控：关于撤销对公司股票交易实施的其他特别处理的提示性公告",
+    "removed_issuer_prefix": "*ST华控：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004615758_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004615758_1.pdf",
+    "body_notice_number": "2010-021",
+    "relative_pdf_path": "AN201203010004615758.pdf",
+    "sha256": "f310b6ebfac0bcad7e61f168eca440bea2806d6e2f3c57d0f3867a576f1dc43d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-06-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004615758_api.json",
+      "sha256": "6de852d62c499d99d454086b849796ef051c0973a9e618ce64494e18b86e30da",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "标题称其他特别处理但正文明确撤退市风险、不存在其他特别处理，恢复普通华联控股和10%，需按全文清两类。"
+}

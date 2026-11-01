@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300376",
+    "announcement_id": "AN202407051637592420",
+    "notice_date": "2024-07-05",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "易事特:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "易事特:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202407051637592420_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202407051637592420_1.pdf",
+    "body_notice_number": "2024-038",
+    "relative_pdf_path": "AN202407051637592420.pdf",
+    "sha256": "882551889d3c6a745e3fdc5ef2bb9255423f961799eeda4451974fca1416355d",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-07-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202407051637592420_api.json",
+      "sha256": "9a37b15b99f401406665c45a8db3505482ac635137a3440b7d398c4fe11d8aeb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确7月9日其他风险，ST易事特20%。"
+}

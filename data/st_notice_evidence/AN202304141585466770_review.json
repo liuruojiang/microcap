@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "688272",
+    "announcement_id": "AN202304141585466770",
+    "notice_date": "2023-04-15",
+    "title": "容诚会计师事务所(特殊普通合伙)关于北京富吉瑞光电科技股份有限公司股票可能被实施退市风险警示事项的问询函涉及问题的说明",
+    "provider_title": "富吉瑞:容诚会计师事务所(特殊普通合伙)关于北京富吉瑞光电科技股份有限公司股票可能被实施退市风险警示事项的问询函涉及问题的说明",
+    "removed_issuer_prefix": "富吉瑞:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304141585466770_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304141585466770_1.pdf",
+    "body_notice_number": "容诚专字[2023]230Z1498号",
+    "relative_pdf_path": "AN202304141585466770.pdf",
+    "sha256": "8845c1e0f723a2398ce91576bf14b0350fb9428fa6ac2236793991181f45d70a",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304141585466770_api.json",
+      "sha256": "5ce3110d78bfc266cd20f3984820e9166c7d49b92c6e2aee047531f354b4bb80",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核对会计师说明题名、问询内容及第6.2.3条对应说明，明确目前公司未被上海证券交易所正式实施退市风险警示；会计师问询回复无状态动作。"
+}

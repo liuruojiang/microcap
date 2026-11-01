@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600854",
+    "announcement_id": "AN201205160005246043",
+    "notice_date": "2012-05-17",
+    "title": "关于撤销股票交易其他特别处理和变更股票简称的公告",
+    "provider_title": "ST春 兰：关于撤销股票交易其他特别处理和变更股票简称的公告",
+    "removed_issuer_prefix": "ST春 兰：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205160005246043_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205160005246043_1.pdf",
+    "body_notice_number": "临2012—008",
+    "relative_pdf_path": "AN201205160005246043.pdf",
+    "sha256": "a433a1f6be5d78884410c5335aa02f523219dc33370b02772e66a435ac3b620b",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-05-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201205160005246043_api.json",
+      "sha256": "dd883518591b08598c8ea643bb11e03260f1b5b25209e7248d5c4d56f05e42cd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段明确全部退出ST、普通简称和10%涨跌幅。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600375",
+    "announcement_id": "AN202411081640795603",
+    "notice_date": "2024-11-09",
+    "title": "汉马科技集团股份有限公司关于法院受理公司及子公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST汉马:汉马科技集团股份有限公司关于法院受理公司及子公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST汉马:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411081640795603_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411081640795603_1.pdf",
+    "body_notice_number": "临2024－133",
+    "relative_pdf_path": "AN202411081640795603.pdf",
+    "sha256": "f1803199a64ba98e731da72035ecee67bea94332da85cc7c0c96566790605126",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2024-11-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202411081640795603_api.json",
+      "sha256": "995178e5eec6d00d5638c734fb08a03feae841b4c516f4dae2b771a4e0207645",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "法院同时受理发行人及子公司重整，正文明确发行人11月11日叠加退市风险，不仅子公司事项。"
+}

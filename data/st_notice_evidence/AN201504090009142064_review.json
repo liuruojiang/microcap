@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002459",
+    "announcement_id": "AN201504090009142064",
+    "notice_date": "2015-04-10",
+    "title": "关于公司股票交易撤销退市风险警示的提示性公告",
+    "provider_title": "*ST天业:关于公司股票交易撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST天业:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504090009142064_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504090009142064_1.pdf",
+    "body_notice_number": "2015-026",
+    "relative_pdf_path": "AN201504090009142064.pdf",
+    "sha256": "6d9e1e925541f739e451335a2b4c1e035e194d7bf812709d01d8934b9eb2288c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-04-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504090009142064_api.json",
+      "sha256": "a046ebd1820c4cd4fab3d71f16f6ae46fe2df05c90cd24616d6a04da1acd25cf",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销，恢复普通简称及10%涨跌幅，全部退出风险；保留提供方公告日与正文生效日差异。"
+}

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600589",
+    "announcement_id": "AN202311241612231949",
+    "notice_date": "2023-11-25",
+    "title": "关于法院裁定受理重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST榕泰:关于法院裁定受理重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST榕泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202311241612231949_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202311241612231949_1.pdf",
+    "body_notice_number": "2023-125",
+    "relative_pdf_path": "AN202311241612231949.pdf",
+    "sha256": "0d66a99a212e0344f26adcb266c96988b070909ed5fa68fb3476a459f1cc6013",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2023-11-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202311241612231949_api.json",
+      "sha256": "539fbdb04031df3fc0517cbeaadbabf429d2e6b1f5d74d5ac26b8c86e3289d45",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "发行人法院重整已受理，正文明确11月27日叠加退市风险；后文可能破产为另一条件风险，不混淆。"
+}

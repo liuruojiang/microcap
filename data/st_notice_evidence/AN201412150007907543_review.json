@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002420",
+    "announcement_id": "AN201412150007907543",
+    "notice_date": "2014-12-16",
+    "title": "关于2012年公司债券(第一期)复牌暨实行风险警示的公告",
+    "provider_title": "毅昌股份:关于2012年公司债券(第一期)复牌暨实行风险警示的公告",
+    "removed_issuer_prefix": "毅昌股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201412150007907543_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201412150007907543_1.pdf",
+    "body_notice_number": "2014-050",
+    "relative_pdf_path": "AN201412150007907543.pdf",
+    "sha256": "138d32b484dff6bc626ab4d77b2bc8e1db2beb2041c363af9fc3fadfb2267019",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201412150007907543_api.json",
+      "sha256": "be4856f5a3d3372be54d54651cc5c9f74daac2981537d64b440749395fe969de",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "仅12毅昌01债券112160改ST毅昌01，不是002420股票动作。"
+}

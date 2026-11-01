@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600515",
+    "announcement_id": "AN201202270004159165",
+    "notice_date": "2007-04-27",
+    "title": "关于撤销退市风险警示的公告",
+    "provider_title": "*ST一 投：关于撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST一 投：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004159165_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004159165_1.pdf",
+    "body_notice_number": "临2007-028",
+    "relative_pdf_path": "AN201202270004159165.pdf",
+    "sha256": "39be814e0f1bd9b2f315ff984a82026fa5a05f3b001e4497f10902021028b34c",
+    "risk_actions": {
+      "delisting": false,
+      "unspecified": true
+    },
+    "actual_effective_date": "2007-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202270004159165_api.json",
+      "sha256": "3a5603730294c6529771291748884a3dae11006f02b6949e256e36fac68701e2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准撤销退市，但简称明确仍ST/SST且仍5%；正文未明确剩余风险具体类别，保留unknown风险，不猜other也不退出ST。"
+}

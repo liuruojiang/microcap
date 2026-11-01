@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600691",
+    "announcement_id": "AN201202260003860732",
+    "notice_date": "2005-04-14",
+    "title": "关于股票获准撤销退市风险警示的公告",
+    "provider_title": "*ST林 控：关于股票获准撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST林 控：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003860732_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003860732_1.pdf",
+    "body_notice_number": "临2005-16",
+    "relative_pdf_path": "AN201202260003860732.pdf",
+    "sha256": "e501d5bb5732bd3b028b26cc67254140b7f24ed8f0bacc2ae4d3cc8709751a07",
+    "risk_actions": {
+      "delisting": false,
+      "unspecified": true
+    },
+    "actual_effective_date": "2005-04-15"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202260003860732_api.json",
+      "sha256": "9f0e4707860060fb94dbc9250f26a5365d14733cddbde97b417f8fc43fd43476",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确仅撤退市，变更后仍ST林控/ST东碳且5%；剩余风险未明确类别，保持unknown，不能退出或猜定other。"
+}

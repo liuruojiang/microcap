@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -14,9 +16,9 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import microcap_top100_mom16_biweekly_live_v2_0 as v2
+from scripts.st_notice_evidence import evidence_fingerprint
 
 
-DEFAULT_BACKUP = ROOT / ".codex_backups" / "20260820_134953" / "outputs"
 DEFAULT_REPORT = ROOT / "outputs" / "microcap_top100_v2_0_audited_history_migration_report.json"
 DEFAULT_CANDIDATE = ROOT / "outputs" / "microcap_top100_v2_0_audited_history_migration_candidate.csv"
 
@@ -30,41 +32,48 @@ def sha256_path(path: Path) -> str:
 
 
 def performance_windows(frame: pd.DataFrame) -> dict[str, dict[str, object]]:
-    returns = pd.to_numeric(frame["return_net"], errors="coerce").fillna(0.0)
+    returns = pd.to_numeric(frame["return_net"], errors="raise")
+    if not returns.map(lambda value: pd.notna(value) and math.isfinite(value)).all():
+        raise ValueError("Migration performance requires finite, complete realized returns")
     returns.index = pd.DatetimeIndex(frame.index)
-    end = returns.index.max()
-    windows = {"full": None, "last_10y": 10, "last_5y": 5, "last_3y": 3, "last_1y": 1}
     out: dict[str, dict[str, object]] = {}
-    for label, years in windows.items():
-        part = returns if years is None else returns.loc[returns.index >= end - pd.DateOffset(years=years)]
-        nav = (1.0 + part).cumprod()
-        elapsed_years = max((part.index[-1] - part.index[0]).days / 365.2425, len(part) / 244.0)
-        annual = float(nav.iloc[-1] ** (1.0 / elapsed_years) - 1.0) if elapsed_years > 0 else 0.0
-        drawdown = float((nav / nav.cummax() - 1.0).min())
-        out[label] = {
-            "start_date": str(part.index.min().date()),
-            "end_date": str(part.index.max().date()),
-            "rows": int(len(part)),
-            "annualized_return": annual,
-            "max_drawdown": drawdown,
-            "final_nav": float(nav.iloc[-1]),
+    for row in v2.overlay_mod.summarize_required_windows(returns):
+        out[row["window"]] = {
+            "start_date": row["start_date"], "end_date": row["end_date"], "rows": row["days"],
+            "annualized_return": None if pd.isna(row["annual_pct"]) else row["annual_pct"] / 100.,
+            "max_drawdown": None if pd.isna(row["max_drawdown_pct"]) else row["max_drawdown_pct"] / 100.,
+            "final_nav": None if pd.isna(row["final_nav"]) else row["final_nav"],
+            "unavailable_reason": row["unavailable_reason"],
         }
     return out
 
 
 def member_st_audit(members_path: Path) -> dict[str, object]:
     members = pd.read_csv(members_path, dtype={"symbol": str})
+    if members.empty:
+        raise ValueError("Empty member history cannot pass migration audit")
     members["symbol"] = members["symbol"].astype(str).str.zfill(6)
-    members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="coerce")
+    members["rebalance_date"] = pd.to_datetime(members["rebalance_date"], errors="raise")
+    if members["rebalance_date"].isna().any():
+        raise ValueError("Member rebalance dates must not be missing")
+    periods = members.groupby("rebalance_date")["symbol"].agg(["size", "nunique"])
+    invalid_periods = periods.loc[(periods["size"] != 100) | (periods["nunique"] != 100)]
     violations: list[dict[str, object]] = []
     bad_policy: list[str] = []
+    registry_sha = evidence_fingerprint(ROOT)
     for symbol, group in members.groupby("symbol"):
         meta_path = v2.freq_mod.resolve_security_meta_path(symbol)
         if meta_path is None:
             bad_policy.append(symbol)
             continue
-        meta = json.loads(Path(meta_path).read_text(encoding="utf-8"))
-        if meta.get("st_notice_policy_version") != v2.freq_mod.ST_NOTICE_POLICY_VERSION:
+        # Read and validate archived metadata, never refresh it during an audit.
+        meta = v2.freq_mod._read_security_meta_payload(Path(meta_path), symbol)
+        if (meta.get("st_notice_policy_version") != v2.freq_mod.ST_NOTICE_POLICY_VERSION
+                or meta.get("st_notice_parser_revision") != v2.freq_mod.ST_NOTICE_PARSER_REVISION
+                or meta.get("st_notice_evidence_sha256") != registry_sha
+                or meta.get("notice_query_status") != "ok"
+                or str(meta.get("name_history_status", "")).startswith("error:")
+                or meta.get("current_st_history_resolved") is not True):
             bad_policy.append(symbol)
         for interval in meta.get("st_intervals") or []:
             start = pd.to_datetime(interval.get("start"), errors="coerce")
@@ -88,6 +97,7 @@ def member_st_audit(members_path: Path) -> dict[str, object]:
         "member_rows": int(len(members)),
         "rebalance_dates": int(members["rebalance_date"].nunique()),
         "distinct_symbols": int(members["symbol"].nunique()),
+        "invalid_member_period_count": int(len(invalid_periods)),
         "bad_policy_count": int(len(set(bad_policy))),
         "bad_policy_symbols": sorted(set(bad_policy)),
         "st_violations": int(len(violations)),
@@ -102,17 +112,24 @@ def build_candidate() -> pd.DataFrame:
     close_df = base_cached[["microcap_close", "hedge_close"]].rename(
         columns={"microcap_close": "microcap", "hedge_close": "hedge"}
     )
+    v2.overlay_mod.validate_close_df(close_df, "v2.0 migration candidate close_df")
     base_gross = v2.base_mod.run_signal(close_df).sort_index()
     gross = v2.base_mod.apply_momentum_gap_exit_buffer(base_gross, v2.V2_0_MOMENTUM_GAP_EXIT_BUFFER)
-    lineage = v2.overlay_mod.apply_volatility_overheat_exit(gross, turnover)
-    return v2.overlay_mod.apply_target_vol_scaling(lineage)
+    return v2.overlay_mod.apply_v2_0_execution(gross, turnover)
+
+
+def preparation_decision(ready: bool) -> dict[str, object]:
+    """Computational evidence never grants the user's exact-hash approval."""
+    return {"approved": False, "ready_for_review": bool(ready),
+            "approval_reason": "Preparation only; explicit approval of this exact-hash report is still required."}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--backup", type=Path, default=DEFAULT_BACKUP)
+    parser.add_argument("--backup", type=Path, required=True)
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
     parser.add_argument("--candidate", type=Path, default=DEFAULT_CANDIDATE)
+    parser.add_argument("--expected-date", type=lambda value: date.fromisoformat(value).isoformat(), required=True)
     args = parser.parse_args()
 
     previous_path = v2.overlay_mod.COSTED_NAV_CSV
@@ -135,19 +152,34 @@ def main() -> None:
     old_audit = member_st_audit(old_members)
     new_audit = member_st_audit(new_members)
     audit_path = v2.OUTPUT_DIR / f"{v2.overlay_mod.OUTPUT_PREFIX}_historical_rewrite_audit.csv"
+    try:
+        v2.base_mod.assert_no_historical_rewrite(
+            previous=previous, candidate=candidate_frame,
+            key_columns=v2.overlay_mod.V2_0_REWRITE_AUDIT_KEY_COLUMNS,
+            allowed_tail_rows=v2.overlay_mod._v2_0_rewrite_allowed_tail_rows(),
+            label="v2.0 migration preparation", audit_path=audit_path,
+            column_allowed_tail_rows=v2.overlay_mod.V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN,
+        )
+    except RuntimeError as exc:
+        # A changed candidate is the object being reviewed; it is never promoted here.
+        if "historical rewrite detected on frozen dates" not in str(exc):
+            raise
+    if not audit_path.exists():
+        raise RuntimeError("v2.0 migration audit CSV was not written")
     proxy_meta = json.loads(base_paths["proxy_meta"].read_text(encoding="utf-8"))
     proxy_meta_matches = v2.base_mod.proxy_meta_matches_execution_model(proxy_meta)
-    approved = bool(
+    ready = bool(
         new_audit["st_violations"] == 0
         and new_audit["bad_policy_count"] == 0
+        and new_audit["invalid_member_period_count"] == 0
         and proxy_meta_matches
-        and candidate_norm.index.max() == pd.Timestamp("2026-08-20")
+        and candidate_norm.index.max() == pd.Timestamp(args.expected_date)
         and len(previous_norm.index.difference(candidate_norm.index)) == 0
     )
     report = {
         "schema_version": 1,
-        "approved": approved,
-        "approval_reason": "Exact-hash one-time migration after full v3 ST interval audit and historical-universe rebuild.",
+        **preparation_decision(ready),
+        "expected_date": args.expected_date,
         "previous_costed_nav": str(previous_path),
         "previous_costed_nav_sha256": sha256_path(previous_path),
         "candidate_csv": str(args.candidate),
@@ -174,7 +206,7 @@ def main() -> None:
     }
     args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=True, indent=2))
-    if not approved:
+    if not ready:
         raise SystemExit(2)
 
 

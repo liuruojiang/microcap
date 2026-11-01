@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002620",
+    "announcement_id": "AN202604291821715330",
+    "notice_date": "2026-04-29",
+    "title": "关于公司股票交易将被实施退市风险警示和继续叠加其他风险警示暨股票停牌的公告",
+    "provider_title": "ST瑞和:关于公司股票交易将被实施退市风险警示和继续叠加其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "ST瑞和:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821715330_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604291821715330_1.pdf",
+    "body_notice_number": "2026-023",
+    "relative_pdf_path": "AN202604291821715330.pdf",
+    "sha256": "f7f9c21c21eee31d8fa25b5b1a0b7efb5f5e8e559ce0a031633452ae7ce3955e",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2026-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604291821715330_api.json",
+      "sha256": "cd4a515ca5129688b38bff08f65c828d35c9198338884d537b2114e2a1d3e032",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

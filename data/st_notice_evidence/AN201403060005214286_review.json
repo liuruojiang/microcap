@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600603",
+    "announcement_id": "AN201403060005214286",
+    "notice_date": "2014-03-07",
+    "title": " *ST兴业关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600603 : *ST兴业关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600603 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403060005214286_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403060005214286_1.pdf",
+    "body_notice_number": "2014-014",
+    "relative_pdf_path": "AN201403060005214286.pdf",
+    "sha256": "f7457c4f3dd12fd9fe151bd5115d8d64157c3106832f74646252af23153190fa",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-03-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403060005214286_api.json",
+      "sha256": "841c613f074fb1c24bccbb6123459bdc0b0db73a2d006ce2c7802942ef4642d1",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer approval and dated new name read in full body; no prior-day announcement date inferred. 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：reviewed_presample18_price_candidates.json"
+}

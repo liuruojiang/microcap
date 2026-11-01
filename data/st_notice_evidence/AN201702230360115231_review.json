@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600319",
+    "announcement_id": "AN201702230360115231",
+    "notice_date": "2017-02-24",
+    "title": "*ST亚星关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600319:*ST亚星关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600319:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702230360115231_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201702230360115231_1.pdf",
+    "body_notice_number": "临2017-018",
+    "relative_pdf_path": "AN201702230360115231.pdf",
+    "sha256": "c28d413b208bad7d1beb416aa5c3af8b8cee604588d3feca61fa0fb57c94ffd9",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2017-02-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201702230360115231_api.json",
+      "sha256": "94ea657af163b5e15b1b2d0c3b831a84c1aa9741018188041976a349376ce80a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准与实施段确认恢复普通简称及10%涨跌幅，完整退出ST类别，历史回顾不倒填首次公开日。"
+}

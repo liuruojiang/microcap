@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600425",
+    "announcement_id": "AN201704070484750195",
+    "notice_date": "2017-04-08",
+    "title": "青松建化关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+    "provider_title": "600425:青松建化关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+    "removed_issuer_prefix": "600425:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704070484750195_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704070484750195_1.pdf",
+    "body_notice_number": "临2017-029",
+    "relative_pdf_path": "AN201704070484750195.pdf",
+    "sha256": "3fceba25e46c311c595ad56c354de517fa48f77e96dcba64c434dca32a5ac9f7",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2017-04-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201704070484750195_api.json",
+      "sha256": "06ecf458f3e48d37217daea0f725b13bc52818ceffe6540ec9606c0a807f91d3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文股票4月11日起实际实施退市风险、变*ST青松，4月10日停牌；债券122213可能暂停交易是另一主体状态。"
+}

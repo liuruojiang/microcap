@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000586",
+    "announcement_id": "AN201203020004870144",
+    "notice_date": "2011-07-20",
+    "title": "关于股票交易撤销其他特别处理的提示性公告",
+    "provider_title": "ST汇源：关于股票交易撤销其他特别处理的提示性公告",
+    "removed_issuer_prefix": "ST汇源：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004870144_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004870144_1.pdf",
+    "body_notice_number": "2011-019",
+    "relative_pdf_path": "AN201203020004870144.pdf",
+    "sha256": "7a4467e3ee82af9683281ce47cbbbab6f2e034b3a53428d986e4043d0237b902",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-07-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004870144_api.json",
+      "sha256": "206b1c0e88d7274a95e73efccf2f4b86cb074236686101f61816ac9d9bf6e91c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他特别处理，普通汇源通信10%。"
+}

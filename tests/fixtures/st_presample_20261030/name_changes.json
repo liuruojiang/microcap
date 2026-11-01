@@ -1,0 +1,362 @@
+[
+  {
+    "change_date": "1999-04-30",
+    "symbol": "000034",
+    "old_name": "深华宝Ａ",
+    "new_name": "ST深华宝"
+  },
+  {
+    "change_date": "1999-05-04",
+    "symbol": "000017",
+    "old_name": "深中华Ａ",
+    "new_name": "ST中华Ａ"
+  },
+  {
+    "change_date": "1999-08-18",
+    "symbol": "000008",
+    "old_name": "深锦兴Ａ",
+    "new_name": "亿安科技"
+  },
+  {
+    "change_date": "2001-01-18",
+    "symbol": "000034",
+    "old_name": "ST深华宝",
+    "new_name": "深 华 宝"
+  },
+  {
+    "change_date": "2001-03-05",
+    "symbol": "000034",
+    "old_name": "深 华 宝",
+    "new_name": "深信泰丰"
+  },
+  {
+    "change_date": "2001-04-19",
+    "symbol": "000007",
+    "old_name": "深达声Ａ",
+    "new_name": "ST 达 声"
+  },
+  {
+    "change_date": "2002-04-12",
+    "symbol": "000007",
+    "old_name": "ST 达 声",
+    "new_name": "深达声Ａ"
+  },
+  {
+    "change_date": "2002-04-30",
+    "symbol": "000008",
+    "old_name": "亿安科技",
+    "new_name": "ST 亿 安"
+  },
+  {
+    "change_date": "2003-05-09",
+    "symbol": "000008",
+    "old_name": "ST 亿 安",
+    "new_name": "*ST 亿安"
+  },
+  {
+    "change_date": "2004-02-20",
+    "symbol": "000008",
+    "old_name": "*ST 亿安",
+    "new_name": "ST 亿 安"
+  },
+  {
+    "change_date": "2005-02-22",
+    "symbol": "000008",
+    "old_name": "ST 亿 安",
+    "new_name": "亿安科技"
+  },
+  {
+    "change_date": "2005-05-09",
+    "symbol": "000017",
+    "old_name": "ST中华Ａ",
+    "new_name": "*ST中华A"
+  },
+  {
+    "change_date": "2005-05-10",
+    "symbol": "000034",
+    "old_name": "深信泰丰",
+    "new_name": "ST 深 泰"
+  },
+  {
+    "change_date": "2005-05-23",
+    "symbol": "000008",
+    "old_name": "亿安科技",
+    "new_name": "宝 利 来"
+  },
+  {
+    "change_date": "2005-10-26",
+    "symbol": "000408",
+    "old_name": "河北华玉",
+    "new_name": "玉源控股"
+  },
+  {
+    "change_date": "2005-12-13",
+    "symbol": "000008",
+    "old_name": "宝 利 来",
+    "new_name": "G 宝利来"
+  },
+  {
+    "change_date": "2006-04-28",
+    "symbol": "000034",
+    "old_name": "ST 深 泰",
+    "new_name": "*ST 深泰"
+  },
+  {
+    "change_date": "2006-05-09",
+    "symbol": "000408",
+    "old_name": "玉源控股",
+    "new_name": "*ST 玉源"
+  },
+  {
+    "change_date": "2006-07-03",
+    "symbol": "000408",
+    "old_name": "*ST 玉源",
+    "new_name": "G*ST玉源"
+  },
+  {
+    "change_date": "2006-08-14",
+    "symbol": "000007",
+    "old_name": "深达声Ａ",
+    "new_name": "G 深达声"
+  },
+  {
+    "change_date": "2006-10-09",
+    "symbol": "000034",
+    "old_name": "*ST 深泰",
+    "new_name": "S*ST深泰"
+  },
+  {
+    "change_date": "2006-10-09",
+    "symbol": "000007",
+    "old_name": "G 深达声",
+    "new_name": "深达声Ａ"
+  },
+  {
+    "change_date": "2006-10-09",
+    "symbol": "000008",
+    "old_name": "G 宝利来",
+    "new_name": "宝 利 来"
+  },
+  {
+    "change_date": "2006-10-09",
+    "symbol": "000017",
+    "old_name": "*ST中华A",
+    "new_name": "S*ST中华"
+  },
+  {
+    "change_date": "2006-10-09",
+    "symbol": "000408",
+    "old_name": "G*ST玉源",
+    "new_name": "*ST 玉源"
+  },
+  {
+    "change_date": "2007-02-09",
+    "symbol": "000017",
+    "old_name": "S*ST中华",
+    "new_name": "S ST中华"
+  },
+  {
+    "change_date": "2007-03-30",
+    "symbol": "000008",
+    "old_name": "宝 利 来",
+    "new_name": "*ST 宝投"
+  },
+  {
+    "change_date": "2007-04-23",
+    "symbol": "000007",
+    "old_name": "深达声Ａ",
+    "new_name": "ST 达 声"
+  },
+  {
+    "change_date": "2007-08-21",
+    "symbol": "000034",
+    "old_name": "S*ST深泰",
+    "new_name": "SST 深泰"
+  },
+  {
+    "change_date": "2007-10-31",
+    "symbol": "000408",
+    "old_name": "*ST 玉源",
+    "new_name": "ST 玉 源"
+  },
+  {
+    "change_date": "2008-04-03",
+    "symbol": "000008",
+    "old_name": "*ST 宝投",
+    "new_name": "ST宝利来"
+  },
+  {
+    "change_date": "2008-07-14",
+    "symbol": "000034",
+    "old_name": "SST 深泰",
+    "new_name": "ST 深 泰"
+  },
+  {
+    "change_date": "2009-04-29",
+    "symbol": "000034",
+    "old_name": "ST 深 泰",
+    "new_name": "*ST深泰"
+  },
+  {
+    "change_date": "2010-01-27",
+    "symbol": "000007",
+    "old_name": "ST 达 声",
+    "new_name": "ST零七"
+  },
+  {
+    "change_date": "2010-03-18",
+    "symbol": "000017",
+    "old_name": "S ST中华",
+    "new_name": "ST中华A"
+  },
+  {
+    "change_date": "2010-04-28",
+    "symbol": "000017",
+    "old_name": "ST中华A",
+    "new_name": "*ST中华A"
+  },
+  {
+    "change_date": "2010-04-28",
+    "symbol": "000408",
+    "old_name": "ST 玉 源",
+    "new_name": "*ST玉源"
+  },
+  {
+    "change_date": "2010-09-14",
+    "symbol": "000034",
+    "old_name": "*ST深泰",
+    "new_name": "ST深泰"
+  },
+  {
+    "change_date": "2011-01-18",
+    "symbol": "000408",
+    "old_name": "*ST玉源",
+    "new_name": "*ST金谷"
+  },
+  {
+    "change_date": "2011-04-01",
+    "symbol": "000034",
+    "old_name": "ST深泰",
+    "new_name": "深信泰丰"
+  },
+  {
+    "change_date": "2011-05-26",
+    "symbol": "000408",
+    "old_name": "*ST金谷",
+    "new_name": "ST金谷源"
+  },
+  {
+    "change_date": "2012-05-04",
+    "symbol": "000007",
+    "old_name": "ST零七",
+    "new_name": "零七股份"
+  },
+  {
+    "change_date": "2012-11-28",
+    "symbol": "000408",
+    "old_name": "ST金谷源",
+    "new_name": "金谷源"
+  },
+  {
+    "change_date": "2013-04-19",
+    "symbol": "000008",
+    "old_name": "ST宝利来",
+    "new_name": "宝利来"
+  },
+  {
+    "change_date": "2014-05-14",
+    "symbol": "000017",
+    "old_name": "*ST中华A",
+    "new_name": "深中华A"
+  },
+  {
+    "change_date": "2015-03-13",
+    "symbol": "000008",
+    "old_name": "宝利来",
+    "new_name": "神州高铁"
+  },
+  {
+    "change_date": "2016-02-17",
+    "symbol": "000007",
+    "old_name": "零七股份",
+    "new_name": "全新好"
+  },
+  {
+    "change_date": "2016-04-25",
+    "symbol": "000034",
+    "old_name": "深信泰丰",
+    "new_name": "神州数码"
+  },
+  {
+    "change_date": "2016-04-28",
+    "symbol": "000408",
+    "old_name": "金谷源",
+    "new_name": "*ST金源"
+  },
+  {
+    "change_date": "2017-05-23",
+    "symbol": "000408",
+    "old_name": "*ST金源",
+    "new_name": "金谷源"
+  },
+  {
+    "change_date": "2017-06-27",
+    "symbol": "000408",
+    "old_name": "金谷源",
+    "new_name": "藏格控股"
+  },
+  {
+    "change_date": "2020-04-29",
+    "symbol": "000017",
+    "old_name": "深中华A",
+    "new_name": "*ST中华A"
+  },
+  {
+    "change_date": "2020-05-06",
+    "symbol": "000408",
+    "old_name": "藏格控股",
+    "new_name": "*ST藏格"
+  },
+  {
+    "change_date": "2021-04-30",
+    "symbol": "000007",
+    "old_name": "全新好",
+    "new_name": "*ST全新"
+  },
+  {
+    "change_date": "2021-05-12",
+    "symbol": "000408",
+    "old_name": "*ST藏格",
+    "new_name": "藏格控股"
+  },
+  {
+    "change_date": "2021-06-22",
+    "symbol": "000017",
+    "old_name": "*ST中华A",
+    "new_name": "深中华A"
+  },
+  {
+    "change_date": "2021-12-08",
+    "symbol": "000408",
+    "old_name": "藏格控股",
+    "new_name": "藏格矿业"
+  },
+  {
+    "change_date": "2022-07-01",
+    "symbol": "000007",
+    "old_name": "*ST全新",
+    "new_name": "全新好"
+  },
+  {
+    "change_date": "2023-05-05",
+    "symbol": "000007",
+    "old_name": "全新好",
+    "new_name": "*ST全新"
+  },
+  {
+    "change_date": "2024-07-02",
+    "symbol": "000007",
+    "old_name": "*ST全新",
+    "new_name": "全新好"
+  }
+]

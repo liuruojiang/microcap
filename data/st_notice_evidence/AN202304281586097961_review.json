@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600823",
+    "announcement_id": "AN202304281586097961",
+    "notice_date": "2023-04-29",
+    "title": "世茂股份关于实施其他风险警示的公告",
+    "provider_title": "世茂股份:世茂股份关于实施其他风险警示的公告",
+    "removed_issuer_prefix": "世茂股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586097961_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586097961_1.pdf",
+    "body_notice_number": "2023-021",
+    "relative_pdf_path": "AN202304281586097961.pdf",
+    "sha256": "ed6a9853c85dba46548d16b59e8130b61cbc5fa859c59a0f8fbff707fde26ea6",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2023-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304281586097961_api.json",
+      "sha256": "95bc80fd9d1e129b1a761a26e570518e3717e2b0b114656fe798767db5728d25",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际公告正文逐项核对；申请待批不作撤销。600145虽标题含申请，正文已有批准及实施安排；600209关键决定在原件第一页，后附财务报告。公告日保留原始接口字段，正文落款及实施日分别记录。 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件global399_long34_root17_bodies_20261101/adjudication.json"
+}

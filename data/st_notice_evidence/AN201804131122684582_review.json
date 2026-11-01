@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000409",
+    "announcement_id": "AN201804131122684582",
+    "notice_date": "2018-04-13",
+    "title": "关于预计公司2017年度亏损暨股票实施退市风险警示的提示性公告",
+    "provider_title": "山东地矿:关于预计公司2017年度亏损暨股票实施退市风险警示的提示性公告",
+    "removed_issuer_prefix": "山东地矿:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201804131122684582_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201804131122684582_1.pdf",
+    "body_notice_number": "2018-025",
+    "relative_pdf_path": "AN201804131122684582.pdf",
+    "sha256": "1bffe8a3e817246b8d9a99df146bea9546aaf73c94f5b1409c7f474ed239ed68",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201804131122684582_api.json",
+      "sha256": "56704804f425d298107dfff308fd8c3687892e54d45458662c02f34ccf7939eb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：2017年报披露后才可能实施，当前为预亏风险提示，不是已生效入口。"
+}

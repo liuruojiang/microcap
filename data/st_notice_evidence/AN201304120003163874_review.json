@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600234",
+    "announcement_id": "AN201304120003163874",
+    "notice_date": "2013-04-13",
+    "title": " ST天龙关于公司股票将被实施退市风险警示的第二次提示性公告",
+    "provider_title": "600234 : ST天龙关于公司股票将被实施退市风险警示的第二次提示性公告",
+    "removed_issuer_prefix": "600234 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304120003163874_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304120003163874_1.pdf",
+    "body_notice_number": "临2013--025",
+    "relative_pdf_path": "AN201304120003163874.pdf",
+    "sha256": "ed4003ec8f65dc5c101a7c7b69bf68b057fbaab796fa70803cfae3fe4cff7abb",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304120003163874_api.json",
+      "sha256": "40817380a960f1134b8d58a3d6db2abc28b24bcb07f391bf36a1403be018e2c5",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "第二次预警基于预计净资产负值，若年报仍负才实施；未确认实施操作，不作ST状态变更。"
+}

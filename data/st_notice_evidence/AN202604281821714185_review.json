@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300027",
+    "announcement_id": "AN202604281821714185",
+    "notice_date": "2026-04-29",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "华谊兄弟:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "华谊兄弟:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604281821714185_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202604281821714185_1.pdf",
+    "body_notice_number": "2026-031",
+    "relative_pdf_path": "AN202604281821714185.pdf",
+    "sha256": "967df74498b755135b06c8c4c2608c8236671a3b11c9af2bc1c254388e5b318f",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2026-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202604281821714185_api.json",
+      "sha256": "bab5c3d7c47e3b60e647c7f012674bc8586ad11e92517021635ee822674be21f",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月30日其他风险改ST华谊，20%限制不变。"
+}

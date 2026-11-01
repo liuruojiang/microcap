@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000720",
+    "announcement_id": "AN201203010004605436",
+    "notice_date": "2010-05-13",
+    "title": "关于撤销退市风险警示特别处理的公告",
+    "provider_title": "*ST能山：关于撤销退市风险警示特别处理的公告",
+    "removed_issuer_prefix": "*ST能山：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004605436_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004605436_1.pdf",
+    "body_notice_number": "2010-017",
+    "relative_pdf_path": "AN201203010004605436.pdf",
+    "sha256": "520830ae55cc444df919ea4c10692a2c0fd1790b88fadbf4242aa1246b7d5748",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-05-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004605436_api.json",
+      "sha256": "88267d8a38b6e69a4b0fcfe4d8fd9c670c39ac9222ad0c25000475b902fad452",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤退市风险但实行其他特别处理，仍ST能山。"
+}

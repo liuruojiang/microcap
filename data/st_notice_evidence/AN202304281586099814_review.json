@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002482",
+    "announcement_id": "AN202304281586099814",
+    "notice_date": "2023-04-29",
+    "title": "关于公司股票交易将被实施退市风险警示和叠加其他风险警示暨股票停牌的公告",
+    "provider_title": "ST广田:关于公司股票交易将被实施退市风险警示和叠加其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "ST广田:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586099814_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586099814_1.pdf",
+    "body_notice_number": "2023-034",
+    "relative_pdf_path": "AN202304281586099814.pdf",
+    "sha256": "864456f8c65135cb753fd5808c2cd4e299a98a3588ba9b8f5f7cc360d3a4828d",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2023-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304281586099814_api.json",
+      "sha256": "4be912c2dcd219b6f027a1c9198389b0138d83d2cd5b91b9a6a8d334f7cf7a84",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确5月5日起退市风险且原其他风险继续，不能将双风险混为一个退出动作。"
+}

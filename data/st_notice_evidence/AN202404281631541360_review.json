@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300116",
+    "announcement_id": "AN202404281631541360",
+    "notice_date": "2024-04-29",
+    "title": "关于公司股票交易将被实施退市风险警示和其他风险警示暨股票停牌一天的公告",
+    "provider_title": "保力新:关于公司股票交易将被实施退市风险警示和其他风险警示暨股票停牌一天的公告",
+    "removed_issuer_prefix": "保力新:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404281631541360_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404281631541360_1.pdf",
+    "body_notice_number": "2024-034",
+    "relative_pdf_path": "AN202404281631541360.pdf",
+    "sha256": "2724ad3e3b57adb5e1bdded89edb32471189245ee61d3a00d2d681deabec551b",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404281631541360_api.json",
+      "sha256": "6829587d7f9071c9f595e654aba2aff7c0a1bfcd400b25c7340390cf987d2be2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Contradiction: page1 says 2024-04-29 start; page2 says 2024-04-30 on resumption. Actions certain but effective_date unresolved; do not autopromote. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

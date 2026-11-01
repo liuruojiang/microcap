@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000922",
+    "announcement_id": "AN201301230005708523",
+    "notice_date": "2013-01-24",
+    "title": "关于撤销股票交易实行其他风险警示的公告",
+    "provider_title": "ST佳电：关于撤销股票交易实行其他风险警示的公告",
+    "removed_issuer_prefix": "ST佳电：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301230005708523_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301230005708523_1.pdf",
+    "body_notice_number": "2013-09",
+    "relative_pdf_path": "AN201301230005708523.pdf",
+    "sha256": "20fc57e40e6fe0d0f6bd3f86e6942a66085165eae73af26c53d7fc22672ab6fb",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-01-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201301230005708523_api.json",
+      "sha256": "f6250c8bf61313ce3c0cdf5e7f9ed19251897510b24fd52c28d49279fb0e290c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他风险，普通佳电股份10%。"
+}

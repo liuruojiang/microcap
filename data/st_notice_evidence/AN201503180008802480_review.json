@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002657",
+    "announcement_id": "AN201503180008802480",
+    "notice_date": "2015-03-19",
+    "title": "关于2012年公司债券实行风险警示的公告",
+    "provider_title": "中科金财:关于2012年公司债券实行风险警示的公告",
+    "removed_issuer_prefix": "中科金财:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503180008802480_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503180008802480_1.pdf",
+    "body_notice_number": "2015-022",
+    "relative_pdf_path": "AN201503180008802480.pdf",
+    "sha256": "a5307b2e5718f66051796cb48e31f240828e0c7ace4fca7dba747f565d1e7565",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503180008802480_api.json",
+      "sha256": "8faec9786e0577a0f4ea8e98d761edd8ca0d5b47fbbbbecd4aae702dc91f9e78",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文112169公司债12中财债于3月20日变ST中财债，评级与风险交易权限均只作用债券，不改变002657股票状态。"
+}

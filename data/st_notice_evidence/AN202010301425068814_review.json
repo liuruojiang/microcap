@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002175",
+    "announcement_id": "AN202010301425068814",
+    "notice_date": "2020-10-31",
+    "title": "关于公司股票交易撤销退市风险警示及实行其他风险警示的提示性公告",
+    "provider_title": "*ST东网:关于公司股票交易撤销退市风险警示及实行其他风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST东网:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202010301425068814_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202010301425068814_1.pdf",
+    "body_notice_number": "2020-077",
+    "relative_pdf_path": "AN202010301425068814.pdf",
+    "sha256": "f0f94d3ddd0a913609e78d210803d0e5c088429bd7e3b213699026250275fb25",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2020-11-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202010301425068814_api.json",
+      "sha256": "88edcb11e9e79227df05e945668ea9ce5fdfd17db88fc7017968c4ddcd98e33e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文已获批准撤销退市但实行/继续其他风险，仍ST及5%，仅撤退市，不退出other。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000008",
+    "announcement_id": "AN201304170003183007",
+    "notice_date": "2013-04-18",
+    "title": "董事会关于撤销公司股票交易其他风险警示的提示性公告",
+    "provider_title": "ST宝利来:董事会关于撤销公司股票交易其他风险警示的提示性公告",
+    "removed_issuer_prefix": "ST宝利来:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304170003183007_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304170003183007_1.pdf",
+    "body_notice_number": "2013014",
+    "relative_pdf_path": "AN201304170003183007.pdf",
+    "sha256": "ed2509deafc503eef306900a475646c3c97d325d0ac5c7b1b2c39f24080b8047",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304170003183007_api.json",
+      "sha256": "4913096fa1612a215ed07de0de7b852d29c948ee9ed50c593a3fff3b7acca685",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "2013014第三节明确已不存在退市风险警示和其他风险警示情形，第四节交易所批准恢复普通宝利来及10%限制。2013-04-18公告日清全部风险；不把正文历史回顾倒填2008类别，2008名称锚仍unknown。"
+}

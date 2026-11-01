@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600732",
+    "announcement_id": "AN202003031375794966",
+    "notice_date": "2020-03-04",
+    "title": "ST爱旭关于公司股票撤销其他风险警示暨停牌的公告",
+    "provider_title": "600732:ST爱旭关于公司股票撤销其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600732:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202003031375794966_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202003031375794966_1.pdf",
+    "body_notice_number": "临2020－022",
+    "relative_pdf_path": "AN202003031375794966.pdf",
+    "sha256": "a176f97ba6db0a3ac7f5a9ce02bd23e0ab2562d9cd9235fa10adc9806060c8e9",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2020-03-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202003031375794966_api.json",
+      "sha256": "eca144f0b703dd6d7e3137b91ba56123cf49015b7c8dd898e6db8c72c24784e2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准/实施段确认普通简称及10%涨跌幅、全部退出ST风险；保留源公告日，历史回顾不倒填。"
+}

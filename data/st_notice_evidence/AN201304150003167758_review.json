@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000498",
+    "announcement_id": "AN201304150003167758",
+    "notice_date": "2013-04-16",
+    "title": "关于撤销退市风险警示与其他风险警示的提示性公告",
+    "provider_title": "*ST路桥:关于撤销退市风险警示与其他风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST路桥:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304150003167758_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304150003167758_1.pdf",
+    "body_notice_number": "2013-19",
+    "relative_pdf_path": "AN201304150003167758.pdf",
+    "sha256": "9d41c0af24b69e037d696c841540dcd63373ee71c33da156786efa08c9691b5a",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304150003167758_api.json",
+      "sha256": "a946fcb33156674c5ae415c631ec5808b274679a560639b6e04489f9df56f6b3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文第四节明确申请尚需深交所审核批准且存在重大不确定性，不构成退出；分别实际取得本ID原件。"
+}

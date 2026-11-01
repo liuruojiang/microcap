@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000587",
+    "announcement_id": "AN202204181560071483",
+    "notice_date": "2022-04-19",
+    "title": "关于公司股票将被实施退市风险警示的提示性公告",
+    "provider_title": "*ST金洲:关于公司股票将被实施退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST金洲:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204181560071483_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204181560071483_1.pdf",
+    "body_notice_number": "2022-028",
+    "relative_pdf_path": "AN202204181560071483.pdf",
+    "sha256": "9dcc72201077051c644de77d1df44b6f372d5435b1336f86838dd857c97b6992",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204181560071483_api.json",
+      "sha256": "fb868224bcad1fc381c197d4d8cde6188f6250246e2b45a18b93d173df97cf56",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Annual-report forecast and continuation reminder. Existing delisting/other risks are historical recitals, not new transitions on this notice. Preserve API publication 2022-04-19, not issuer signature 2022-04-18. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_000587_final_20261101.json"
+}

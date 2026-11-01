@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600078",
+    "announcement_id": "AN202208141577198233",
+    "notice_date": "2022-08-15",
+    "title": "江苏澄星磷化工股份有限公司关于公司股票撤销退市风险警示继续实施其他风险警示暨停牌的公告",
+    "provider_title": "600078:江苏澄星磷化工股份有限公司关于公司股票撤销退市风险警示继续实施其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600078:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202208141577198233_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202208141577198233_1.pdf",
+    "body_notice_number": "2022-162",
+    "relative_pdf_path": "AN202208141577198233.pdf",
+    "sha256": "7c643bc92cc8fb17ee0cd97bfbd889e5ff436fe30de1452297ff0719bb3a2b5d",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2022-08-16"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202208141577198233_api.json",
+      "sha256": "1731a6aace52b90da8c734550a8c0395cdd982a21e9a0a841e67b91be848eac6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：明确撤退市继续其他，*ST澄星变ST澄星且5%维持。"
+}

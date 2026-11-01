@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002742",
+    "announcement_id": "AN202508081723882149",
+    "notice_date": "2025-08-09",
+    "title": "关于法院裁定受理公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST三圣:关于法院裁定受理公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST三圣:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202508081723882149_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202508081723882149_1.pdf",
+    "body_notice_number": "2025-45",
+    "relative_pdf_path": "AN202508081723882149.pdf",
+    "sha256": "c6bb9ee8573e3b21670d17e64af813faa0461b80c0aaffc08cb8517843bf29a4",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2025-08-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202508081723882149_api.json",
+      "sha256": "b441837e767ef5b8fa707bca5489c820751706ba0bf19aafdc29ee712a86c722",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600556",
+    "announcement_id": "AN201405060005719741",
+    "notice_date": "2014-05-07",
+    "title": " *ST北生关于公司股票撤销退市风险警示的提示公告",
+    "provider_title": "600556 : *ST北生关于公司股票撤销退市风险警示的提示公告",
+    "removed_issuer_prefix": "600556 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201405060005719741_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201405060005719741_1.pdf",
+    "body_notice_number": "2014-014",
+    "relative_pdf_path": "AN201405060005719741.pdf",
+    "sha256": "85515d152158e8851e954f868d886a807ed007b5dc57cab01517fb6fc00953be",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-05-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201405060005719741_api.json",
+      "sha256": "9ce37d0c9abd034b854b5a15fe9b44b05e25493abc89b30121fd858bc4ed76de",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer approval and dated new name read in full body; no prior-day announcement date inferred. 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：reviewed_presample18_price_candidates.json"
+}

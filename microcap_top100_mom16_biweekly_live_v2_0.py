@@ -1360,7 +1360,7 @@ def build_historical_st_status_series(symbol: str, trading_dates: pd.DatetimeInd
     if mod is None:
         raise RuntimeError("Historical ST metadata runtime is unavailable")
     try:
-        meta = mod.load_security_meta(str(symbol).zfill(6))
+        meta = mod.load_security_meta(str(symbol).zfill(6), as_of=pd.DatetimeIndex(trading_dates).max())
         if meta is None:
             raise ValueError("security metadata is unavailable")
         series = mod.build_st_status_series(meta, trading_dates)
@@ -1562,82 +1562,30 @@ def fetch_price_history(symbol: str, start_date: str, end_date: str, force_refre
 
 
 def fetch_adjusted_price_history(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
-    cache_path = ADJ_PRICE_CACHE_DIR / f"{symbol}.csv"
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    start_ts = pd.Timestamp(start_date)
-    end_ts = pd.Timestamp(end_date)
-    cached = _read_local_or_shared_cache(cache_path, "date", SHARED_ADJ_PRICE_CACHE_DIR)
-    if (
-        not force_refresh
-        and cached is not None
-        and not cached.empty
-        and cached["date"].min() <= start_ts
-        and cached["date"].max() >= end_ts
-    ):
-        return cached[(cached["date"] >= start_ts) & (cached["date"] <= end_ts)].copy()
-
-    fetch_start_ts = start_ts
-    if cached is not None and not cached.empty and not force_refresh:
-        overlap_start = pd.Timestamp(cached["date"].max()) - pd.Timedelta(days=10)
-        fetch_start_ts = max(start_ts, overlap_start)
-
-    try:
-        frame = _fetch_adjusted_price_history_tx(symbol, fetch_start_ts, end_ts)
-    except Exception:
-        ak = get_akshare()
-        frame = ak.stock_zh_a_hist(
-            symbol=symbol,
-            period="daily",
-            start_date=fetch_start_ts.strftime("%Y%m%d"),
-            end_date=end_date.replace("-", ""),
-            adjust="qfq",
-        )
-        if frame.empty and cached is not None and not cached.empty:
-            return cached[(cached["date"] >= start_ts) & (cached["date"] <= end_ts)].copy()
-        if frame.empty:
-            raise ValueError(f"empty adjusted price history for {symbol}")
-        frame = frame[[COL_DATE, COL_CLOSE]].copy()
-        frame.columns = ["date", "close_qfq"]
-        frame["date"] = pd.to_datetime(frame["date"])
-        frame["close_qfq"] = pd.to_numeric(frame["close_qfq"], errors="coerce")
-        frame = frame.dropna(subset=["close_qfq"]).sort_values("date")
-    merged = _merge_cache_frames(cached, frame, "date")
-    merged.to_csv(cache_path, index=False, encoding="utf-8")
-    return merged[(merged["date"] >= start_ts) & (merged["date"] <= end_ts)].copy()
+    from scripts.stock_return_pipeline import load_return_prices
+    raw_path = PRICE_CACHE_DIR / f"{symbol}.csv"
+    if not raw_path.exists() and SHARED_PRICE_CACHE_DIR is not None:
+        raw_path = SHARED_PRICE_CACHE_DIR / f"{symbol}.csv"
+    master_path = CACHE_DIR / "security_master.csv"
+    if not master_path.exists() and SHARED_CACHE_DIR is not None:
+        master_path = SHARED_CACHE_DIR / "security_master.csv"
+    master = pd.read_csv(master_path, dtype={"symbol": str})
+    frame = load_return_prices(root=ROOT, symbol=symbol, raw_path=raw_path,
+                               master=master, as_of=end_date, allow_network=True)
+    return frame.loc[frame.date.between(pd.Timestamp(start_date), pd.Timestamp(end_date))].copy()
 
 
 def fetch_share_change(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
+    from scripts.share_change_source import refresh_share_change
     cache_path = SHARE_CACHE_DIR / f"{symbol}.csv"
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    start_ts = pd.Timestamp(start_date)
-    end_ts = pd.Timestamp(end_date)
-    cached = _read_local_or_shared_cache(cache_path, "change_date", SHARED_SHARE_CACHE_DIR)
-    if not force_refresh and cached is not None and not cached.empty and cached["change_date"].min() <= end_ts:
-        return cached[cached["change_date"] <= end_ts].copy()
-
-    fetch_start_ts = pd.Timestamp("1990-01-01")
-    if cached is not None and not cached.empty and not force_refresh:
-        overlap_start = pd.Timestamp(cached["change_date"].max()) - pd.Timedelta(days=30)
-        fetch_start_ts = max(fetch_start_ts, overlap_start)
-
-    ak = get_akshare()
-    frame = ak.stock_share_change_cninfo(
-        symbol=symbol,
-        start_date=fetch_start_ts.strftime("%Y%m%d"),
-        end_date=end_date.replace("-", ""),
-    )
-    if frame.empty and cached is not None and not cached.empty:
-        return cached[cached["change_date"] <= end_ts].copy()
-    if frame.empty:
-        raise ValueError(f"empty share change for {symbol}")
-    frame = frame[[COL_CHANGE_DATE, COL_TOTAL_SHARES, COL_REASON]].copy()
-    frame.columns = ["change_date", "total_shares_10k", "reason"]
-    frame["change_date"] = pd.to_datetime(frame["change_date"])
-    frame["total_shares_10k"] = pd.to_numeric(frame["total_shares_10k"], errors="coerce")
-    frame = frame.dropna(subset=["total_shares_10k"]).sort_values("change_date")
-    merged = _merge_cache_frames(cached, frame, "change_date")
-    merged.to_csv(cache_path, index=False, encoding="utf-8")
-    return merged[merged["change_date"] <= end_ts].copy()
+    if not cache_path.exists() and SHARED_SHARE_CACHE_DIR is not None:
+        shared = SHARED_SHARE_CACHE_DIR / f"{symbol}.csv"
+        if shared.exists():
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            with cache_path.open("xb") as destination:
+                destination.write(shared.read_bytes())
+    return refresh_share_change(root=ROOT, symbol=symbol, cache_path=cache_path,
+                                as_of=end_date, allow_network=True)
 
 
 def select_return_close(
@@ -1649,9 +1597,18 @@ def select_return_close(
     raw_close = pd.to_numeric(raw_close.sort_index(), errors="coerce").astype(float)
     if not np.isfinite(raw_close).all() or raw_close.le(0.0).any():
         raise ValueError(f"raw return-price data for {symbol} must contain finite positive closes")
-    if raw_close.empty or return_price is None or return_price.empty:
+    if raw_close.empty:
         return raw_close.copy()
-    return_col = next((col for col in ("close_qfq", "close_adj", "close_raw") if col in return_price.columns), None)
+    if return_price is None or return_price.empty:
+        raise ValueError(f"Missing verified adjusted return prices for {symbol}")
+    from scripts.stock_return_basis import RETURN_BASIS_REVISION
+    manifest = return_price.attrs.get("return_basis_manifest", {})
+    if (manifest.get("return_basis_revision") != RETURN_BASIS_REVISION
+            or manifest.get("symbol") != str(symbol).zfill(6)
+            or any(len(str(manifest.get(key, ""))) != 64 for key in
+                   ("raw_sha256", "qfq_sha256", "hfq_sha256"))):
+        raise ValueError(f"Unverified return-basis identity for {symbol}")
+    return_col = "close_adj" if "close_adj" in return_price.columns else None
     if "date" not in return_price.columns or return_col is None:
         raise ValueError(f"return-price data for {symbol} lacks date or a supported close column")
     adjusted = return_price[["date", return_col]].copy()
@@ -1660,7 +1617,7 @@ def select_return_close(
         raise ValueError(f"return-price data for {symbol} contains invalid dates")
     adjusted = adjusted.loc[adjusted["date"].between(raw_close.index.min(), raw_close.index.max())]
     if adjusted.empty:
-        return raw_close.copy()
+        raise ValueError(f"No adjusted return prices in range for {symbol}")
     if adjusted["date"].duplicated().any():
         raise ValueError(f"return-price data for {symbol} contains duplicate dates")
     adjusted_close = pd.to_numeric(adjusted.set_index("date")[return_col], errors="coerce").astype(float)
@@ -1670,12 +1627,6 @@ def select_return_close(
     covered = aligned.notna()
     if covered.all():
         return adjusted_close.sort_index().rename(raw_close.name)
-    # Equal observations introduce no adjustment. A non-unit constant ratio is
-    # not proof of corporate-action coverage and must never justify a fallback.
-    raw_at_adjusted_dates = raw_close.reindex(raw_close.index.union(adjusted_close.index)).sort_index().ffill()
-    raw_at_adjusted_dates = raw_at_adjusted_dates.reindex(adjusted_close.index)
-    if covered.any() and adjusted_close.eq(raw_at_adjusted_dates).all():
-        return raw_close.copy()
     missing_dates = [str(pd.Timestamp(dt).date()) for dt in raw_close.index[~covered][:5]]
     raise ValueError(
         f"incomplete adjusted return-price coverage for {symbol}; "
@@ -1685,15 +1636,9 @@ def select_return_close(
 
 def build_symbol_panel(symbol: str, start_date: str, end_date: str, force_refresh: bool = False) -> pd.DataFrame:
     price = fetch_price_history(symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh)
-    try:
-        adjusted_price = fetch_adjusted_price_history(
-            symbol=symbol,
-            start_date=start_date,
-            end_date=end_date,
-            force_refresh=force_refresh,
-        )
-    except Exception:
-        adjusted_price = pd.DataFrame(columns=["date", "close_qfq"])
+    adjusted_price = fetch_adjusted_price_history(
+        symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh,
+    )
     shares = fetch_share_change(symbol=symbol, start_date=start_date, end_date=end_date, force_refresh=force_refresh)
     merged = pd.merge_asof(
         price.sort_values("date"),
@@ -1803,6 +1748,9 @@ def build_public_proxy(args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataF
                         symbol_panels[key] = panel
                 except Exception as exc:
                     failures[symbol] = str(exc)
+
+    if failures:
+        raise RuntimeError(f"Incomplete price/return-basis universe: {failures}")
 
     if not symbol_panels:
         sample = dict(list(failures.items())[:10])
@@ -2061,7 +2009,7 @@ LOOKBACK = 16
 TOP_N = 100
 SECURITY_META_VERSION = 2
 ST_NOTICE_POLICY_VERSION = "cninfo-category-plus-entry-exit-keyword-v3"
-ST_NOTICE_PARSER_REVISION = "category-state-body-evidence-20261029-v2"
+ST_NOTICE_PARSER_REVISION = "category-state-presample-anchor-20261101-v7-sample-start"
 CHINEXT_LIMIT_SWITCH = pd.Timestamp("2020-08-24")
 # Both exchanges raised main-board ST limits from 5% to 10% on this date.
 MAINBOARD_ST_LIMIT_SWITCH = pd.Timestamp("2026-07-06")
@@ -2596,16 +2544,22 @@ def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]
     retained/affirmatively imposed risk takes precedence over a withdrawal of
     another reason for the same risk category.
     """
-    text = re.sub(r"\s+", "", str(title or "").upper())
+    text = re.sub(r"\s+", "", str(title or "").upper()).replace("撤消", "撤销")
     if not text or "申请" in text:
         return {}, False
-    if any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司", "债券", "可转债")):
+    if not any(token in text for token in ("风险警示", "特别处理", "摘帽")):
+        return {}, False
+    # Remediation progress describes efforts toward withdrawal, not an exchange decision.
+    if re.search(r"(?:为|争取)撤销(?:股票交易)?(?:退市风险警示|其他风险警示|风险警示|特别处理).*采取.*措施.*(?:进展|情况)", text):
+        return {}, False
+    if (("撤销" in text and "提示性公告" in text)
+            or any(token in text for token in ("将被", "将于", "问询函", "子公司", "参股公司", "债券", "可转债"))):
         from scripts.st_notice_evidence import StNoticeEvidenceError
         raise StNoticeEvidenceError("ST title requires verified issuer/body evidence: " + text)
     actions: dict[str, bool] = {}
     had_effective_withdrawal = False
     inherited: bool | None = None
-    for clause in re.split(r"以及|同时|并且|并|暨|及|且|但|和|后|[，,。；;、]", text):
+    for clause in re.split(r"以及|同时|并且|并|暨|及|且|但|和|后|[，,。；;、]|(?=继续(?:被)?(?:实施|实行))", text):
         if not clause:
             continue
         categories = []
@@ -2625,12 +2579,13 @@ def _parse_st_notice_risk_transition(title: str) -> tuple[dict[str, bool], bool]
             continue
         # A possible or rejected action must not become effective merely because
         # it shares a title with an effective action on a different category.
-        if (any(token in clause for token in ["可能", "存在被实施", "存在实施", "不予", "尚未", "未获", "未被", "不会", "不撤销", "不再实施"])
+        if (any(token in clause for token in ["可能", "存在被实施", "存在实施", "不予", "尚未", "未获", "未被", "不会", "不撤销", "不能撤销", "免于被实施", "不再实施"])
+                or re.search(r"存在(?:被)?.{0,8}(?:实施|实行)", clause)
                 or ("拟" in clause and any(token in clause for token in ["实施", "撤销", "摘帽"]))):
             inherited = None
             continue
         withdrawal = any(token in clause for token in ["撤销", "摘帽"])
-        affirmative = any(token in clause for token in ["实施", "实行", "继续", "仍被", "转为", "改为", "变更为", "调整为"])
+        affirmative = any(token in clause for token in ["实施", "实行", "继续", "仍被", "仍处于", "转为", "改为", "变更为", "调整为"])
         if withdrawal:
             # Partial removal cannot establish absence of this risk category.
             action = "部分" in clause
@@ -2661,18 +2616,61 @@ def classify_st_notice_risk_actions(title: str) -> dict[str, bool]:
 
 
 
+def build_st_presample_name_anchor(first_trade_date, changes, *, verified_events=None):
+    """Use only historical exchange name events strictly before the price sample.
+
+    A risk name establishes risk presence, not its complete category set. Only
+    a reviewed body effective on that exact change date may resolve categories.
+    """
+    from scripts.st_notice_evidence import StNoticeEvidenceError
+    if changes is None or changes.empty:
+        return None
+    work = changes.copy()
+    work["change_date"] = pd.to_datetime(work["change_date"], errors="coerce").dt.normalize()
+    work = work.loc[work["change_date"] < pd.Timestamp(first_trade_date).normalize()]
+    if work.empty:
+        return None
+    anchor_date = work["change_date"].max()
+    latest = work.loc[work["change_date"] == anchor_date]
+    names = set(latest["new_name"].astype(str))
+    if len(names) != 1:
+        raise StNoticeEvidenceError("Conflicting historical names on pre-sample anchor date")
+    name = next(iter(names))
+    active = is_st_name(name)
+    state = {"delisting": False, "other": False, "unspecified": active}
+    bodies = [event for event in (verified_events or {}).values()
+              if event.get("actual_effective_date") == str(anchor_date.date())
+              and pd.Timestamp(event["notice_date"]) <= anchor_date]
+    body_actions = {}
+    for event in bodies:
+        for category, value in event["risk_actions"].items():
+            if category in body_actions and body_actions[category] != value:
+                raise StNoticeEvidenceError("Conflicting reviewed bodies at pre-sample name anchor")
+            body_actions[category] = value
+    # Explicit coverage of both named categories is needed to clear unknown.
+    if {"delisting", "other"} <= body_actions.keys():
+        state.update(body_actions)
+        state["unspecified"] = False
+        if any(state.values()) != active:
+            raise StNoticeEvidenceError("Historical name and reviewed body disagree at anchor")
+    return {"date": str(anchor_date.date()), "name": name,
+            "risk_state": state, "source": "exchange_historical_name_change",
+            "category_status": "unknown" if state["unspecified"] else "resolved"}
+
+
 def build_st_intervals_from_notices(
     first_trade_date: pd.Timestamp,
     last_trade_date: pd.Timestamp,
     notices: pd.DataFrame,
     *, verified_events: dict[str, dict] | None = None,
+    initial_name_anchor: dict | None = None,
 ) -> list[dict[str, str | None]]:
-    if notices.empty:
+    if notices.empty and initial_name_anchor is None:
         return []
     work = notices.copy()
     work["notice_date"] = pd.to_datetime(work["notice_date"], errors="coerce").dt.normalize()
     work = work.dropna(subset=["notice_date"]).sort_values("notice_date")
-    if work.empty:
+    if work.empty and initial_name_anchor is None:
         return []
 
     first_trade = pd.Timestamp(first_trade_date).normalize()
@@ -2681,16 +2679,29 @@ def build_st_intervals_from_notices(
     risk_state: dict[str, bool] = {"delisting": False, "other": False, "unspecified": False}
     history_known = False
     active_start: pd.Timestamp | None = None
+    anchor_date = None
+    anchor_unknown = False
+    if initial_name_anchor is not None:
+        from scripts.st_notice_evidence import StNoticeEvidenceError
+        anchor_date = pd.Timestamp(initial_name_anchor["date"]).normalize()
+        if anchor_date >= first_trade:
+            raise StNoticeEvidenceError("Name anchor must precede the sample; future names are forbidden")
+        risk_state = dict(initial_name_anchor["risk_state"])
+        anchor_unknown = bool(risk_state.get("unspecified"))
+        history_known = True
+        active_start = first_trade if any(risk_state.values()) else None
 
     for raw_date, group in work.groupby("notice_date", sort=True):
         notice_date = pd.Timestamp(raw_date).normalize()
-        if notice_date > last_trade:
+        if notice_date > last_trade or (anchor_date is not None and notice_date < anchor_date):
             continue
         # Same-day distinct titles have no reliable intraday event ordering.
         # Duplicate exits are idempotent; contradictory category evidence must
         # fail closed, rather than depending on provider/input ordering.
         day_actions: dict[str, bool] = {}
         day_had_effective_withdrawal = False
+        day_verified_complete = False
+        day_verified_keeps_unknown = False
         for row in group.itertuples(index=False):
             verified = (verified_events or {}).get(str(getattr(row, "announcement_id", "")))
             if verified is not None:
@@ -2698,6 +2709,8 @@ def build_st_intervals_from_notices(
                     from scripts.st_notice_evidence import StNoticeEvidenceError
                     raise StNoticeEvidenceError("Verified ST event date mismatch")
                 actions = verified["risk_actions"]
+                day_verified_complete |= {"delisting", "other"} <= actions.keys()
+                day_verified_keeps_unknown |= actions.get("unspecified") is True
                 had_withdrawal = any(value is False for value in actions.values())
             else:
                 actions, had_withdrawal = _parse_st_notice_risk_transition(getattr(row, "title", ""))
@@ -2709,6 +2722,18 @@ def build_st_intervals_from_notices(
                 day_actions[category] = action
         if not day_actions:
             continue
+        if anchor_date is not None and notice_date == anchor_date:
+            same_day_state = {**risk_state, **day_actions}
+            category_conflict = not anchor_unknown and any(risk_state.get(category) != value for category, value in day_actions.items())
+            if category_conflict or any(same_day_state.values()) != any(risk_state.values()):
+                from scripts.st_notice_evidence import StNoticeEvidenceError
+                raise StNoticeEvidenceError("Same-day historical name and notice conflict at anchor")
+        if anchor_unknown and not day_verified_keeps_unknown and any(value is False for value in day_actions.values()):
+            if not day_verified_complete and not all(day_actions.get(category) is False for category in ("delisting", "other")):
+                from scripts.st_notice_evidence import StNoticeEvidenceError
+                raise StNoticeEvidenceError("Pre-sample risk category unknown; reviewed body required before category withdrawal")
+            day_actions["unspecified"] = False
+            anchor_unknown = False
         was_active = any(risk_state.values())
         initial_withdrawal = not history_known and day_had_effective_withdrawal
         risk_state.update(day_actions)
@@ -2767,7 +2792,7 @@ def build_active_status_series(meta: dict[str, object] | None, dates: pd.Datetim
     if pd.notna(list_date):
         series &= dates >= pd.Timestamp(list_date).normalize()
     if pd.notna(delist_date):
-        series &= dates <= pd.Timestamp(delist_date).normalize()
+        series &= dates < pd.Timestamp(delist_date).normalize()
     return series
 
 
@@ -3077,7 +3102,7 @@ def _preserve_security_meta_evidence(previous: dict[str, object], candidate: dic
     return candidate
 
 
-def build_security_meta(symbol: str) -> dict[str, object] | None:
+def build_security_meta(symbol: str, *, as_of: pd.Timestamp | str | None = None) -> dict[str, object] | None:
     price_path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, symbol)
     if price_path is None:
         return None
@@ -3088,6 +3113,7 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         return None
 
     first_trade = pd.Timestamp(price["date"].min()).normalize()
+    sample_start = max(first_trade, pd.Timestamp(START_DATE).normalize())
     last_trade = pd.Timestamp(price["date"].max()).normalize()
     master = load_security_master()
     master_row: pd.Series | None = None
@@ -3095,18 +3121,30 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         matched = master.loc[master["symbol"].astype(str).str.zfill(6) == str(symbol).zfill(6)]
         if not matched.empty:
             master_row = matched.iloc[-1]
+    notice_start = pd.Timestamp("1990-01-01")
+    if master_row is not None and pd.notna(master_row.get("list_date")):
+        notice_start = max(notice_start, min(first_trade, pd.Timestamp(master_row["list_date"]).normalize()))
+    notice_end = last_trade if as_of is None else pd.Timestamp(as_of).normalize()
+    if pd.isna(notice_end) or notice_end < first_trade:
+        raise ValueError("Notice as_of must be a valid date on/after first observed trade")
+    if master_row is not None and pd.notna(master_row.get("delist_date")):
+        notice_end = min(notice_end, pd.Timestamp(master_row["delist_date"]).normalize())
     name_intervals: list[dict[str, str | None]] = []
     notice_intervals: list[dict[str, str | None]] = []
-    current_name_intervals: list[dict[str, str | None]] = []
+    symbol_changes = pd.DataFrame(columns=["change_date", "old_name", "new_name"])
     name_history_status = "not_applicable"
     notice_query_status = "not_started"
     notice_count = 0
+    archived = None
+    name_anchor = None
 
-    if str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
+    from scripts.st_notice_archive import load_notice_archive
+    archived = load_notice_archive(ROOT, str(symbol).zfill(6), notice_start.strftime("%Y%m%d"), notice_end.strftime("%Y%m%d"))
+    if (archived is None or "name_changes" not in archived) and str(symbol).zfill(6).startswith(("000", "001", "002", "003", "300", "301")):
         try:
             changes = fetch_sz_name_change_history()
             symbol_changes = changes.loc[changes["symbol"] == str(symbol).zfill(6), ["change_date", "old_name", "new_name"]]
-            name_intervals = build_st_intervals_from_name_changes(first_trade, last_trade, symbol_changes)
+            name_intervals = build_st_intervals_from_name_changes(sample_start, notice_end, symbol_changes)
             name_history_status = "ok"
         except Exception as exc:
             name_intervals = []
@@ -3114,14 +3152,21 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
 
     from scripts.st_notice_evidence import StNoticeEvidenceError, load_verified_events, evidence_fingerprint
     try:
-        notices = fetch_cninfo_st_notices(
-            symbol=str(symbol).zfill(6),
-            start_date=first_trade.strftime("%Y%m%d"),
-            end_date=last_trade.strftime("%Y%m%d"),
-        )
+        if archived is not None and "name_changes" in archived:
+            symbol_changes = pd.DataFrame(archived["name_changes"])
+            name_intervals = []  # Effective name dates cross-check notice policy; never replace announcement dates.
+            name_history_status = "ok:source_bounded_historical_names"
+        notices = (pd.DataFrame(archived["rows"], columns=["notice_date", "title", "announcement_id", "issuer_symbol", "source_url", "source_provider"])
+                   if archived is not None else fetch_cninfo_st_notices(
+                       symbol=str(symbol).zfill(6), start_date=notice_start.strftime("%Y%m%d"), end_date=notice_end.strftime("%Y%m%d")))
         notice_count = int(len(notices))
-        verified_events = load_verified_events(ROOT, str(symbol).zfill(6), first_trade, last_trade, notices)
-        notice_intervals = build_st_intervals_from_notices(first_trade, last_trade, notices, verified_events=verified_events)
+        verified_events = load_verified_events(ROOT, str(symbol).zfill(6), notice_start, notice_end, notices)
+        name_anchor = build_st_presample_name_anchor(sample_start, symbol_changes, verified_events=verified_events)
+        if name_anchor is not None and archived is not None and archived.get("name_history_source"):
+            name_anchor["source"] = archived["name_history_source"]
+        notice_intervals = build_st_intervals_from_notices(sample_start, notice_end, notices, verified_events=verified_events, initial_name_anchor=name_anchor)
+        if archived is not None:
+            notice_intervals = [dict(item, source="archived_mixed_provider_notice") for item in notice_intervals]
         notice_query_status = "ok"
     except StNoticeEvidenceError:
         raise
@@ -3130,17 +3175,9 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         notice_query_status = f"error:{type(exc).__name__}:{exc}"
 
     current_st_name = load_current_st_name_map().get(str(symbol).zfill(6), "")
-    current_name = current_st_name
-    if not current_name and master_row is not None and not pd.isna(master_row.get("name")):
-        current_name = str(master_row.get("name"))
-    if current_name:
-        current_name_intervals = build_st_interval_from_current_name_snapshot(
-            first_trade,
-            last_trade,
-            current_name,
-        )
-
-    st_intervals = merge_st_intervals([*name_intervals, *notice_intervals, *current_name_intervals])
+    # A current snapshot has no historical announcement date. Never seed a
+    # historical interval at last_trade (which can precede the snapshot date).
+    st_intervals = merge_st_intervals([*name_intervals, *notice_intervals])
     evidence_intervals = [*name_intervals, *notice_intervals]
     current_st_history_resolved = (not current_st_name) or any(item.get("end") is None for item in evidence_intervals)
 
@@ -3151,7 +3188,15 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         "st_notice_evidence_sha256": evidence_fingerprint(ROOT),
         "symbol": str(symbol).zfill(6),
         "first_trade_date": str(first_trade.date()),
+        "st_history_sample_start": str(sample_start.date()),
         "last_trade_date": str(last_trade.date()),
+        "st_presample_name_anchor": name_anchor,
+        "notice_query_start_date": str(notice_start.date()),
+        "notice_query_end_date": str(notice_end.date()),
+        "st_notice_archive_sha256": None if archived is None else archived["manifest_sha256"],
+        "st_notice_archive_manifest_path": None if archived is None else archived.get("manifest_path"),
+        "st_source_boundary": None if archived is None else archived.get("source_boundary"),
+        "st_notice_source_providers": ["cninfo"] if archived is None else archived["source_providers"],
         "list_date": (
             None
             if master_row is None or pd.isna(master_row.get("list_date"))
@@ -3167,6 +3212,7 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         "current_st_snapshot_name": current_st_name or None,
         "name_history_status": name_history_status,
         "notice_query_status": notice_query_status,
+        "notice_source_complete": notice_query_status == "ok",
         "notice_count": notice_count,
         "current_st_history_resolved": bool(current_st_history_resolved),
         "st_intervals": st_intervals,
@@ -3176,6 +3222,8 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
         previous = _read_security_meta_payload(previous_path, symbol)
         retained = _preserve_security_meta_evidence(previous, meta)
         if retained is previous:
+            if as_of is not None and not _notice_horizon_covers(previous, notice_end):
+                raise SecurityMetaHistoryEvidenceUnresolved("Preserved history does not cover requested notice horizon")
             _require_resolved_current_st_history(previous)
             return previous
     _require_resolved_current_st_history(meta)
@@ -3192,7 +3240,27 @@ def build_security_meta(symbol: str) -> dict[str, object] | None:
     return meta
 
 
-def load_security_meta(symbol: str) -> dict[str, object]:
+def _notice_horizon_covers(payload: dict[str, object], requested_end: pd.Timestamp | None) -> bool:
+    if requested_end is None:
+        return True
+    end = requested_end
+    delist = pd.to_datetime(payload.get("delist_date"), errors="coerce")
+    if pd.notna(delist):
+        end = min(end, pd.Timestamp(delist).normalize())
+    available = pd.to_datetime(payload.get("notice_query_end_date"), errors="coerce")
+    required_start = pd.to_datetime(payload.get("list_date"), errors="coerce")
+    required_start = pd.Timestamp("1990-01-01") if pd.isna(required_start) else max(pd.Timestamp("1990-01-01"), pd.Timestamp(required_start).normalize())
+    available_start = pd.to_datetime(payload.get("notice_query_start_date"), errors="coerce")
+    return bool(payload.get("notice_source_complete") is True and pd.notna(available_start)
+                and pd.Timestamp(available_start).normalize() <= required_start
+                and pd.notna(available) and pd.Timestamp(available).normalize() >= end)
+
+
+def load_security_meta(symbol: str, *, as_of: pd.Timestamp | str | None = None) -> dict[str, object]:
+    from scripts.st_notice_archive import notice_archive_cache_matches
+    requested_end = None if as_of is None else pd.Timestamp(as_of).normalize()
+    if requested_end is not None and pd.isna(requested_end):
+        raise ValueError("Notice as_of is invalid")
     code = str(symbol).zfill(6)
     current_st_name = load_current_st_name_map().get(code, "")
     meta_path = resolve_security_meta_path(symbol)
@@ -3216,7 +3284,8 @@ def load_security_meta(symbol: str) -> dict[str, object]:
             if (payload.get("meta_version") == SECURITY_META_VERSION and identity_matches
                     and policy_matches and name_matches and not _security_meta_source_failures(payload)):
                 if not current_st_name:
-                    return payload
+                    if _notice_horizon_covers(payload, requested_end) and notice_archive_cache_matches(payload, ROOT):
+                        return payload
                 # A same-name/current-date cache hit is not enough to prove the
                 # historical start of a current ST interval. In particular, a
                 # failed notice query may leave only a current-name snapshot
@@ -3229,7 +3298,8 @@ def load_security_meta(symbol: str) -> dict[str, object]:
                 name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
                 date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
                 if history_resolved and policy_matches and name_matches and date_matches:
-                    return payload
+                    if _notice_horizon_covers(payload, requested_end) and notice_archive_cache_matches(payload, ROOT):
+                        return payload
         except SecurityMetaHistoryCorrectionRequired:
             raise
         except Exception as exc:
@@ -3237,7 +3307,7 @@ def load_security_meta(symbol: str) -> dict[str, object]:
                 f"Cannot validate security metadata for {code}: {type(exc).__name__}: {exc}"
             ) from exc
     try:
-        meta = build_security_meta(symbol)
+        meta = build_security_meta(symbol, as_of=as_of)
     except SecurityMetaHistoryCorrectionRequired:
         raise
     except Exception as exc:
@@ -3367,11 +3437,20 @@ def build_tradeability_series(
         index=trading_dates,
         dtype=bool,
     )
-    actual_price_dates = pd.DatetimeIndex(close_series.index)
+    if "tradestatus" in price.columns:
+        status = pd.to_numeric(price["tradestatus"], errors="coerce")
+        if status.isna().any() or not status.isin([0, 1]).all():
+            raise ValueError("invalid explicit trading status")
+        actual_price_dates = pd.DatetimeIndex(price.loc[status.eq(1), "date"])
+    else:
+        actual_price_dates = pd.DatetimeIndex(close_series.index)
     close_calendar = close_series.reindex(trading_dates)
     close_calendar = close_calendar.where(listed_mask)
     close_calendar = close_calendar.ffill().where(listed_mask)
-    return_close_series = index_mod.select_return_close(symbol, close_series, return_price)
+    return_input = close_series.reindex(actual_price_dates) if "tradestatus" in price.columns else close_series
+    return_close_series = index_mod.select_return_close(symbol, return_input, return_price)
+    if "tradestatus" in price.columns:
+        return_close_series = return_close_series.reindex(actual_price_dates)
     return_close_calendar = return_close_series.reindex(trading_dates)
     return_close_calendar = return_close_calendar.where(listed_mask).ffill().where(listed_mask)
     ret_series = return_close_calendar.pct_change(fill_method=None).astype(float)
@@ -3440,7 +3519,7 @@ def load_symbol_cache(
         price_path = resolve_cache_path(PRICE_DIR, SHARED_PRICE_DIR, symbol)
         share_path = resolve_cache_path(SHARE_DIR, SHARED_SHARE_DIR, symbol)
         if price_path is None or share_path is None:
-            return None
+            raise FileNotFoundError(f"Missing required price/share history for {symbol}")
 
         start_ts = pd.Timestamp(trading_dates.min())
         end_ts = pd.Timestamp(trading_dates.max())
@@ -3457,40 +3536,30 @@ def load_symbol_cache(
         if price["close_raw"].isna().any():
             raise ValueError(f"raw price cache for {symbol} contains missing or nonnumeric closes")
 
-        adjusted_price: pd.DataFrame | None = None
-        adjusted_path = resolve_cache_path(ADJ_PRICE_DIR, SHARED_ADJ_PRICE_DIR, symbol)
-        if adjusted_path is not None:
-            adjusted_price = pd.read_csv(adjusted_path)
-            adjusted_price["date"] = pd.to_datetime(adjusted_price["date"], errors="coerce")
-            if adjusted_price["date"].isna().any():
-                raise ValueError(f"adjusted price cache for {symbol} contains invalid dates")
-            adjusted_price = adjusted_price[(adjusted_price["date"] >= start_ts) & (adjusted_price["date"] <= end_ts)]
-            if not adjusted_price.empty:
-                return_col = next(
-                    (col for col in ["close_qfq", "close_adj", "close_raw"] if col in adjusted_price.columns),
-                    None,
-                )
-                if return_col is not None:
-                    adjusted_price[return_col] = pd.to_numeric(adjusted_price[return_col], errors="coerce")
-                    adjusted_price = adjusted_price.sort_values("date")
-                else:
-                    raise ValueError(
-                        f"adjusted price cache for {str(symbol).zfill(6)} has no supported adjusted close column"
-                    )
+        from scripts.stock_return_pipeline import load_return_prices
+        adjusted_price = load_return_prices(
+            root=ROOT, symbol=symbol, raw_path=price_path, master=load_security_master(),
+            as_of=end_ts.strftime("%Y-%m-%d"), allow_network=False,
+        )
 
         shares = pd.read_csv(share_path)
         shares["change_date"] = pd.to_datetime(shares["change_date"])
         shares["total_shares_10k"] = pd.to_numeric(shares["total_shares_10k"], errors="coerce")
         shares = shares.dropna(subset=["total_shares_10k"]).sort_values("change_date")
         if shares.empty:
-            return None
+            raise ValueError(f"Empty required share history for {symbol}")
 
-        meta = load_security_meta(symbol)
+        meta = load_security_meta(symbol, as_of=trading_dates.max())
+        from scripts.tradeability_evidence import enrich_price_with_trade_status
+        price = enrich_price_with_trade_status(
+            root=ROOT, symbol=symbol, raw_path=price_path, price=price,
+            master=load_security_master(), trading_dates=trading_dates, require_evidence=True,
+        )
         st_series = build_st_status_series(meta, trading_dates)
         active_series = build_active_status_series(meta, trading_dates)
         ret_series, tradeable_series, buyable_series, sellable_series = build_tradeability_series(
             symbol=symbol,
-            price=price[["date", "close_raw"]].copy(),
+            price=price.copy(),
             trading_dates=trading_dates,
             return_price=None if adjusted_price is None or adjusted_price.empty else adjusted_price,
             st_series=st_series,
@@ -3681,6 +3750,25 @@ def apply_trade_constraints(
     }
 
 
+DELISTING_VALUATION_POLICY = "delist_zero_writeoff_equal_survivors_v1"
+
+
+def delist_dates_from_master(master: pd.DataFrame) -> dict[str, pd.Timestamp]:
+    if not {"symbol", "delist_date"}.issubset(master.columns):
+        raise ValueError("Delisting valuation requires the historical security master")
+    if master["symbol"].astype(str).str.zfill(6).duplicated().any():
+        raise ValueError("Ambiguous issuer lifecycle")
+    result = {}
+    for row in master.itertuples(index=False):
+        if pd.isna(row.delist_date) or str(row.delist_date).strip() == "":
+            continue
+        day = pd.Timestamp(row.delist_date).normalize()
+        if pd.isna(day):
+            raise ValueError("Invalid delisting date")
+        result[str(row.symbol).zfill(6)] = day
+    return result
+
+
 def simulate_rebalance_path(
     trading_dates: pd.DatetimeIndex,
     returns_df: pd.DataFrame,
@@ -3692,10 +3780,16 @@ def simulate_rebalance_path(
     top_n: int = TOP_N,
     execution_timing: str = EXECUTION_TIMING_NEXT_OPEN,
     initial_members: list[str] | None = None,
+    delist_dates: dict[str, pd.Timestamp] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[pd.Timestamp, list[str]]]:
     if execution_timing not in {EXECUTION_TIMING_NEXT_OPEN, EXECUTION_TIMING_CLOSE}:
         raise ValueError(f"unsupported execution_timing: {execution_timing}")
 
+    lifecycle = {str(symbol).zfill(6): pd.Timestamp(day).normalize()
+                 for symbol, day in (delist_dates or {}).items()}
+    if any(pd.isna(day) for day in lifecycle.values()):
+        raise ValueError("Unproven delisting date")
+    writeoff_events: list[dict[str, object]] = []
     rebalance_set = set(rebalance_dates)
     if initial_members is not None:
         if len(initial_members) != top_n or len(set(initial_members)) != top_n:
@@ -3717,11 +3811,17 @@ def simulate_rebalance_path(
             index_rows.append({"date": dt, "close": current_level, "daily_return": np.nan, "holding_count": len(current_members)})
             continue
 
+        opening_writeoffs = []
+        opening_count = len(current_members)
+        if execution_timing == EXECUTION_TIMING_NEXT_OPEN:
+            opening_writeoffs = [s for s in current_members if s in lifecycle and lifecycle[s] <= pd.Timestamp(dt)]
+            current_members = [s for s in current_members if s not in opening_writeoffs]
         prev_dt = pd.Timestamp(trading_dates[i - 1])
         if prev_dt in rebalance_set:
             constraint_trade_date = prev_dt if execution_timing == EXECUTION_TIMING_CLOSE else pd.Timestamp(dt)
             execution_date = prev_dt if execution_timing == EXECUTION_TIMING_CLOSE else pd.Timestamp(dt)
-            target_members = target_members_map.get(prev_dt, [])
+            target_members = [s for s in target_members_map.get(prev_dt, [])
+                              if s not in lifecycle or lifecycle[s] > execution_date]
             trade_result = apply_trade_constraints(
                 current_members=current_members,
                 target_members=target_members,
@@ -3754,11 +3854,34 @@ def simulate_rebalance_path(
                 }
             )
 
+        closing_writeoffs = [s for s in current_members if s in lifecycle and lifecycle[s] <= pd.Timestamp(dt)]
+        denominator = opening_count if opening_writeoffs else len(current_members)
+        writeoffs = opening_writeoffs or closing_writeoffs
+        for symbol in writeoffs:
+            writeoff_events.append({"date": str(pd.Timestamp(dt).date()), "symbol": symbol,
+                "delist_date": str(lifecycle[symbol].date()), "writeoff_weight": 1.0 / denominator,
+                "security_return": -1.0, "portfolio_return_contribution": -1.0 / denominator,
+                "event_type": "conservative_valuation_writeoff_not_trade", "is_trade": False,
+                "sell_count": 0, "transaction_cost": 0.0, "policy": DELISTING_VALUATION_POLICY})
         if current_members:
             day_ret = returns_df.loc[dt, current_members].reindex(current_members)
-            portfolio_ret = float(day_ret.fillna(0.0).mean()) if len(day_ret) else 0.0
+            day_ret = day_ret.copy()
+            if closing_writeoffs:
+                day_ret.loc[closing_writeoffs] = -1.0
+            invalid = ~np.isfinite(day_ret.to_numpy(dtype=float))
+            if invalid.any():
+                symbols = ",".join(day_ret.index[invalid].astype(str))
+                raise RuntimeError(
+                    f"Unvalued held securities on {pd.Timestamp(dt).date()}: {symbols}; "
+                    "missing or terminal returns require explicit source-backed treatment"
+                )
+            portfolio_ret = float(day_ret.mean())
         else:
             portfolio_ret = 0.0
+        if opening_writeoffs:
+            loss_weight = len(opening_writeoffs) / opening_count
+            portfolio_ret = -loss_weight + (1.0 - loss_weight) * portfolio_ret
+        current_members = [s for s in current_members if s not in closing_writeoffs]
         current_level *= 1.0 + portfolio_ret
         index_rows.append(
             {
@@ -3772,7 +3895,8 @@ def simulate_rebalance_path(
     if len(trading_dates) and execution_timing == EXECUTION_TIMING_CLOSE:
         final_dt = pd.Timestamp(trading_dates[-1])
         if final_dt in rebalance_set and final_dt not in effective_members_map:
-            target_members = target_members_map.get(final_dt, [])
+            target_members = [s for s in target_members_map.get(final_dt, [])
+                              if s not in lifecycle or lifecycle[s] > final_dt]
             trade_result = apply_trade_constraints(
                 current_members=current_members,
                 target_members=target_members,
@@ -3805,7 +3929,13 @@ def simulate_rebalance_path(
                 }
             )
 
-    return pd.DataFrame(index_rows), pd.DataFrame(turnover_rows), effective_members_map
+    index_frame = pd.DataFrame(index_rows)
+    index_frame.attrs["terminal_effective_members"] = list(current_members)
+    index_frame.attrs["terminal_as_of"] = None if not len(trading_dates) else str(pd.Timestamp(trading_dates[-1]).date())
+    index_frame.attrs["delisting_valuation_policy"] = DELISTING_VALUATION_POLICY
+    if writeoff_events:
+        index_frame.attrs["delisting_writeoff_events"] = writeoff_events
+    return index_frame, pd.DataFrame(turnover_rows), effective_members_map
 
 
 def build_index_and_turnover(
@@ -3828,6 +3958,7 @@ def build_index_and_turnover(
         one_side_cost_rate=cost_mod.MONTHLY_REBALANCE_ONE_SIDE,
         top_n=TOP_N,
         execution_timing=execution_timing,
+        delist_dates=delist_dates_from_master(load_security_master()),
     )
     return index_df, turnover_df
 
@@ -4021,7 +4152,7 @@ REALTIME_QUOTE_INTEGRITY_META_FIELDS = (
     "hedge_quoted_at", "hedge_fetched_at", "hedge_price_origin",
 )
 REALTIME_QUOTE_POLICY_VERSION = "strict-per-symbol-date-v1"
-PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-v1"
+PROXY_REBALANCE_POLICY_VERSION = "fixed-biweekly-anchor-20160107-delist-zero-v2"
 REALTIME_QUOTE_FETCH_ATTEMPTS = 3
 REALTIME_QUOTE_RETRY_SECONDS = 5
 REALTIME_CLOSE_REFRESH_MAX_WORKERS = 8
@@ -4677,6 +4808,20 @@ def _log_price_cache_refresh(message: str) -> None:
     print(f"[top100-refresh] {message}", file=sys.stderr, flush=True)
 
 
+def refresh_return_basis_sources(symbols: list[str], end_text: str) -> None:
+    """Revalidate all selected legs, including stocks whose raw tail is current."""
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = {pool.submit(fetch_mod.fetch_adjusted_price_history, symbol,
+                               freq_mod.START_DATE, end_text, False): symbol for symbol in symbols}
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception as exc:
+                for pending in futures:
+                    pending.cancel()
+                raise RuntimeError(f"Return-basis refresh failed for {futures[future]}: {exc}") from exc
+
+
 def refresh_price_cache_tail(
     end_date: pd.Timestamp,
     max_workers: int,
@@ -4684,89 +4829,27 @@ def refresh_price_cache_tail(
     force_refresh: bool = False,
     progress_interval: int | None = 25,
 ) -> None:
-    ensure_fetch_dirs = getattr(fetch_mod, "ensure_dirs", None)
-    if ensure_fetch_dirs is not None:
-        ensure_fetch_dirs()
-    if symbols is None:
-        symbols = freq_mod.load_universe()
+    from scripts.stock_daily_inputs import refresh_daily_inputs
+    symbols = freq_mod.load_universe() if symbols is None else symbols
     symbols = sorted(dict.fromkeys(str(symbol).zfill(6) for symbol in symbols))
     if not symbols:
-        raise RuntimeError("No backtest-universe symbols available for price-cache refresh.")
-
+        raise RuntimeError("No backtest-universe symbols available for verified refresh")
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
-    failures: dict[str, str] = {}
-    workers = max(1, min(int(max_workers), 16))
-    preflight = price_cache_refresh_preflight(pd.Timestamp(end_date), symbols, force_refresh=force_refresh)
-    sample = ",".join(preflight.get("sample_stale_or_missing_symbols", []) or [])
-    _log_price_cache_refresh(
-        "price-cache refresh preflight "
-        f"end_date={end_text} symbols={preflight['symbol_count']} "
-        f"stale_or_missing={preflight['stale_or_missing_count']} "
-        f"missing={preflight['missing_count']} stale={preflight['stale_count']} "
-        f"current={preflight['current_count']} force_refresh={preflight['force_refresh']} "
-        f"workers={workers} sample={sample}"
-    )
-    refresh_symbols = list(preflight.get("stale_or_missing_symbols", []) or [])
-    if not refresh_symbols:
-        _log_price_cache_refresh("price-cache refresh complete 0/0 failures=0")
-        return
-
-    def refresh_price_history_with_fallback(symbol: str) -> None:
-        try:
-            fetch_mod.fetch_price_history(symbol, freq_mod.START_DATE, end_text, force_refresh)
-            return
-        except Exception as free_exc:
-            raise RuntimeError(
-                f"free price refresh failed for {symbol}; QVeris fallback is disabled"
-            ) from free_exc
-
-    def refresh_symbol(symbol: str) -> None:
-        refresh_price_history_with_fallback(symbol)
-        fetch_share_change = getattr(fetch_mod, "fetch_share_change", None)
-        if fetch_share_change is not None:
-            fetch_share_change(symbol, freq_mod.START_DATE, end_text, force_refresh)
-
-    completed = 0
-    total_symbols = len(refresh_symbols)
-    interval = max(0, int(progress_interval or 0))
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        futures = {pool.submit(refresh_symbol, symbol): symbol for symbol in refresh_symbols}
-        for fut in as_completed(futures):
-            symbol = futures[fut]
+    _log_price_cache_refresh(f"verified stock-input refresh end_date={end_text} symbols={len(symbols)}")
+    refresh_daily_inputs(root=ROOT, symbols=symbols, as_of=end_text, allow_network=True)
+    # Share histories need a query-cutoff receipt even when no new event occurred.
+    with ThreadPoolExecutor(max_workers=max(1, min(int(max_workers), 2))) as pool:
+        futures = {pool.submit(fetch_mod.fetch_share_change, symbol, freq_mod.START_DATE,
+                               end_text, force_refresh): symbol for symbol in symbols}
+        for future in as_completed(futures):
             try:
-                fut.result()
+                future.result()
             except Exception as exc:
-                failures[symbol] = str(exc)
-            completed += 1
-            if interval and (completed % interval == 0 or completed == total_symbols):
-                progress_percent = completed / total_symbols * 100.0
-                _log_price_cache_refresh(
-                    "price-cache refresh progress "
-                    f"{completed}/{total_symbols} ({progress_percent:.1f}%) failures={len(failures)}"
-                )
-    for retry_attempt in range(3):
-        if not failures:
-            break
-        retry_symbols = list(failures)
-        failures = {}
-        for symbol in retry_symbols:
-            try:
-                time.sleep(1.0 * (retry_attempt + 1))
-                refresh_symbol(symbol)
-            except Exception as exc:
-                failures[symbol] = str(exc)
-    if failures:
-        audit = pd.DataFrame(
-            [{"symbol": symbol, "error": error} for symbol, error in failures.items()]
-        )
-        audit_path = OUTPUT_DIR / f"price_cache_refresh_failures_{end_text}.csv"
-        _atomic_to_csv(audit, audit_path, index=False, encoding="utf-8")
-    if len(failures) > max(20, len(refresh_symbols) // 100):
-        sample = ", ".join(list(failures)[:10])
-        raise RuntimeError(
-            f"Too many price-cache refresh failures ({len(failures)}/{len(refresh_symbols)}). Sample: {sample}"
-        )
-    _log_price_cache_refresh(f"price-cache refresh complete {total_symbols}/{total_symbols} failures={len(failures)}")
+                for pending in futures:
+                    pending.cancel()
+                raise RuntimeError(f"Share source refresh failed for {futures[future]}: {exc}") from exc
+    refresh_return_basis_sources(symbols, end_text)
+    _log_price_cache_refresh(f"price-cache refresh complete {len(symbols)}/{len(symbols)} failures=0")
 
 
 def _load_cached_market_cap_asof(symbol: str, ref_date: pd.Timestamp) -> tuple[str, float] | None:
@@ -5184,8 +5267,12 @@ def build_local_proxy_bundle(
         one_side_cost_rate=0.003,
         top_n=TOP_N,
         execution_timing=EXECUTION_TIMING,
+        delist_dates=freq_mod.delist_dates_from_master(freq_mod.load_security_master()),
         **({"initial_members": initial_members} if initial_members is not None else {}),
     )
+    writeoff_events = list(index_df.attrs.get("delisting_writeoff_events", []))
+    terminal_members = list(index_df.attrs["terminal_effective_members"])
+    terminal_as_of = index_df.attrs["terminal_as_of"]
     index_df["holding_effective"] = index_df["holding_count"].gt(0)
     index_df, members_df, turnover_df, effective_start = trim_proxy_history(index_df, members_df, turnover_df)
     rebalance_count = 0
@@ -5193,18 +5280,25 @@ def build_local_proxy_bundle(
         rebalance_count = int(pd.to_datetime(members_df["rebalance_date"], errors="coerce").dropna().nunique())
     meta = {
         "index_code": INDEX_CODE,
+        "delisting_writeoff_events": writeoff_events,
+        "terminal_effective_members": terminal_members,
+        "terminal_effective_as_of": terminal_as_of,
+        "terminal_member_derivation": "actual_simulate_rebalance_path_final_current_members",
+        "delisting_valuation_policy": freq_mod.DELISTING_VALUATION_POLICY,
         "source_used": "local_cache_proxy",
         "universe_source": universe_source,
         "universe_symbol_count": int(len(symbols)),
         "symbol_load_stats": returns_df.attrs.get("symbol_load_stats", {}),
         "method_note": (
-            "Local cache reconstruction using raw close data, OHLC tradeability checks, and share-change data. "
+            "Local cache reconstruction using verified proportional adjusted returns, raw prices for market capitalization, "
+            "OHLC tradeability checks, and share-change data. "
             "This practical version anchors biweekly rebalances to Thursday signal dates, excludes suspended names "
             "from signal-date ranking, and applies conservative close execution: if the signal-date close is locked "
             "at the price limit, buys or sells are blocked at the close."
         ),
         "core_params": {
             "top_n": TOP_N,
+            "delisting_valuation_policy": freq_mod.DELISTING_VALUATION_POLICY,
             "exclude_current_st": False,
             "exclude_historical_st": True,
             "exclude_bj_exchange": True,
@@ -5226,18 +5320,23 @@ def build_local_proxy_bundle(
             "st_notice_policy_version": getattr(freq_mod, "ST_NOTICE_POLICY_VERSION", None),
             "security_meta_cache_fingerprint": security_meta_cache_fingerprint(),
             "security_master_enabled": True,
+            "stock_return_basis_revision": "sina_ratio_ex_reference_v1",
+            "stock_input_evidence_fingerprint": stock_input_evidence_fingerprint(),
         },
         "start_date": str(pd.Timestamp(index_df["date"].min()).date()),
         "end_date": str(pd.Timestamp(index_df["date"].max()).date()),
         "rebalance_dates_count": rebalance_count,
+        "return_basis_consumption": {
+            "revision": "stock_return_consumption_v1",
+            "full_rebuild_anchor": str(pd.Timestamp(index_df["date"].max()).date()),
+            "tail_extensions": [],
+        },
     }
     if effective_start is not None:
         meta["effective_start_date"] = str(effective_start.date())
     if initial_members is not None:
         meta["continuation_bridge_date"] = str(trading_dates[0].date())
-        meta["continuation_effective_members"] = (
-            effective_members_map[max(effective_members_map)] if effective_members_map else list(initial_members)
-        )
+        meta["continuation_effective_members"] = terminal_members
     return index_df, members_df, turnover_df, meta
 
 
@@ -5260,6 +5359,21 @@ def security_meta_cache_fingerprint() -> dict[str, object]:
     return {"present_count": present, "missing_count": missing, "sha256": digest.hexdigest()}
 
 
+def stock_input_evidence_fingerprint() -> dict[str, object]:
+    """Bind return and trading-state evidence consumed by the proxy."""
+    import hashlib
+    paths = [ROOT / ".microcap_index_cache/security_master.csv"]
+    for folder in ("return_basis/manifests", "trade_status", "share_sources"):
+        paths.extend(sorted((ROOT / ".microcap_index_cache" / folder).glob("*.json")))
+    digest = hashlib.sha256()
+    for path in sorted(paths):
+        if not path.is_file():
+            raise FileNotFoundError(f"Missing stock input evidence: {path}")
+        digest.update(path.relative_to(ROOT).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+    from scripts.stock_input_contract import source_fingerprint
+    return {"file_count": len(paths), "sha256": digest.hexdigest(), "code": source_fingerprint(ROOT)}
+
+
 def _proxy_meta_core_matches_execution_model(meta: dict[str, object]) -> bool:
     core_params = meta.get("core_params") if isinstance(meta, dict) else None
     if not isinstance(core_params, dict):
@@ -5273,14 +5387,16 @@ def _proxy_meta_core_matches_execution_model(meta: dict[str, object]) -> bool:
     proxy_rebalance_policy_version = core_params.get("proxy_rebalance_policy_version")
     st_notice_policy_version = core_params.get("st_notice_policy_version")
     return (
-        core_params.get("execution_timing") == EXECUTION_TIMING
+        core_params.get("stock_return_basis_revision") == "sina_ratio_ex_reference_v1"
+        and core_params.get("execution_timing") == EXECUTION_TIMING
         and core_params.get("trade_constraint_mode") == TRADE_CONSTRAINT_MODE
         and core_params.get("exclude_current_st") is False
         and core_params.get("exclude_historical_st") is True
         and rebalance_phase_anchor_date in (None, REBALANCE_ANCHOR_DATE)
         and member_filter_policy_version == MEMBER_FILTER_POLICY_VERSION
         and realtime_quote_policy_version in (None, REALTIME_QUOTE_POLICY_VERSION)
-        and proxy_rebalance_policy_version in (None, PROXY_REBALANCE_POLICY_VERSION)
+        and proxy_rebalance_policy_version == PROXY_REBALANCE_POLICY_VERSION
+        and core_params.get("delisting_valuation_policy") == freq_mod.DELISTING_VALUATION_POLICY
         and st_notice_policy_version == getattr(freq_mod, "ST_NOTICE_POLICY_VERSION", None)
     )
 
@@ -5289,7 +5405,8 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     if not _proxy_meta_core_matches_execution_model(meta):
         return False
     core_params = meta["core_params"]
-    return core_params.get("security_meta_cache_fingerprint") == security_meta_cache_fingerprint()
+    return (core_params.get("security_meta_cache_fingerprint") == security_meta_cache_fingerprint()
+            and core_params.get("stock_input_evidence_fingerprint") == stock_input_evidence_fingerprint())
 
 
 def _file_sha256(path: Path) -> str:
@@ -5687,19 +5804,27 @@ def _reconstruct_effective_members_from_saved_targets(
     )
     if len(rebalance_dates) == 0:
         return []
-    trade_dates = _minimal_tradeability_dates(panel_dates, rebalance_dates)
+    # Evidence validation and prior-close limit checks require the complete
+    # session calendar, not only rebalance days and their immediate predecessors.
+    trade_dates = pd.DatetimeIndex(panel_dates)
+    trade_dates = trade_dates[(trade_dates >= pd.Timestamp(freq_mod.START_DATE))
+                             & (trade_dates <= pd.Timestamp(as_of_date).normalize())]
     if len(trade_dates) == 0:
         return []
     symbols = sorted({symbol for dt in rebalance_dates for symbol in target_members_map[pd.Timestamp(dt).normalize()]})
     buyable_df, sellable_df = _load_buy_sell_for_symbols(symbols, trade_dates, max_workers)
+    lifecycle = freq_mod.delist_dates_from_master(freq_mod.load_security_master())
     current_members: list[str] = []
-    for dt in rebalance_dates:
+    for dt in trade_dates:
         dt = pd.Timestamp(dt).normalize()
+        current_members = [s for s in current_members if s not in lifecycle or lifecycle[s] > dt]
+        if dt not in rebalance_dates:
+            continue
         if dt not in buyable_df.index or dt not in sellable_df.index:
             continue
         trade_result = freq_mod.apply_trade_constraints(
             current_members=current_members,
-            target_members=target_members_map.get(dt, []),
+            target_members=[s for s in target_members_map.get(dt, []) if s not in lifecycle or lifecycle[s] > dt],
             trade_date=dt,
             buyable_df=buyable_df,
             sellable_df=sellable_df,
@@ -5750,9 +5875,11 @@ def try_extend_proxy_index_without_rebalance(
     proxy["date"] = pd.to_datetime(proxy["date"], errors="coerce")
     proxy["close"] = pd.to_numeric(proxy["close"], errors="coerce")
     proxy["daily_return"] = pd.to_numeric(proxy["daily_return"], errors="coerce")
-    proxy = proxy.dropna(subset=["date", "close"]).sort_values("date").drop_duplicates(subset="date", keep="last")
-    if proxy.empty:
-        return False
+    if (proxy["date"].isna().any() or proxy["date"].dt.normalize().duplicated().any()
+            or not proxy["date"].is_monotonic_increasing
+            or not np.isfinite(proxy[["close", "daily_return"]].to_numpy()).all()
+            or proxy["close"].le(0).any()):
+        raise ValueError("Invalid historical proxy values; tail extension cannot repair history")
 
     current_end = pd.Timestamp(proxy["date"].max()).normalize()
     target_end = pd.Timestamp(target_end_date).normalize()
@@ -5847,6 +5974,52 @@ def try_extend_proxy_index_without_rebalance(
     if not current_st or current_st.intersection(effective_members):
         return False
 
+    consumption = json.loads(json.dumps(prior_meta.get("return_basis_consumption")))
+    if not isinstance(consumption, dict) or consumption.get("revision") != "stock_return_consumption_v1":
+        return False
+    extensions = consumption.get("tail_extensions")
+    if not isinstance(extensions, list):
+        return False
+    previous_end = extensions[-1].get("end") if extensions else consumption.get("full_rebuild_anchor")
+    if previous_end != str(current_end.date()):
+        return False
+    authority_paths = {
+        "effective_members_sha256": effective_path,
+        "proxy_members_sha256": paths["proxy_members"],
+        "proxy_turnover_sha256": paths["proxy_turnover"],
+    }
+    if any(path is None or not path.is_file() for path in authority_paths.values()):
+        return False
+    turnover_authority = pd.read_csv(paths["proxy_turnover"])
+    if turnover_authority.empty:
+        return False
+    execution_columns = {}
+    for column in ("execution_date", "effective_date", "return_start_date"):
+        if column not in turnover_authority:
+            return False
+        execution_days = pd.to_datetime(turnover_authority[column], errors="coerce").dt.normalize()
+        if execution_days.isna().any() or not execution_days.isin(panel_dates).all():
+            return False
+        execution_columns[column] = execution_days
+        if column != "return_start_date" and ((execution_days > current_end) & (execution_days <= target_end)).any():
+            return False
+    if (execution_columns["return_start_date"] < execution_columns["effective_date"]).any():
+        return False
+    effective_authority = pd.read_csv(effective_path)
+    authority_days = pd.to_datetime(effective_authority["as_of_date"], errors="coerce").dt.normalize()
+    executed = pd.concat([execution_columns[name] for name in ("execution_date", "effective_date")])
+    executed = executed[executed <= current_end]
+    if (authority_days.isna().any() or authority_days.nunique() != 1
+            or authority_days.max() > current_end
+            or (not executed.empty and authority_days.min() < executed.max())):
+        return False
+    consumption_entry = {
+        "start_exclusive": str(current_end.date()), "end": str(target_end.date()),
+        "symbols": sorted(effective_members),
+        **{key: hashlib.sha256(path.read_bytes()).hexdigest() for key, path in authority_paths.items()},
+    }
+    extensions.append(consumption_entry)
+
     tail_dates = pd.DatetimeIndex([pd.Timestamp(current_end), *list(missing_dates)])
     returns_df = pd.DataFrame(index=tail_dates)
     workers = max(1, min(int(args.max_workers), 16))
@@ -5860,40 +6033,13 @@ def try_extend_proxy_index_without_rebalance(
     )
 
     def load_tail_return(symbol: str) -> tuple[str, pd.Series, str] | None:
-        raw_path = freq_mod.resolve_cache_path(
-            freq_mod.PRICE_DIR,
-            getattr(freq_mod, "SHARED_PRICE_DIR", None),
-            symbol,
-        )
-        adjusted_path = freq_mod.resolve_cache_path(
-            freq_mod.ADJ_PRICE_DIR,
-            getattr(freq_mod, "SHARED_ADJ_PRICE_DIR", None),
-            symbol,
-        )
-        source_path = adjusted_path or raw_path
-        if source_path is None:
+        from scripts.stock_tail_returns import load_tail_returns
+        raw_path = freq_mod.resolve_cache_path(freq_mod.PRICE_DIR, freq_mod.SHARED_PRICE_DIR, symbol)
+        if raw_path is None:
             return None
-        frame = pd.read_csv(source_path)
-        close_column = next(
-            (column for column in ("close_qfq", "close_adj", "close_raw", "close") if column in frame.columns),
-            None,
-        )
-        if "date" not in frame.columns or close_column is None:
-            return None
-        frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
-        frame[close_column] = pd.to_numeric(frame[close_column], errors="coerce")
-        close = (
-            frame.dropna(subset=["date", close_column])
-            .sort_values("date")
-            .drop_duplicates(subset="date", keep="last")
-            .set_index("date")[close_column]
-            .reindex(tail_dates)
-            .ffill()
-        )
-        if close.isna().any() or (close <= 0).any():
-            return None
-        source = "adjusted" if adjusted_path is not None else "raw"
-        return symbol, close.pct_change(fill_method=None).fillna(0.0), source
+        returns = load_tail_returns(root=ROOT, symbol=symbol, raw_path=raw_path,
+                                    master=freq_mod.load_security_master(), tail_dates=tail_dates)
+        return symbol, returns, "adjusted"
 
     return_sources: dict[str, int] = {"adjusted": 0, "raw": 0}
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -5912,7 +6058,9 @@ def try_extend_proxy_index_without_rebalance(
     new_rows: list[dict[str, object]] = []
     for dt in missing_dates:
         day_ret = returns_df.reindex(columns=effective_members).loc[pd.Timestamp(dt)].reindex(effective_members)
-        portfolio_ret = float(day_ret.fillna(0.0).mean()) if len(day_ret) else 0.0
+        if len(day_ret) != TOP_N or day_ret.isna().any() or not np.isfinite(day_ret).all():
+            raise ValueError("Incomplete finite member returns in no-rebalance tail")
+        portfolio_ret = float(day_ret.mean())
         current_level *= 1.0 + portfolio_ret
         new_rows.append(
             {
@@ -5925,6 +6073,9 @@ def try_extend_proxy_index_without_rebalance(
         )
     if not new_rows:
         return False
+    if any(hashlib.sha256(path.read_bytes()).hexdigest() != consumption_entry[key]
+           for key, path in authority_paths.items()):
+        raise ValueError("Member authorities changed during no-rebalance tail refresh")
     combined = pd.concat([proxy, pd.DataFrame(new_rows)], ignore_index=True, sort=False)
     combined["date"] = pd.to_datetime(combined["date"], errors="coerce")
     combined = combined.dropna(subset=["date"]).sort_values("date").drop_duplicates(subset="date", keep="last")
@@ -5948,6 +6099,8 @@ def try_extend_proxy_index_without_rebalance(
     meta["tail_extension_effective_member_count"] = len(effective_members)
     meta["tail_extension_replaced_flat_placeholder"] = replaced_flat_placeholder
     meta["tail_extension_return_source_counts"] = return_sources
+    meta["return_basis_consumption"] = consumption
+    meta.setdefault("core_params", {})["stock_input_evidence_fingerprint"] = stock_input_evidence_fingerprint()
     authority_payload = FROZEN_TAIL_AUTHORITY_PATH.read_bytes()
     meta["tail_extension_authority_sha256"] = hashlib.sha256(authority_payload).hexdigest()
     _atomic_write_json(paths["proxy_meta"], meta, encoding="utf-8")
@@ -7763,12 +7916,18 @@ def build_live_target_members_map(
     out: dict[pd.Timestamp, list[str]] = {}
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
-        ranked = sorted(cap_map.items(), key=lambda x: x[1])
-        name_filter = is_live_tradable_name if exclude_current_st_names else is_tradable_name
+        # Historical caps already carry PIT ST, lifecycle and trading eligibility.
+        # A current delisted name must not erase the issuer's eligible history.
+        ranked = sorted(
+            ((symbol, float(cap)) for symbol, cap in cap_map.items()
+             if np.isfinite(float(cap)) and float(cap) > 0),
+            key=lambda item: (item[1], str(item[0])),
+        )
         tradable_candidates = [
             symbol
             for symbol, _ in ranked
-            if name_filter(name_map.get(str(symbol).zfill(6), ""))
+            if (not exclude_current_st_names
+                or is_live_tradable_name(name_map.get(str(symbol).zfill(6), "")))
         ]
         if len(tradable_candidates) < int(top_n):
             raise RuntimeError(
@@ -12080,10 +12239,13 @@ def _load_reference_summary() -> dict[str, object]:
 
 
 def current_base_fingerprint() -> dict[str, object]:
+    from scripts.stock_input_contract import source_fingerprint
     validate_base_hedge_ratio()
     resolved = _resolve_base_paths()
     return {
         "base_version": "embedded_v2_base",
+        "stock_return_basis_revision": "sina_ratio_ex_reference_v1",
+        "stock_input_source_fingerprint": source_fingerprint(ROOT),
         "base_hedge_ratio": BASE_HEDGE_RATIO,
         "base_costed_nav_csv": str(resolved.costed_nav_csv),
         "base_index_csv": str(resolved.index_csv),
@@ -12125,6 +12287,18 @@ def _safe_bool(value: object, default: bool = False) -> bool:
     return bool(value)
 
 
+def _apply_terminal_loss_policy(signal_df: pd.DataFrame) -> None:
+    # Read the actual base authority; old/unrebuilt histories must never acquire
+    # the new valuation label merely because the reporting code was upgraded.
+    meta = _load_v2_base_proxy_meta()
+    policy = "delist_zero_writeoff_equal_survivors_v1"
+    if (meta.get("delisting_valuation_policy") != policy
+            or meta.get("core_params", {}).get("delisting_valuation_policy") != policy):
+        raise RuntimeError("close-confirmed terminal valuation policy missing or inconsistent; rebuild base authority")
+    signal_df["terminal_loss_policy"] = policy
+    signal_df["terminal_loss_policy_note"] = "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交"
+
+
 def augment_close_confirmed_signal_with_member_contract(
     signal_df: pd.DataFrame,
     turnover_df: pd.DataFrame,
@@ -12137,6 +12311,7 @@ def augment_close_confirmed_signal_with_member_contract(
         raise ValueError("close-confirmed signal is empty")
 
     out = signal_df.copy()
+    _apply_terminal_loss_policy(out)
     signal_date = pd.to_datetime(out.iloc[0].get("date"), errors="coerce")
     if pd.isna(signal_date):
         raise ValueError("close-confirmed signal is missing a valid date")
@@ -13085,6 +13260,7 @@ def _assert_realtime_signal_ready_to_commit(signal_row: pd.DataFrame, meta: dict
 
 
 def _apply_realtime_meta_columns_to_signal_row(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:
+    _apply_terminal_loss_policy(signal_row)
     publication_fields = {
         "snapshot_time", "quote_trade_date", "latest_anchor_trade_date",
         "expected_latest_completed_trade_date", "expected_latest_completed_trade_date_source",

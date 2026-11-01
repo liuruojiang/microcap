@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600610",
+    "announcement_id": "AN201202280004279928",
+    "notice_date": "2008-05-29",
+    "title": "关于撤销股票交易退市风险警示的公告 ",
+    "provider_title": "S*ST中纺：关于撤销股票交易退市风险警示的公告 ",
+    "removed_issuer_prefix": "S*ST中纺：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004279928_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004279928_1.pdf",
+    "body_notice_number": "临2008－027",
+    "relative_pdf_path": "AN201202280004279928.pdf",
+    "sha256": "868b0ab35685536a98238d7c29d66e4a0d924f3ff628fda581bce965ac72fcbf",
+    "risk_actions": {
+      "delisting": false,
+      "unspecified": true
+    },
+    "actual_effective_date": "2008-05-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202280004279928_api.json",
+      "sha256": "c413c7470c3f021a74d9718521265e149336d44dd8a6597dc74395b801ce6321",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准撤销退市，但简称明确仍ST/SST且仍5%；正文未明确剩余风险具体类别，保留unknown风险，不猜other也不退出ST。"
+}

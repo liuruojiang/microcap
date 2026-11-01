@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600793",
+    "announcement_id": "AN201403190005282259",
+    "notice_date": "2014-03-20",
+    "title": " ST宜纸关于不能撤销股票交易其他风险警示的公告",
+    "provider_title": "600793 : ST宜纸关于不能撤销股票交易其他风险警示的公告",
+    "removed_issuer_prefix": "600793 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403190005282259_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403190005282259_1.pdf",
+    "body_notice_number": "2014-09",
+    "relative_pdf_path": "AN201403190005282259.pdf",
+    "sha256": "c6fc6cf9687e99c379d5e11606190f9e6d6545f2d2e224ee14ea84bcb7f3b204",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403190005282259_api.json",
+      "sha256": "d0ae41b1a646ca4c4a4a2dd49a4795577f4715ae5c01230a721a7ef07a44af8b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "不能撤销是无动作；现状other=True，不能用分类撤销清除任何风险。实际撤销另见补充2016公告。 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

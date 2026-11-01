@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002473",
+    "announcement_id": "AN202007231393639640",
+    "notice_date": "2020-07-24",
+    "title": "关于公司股票实施其他风险警示的公告",
+    "provider_title": "圣莱达:关于公司股票实施其他风险警示的公告",
+    "removed_issuer_prefix": "圣莱达:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202007231393639640_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202007231393639640_1.pdf",
+    "body_notice_number": "2020-032",
+    "relative_pdf_path": "AN202007231393639640.pdf",
+    "sha256": "3f682fe1f7b3833056e0e9364ce6ff9530023d919de12e028859d8beb6487f30",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2020-07-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202007231393639640_api.json",
+      "sha256": "96cc87a5da05f23f7d3bd9273826f3bd7b88f8fefc557bd0831fc51f7b4c2c11",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_long34_price17_candidates_20261101.json"
+}

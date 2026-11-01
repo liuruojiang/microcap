@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600818",
+    "announcement_id": "AN201202260003869524",
+    "notice_date": "2005-03-18",
+    "title": "撤销公司股票其他特别处理公告",
+    "provider_title": "ST 永 久：撤销公司股票其他特别处理公告",
+    "removed_issuer_prefix": "ST 永 久：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003869524_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202260003869524_1.pdf",
+    "body_notice_number": "临2005-007",
+    "relative_pdf_path": "AN201202260003869524.pdf",
+    "sha256": "f53a1590b34091029803db88f88cc4f5fc9ffc917bdd4bfea9a8c380c9a1b5d7",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2005-03-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202260003869524_api.json",
+      "sha256": "8d7b551245a9e25b58f3f5b8274dfd8c73bc3b7bae8c47b1cc1229a4f3875479",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段确定普通名称和10%涨跌幅，退出全部ST类别；保留提供方公开日，不用历史回顾或落款提前公告日。"
+}

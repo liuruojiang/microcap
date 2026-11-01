@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300209",
+    "announcement_id": "AN202404261631343343",
+    "notice_date": "2024-04-26",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌及继续被实施其他风险警示的提示性公告",
+    "provider_title": "ST有棵树:关于公司股票交易将被实施退市风险警示暨股票停牌及继续被实施其他风险警示的提示性公告",
+    "removed_issuer_prefix": "ST有棵树:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404261631343343_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404261631343343_1.pdf",
+    "body_notice_number": "2024-033",
+    "relative_pdf_path": "AN202404261631343343.pdf",
+    "sha256": "e20b472f7d04210b2f15532243a131075626bb05c8802b9d7219c3438d5b8d12",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2024-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404261631343343_api.json",
+      "sha256": "b5a57edc32084de61474b65e441c6f549f7f2f705ec709c02d47d2b65d0a75b3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原PDF正文标题及特别提示明确退市风险并继续other，API标题简化不能盖过正文，4月29日双风险改*ST有树。"
+}

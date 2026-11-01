@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000010",
+    "announcement_id": "AN201310160004508541",
+    "notice_date": "2013-10-17",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST华新:关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST华新:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201310160004508541_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201310160004508541_1.pdf",
+    "body_notice_number": "2013-096",
+    "relative_pdf_path": "AN201310160004508541.pdf",
+    "sha256": "7deee0053217029d1c3f27961cdd4139027d1e88a644d0a4be0e674d926c1277",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-10-18"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201310160004508541_api.json",
+      "sha256": "35684ea253249acc8869115d918711a84e0268e9490f1d1b6b06a3f82e68a9a8",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "全文确认撤销其他风险、恢复普通深华新与10%涨跌幅；原样本前未知类别当日全部结束，不倒填历史回顾。"
+}

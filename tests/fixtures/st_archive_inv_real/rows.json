@@ -1,0 +1,614 @@
+[
+  {
+    "symbol": "002072",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/002072/page_001.json",
+    "index": 30,
+    "row": {
+      "art_code": "AN202607091826849731",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "32190799778790",
+          "market_code": "0",
+          "short_name": "凯瑞德",
+          "stock_code": "002072"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "2026-07-09 19:16:06:538",
+      "eiTime": "2026-07-09 19:15:29:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2026-07-09 00:00:00",
+      "product_code": "",
+      "sort_date": "2026-07-09 12:00:00",
+      "source_type": "324",
+      "title": "凯瑞德:2026年7月9日投资者关系活动记录表",
+      "title_ch": "凯瑞德:2026年7月9日投资者关系活动记录表",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "002072",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/002072/page_001.json",
+    "index": 56,
+    "row": {
+      "art_code": "AN202603061820346055",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "32190799778790",
+          "market_code": "0",
+          "short_name": "凯瑞德",
+          "stock_code": "002072"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "2026-03-06 18:01:06:485",
+      "eiTime": "2026-03-06 18:00:29:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2026-03-06 00:00:00",
+      "product_code": "",
+      "sort_date": "2026-03-06 12:00:00",
+      "source_type": "324",
+      "title": "凯瑞德:2026年3月6日投资者关系活动记录表",
+      "title_ch": "凯瑞德:2026年3月6日投资者关系活动记录表",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "002072",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/002072/page_002.json",
+    "index": 36,
+    "row": {
+      "art_code": "AN202506121689700687",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "32190799778790",
+          "market_code": "0",
+          "short_name": "凯瑞德",
+          "stock_code": "002072"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2025-06-12 19:14:15:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2025-06-12 00:00:00",
+      "product_code": "",
+      "sort_date": "2025-06-12 12:00:00",
+      "source_type": "324",
+      "title": "凯瑞德:2025年6月12日投资者关系活动记录表",
+      "title_ch": "凯瑞德:2025年6月12日投资者关系活动记录表",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "002072",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/002072/page_002.json",
+    "index": 43,
+    "row": {
+      "art_code": "AN202504291664503723",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "32190799778790",
+          "market_code": "0",
+          "short_name": "凯瑞德",
+          "stock_code": "002072"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2025-04-29 17:31:17:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2025-04-29 00:00:00",
+      "product_code": "",
+      "sort_date": "2025-04-29 12:00:00",
+      "source_type": "324",
+      "title": "凯瑞德:2025年4月29日投资者关系活动记录表",
+      "title_ch": "凯瑞德:2025年4月29日投资者关系活动记录表",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_001.json",
+    "index": 4,
+    "row": {
+      "art_code": "AN202609101829219419",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "2026-09-10 15:33:03:632",
+      "eiTime": "2026-09-10 15:32:23:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2026-09-10 00:00:00",
+      "product_code": "",
+      "sort_date": "2026-09-10 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2026年半年度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2026年半年度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_001.json",
+    "index": 23,
+    "row": {
+      "art_code": "AN202605141822317747",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "2026-05-14 17:49:51:591",
+      "eiTime": "2026-05-14 17:49:15:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2026-05-14 00:00:00",
+      "product_code": "",
+      "sort_date": "2026-05-14 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2025年年度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2025年年度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_002.json",
+    "index": 18,
+    "row": {
+      "art_code": "AN202511121779976590",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "2025-11-12 17:14:18:657",
+      "eiTime": "2025-11-12 17:14:13:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2025-11-12 00:00:00",
+      "product_code": "",
+      "sort_date": "2025-11-12 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2025年第三季度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2025年第三季度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_002.json",
+    "index": 36,
+    "row": {
+      "art_code": "AN202509091740762936",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "2025-09-09 17:27:54:538",
+      "eiTime": "2025-09-09 17:27:33:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2025-09-09 00:00:00",
+      "product_code": "",
+      "sort_date": "2025-09-09 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2025年半年度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2025年半年度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_002.json",
+    "index": 54,
+    "row": {
+      "art_code": "AN202505151673319972",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2025-05-15 17:30:33:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2025-05-15 00:00:00",
+      "product_code": "",
+      "sort_date": "2025-05-15 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2024年度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2024年度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_003.json",
+    "index": 22,
+    "row": {
+      "art_code": "AN202411111640815617",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2024-11-11 17:19:20:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2024-11-11 00:00:00",
+      "product_code": "",
+      "sort_date": "2024-11-11 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2024年第三季度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2024年第三季度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_003.json",
+    "index": 31,
+    "row": {
+      "art_code": "AN202409091639799248",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2024-09-09 18:30:37:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2024-09-09 00:00:00",
+      "product_code": "",
+      "sort_date": "2024-09-09 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2024年半年度业绩说明会)",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表(2024年半年度业绩说明会)",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_006.json",
+    "index": 63,
+    "row": {
+      "art_code": "AN202204211560669193",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2022-04-21 17:56:37:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2022-04-21 00:00:00",
+      "product_code": "",
+      "sort_date": "2022-04-21 12:00:00",
+      "source_type": "311",
+      "title": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表-0421",
+      "title_ch": "天下秀:天下秀数字科技(集团)股份有限公司投资者关系活动记录表-0421",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_007.json",
+    "index": 15,
+    "row": {
+      "art_code": "AN202108311513471668",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2021-08-31 16:21:07:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2021-08-31 00:00:00",
+      "product_code": "",
+      "sort_date": "2021-08-31 12:00:00",
+      "source_type": "311",
+      "title": "天下秀2021年8月17日-8月31日投资者调研报告",
+      "title_ch": "天下秀2021年8月17日-8月31日投资者调研报告",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_007.json",
+    "index": 25,
+    "row": {
+      "art_code": "AN202107131503549451",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2021-07-13 13:53:23:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2021-07-13 00:00:00",
+      "product_code": "",
+      "sort_date": "2021-07-13 12:00:00",
+      "source_type": "311",
+      "title": "天下秀2021年6月1日-7月12日投资者调研报告",
+      "title_ch": "天下秀2021年6月1日-7月12日投资者调研报告",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600556",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/600556/page_007.json",
+    "index": 27,
+    "row": {
+      "art_code": "AN202106021495535028",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "27549116520661",
+          "market_code": "1",
+          "short_name": "天下秀",
+          "stock_code": "600556"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2021-06-02 16:37:32:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2021-06-02 00:00:00",
+      "product_code": "",
+      "sort_date": "2021-06-02 12:00:00",
+      "source_type": "311",
+      "title": "天下秀2021年5月10日-2021年5月24日投资者调研报告",
+      "title_ch": "天下秀2021年5月10日-2021年5月24日投资者调研报告",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600831",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/additional32_full_20261029/600831/page_004.json",
+    "index": 10,
+    "row": {
+      "art_code": "AN202309211599667594",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "38775204779733",
+          "market_code": "1",
+          "short_name": "广电网络",
+          "stock_code": "600831"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2023-09-21 16:12:34:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2023-09-21 00:00:00",
+      "product_code": "",
+      "sort_date": "2023-09-21 12:00:00",
+      "source_type": "311",
+      "title": "广电网络:广电网络召开“2023年半年度业绩说明会”",
+      "title_ch": "广电网络:广电网络召开“2023年半年度业绩说明会”",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600831",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/additional32_full_20261029/600831/page_004.json",
+    "index": 30,
+    "row": {
+      "art_code": "AN202306161591024298",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "38775204779733",
+          "market_code": "1",
+          "short_name": "广电网络",
+          "stock_code": "600831"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2023-06-16 15:10:35:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2023-06-16 00:00:00",
+      "product_code": "",
+      "sort_date": "2023-06-16 12:00:00",
+      "source_type": "311",
+      "title": "广电网络:广电网络召开“2022年度暨2023年第一季度业绩说明会”",
+      "title_ch": "广电网络:广电网络召开“2022年度暨2023年第一季度业绩说明会”",
+      "title_en": ""
+    }
+  },
+  {
+    "symbol": "600831",
+    "path": "research_reports/20261029_st_history_repair/source_recovery/additional32_full_20261029/600831/page_004.json",
+    "index": 31,
+    "row": {
+      "art_code": "AN202306161591023723",
+      "codes": [
+        {
+          "ann_type": "INV",
+          "inner_code": "38775204779733",
+          "market_code": "1",
+          "short_name": "广电网络",
+          "stock_code": "600831"
+        }
+      ],
+      "columns": [
+        {
+          "column_code": "050003",
+          "column_name": "调研活动"
+        }
+      ],
+      "display_time": "",
+      "eiTime": "2023-06-16 15:04:32:000",
+      "language": "0",
+      "listing_state": "0",
+      "notice_date": "2023-06-16 00:00:00",
+      "product_code": "",
+      "sort_date": "2023-06-16 12:00:00",
+      "source_type": "311",
+      "title": "广电网络:广电网络参加“2023年陕西辖区上市公司投资者集体接待日暨2022年度业绩说明会”",
+      "title_ch": "广电网络:广电网络参加“2023年陕西辖区上市公司投资者集体接待日暨2022年度业绩说明会”",
+      "title_en": ""
+    }
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600094",
+    "announcement_id": "AN201203030005004133",
+    "notice_date": "2012-02-29",
+    "title": "关于撤销股票交易其他特别处理和变更股票简称的公告",
+    "provider_title": "ST华源：关于撤销股票交易其他特别处理和变更股票简称的公告",
+    "removed_issuer_prefix": "ST华源：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030005004133_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030005004133_1.pdf",
+    "body_notice_number": "临2012-006",
+    "relative_pdf_path": "AN201203030005004133.pdf",
+    "sha256": "2d5c20e9125b70384e7d2f204301e2bcc23b551f4a5c3b20d5b768b24a00b99e",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-03-01"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030005004133_api.json",
+      "sha256": "2e25bab7955cbfd2a244fe0422166f444ecff89e21c86d8494936d6ffbbea734",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

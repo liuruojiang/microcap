@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002072",
+    "announcement_id": "AN201203020004841452",
+    "notice_date": "2011-06-02",
+    "title": "关于股票交易撤销退市风险警示并实行其他特别处理的提示性公告",
+    "provider_title": "*ST德棉：关于股票交易撤销退市风险警示并实行其他特别处理的提示性公告",
+    "removed_issuer_prefix": "*ST德棉：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004841452_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004841452_1.pdf",
+    "body_notice_number": "2011-L025",
+    "relative_pdf_path": "AN201203020004841452.pdf",
+    "sha256": "0b2effa6b41c029a1258adb75dd3c937391eced1c0e81bf06d6080490d032548",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2011-06-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004841452_api.json",
+      "sha256": "f682be7ec54a089aa602f49dc0c579b806cc23b38d044d7149e5c11d9010d17c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文已获批准撤销退市但实行/继续其他风险，仍ST及5%，仅撤退市，不退出other。"
+}

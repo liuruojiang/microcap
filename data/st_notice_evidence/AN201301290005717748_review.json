@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600681",
+    "announcement_id": "AN201301290005717748",
+    "notice_date": "2013-01-30",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST万鸿：关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST万鸿：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301290005717748_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301290005717748_1.pdf",
+    "body_notice_number": "2013-005",
+    "relative_pdf_path": "AN201301290005717748.pdf",
+    "sha256": "56b274f6beaa1a298ebaece44b55e0e5edb18a9989ed586f61d07f0edc4101e0",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-01-31"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201301290005717748_api.json",
+      "sha256": "375952b08e3f85554ddbdc862274cba1e155edf4e1707cd9e404cf8bce0f40b7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所批准及实施段确认撤风险、普通简称和10%涨跌幅，完整清零ST类别。"
+}

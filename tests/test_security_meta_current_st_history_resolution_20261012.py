@@ -42,7 +42,7 @@ def test_unresolved_same_date_st_cache_is_not_reused(unresolved_688496, monkeypa
     before = cache.read_bytes()
     calls = []
 
-    def unresolved_builder(symbol):
+    def unresolved_builder(symbol, *, as_of=None):
         calls.append(symbol)
         return old
 
@@ -66,7 +66,7 @@ def test_resolved_official_history_replaces_snapshot_only_cache(unresolved_68849
         ],
     }
 
-    def resolved_builder(symbol):
+    def resolved_builder(symbol, *, as_of=None):
         calls.append(symbol)
         return verified
 
@@ -104,7 +104,7 @@ def test_official_builder_does_not_overwrite_unresolved_history_in_place(unresol
     monkeypatch.setitem(ns, "fetch_cninfo_st_notices", official_notices)
     with pytest.raises(ns["SecurityMetaHistoryCorrectionRequired"], match="exact-hash lineage review"):
         ns["load_security_meta"]("688496")
-    assert calls == [("688496", "20221228", "20260910")]
+    assert calls == [("688496", "19900101", "20260910")]
     assert cache.read_bytes() == before
 
 
@@ -144,11 +144,14 @@ def test_official_cache_panel_loader_fails_closed_on_unresolved_history(tmp_path
             return share
         return None
 
-    def unresolved_meta(_symbol):
+    def unresolved_meta(_symbol, *, as_of=None):
         raise ns["SecurityMetaHistoryEvidenceUnresolved"]("688496 history remains unresolved")
 
     monkeypatch.setitem(ns, "resolve_cache_path", resolve_cache_path)
     monkeypatch.setitem(ns, "load_security_meta", unresolved_meta)
+    # Metadata fault test: isolate the separately tested return-source boundary.
+    from scripts import stock_return_pipeline
+    monkeypatch.setattr(stock_return_pipeline, "load_return_prices", lambda **kwargs: pd.DataFrame())
     dates = pd.DatetimeIndex([pd.Timestamp("2026-09-10")])
     with pytest.raises(RuntimeError, match="symbol cache panel load failed for 1 symbols") as exc:
         freq.load_cache_panels(

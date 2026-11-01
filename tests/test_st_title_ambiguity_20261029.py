@@ -48,7 +48,7 @@ def test_retained_other_and_duplicate_withdrawal(funcs):
     events=pd.DataFrame([
        ('2024-01-02','关于实施退市风险警示及其他风险警示的公告'),
        ('2024-02-01','关于撤销退市风险警示的公告'),
-       ('2024-02-02','关于撤销退市风险警示的提示性公告'),
+       ('2024-02-02','关于撤销退市风险警示的公告'),
        ('2024-03-01','关于撤销其他风险警示的公告')],columns=['notice_date','title'])
     spans=funcs['build_st_intervals_from_notices'](pd.Timestamp('2020-01-02'),pd.Timestamp('2025-01-02'),events)
     assert [(r['start'],r['end']) for r in spans]==[('2024-01-02','2024-03-01')]

@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600423",
+    "announcement_id": "AN201704290540712863",
+    "notice_date": "2017-04-29",
+    "title": "柳化股份关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+    "provider_title": "600423:柳化股份关于公司股票实施退市风险警示和公司债券可能暂停交易的公告",
+    "removed_issuer_prefix": "600423:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704290540712863_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704290540712863_1.pdf",
+    "body_notice_number": "2017-0381",
+    "relative_pdf_path": "AN201704290540712863.pdf",
+    "sha256": "fbd75753df241fb3c4c994f4efd2407d00d41fdc8a4c99dcd1d647a1fe1849eb",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2017-05-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201704290540712863_api.json",
+      "sha256": "11fd949aa155347172a497009bf882ae3235e122025e0d158d3b0d788b634028",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

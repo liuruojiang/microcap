@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000750",
+    "announcement_id": "AN201203010004643402",
+    "notice_date": "2010-08-05",
+    "title": "关于撤销股票交易退市风险警示处理的公告",
+    "provider_title": "S*ST集琦：关于撤销股票交易退市风险警示处理的公告",
+    "removed_issuer_prefix": "S*ST集琦：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004643402_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004643402_1.pdf",
+    "body_notice_number": "2010-020",
+    "relative_pdf_path": "AN201203010004643402.pdf",
+    "sha256": "40e394fcf8c02d9ac96918bfcc886693e6c33de483007092ce6138320218cda9",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2010-08-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004643402_api.json",
+      "sha256": "d41f9474fc76c64864b8848f95ee7187c87a58b201566c017d156e07b0c4cb57",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确8月6日核准撤销退市风险但仍实行其他特别处理，S*ST集琦变SST集琦、5%不变；双类别确定并保留其他风险。"
+}

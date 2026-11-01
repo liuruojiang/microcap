@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600385",
+    "announcement_id": "AN201504300009454529",
+    "notice_date": "2015-05-01",
+    "title": "ST金泰关于公司股票撤销其他风险警示的公告",
+    "provider_title": "600385:ST金泰关于公司股票撤销其他风险警示的公告",
+    "removed_issuer_prefix": "600385:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504300009454529_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504300009454529_1.pdf",
+    "body_notice_number": "2015-008",
+    "relative_pdf_path": "AN201504300009454529.pdf",
+    "sha256": "f9c27d09ee3b76f830b4d19a2aaea6c1ff40952021632ce0690fe0726e86b25c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504300009454529_api.json",
+      "sha256": "01acbf25a916bf47c40574e2c9f49ec65ce89cd70d4a290c438bd937e51ce5ff",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 API公告日期2015-05-01，但PDF落款2015-05-04，须核对披露日期；未擅改源日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json 保留API实际公告日2015-05-01（非董事会落款5/4）；同URL二次实收相同SHA，源PDF3页完整可读但末尾原生%%EO缺F，未补写原件。同期4/30新闻佐证此前已公开，不由落款覆盖API公告日。"
+}

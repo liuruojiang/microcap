@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000408",
+    "announcement_id": "AN201203020004839211",
+    "notice_date": "2011-05-25",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST金谷：关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST金谷：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004839211_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004839211_1.pdf",
+    "body_notice_number": "2011-12",
+    "relative_pdf_path": "AN201203020004839211.pdf",
+    "sha256": "3d9855e170e980684c2c39ec4ec196fdecb9297e43310c079b3fdfd5e02144fe",
+    "risk_actions": {
+      "delisting": false,
+      "unspecified": true
+    },
+    "actual_effective_date": "2011-05-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004839211_api.json",
+      "sha256": "f105ffdc73fdec89bcb00c77db138d8de1847d05b64bf1d37fd0532999098637",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市风险但仍简称ST金谷源/5%限制，仅证明风险保留，未明确other类别；保留unknown不推测。"
+}

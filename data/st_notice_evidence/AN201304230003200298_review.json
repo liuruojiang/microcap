@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000030",
+    "announcement_id": "AN201304230003200298",
+    "notice_date": "2013-04-23",
+    "title": "关于撤销股票交易退市风险警示和变更证券简称的公告",
+    "provider_title": "*ST盛润A:关于撤销股票交易退市风险警示和变更证券简称的公告",
+    "removed_issuer_prefix": "*ST盛润A:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304230003200298_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304230003200298_1.pdf",
+    "body_notice_number": "2013-39",
+    "relative_pdf_path": "AN201304230003200298.pdf",
+    "sha256": "d2346bc0c3475b760defa3d2b6da2379d48fa3fdd7458333e226d768bbfcd070",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-24"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304230003200298_api.json",
+      "sha256": "11abcb0b9c7d8cf7681ac3a18dd736d2b1f3c09dbe22141f2879dee99f91c5ac",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "全文确认退市风险撤销且不存在其他风险，4月24日普通富奥A/B恢复10%限制。"
+}

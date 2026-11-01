@@ -106,7 +106,11 @@ def test_pack_accepts_long_holiday_when_anchors_match_completed_session(
     previous = completed - date.resolution
     monkeypatch.setattr(exchange_calendar, "sessions_for_day",
                         lambda _day: (previous, completed))
-    for path in workspace.rglob("*"):
+    # Shift only synthetic strategy outputs, never immutable issuer evidence.
+    synthetic_paths = list((workspace / "outputs").rglob("*"))
+    synthetic_paths += list((workspace / state.PRICE_CACHE_DIR).glob("*.csv"))
+    synthetic_paths += list((workspace / state.SHARE_CACHE_DIR).glob("*.csv"))
+    for path in synthetic_paths:
         if path.is_file():
             payload = path.read_bytes()
             payload = payload.replace(b"2026-09-03", completed_text.encode("ascii"))

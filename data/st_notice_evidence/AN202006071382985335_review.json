@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002072",
+    "announcement_id": "AN202006071382985335",
+    "notice_date": "2020-06-08",
+    "title": "关于撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "provider_title": "*ST凯瑞:关于撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST凯瑞:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202006071382985335_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202006071382985335_1.pdf",
+    "body_notice_number": "2020-L048",
+    "relative_pdf_path": "AN202006071382985335.pdf",
+    "sha256": "b63f7165639c65bcc5463fb2c1348539a72436c95cb08686b2a7c215a397ba3e",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2020-06-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202006071382985335_api.json",
+      "sha256": "97573103c52d7bca29cbafcb2c3f62d5cce8af0779fede5c4e53d0d5ca5c7448",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文已批准撤退市，但违规担保其他风险未消除，6月9日ST凯瑞并继续5%，保留other。"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600707",
+    "announcement_id": "AN201303250005803180",
+    "notice_date": "2013-03-26",
+    "title": "关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "provider_title": "彩虹股份：关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "removed_issuer_prefix": "彩虹股份：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303250005803180_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201303250005803180_1.pdf",
+    "body_notice_number": "临2013-006",
+    "relative_pdf_path": "AN201303250005803180.pdf",
+    "sha256": "5189044292d9ace1be31e92a23410603a514c37484002d1773f3bac9943be256",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201303250005803180_api.json",
+      "sha256": "28232e44622a82caa8631f3b503bcc4edba1f043ae2f422b98c5af303d80b694",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文为年报前预计亏损提示，2012年报尚待披露，不是交易所实施决定。"
+}

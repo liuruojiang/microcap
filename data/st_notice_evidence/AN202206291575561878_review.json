@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000509",
+    "announcement_id": "AN202206291575561878",
+    "notice_date": "2022-06-30",
+    "title": "关于撤销退市风险警示暨停牌的公告",
+    "provider_title": "*ST华塑:关于撤销退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "*ST华塑:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206291575561878_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206291575561878_1.pdf",
+    "body_notice_number": "2022-046",
+    "relative_pdf_path": "AN202206291575561878.pdf",
+    "sha256": "6f2d6668f9360eddb35fb04e3036f5f7e07ecf2217f207a15e447444eb4c8c78",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2022-07-01"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202206291575561878_api.json",
+      "sha256": "dddc39c16e73d7ce5f81db835028fff02ec0efe236b1311cb18e056e85622b0e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "已核原文对应股票代码/发行人、核准段和实施段：交易所已批准撤销，恢复普通名称及10%涨跌幅，完整退出ST风险；不将标题未提其他风险误解为保留旧类别。正文回顾不倒填历史公开日期。"
+}

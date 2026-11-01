@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000980",
+    "announcement_id": "AN202201141540406359",
+    "notice_date": "2022-01-15",
+    "title": "公司关于撤销对公司股票交易因重整而被实施退市风险警示情形但仍处于退市风险警示状态的公告",
+    "provider_title": "*ST众泰:公司关于撤销对公司股票交易因重整而被实施退市风险警示情形但仍处于退市风险警示状态的公告",
+    "removed_issuer_prefix": "*ST众泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202201141540406359_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202201141540406359_1.pdf",
+    "body_notice_number": "2022—010",
+    "relative_pdf_path": "AN202201141540406359.pdf",
+    "sha256": "6030458b502733f07839841980ec67c5dfcbfa5eb11d9d00301b1a7c76e5e688",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202201141540406359_api.json",
+      "sha256": "fc7781117721502f07cd8eceb980a53b6882ea0e8fb1e108d822fe98096c8c82",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "仅撤销重整原因，正文重要提示及第一节明确财务退市原因不变、仍处于退市叠加其他风险；没有新增实际生效日，不能将单一原因撤销误作全类退出。"
+}

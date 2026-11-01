@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600714",
+    "announcement_id": "AN201203020004819787",
+    "notice_date": "2011-04-28",
+    "title": "关于撤销股票交易其他特别处理和变更股票简称的公告",
+    "provider_title": "ST金瑞：关于撤销股票交易其他特别处理和变更股票简称的公告",
+    "removed_issuer_prefix": "ST金瑞：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004819787_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004819787_1.pdf",
+    "body_notice_number": "2011-007",
+    "relative_pdf_path": "AN201203020004819787.pdf",
+    "sha256": "8aa5e6f2d20ba4c40a875d536bcfdfe935457c4c4ed0d8007f46d4aa21fe094d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-04-29"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004819787_api.json",
+      "sha256": "16322c3e9515222b5de6cd0012cbb914538fc7f7bc37411cc828be0f3de55ab0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确实施日及新简称；无ST新简称及10%幅度支持完全撤销，ST简称及5%幅度支持退市风险撤销但其他风险继续。 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：withdrawal_sync17_20261101/adjudication.json"
+}

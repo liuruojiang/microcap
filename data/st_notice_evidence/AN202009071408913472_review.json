@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300029",
+    "announcement_id": "AN202009071408913472",
+    "notice_date": "2020-09-07",
+    "title": "关于公司股票交易将被实施其他风险警示(ST)的风险提示公告",
+    "provider_title": "天龙光电:关于公司股票交易将被实施其他风险警示(ST)的风险提示公告",
+    "removed_issuer_prefix": "天龙光电:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009071408913472_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009071408913472_1.pdf",
+    "body_notice_number": "2020-088",
+    "relative_pdf_path": "AN202009071408913472.pdf",
+    "sha256": "e8e58dbdec4cd48589a6d46bf1da00eea5c83ead3564c6212909746eb6a49c1b",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202009071408913472_api.json",
+      "sha256": "3036aebf7ef72dbb655b5c52f1f852156cbc4bc964a31d6fb60b7de8a5696354",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Same pre-rule notice remains pending, no current transition. Separate actual later notice AN202009131411572897 establishes announcement2020-09-14 and execution2020-09-15; do not backdate. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json 主代理与root重读原文更正旧PENDING建议：已触及且肯定宣布新规施行后将ST，非未来可能条件；按既定公告日policy排除，保留API公告日2020-09-08，不把落款9/7当公告、不把规则9/12当实施交易日。"
+}

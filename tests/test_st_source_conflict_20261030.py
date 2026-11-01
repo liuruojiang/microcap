@@ -1,3 +1,4 @@
+from st_evidence_fixture import copy_real_evidence_subset
 """Real reviewed conflict plus adversarial mutations of its identity and bytes."""
 import json
 import shutil
@@ -15,7 +16,7 @@ ID = '1220378276'
 
 @pytest.fixture
 def isolated(tmp_path):
-    shutil.copytree(ROOT / 'data/st_notice_evidence', tmp_path / 'data/st_notice_evidence')
+    copy_real_evidence_subset(ROOT, tmp_path, [ID, '1225251716'])
     path = tmp_path / 'data/st_notice_evidence/registry.json'
     registry = json.loads(path.read_text(encoding='utf-8-sig'))
     return tmp_path, path, registry, next(e for e in registry['events'] if e['announcement_id'] == ID)

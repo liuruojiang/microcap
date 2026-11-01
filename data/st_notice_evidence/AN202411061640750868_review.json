@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002602",
+    "announcement_id": "AN202411061640750868",
+    "notice_date": "2024-11-07",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "世纪华通:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "世纪华通:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411061640750868_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411061640750868_1.pdf",
+    "body_notice_number": "2024-065",
+    "relative_pdf_path": "AN202411061640750868.pdf",
+    "sha256": "5789dce0f32d8e61ea0d56a3387772907f79d3f3506a943ae37c44ddd56b6c92",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-11-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202411061640750868_api.json",
+      "sha256": "7ce799d61eeddcde13a176966f59bbbd35dbc8eee019255e5c9a6662ddf88deb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确世纪华通11月8日起改ST华通。"
+}

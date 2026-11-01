@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000818",
+    "announcement_id": "AN201203150005041374",
+    "notice_date": "2012-03-12",
+    "title": "关于撤销公司股票其它特别处理的公告",
+    "provider_title": "ST化工：关于撤销公司股票其它特别处理的公告",
+    "removed_issuer_prefix": "ST化工：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203150005041374_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203150005041374_1.pdf",
+    "body_notice_number": "2012-039",
+    "relative_pdf_path": "AN201203150005041374.pdf",
+    "sha256": "78896fb42e2c7c3c258c5fe252888edf55ea07ca6531d6153d0508bbba65821d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-03-13"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203150005041374_api.json",
+      "sha256": "7c82bb79f279fc1f83bc215dc97bc0e76a66bc9aad5b317e4a2e831c85bb7ca0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他特别处理，普通方大化工10%。"
+}

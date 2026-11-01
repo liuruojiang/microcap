@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002800",
+    "announcement_id": "AN202304261585919558",
+    "notice_date": "2023-04-27",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "天顺股份:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "天顺股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304261585919558_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304261585919558_1.pdf",
+    "body_notice_number": "2023-028",
+    "relative_pdf_path": "AN202304261585919558.pdf",
+    "sha256": "b6afdd8193e3291a326446421be778f74f11dedeebffa7adb7be12285ceb13ad",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2023-04-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304261585919558_api.json",
+      "sha256": "64214b95bf2246bcec12d7189888843e56cb102cc09072186c255161b3032834",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确4月28日其他风险改ST天顺。"
+}

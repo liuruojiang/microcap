@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000921",
+    "announcement_id": "AN201304210003193247",
+    "notice_date": "2013-04-22",
+    "title": "关于撤销A股股票交易其他风险警示及变更A股股票简称的公告",
+    "provider_title": "ST科龙:关于撤销A股股票交易其他风险警示及变更A股股票简称的公告",
+    "removed_issuer_prefix": "ST科龙:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304210003193247_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304210003193247_1.pdf",
+    "body_notice_number": "2013-014",
+    "relative_pdf_path": "AN201304210003193247.pdf",
+    "sha256": "404f0b5ddc7453a7cf0644563891c9cec07327bddf881aa7ee560b66d1e05a72",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304210003193247_api.json",
+      "sha256": "d5cc3eaebe36cfd18c53d23947732aa79fa5b9feb475c413549c77335b439968",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确两类风险均不再存在，核准A股恢复普通海信科龙10%，不扩及H股。"
+}

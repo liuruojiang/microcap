@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000955",
+    "announcement_id": "AN201305060003231443",
+    "notice_date": "2013-05-07",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST欣龙:关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST欣龙:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305060003231443_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305060003231443_1.pdf",
+    "body_notice_number": "2013-025",
+    "relative_pdf_path": "AN201305060003231443.pdf",
+    "sha256": "9b9dee443329681c7f1ccd92542aa5615f7704eafe88cbc576e7e3b1e3599c79",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305060003231443_api.json",
+      "sha256": "123439923f87268107bba1fad9339cfcb9db9ea33efe04ed9a0362410cefef1d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤其他风险，普通欣龙控股10%。末段证券代码误写000995；页首代码000955、公司主体及落款欣龙、API发行人均000955，不能据笔误映射皇台。原字节保留。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002506",
+    "announcement_id": "AN201508050010404902",
+    "notice_date": "2015-08-06",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST集成:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST集成:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201508050010404902_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201508050010404902_1.pdf",
+    "body_notice_number": "2015-086",
+    "relative_pdf_path": "AN201508050010404902.pdf",
+    "sha256": "dcc9c2bbe80e24b97fb21d3ed2110e4567d2bea1ea7a46e58041c10b555f5ce3",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-08-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201508050010404902_api.json",
+      "sha256": "3437d14a98155b85c4d4350536e1a9ff48994e163996ace4f6301c529dad9fb9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准段明确批准撤销且普通简称恢复；明确无其他风险或同时撤销两类，普通交易10%（恢复上市首日例外不改变ST状态），完整清零旧类别。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600792",
+    "announcement_id": "AN201203030004939337",
+    "notice_date": "2011-10-31",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST马龙：关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST马龙：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004939337_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004939337_1.pdf",
+    "body_notice_number": "2011-36",
+    "relative_pdf_path": "AN201203030004939337.pdf",
+    "sha256": "fc3b8311464069ef4b96fd03f1d8fe82d9d3f65f032279edfb36f1921a3a4222",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-11-01"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004939337_api.json",
+      "sha256": "f56bd994f4259278955089f47a72ad6319f8d97d1fbcb47cee77bb069edc9966",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段确定普通名称和10%涨跌幅，退出全部ST类别；保留提供方公开日，不用历史回顾或落款提前公告日。"
+}

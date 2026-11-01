@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000509",
+    "announcement_id": "AN201203030004932107",
+    "notice_date": "2011-10-25",
+    "title": "关于撤销退市风险警示的特别处理及实施其他特别处理的公告",
+    "provider_title": "S*ST华塑：关于撤销退市风险警示的特别处理及实施其他特别处理的公告",
+    "removed_issuer_prefix": "S*ST华塑：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004932107_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004932107_1.pdf",
+    "body_notice_number": "2011-050",
+    "relative_pdf_path": "AN201203030004932107.pdf",
+    "sha256": "959558f2106f22751ece130417e8a92b30bb7f40cce0d322bb22db24d15b5d34",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-10-26"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004932107_api.json",
+      "sha256": "df8c742781ce10ce5ca68dca1122289d6dd38d5e78acf2deec1b08432be03b42",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市风险并实行其他特别处理，仍SST华塑5%。"
+}

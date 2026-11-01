@@ -1,0 +1,36 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000856",
+    "announcement_id": "AN201208060005411940",
+    "notice_date": "2012-08-07",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "ST唐陶：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "ST唐陶：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208060005411940_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208060005411940_1.pdf",
+    "body_notice_number": "2012-28",
+    "relative_pdf_path": "AN201208060005411940.pdf",
+    "sha256": "ca598129b564e12332247bf50d96d97557fa046df339d55c80840d2a6d4f4291",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208060005411940_api.json",
+      "sha256": "e99dc89574dec1c5e3b6bf403920388c26f517eac4db9e181050e1bffdb8fcf6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    },
+    "issuer_corroboration": {
+      "relative_path": "AN201208060005411940_corroboration.pdf",
+      "sha256": "cdf834af00cd7cee56eb8860223c7639d830cbe3169f25c3f1253e4f90cf29eb",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2012-08-24/61470697.PDF"
+    }
+  },
+  "review_notes": "原公告2012-28有内部措辞矛盾：一句称撤退市并其他处理，但标题撤其他、同段恢复普通冀东装备/10%。独立发行人2012半年报（CNInfo61470697，第23页）明确交易所核准8月8日撤其他特别处理及普通名称10%，与真实历史名称一致，证实该句错误。保留原件矛盾及辅证，公告日仍原API2012-08-07，不以8月24日报告回顾倒填首次可得日期。"
+}

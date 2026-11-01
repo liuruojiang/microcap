@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002197",
+    "announcement_id": "AN202404291631673341",
+    "notice_date": "2024-04-30",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "provider_title": "证通电子:关于公司股票交易将被实施其他风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "证通电子:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404291631673341_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404291631673341_1.pdf",
+    "body_notice_number": "2024-029",
+    "relative_pdf_path": "AN202404291631673341.pdf",
+    "sha256": "57c3aad2d98e79cab7450df89edb424c34f0d7905fec9fc981d9a269a5e9be04",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2024-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404291631673341_api.json",
+      "sha256": "e3cc312cb9758ebdef013c0856496f67c0a22aa8365b8122b6555ebfec22a91d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确证通电子改ST证通，4月30日停牌，5月6日实施其他风险警示。"
+}

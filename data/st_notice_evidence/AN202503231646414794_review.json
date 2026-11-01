@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300175",
+    "announcement_id": "AN202503231646414794",
+    "notice_date": "2025-03-24",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "provider_title": "朗源股份:关于公司股票交易将被实施其他风险警示暨股票停复牌的提示性公告",
+    "removed_issuer_prefix": "朗源股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503231646414794_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202503231646414794_1.pdf",
+    "body_notice_number": "2025-004",
+    "relative_pdf_path": "AN202503231646414794.pdf",
+    "sha256": "19844cdd9ec21df2be3c7806cc78a13289917000e48f2e8824b763979bce38c4",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-03-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202503231646414794_api.json",
+      "sha256": "b4fcb1ee6c33e302a6456f5a4603e8f11968e05ebdc8c0a11bb7b93a2d56723d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002163",
+    "announcement_id": "AN201505040009482612",
+    "notice_date": "2015-05-05",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST三鑫:关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST三鑫:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201505040009482612_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201505040009482612_1.pdf",
+    "body_notice_number": "2015-036",
+    "relative_pdf_path": "AN201505040009482612.pdf",
+    "sha256": "18a8eafc146c1993e9d8d371a633d097525bd9f387ee5e6fcb073b0bc943d7fe",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201505040009482612_api.json",
+      "sha256": "a420707f706b5d9e72840f1a00e3821f95a4b724a318c52efe14dea78e0fbf55",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文核验交易所已经审核批准，实施段明确普通简称、10%及无其他风险；提示性标题在本件属于已批准实施，退出全部ST类别。"
+}

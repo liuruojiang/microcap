@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000557",
+    "announcement_id": "AN201605040014704931",
+    "notice_date": "2016-05-05",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST广夏:关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST广夏:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201605040014704931_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201605040014704931_1.pdf",
+    "body_notice_number": "2016-034",
+    "relative_pdf_path": "AN201605040014704931.pdf",
+    "sha256": "b6b264a0b1e99254509f1e56328de27725ecafc90f40d2511d81bc341a6b28ae",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2016-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201605040014704931_api.json",
+      "sha256": "ac41e7d323230d158cec55808dd9e8e8ba05a8b1171b286258059292b70f01cd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确无两类风险，交易所核准5月6日普通银广夏10%。"
+}

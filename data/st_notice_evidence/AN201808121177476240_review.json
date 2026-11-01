@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002496",
+    "announcement_id": "AN201808121177476240",
+    "notice_date": "2018-08-13",
+    "title": "关于公司股票交易实施其他风险警示的公告",
+    "provider_title": "辉丰股份:关于公司股票交易实施其他风险警示的公告",
+    "removed_issuer_prefix": "辉丰股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201808121177476240_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201808121177476240_1.pdf",
+    "body_notice_number": "2018-096",
+    "relative_pdf_path": "AN201808121177476240.pdf",
+    "sha256": "324ef043d6314bd984ac0ec4218f89a6288b936565456bab855835de1617ec73",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2018-08-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201808121177476240_api.json",
+      "sha256": "f5825a23148852f54f26064e56bcd30fc82f95bf361be358320e10def28f4997",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer implementation; PDF board signature2018-08-10 is not public notice_date2018-08-13. Complete bounded f_node0 pages captured, no IPO anchor modified. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_price_002496_actual_entry_20261101.json"
+}

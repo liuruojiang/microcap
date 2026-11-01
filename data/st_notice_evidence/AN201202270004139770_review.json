@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600721",
+    "announcement_id": "AN201202270004139770",
+    "notice_date": "2007-06-26",
+    "title": "关于撤销退市风险警示的公告",
+    "provider_title": "S*ST百花：关于撤销退市风险警示的公告",
+    "removed_issuer_prefix": "S*ST百花：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004139770_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004139770_1.pdf",
+    "body_notice_number": "临2007-018",
+    "relative_pdf_path": "AN201202270004139770.pdf",
+    "sha256": "515d4190b3a92842079cbdc4f1acee1f5129495d4ba8338a45c50d64a35f788f",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2007-06-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202270004139770_api.json",
+      "sha256": "9715564ecf3e503756d6a6cb9602569ae16b8755d2f1668c6c0f1b7bbbe32760",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市并实行其他特别处理，仍ST/SST及5%，保留other；不是依据简称猜类别。"
+}

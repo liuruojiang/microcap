@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600381",
+    "announcement_id": "AN202504251662283106",
+    "notice_date": "2025-04-26",
+    "title": "青海春天关于公司股票将被实施退市风险警示的提示性公告",
+    "provider_title": "ST春天:青海春天关于公司股票将被实施退市风险警示的提示性公告",
+    "removed_issuer_prefix": "ST春天:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202504251662283106_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202504251662283106_1.pdf",
+    "body_notice_number": "2025-011",
+    "relative_pdf_path": "AN202504251662283106.pdf",
+    "sha256": "57e2d69571906ffcd5731409de3bbe87970375bf601ea57fbb097308f332e6a4",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202504251662283106_api.json",
+      "sha256": "4a5549c0efe2de7a38666707bc74ea5a9ed464d5b7b25df4e2cf53dfd0c4a4bd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：业绩预测修正，原文如经审计触及条件才实施；无当前动作。"
+}

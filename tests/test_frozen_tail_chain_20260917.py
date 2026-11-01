@@ -17,6 +17,14 @@ def chain(tmp_path, monkeypatch):
     monkeypatch.setitem(ns, "_proxy_meta_core_matches_execution_model", lambda meta: True)
     monkeypatch.setitem(ns, "proxy_meta_matches_execution_model", lambda meta: False)
     monkeypatch.setitem(ns, "refresh_price_cache_tail", lambda *a, **kw: None)
+    monkeypatch.setitem(ns, "stock_input_evidence_fingerprint", lambda: {"fixture": "state_boundary_only"})
+    from scripts import stock_tail_returns
+    def fixture_tail(**kwargs):
+        values = pd.Series(0.01, index=pd.DatetimeIndex(kwargs["tail_dates"]))
+        values.iloc[0] = 0.0
+        return values
+    monkeypatch.setattr(stock_tail_returns, "load_tail_returns", fixture_tail)
+    monkeypatch.setattr(base.freq_mod, "load_security_master", lambda: pd.DataFrame())
     dates = pd.bdate_range("2026-09-17", "2026-10-02")
     seed = dates[0]
     paths = {key: tmp_path / (key + ".csv") for key in ["proxy_members", "proxy_turnover", "proxy_effective_members", "panel_shadow"]}
@@ -26,7 +34,8 @@ def chain(tmp_path, monkeypatch):
     symbols = ["000001", "000002"]
     pd.DataFrame({"date": dates}).to_csv(paths["panel_shadow"], index=False)
     pd.DataFrame({"rebalance_date": [seed] * 2, "rank": [1, 2], "symbol": symbols}).to_csv(paths["proxy_members"], index=False)
-    pd.DataFrame({"rebalance_date": [seed], "entry_count": [0], "exit_count": [0]}).to_csv(paths["proxy_turnover"], index=False)
+    pd.DataFrame({"rebalance_date": [seed], "execution_date": [seed], "effective_date": [seed],
+                  "return_start_date": [seed], "entry_count": [0], "exit_count": [0]}).to_csv(paths["proxy_turnover"], index=False)
     pd.DataFrame({"as_of_date": [seed] * 2, "rank": [1, 2], "symbol": symbols}).to_csv(paths["proxy_effective_members"], index=False)
     pd.DataFrame({"date": [seed], "close": [100.0], "daily_return": [0.01], "holding_count": [2], "holding_effective": [True]}).to_csv(args.index_csv, index=False)
     gross = pd.DataFrame(index=dates.rename("date"))
@@ -53,7 +62,9 @@ def chain(tmp_path, monkeypatch):
     monkeypatch.setattr(base.freq_mod, "CURRENT_ST", st)
     monkeypatch.setattr(base.freq_mod, "load_current_st_name_map", lambda: {"999999": "*ST test"})
     fp = {"present_count": 10, "missing_count": 0, "sha256": "test-authorized-metadata"}
-    meta = {"core_params": {"security_meta_cache_fingerprint": fp}}
+    meta = {"core_params": {"security_meta_cache_fingerprint": fp},
+            "return_basis_consumption": {"revision": "stock_return_consumption_v1",
+                "full_rebuild_anchor": str(seed.date()), "tail_extensions": []}}
     paths["proxy_meta"].write_text(json.dumps(meta), encoding="utf-8")
     authority = {"version": base.FROZEN_TAIL_AUTHORITY_VERSION, "seed_end_date": str(seed.date()),
                  "security_meta_cache_fingerprint": fp, "seed_file_rows": {"proxy_index": 1, "costed_nav": 1},
@@ -74,6 +85,48 @@ def extend(state, target):
     meta = json.loads(state.paths["proxy_meta"].read_text(encoding="utf-8"))
     assert state.base.frozen_tail_extension_matches_authority(state.args, state.paths, meta, target, target)
     return meta
+
+
+def test_missing_tail_return_is_not_silently_zero(chain, monkeypatch):
+    from scripts import stock_tail_returns
+    def missing(**kwargs):
+        return pd.Series(float('nan'), index=pd.DatetimeIndex(kwargs['tail_dates']))
+    monkeypatch.setattr(stock_tail_returns, 'load_tail_returns', missing)
+    before = chain.args.index_csv.read_bytes()
+    with pytest.raises(ValueError, match='Incomplete finite member returns'):
+        extend(chain, '2026-09-18')
+    assert chain.args.index_csv.read_bytes() == before
+
+
+def test_member_authority_drift_cannot_publish_tail(chain, monkeypatch):
+    namespace = chain.base.ensure_strategy_files.__globals__
+    def mutate(*args, **kwargs):
+        path = chain.paths['proxy_members']
+        path.write_bytes(path.read_bytes() + b'\n')
+    monkeypatch.setitem(namespace, 'refresh_price_cache_tail', mutate)
+    before = chain.args.index_csv.read_bytes()
+    with pytest.raises(ValueError, match='Member authorities changed'):
+        extend(chain, '2026-09-18')
+    assert chain.args.index_csv.read_bytes() == before
+
+
+def test_first_return_day_after_completed_close_execution_allows_tail(chain):
+    turnover = pd.read_csv(chain.paths['proxy_turnover'])
+    turnover['return_start_date'] = '2026-09-18'
+    turnover.to_csv(chain.paths['proxy_turnover'], index=False)
+    assert chain.base.try_extend_proxy_index_without_rebalance(
+        chain.args, chain.paths, chain.paths['panel_shadow'], pd.Timestamp('2026-09-18'))
+
+
+def test_actual_execution_inside_tail_requires_rebalance_path(chain):
+    turnover = pd.read_csv(chain.paths['proxy_turnover'])
+    for column in ('execution_date', 'effective_date', 'return_start_date'):
+        turnover[column] = '2026-09-18'
+    turnover.to_csv(chain.paths['proxy_turnover'], index=False)
+    before = chain.args.index_csv.read_bytes()
+    assert not chain.base.try_extend_proxy_index_without_rebalance(
+        chain.args, chain.paths, chain.paths['panel_shadow'], pd.Timestamp('2026-09-18'))
+    assert chain.args.index_csv.read_bytes() == before
 
 
 def test_repeated_daily_extensions_keep_seed_identity_and_frozen_bytes(chain):

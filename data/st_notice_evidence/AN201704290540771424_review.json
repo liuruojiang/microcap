@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600654",
+    "announcement_id": "AN201704290540771424",
+    "notice_date": "2017-04-29",
+    "title": "中安消关于公司股票将被实施退市风险警示暨股票停牌的提示性公告",
+    "provider_title": "600654:中安消关于公司股票将被实施退市风险警示暨股票停牌的提示性公告",
+    "removed_issuer_prefix": "600654:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704290540771424_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704290540771424_1.pdf",
+    "body_notice_number": "2017-077",
+    "relative_pdf_path": "AN201704290540771424.pdf",
+    "sha256": "1cb1a651925addbf709aaf41fb6e1a5da49ebf66444a7e6a1f23d1aa715add33",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2017-05-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201704290540771424_api.json",
+      "sha256": "05404702bceb92904e33bd7d23089a7d4e41111b8ccdba2c7dcdb221a874f038",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "无法表示意见审计已出具，正文明确5月3日实施；简称在提示段写*ST中安、第一节写*ST中安消存在字面差异，但代码、发行人、风险类别和日期一致，不由简称猜类别。"
+}

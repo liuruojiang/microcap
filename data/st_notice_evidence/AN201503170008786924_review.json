@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600069",
+    "announcement_id": "AN201503170008786924",
+    "notice_date": "2015-03-18",
+    "title": "银鸽投资关于公司股票将被实施退市风险警示、公司债券可能被暂停上市交易的第三次提示性公告",
+    "provider_title": "600069:银鸽投资关于公司股票将被实施退市风险警示、公司债券可能被暂停上市交易的第三次提示性公告",
+    "removed_issuer_prefix": "600069:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503170008786924_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503170008786924_1.pdf",
+    "body_notice_number": "2015-017",
+    "relative_pdf_path": "AN201503170008786924.pdf",
+    "sha256": "2cadfae4f24a81407f0d499a2850ef47175b072c0853ea942df2233d39add2ad",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503170008786924_api.json",
+      "sha256": "df89e2ebe5595fc3ff148b609dfee12b80377b45f2f3830b9eb9dbeb41083d42",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：预计年度亏损/未经审计业绩快报，年报后才可能实施，含债券潜在暂停；无当前动作。"
+}

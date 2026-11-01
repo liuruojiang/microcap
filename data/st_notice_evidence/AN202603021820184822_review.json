@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600265",
+    "announcement_id": "AN202603021820184822",
+    "notice_date": "2026-03-03",
+    "title": "关于公司股票将被实施退市风险警示的第二次风险提示公告",
+    "provider_title": "ST景谷:关于公司股票将被实施退市风险警示的第二次风险提示公告",
+    "removed_issuer_prefix": "ST景谷:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603021820184822_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202603021820184822_1.pdf",
+    "body_notice_number": "2026-006",
+    "relative_pdf_path": "AN202603021820184822.pdf",
+    "sha256": "a8339a9b855d8b402532e1799a58c91c000baca88753a5dcd6a4454a06a21c05",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202603021820184822_api.json",
+      "sha256": "88a81e360c78c863bcca26f9c6741e73fa8388fcaae046ca6747c8323d2be077",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "预告/初测2025业绩，明确实际实施前还将另行公告；不在本公告日新增退市风险。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

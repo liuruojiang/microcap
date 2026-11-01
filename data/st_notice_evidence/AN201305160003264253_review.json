@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000670",
+    "announcement_id": "AN201305160003264253",
+    "notice_date": "2013-05-17",
+    "title": "关于撤销股票退市风险警示、变更股票简称的公告",
+    "provider_title": "S*ST天发:关于撤销股票退市风险警示、变更股票简称的公告",
+    "removed_issuer_prefix": "S*ST天发:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305160003264253_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305160003264253_1.pdf",
+    "body_notice_number": "2013-015",
+    "relative_pdf_path": "AN201305160003264253.pdf",
+    "sha256": "f337df867cec14ce6b2538a1dc75426f3173e996f09ff3253bab9157bd0acd3c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-20"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305160003264253_api.json",
+      "sha256": "542dbf3b196ce14cb3cc162b4bcd43bb4c91253773a59f1ab512d4582fa83c5c",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所批准撤退市风险并恢复正常交易，S*ST天发改S舜元（不含ST）；5%限制保留，不能只按5%推断仍ST。仅当日退出，不回填早年类别。"
+}

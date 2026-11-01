@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600610",
+    "announcement_id": "AN201505040009481633",
+    "notice_date": "2015-05-05",
+    "title": "*ST中毅关于公司股票撤销退市风险警示公告",
+    "provider_title": "600610:*ST中毅关于公司股票撤销退市风险警示公告",
+    "removed_issuer_prefix": "600610:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201505040009481633_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201505040009481633_1.pdf",
+    "body_notice_number": "临2015－030",
+    "relative_pdf_path": "AN201505040009481633.pdf",
+    "sha256": "6a2c91f6c27523e04ab5431108c3506d5dd30961dd9894f4c73b11d8c217d13a",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201505040009481633_api.json",
+      "sha256": "9804719364c83a13d43a97adc75f0709da70900596c4c4d4cb1ee831cf421985",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文交易所批准及实施段确认撤风险、普通简称和10%涨跌幅，完整清零ST类别。"
+}

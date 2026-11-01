@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300367",
+    "announcement_id": "AN202009081409437061",
+    "notice_date": "2020-09-08",
+    "title": "关于公司股票将被实行其他风险警示(ST)的提示性公告",
+    "provider_title": "东方网力:关于公司股票将被实行其他风险警示(ST)的提示性公告",
+    "removed_issuer_prefix": "东方网力:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009081409437061_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202009081409437061_1.pdf",
+    "body_notice_number": "2020-172",
+    "relative_pdf_path": "AN202009081409437061.pdf",
+    "sha256": "eddcf7c9f4d656b8444b876d345c91bc1b7828c6033f4a9acc450e917484077d",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202009081409437061_api.json",
+      "sha256": "6d04d28128634ae5ca5983b33c06448556529eae119352e172959dc1f57a9f4d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "2020-09-08预告，提及规则9/12生效和预计10/12前不能解决，不是确定股票实施日期；actions为空。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

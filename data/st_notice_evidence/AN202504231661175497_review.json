@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002211",
+    "announcement_id": "AN202504231661175497",
+    "notice_date": "2025-04-24",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停复牌的公告",
+    "provider_title": "宏达新材:关于公司股票交易将被实施其他风险警示暨股票停复牌的公告",
+    "removed_issuer_prefix": "宏达新材:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202504231661175497_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202504231661175497_1.pdf",
+    "body_notice_number": "2025-027",
+    "relative_pdf_path": "AN202504231661175497.pdf",
+    "sha256": "0f0125a8ec564a728bb8d5b1baaeffe5d1ba432438226385ae887fbc9587ab24",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2025-04-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202504231661175497_api.json",
+      "sha256": "1a1d2ab722d09ce11afaea1e1774b63255480829abf0f4be181eca53d96d5826",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

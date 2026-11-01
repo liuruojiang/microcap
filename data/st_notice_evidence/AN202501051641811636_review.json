@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300630",
+    "announcement_id": "AN202501051641811636",
+    "notice_date": "2025-01-05",
+    "title": "关于公司股票可能被实施重大违法强制退市及可转换公司债券交易相关风险提示公告",
+    "provider_title": "普利制药:关于公司股票可能被实施重大违法强制退市及可转换公司债券交易相关风险提示公告",
+    "removed_issuer_prefix": "普利制药:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202501051641811636_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202501051641811636_1.pdf",
+    "body_notice_number": "2025-003",
+    "relative_pdf_path": "AN202501051641811636.pdf",
+    "sha256": "46ddba1ef26982d5de574b14d72098c033a81545ee8107e358f355bffc278af2",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202501051641811636_api.json",
+      "sha256": "f1661d04d8d31f116335da90a2653c75e66ad2be758eabb44d3e83c99fbf866d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：行政处罚事先告知可能触及重大违法强制退市，最终以处罚决定书为准，未宣告当前ST进退。"
+}

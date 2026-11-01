@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002200",
+    "announcement_id": "AN202510261769368414",
+    "notice_date": "2025-10-27",
+    "title": "关于法院裁定受理公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST交投:关于法院裁定受理公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST交投:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202510261769368414_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202510261769368414_1.pdf",
+    "body_notice_number": "2025-096",
+    "relative_pdf_path": "AN202510261769368414.pdf",
+    "sha256": "e44ab3caf94410936d365ea852abe93fcd833e18d50e14b4d742010e8336e00a",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2025-10-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202510261769368414_api.json",
+      "sha256": "f225edf2b0451b25ac2c3fc49f9a5531cc58d76176cad3d16c6010c773abe7ec",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}

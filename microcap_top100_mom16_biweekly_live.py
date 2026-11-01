@@ -2819,12 +2819,18 @@ def build_live_target_members_map(
     out: dict[pd.Timestamp, list[str]] = {}
     for dt in rebalance_dates:
         cap_map = caps_by_date.get(pd.Timestamp(dt), {})
-        ranked = sorted(cap_map.items(), key=lambda x: x[1])
-        name_filter = is_live_tradable_name if exclude_current_st_names else is_tradable_name
+        # Historical caps already carry PIT ST, lifecycle and trading eligibility.
+        # A current delisted name must not erase the issuer's eligible history.
+        ranked = sorted(
+            ((symbol, float(cap)) for symbol, cap in cap_map.items()
+             if np.isfinite(float(cap)) and float(cap) > 0),
+            key=lambda item: (item[1], str(item[0])),
+        )
         tradable_members = [
             symbol
             for symbol, _ in ranked
-            if name_filter(name_map.get(str(symbol).zfill(6), ""))
+            if (not exclude_current_st_names
+                or is_live_tradable_name(name_map.get(str(symbol).zfill(6), "")))
         ][:top_n]
         out[pd.Timestamp(dt)] = tradable_members
     return out

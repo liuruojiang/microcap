@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300297",
+    "announcement_id": "AN202307141592279098",
+    "notice_date": "2023-07-14",
+    "title": "关于公司股票及可转换公司债券进入退市整理期交易的第二次风险提示公告",
+    "provider_title": "蓝盾退:关于公司股票及可转换公司债券进入退市整理期交易的第二次风险提示公告",
+    "removed_issuer_prefix": "蓝盾退:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307141592279098_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307141592279098_1.pdf",
+    "body_notice_number": null,
+    "relative_pdf_path": "AN202307141592279098.pdf",
+    "sha256": "2a11da916ee97634020a378547f3aeb9492ad36cc0f1e7018d8b0899d25b8b1e",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202307141592279098_api.json",
+      "sha256": "12a29870cb1be72029008cc9b07e7b26e2256098708ca7278ca51c8ad99488bd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：退市整理期股票及可转债风险提示，未宣告新的ST类别进退。"
+}

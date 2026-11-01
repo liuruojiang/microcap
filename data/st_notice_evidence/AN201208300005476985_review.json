@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600515",
+    "announcement_id": "AN201208300005476985",
+    "notice_date": "2012-08-31",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "ST海建：关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "ST海建：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208300005476985_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208300005476985_1.pdf",
+    "body_notice_number": "临2012-041",
+    "relative_pdf_path": "AN201208300005476985.pdf",
+    "sha256": "06937c172bdba6e5fa1a3e990701761af70eaa00a82c7565157fee073f9d0b42",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-09-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208300005476985_api.json",
+      "sha256": "e10b01249a9ddf8b8e014e17b4262d4253914d27804b6d1ce45d1a6eabfc1f8e",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准与实施段确认恢复普通简称及10%涨跌幅，完整退出ST类别，历史回顾不倒填首次公开日。"
+}

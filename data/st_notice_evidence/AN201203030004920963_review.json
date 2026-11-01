@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000818",
+    "announcement_id": "AN201203030004920963",
+    "notice_date": "2011-09-29",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST化工：关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST化工：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004920963_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004920963_1.pdf",
+    "body_notice_number": "2011-123",
+    "relative_pdf_path": "AN201203030004920963.pdf",
+    "sha256": "e547cea0e81aa11ef7f5822469a692ff41453305582ddcc284a6851dfd438da6",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-09-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004920963_api.json",
+      "sha256": "7c82bb79f279fc1f83bc215dc97bc0e76a66bc9aad5b317e4a2e831c85bb7ca0",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市风险并继续其他特别处理，仍ST化工。"
+}

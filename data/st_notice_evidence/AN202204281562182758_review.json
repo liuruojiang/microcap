@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600721",
+    "announcement_id": "AN202204281562182758",
+    "notice_date": "2022-04-29",
+    "title": "新疆百花村医药集团股份有限公司关于股票撤销退市风险警示暨停牌的公告",
+    "provider_title": "600721:新疆百花村医药集团股份有限公司关于股票撤销退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600721:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204281562182758_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204281562182758_1.pdf",
+    "body_notice_number": "2022-034",
+    "relative_pdf_path": "AN202204281562182758.pdf",
+    "sha256": "f68541bbc386ecaea5c7ea94ac21cfdd0790a0ba079730b6e8ec006254ba87cd",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2022-05-05"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204281562182758_api.json",
+      "sha256": "f862a519a24a15fce351b0cf38ba15f7a08510199c6d303c3e298247b7ff6cc8",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准/实施段确认普通简称及10%涨跌幅、全部退出ST风险；保留源公告日，历史回顾不倒填。"
+}

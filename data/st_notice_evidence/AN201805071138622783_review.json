@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600847",
+    "announcement_id": "AN201805071138622783",
+    "notice_date": "2018-05-08",
+    "title": "*ST万里关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600847:*ST万里关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600847:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201805071138622783_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201805071138622783_1.pdf",
+    "body_notice_number": "2018-022",
+    "relative_pdf_path": "AN201805071138622783.pdf",
+    "sha256": "cf6122aa4ee3ba36514a7f4913c4fd635059814d7c934a617ccc69c72ca7367c",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2018-05-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201805071138622783_api.json",
+      "sha256": "d5d73c8f4422867ecebbd9a6443d3f44ca97b435570118940b440747f2a9e9fa",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准/实施段明确全部退出ST、普通简称和10%涨跌幅。"
+}

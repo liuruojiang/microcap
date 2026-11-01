@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002265",
+    "announcement_id": "AN201404010005359956",
+    "notice_date": "2014-04-02",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST西仪:关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST西仪:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404010005359956_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404010005359956_1.pdf",
+    "body_notice_number": "2014-015",
+    "relative_pdf_path": "AN201404010005359956.pdf",
+    "sha256": "4c01aeb90d9504f21bc79d1b54800bb8b1b48e73d9275ea15bc57eb04198031b",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-04-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404010005359956_api.json",
+      "sha256": "8563beb979a574fafaf1815846b3a3fafae2852ca4bc3747da7abde5807ee3ce",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销，恢复普通简称及10%涨跌幅，全部退出风险；保留提供方公告日与正文生效日差异。"
+}

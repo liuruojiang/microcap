@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002604",
+    "announcement_id": "AN201801171078646297",
+    "notice_date": "2018-01-18",
+    "title": "关于公司股票被实行其他风险警示的公告",
+    "provider_title": "龙力生物:关于公司股票被实行其他风险警示的公告",
+    "removed_issuer_prefix": "龙力生物:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201801171078646297_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201801171078646297_1.pdf",
+    "body_notice_number": "2018-010",
+    "relative_pdf_path": "AN201801171078646297.pdf",
+    "sha256": "5d33ffa40aaa87b19b6add0676cda09c5f7b50f1fe90ff91183e92041ae8845c",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2018-01-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201801171078646297_api.json",
+      "sha256": "b920b76e03af9c25e920cca0ade5d8ac2aec2f821e636f70b6cc10e4ed00456a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_long34_price17_candidates_20261101.json"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002086",
+    "announcement_id": "AN202112231536307600",
+    "notice_date": "2021-12-24",
+    "title": "关于撤销公司股票交易退市风险实行其他风险警示暨停牌的的公告",
+    "provider_title": "*ST东洋:关于撤销公司股票交易退市风险实行其他风险警示暨停牌的的公告",
+    "removed_issuer_prefix": "*ST东洋:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202112231536307600_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202112231536307600_1.pdf",
+    "body_notice_number": "2021-092",
+    "relative_pdf_path": "AN202112231536307600.pdf",
+    "sha256": "f75ff8972f6729ae978f4af7ce1fef0932bb0ef4f0478274fa244810d9b5b191",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2021-12-27"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202112231536307600_api.json",
+      "sha256": "73e8a39ed68ecec76f20b78bc5b5fccc853dfa4c5539e6c04823102b4c367d75",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文标题漏警示字但正文明确12月27日撤退市并继续其他风险；主要银行冻结/违规占用担保等尚存，简称ST东洋。"
+}

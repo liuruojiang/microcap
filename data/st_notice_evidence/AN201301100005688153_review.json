@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000669",
+    "announcement_id": "AN201301100005688153",
+    "notice_date": "2013-01-11",
+    "title": "关于撤销退市风险警示的提示性公告",
+    "provider_title": "*ST领先：关于撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST领先：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301100005688153_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201301100005688153_1.pdf",
+    "body_notice_number": "2013-003",
+    "relative_pdf_path": "AN201301100005688153.pdf",
+    "sha256": "4535ffd4990e2759ac19b6604052a1fa11f96022276e5caa6fe327db22388216",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2013-01-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201301100005688153_api.json",
+      "sha256": "5b038b72e0c145f97f6893a95c230337873b972db91b098f30a67d4dd49ac658",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

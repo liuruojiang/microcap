@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600397",
+    "announcement_id": "AN201803051098419385",
+    "notice_date": "2018-03-06",
+    "title": "安源煤业关于公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "provider_title": "600397:安源煤业关于公司股票可能被实施退市风险警示和公司债券可能被暂停上市交易的第二次提示性公告",
+    "removed_issuer_prefix": "600397:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201803051098419385_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201803051098419385_1.pdf",
+    "body_notice_number": "2018-013",
+    "relative_pdf_path": "AN201803051098419385.pdf",
+    "sha256": "760b2391d78fd8a25518e89f9a7bdba3f4052bce7596bb1d46936dfc59a6f6ea",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201803051098419385_api.json",
+      "sha256": "45a8b5247a0c785e6c81de17aeeb3a450f4687752a492d75a940cbc67b0531eb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "第二次预测亏损条件提示，股票和债券均未来可能，非正式实施操作。"
+}

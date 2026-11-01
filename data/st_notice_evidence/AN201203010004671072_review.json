@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000034",
+    "announcement_id": "AN201203010004671072",
+    "notice_date": "2010-09-13",
+    "title": "关于撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "provider_title": "*ST深泰：关于撤销股票交易退市风险警示并实行其他特别处理的公告",
+    "removed_issuer_prefix": "*ST深泰：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004671072_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004671072_1.pdf",
+    "body_notice_number": "2010-62",
+    "relative_pdf_path": "AN201203010004671072.pdf",
+    "sha256": "3c32b9efc52eef4fba7f4cf781251e88f4159f4fa415786d2c3902f7587ed36d",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-09-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004671072_api.json",
+      "sha256": "d6a49f8b5ecb6db59838ec85ea6349e992854f3e5a6c50ff89c1302be55cc07b",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "全文确认撤退市风险但仍其他特别处理；风险状态保持，类别完整明确后清未知。"
+}

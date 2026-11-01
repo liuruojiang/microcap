@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600890",
+    "announcement_id": "AN201203010004636657",
+    "notice_date": "2010-07-16",
+    "title": "获准撤销退市风险警示的公告",
+    "provider_title": "*ST中房：获准撤销退市风险警示的公告",
+    "removed_issuer_prefix": "*ST中房：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004636657_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203010004636657_1.pdf",
+    "body_notice_number": "2010-16",
+    "relative_pdf_path": "AN201203010004636657.pdf",
+    "sha256": "6b0b4fbee5ff419c70ff728086b04b58927243da6eb96209323c44c0fa0ebceb",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2010-07-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203010004636657_api.json",
+      "sha256": "e7dc6e766b0100ea2e4869ec71eacc607ad70d793b774f7f156dd1b42d7bb166",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

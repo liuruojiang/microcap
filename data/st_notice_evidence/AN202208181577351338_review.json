@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002366",
+    "announcement_id": "AN202208181577351338",
+    "notice_date": "2022-08-19",
+    "title": "关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST海核:关于法院裁定受理公司重整暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST海核:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202208181577351338_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202208181577351338_1.pdf",
+    "body_notice_number": "2022-048",
+    "relative_pdf_path": "AN202208181577351338.pdf",
+    "sha256": "9f6da09342db80a93f2759d3aed002b0f3dd45f5e6d2de3678615d5cb250a021",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2022-08-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202208181577351338_api.json",
+      "sha256": "e6e134f5e8cdd872b3b54ec44458e39832ba0b73c7a3e6413b4d34ea41b8de74",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "烟台中院受理发行人重整，正文明确8月19日起叠加退市风险；已有5月6日两类风险不清除。"
+}

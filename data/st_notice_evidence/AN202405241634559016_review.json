@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002092",
+    "announcement_id": "AN202405241634559016",
+    "notice_date": "2024-05-24",
+    "title": "申万宏源证券有限公司关于新疆中泰化学股份有限公司股票交易将被实施其他风险警示暨股票停牌的临时受托管理事务报告",
+    "provider_title": "ST中泰:申万宏源证券有限公司关于新疆中泰化学股份有限公司股票交易将被实施其他风险警示暨股票停牌的临时受托管理事务报告",
+    "removed_issuer_prefix": "ST中泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405241634559016_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202405241634559016_1.pdf",
+    "body_notice_number": "trustee-report-2024-05",
+    "relative_pdf_path": "AN202405241634559016.pdf",
+    "sha256": "68427ca06206f673149e13e8280f34c0bfc6a1540c701e77923cecb2e8754b6b",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202405241634559016_api.json",
+      "sha256": "cfd9f7c6cebc531d20279fd2d9dc7a42ed812eea7e9b252f3a05988173b520d6",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "债券受托管理人报告转述发行人5月18日公告和5月21日实施事实，非新的股票风险警示决定，不在5月24日重新新增动作。"
+}

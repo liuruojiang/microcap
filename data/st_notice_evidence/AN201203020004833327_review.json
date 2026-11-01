@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000922",
+    "announcement_id": "AN201203020004833327",
+    "notice_date": "2011-05-13",
+    "title": "关于撤销股票交易退市风险警示及实行其他特别处理的公告",
+    "provider_title": "*ST阿继：关于撤销股票交易退市风险警示及实行其他特别处理的公告",
+    "removed_issuer_prefix": "*ST阿继：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004833327_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004833327_1.pdf",
+    "body_notice_number": "2011-013",
+    "relative_pdf_path": "AN201203020004833327.pdf",
+    "sha256": "e90b9391e0f98013cd37fe652faab4e7cdf6362c2254ef16855b84fa2a1cf7e6",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-05-16"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004833327_api.json",
+      "sha256": "d93e2ae50368e72652f7b6f2abaf3eb6b6780383c30a3b94e1181e42e7fdba88",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准撤退市风险仍其他特别处理，ST阿继5%。"
+}

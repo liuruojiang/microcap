@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600608",
+    "announcement_id": "AN201302060005732816",
+    "notice_date": "2013-02-07",
+    "title": "关于撤销股票交易其他风险警示的公告",
+    "provider_title": "ST沪科：关于撤销股票交易其他风险警示的公告",
+    "removed_issuer_prefix": "ST沪科：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201302060005732816_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201302060005732816_1.pdf",
+    "body_notice_number": "2013-008",
+    "relative_pdf_path": "AN201302060005732816.pdf",
+    "sha256": "0c449704fcebce716816df7cf527f3d9426e6351d45c42cd19bee3a53ea2aadc",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-02-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201302060005732816_api.json",
+      "sha256": "0158d1f4573bff527671f028f832f9a57250a1b741ce650ee0dee89b0edaeef2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

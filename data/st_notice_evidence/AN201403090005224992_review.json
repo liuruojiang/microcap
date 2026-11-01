@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000908",
+    "announcement_id": "AN201403090005224992",
+    "notice_date": "2014-03-10",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST天一:关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST天一:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403090005224992_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403090005224992_1.pdf",
+    "body_notice_number": "2014-013",
+    "relative_pdf_path": "AN201403090005224992.pdf",
+    "sha256": "a32351bd2f4df52abc9e9540a9cf7e14b961ac1de601dfae665eb9fe09c4595b",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2014-03-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403090005224992_api.json",
+      "sha256": "5ae03956005962ac8f2e73d21203e3ed0e0e71f24b7303310bde09c61c077d9a",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round3_price9_11events_20261101.json"
+}

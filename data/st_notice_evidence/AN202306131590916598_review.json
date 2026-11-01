@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002535",
+    "announcement_id": "AN202306131590916598",
+    "notice_date": "2023-06-14",
+    "title": "关于公司撤销其他风险警示暨停牌公告",
+    "provider_title": "ST林重:关于公司撤销其他风险警示暨停牌公告",
+    "removed_issuer_prefix": "ST林重:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202306131590916598_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202306131590916598_1.pdf",
+    "body_notice_number": "2023-0057",
+    "relative_pdf_path": "AN202306131590916598.pdf",
+    "sha256": "6e7379e2380dc0a82b89b252e98c000d8d3e4cb130bdc4350865cc0b28daade0",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2023-06-15"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202306131590916598_api.json",
+      "sha256": "da0e38e3e4f012b9066d86f2a043c10c29ef665aa00c9f488827539f869b0fca",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600617",
+    "announcement_id": "AN201203030004966795",
+    "notice_date": "2011-12-21",
+    "title": "关于股票撤销退市风险警示并实施其他特别处理的公告",
+    "provider_title": "*ST联华：关于股票撤销退市风险警示并实施其他特别处理的公告",
+    "removed_issuer_prefix": "*ST联华：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004966795_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030004966795_1.pdf",
+    "body_notice_number": "2011-074",
+    "relative_pdf_path": "AN201203030004966795.pdf",
+    "sha256": "cc2b139aafe6b5d3660761062e4a8c9d82cbaa6a521c5b3f4005d2aaca7a33e1",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2011-12-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203030004966795_api.json",
+      "sha256": "11e22b05cf731daa0e5646b4d3f3d2bda751d1e33b744c26c55caa7692f39211",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual issuer approval and dated new name read in full body; no prior-day announcement date inferred. 由独立代理阅读全文及关键引文审定，主代理复核真实原件/回执和完整状态；不是从当前名称倒推。审阅文件：reviewed_presample18_price_candidates.json"
+}

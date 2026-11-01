@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000526",
+    "announcement_id": "AN201611280134888145",
+    "notice_date": "2016-11-29",
+    "title": "关于股票交易存在被实行退市风险警示的风险提示性公告",
+    "provider_title": "紫光学大:关于股票交易存在被实行退市风险警示的风险提示性公告",
+    "removed_issuer_prefix": "紫光学大:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201611280134888145_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201611280134888145_1.pdf",
+    "body_notice_number": "2016-099",
+    "relative_pdf_path": "AN201611280134888145.pdf",
+    "sha256": "e6d13a2d49685e603746af70932b159804ca7b7068b472df493a01d054b55487",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201611280134888145_api.json",
+      "sha256": "6823c433569e5a0539576e52e02718c3006460a77b965abde8d5c8e1f542ad32",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：2016经审计净利若为负才触发，为条件风险提示。"
+}

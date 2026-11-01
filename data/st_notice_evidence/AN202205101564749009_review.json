@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600084",
+    "announcement_id": "AN202205101564749009",
+    "notice_date": "2022-05-11",
+    "title": "中信国安葡萄酒业股份有限公司关于股票撤销退市风险警示暨停牌的公告",
+    "provider_title": "600084:中信国安葡萄酒业股份有限公司关于股票撤销退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "600084:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202205101564749009_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202205101564749009_1.pdf",
+    "body_notice_number": "临2022-025",
+    "relative_pdf_path": "AN202205101564749009.pdf",
+    "sha256": "1705f80d6d63365c71d3164fad92c5d112b37386cd6f9f350c90227b3e624c15",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2022-05-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202205101564749009_api.json",
+      "sha256": "c7ab7b5c5b36004a6110e0f7acc5404f65da8cc67b6eeee9683c72a7c0060237",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

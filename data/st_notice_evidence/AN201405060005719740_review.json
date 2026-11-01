@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600319",
+    "announcement_id": "AN201405060005719740",
+    "notice_date": "2014-05-07",
+    "title": " *ST亚星关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600319 : *ST亚星关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600319 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201405060005719740_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201405060005719740_1.pdf",
+    "body_notice_number": "临2014-038",
+    "relative_pdf_path": "AN201405060005719740.pdf",
+    "sha256": "a38f012f2a785fe83f45f6ff15938a2c9990e8ec69b19ce6f5f886055abcacc6",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-05-08"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201405060005719740_api.json",
+      "sha256": "b201b7d0d7efa24e208fcc682a1d35c5670ac10bdf07e90821a0594d6fbd3e15",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准与实施段确认恢复普通简称及10%涨跌幅，完整退出ST类别，历史回顾不倒填首次公开日。"
+}

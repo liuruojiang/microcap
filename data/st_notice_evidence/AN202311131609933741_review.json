@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "603030",
+    "announcement_id": "AN202311131609933741",
+    "notice_date": "2023-11-14",
+    "title": "关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST全筑:关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST全筑:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202311131609933741_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202311131609933741_1.pdf",
+    "body_notice_number": "临2023-147",
+    "relative_pdf_path": "AN202311131609933741.pdf",
+    "sha256": "939c9932d11cf7182711675b269236ae7b797408ed449e5ac16d04ea0df025b8",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202311131609933741_api.json",
+      "sha256": "3589259e33a35285cc2a891643e9f2de89b76687c92d8cd1d662fd943f485cce",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确2023年5月5日已双风险，法院受理重整仅叠加退市风险原因，股票简称和5%保持；确认两类延续，不创造首次实施生效日。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600610",
+    "announcement_id": "AN201208260005463344",
+    "notice_date": "2012-08-27",
+    "title": "关于股票交易撤销其他风险警示的公告",
+    "provider_title": "SST中纺：关于股票交易撤销其他风险警示的公告",
+    "removed_issuer_prefix": "SST中纺：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208260005463344_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201208260005463344_1.pdf",
+    "body_notice_number": "临2012－016",
+    "relative_pdf_path": "AN201208260005463344.pdf",
+    "sha256": "f20a59eeb72298bf14d41062b0784affd49cdb39df24f73dfb7b85d540fd5217",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2012-08-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201208260005463344_api.json",
+      "sha256": "ab5c767f89e16c0ec07427922f8542526485dde37524cca7e58cac7f446339fb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文批准撤销且恢复不带ST证券简称，确认无剩余ST类别；600610原文特别明确A股仍5%是股改未完成原因、B股恢复10%，不能将5%误当仍ST。"
+}

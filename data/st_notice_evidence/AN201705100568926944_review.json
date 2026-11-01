@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000504",
+    "announcement_id": "AN201705100568926944",
+    "notice_date": "2017-05-11",
+    "title": "关于撤销公司股票退市风险警示的公告",
+    "provider_title": "*ST生物:关于撤销公司股票退市风险警示的公告",
+    "removed_issuer_prefix": "*ST生物:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201705100568926944_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201705100568926944_1.pdf",
+    "body_notice_number": "2017-035",
+    "relative_pdf_path": "AN201705100568926944.pdf",
+    "sha256": "705e18524cb71ee051eb4806fcc3180c46f12f29e412d6d130ae5999629fbaeb",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2017-05-12"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201705100568926944_api.json",
+      "sha256": "5eeaee2c2a2dcdb2af78f90b8cad1e7f5d569d1155ff5b368f9cf40433cdd244",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual approval and normal name plus explicit absence of both categories. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round3_price9_11events_20261101.json"
+}

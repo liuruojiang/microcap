@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600179",
+    "announcement_id": "AN201611010045136847",
+    "notice_date": "2016-11-02",
+    "title": "*ST黑化关于公司股票撤销退市风险警示的公告",
+    "provider_title": "600179:*ST黑化关于公司股票撤销退市风险警示的公告",
+    "removed_issuer_prefix": "600179:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201611010045136847_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201611010045136847_1.pdf",
+    "body_notice_number": "2016-078",
+    "relative_pdf_path": "AN201611010045136847.pdf",
+    "sha256": "760e3b160899957d8ddb1069bc1b932c2c81c135137ab9fc848da3e942f13679",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2016-11-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201611010045136847_api.json",
+      "sha256": "31ac346d4bb99d6f4a5052be463e80ef3c38e18988851771b0b96f0ad3431dbe",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文核准/实施段确认交易所批准恢复普通简称及10%涨跌幅，明确无剩余风险或完整撤销；退出全部ST类别，正文的经济经营一般风险不冒充股票ST风险。"
+}

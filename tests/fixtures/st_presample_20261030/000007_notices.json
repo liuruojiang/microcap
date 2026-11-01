@@ -1,0 +1,594 @@
+[
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000007/page_003.json",
+      "index": 5
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003001",
+        "column_name": "实施其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202270004166809",
+    "issuer_symbol": "000007",
+    "notice_date": "2007-04-20",
+    "provider_notice_date": "2007-04-20 00:00:00",
+    "provider_title": "深达声Ａ：董事会关于股票交易实行其他特别处理的公告",
+    "title": "董事会关于股票交易实行其他特别处理的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "深达声Ａ："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004166809_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202270004166809_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000007/page_006.json",
+      "index": 4
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003",
+        "column_name": "特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202250003485099",
+    "issuer_symbol": "000007",
+    "notice_date": "2001-04-18",
+    "provider_notice_date": "2001-04-18 00:00:00",
+    "provider_title": "深圳市赛格达声股份有限公司董事会关于对本公司股票实行特别处理",
+    "title": "深圳市赛格达声股份有限公司董事会关于对本公司股票实行特别处理",
+    "title_transform": {
+      "operation": "identity",
+      "removed_prefix": ""
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003485099_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003485099_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_pre2010/000007/page_006.json",
+      "index": 5
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003001",
+        "column_name": "实施其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201202250003525563",
+    "issuer_symbol": "000007",
+    "notice_date": "2001-04-17",
+    "provider_notice_date": "2001-04-17 00:00:00",
+    "provider_title": "深 达 声：关于对本公司股票实行特别处理（“ST”）的公告      ",
+    "title": "关于对本公司股票实行特别处理（“ST”）的公告      ",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "深 达 声："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003525563_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202250003525563_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_002.json",
+      "index": 93
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003005",
+        "column_name": "撤销退市风险警示"
+      },
+      {
+        "column_code": "001002004008",
+        "column_name": "停牌公告"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202406301637107444",
+    "issuer_symbol": "000007",
+    "notice_date": "2024-07-01",
+    "provider_notice_date": "2024-07-01 00:00:00",
+    "provider_title": "*ST全新:关于公司股票交易撤销退市风险警示暨停牌的公告",
+    "title": "关于公司股票交易撤销退市风险警示暨停牌的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST全新:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202406301637107444_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202406301637107444_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_003.json",
+      "index": 20
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003006",
+        "column_name": "申请撤销风险警示及特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202404281631526836",
+    "issuer_symbol": "000007",
+    "notice_date": "2024-04-29",
+    "provider_notice_date": "2024-04-29 00:00:00",
+    "provider_title": "*ST全新:关于申请撤销对公司股票交易实施退市风险警示的公告",
+    "title": "关于申请撤销对公司股票交易实施退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST全新:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404281631526836_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404281631526836_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_004.json",
+      "index": 21
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202304291586108313",
+    "issuer_symbol": "000007",
+    "notice_date": "2023-04-29",
+    "provider_notice_date": "2023-04-29 00:00:00",
+    "provider_title": "全新好:关于公司股票被实施退市风险警示的公告",
+    "title": "关于公司股票被实施退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "全新好:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304291586108313_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304291586108313_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_004.json",
+      "index": 51
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202304271586000922",
+    "issuer_symbol": "000007",
+    "notice_date": "2023-04-28",
+    "provider_notice_date": "2023-04-28 00:00:00",
+    "provider_title": "全新好:关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title": "关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "全新好:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304271586000922_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304271586000922_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_005.json",
+      "index": 26
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003005",
+        "column_name": "撤销退市风险警示"
+      },
+      {
+        "column_code": "001002004008",
+        "column_name": "停牌公告"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202206291575563015",
+    "issuer_symbol": "000007",
+    "notice_date": "2022-06-30",
+    "provider_notice_date": "2022-06-30 00:00:00",
+    "provider_title": "*ST全新:关于公司股票交易撤销退市风险警示暨停牌的公告",
+    "title": "关于公司股票交易撤销退市风险警示暨停牌的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST全新:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206291575563015_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206291575563015_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_005.json",
+      "index": 68
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003006",
+        "column_name": "申请撤销风险警示及特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202204291562376060",
+    "issuer_symbol": "000007",
+    "notice_date": "2022-04-30",
+    "provider_notice_date": "2022-04-30 00:00:00",
+    "provider_title": "*ST全新:关于申请撤销对公司股票交易实施退市风险警示的公告",
+    "title": "关于申请撤销对公司股票交易实施退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "*ST全新:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562376060_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562376060_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_006.json",
+      "index": 81
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202104281488459862",
+    "issuer_symbol": "000007",
+    "notice_date": "2021-04-29",
+    "provider_notice_date": "2021-04-29 00:00:00",
+    "provider_title": "全新好:关于公司股票被实施退市风险警示的公告",
+    "title": "关于公司股票被实施退市风险警示的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "全新好:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104281488459862_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104281488459862_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_007.json",
+      "index": 10
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202103311479282452",
+    "issuer_symbol": "000007",
+    "notice_date": "2021-04-01",
+    "provider_notice_date": "2021-04-01 00:00:00",
+    "provider_title": "全新好:关关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title": "关关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "全新好:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202103311479282452_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202103311479282452_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_007.json",
+      "index": 19
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002001004006006",
+        "column_name": "风险提示性公告"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202103011466844370",
+    "issuer_symbol": "000007",
+    "notice_date": "2021-03-02",
+    "provider_notice_date": "2021-03-02 00:00:00",
+    "provider_title": "全新好:关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title": "关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "全新好:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202103011466844370_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202103011466844370_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_007.json",
+      "index": 31
+    },
+    "provider_columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN202101291455673488",
+    "issuer_symbol": "000007",
+    "notice_date": "2021-01-30",
+    "provider_notice_date": "2021-01-30 00:00:00",
+    "provider_title": "全新好:关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title": "关于公司股票可能被实施退市风险警示的风险提示公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "全新好:"
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202101291455673488_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202101291455673488_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_024.json",
+      "index": 25
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003002",
+        "column_name": "撤销其他特别处理"
+      },
+      {
+        "column_code": "001002005001009",
+        "column_name": "公司章程修正"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201205170005246704",
+    "issuer_symbol": "000007",
+    "notice_date": "2012-05-03",
+    "provider_notice_date": "2012-05-03 00:00:00",
+    "provider_title": "ST零七：关于撤销公司股票交易其他特别处理及变更证券简称的公告",
+    "title": "关于撤销公司股票交易其他特别处理及变更证券简称的公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST零七："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205170005246704_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201205170005246704_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_024.json",
+      "index": 36
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003002",
+        "column_name": "撤销其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201203030005001413",
+    "issuer_symbol": "000007",
+    "notice_date": "2012-02-28",
+    "provider_notice_date": "2012-02-28 00:00:00",
+    "provider_title": "ST零七：关于申请对公司股票交易撤销其他特别处理及变更证券简称的提示性公告",
+    "title": "关于申请对公司股票交易撤销其他特别处理及变更证券简称的提示性公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST零七："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030005001413_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030005001413_1.pdf"
+  },
+  {
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/source_recovery/eastmoney_full_20261029/000007/page_024.json",
+      "index": 37
+    },
+    "provider_columns": [
+      {
+        "column_code": "001",
+        "column_name": "股票"
+      },
+      {
+        "column_code": "001002004003002",
+        "column_name": "撤销其他特别处理"
+      }
+    ],
+    "source_provider": "eastmoney",
+    "announcement_id": "AN201203030005001414",
+    "issuer_symbol": "000007",
+    "notice_date": "2012-02-28",
+    "provider_notice_date": "2012-02-28 00:00:00",
+    "provider_title": "ST零七：第八届董事会第十三次（临时）会议决议公告",
+    "title": "第八届董事会第十三次（临时）会议决议公告",
+    "title_transform": {
+      "operation": "strip_issuer_prefix",
+      "removed_prefix": "ST零七："
+    },
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030005001414_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203030005001414_1.pdf"
+  },
+  {
+    "notice_date": "2012-02-28",
+    "title": "第八届董事会第十三次（临时）会议决议公告",
+    "announcement_id": "60593608",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2012-02-28/60593608.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_1.json",
+      "index": 4
+    }
+  },
+  {
+    "notice_date": "2012-02-28",
+    "title": "关于申请对公司股票交易撤销其他特别处理及变更证券简称的提示性公告",
+    "announcement_id": "60593607",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2012-02-28/60593607.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_1.json",
+      "index": 5
+    }
+  },
+  {
+    "notice_date": "2012-05-03",
+    "title": "关于撤销公司股票交易其他特别处理及变更证券简称的公告",
+    "announcement_id": "60942890",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2012-05-03/60942890.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_1.json",
+      "index": 3
+    }
+  },
+  {
+    "notice_date": "2021-01-30",
+    "title": "关于公司股票可能被实施退市风险警示的风险提示公告",
+    "announcement_id": "1209215350",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2021-01-30/1209215350.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 9
+    }
+  },
+  {
+    "notice_date": "2021-03-02",
+    "title": "关于公司股票可能被实施退市风险警示的风险提示公告",
+    "announcement_id": "1209317237",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2021-03-02/1209317237.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 8
+    }
+  },
+  {
+    "notice_date": "2021-04-01",
+    "title": "关关于公司股票可能被实施退市风险警示的风险提示公告",
+    "announcement_id": "1209565702",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2021-04-01/1209565702.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 7
+    }
+  },
+  {
+    "notice_date": "2021-04-29",
+    "title": "关于公司股票被实施退市风险警示的公告",
+    "announcement_id": "1209855035",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2021-04-29/1209855035.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_1.json",
+      "index": 2
+    }
+  },
+  {
+    "notice_date": "2022-04-30",
+    "title": "关于申请撤销对公司股票交易实施退市风险警示的公告",
+    "announcement_id": "1213265892",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2022-04-30/1213265892.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 5
+    }
+  },
+  {
+    "notice_date": "2022-06-30",
+    "title": "关于公司股票交易撤销退市风险警示暨停牌的公告",
+    "announcement_id": "1213879460",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2022-06-30/1213879460.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_1.json",
+      "index": 1
+    }
+  },
+  {
+    "notice_date": "2023-04-28",
+    "title": "关于公司股票可能被实施退市风险警示的风险提示公告",
+    "announcement_id": "1216660040",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216660040.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 3
+    }
+  },
+  {
+    "notice_date": "2023-04-29",
+    "title": "关于公司股票被实施退市风险警示的公告",
+    "announcement_id": "1216704076",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-29/1216704076.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_1.json",
+      "index": 0
+    }
+  },
+  {
+    "notice_date": "2024-04-29",
+    "title": "关于申请撤销对公司股票交易实施退市风险警示的公告",
+    "announcement_id": "1219862509",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-29/1219862509.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 1
+    }
+  },
+  {
+    "notice_date": "2024-07-01",
+    "title": "关于公司股票交易撤销退市风险警示暨停牌的公告",
+    "announcement_id": "1220502482",
+    "issuer_symbol": "000007",
+    "source_url": "https://static.cninfo.com.cn/finalpage/2024-07-01/1220502482.PDF",
+    "source_provider": "cninfo",
+    "source_row_binding": {
+      "path": "research_reports/20261029_st_history_repair/st_recert_runtime/canary10/raw/000007_2.json",
+      "index": 0
+    }
+  }
+]

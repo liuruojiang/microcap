@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002427",
+    "announcement_id": "AN202008021395877471",
+    "notice_date": "2020-08-03",
+    "title": "关于撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "provider_title": "*ST尤夫:关于撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST尤夫:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202008021395877471_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202008021395877471_1.pdf",
+    "body_notice_number": "2020-080",
+    "relative_pdf_path": "AN202008021395877471.pdf",
+    "sha256": "6c7a7d062ddc3f2e0b3c0f7ffa3e0a84e50188fb5cc493017397666dc7e6220b",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2020-08-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202008021395877471_api.json",
+      "sha256": "a518ae3f57a19732e5d5fb6e4d08306e5ef289cf38ec0bb943fb7255c8bec5ba",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销退市风险警示，但仍实施其他风险警示，简称ST且5%限制，不作为全部退出。"
+}

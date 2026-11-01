@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002781",
+    "announcement_id": "AN202204291562377766",
+    "notice_date": "2022-04-30",
+    "title": "关于公司股票将被实施退市风险警示及继续实施其他风险警示暨停牌的公告",
+    "provider_title": "ST奇信:关于公司股票将被实施退市风险警示及继续实施其他风险警示暨停牌的公告",
+    "removed_issuer_prefix": "ST奇信:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562377766_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204291562377766_1.pdf",
+    "body_notice_number": "2022-060",
+    "relative_pdf_path": "AN202204291562377766.pdf",
+    "sha256": "45d24f060f52c674df9c3a4a2c6c8f7702c663a493759cef07215159eb2418a7",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2022-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204291562377766_api.json",
+      "sha256": "24e3d852edf213c9bcd4d08c1c85cff5833f05ffc311e52b55e72fa575cc98d2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

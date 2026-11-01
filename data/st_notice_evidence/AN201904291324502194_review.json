@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002247",
+    "announcement_id": "AN201904291324502194",
+    "notice_date": "2019-04-30",
+    "title": "关于存在被证券交易所实施其他风险警示的风险提示公告",
+    "provider_title": "聚力文化:关于存在被证券交易所实施其他风险警示的风险提示公告",
+    "removed_issuer_prefix": "聚力文化:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904291324502194_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904291324502194_1.pdf",
+    "body_notice_number": "2019-032",
+    "relative_pdf_path": "AN201904291324502194.pdf",
+    "sha256": "a896d3d313c26f92ccc45bf5aa311b9d572c664618d57d7804335209d62eba94",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201904291324502194_api.json",
+      "sha256": "d195057803eaa0b722e670fe3a8d72e0d59602b233777695859b81d6091ae925",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：如一个月内未偿还占用资金深交所有权决定其他警示，当前未实施。"
+}

@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000856",
+    "announcement_id": "AN201704050475892062",
+    "notice_date": "2017-04-06",
+    "title": "关于撤消公司股票交易退市风险警示的公告",
+    "provider_title": "*ST冀装:关于撤消公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST冀装:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704050475892062_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201704050475892062_1.pdf",
+    "body_notice_number": "2017-16",
+    "relative_pdf_path": "AN201704050475892062.pdf",
+    "sha256": "1362c8d8fdeb9a384678ccc5b46a9be64f7d7796be50cbf2c14bc9e87b862fee",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2017-04-07"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201704050475892062_api.json",
+      "sha256": "02f858773462c069e2ec82e8e766f1bdbe6968be065d8b6146cbf446e4eb08eb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：正文4/7恢复冀东装备10%，无其他或退市警示。"
+}

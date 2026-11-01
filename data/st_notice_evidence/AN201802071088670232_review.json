@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600696",
+    "announcement_id": "AN201802071088670232",
+    "notice_date": "2018-02-08",
+    "title": "*ST匹凸关于公司股票撤销退市风险警示及实施其他风险警示的提示性公告",
+    "provider_title": "600696:*ST匹凸关于公司股票撤销退市风险警示及实施其他风险警示的提示性公告",
+    "removed_issuer_prefix": "600696:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201802071088670232_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201802071088670232_1.pdf",
+    "body_notice_number": "2018-017",
+    "relative_pdf_path": "AN201802071088670232.pdf",
+    "sha256": "6fd2becd6c6d3c59377175235f03fe944192c07127bb02c84e3f8ffcc2c97c6d",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2018-02-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201802071088670232_api.json",
+      "sha256": "21fd9404be9590c1fa9e4c97c911c299d37228a4167762d9ff1ebfaaeac92e63",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

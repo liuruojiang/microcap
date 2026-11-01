@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600733",
+    "announcement_id": "AN201802131091387233",
+    "notice_date": "2018-02-14",
+    "title": "S*ST前锋关于公司股票撤销退市风险警示及实施其他风险警示的提示性公告",
+    "provider_title": "600733:S*ST前锋关于公司股票撤销退市风险警示及实施其他风险警示的提示性公告",
+    "removed_issuer_prefix": "600733:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201802131091387233_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201802131091387233_1.pdf",
+    "body_notice_number": "临2018-038",
+    "relative_pdf_path": "AN201802131091387233.pdf",
+    "sha256": "dd3f34f3c4c38535a2243e97feac4430c252c9c940c1cb7361802cc50644cb63",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2018-02-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201802131091387233_api.json",
+      "sha256": "b22063bd8bc72df6cca1c07f079c2a375e5a56c402a472669c262a221a0c82ca",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确上交所2月13日核准，2月22日撤销退市风险但实施其他风险，S*ST变SST，继续5%。"
+}

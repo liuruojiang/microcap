@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002217",
+    "announcement_id": "AN202411241641042787",
+    "notice_date": "2024-11-25",
+    "title": "关于法院受理公司及子公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示情形的公告",
+    "provider_title": "*ST合泰:关于法院受理公司及子公司重整并指定管理人暨公司股票交易将被叠加实施退市风险警示情形的公告",
+    "removed_issuer_prefix": "*ST合泰:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411241641042787_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202411241641042787_1.pdf",
+    "body_notice_number": "2024-070",
+    "relative_pdf_path": "AN202411241641042787.pdf",
+    "sha256": "862f17bf93e6c7bf3c6e6e35a2203fa00b38c60453a3d7f1bf57b75e8a5bc4da",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2024-11-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202411241641042787_api.json",
+      "sha256": "f4aee4e39f96c1744c2e3c517b80501e0d835c4d971c9725bbcfa1064220b489",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "重整涉及发行人本身及子公司；正文明确发行人11月25日起叠加退市风险，不清除已有其他风险。"
+}

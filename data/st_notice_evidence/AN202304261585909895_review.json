@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300167",
+    "announcement_id": "AN202304261585909895",
+    "notice_date": "2023-04-27",
+    "title": "关于公司股票交易将被实施其他风险警示暨股票停牌的公告",
+    "provider_title": "迪威迅:关于公司股票交易将被实施其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "迪威迅:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304261585909895_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304261585909895_1.pdf",
+    "body_notice_number": "2023-075",
+    "relative_pdf_path": "AN202304261585909895.pdf",
+    "sha256": "a516584ac26500b137965835ff5ddecbb83c7902bf376c22c29cc5d3aaf0220a",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2023-04-28"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304261585909895_api.json",
+      "sha256": "eda3ec83873764d71322de90fcf81cd038fae4e33cd072f3520964d1c0a11082",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

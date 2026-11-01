@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300178",
+    "announcement_id": "AN202104291488681953",
+    "notice_date": "2021-04-30",
+    "title": "关于公司股票交易将被实施退市风险警示暨停牌的公告",
+    "provider_title": "腾邦国际:关于公司股票交易将被实施退市风险警示暨停牌的公告",
+    "removed_issuer_prefix": "腾邦国际:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104291488681953_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202104291488681953_1.pdf",
+    "body_notice_number": "2021-073",
+    "relative_pdf_path": "AN202104291488681953.pdf",
+    "sha256": "28ee5fcc424ef021f6284bb8c077a5a2179f0b5488f828bc0f486f32aee67c83",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2021-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202104291488681953_api.json",
+      "sha256": "a455679ce1f82890f84983209cdc78fc0f5f2d6e3d29e0391b2f472385e59119",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

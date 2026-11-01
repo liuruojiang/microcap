@@ -36,6 +36,22 @@ RELEASE_FILES = [
     "scripts/top100_data_contracts.py",
 ] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
 RELEASE_FILES += evidence_source_files(Path(__file__).resolve().parents[1])
+RETURN_BASIS_FILES = [
+    "scripts/stock_return_basis.py", "scripts/stock_return_basis_store.py",
+    "scripts/stock_return_pipeline.py", "fetch_wind_microcap_index.py",
+    "scripts/tradeability_evidence.py",
+    "scripts/stock_input_contract.py",
+    "scripts/st_notice_archive.py",
+    "scripts/st_history_scope.py",
+    "scripts/st_notice_incremental.py",
+    "scripts/st_notice_refresh.py",
+    "scripts/st_metadata_refresh.py",
+    "scripts/stock_tail_returns.py",
+    "scripts/share_change_source.py",
+    "scripts/stock_daily_inputs.py",
+]
+RELEASE_FILES += RETURN_BASIS_FILES
+RELEASE_FILES = list(dict.fromkeys(RELEASE_FILES))
 V20_STRATEGY_REVISION = "plain_mom16_fixed1_20260904"
 V23_STRATEGY_REVISION = "plain_lb25_hl2p5_r2off_no_overheat_20261029"
 V25_STRATEGY_REVISION = "plain_lb20_hl3_entry0_exit0_20260905"
@@ -130,6 +146,7 @@ def input_hashes(root: Path) -> dict:
     names += [AUTHORITY] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
     names += ["scripts/top100_data_contracts.py"]
     names += evidence_source_files(root)
+    names += RETURN_BASIS_FILES
     return {name: (hashlib.sha256((root / name).read_bytes()).hexdigest()
                    if name.startswith("data/st_notice_evidence/") else sha(root / name))
             for name in names}

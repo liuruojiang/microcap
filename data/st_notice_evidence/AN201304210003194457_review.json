@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600751",
+    "announcement_id": "AN201304210003194457",
+    "notice_date": "2013-04-22",
+    "title": " SST天海关于股票交易撤销其他风险警示并变更证券简称的公告",
+    "provider_title": "600751 : SST天海关于股票交易撤销其他风险警示并变更证券简称的公告",
+    "removed_issuer_prefix": "600751 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304210003194457_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304210003194457_1.pdf",
+    "body_notice_number": "临2013-021",
+    "relative_pdf_path": "AN201304210003194457.pdf",
+    "sha256": "4cde030ff0fdbf86dafa5334336227e5247a70be6d571e6fdfd83912541aa3a2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304210003194457_api.json",
+      "sha256": "df04dccbef80a3f7feb80ed103f6ceab3f24aafda42727adbe399a421ef19688",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确交易所4月19日批准A/B股撤其他风险并改名S天海/天海B；A股因股改仍停牌，4月23日复牌及10%条款专指B股，不伪作600751 A股实际复牌日期。风险退出按原公告日政策，A股实际生效日不确定留空。"
+}

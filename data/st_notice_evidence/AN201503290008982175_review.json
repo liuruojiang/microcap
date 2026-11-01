@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000504",
+    "announcement_id": "AN201503290008982175",
+    "notice_date": "2015-03-30",
+    "title": "关于撤销公司股票退市风险警示公告",
+    "provider_title": "*ST传媒:关于撤销公司股票退市风险警示公告",
+    "removed_issuer_prefix": "*ST传媒:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503290008982175_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503290008982175_1.pdf",
+    "body_notice_number": "2015-038",
+    "relative_pdf_path": "AN201503290008982175.pdf",
+    "sha256": "376bd94af4ec97b570a13d23cf0a15c134c6d4931e56bdaf431bc5961e611f68",
+    "risk_actions": {
+      "delisting": false,
+      "other": false
+    },
+    "actual_effective_date": "2015-03-31"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503290008982175_api.json",
+      "sha256": "073ef1ff4fcccfa8d4103b1a150cacf87bb55dd272c63dfdcfeb7169a957dfdd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Actual approval and next-session normal name plus explicit no other risk. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round3_price9_11events_20261101.json"
+}

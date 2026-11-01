@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002234",
+    "announcement_id": "AN201504010009050532",
+    "notice_date": "2015-04-02",
+    "title": "关于公司股票撤销退市风险警示的提示性公告",
+    "provider_title": "*ST民和:关于公司股票撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST民和:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504010009050532_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201504010009050532_1.pdf",
+    "body_notice_number": "2015-017",
+    "relative_pdf_path": "AN201504010009050532.pdf",
+    "sha256": "17fe9b8a983764d9cf2390680ca2be1ffcaf8ba708bb32a6e94cea63f0a28fdb",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-04-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201504010009050532_api.json",
+      "sha256": "ca92be00d0a58572697437069b28539d7e7223e8bf9c8b866697772dc98dc095",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销，恢复普通简称及10%涨跌幅，全部退出风险；保留提供方公告日与正文生效日差异。"
+}

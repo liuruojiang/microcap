@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300167",
+    "announcement_id": "AN202404271631454718",
+    "notice_date": "2024-04-27",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "provider_title": "ST迪威迅:关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "ST迪威迅:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404271631454718_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202404271631454718_1.pdf",
+    "body_notice_number": "2024-025",
+    "relative_pdf_path": "AN202404271631454718.pdf",
+    "sha256": "13b31c52d1a3953a37bfc79a6f3d7c891122ea1e5b3fbc8c6768cfbbfbcca342",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2024-04-30"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202404271631454718_api.json",
+      "sha256": "6829587d7f9071c9f595e654aba2aff7c0a1bfcd400b25c7340390cf987d2be2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "核读真实PDF特别提示/实施安排/风险段：特别提示及第二节明确4/30退市并继续其他，*ST迪威。"
+}

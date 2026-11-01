@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002766",
+    "announcement_id": "AN202201161540796376",
+    "notice_date": "2022-01-17",
+    "title": "关于撤销公司股票因法院裁定受理公司重整而被实施的退市风险警示情形暨继续被实施退市风险警示及其他风险警示的提示性公告(更新后)",
+    "provider_title": "*ST索菱:关于撤销公司股票因法院裁定受理公司重整而被实施的退市风险警示情形暨继续被实施退市风险警示及其他风险警示的提示性公告(更新后)",
+    "removed_issuer_prefix": "*ST索菱:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202201161540796376_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202201161540796376_1.pdf",
+    "body_notice_number": "2022-009",
+    "relative_pdf_path": "AN202201161540796376.pdf",
+    "sha256": "ff085abb2c868e6b359849cf2667a28f259ae90fc6729d2a2830ad4c87468e68",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2022-01-17"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202201161540796376_api.json",
+      "sha256": "70488a9958959ce61cd4bb92a364017073f82f241e0f8cb60a63a98b9106ce54",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文仅撤销重整原因，净资产为负及其他风险事项继续，明确仍实施退市及其他风险警示，不能按撤销字样退出。"
+}

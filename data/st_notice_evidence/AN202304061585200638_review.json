@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300268",
+    "announcement_id": "AN202304061585200638",
+    "notice_date": "2023-04-07",
+    "title": "关于公司股票交易将被实施退市风险警示及其他风险警示暨股票停牌的公告",
+    "provider_title": "佳沃食品:关于公司股票交易将被实施退市风险警示及其他风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "佳沃食品:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304061585200638_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304061585200638_1.pdf",
+    "body_notice_number": "2023-029",
+    "relative_pdf_path": "AN202304061585200638.pdf",
+    "sha256": "189763698605454e765353a4af9ac32b3d2b699646c0716d5df4fb56bdfb0832",
+    "risk_actions": {
+      "delisting": true,
+      "other": true
+    },
+    "actual_effective_date": "2023-04-10"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304061585200638_api.json",
+      "sha256": "5b34600e6d666fb4ea512ae355196f3ee6e99048824b1df911529a6098056edd",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

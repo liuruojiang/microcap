@@ -1,0 +1,42 @@
+[
+  {
+    "symbol": "000007",
+    "source_path": "research_reports/20261029_st_history_repair/source_recovery/normalized_trial/000007/combined_notice_rows.json",
+    "source_sha256": "d709a6803ad70613635bdee38c1fe9da357732854648d12f438d9db402ef7b86",
+    "fixture": "000007_notices.json",
+    "fixture_sha256": "61c4cb3692f86b6144586816cb501708eefcc2b90d5f85955b1ae3eec7984e57"
+  },
+  {
+    "symbol": "000008",
+    "source_path": "research_reports/20261029_st_history_repair/source_recovery/normalized_trial/000008/combined_notice_rows.json",
+    "source_sha256": "b91a17707859130be79164784d980789f1f49090e825c803ee53936b43ad4381",
+    "fixture": "000008_notices.json",
+    "fixture_sha256": "7dd7cf3cd41314f3c4eb8c63cb6446a977396b37852bd2abb34f0a6c36412161"
+  },
+  {
+    "symbol": "000017",
+    "source_path": "research_reports/20261029_st_history_repair/source_recovery/normalized_trial/000017/combined_notice_rows.json",
+    "source_sha256": "1ef97989ed4c6759e4e6ee2dcf3bb6a2c18efefe2bd21c060640150c9158cf28",
+    "fixture": "000017_notices.json",
+    "fixture_sha256": "01c508065bf30651e1c0d37ec9ce8695d8a3eaa55e45ebcfcf59c62e406eb2f5"
+  },
+  {
+    "symbol": "000034",
+    "source_path": "research_reports/20261029_st_history_repair/source_recovery/normalized_trial/000034/combined_notice_rows.json",
+    "source_sha256": "03567160238e2d03988e1d5499a9b152537a2e009335a65171a926b0ba5d5628",
+    "fixture": "000034_notices.json",
+    "fixture_sha256": "287fe043445ebe16d11ae2b835c1405575ad66995d509632d30a23732e2922bc"
+  },
+  {
+    "symbol": "000408",
+    "source_path": "research_reports/20261029_st_history_repair/source_recovery/normalized_trial/000408/combined_notice_rows.json",
+    "source_sha256": "89b021533a479090827e1e500810af77d55762c269b657e6192abbaf2ea99060",
+    "fixture": "000408_notices.json",
+    "fixture_sha256": "839bccfa6fb261b96c5df789ebe27397cccff97d180263c60c445a115e572649"
+  },
+  {
+    "source_path": ".microcap_index_cache/sz_name_change_short.csv",
+    "source_sha256": "856e18b71a21c14eba80b7111316ad5a99a30660d007248b95773affb8caca93",
+    "fixture": "name_changes.json"
+  }
+]

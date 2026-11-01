@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002699",
+    "announcement_id": "AN202206011569378381",
+    "notice_date": "2022-06-02",
+    "title": "关于公司股票被实行其他风险警示的公告",
+    "provider_title": "美盛文化:关于公司股票被实行其他风险警示的公告",
+    "removed_issuer_prefix": "美盛文化:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206011569378381_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202206011569378381_1.pdf",
+    "body_notice_number": "2022-035",
+    "relative_pdf_path": "AN202206011569378381.pdf",
+    "sha256": "270e0c664ee22909e3e11ddb17dc233d0041eb7c2a6d46b00e0d52dcf99eff24",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2022-06-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202206011569378381_api.json",
+      "sha256": "7286cf7b2f6949a25145f510d52a5b84d15662c4c11fa4a22c65ca6f8c5bad4d",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Only current issuer-confirmed action; conditional/rule examples not treated as transitions. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_long34_price17_candidates_20261101.json"
+}

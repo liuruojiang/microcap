@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002160",
+    "announcement_id": "AN201403090005225093",
+    "notice_date": "2014-03-10",
+    "title": "关于公司股票将被实行退市风险警示特别处理的公告",
+    "provider_title": "常铝股份:关于公司股票将被实行退市风险警示特别处理的公告",
+    "removed_issuer_prefix": "常铝股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403090005225093_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403090005225093_1.pdf",
+    "body_notice_number": "2014-022",
+    "relative_pdf_path": "AN201403090005225093.pdf",
+    "sha256": "1c78e60447ecae23e56a202f07264b10911930099c19a2623bb6561b3de8f2a1",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2014-03-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403090005225093_api.json",
+      "sha256": "bc265384d3025f00037801799074e8f2e3b9df8c7939b8000605023e8058c8f7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确常铝股份改*ST常铝，3月11日起实施退市风险警示。"
+}

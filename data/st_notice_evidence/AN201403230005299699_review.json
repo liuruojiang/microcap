@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600610",
+    "announcement_id": "AN201403230005299699",
+    "notice_date": "2014-03-24",
+    "title": " S中纺机关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "provider_title": "600610 : S中纺机关于公司股票将被实施退市风险警示的第三次提示性公告",
+    "removed_issuer_prefix": "600610 :",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403230005299699_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403230005299699_1.pdf",
+    "body_notice_number": "临2014－015",
+    "relative_pdf_path": "AN201403230005299699.pdf",
+    "sha256": "c2b2e60c7fa5677f22ab52061341ce00a9205cec79c164b3524de50e5aafbfb7",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403230005299699_api.json",
+      "sha256": "dc99c26755cde64ac82c328a59ed7b2f2f72f6dd7ca59c8bb15be0b1d9616f42",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文为2013年度经审计净利润若负才在年报后实施，当前仅财务初步测算，第二/第三次条件预警不改变状态。原PDF解析提示EOF尾标不完整，页面正文及署名日期完整保留，未改原字节。"
+}

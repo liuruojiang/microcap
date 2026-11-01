@@ -38,6 +38,17 @@ def metadata_runtime(tmp_path, monkeypatch):
     monkeypatch.setitem(ns, "fetch_cninfo_st_notices", lambda **_kwargs: pd.DataFrame(
         columns=["notice_date", "title"]))
     monkeypatch.setitem(ns, "read_ohlc_cache", lambda *_args: pd.DataFrame())
+    # Upstream contract fixtures; real metadata remains the fault-injection target.
+    from scripts import stock_return_pipeline, tradeability_evidence
+    from scripts.stock_return_basis import RETURN_BASIS_REVISION
+    def return_prices(**kwargs):
+        frame = pd.read_csv(price, parse_dates=["date"]).rename(columns={"close_raw": "close_adj"})
+        frame.attrs["return_basis_manifest"] = dict(return_basis_revision=RETURN_BASIS_REVISION,
+            symbol=kwargs["symbol"], raw_sha256="a" * 64, qfq_sha256="b" * 64, hfq_sha256="c" * 64)
+        return frame
+    monkeypatch.setattr(stock_return_pipeline, "load_return_prices", return_prices)
+    monkeypatch.setattr(tradeability_evidence, "enrich_price_with_trade_status",
+                        lambda **kwargs: kwargs["price"].assign(tradestatus=1))
     return ns, metadata
 
 

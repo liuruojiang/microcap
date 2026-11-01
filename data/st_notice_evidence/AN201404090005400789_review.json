@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002373",
+    "announcement_id": "AN201404090005400789",
+    "notice_date": "2014-04-10",
+    "title": "关于公司股票将被实行退市风险警示的公告",
+    "provider_title": "联信永益:关于公司股票将被实行退市风险警示的公告",
+    "removed_issuer_prefix": "联信永益:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404090005400789_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404090005400789_1.pdf",
+    "body_notice_number": "2014-015",
+    "relative_pdf_path": "AN201404090005400789.pdf",
+    "sha256": "71479f2208949c500c2f3a5e30013717a5699e6298b4789ed0684349eb9827dd",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2014-04-11"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404090005400789_api.json",
+      "sha256": "dc3d0b05977623c17733722f23740c731512628f60b398a426875610e7125de4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确联信永益4月11日起改*ST联信。"
+}

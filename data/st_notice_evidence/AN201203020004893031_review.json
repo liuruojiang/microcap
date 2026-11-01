@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000656",
+    "announcement_id": "AN201203020004893031",
+    "notice_date": "2011-08-22",
+    "title": "关于公司股票交易撤销其他特别处理及变更行业分类的公告",
+    "provider_title": "ST 东 源：关于公司股票交易撤销其他特别处理及变更行业分类的公告",
+    "removed_issuer_prefix": "ST 东 源：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004893031_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201203020004893031_1.pdf",
+    "body_notice_number": "2011-038",
+    "relative_pdf_path": "AN201203020004893031.pdf",
+    "sha256": "fb83f01a61c93c7cff3c65216311bd041469c959deaf66234f4ce90046e0119b",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2011-08-23"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201203020004893031_api.json",
+      "sha256": "6aef5d8c814079b2c1fc7de450482247c07554ee9d9a66e7cb4b3c5652836092",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

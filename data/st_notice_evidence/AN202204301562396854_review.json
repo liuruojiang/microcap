@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "688086",
+    "announcement_id": "AN202204301562396854",
+    "notice_date": "2022-04-30",
+    "title": "关于公司股票将被实施退市风险警示及停牌的提示性公告",
+    "provider_title": "688086:关于公司股票将被实施退市风险警示及停牌的提示性公告",
+    "removed_issuer_prefix": "688086:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204301562396854_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204301562396854_1.pdf",
+    "body_notice_number": "2022-044",
+    "relative_pdf_path": "AN202204301562396854.pdf",
+    "sha256": "90f94d6d17c981db9d184d85becc6a885d86db62fcd0bc79661d44aa4a672067",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2022-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204301562396854_api.json",
+      "sha256": "24e3d852edf213c9bcd4d08c1c85cff5833f05ffc311e52b55e72fa575cc98d2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

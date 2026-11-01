@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000038",
+    "announcement_id": "AN201305120003248514",
+    "notice_date": "2013-05-13",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST大通:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST大通:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305120003248514_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305120003248514_1.pdf",
+    "body_notice_number": "2013-026",
+    "relative_pdf_path": "AN201305120003248514.pdf",
+    "sha256": "07f9e757b9aa2291eb2b675d68e7324f152fb3f7dcdbcd1fbc12d2ff9fd8004d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-14"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305120003248514_api.json",
+      "sha256": "554ef80bce8fb37a95e475a7bfe33b8a8ec496beeae41093d6c4183428781a86",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

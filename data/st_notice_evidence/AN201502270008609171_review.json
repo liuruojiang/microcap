@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002608",
+    "announcement_id": "AN201502270008609171",
+    "notice_date": "2015-02-28",
+    "title": "关于公司债券可能被实行风险警示的提示性公告",
+    "provider_title": "舜天船舶:关于公司债券可能被实行风险警示的提示性公告",
+    "removed_issuer_prefix": "舜天船舶:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201502270008609171_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201502270008609171_1.pdf",
+    "body_notice_number": "2015-018",
+    "relative_pdf_path": "AN201502270008609171.pdf",
+    "sha256": "33002ac6decb5c9aa7980072cb24d6365507fc3a9f713d6c33d8c0091dc4a08c",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201502270008609171_api.json",
+      "sha256": "5be9ef1e5a5e598542183533d4b6c865c163be87b3d2cc3bf15b2c97ace2e098",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "仅112108债券可能风险提示，无已生效股票ST动作。"
+}

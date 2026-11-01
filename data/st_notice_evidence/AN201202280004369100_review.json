@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "600745",
+    "announcement_id": "AN201202280004369100",
+    "notice_date": "2009-04-21",
+    "title": "关于公司股票交易其他特别处理撤销的公告",
+    "provider_title": "ST天  华：关于公司股票交易其他特别处理撤销的公告",
+    "removed_issuer_prefix": "ST天  华：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004369100_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201202280004369100_1.pdf",
+    "body_notice_number": "临2009-023",
+    "relative_pdf_path": "AN201202280004369100.pdf",
+    "sha256": "7bdc532b03b57ee2423daf00d728bb6428f7e6bf570d0dbecc10e7483fc283a4",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2009-04-22"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201202280004369100_api.json",
+      "sha256": "bf0a2bb87749241acd6d0fdc91456b45281c7174086ddc3fd0a5ab74d0cfc554",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "原文批准/实施段确认普通简称及10%涨跌幅、全部退出ST风险；保留源公告日，历史回顾不倒填。"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000509",
+    "announcement_id": "AN201404290005601263",
+    "notice_date": "2014-04-30",
+    "title": "关于撤销股票退市风险警示的提示性公告",
+    "provider_title": "*ST华塑:关于撤销股票退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST华塑:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404290005601263_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404290005601263_1.pdf",
+    "body_notice_number": "2014-034",
+    "relative_pdf_path": "AN201404290005601263.pdf",
+    "sha256": "9ad1fcd2052366bc781383b3f71694d60c4f8fe87ed1c95fb6c6470cd8dcd134",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404290005601263_api.json",
+      "sha256": "44f7baaa284bca5dee03bd02e42885f00563dd995699944b9fde7934fe5ef0eb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文第二节明确4月29日仅递交申请，第三节明确尚需交易所核准及结果不确定；标题虽写撤销提示性公告，不能认证退出。后续2014-036才是批准公告。"
+}

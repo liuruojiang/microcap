@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002160",
+    "announcement_id": "AN201503180008801020",
+    "notice_date": "2015-03-19",
+    "title": "关于公司股票撤销退市风险警示的提示性公告",
+    "provider_title": "*ST常铝:关于公司股票撤销退市风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST常铝:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503180008801020_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503180008801020_1.pdf",
+    "body_notice_number": "2015-028",
+    "relative_pdf_path": "AN201503180008801020.pdf",
+    "sha256": "3487beb02bf9b494dd1605cb7a05789068bc76a81880290476afa4a74747da35",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2015-03-20"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503180008801020_api.json",
+      "sha256": "c28b1f73a1bb1e24cbeea1b68cd76d4a1a09937ea428d37d44c7dbedc5f54e83",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐份正文核验交易所已经审核批准，实施段明确普通简称、10%及无其他风险；提示性标题在本件属于已批准实施，退出全部ST类别。"
+}

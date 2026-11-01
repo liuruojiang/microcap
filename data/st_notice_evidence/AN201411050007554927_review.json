@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000403",
+    "announcement_id": "AN201411050007554927",
+    "notice_date": "2014-11-06",
+    "title": "关于股票交易撤销退市风险警示并实施其他风险警示的公告",
+    "provider_title": "*ST生化:关于股票交易撤销退市风险警示并实施其他风险警示的公告",
+    "removed_issuer_prefix": "*ST生化:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201411050007554927_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201411050007554927_1.pdf",
+    "body_notice_number": "2014-077",
+    "relative_pdf_path": "AN201411050007554927.pdf",
+    "sha256": "7e4229cf909055fbd70bfa6eeaeeced9a5be1e7821587c9a392e9c7ea840eb8b",
+    "risk_actions": {
+      "delisting": false,
+      "other": true,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-11-07"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201411050007554927_api.json",
+      "sha256": "defb2c1a9feca15bf29e4da60487e73898467c2f9c8bdfa33c2139e04bd59795",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确撤退市风险并仍实施其他风险，保持5%，不误全退出。"
+}

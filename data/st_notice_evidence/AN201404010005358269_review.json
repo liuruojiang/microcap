@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000958",
+    "announcement_id": "AN201404010005358269",
+    "notice_date": "2014-04-02",
+    "title": "关于撤销退市风险警示公告",
+    "provider_title": "*ST东热:关于撤销退市风险警示公告",
+    "removed_issuer_prefix": "*ST东热:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404010005358269_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201404010005358269_1.pdf",
+    "body_notice_number": "2014-017",
+    "relative_pdf_path": "AN201404010005358269.pdf",
+    "sha256": "acf8b194edc9cbf7a583c361e3383c5a76b47650e6bfa436f0b8d3a77138a330",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-04-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201404010005358269_api.json",
+      "sha256": "1ad99385d04a9f26b9a894ae911b543e2ed8072d77a34d4412ae8f3f4dd987bb",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文核准段明确批准撤销且普通简称恢复；明确无其他风险或同时撤销两类，普通交易10%（恢复上市首日例外不改变ST状态），完整清零旧类别。"
+}

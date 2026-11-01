@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000409",
+    "announcement_id": "AN201304010005825225",
+    "notice_date": "2013-04-02",
+    "title": "关于撤销股票交易其他特别处理的公告",
+    "provider_title": "ST泰复：关于撤销股票交易其他特别处理的公告",
+    "removed_issuer_prefix": "ST泰复：",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005825225_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201304010005825225_1.pdf",
+    "body_notice_number": "2013-033",
+    "relative_pdf_path": "AN201304010005825225.pdf",
+    "sha256": "aac62e397ba524a7b40b5f23399ee7804629cfac51f1e92e8238d8432bd1c0c2",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-04-03"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201304010005825225_api.json",
+      "sha256": "d38e0068d9e6a8bca6a610592e357ec9befa78202906e828fa4dddda00834df7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确交易所核准撤其他特别处理，普通泰复实业及10%涨跌幅。"
+}

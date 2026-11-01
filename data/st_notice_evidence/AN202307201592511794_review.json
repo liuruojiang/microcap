@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002157",
+    "announcement_id": "AN202307201592511794",
+    "notice_date": "2023-07-21",
+    "title": "关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "provider_title": "*ST正邦:关于法院裁定受理公司重整及指定管理人暨公司股票交易将被叠加实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST正邦:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307201592511794_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202307201592511794_1.pdf",
+    "body_notice_number": "2023-103",
+    "relative_pdf_path": "AN202307201592511794.pdf",
+    "sha256": "a0a2f7528d5e5fada3435324b4ccb4618dff3f083bfb1ceb9e4e35dcc8f36e64",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2023-07-21"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202307201592511794_api.json",
+      "sha256": "90cc9e6fa8a703bcba1e016044c57f7fb9e9981940447ffdcb4c3e7a8a2ed0b7",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Additional delisting reason; no opposite-risk reset inferred. 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：reviewed_global399_price45_candidates_20261101.json"
+}

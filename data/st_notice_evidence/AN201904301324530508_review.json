@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000981",
+    "announcement_id": "AN201904301324530508",
+    "notice_date": "2019-04-30",
+    "title": "关于公司控股股东及其关联方资金占用触发其他风险警示情形暨公司股票停牌的提示性公告",
+    "provider_title": "银亿股份:关于公司控股股东及其关联方资金占用触发其他风险警示情形暨公司股票停牌的提示性公告",
+    "removed_issuer_prefix": "银亿股份:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904301324530508_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201904301324530508_1.pdf",
+    "body_notice_number": "2019-051",
+    "relative_pdf_path": "AN201904301324530508.pdf",
+    "sha256": "03aea34ff430a0b2d4db49d6b7692551f3de67c26154cb4d22e18fb8dafc3bcc",
+    "risk_actions": {
+      "other": true
+    },
+    "actual_effective_date": "2019-05-06"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201904301324530508_api.json",
+      "sha256": "5e6b38fcc965d70a567df5bf499537bc0c60773c1586f9fb1d7a4036dba1cbda",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际PDF关键状态段及首尾声明核对：正文特别提示及事项1-6明确5/6ST银亿，资金占用已触发。"
+}

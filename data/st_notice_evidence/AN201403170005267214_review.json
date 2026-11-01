@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000555",
+    "announcement_id": "AN201403170005267214",
+    "notice_date": "2014-03-18",
+    "title": "关于撤销股票交易退市风险警示的公告",
+    "provider_title": "*ST太光:关于撤销股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST太光:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403170005267214_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201403170005267214_1.pdf",
+    "body_notice_number": "2014-036",
+    "relative_pdf_path": "AN201403170005267214.pdf",
+    "sha256": "b3ef1341abd81c40e30600df5c77e235b644aad9c6d13d93c3a647be085fd54d",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2014-03-19"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201403170005267214_api.json",
+      "sha256": "f0011a0cc942fdaddcea5bdf0e4f6d577f19596e32a3bd3d1d0bca1e8b038b96",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文明确不存在退市及其他风险，交易所核准2014年3月19日撤销及普通神州信息10%。相邻恢复交易句误写2013年，保留原件并以同段明确核准日/2014停牌日及落款核定实际日，不改公告日。"
+}

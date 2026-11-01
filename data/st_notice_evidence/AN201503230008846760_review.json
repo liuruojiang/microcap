@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000068",
+    "announcement_id": "AN201503230008846760",
+    "notice_date": "2015-03-24",
+    "title": "关于公司股票将被实行退市风险警示特别处理公告",
+    "provider_title": "华控赛格:关于公司股票将被实行退市风险警示特别处理公告",
+    "removed_issuer_prefix": "华控赛格:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503230008846760_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201503230008846760_1.pdf",
+    "body_notice_number": "2015-32",
+    "relative_pdf_path": "AN201503230008846760.pdf",
+    "sha256": "0f1604a64bf1638c7e8da4e711e7db5843baa3d0f684a248c60f6b01b7366d62",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2015-03-25"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201503230008846760_api.json",
+      "sha256": "284deedb570eec26b444aa4126c005a57b4a3b10e4bff7b0efb9d9bc87e47f49",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "逐页全文与已审CNInfo 1200732981 原件完全相同，PDF字节不同单独保留；沿用经全文核验动作。"
+}

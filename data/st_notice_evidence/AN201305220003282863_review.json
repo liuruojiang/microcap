@@ -1,0 +1,31 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000622",
+    "announcement_id": "AN201305220003282863",
+    "notice_date": "2013-05-23",
+    "title": "关于撤销公司股票交易退市风险警示的公告",
+    "provider_title": "*ST恒立:关于撤销公司股票交易退市风险警示的公告",
+    "removed_issuer_prefix": "*ST恒立:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305220003282863_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN201305220003282863_1.pdf",
+    "body_notice_number": "2013-026",
+    "relative_pdf_path": "AN201305220003282863.pdf",
+    "sha256": "d9ee5029d865d3aa6dc5b7327b4ce7fe3d01076da7c1edd3baf8d3cd78f297eb",
+    "risk_actions": {
+      "delisting": false,
+      "other": false,
+      "unspecified": false
+    },
+    "actual_effective_date": "2013-05-24"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN201305220003282863_api.json",
+      "sha256": "fb0fd5dce2cc83cf8c0dc63de799352f15cee64318120d6fd3339a88a05a64d4",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文当前批准动作、实施日期及新简称人工逐项审阅；历史原因不作新入口，条件性未来风险不作现时ST。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_root31_20261101/adjudication.json"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002188",
+    "announcement_id": "AN202006071382985332",
+    "notice_date": "2020-06-08",
+    "title": "关于公司股票交易撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "provider_title": "*ST巴士:关于公司股票交易撤销退市风险警示及继续实行其他风险警示的提示性公告",
+    "removed_issuer_prefix": "*ST巴士:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202006071382985332_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202006071382985332_1.pdf",
+    "body_notice_number": "2020-062",
+    "relative_pdf_path": "AN202006071382985332.pdf",
+    "sha256": "c78b65143c77cd34f4e0d86ae029153ecb334e127bedfe3a5ce406b8efb924b8",
+    "risk_actions": {
+      "delisting": false,
+      "other": true
+    },
+    "actual_effective_date": "2020-06-09"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202006071382985332_api.json",
+      "sha256": "9cec9205a7f6e499a34b7153421a214de1034ff67f1a212c4badae2b273164c3",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "实际正文明确交易所已同意撤销退市风险警示，但仍实施其他风险警示，简称ST且5%限制，不作为全部退出。"
+}

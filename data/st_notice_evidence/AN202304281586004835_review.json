@@ -1,0 +1,29 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300799",
+    "announcement_id": "AN202304281586004835",
+    "notice_date": "2023-04-28",
+    "title": "关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "provider_title": "左江科技:关于公司股票交易将被实施退市风险警示暨股票停牌的公告",
+    "removed_issuer_prefix": "左江科技:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586004835_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202304281586004835_1.pdf",
+    "body_notice_number": "2023-028",
+    "relative_pdf_path": "AN202304281586004835.pdf",
+    "sha256": "e4e3f051b09ae9f68e6f7ae299db48185031a8d7492ae25802faa50781558011",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2023-05-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202304281586004835_api.json",
+      "sha256": "29b01335ce4b8b91789d473e41faaeafc8955400f9fe1541b4d89858e9f8ba39",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "正文确认股票实施类别、起始日和简称；未涉及类别不赋false，不自动套用同标题其他日期。 独立逐事件正文审定，原件+API身份回执已复核；来源审阅文件：global399_sync42_bodies_20261101/adjudication.json"
+}

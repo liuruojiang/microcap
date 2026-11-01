@@ -1,0 +1,11 @@
+{
+  "url": "https://webapi.cninfo.com.cn/api/stock/p_stock2215",
+  "params": {
+    "scode": "000422",
+    "sdate": "2025-01-01",
+    "edate": "2026-10-29"
+  },
+  "status": 200,
+  "sha256": "3a0bb5b0048931178e9d7a5d8857a53d68df7d2e76d3daa50884d0665efdfc5b",
+  "retrieved_at_utc": "2026-10-30T04:17:01.489462+00:00"
+}

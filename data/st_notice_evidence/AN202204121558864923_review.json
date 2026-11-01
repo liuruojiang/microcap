@@ -1,0 +1,27 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000587",
+    "announcement_id": "AN202204121558864923",
+    "notice_date": "2022-04-13",
+    "title": "关于公司股票将被实施退市风险警示的公告",
+    "provider_title": "*ST金洲:关于公司股票将被实施退市风险警示的公告",
+    "removed_issuer_prefix": "*ST金洲:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204121558864923_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202204121558864923_1.pdf",
+    "body_notice_number": "2022-026",
+    "relative_pdf_path": "AN202204121558864923.pdf",
+    "sha256": "62ac7fc4869aa56592944cd0889b0a0370158e56d9e4ff84d8962190773ec5ac",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "AN202204121558864923_api.json",
+      "sha256": "cfe7861db5e618f5a023c8239fd0706a2f504d2a20326d085396ded00ba7c3f9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    }
+  },
+  "review_notes": "Forecast new annual trigger plus history of already-existing two risk categories; no new transition as of this notice. 独立原件关键段审定，API原行与PDF/receipt实际复核；审定文件reviewed_round2_price14_candidates_20261101.json"
+}
