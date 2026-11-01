@@ -26,7 +26,7 @@ foreach ($Name in @('sitecustomize.py', 'notice_boundary_adapter.py', 'exact_non
     }
 }
 $Certificate = Join-Path $CompatRoot 'exact_non_st_addition_certificate.json'
-$ExpectedCertificate = '79e957bb3dcfd5b09927da67f917ae1a6d03ae5478baeff28ec85cbe5014f318'
+$ExpectedCertificate = '1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9'
 if ((Get-FileHash -LiteralPath $Certificate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $ExpectedCertificate) {
     throw 'Automation reviewed-notice certificate identity mismatch.'
 }
