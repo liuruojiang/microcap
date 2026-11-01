@@ -60,11 +60,14 @@ def require_ok(report: dict) -> None:
 def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
     if set(roots) != set(delivery.COSTED):
         raise ValueError("All three version roots are required")
+    roots = {version: Path(root).resolve() for version, root in roots.items()}
+    unique_roots = tuple(dict.fromkeys(roots.values()))
     primary = roots["0"]
-    before = {v: delivery.input_hashes(root) for v, root in roots.items()}
+    before_by_root = {root: delivery.input_hashes(root) for root in unique_roots}
+    before = {version: before_by_root[root] for version, root in roots.items()}
     if any(value != before["0"] for value in before.values()):
         raise ValueError("Isolated version workspaces do not share identical core and base inputs")
-    for root in roots.values():
+    for root in unique_roots:
         if (root / delivery.LOCK).exists():
             raise RuntimeError("A whole-delivery refresh is active")
         require_ok(delivery.validate_base_state_for_session(root, expected))
@@ -77,7 +80,7 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
                 copy_file(root / name, staged / name)
         report = delivery.inspect_outputs(staged, expected)
         require_ok(report)
-        if before != {v: delivery.input_hashes(root) for v, root in roots.items()}:
+        if before_by_root != {root: delivery.input_hashes(root) for root in unique_roots}:
             raise RuntimeError("Inputs changed during cloud packing")
         report.update(status="complete", verified_at=datetime.now(timezone.utc).isoformat(),
                       release_sha=subprocess.check_output(

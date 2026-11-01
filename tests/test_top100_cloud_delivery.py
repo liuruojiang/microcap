@@ -173,3 +173,32 @@ def test_prior_day_proof_is_not_rewritten_during_transport(workspace, monkeypatc
     with patch.object(state, "validate_state", side_effect=validate):
         assert cloud.restore(target, bundle, "2026-09-03")["signal_ready"] is False
     assert calls and all(value is False for value in calls)
+
+
+@pytest.mark.parametrize('distinct', [False, True])
+def test_pack_validates_each_resolved_root_once_and_hashes_before_and_after(workspace, monkeypatch, distinct):
+    from collections import Counter
+    monkeypatch.setattr(state, 'validate_state', lambda *a, **kw: {
+        'ok':True,'errors':[],'anchor_dates':{'proxy_index':'2026-09-03','costed_nav':'2026-09-03','panel_shadow':'2026-09-03'}})
+    monkeypatch.setattr(cloud.subprocess,'check_output',lambda *a,**kw:'a'*40)
+    roots={version:workspace for version in delivery.COSTED}
+    if distinct:
+        for version in ('3','5'):
+            other=workspace.parent/('pack-root-'+version)
+            shutil.copytree(workspace,other);roots[version]=other
+    else:
+        roots['3']=workspace/'outputs'/'..'
+        roots['5']=workspace/'.'
+    unique={root.resolve() for root in roots.values()};hash_calls=Counter();validation_calls=Counter()
+    original_hashes=delivery.input_hashes;original_validate=delivery.validate_base_state_for_session
+    def counted_hashes(root):
+        if root.resolve() in unique:hash_calls[root.resolve()]+=1
+        return original_hashes(root)
+    def counted_validate(root,expected):
+        if root.resolve() in unique:validation_calls[root.resolve()]+=1
+        return original_validate(root,expected)
+    monkeypatch.setattr(delivery,'input_hashes',counted_hashes)
+    monkeypatch.setattr(delivery,'validate_base_state_for_session',counted_validate)
+    assert cloud.pack(roots,workspace.parent/('unique-'+str(distinct)+'.zip'),'2026-09-03')['ok']
+    assert hash_calls==Counter({root:2 for root in unique})
+    assert validation_calls==Counter({root:1 for root in unique})
