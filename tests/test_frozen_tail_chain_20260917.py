@@ -190,3 +190,35 @@ def test_non_authority_full_cache_reuses_valid_execution_date_without_replay(cha
     for target in ["2026-09-18", "2026-09-21"]:
         chain.base.ensure_strategy_files(chain.args, chain.paths, chain.paths["panel_shadow"], pd.Timestamp(target))
     assert chain.paths["proxy_effective_members"].read_bytes() == chain.frozen["proxy_effective_members"]
+
+
+def test_tail_refreshes_latest_target_union_without_changing_executed_returns(chain, monkeypatch):
+    ns = chain.base.try_extend_proxy_index_without_rebalance.__globals__
+    monkeypatch.setitem(ns, "_proxy_target_members_map_from_saved_members", lambda _: {
+        chain.seed - pd.Timedelta(days=14): ["000008"],
+        chain.seed: ["000002", "000003"],
+        chain.seed + pd.Timedelta(days=14): ["000009"],
+    })
+    refreshed = []
+    monkeypatch.setitem(ns, "refresh_price_cache_tail", lambda *a, **kw: refreshed.extend(kw["symbols"]))
+    assert chain.base.try_extend_proxy_index_without_rebalance(
+        chain.args, chain.paths, chain.paths["panel_shadow"], pd.Timestamp("2026-09-18"))
+    assert refreshed == ["000001", "000002", "000003"]
+    # Fixture has no price loader for000003: any accidental return inclusion raises.
+    latest = pd.read_csv(chain.args.index_csv).iloc[-1]
+    assert latest.daily_return == pytest.approx(0.01)
+    assert latest.holding_count == 2
+    assert chain.paths["proxy_effective_members"].read_bytes() == chain.frozen["proxy_effective_members"]
+    meta = json.loads(chain.paths["proxy_meta"].read_text(encoding="utf-8"))
+    assert meta["return_basis_consumption"]["tail_extensions"][-1]["symbols"] == ["000001", "000002"]
+
+
+def test_tail_future_only_target_fails_before_refresh(chain, monkeypatch):
+    ns = chain.base.try_extend_proxy_index_without_rebalance.__globals__
+    monkeypatch.setitem(ns, "_proxy_target_members_map_from_saved_members", lambda _: {
+        chain.seed + pd.Timedelta(days=1): ["000003"]})
+    monkeypatch.setitem(ns, "refresh_price_cache_tail", lambda *a, **kw: pytest.fail("future target must not refresh"))
+    before = chain.args.index_csv.read_bytes()
+    assert not chain.base.try_extend_proxy_index_without_rebalance(
+        chain.args, chain.paths, chain.paths["panel_shadow"], pd.Timestamp("2026-09-18"))
+    assert chain.args.index_csv.read_bytes() == before

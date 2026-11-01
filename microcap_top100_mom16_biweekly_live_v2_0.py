@@ -5943,8 +5943,10 @@ def try_extend_proxy_index_without_rebalance(
         return False
 
     target_members_map = _proxy_target_members_map_from_saved_members(paths["proxy_members"])
-    if not target_members_map:
+    past_target_dates = [dt for dt in target_members_map if pd.Timestamp(dt).normalize() <= current_end]
+    if not past_target_dates:
         return False
+    latest_target_members = target_members_map[max(past_target_dates)]
     effective_path = paths.get("proxy_effective_members")
     authority = _load_frozen_tail_authority() if certified else None
     certified_seed = pd.Timestamp(authority["seed_end_date"]).normalize() if certified else current_end
@@ -6027,7 +6029,7 @@ def try_extend_proxy_index_without_rebalance(
     refresh_price_cache_tail(
         target_end,
         min(int(args.max_workers), 4),
-        symbols=effective_members,
+        symbols=sorted(set(effective_members) | set(latest_target_members)),
         force_refresh=args.force_refresh,
         progress_interval=25,
     )
