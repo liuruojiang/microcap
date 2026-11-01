@@ -81,14 +81,29 @@ def _consumption_requirements(root, target, requested):
         effective=frames["effective_members"]
         if not {"as_of_date","rank","symbol"}.issubset(effective.columns):raise ReturnBasisError("Invalid effective authority schema")
         dates=set(effective.as_of_date.astype(str));members=effective.symbol.astype(str).str.zfill(6).tolist()
-        if len(dates)!=1 or next(iter(dates))>start or len(members)!=100 or len(set(members))!=100 or set(pd.to_numeric(effective['rank']))!=set(range(1,101)):
+        if len(dates)!=1 or len(members)!=100 or len(set(members))!=100 or set(pd.to_numeric(effective['rank']))!=set(range(1,101)):
             raise ReturnBasisError("Effective authority is not a valid dated 100-member set")
+        effective_anchor=next(iter(dates))
+        if effective_anchor not in session_set:
+            raise ReturnBasisError("Effective authority date is not an exchange session")
+        if effective_anchor>start:
+            # A current end-state snapshot can also describe this no-rebalance
+            # tail only when the actual full-replay terminal state proves the
+            # identical ranked portfolio already existed at its start.
+            terminal=meta.get("terminal_effective_members")
+            terminal_date=meta.get("terminal_effective_as_of")
+            if (effective_anchor!=end
+                    or meta.get("terminal_member_derivation")!="actual_simulate_rebalance_path_final_current_members"
+                    or terminal_date!=full or terminal_date>start
+                    or not isinstance(terminal,list) or terminal!=members):
+                raise ReturnBasisError("Current effective snapshot lacks matching full-replay terminal authority")
+            effective_anchor=terminal_date
         if set(tail.get("symbols",[]))!=set(members) or len(tail.get("symbols",[]))!=100 or not set(members).issubset(requested):raise ReturnBasisError("Consumption symbols disagree with independent authority")
         turnover=frames["turnover"];observed=[];turnover_days={}
         if turnover.empty or frames['members'].empty:raise ReturnBasisError("Consumption turnover/member authority is empty")
         for column in ("execution_date","effective_date","return_start_date"):
             if column not in turnover:raise ReturnBasisError("Turnover lacks execution dates")
-            parsed=pd.to_datetime(turnover[column],errors="raise")
+            parsed=pd.to_datetime(turnover[column],format="ISO8601",errors="raise")
             if parsed.isna().any():raise ReturnBasisError("Turnover has unproven execution dates")
             days=parsed.dt.strftime("%Y-%m-%d")
             if not set(days).issubset(session_set):raise ReturnBasisError("Turnover execution date is not an exchange session")
@@ -103,7 +118,7 @@ def _consumption_requirements(root, target, requested):
         executed=turnover_days["execution_date"];became_effective=turnover_days["effective_date"]
         if ((first_return<executed)|(first_return<became_effective)).any():raise ReturnBasisError("Turnover return starts before execution/effectiveness")
         if (newly_consumed&((executed>start)|(became_effective>start))).any():raise ReturnBasisError("Tail return belongs to unexecuted rebalance")
-        if observed and next(iter(dates))<max(observed):raise ReturnBasisError("Effective members predate latest execution")
+        if observed and effective_anchor<max(observed):raise ReturnBasisError("Effective members predate latest execution")
         planned=pd.to_datetime(frames['members']['rebalance_date'],errors='raise').dt.strftime('%Y-%m-%d')
         if ((planned>start)&(planned<=end)).any():raise ReturnBasisError("Tail crosses new saved rebalance")
         latest.update(members);cursor=end

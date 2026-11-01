@@ -908,7 +908,8 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
 
 def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
     names = archive.namelist()
-    if MANIFEST_NAME not in names:
+    names_set = set(names)
+    if MANIFEST_NAME not in names_set:
         raise ValueError(f"state bundle is missing integrity manifest: {MANIFEST_NAME}")
     if len(names) != len(set(names)):
         raise ValueError("state bundle contains duplicate archive members")
@@ -937,7 +938,7 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
             raise ValueError(f"state bundle contains a nonportable path alias: {rel}")
         portable_paths.add(portable)
         declared.add(rel)
-        if rel not in names:
+        if rel not in names_set:
             raise ValueError(f"state bundle is missing declared file: {rel}")
         info = archive.getinfo(rel)
         expected_bytes = entry.get("bytes")

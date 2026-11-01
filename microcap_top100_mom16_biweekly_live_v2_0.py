@@ -9557,6 +9557,36 @@ def ensure_realtime_query_base_context(
     return context
 
 
+def _current_publication_name_map() -> dict[str, str]:
+    """Validate the installed current snapshot; never rewrite historical labels."""
+    frame = pd.read_csv(freq_mod.ACTIVE_UNIVERSE, dtype=str).fillna("")
+    if not {"code", "name"}.issubset(frame.columns):
+        raise RuntimeError("Current name snapshot schema incomplete")
+    codes = frame["code"].str.strip()
+    names = frame["name"].str.strip()
+    if (frame.empty or codes.duplicated().any() or not codes.str.fullmatch(r"\d{6}").all()
+            or names.eq("").any()):
+        raise RuntimeError("Current name snapshot has invalid or duplicate identity")
+    mapping = dict(zip(codes, names))
+    current_st = freq_mod.load_current_st_name_map()
+    if not current_st or any(code not in mapping or mapping[code] != name for code, name in current_st.items()):
+        raise RuntimeError("Current name and ST snapshots disagree")
+    risky = {code for code, name in mapping.items() if not is_live_tradable_name(name)}
+    if not set(current_st).issubset(risky):
+        raise RuntimeError("Current ST snapshot contains inconsistent names")
+    return mapping
+
+
+def _with_current_publication_names(members: pd.DataFrame, names: dict[str, str]) -> pd.DataFrame:
+    out = members.copy()
+    codes = out["symbol"].astype(str).str.zfill(6)
+    if not codes.isin(names).all():
+        raise RuntimeError("Current member name missing from verified snapshot")
+    out["name"] = codes.map(names)
+    assert_no_st_members(out, "current publication members")
+    return out
+
+
 def ensure_static_members_fresh(
     args: argparse.Namespace,
     paths: dict[str, Path],
@@ -9579,7 +9609,9 @@ def ensure_static_members_fresh(
             frame = formal.get(pd.Timestamp(dt).normalize())
             if frame is None or len(frame) != TOP_N or frame["symbol"].nunique() != TOP_N:
                 raise RuntimeError("Formal proxy member snapshot incomplete; refusing independent re-ranking")
+        current_names = _current_publication_name_map()
         target_members = add_capital_columns(formal[latest_rebalance.normalize()].copy(), capital=args.capital)
+        target_members = _with_current_publication_names(target_members, current_names)
         assert_no_st_members(target_members, "current formal target members")
         prev_members = formal.get(pd.Timestamp(prev_rebalance).normalize()) if prev_rebalance is not None else None
         executed = _continuation_members_at_bridge(paths, pd.Timestamp(target_end_date).normalize())
@@ -9589,11 +9621,14 @@ def ensure_static_members_fresh(
         effective_members = names.reindex(executed).reset_index()
         effective_members["rank"] = np.arange(1, TOP_N + 1)
         effective_members["target_weight"] = 1.0 / TOP_N
+        effective_members = _with_current_publication_names(effective_members, current_names)
         if effective_members["name"].isna().any() or not effective_members["name"].map(is_live_tradable_name).all():
             raise RuntimeError("Executed member names missing or restricted; refusing publication")
         target_members["signal_date"] = latest_rebalance.date()
         target_members["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()
         changes_df = build_change_table(prev_members, target_members)
+        if not changes_df.empty:
+            changes_df["name"] = changes_df["symbol"].astype(str).str.zfill(6).map(current_names).fillna(changes_df["name"])
         if not changes_df.empty:
             changes_df["signal_date"] = latest_rebalance.date()
             changes_df["effective_date"] = None if rebalance_effective_date is None else pd.Timestamp(rebalance_effective_date).date()

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-10-30",
+  "status": "formal_numeric_and_signal_PASS_whole_delivery_and_cloud_pending",
+  "approved_by": "assistant executing explicit user deployment authorization",
+  "user_separately_reviewed_generated_hashes": false,
+  "authorization_scope": "User selected conservative delisting model and explicitly requested commit/push plus local/cloud daily synchronization. This record binds the executing assistant verification to those existing instructions; it is not a claim of separate user hash review.",
+  "terminal_loss_policy": "delist_zero_writeoff_equal_survivors_v1",
+  "terminal_loss_policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+  "versions": {
+    "v2_0": {
+      "approved_report": "v2_0_approved_migration_report.json",
+      "authorization_record": "v2_0_authorization_binding.json",
+      "clean_rewrite_status": "clean",
+      "summary_sha256": "0c4902cf2b908ec25143b1fdeb338497250d5b7411defd33c3af7a2cbff4bc6f",
+      "stream": {
+        "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+        "sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+        "rows": 4049,
+        "latest": "2026-10-30",
+        "full_difference": {
+          "return_net": 0.0,
+          "nav_net": 0.0
+        },
+        "last95_difference": {
+          "return_net": 0.0,
+          "nav_net": 0.0
+        }
+      }
+    },
+    "v2_3": {
+      "approved_report": "v2_3_approved_migration_report.json",
+      "authorization_record": "v2_3_authorization_binding.json",
+      "clean_rewrite_status": "clean",
+      "summary_sha256": "de1b0b94faf46e897a1c56f75ec0edca9e10a99ab26bf9abd1441406ea86d975",
+      "stream": {
+        "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+        "sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e",
+        "rows": 4004,
+        "latest": "2026-10-30",
+        "full_difference": {
+          "return_net": 0.0,
+          "nav_net": 0.0
+        },
+        "last95_difference": {
+          "return_net": 0.0,
+          "nav_net": 0.0
+        }
+      }
+    },
+    "v2_5": {
+      "approved_report": "v2_5_approved_migration_report.json",
+      "authorization_record": "v2_5_authorization_binding.json",
+      "clean_rewrite_status": "clean",
+      "summary_sha256": "ec5d90ba98411ec35b1e6bfc63e3aedce1946365ab81fd46ec5b485573b70417",
+      "stream": {
+        "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+        "sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac",
+        "rows": 4004,
+        "latest": "2026-10-30",
+        "full_difference": {
+          "return_net": 0.0,
+          "nav_net": 0.0
+        },
+        "last95_difference": {
+          "return_net": 0.0,
+          "nav_net": 0.0
+        }
+      }
+    }
+  },
+  "seed_file_sha256": {
+    "proxy_index": "80fc67bf9475f16140d89bb33df43f667587f180c2e122540d023d53442332d1",
+    "costed_nav": "58d7410fb0f635bf1a15d1add8cb4fae050a43a256b6e085d4ff5951e6e46d72",
+    "proxy_meta": "25efd00309f504cb029a094bc4b94acfbefabe8b29a646fc5427b4ddb509f814",
+    "proxy_members": "13fc2763e5eba10fad728ce9ed0d780393d569be748b63f107ddffac35267a70",
+    "proxy_turnover": "6aa7ad8e8d825da5c7516b96abc17d95c2da60a6eddfb32620ec24bc36b0d000",
+    "proxy_effective_members": "9aba4fd77e037d78fc5673791ef8eb9eab27aa6c67b2e9aad341bd1dc15befdd"
+  },
+  "seed_hash_caliber": "actual base_mod._file_sha256: CRLF normalized to LF",
+  "evidence_sha256": {
+    "v2_0_approved_migration_report.json": "49472c39c53480089028bc765691ad9ea5bb46fbf6a2d8dcdb22f716dcc8b4cb",
+    "v2_0_prepared_report.json": "8ca83c3a0e395bce883a3671eac9cca39832dc997fb9b63ea203fc6a5e8a8cc9",
+    "v2_0_authorization_binding.json": "4b79ba9e8ff0ff29028481bb602dcdf3c5c4a11cf536a4796fd6498d0174ae27",
+    "v2_3_approved_migration_report.json": "c120fe75a0dcae8f742cdea4869d32d7b9e5d842c14a2a8157457fd384880289",
+    "v2_3_prepared_report.json": "169c6eec2159a58b4ed16f7579a4541fafec9abe17b5f0a21719599ca92efdf0",
+    "v2_3_authorization_binding.json": "9eb869427e02e83eec8b6802f22c43a739394cb39d4721e5ca1c8214d6a896e0",
+    "v2_5_approved_migration_report.json": "f65aff2f961b07d85fda9a76f702ca1c36aca1f2f58a96f2a11811851c999625",
+    "v2_5_prepared_report.json": "cf517d363f4cc13522a1a9517c6931be221030e5e8e0815dfed99d47a9f04ee8",
+    "v2_5_authorization_binding.json": "928d2474023a8f2f1a07d41e304ff6747a32d54768071ec17777cd8027416d92",
+    "formal_three_version_readonly.json": "357fed03ad955cb151049afc0df925ec71df010bd710c35cbacfb5ce43df2eb9",
+    "archived_rewrite_audit_receipt.json": "c3734d861e192eed95ad68bf7bbd09f23cab7ffa631de498e77b94c1792d946e"
+  },
+  "limitations": [
+    "Public/local proxy, not official Wind 868008.WI.",
+    "ST evidence is complete within the returned verified public-provider scope, not proof of all possible historical notices.",
+    "Economic share-count basis retained; public-disclosure point-in-time completeness not certified.",
+    "Delisting writeoff is a conservative model assumption, not real sale, cash recovery or certification of remaining rights.",
+    "One earlier acceptance email was already sent; no additional email is authorized here.",
+    "refresh-all/check and current cloud workflow/final-CSV verification remain pending."
+  ],
+  "created_at_utc": "2026-11-01T05:53:46.849572+00:00"
+}

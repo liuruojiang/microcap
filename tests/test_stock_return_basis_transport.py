@@ -90,3 +90,48 @@ def test_transport_fails_closed_without_repairs(tmp_path,monkeypatch,change):
     symbols=["000001","000559"] if change=="missing_symbol" else ["000001"]
     with pytest.raises(ReturnBasisError):verify_return_basis_transport(tmp_path,anchor,symbols)
     assert snapshot(tmp_path)==before
+
+
+@pytest.mark.parametrize('fault', [None, 'two_contiguous_tails', 'mixed_iso_dates', 'missing_derivation', 'future_terminal', 'different_members', 'duplicate_terminal', 'missing_terminal', 'future_snapshot', 'new_execution', 'stale_terminal_execution'])
+def test_current_snapshot_needs_actual_pre_tail_terminal_state(tmp_path, monkeypatch, fault):
+    symbols=[str(i).zfill(6) for i in range(1,101)]
+    monkeypatch.setattr(pipeline,'sessions_for_day',lambda _:tuple(dt.date.fromisoformat(s) for s in ['2026-10-22','2026-10-23','2026-10-26','2026-10-27','2026-10-28']))
+    out=tmp_path/'outputs';out.mkdir();prefix=out/'microcap_top100_mom16_biweekly_live_v2_0_base_proxy'
+    pd.DataFrame(dict(as_of_date=['2026-10-27']*100,rank=range(1,101),symbol=symbols)).to_csv(str(prefix)+'_effective_members.csv',index=False)
+    pd.DataFrame(dict(rebalance_date=['2026-10-23']*100,rank=range(1,101),symbol=symbols)).to_csv(str(prefix)+'_members.csv',index=False)
+    pd.DataFrame([dict(execution_date='2026-10-23',effective_date='2026-10-23',return_start_date='2026-10-26')]).to_csv(str(prefix)+'_turnover.csv',index=False)
+    pd.DataFrame(dict(date=['2026-10-23','2026-10-26','2026-10-27'])).to_csv(out/'wind_microcap_top_100_biweekly_thursday_16y_cached.csv',index=False)
+    tail=dict(start_exclusive='2026-10-23',end='2026-10-27',symbols=symbols.copy())
+    meta=dict(terminal_member_derivation='actual_simulate_rebalance_path_final_current_members',terminal_effective_as_of='2026-10-23',terminal_effective_members=symbols.copy(),return_basis_consumption=dict(revision='stock_return_consumption_v1',full_rebuild_anchor='2026-10-23',tail_extensions=[tail]))
+    if fault=='missing_derivation':meta.pop('terminal_member_derivation')
+    elif fault=='future_terminal':meta['terminal_effective_as_of']='2026-10-27'
+    elif fault=='different_members':meta['terminal_effective_members'][0]='999999'
+    elif fault=='duplicate_terminal':meta['terminal_effective_members'][0]=symbols[1]
+    elif fault=='missing_terminal':meta.pop('terminal_effective_members')
+    elif fault=='future_snapshot':
+        p=Path(str(prefix)+'_effective_members.csv');d=pd.read_csv(p,dtype={'symbol':str});d.as_of_date='2026-10-28';d.to_csv(p,index=False)
+    elif fault=='new_execution':
+        pd.DataFrame([dict(execution_date='2026-10-26',effective_date='2026-10-26',return_start_date='2026-10-27')]).to_csv(str(prefix)+'_turnover.csv',index=False)
+    elif fault=='stale_terminal_execution':
+        # A full-replay terminal state preceding a later execution cannot be
+        # used even when its list happens to match the end-state snapshot.
+        meta['terminal_effective_as_of']='2026-10-22';meta['return_basis_consumption']['full_rebuild_anchor']='2026-10-22';tail['start_exclusive']='2026-10-22'
+    for name,key in [('effective_members','effective_members_sha256'),('members','proxy_members_sha256'),('turnover','proxy_turnover_sha256')]:tail[key]=hashlib.sha256(Path(str(prefix)+'_'+name+'.csv').read_bytes()).hexdigest()
+    if fault=='mixed_iso_dates':
+        turnover=Path(str(prefix)+'_turnover.csv')
+        pd.DataFrame([dict(execution_date='2026-10-22',effective_date='2026-10-22',return_start_date='2026-10-23'),dict(execution_date='2026-10-23',effective_date='2026-10-23',return_start_date='2026-10-26 00:00:00')]).to_csv(turnover,index=False)
+        tail['proxy_turnover_sha256']=hashlib.sha256(turnover.read_bytes()).hexdigest()
+    if fault=='two_contiguous_tails':
+        authority=Path(str(prefix)+'_effective_members.csv');data=pd.read_csv(authority,dtype={'symbol':str});data['as_of_date']='2026-10-26';data.to_csv(authority,index=False)
+        tail['effective_members_sha256']=hashlib.sha256(authority.read_bytes()).hexdigest()
+        first=dict(tail,end='2026-10-26')
+        second=dict(tail,start_exclusive='2026-10-26')
+        meta['return_basis_consumption']['tail_extensions']=[first,second]
+    Path(str(prefix)+'_meta.json').write_text(json.dumps(meta))
+    before=snapshot(tmp_path)
+    if fault not in (None,'two_contiguous_tails','mixed_iso_dates'):
+        with pytest.raises(ReturnBasisError):pipeline._consumption_requirements(tmp_path,'2026-10-27',set(symbols))
+    else:
+        full,live,_=pipeline._consumption_requirements(tmp_path,'2026-10-27',set(symbols))
+        assert full=='2026-10-23' and live==set(symbols)
+    assert snapshot(tmp_path)==before

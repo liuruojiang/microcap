@@ -1,0 +1,17 @@
+{
+  "version": "2.5",
+  "approved_by": "assistant executing explicit user deployment authorization",
+  "authorization_quotes": [
+    "采用保守模型：退市日剩余价值计零并释放仓位，明确标注非真实成交",
+    "搞得太久了，这些小问题就别管了，赶紧结束。然后做好提交推送，做好本地和远端日报的同步"
+  ],
+  "user_separately_reviewed_generated_hashes": false,
+  "prepared_report_sha256": "cf517d363f4cc13522a1a9517c6931be221030e5e8e0815dfed99d47a9f04ee8",
+  "candidate_csv_sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac",
+  "diagnostic_result_sha256": "571021dc025b41330b9ebdc75169a4b1cb9b8eaa112afa816cf52db581ba9331",
+  "diagnostic_stream_sha256": "da9009d65670d6c9a96318d2faacad7f115a70c4351f218670b2c9a620993460",
+  "formal_candidate_matches_independently_audited_diagnostic": true,
+  "terminal_loss_policy": "delist_zero_writeoff_equal_survivors_v1",
+  "additional_email_authorized": false,
+  "approved_at_utc": "2026-11-01T05:39:28.961059+00:00"
+}

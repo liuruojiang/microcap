@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "version": "2.3",
+  "approved": false,
+  "ready_for_review": true,
+  "approval_reason": "Preparation only; explicit approval of this exact-hash report is still required.",
+  "expected_date": "2026-10-30",
+  "previous_costed_nav": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+  "previous_costed_nav_sha256": "1d4ac8fbc457bf9e3b67904b5dd4a83e053d04ce9c06392bdd42c489daaf6337",
+  "candidate_csv": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_v2_3_audited_history_migration_candidate.csv",
+  "candidate_frame_sha256": "d587e4f5b8132a1352886945acecacb6a67ec2330add378d9b1693dcf0775d76",
+  "v2_0_costed_nav": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+  "v2_0_costed_nav_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+  "base_proxy_meta": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+  "base_proxy_meta_sha256": "dd854fae45f16609ddf7fa36bd019aa7427d647b809e40306fa82e4f65a9e2fc",
+  "rewrite_audit": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_3_historical_rewrite_audit.csv",
+  "rewrite_audit_sha256": "f6ecf044989089f72ba302d180d9c523c37b9c2baa1d8bbd525bdd7ac6076de0",
+  "previous_row_count": 4002,
+  "candidate_row_count": 4004,
+  "previous_latest_date": "2026-10-28",
+  "candidate_latest_date": "2026-10-30",
+  "dates_removed": [],
+  "dates_added": [
+    "2026-10-29",
+    "2026-10-30"
+  ],
+  "common_return_changed_rows": 2979,
+  "first_common_return_change": "2010-05-05",
+  "new_member_st_violations": 0,
+  "new_member_bad_policy_count": 0,
+  "proxy_meta_matches_current_cache": true,
+  "previous_performance": {
+    "full": {
+      "start_date": "2010-05-05",
+      "end_date": "2026-10-28",
+      "rows": 4002,
+      "annualized_return": 0.23545992894620937,
+      "max_drawdown": -0.14975523114480482,
+      "final_nav": 32.07307711921026,
+      "unavailable_reason": ""
+    },
+    "last_10y": {
+      "start_date": "2016-10-28",
+      "end_date": "2026-10-28",
+      "rows": 2428,
+      "annualized_return": 0.19628448962573675,
+      "max_drawdown": -0.14975523114480394,
+      "final_nav": 5.9499976555283585,
+      "unavailable_reason": ""
+    },
+    "last_5y": {
+      "start_date": "2021-10-28",
+      "end_date": "2026-10-28",
+      "rows": 1212,
+      "annualized_return": 0.23966934421764474,
+      "max_drawdown": -0.1497552311448045,
+      "final_nav": 2.907167800354398,
+      "unavailable_reason": ""
+    },
+    "last_3y": {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-28",
+      "rows": 726,
+      "annualized_return": 0.18024793595326075,
+      "max_drawdown": -0.14975523114480405,
+      "final_nav": 1.6373816342100653,
+      "unavailable_reason": ""
+    },
+    "last_1y": {
+      "start_date": "2025-10-28",
+      "end_date": "2026-10-28",
+      "rows": 243,
+      "annualized_return": 0.09699528068954176,
+      "max_drawdown": -0.14975523114480427,
+      "final_nav": 1.0965791538739456,
+      "unavailable_reason": ""
+    }
+  },
+  "candidate_performance": {
+    "full": {
+      "start_date": "2010-05-05",
+      "end_date": "2026-10-30",
+      "rows": 4004,
+      "annualized_return": 0.2581499247132679,
+      "max_drawdown": -0.18223121666649544,
+      "final_nav": 43.310407310597135,
+      "unavailable_reason": ""
+    },
+    "last_10y": {
+      "start_date": "2016-10-31",
+      "end_date": "2026-10-30",
+      "rows": 2429,
+      "annualized_return": 0.19539335507478328,
+      "max_drawdown": -0.18223121666649578,
+      "final_nav": 5.910361333573819,
+      "unavailable_reason": ""
+    },
+    "last_5y": {
+      "start_date": "2021-11-01",
+      "end_date": "2026-10-30",
+      "rows": 1212,
+      "annualized_return": 0.27212988681588524,
+      "max_drawdown": -0.18223121666649533,
+      "final_nav": 3.305445632835022,
+      "unavailable_reason": ""
+    },
+    "last_3y": {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-30",
+      "rows": 728,
+      "annualized_return": 0.22365295278444997,
+      "max_drawdown": -0.18223121666649555,
+      "final_nav": 1.8261555473685482,
+      "unavailable_reason": ""
+    },
+    "last_1y": {
+      "start_date": "2025-10-30",
+      "end_date": "2026-10-30",
+      "rows": 243,
+      "annualized_return": 0.14576145203343804,
+      "max_drawdown": -0.14603307575702984,
+      "final_nav": 1.145122682950804,
+      "unavailable_reason": ""
+    }
+  }
+}

@@ -2,6 +2,8 @@ outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json
 outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv -text
 research_reports/** -text
 outputs/** -text
+.microcap_index_cache/active_universe.csv -text
+.microcap_index_cache/current_st.csv -text
 quant_param_scan_runs/** -text
 quant_research_runs/** -text
 data/st_notice_evidence/*.pdf -text
@@ -19,3 +21,6 @@ tests/fixtures/st_recovery_listing_real/** -text
 tests/fixtures/stock_return_basis_real/** -text
 tests/fixtures/stock_return_basis_transport_real/** -text
 tests/fixtures/delisting_parity_actual/** -text
+
+# Preserve exact migration approval and release evidence hashes.
+docs/release_evidence_20261101/*.json -text

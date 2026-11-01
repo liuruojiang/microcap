@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "version": "2.5",
+  "approved": true,
+  "ready_for_review": true,
+  "approval_reason": "Existing explicit model and release authorization; exact artifacts verified by the executing assistant.",
+  "expected_date": "2026-10-30",
+  "previous_costed_nav": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+  "previous_costed_nav_sha256": "a5817fde3aadaead861348870f22edd09a79f8cee9e042d4cbdb6fc6ea634937",
+  "candidate_csv": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_v2_5_audited_history_migration_candidate.csv",
+  "candidate_frame_sha256": "8f50392ce7fc3e2932751467d1fb1e5a7424dbf42842fa20c31263caa6043ed0",
+  "v2_0_costed_nav": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+  "v2_0_costed_nav_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+  "base_proxy_meta": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+  "base_proxy_meta_sha256": "dd854fae45f16609ddf7fa36bd019aa7427d647b809e40306fa82e4f65a9e2fc",
+  "rewrite_audit": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_5_historical_rewrite_audit.csv",
+  "rewrite_audit_sha256": "8bcca98ab043a03c2ff4a133c73e0b0f6d02845486321f464c8c220d85256024",
+  "previous_row_count": 4002,
+  "candidate_row_count": 4004,
+  "previous_latest_date": "2026-10-28",
+  "candidate_latest_date": "2026-10-30",
+  "dates_removed": [],
+  "dates_added": [
+    "2026-10-29",
+    "2026-10-30"
+  ],
+  "common_return_changed_rows": 2616,
+  "first_common_return_change": "2010-05-31",
+  "new_member_st_violations": 0,
+  "new_member_bad_policy_count": 0,
+  "proxy_meta_matches_current_cache": true,
+  "previous_performance": {
+    "full": {
+      "start_date": "2010-05-05",
+      "end_date": "2026-10-28",
+      "rows": 4002,
+      "annualized_return": 0.3238885143892287,
+      "max_drawdown": -0.2722378133147271,
+      "final_nav": 99.66965441269251,
+      "unavailable_reason": ""
+    },
+    "last_10y": {
+      "start_date": "2016-10-28",
+      "end_date": "2026-10-28",
+      "rows": 2428,
+      "annualized_return": 0.20087866392484943,
+      "max_drawdown": -0.2690260639525117,
+      "final_nav": 6.181323804085343,
+      "unavailable_reason": ""
+    },
+    "last_5y": {
+      "start_date": "2021-10-28",
+      "end_date": "2026-10-28",
+      "rows": 1212,
+      "annualized_return": 0.32735877761069476,
+      "max_drawdown": -0.21874473928715374,
+      "final_nav": 4.082340507163069,
+      "unavailable_reason": ""
+    },
+    "last_3y": {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-28",
+      "rows": 726,
+      "annualized_return": 0.37137373450173605,
+      "max_drawdown": -0.19723904586064622,
+      "final_nav": 2.5591444349581938,
+      "unavailable_reason": ""
+    },
+    "last_1y": {
+      "start_date": "2025-10-28",
+      "end_date": "2026-10-28",
+      "rows": 243,
+      "annualized_return": 0.15092047206009784,
+      "max_drawdown": -0.128759465700644,
+      "final_nav": 1.150257647746184,
+      "unavailable_reason": ""
+    }
+  },
+  "candidate_performance": {
+    "full": {
+      "start_date": "2010-05-05",
+      "end_date": "2026-10-30",
+      "rows": 4004,
+      "annualized_return": 0.33318080463957345,
+      "max_drawdown": -0.2846226319418731,
+      "final_nav": 112.0492282206354,
+      "unavailable_reason": ""
+    },
+    "last_10y": {
+      "start_date": "2016-10-31",
+      "end_date": "2026-10-30",
+      "rows": 2429,
+      "annualized_return": 0.1766155640204532,
+      "max_drawdown": -0.28462263194187476,
+      "final_nav": 5.048490486790933,
+      "unavailable_reason": ""
+    },
+    "last_5y": {
+      "start_date": "2021-11-01",
+      "end_date": "2026-10-30",
+      "rows": 1212,
+      "annualized_return": 0.35524235487030253,
+      "max_drawdown": -0.19662380184162664,
+      "final_nav": 4.526436217645167,
+      "unavailable_reason": ""
+    },
+    "last_3y": {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-30",
+      "rows": 728,
+      "annualized_return": 0.3954992499596584,
+      "max_drawdown": -0.18888265454563247,
+      "final_nav": 2.702814285568042,
+      "unavailable_reason": ""
+    },
+    "last_1y": {
+      "start_date": "2025-10-30",
+      "end_date": "2026-10-30",
+      "rows": 243,
+      "annualized_return": 0.18362242069611678,
+      "max_drawdown": -0.1270433966271045,
+      "final_nav": 1.1828049384742079,
+      "unavailable_reason": ""
+    }
+  },
+  "approval_record": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_st_history_repair\\final_delivery_20261101\\migration_decisions\\v2_5_authorization_binding.json",
+  "approval_record_sha256": "928d2474023a8f2f1a07d41e304ff6747a32d54768071ec17777cd8027416d92",
+  "prepared_report_sha256": "cf517d363f4cc13522a1a9517c6931be221030e5e8e0815dfed99d47a9f04ee8",
+  "user_separately_reviewed_generated_hashes": false
+}

@@ -1,0 +1,17 @@
+{
+  "0": {
+    "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261029_st_history_repair\\final_delivery_20261101\\migration_decisions\\v2_0_approved_rewrite_audit.csv",
+    "sha256": "b91079329e02984bc7566ae9616e234c3ed1b7bd7801ac3b115073336ddeb4e4",
+    "matches_approved_report": true
+  },
+  "3": {
+    "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261029_st_history_repair\\final_delivery_20261101\\migration_decisions\\v2_3_approved_rewrite_audit.csv",
+    "sha256": "f6ecf044989089f72ba302d180d9c523c37b9c2baa1d8bbd525bdd7ac6076de0",
+    "matches_approved_report": true
+  },
+  "5": {
+    "path": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261029_st_history_repair\\final_delivery_20261101\\migration_decisions\\v2_5_approved_rewrite_audit.csv",
+    "sha256": "8bcca98ab043a03c2ff4a133c73e0b0f6d02845486321f464c8c220d85256024",
+    "matches_approved_report": true
+  }
+}

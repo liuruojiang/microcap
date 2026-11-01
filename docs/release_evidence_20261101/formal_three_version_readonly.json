@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "scope": "formal_numeric_and_signal_readback; whole_delivery_and_cloud_pending",
+  "formal_meta_sha256": "dd854fae45f16609ddf7fa36bd019aa7427d647b809e40306fa82e4f65a9e2fc",
+  "streams": {
+    "v2_0": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+      "rows": 4049,
+      "latest": "2026-10-30",
+      "full_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0
+      },
+      "last95_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0
+      }
+    },
+    "v2_3": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+      "sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e",
+      "rows": 4004,
+      "latest": "2026-10-30",
+      "full_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0
+      },
+      "last95_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0
+      }
+    },
+    "v2_5": {
+      "path": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac",
+      "rows": 4004,
+      "latest": "2026-10-30",
+      "full_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0
+      },
+      "last95_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0
+      }
+    }
+  },
+  "signals": {
+    "v2_0": {
+      "sha256": "23aa756f9f465cb13deaabd3588320b064599e5307028d7f6a2cc981275a1d1f",
+      "version": "2.0",
+      "date": "2026-10-30",
+      "revision": "plain_mom16_fixed1_20260904",
+      "policy": "delist_zero_writeoff_equal_survivors_v1",
+      "policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+      "member_signal_date": "2026-10-29",
+      "member_execution_date": "2026-10-30",
+      "member_actionable": false,
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "trade_state": "hold"
+    },
+    "v2_3": {
+      "sha256": "2be81db75d259eed79bd239bb5e42c69726fadfbd272068b18409f928a7b22e8",
+      "version": "2.3",
+      "date": "2026-10-30",
+      "revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+      "policy": "delist_zero_writeoff_equal_survivors_v1",
+      "policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+      "member_signal_date": "2026-10-29",
+      "member_execution_date": "2026-10-30",
+      "member_actionable": false,
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "trade_state": "hold"
+    },
+    "v2_5": {
+      "sha256": "09d895552fefcb7cd99f8421a580da955a94e7fe4fa80daf6b8dab8805296c6b",
+      "version": "2.5",
+      "date": "2026-10-30",
+      "revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "policy": "delist_zero_writeoff_equal_survivors_v1",
+      "policy_note": "退市日剩余价值计零并释放仓位；保守模型假设，非真实成交",
+      "member_signal_date": "2026-10-29",
+      "member_execution_date": "2026-10-30",
+      "member_actionable": false,
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "trade_state": "hold"
+    }
+  },
+  "members": {
+    "sha256": "9793dcb7b72e0502e164374efc6eb69cbfcbb1aaf8b33cb1604d90e5bce0a001",
+    "unique": 100,
+    "st_overlap": 0,
+    "delisted": 0,
+    "current_names_available_and_clean": 100,
+    "current_name_source_sha256": "d87649d76733e83ca6ce98b4867a788020516488d60d2e18353f58d02a57dcb3"
+  },
+  "caveat": "Member execution field is report next-session context; actionable is false. Current named publication artifact is checked separately during delivery.",
+  "independently_verified_diagnostic_result_sha256": "571021dc025b41330b9ebdc75169a4b1cb9b8eaa112afa816cf52db581ba9331"
+}

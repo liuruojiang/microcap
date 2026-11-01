@@ -1,0 +1,591 @@
+{
+  "schema_version": 1,
+  "approved": true,
+  "ready_for_review": true,
+  "approval_reason": "Existing explicit model and release authorization; exact artifacts verified by the executing assistant.",
+  "expected_date": "2026-10-30",
+  "previous_costed_nav": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+  "previous_costed_nav_sha256": "fb192a7367435399293bdd0acb7382758ab3845cd26361fb60cb38bdd214deda",
+  "candidate_csv": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_v2_0_audited_history_migration_candidate.csv",
+  "candidate_frame_sha256": "e7138c7d5d060202c72c04dafba0bf985ab6163b5ceff447a95c552cb1ae8352",
+  "base_proxy_meta": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json",
+  "base_proxy_meta_sha256": "dd854fae45f16609ddf7fa36bd019aa7427d647b809e40306fa82e4f65a9e2fc",
+  "rewrite_audit": "D:\\动量策略\\微盘股对冲策略\\outputs\\microcap_top100_mom16_biweekly_live_v2_0_historical_rewrite_audit.csv",
+  "rewrite_audit_sha256": "b91079329e02984bc7566ae9616e234c3ed1b7bd7801ac3b115073336ddeb4e4",
+  "previous_row_count": 4047,
+  "candidate_row_count": 4049,
+  "previous_latest_date": "2026-10-28",
+  "candidate_latest_date": "2026-10-30",
+  "dates_removed": [],
+  "dates_added": [
+    "2026-10-29",
+    "2026-10-30"
+  ],
+  "common_return_changed_rows": 3116,
+  "first_common_return_change": "2010-03-02",
+  "old_member_audit": {
+    "member_rows": 43300,
+    "rebalance_dates": 433,
+    "distinct_symbols": 1187,
+    "invalid_member_period_count": 0,
+    "bad_policy_count": 0,
+    "bad_policy_symbols": [],
+    "st_violations": 169,
+    "st_violation_symbols": [
+      "600076",
+      "600338",
+      "600408",
+      "600506",
+      "600530",
+      "600603",
+      "600617",
+      "600633",
+      "600678",
+      "600769",
+      "600792"
+    ],
+    "st_violation_rebalance_dates": [
+      "2010-01-14",
+      "2010-01-28",
+      "2010-02-11",
+      "2010-02-25",
+      "2010-03-11",
+      "2010-03-25",
+      "2010-04-08",
+      "2010-04-22",
+      "2010-05-06",
+      "2010-05-20",
+      "2010-06-03",
+      "2010-06-17",
+      "2010-07-01",
+      "2010-07-15",
+      "2010-07-29",
+      "2010-08-12",
+      "2010-08-26",
+      "2010-09-09",
+      "2010-09-27",
+      "2010-10-08",
+      "2010-10-21",
+      "2010-11-04",
+      "2010-11-18",
+      "2010-12-02",
+      "2010-12-16",
+      "2010-12-30",
+      "2011-01-13",
+      "2011-01-27",
+      "2011-02-10",
+      "2011-02-24",
+      "2011-03-10",
+      "2011-03-24",
+      "2011-04-07",
+      "2011-04-21",
+      "2011-05-05",
+      "2011-05-19",
+      "2011-06-02",
+      "2011-06-16",
+      "2011-06-30",
+      "2011-07-14",
+      "2011-08-11",
+      "2011-08-25",
+      "2011-09-08",
+      "2011-09-22",
+      "2011-10-10",
+      "2011-10-20",
+      "2011-11-03",
+      "2011-11-17",
+      "2011-12-01",
+      "2011-12-15",
+      "2011-12-29",
+      "2012-01-12",
+      "2012-01-30",
+      "2012-02-09",
+      "2012-02-23",
+      "2012-03-08",
+      "2012-03-22",
+      "2012-04-05",
+      "2012-04-19",
+      "2012-05-03",
+      "2012-05-17",
+      "2012-09-06",
+      "2012-09-20",
+      "2012-10-08",
+      "2020-07-30",
+      "2020-08-13",
+      "2020-08-27",
+      "2020-09-10",
+      "2020-09-24",
+      "2020-10-09",
+      "2020-10-22",
+      "2020-11-05",
+      "2020-11-19",
+      "2023-10-09",
+      "2023-10-19",
+      "2023-11-02"
+    ],
+    "st_violation_sample": [
+      {
+        "date": "2010-12-02",
+        "symbol": "600076",
+        "name": "康欣新材",
+        "st_start": "2010-01-04",
+        "st_end": "2013-03-06"
+      },
+      {
+        "date": "2010-12-16",
+        "symbol": "600076",
+        "name": "康欣新材",
+        "st_start": "2010-01-04",
+        "st_end": "2013-03-06"
+      },
+      {
+        "date": "2010-12-30",
+        "symbol": "600076",
+        "name": "康欣新材",
+        "st_start": "2010-01-04",
+        "st_end": "2013-03-06"
+      },
+      {
+        "date": "2011-01-13",
+        "symbol": "600076",
+        "name": "康欣新材",
+        "st_start": "2010-01-04",
+        "st_end": "2013-03-06"
+      },
+      {
+        "date": "2011-10-10",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2011-12-01",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2011-12-15",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2011-12-29",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-01-12",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-01-30",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-02-09",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-02-23",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-03-08",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-03-22",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-04-05",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2012-04-19",
+        "symbol": "600338",
+        "name": "西藏珠峰",
+        "st_start": "2010-01-05",
+        "st_end": "2013-03-11"
+      },
+      {
+        "date": "2020-07-30",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-08-13",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-08-27",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-09-10",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-09-24",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-10-09",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-10-22",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-11-05",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2020-11-19",
+        "symbol": "600408",
+        "name": "安泰集团",
+        "st_start": "2018-04-23",
+        "st_end": "2022-05-05"
+      },
+      {
+        "date": "2010-11-18",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2010-12-02",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2010-12-16",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2010-12-30",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-01-13",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-01-27",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-02-10",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-02-24",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-03-10",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-03-24",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-04-07",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-04-21",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-05-05",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-05-19",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-06-02",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-06-16",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-07-14",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-08-11",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-08-25",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-09-08",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-09-22",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-10-20",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-11-03",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-11-17",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      },
+      {
+        "date": "2011-12-01",
+        "symbol": "600506",
+        "name": "统一股份",
+        "st_start": "2010-01-04",
+        "st_end": "2012-08-23"
+      }
+    ]
+  },
+  "new_member_audit": {
+    "member_rows": 43400,
+    "rebalance_dates": 434,
+    "distinct_symbols": 1297,
+    "invalid_member_period_count": 0,
+    "bad_policy_count": 0,
+    "bad_policy_symbols": [],
+    "st_violations": 0,
+    "st_violation_symbols": [],
+    "st_violation_rebalance_dates": [],
+    "st_violation_sample": []
+  },
+  "new_member_st_violations": 0,
+  "new_member_bad_policy_count": 0,
+  "proxy_meta_matches_current_cache": true,
+  "previous_performance": {
+    "full": {
+      "start_date": "2010-03-01",
+      "end_date": "2026-10-28",
+      "rows": 4047,
+      "annualized_return": 0.2264666165340543,
+      "max_drawdown": -0.1540731370533418,
+      "final_nav": 29.542672285738778,
+      "unavailable_reason": ""
+    },
+    "last_10y": {
+      "start_date": "2016-10-28",
+      "end_date": "2026-10-28",
+      "rows": 2428,
+      "annualized_return": 0.18802154574587646,
+      "max_drawdown": -0.14476357144097995,
+      "final_nav": 5.553455364313372,
+      "unavailable_reason": ""
+    },
+    "last_5y": {
+      "start_date": "2021-10-28",
+      "end_date": "2026-10-28",
+      "rows": 1212,
+      "annualized_return": 0.2552424889701195,
+      "max_drawdown": -0.14476357144098062,
+      "final_nav": 3.0931514525797734,
+      "unavailable_reason": ""
+    },
+    "last_3y": {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-28",
+      "rows": 726,
+      "annualized_return": 0.1827835008956771,
+      "max_drawdown": -0.14476357144098018,
+      "final_nav": 1.6478702795726954,
+      "unavailable_reason": ""
+    },
+    "last_1y": {
+      "start_date": "2025-10-28",
+      "end_date": "2026-10-28",
+      "rows": 243,
+      "annualized_return": 0.046595937046850944,
+      "max_drawdown": -0.14476357144097973,
+      "final_nav": 1.0464006067171925,
+      "unavailable_reason": ""
+    }
+  },
+  "candidate_performance": {
+    "full": {
+      "start_date": "2010-03-01",
+      "end_date": "2026-10-30",
+      "rows": 4049,
+      "annualized_return": 0.2514514886958614,
+      "max_drawdown": -0.1499687168375483,
+      "final_nav": 41.35364420792369,
+      "unavailable_reason": ""
+    },
+    "last_10y": {
+      "start_date": "2016-10-31",
+      "end_date": "2026-10-30",
+      "rows": 2429,
+      "annualized_return": 0.19238206265648075,
+      "max_drawdown": -0.14996871683754776,
+      "final_nav": 5.763806385850536,
+      "unavailable_reason": ""
+    },
+    "last_5y": {
+      "start_date": "2021-11-01",
+      "end_date": "2026-10-30",
+      "rows": 1212,
+      "annualized_return": 0.2768732337992581,
+      "max_drawdown": -0.1424712055914633,
+      "final_nav": 3.367120516990464,
+      "unavailable_reason": ""
+    },
+    "last_3y": {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-30",
+      "rows": 728,
+      "annualized_return": 0.23924444693862904,
+      "max_drawdown": -0.14247120559146342,
+      "final_nav": 1.8964604098570532,
+      "unavailable_reason": ""
+    },
+    "last_1y": {
+      "start_date": "2025-10-30",
+      "end_date": "2026-10-30",
+      "rows": 243,
+      "annualized_return": 0.0836665552260989,
+      "max_drawdown": -0.1424712055914633,
+      "final_nav": 1.083309757917625,
+      "unavailable_reason": ""
+    }
+  },
+  "approval_record": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_st_history_repair\\final_delivery_20261101\\migration_decisions\\v2_0_authorization_binding.json",
+  "approval_record_sha256": "4b79ba9e8ff0ff29028481bb602dcdf3c5c4a11cf536a4796fd6498d0174ae27",
+  "prepared_report_sha256": "8ca83c3a0e395bce883a3671eac9cca39832dc997fb9b63ea203fc6a5e8a8cc9",
+  "user_separately_reviewed_generated_hashes": false
+}
