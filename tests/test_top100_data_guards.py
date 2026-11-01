@@ -209,15 +209,16 @@ def test_full_proxy_bundle_uses_backtest_universe_when_symbols_are_omitted(monke
     monkeypatch.setattr(v2_0.freq_mod, "load_cache_panels", fake_load_cache_panels)
     def fake_simulate_rebalance_path(**kwargs: object):
         dates = pd.DatetimeIndex(kwargs["trading_dates"])
-        return (
-            pd.DataFrame(
+        index = pd.DataFrame(
                 {
                     "date": dates,
                     "close": [1.0, 1.01, 1.02],
                     "daily_return": [0.0, 0.01, 0.0099],
                     "holding_count": [100, 100, 100],
                 }
-            ),
+            )
+        index.attrs.update(terminal_effective_members=["000001"], terminal_as_of=str(dates[-1].date()))
+        return (index,
             pd.DataFrame({"rebalance_date": [pd.Timestamp("2026-06-18")], "turnover": [0.0]}),
             None,
         )

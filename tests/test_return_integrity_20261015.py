@@ -6,6 +6,8 @@ refreshing, writing, or reporting any production strategy artifacts.
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
+import json
 
 import numpy as np
 import pandas as pd
@@ -105,95 +107,91 @@ def _tradeability(raw: pd.DataFrame, adjusted: pd.DataFrame | None, dates=None):
     )
 
 
-@pytest.mark.parametrize("return_column", ["close_qfq", "close_adj", "close_raw"])
-def test_complete_adjustment_uses_one_price_basis(raw_price, return_column) -> None:
-    adjusted = pd.DataFrame({
-        "date": raw_price.date,
-        return_column: [50.0, 51.0, 51.0, 52.0, 53.0],
-    })
-    result = _tradeability(raw_price, adjusted)[0]
-    np.testing.assert_allclose(
-        result, [np.nan, 0.02, 0.0, 52.0 / 51.0 - 1.0, 53.0 / 52.0 - 1.0],
-        rtol=0.0, atol=1e-15, equal_nan=True,
-    )
+def _validated_synthetic_adjustment(raw, values=None):
+    """Synthetic paired factors run through the real ratio builder, not raw relabeling."""
+    from scripts.stock_return_basis import build_ratio_return_basis
+    values = np.asarray(raw.close_raw if values is None else values, dtype=float)
+    dates = pd.to_datetime(raw.date).dt.strftime("%Y-%m-%d").tolist()
+    inputs = {}
+    for kind, factors in (("qfq", np.asarray(raw.close_raw) / values),
+                          ("hfq", values / np.asarray(raw.close_raw))):
+        body = ("var sh600000" + kind + "=" + json.dumps({"total": len(dates),
+                "data": [{"d": d, "f": float(f)} for d, f in zip(dates, factors)]})).encode()
+        inputs[kind + "_source"] = body
+        inputs[kind + "_receipt"] = {"status": 200,
+            "url": "https://finance.sina.com.cn/realstock/company/sh600000/" + kind + ".js",
+            "sha256": hashlib.sha256(body).hexdigest()}
+    adjusted, manifest = build_ratio_return_basis(symbol="600000", raw_csv=raw.to_csv(index=False).encode(),
+        as_of=dates[-1], sessions=dates, list_date=dates[0], **inputs)
+    adjusted.attrs["return_basis_manifest"] = manifest
+    return adjusted
 
 
-def test_partial_identical_adjustment_keeps_raw_returns_and_tradeability(raw_price) -> None:
-    adjusted = raw_price.iloc[1:4].rename(columns={"close_raw": "close_qfq"})
-    expected = _tradeability(raw_price, None)
-    result = _tradeability(raw_price, adjusted)
-    for actual, normal in zip(result, expected):
-        pd.testing.assert_series_equal(actual, normal, check_exact=True)
+def test_complete_adjustment_uses_one_price_basis(raw_price):
+    adjusted = _validated_synthetic_adjustment(raw_price, [50, 51, 51, 52, 53])
+    np.testing.assert_allclose(_tradeability(raw_price, adjusted)[0],
+        [np.nan, .02, 0, 52/51-1, 53/52-1], rtol=0, atol=1e-15, equal_nan=True)
 
 
-@pytest.mark.parametrize("factors", [
-    [0.5, 0.5, 0.5], [0.5, 1.0, 1.0], [1.0, 1.0 + 1e-12, 1.0],
-])
-def test_partial_meaningful_adjustment_rejects_even_constant_ratio(raw_price, factors) -> None:
-    adjusted = raw_price.iloc[1:4].rename(columns={"close_raw": "close_qfq"}).copy()
-    adjusted["close_qfq"] *= factors
+@pytest.mark.parametrize("column", ["close_qfq", "close_adj", "close_raw"])
+def test_legacy_adjustment_without_verified_basis_is_rejected(raw_price, column):
+    adjusted = raw_price.rename(columns={"close_raw": column})
+    with pytest.raises(ValueError, match="Unverified return-basis identity"):
+        _tradeability(raw_price, adjusted)
+
+
+def test_missing_adjustment_is_rejected(raw_price):
+    with pytest.raises(ValueError, match="Missing verified adjusted"):
+        _tradeability(raw_price, None)
+
+
+@pytest.mark.parametrize("factors", [[1,1,1], [.5,.5,.5], [.5,1,1], [1,1+1e-12,1]])
+def test_partial_adjustment_rejects_even_identical_or_constant_ratio(raw_price, factors):
+    adjusted = _validated_synthetic_adjustment(raw_price).iloc[1:4].copy()
+    adjusted["close_adj"] *= factors
     with pytest.raises(ValueError, match="incomplete adjusted return-price coverage.*600000"):
         _tradeability(raw_price, adjusted)
 
 
-def test_internal_adjusted_gap_is_not_forward_filled_across_a_raw_observation(raw_price) -> None:
-    adjusted = pd.DataFrame({
-        "date": raw_price.date,
-        "close_qfq": [50.0, 51.0, 51.0, 52.0, 53.0],
-    }).drop(index=2)
+def test_internal_adjusted_gap_is_not_forward_filled_across_a_raw_observation(raw_price):
+    adjusted = _validated_synthetic_adjustment(raw_price, [50,51,51,52,53]).drop(index=2)
     with pytest.raises(ValueError, match="missing dates=.*2026-01-07"):
         _tradeability(raw_price, adjusted)
 
 
-def test_suspended_day_and_outside_listing_dates_keep_existing_semantics(raw_price) -> None:
+def test_suspended_day_and_outside_listing_dates_keep_existing_semantics(raw_price):
     raw = raw_price.drop(index=2)
-    adjusted = pd.DataFrame({
-        "date": raw.date,
-        "close_qfq": [50.0, 51.0, 52.0, 53.0],
-    })
-    dates = pd.bdate_range("2026-01-02", periods=7)
-    returns, tradeable, _, _ = _tradeability(raw, adjusted, dates)
-    np.testing.assert_allclose(
-        returns, [np.nan, np.nan, 0.02, 0.0, 52.0 / 51.0 - 1.0,
-                  53.0 / 52.0 - 1.0, np.nan],
-        rtol=0.0, atol=1e-15, equal_nan=True,
-    )
-    assert tradeable.tolist() == [False, True, True, False, True, True, False]
+    adjusted = _validated_synthetic_adjustment(raw, [50,51,52,53])
+    returns, tradeable, _, _ = _tradeability(raw, adjusted, pd.bdate_range("2026-01-02", periods=7))
+    np.testing.assert_allclose(returns, [np.nan,np.nan,.02,0,52/51-1,53/52-1,np.nan],
+        rtol=0, atol=1e-15, equal_nan=True)
+    assert tradeable.tolist() == [False,True,True,False,True,True,False]
 
 
-def test_complete_adjustment_preserves_observation_on_a_raw_missing_day(raw_price) -> None:
-    raw = raw_price.drop(index=2)
-    adjusted = pd.DataFrame({
-        "date": raw_price.date,
-        "close_qfq": [50.0, 51.0, 51.5, 52.0, 53.0],
-    })
-    returns, tradeable, _, _ = _tradeability(raw, adjusted, raw_price.date)
-    np.testing.assert_allclose(
-        returns, [np.nan, 0.02, 51.5 / 51.0 - 1.0, 52.0 / 51.5 - 1.0, 53.0 / 52.0 - 1.0],
-        rtol=0.0, atol=1e-15, equal_nan=True,
-    )
+def test_complete_adjustment_preserves_observation_on_a_raw_missing_day(raw_price):
+    adjusted = _validated_synthetic_adjustment(raw_price, [50,51,51.5,52,53])
+    returns, tradeable, _, _ = _tradeability(raw_price.drop(index=2), adjusted, raw_price.date)
+    np.testing.assert_allclose(returns, [np.nan,.02,51.5/51-1,52/51.5-1,53/52-1],
+        rtol=0, atol=1e-15, equal_nan=True)
     assert not tradeable.iloc[2]
 
 
-def test_partial_adjustment_cannot_discard_difference_on_a_raw_missing_day(raw_price) -> None:
-    raw = raw_price.drop(index=2)
-    adjusted = raw_price.iloc[1:4].rename(columns={"close_raw": "close_qfq"})
-    # The two overlapping prices equal raw, but the extra date differs from the
-    # raw calendar's carried close. It is meaningful data, not a redundant cache.
+def test_partial_adjustment_cannot_discard_difference_on_a_raw_missing_day(raw_price):
+    adjusted = _validated_synthetic_adjustment(raw_price).iloc[1:4]
     with pytest.raises(ValueError, match="incomplete adjusted return-price coverage"):
-        _tradeability(raw, adjusted, raw_price.date)
+        _tradeability(raw_price.drop(index=2), adjusted, raw_price.date)
 
 
-@pytest.mark.parametrize("bad", [np.nan, "damaged", np.inf, 0.0])
-def test_invalid_adjusted_close_is_not_replaced_by_raw(raw_price, bad) -> None:
-    adjusted = raw_price.rename(columns={"close_raw": "close_qfq"}).astype({"close_qfq": object})
-    adjusted.at[2, "close_qfq"] = bad
+@pytest.mark.parametrize("bad", [np.nan,"damaged",np.inf,0.0])
+def test_invalid_adjusted_close_is_not_replaced_by_raw(raw_price, bad):
+    adjusted = _validated_synthetic_adjustment(raw_price).astype({"close_adj": object})
+    adjusted.at[2,"close_adj"] = bad
     with pytest.raises(ValueError, match="finite positive closes"):
         _tradeability(raw_price, adjusted)
 
 
-def test_duplicate_adjusted_dates_are_rejected(raw_price) -> None:
-    adjusted = raw_price.rename(columns={"close_raw": "close_qfq"})
+def test_duplicate_adjusted_dates_are_rejected(raw_price):
+    adjusted = _validated_synthetic_adjustment(raw_price)
     adjusted = pd.concat([adjusted, adjusted.iloc[[2]]], ignore_index=True)
     with pytest.raises(ValueError, match="duplicate dates"):
         _tradeability(raw_price, adjusted)
@@ -203,7 +201,7 @@ def test_duplicate_adjusted_dates_are_rejected(raw_price) -> None:
     "partial_adjustment", "adjusted_nan", "adjusted_text", "adjusted_nat",
     "raw_nan", "raw_text", "raw_nat", "raw_zero", "raw_negative", "raw_inf", "raw_negative_inf",
 ])
-def test_cache_loader_propagates_return_data_failure(raw_price, tmp_path: Path,
+def test_cache_loader_rejects_unverified_legacy_basis_or_invalid_raw(raw_price, tmp_path: Path,
                                                    monkeypatch: pytest.MonkeyPatch, attack) -> None:
     paths = {}
     for name in ("PRICE_DIR", "ADJ_PRICE_DIR", "SHARE_DIR"):
@@ -244,16 +242,13 @@ def test_cache_loader_propagates_return_data_failure(raw_price, tmp_path: Path,
     monkeypatch.setitem(namespace, "build_st_status_series", lambda _meta, dates: pd.Series(False, index=dates))
     monkeypatch.setitem(namespace, "build_active_status_series", lambda _meta, dates: pd.Series(True, index=dates))
     dates = pd.DatetimeIndex(raw_price.date)
-    with pytest.raises(RuntimeError, match="symbol cache load failed.*(incomplete adjusted|finite positive|invalid dates|missing or nonnumeric)"):
+    with pytest.raises(RuntimeError, match="symbol cache load failed.*(Unverified ratio return basis|invalid dates|missing or nonnumeric)"):
         v20.freq_mod.load_symbol_cache("600000", dates, dates)
 
 
 @pytest.mark.parametrize("partial", [False, True])
 def test_public_symbol_panel_uses_the_same_coverage_guard(raw_price, monkeypatch, partial) -> None:
-    adjusted = pd.DataFrame({
-        "date": raw_price.date,
-        "close_qfq": [50.0, 51.0, 51.0, 52.0, 53.0],
-    })
+    adjusted = _validated_synthetic_adjustment(raw_price, [50, 51, 51, 52, 53])
     if partial:
         adjusted = adjusted.iloc[1:4]
     namespace = v20.fetch_mod.build_symbol_panel.__globals__
@@ -299,7 +294,7 @@ def test_public_symbol_panel_rejects_invalid_raw_prices_without_adjustment(raw_p
 
 
 @pytest.mark.parametrize("prices", [[0.0, 0.0], [-100.0, -101.0]])
-def test_no_adjustment_loader_cannot_launder_invalid_prices_into_a_valid_proxy(
+def test_no_adjustment_loader_cannot_launder_unverified_prices_into_a_valid_proxy(
     tmp_path, monkeypatch, prices,
 ) -> None:
     dates = pd.to_datetime(["2026-01-05", "2026-01-06"])
@@ -314,7 +309,7 @@ def test_no_adjustment_loader_cannot_launder_invalid_prices_into_a_valid_proxy(
     monkeypatch.setitem(namespace, "build_st_status_series", lambda _meta, days: pd.Series(False, index=days))
     monkeypatch.setitem(namespace, "build_active_status_series", lambda _meta, days: pd.Series(True, index=days))
     monkeypatch.setitem(namespace, "read_ohlc_cache", lambda *_args: pd.DataFrame())
-    with pytest.raises(RuntimeError, match="symbol cache panel load failed.*finite positive"):
+    with pytest.raises(RuntimeError, match="symbol cache panel load failed.*Unverified ratio return basis"):
         v20.freq_mod.load_cache_panels(
             ["600000"], dates, dates, max_workers=1, trade_constraint_mode="close",
         )
