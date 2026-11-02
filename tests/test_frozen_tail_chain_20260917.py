@@ -222,3 +222,13 @@ def test_tail_future_only_target_fails_before_refresh(chain, monkeypatch):
     assert not chain.base.try_extend_proxy_index_without_rebalance(
         chain.args, chain.paths, chain.paths["panel_shadow"], pd.Timestamp("2026-09-18"))
     assert chain.args.index_csv.read_bytes() == before
+
+def test_tail_accepts_mixed_iso_date_serialization(chain):
+    turnover=pd.read_csv(chain.paths['proxy_turnover'])
+    prior=turnover.copy()
+    for c in ('rebalance_date','execution_date','effective_date','return_start_date'):prior[c]='2026-09-16'
+    turnover['return_start_date']='2026-09-18 00:00:00'
+    pd.concat([prior,turnover],ignore_index=True).to_csv(chain.paths['proxy_turnover'],index=False)
+    panel=pd.read_csv(chain.paths['panel_shadow'])
+    pd.concat([pd.DataFrame({'date':['2026-09-16']}),panel],ignore_index=True).to_csv(chain.paths['panel_shadow'],index=False)
+    assert chain.base.try_extend_proxy_index_without_rebalance(chain.args,chain.paths,chain.paths['panel_shadow'],pd.Timestamp('2026-09-18'))

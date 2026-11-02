@@ -6006,7 +6006,7 @@ def try_extend_proxy_index_without_rebalance(
     for column in ("execution_date", "effective_date", "return_start_date"):
         if column not in turnover_authority:
             return False
-        execution_days = pd.to_datetime(turnover_authority[column], errors="coerce").dt.normalize()
+        execution_days = pd.to_datetime(turnover_authority[column], format="mixed", errors="coerce").dt.normalize()
         if execution_days.isna().any() or not execution_days.isin(panel_dates).all():
             return False
         execution_columns[column] = execution_days
