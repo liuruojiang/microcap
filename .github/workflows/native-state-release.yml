@@ -1,0 +1,40 @@
+name: Assemble verified native state release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download exact base and delta
+        run: |
+          gh release download top100-shared-history-20261101 --repo liuruojiang/microcap --pattern microcap-whole-delivery-20261030.zip
+          gh release download top100-native-daily-20261102 --repo liuruojiang/microcap --pattern native-state-delta.zip
+      - name: Reconstruct and verify identical bundle
+        shell: python
+        run: |
+          import hashlib,json,zipfile
+          from pathlib import Path
+          old=Path('microcap-whole-delivery-20261030.zip').read_bytes()
+          delta=Path('native-state-delta.zip').read_bytes()
+          assert hashlib.sha256(old).hexdigest()=='8d6af3322aeb693f0bcee2e61281d6389c21b496b8305f3e1f1c27834fdc8664'
+          assert hashlib.sha256(delta).hexdigest()=='2c97eb4a6d85612a92c84b2029d7dd73758f55aa09de53844556aa762bf9e884'
+          with zipfile.ZipFile('native-state-delta.zip') as z:
+              r=json.loads(z.read('recipe.json'));literal=z.read('literals.bin')
+          result=bytearray()
+          for kind,start,size in r['ops']:
+              assert kind in ('copy','literal') and start>=0 and size>=0
+              source=old if kind=='copy' else literal
+              assert start+size<=len(source)
+              result.extend(source[start:start+size])
+          assert len(result)==452877430
+          assert hashlib.sha256(result).hexdigest()=='2c673040c8d919476f8896e5596b7a693db6443304d4ad9e3f50925383c8a140'
+          Path('microcap-native-whole-delivery-20261030.zip').write_bytes(result)
+      - name: Upload exact bundle and publish release
+        run: |
+          gh release upload top100-native-daily-20261102 microcap-native-whole-delivery-20261030.zip --repo liuruojiang/microcap
+          gh release edit top100-native-daily-20261102 --repo liuruojiang/microcap --draft=false
