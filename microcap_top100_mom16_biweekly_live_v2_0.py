@@ -3298,7 +3298,12 @@ def load_security_meta(symbol: str, *, as_of: pd.Timestamp | str | None = None) 
                 price_last = latest_symbol_price_date(code)
                 policy_matches = payload.get("st_notice_policy_version") == ST_NOTICE_POLICY_VERSION
                 name_matches = str(payload.get("current_st_snapshot_name") or "") == current_st_name
-                date_matches = price_last is None or (pd.notna(meta_last) and pd.Timestamp(meta_last).normalize() >= price_last)
+                # A verified notice horizon is the ST freshness authority;
+                # newly appended price rows must not shorten it during replay.
+                notice_end = pd.to_datetime(payload.get("notice_query_end_date"), errors="coerce")
+                covered_end = max((d for d in (meta_last, notice_end) if pd.notna(d)), default=pd.NaT)
+                required_end = min(price_last, requested_end) if price_last is not None and requested_end is not None else price_last
+                date_matches = required_end is None or (pd.notna(covered_end) and covered_end >= required_end)
                 if history_resolved and policy_matches and name_matches and date_matches:
                     if _notice_horizon_covers(payload, requested_end) and notice_archive_cache_matches(payload, ROOT):
                         return payload

@@ -34,16 +34,25 @@ def load_return_prices(*, root, symbol, raw_path, master, as_of, allow_network=F
     row = rows.iloc[0]
     cutoff = pd.Timestamp(as_of).normalize()
     try:
-        sessions = [day.isoformat() for day in sessions_for_day(cutoff.date())]
+        # A dated replay must not truncate an already certified live cache.
+        # Revalidate its complete original horizon, then expose only the
+        # requested historical slice. No source date or fingerprint is altered.
+        manifest_path = Path(root) / ".microcap_index_cache/return_basis/manifests" / (symbol + ".json")
+        validation_cutoff = cutoff
+        if manifest_path.exists():
+            existing = json.loads(manifest_path.read_bytes())
+            validation_cutoff = max(cutoff, pd.Timestamp(existing["as_of"]).normalize())
+        sessions = [day.isoformat() for day in sessions_for_day(validation_cutoff.date())]
         frame, manifest = load_or_build(
             basis_root=Path(root) / ".microcap_index_cache" / "return_basis",
-            symbol=symbol, raw_path=raw_path, as_of=cutoff.strftime("%Y-%m-%d"),
+            symbol=symbol, raw_path=raw_path, as_of=validation_cutoff.strftime("%Y-%m-%d"),
             sessions=sessions, list_date=pd.Timestamp(row.list_date).strftime("%Y-%m-%d"),
             delist_date=None if pd.isna(row.delist_date) else pd.Timestamp(row.delist_date).strftime("%Y-%m-%d"),
             allow_network=allow_network,
         )
     except Exception as exc:
         raise ReturnBasisError(f"Unverified ratio return basis for {symbol}: {exc}") from exc
+    frame = frame.loc[pd.to_datetime(frame["date"]) <= cutoff].copy()
     frame.attrs["return_basis_manifest"] = manifest
     return frame
 

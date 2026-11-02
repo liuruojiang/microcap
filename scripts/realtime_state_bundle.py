@@ -1218,6 +1218,10 @@ def refresh_state(
                 consumed_through=_parse_date(v2_0.base_mod.read_csv_last_date(args.index_csv)),
             )
             if metadata_result["requires_full_rebuild"]:
+                from scripts.st_metadata_refresh import try_cached_history_rebuild
+                try_cached_history_rebuild(root=root, base=v2_0.base_mod, args=args,
+                                           paths=base_paths, panel_path=panel_path,
+                                           target=target_end_ts)
                 args.allow_full_rebuild = True
             notice_refresh_completed = True
         _log_refresh_phase("rebuild_or_extend_proxy_state")

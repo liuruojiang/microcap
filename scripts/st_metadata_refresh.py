@@ -147,3 +147,63 @@ def refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, cons
         return _refresh_metadata_after_notice(root=root,freq_mod=freq_mod,target=target,notice_result=notice_result,consumed_through=consumed_through)
     finally:
         lock.unlink()
+
+def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
+    """Replay an unchanged ST history from certified caches, then native short tail.
+
+    This recomputes the proxy; it never edits fingerprints to accept old outputs.
+    Unknown metadata changes or a new scheduled rebalance retain the full route.
+    """
+    import copy
+    import io
+    import pandas as pd
+    root=Path(root);target=pd.Timestamp(target).normalize()
+    marker_path=root/MARKER
+    if not marker_path.exists() or not paths['proxy_meta'].exists():return False
+    marker=json.loads(marker_path.read_bytes())
+    if marker.get('status')!='complete' or marker.get('target')!=str(target.date()):return False
+    prior=json.loads(paths['proxy_meta'].read_bytes())
+    if base.proxy_meta_matches_execution_model(prior):return False
+    proof=prior.get('return_basis_consumption',{})
+    anchor=proof.get('full_rebuild_anchor')
+    if proof.get('revision')!='stock_return_consumption_v1' or not anchor:return False
+    anchor=pd.Timestamp(anchor)
+    if not anchor<target or (target-anchor).days>10:return False
+    dates=pd.to_datetime(pd.read_csv(panel_path)['date'],errors='raise')
+    dates=pd.DatetimeIndex(dates[dates<=target])
+    scheduled=base.build_biweekly_rebalance_dates(dates)
+    if ((scheduled>anchor)&(scheduled<=target)).any():return False
+    allowed={'notice_query_end_date','st_notice_archive_sha256','st_notice_archive_manifest_path','notice_count','last_trade_date'}
+    backup=_bound(root,marker['work'])/'backup'
+    for symbol,digest in marker['new_hashes'].items():
+        oldraw=(backup/(symbol+'.json')).read_bytes()
+        raw=(root/'.microcap_index_cache/security_meta'/(symbol+'.json')).read_bytes()
+        if _sha(oldraw)!=marker['old_hashes'][symbol] or _sha(raw)!=digest:_fail('Changed cached replay metadata: '+symbol)
+        old,new=json.loads(oldraw),json.loads(raw)
+        if not _history_equal(old,new,str(target.date())):return False
+        if any(old.get(k)!=new.get(k) for k in (old.keys()|new.keys())-allowed):return False
+    stage=root/'.microcap_index_cache/scoped_proxy_rebuild'/uuid.uuid4().hex;stage.mkdir(parents=True)
+    keys=('proxy_members','proxy_turnover','proxy_meta','proxy_effective_members')
+    originals={p:p.read_bytes() for p in [args.index_csv,args.costed_nav_csv,*[paths[k] for k in keys]]}
+    for p,raw in originals.items():(stage/('before_'+p.name)).write_bytes(raw)
+    staged_args=copy.copy(args);staged_args.index_csv=stage/args.index_csv.name;staged_args.costed_nav_csv=stage/args.costed_nav_csv.name
+    staged_paths={k:stage/p.name for k,p in paths.items()}
+    print('[cached-replay] local historical rebuild through '+str(anchor.date())+'; no universe network refresh',flush=True)
+    with frozen_notice_sources(root):
+        index,members,turnover,meta=base.build_local_proxy_bundle(staged_args,dates[dates<=anchor])
+    for frame,p in [(index,staged_args.index_csv),(members,staged_paths['proxy_members']),(turnover,staged_paths['proxy_turnover'])]:base._atomic_to_csv(frame,p,index=False,encoding='utf-8')
+    base._atomic_write_json(staged_paths['proxy_meta'],meta,encoding='utf-8')
+    base._write_proxy_effective_members(staged_paths['proxy_effective_members'],anchor,meta['terminal_effective_members'])
+    base.rebuild_costed_nav_from_proxy_turnover(staged_args,staged_paths,panel_path,target_end_date=anchor)
+    if not base.try_extend_proxy_index_without_rebalance(staged_args,staged_paths,panel_path,target):_fail('Native cached replay tail rejected')
+    if not base.try_extend_costed_nav_without_turnover(staged_args,panel_path,target,staged_paths['proxy_turnover']):_fail('Native cached costed tail rejected')
+    installs=[(args.index_csv,staged_args.index_csv),(args.costed_nav_csv,staged_args.costed_nav_csv)]+[(paths[k],staged_paths[k]) for k in keys]
+    for oldp,newp in installs[:2]+[(paths[k],staged_paths[k]) for k in ('proxy_members','proxy_turnover')]:
+        old=pd.read_csv(io.BytesIO(originals[oldp]));new=pd.read_csv(newp)
+        pd.testing.assert_frame_equal(old,new.iloc[:len(old)].reset_index(drop=True),check_exact=True,check_dtype=False)
+    for p,raw in originals.items():
+        if p.read_bytes()!=raw:_fail('Concurrent cached replay output change')
+    _atomic(stage/'receipt.json',_bytes(dict(status='exact_historical_parity_pass',anchor=str(anchor.date()),target=str(target.date()),outputs={p.name:_sha(q.read_bytes()) for p,q in installs})))
+    for p,q in installs:_atomic(p,q.read_bytes())
+    print('[cached-replay] exact historical parity and native member tail passed',flush=True)
+    return True
