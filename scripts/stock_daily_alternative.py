@@ -6,6 +6,7 @@ suspension: an issuer-specific full-session suspension record is required.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import math
@@ -127,10 +128,14 @@ def query(symbol, start, end, sessions, prior_raw_close):
     prices = fetch(PRICE_URL, {"param": f"{code},day,{start},{end},640,"})
     bars = json.loads(prices["body"])["data"][code]["day"]
     traded = {r[0] for r in bars if len(r) >= 6 and float(r[5]) > 0}
+    missing = [day for day in sessions if day not in traded]
+    # Long historical suspensions still require one native response per session.
+    # Bound independent reads rather than spending the deadline serially.
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        receipts = list(pool.map(lambda day: fetch(SUSPENSION_URL, _suspension_params(day)), missing))
     native = dict(symbol=symbol, start=start, end=end, sessions=list(sessions),
                   prior_raw_close=float(prior_raw_close), prices=prices,
-                  suspensions={day: fetch(SUSPENSION_URL, _suspension_params(day))
-                               for day in sessions if day not in traded})
+                  suspensions=dict(zip(missing, receipts, strict=True)))
     rows = normalize(native)
     return {"provider": PROVIDER, "request": {"code": code[:2] + "." + symbol,
             "start": start, "end": end, "frequency": "d", "adjustflag": "3"},
