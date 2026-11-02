@@ -1287,6 +1287,7 @@ def refresh_state(
         if not report["ok"]:
             raise RuntimeError(
                 "state refresh failed and no reusable validated state is available: "
+                + f"upstream={type(exc).__name__}: {exc}; "
                 + "; ".join(str(error) for error in report.get("errors", []))
             ) from exc
         return report
