@@ -384,7 +384,7 @@ def test_base_state_uses_completed_session_across_long_calendar_gap(workspace, m
     report = delivery.validate_base_state_for_session(workspace, completed.isoformat())
 
     assert report["ok"]
-    assert calls == [{"max_anchor_age_days": None}]
+    assert calls == [{"max_anchor_age_days": None, "close_confirmed_session": completed}]
 
 
 def test_base_state_rejects_calendar_age_independent_anchor_mismatch(workspace, monkeypatch):

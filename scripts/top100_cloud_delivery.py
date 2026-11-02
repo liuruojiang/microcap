@@ -88,7 +88,8 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
         delivery.write_manifest(staged, report)
         extras = (set(report["artifacts"]) | set(report["inputs"]) |
                   {delivery.MANIFEST}) - set(SOURCE_FILES)
-        packed = state.pack_state(staged, bundle, None, extra_files=extras)
+        packed = state.pack_state(staged, bundle, None, extra_files=extras,
+                                  close_confirmed_session=state._parse_date(expected))
         require_ok(packed)
         with zipfile.ZipFile(bundle) as archive:
             state._verify_bundle_manifest(archive)

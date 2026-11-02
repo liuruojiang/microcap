@@ -630,12 +630,30 @@ def _verify_return_basis_transport_memoized(root: Path, anchor, symbols):
     return result
 
 
+def _close_confirmed_proof_day(proof: dict, session: date, today: date) -> str:
+    """Reuse dated close evidence only while its exchange session remains latest."""
+    from scripts.exchange_calendar import latest_completed_session
+    if latest_completed_session() != session:
+        raise ValueError("Close-confirmed proof misses latest completed exchange session")
+    verified = _parse_date(proof.get("verified_on"))
+    stamp = datetime.fromisoformat(str(proof.get("verified_at_utc", "")))
+    if (proof.get("target_end_date") != session.isoformat() or verified is None
+            or not session <= verified <= today or stamp.tzinfo is None
+            or stamp > datetime.now(timezone.utc)
+            or (stamp.astimezone(timezone.utc) + timedelta(hours=8)).date() != verified
+            or (verified == session and
+                (stamp.astimezone(timezone.utc) + timedelta(hours=8)).hour < 15)):
+        raise ValueError("Invalid dated close-confirmed refresh proof")
+    return verified.isoformat()
+
+
 def validate_state(
     root: Path,
     max_anchor_age_days: int | None = None,
     today: date | None = None,
     *,
     require_current_refresh_proof: bool = True,
+    close_confirmed_session: date | None = None,
 ) -> dict[str, object]:
     root = root.resolve()
     errors: list[str] = []
@@ -736,10 +754,16 @@ def validate_state(
     if require_current_refresh_proof and refresh_proof is None:
         errors.append(f"missing or invalid independent realtime refresh proof: {REFRESH_PROOF_REL}")
     elif require_current_refresh_proof and refresh_proof is not None:
+        proof_day = today_value.isoformat()
+        if close_confirmed_session is not None:
+            try:
+                proof_day = _close_confirmed_proof_day(refresh_proof, close_confirmed_session, today_value)
+            except (ValueError, TypeError) as exc:
+                errors.append(str(exc))
         expected_fields = {
             "version": REFRESH_PROOF_VERSION,
             "source": REFRESH_PROOF_SOURCE,
-            "verified_on": today_value.isoformat(),
+            "verified_on": proof_day,
         }
         for field, expected in expected_fields.items():
             if refresh_proof.get(field) != expected:
@@ -971,9 +995,12 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
 
 
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
-               extra_files: Iterable[str] = ()) -> dict[str, object]:
+               extra_files: Iterable[str] = (), *,
+               close_confirmed_session: date | None = None) -> dict[str, object]:
     root, bundle = _extended(root), _extended(bundle)
-    report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
+    validation_options = ({"close_confirmed_session": close_confirmed_session}
+                          if close_confirmed_session is not None else {})
+    report = validate_state(root, max_anchor_age_days=max_anchor_age_days, **validation_options)
     anchor = _parse_date(str(report.get("anchor_dates", {}).get("proxy_index", "")))
     if anchor is not None:
         report.setdefault("errors", []).extend(validate_reference_summary(root, anchor))

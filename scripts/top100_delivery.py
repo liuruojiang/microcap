@@ -557,7 +557,8 @@ def write_manifest(root: Path, report: dict) -> None:
 
 def validate_base_state_for_session(root: Path, expected_date: str) -> dict:
     """Require current proof and exact latest-session anchors without a calendar-age cap."""
-    report = state.validate_state(root, max_anchor_age_days=None)
+    report = state.validate_state(root, max_anchor_age_days=None,
+                                  close_confirmed_session=state._parse_date(expected_date))
     errors = list(report.get("errors") or [])
     target_day = state._parse_date(expected_date)
     if target_day is None:
