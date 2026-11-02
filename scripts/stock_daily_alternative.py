@@ -106,11 +106,19 @@ def normalize(native):
 def query(symbol, start, end, sessions, prior_raw_close):
     deadline = time.monotonic() + 45
     def fetch(url, params):
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            raise TimeoutError("Alternative source query exceeded its total deadline")
-        r = requests.get(url, params=params, timeout=(min(5, remaining), min(10, remaining)))
-        r.raise_for_status()
+        for attempt in range(3):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(f"Alternative source query exceeded its total deadline: {symbol}")
+            try:
+                r = requests.get(url, params=params, timeout=(min(5, remaining), min(10, remaining)))
+                r.raise_for_status()
+                break
+            except (requests.Timeout, requests.ConnectionError):
+                if attempt == 2:
+                    raise
+                print(f"[daily-source] transient network failure symbol={symbol}; retry={attempt + 1}/2", flush=True)
+                time.sleep(min(0.25 * (attempt + 1), max(0, deadline - time.monotonic())))
         body = r.content.decode("utf-8")
         return {"url": url, "params": params, "status": r.status_code,
                 "retrieved_at": datetime.now(timezone.utc).isoformat(), "body": body,

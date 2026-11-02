@@ -102,3 +102,26 @@ def test_failed_parallel_group_joins_active_writer_before_returning():
     with pytest.raises(ValueError, match='source failed'):
         daily._parallel_alternative(['bad', 'active'], task)
     assert finished.is_set()
+
+
+@pytest.mark.parametrize('permanent', [False, True])
+def test_transient_network_retry_is_bounded_and_keeps_source_contract(monkeypatch, permanent):
+    dates = pd.bdate_range('2026-10-16', periods=7)
+    install_source(monkeypatch, dates)
+    successful_get = alt.requests.get
+    calls = []
+    def flaky(*args, **kwargs):
+        calls.append((args, kwargs))
+        if permanent or len(calls) < 3:
+            raise alt.requests.ReadTimeout('source timeout')
+        return successful_get(*args, **kwargs)
+    monkeypatch.setattr(alt.requests, 'get', flaky)
+    monkeypatch.setattr(alt.time, 'sleep', lambda seconds: None)
+    args = ('000001', str(dates[0].date()), str(dates[-1].date()), [str(d.date()) for d in dates], 10)
+    if permanent:
+        with pytest.raises(alt.requests.ReadTimeout):
+            alt.query(*args)
+    else:
+        alt.verify(alt.query(*args))
+    assert len(calls) == 3
+    assert calls[0] == calls[1] == calls[2]
