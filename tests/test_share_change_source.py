@@ -234,7 +234,8 @@ def test_native_encoder_initialization_is_serialized(monkeypatch):
 
 
 @pytest.mark.parametrize('tls_failure', [False, True])
-def test_dns_fallback_preserves_hostname_and_tls_validation(monkeypatch, tls_failure):
+@pytest.mark.parametrize('empty_mode', ['none', 'first', 'all'])
+def test_dns_fallback_preserves_hostname_and_tls_validation(monkeypatch, tls_failure, empty_mode):
     from types import SimpleNamespace
     monkeypatch.setattr(source, '_DNS_CACHE', {})
     def unresolved(*args, **kwargs):
@@ -242,10 +243,16 @@ def test_dns_fallback_preserves_hostname_and_tls_validation(monkeypatch, tls_fai
     monkeypatch.setattr(source.requests, 'post', unresolved)
     dns = {'Status': 0, 'Question': [{'name': 'webapi.cninfo.com.cn.', 'type': 1}],
            'Answer': [{'name': 'webapi.cninfo.com.cn.', 'type': 1, 'data': '8.8.8.8', 'TTL': 6}]}
-    monkeypatch.setattr(source.requests, 'get', lambda *a, **k: SimpleNamespace(json=lambda: dns, raise_for_status=lambda: None))
+    lookups = []
+    def lookup(url, **kwargs):
+        lookups.append(url)
+        body = dict(dns, Answer=[]) if empty_mode == 'all' or (empty_mode == 'first' and len(lookups) == 1) else dns
+        return SimpleNamespace(json=lambda: body, raise_for_status=lambda: None)
+    monkeypatch.setattr(source.requests, 'get', lookup)
     def curl(command, **kwargs):
         assert '--insecure' not in command and '-k' not in command
-        assert command[command.index('--resolve') + 1] == 'webapi.cninfo.com.cn:443:8.8.8.8'
+        address = source._KNOWN_CNINFO_IPV4 if empty_mode == 'all' else '8.8.8.8'
+        assert command[command.index('--resolve') + 1] == 'webapi.cninfo.com.cn:443:' + address
         assert command[-1] == 'https://webapi.cninfo.com.cn/api/stock/p_stock2215?scode=000001'
         return SimpleNamespace(returncode=60 if tls_failure else 0, stdout=b'{"resultcode":200}\n200', stderr=b'certificate failure')
     monkeypatch.setattr(source.subprocess, 'run', curl)
@@ -256,3 +263,6 @@ def test_dns_fallback_preserves_hostname_and_tls_validation(monkeypatch, tls_fai
     else:
         response = source._post_with_dns_fallback('https://webapi.cninfo.com.cn/api/stock/p_stock2215', **args)
         assert response.status_code == 200 and response.content == b'{"resultcode":200}'
+        assert response._microcap_transport['https_certificate_verification'] is True
+        assert response._microcap_transport['kind'] == ('previously_observed_route_not_fresh_dns' if empty_mode == 'all' else 'https_dns_response')
+    assert len(lookups) == (1 if empty_mode == 'none' else 2)

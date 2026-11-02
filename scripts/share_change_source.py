@@ -21,6 +21,9 @@ from scripts.stock_return_basis_store import _extended
 _ENCODER_LOCK = threading.Lock()
 _DNS_LOCK = threading.Lock()
 _DNS_CACHE = {}
+# Observed through Google/Cloudflare/Ali DNS and verified against the real
+# CNInfo HTTPS API on 2026-11-02. This is a route, never a TLS-identity override.
+_KNOWN_CNINFO_IPV4 = '120.48.196.100'
 
 
 def _post_with_dns_fallback(url, *, params, headers, timeout):
@@ -36,20 +39,35 @@ def _post_with_dns_fallback(url, *, params, headers, timeout):
         raise ValueError('DNS fallback is restricted to the CNInfo share endpoint')
     with _DNS_LOCK:
         if _DNS_CACHE.get('expires', 0) <= time.monotonic():
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise requests.Timeout('CNInfo DNS fallback deadline exhausted')
-            answer = requests.get('https://dns.google/resolve', params={'name': host, 'type': 'A'},
-                                  timeout=min(5, remaining))
-            answer.raise_for_status()
-            payload = answer.json()
-            if payload.get('Status') != 0 or not any(q.get('name', '').rstrip('.') == host and q.get('type') == 1 for q in payload.get('Question', [])):
-                raise ValueError('CNInfo DNS response identity failed')
-            records = [r for r in payload.get('Answer', []) if r.get('name', '').rstrip('.') == host and r.get('type') == 1]
-            if not records or not ipaddress.ip_address(records[0]['data']).is_global or int(records[0]['TTL']) <= 0:
-                raise ValueError('CNInfo DNS response has no valid public address')
-            _DNS_CACHE.update(address=records[0]['data'], expires=time.monotonic() + min(300, int(records[0]['TTL'])))
+            records = []
+            for resolver in ('https://cloudflare-dns.com/dns-query', 'https://dns.google/resolve'):
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise requests.Timeout('CNInfo DNS fallback deadline exhausted')
+                try:
+                    answer = requests.get(resolver, params={'name': host, 'type': 'A'},
+                                          headers={'Accept': 'application/dns-json'}, timeout=min(5, remaining))
+                    answer.raise_for_status()
+                except requests.RequestException:
+                    continue
+                payload = answer.json()
+                if not any(q.get('name', '').rstrip('.') == host and q.get('type') == 1 for q in payload.get('Question', [])):
+                    raise ValueError('CNInfo DNS response identity failed')
+                if payload.get('Status') != 0:
+                    continue
+                records = [r for r in payload.get('Answer', []) if r.get('name', '').rstrip('.') == host and r.get('type') == 1]
+                if records:
+                    break
+            if not records:
+                _DNS_CACHE.update(address=_KNOWN_CNINFO_IPV4, expires=time.monotonic() + 60,
+                                  kind='previously_observed_route_not_fresh_dns')
+            else:
+                if not ipaddress.ip_address(records[0]['data']).is_global or int(records[0]['TTL']) < 0:
+                    raise ValueError('CNInfo DNS response has no valid public address')
+                _DNS_CACHE.update(address=records[0]['data'], expires=time.monotonic() + min(300, int(records[0]['TTL'])),
+                                  kind='https_dns_response')
         address = _DNS_CACHE['address']
+        route_kind = _DNS_CACHE.get('kind', 'previously_observed_route_not_fresh_dns')
     remaining = deadline - time.monotonic()
     if remaining <= 0:
         raise requests.Timeout('CNInfo DNS fallback deadline exhausted')
@@ -70,6 +88,8 @@ def _post_with_dns_fallback(url, *, params, headers, timeout):
     response.status_code = int(status)
     response._content = body
     response.url = url
+    response._microcap_transport = dict(kind=route_kind, address=address, origin_hostname=host,
+                                       https_certificate_verification=True)
     return response
 
 
@@ -205,6 +225,7 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
     receipt = dict(schema_version=1, symbol=symbol, url=url, params=params, status=response.status_code,
                    retrieved_at_utc=datetime.now(timezone.utc).isoformat(), response_sha256=_sha(raw),
                    response_path=attempt.relative_to(source_root).as_posix(), query_end=end)
+    receipt['transport'] = getattr(response, '_microcap_transport', {'kind': 'system_dns_https'})
     _atomic(attempt.with_suffix(".receipt.json"), json.dumps(receipt, ensure_ascii=False, indent=2).encode())
     if response.status_code in (403, 429):
         _atomic(source_root / "RATE_LIMIT_STOP.json", json.dumps(receipt).encode())
