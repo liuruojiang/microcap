@@ -1132,6 +1132,35 @@ def _log_refresh_phase(phase: str) -> None:
     print(f"[realtime-state] phase={phase}", file=sys.stderr, flush=True)
 
 
+def _reuse_same_day_notice_proof(root: Path, target: date, now=None):
+    """Resume an authenticated same-day post-close snapshot without changing it.
+
+    This is not a new observation: retain the original observation timestamps.
+    Old dates, pre-close snapshots and future receipts cannot qualify. Once a
+    snapshot qualifies, any altered bound evidence must fail rather than refetch.
+    """
+    from scripts.st_notice_refresh import FRESHNESS, freshness_source_files
+    path = root / FRESHNESS
+    if not path.is_file():
+        return None
+    current = now or datetime.now(timezone.utc)
+    close = datetime.fromisoformat(target.isoformat() + "T15:00:00+08:00")
+    if current.astimezone(close.tzinfo).date() != target or current < close:
+        return None
+    proof = json.loads(path.read_bytes())
+    if proof.get("target") != target.isoformat():
+        return None
+    started = datetime.fromisoformat(proof["required_asof"])
+    completed = datetime.fromisoformat(proof["completed_at"])
+    if started.tzinfo is None or completed.tzinfo is None or not close <= started <= completed <= current:
+        return None
+    files = freshness_source_files(root)
+    manifest_path, digest = proof["authority"]
+    return dict(authority_changed=False, target=target.isoformat(),
+                manifest_path=manifest_path, manifest_sha256=digest,
+                freshness_files=files, reused_same_day_close_proof=True)
+
+
 def refresh_state(
     root: Path,
     max_workers: int = 8,
@@ -1177,7 +1206,11 @@ def refresh_state(
                     if (pending_metadata["target"] != target_end_date.isoformat()
                             or pending_metadata["authority"] != list(resolve_archive_reference(root))):
                         raise RuntimeError("Unfinished ST metadata refresh must resume its exact target and authority before notice mutation")
-            notice_result = refresh_notice_archive(root=root, target=target_end_date.isoformat())
+            notice_result = _reuse_same_day_notice_proof(root, target_end_date)
+            if notice_result is None:
+                notice_result = refresh_notice_archive(root=root, target=target_end_date.isoformat())
+            else:
+                _log_refresh_phase("reuse_verified_same_day_notice_snapshot")
             from scripts.st_metadata_refresh import refresh_metadata_after_notice
             metadata_result = refresh_metadata_after_notice(
                 root=root, freq_mod=v2_0.base_mod.freq_mod,
