@@ -142,3 +142,30 @@ def test_pending_transaction_blocks_hook_before_any_mutation(tmp_path,monkeypatc
     with pytest.raises(RuntimeError,match='current ST notice refresh did not complete'):
         bundle.refresh_state(tmp_path)
     assert calls==[]
+
+
+def test_refresh_driver_passes_date_only_consumed_proxy_anchor(tmp_path, monkeypatch):
+    import sys
+    import pandas as pd
+    from datetime import date
+    from scripts import realtime_state_bundle as bundle, st_notice_refresh
+    cache = tmp_path / '.microcap_index_cache'; cache.mkdir()
+    (cache / 'st_notice_archive_pointer.json').write_text('{}')
+    monkeypatch.setattr(st_notice_refresh, 'refresh_notice_archive', lambda **kw: {'authority_changed': True})
+    observed = []
+    def metadata(**kwargs):
+        observed.append(kwargs['consumed_through'])
+        raise RuntimeError('stop after actual metadata call')
+    monkeypatch.setattr(m, 'refresh_metadata_after_notice', metadata)
+    base = SimpleNamespace(DEFAULT_OUTPUT_PREFIX='fixture', freq_mod=object(),
+        build_output_paths=lambda p: {},
+        build_refreshed_panel_shadow=lambda *a: (tmp_path / 'panel.csv', '2026-11-02'),
+        read_csv_last_date=lambda p: pd.Timestamp('2026-10-30 00:00:00'))
+    fake = SimpleNamespace(_sync_embedded_base_config=lambda: None,
+        _build_base_args=lambda **kw: SimpleNamespace(index_csv=tmp_path/'index.csv'), base_mod=base)
+    monkeypatch.setitem(sys.modules, 'microcap_top100_mom16_biweekly_live_v2_0', fake)
+    monkeypatch.setitem(sys.modules, 'run_top100_v1_6_v1_8_realtime_signals',
+        SimpleNamespace(ensure_static_realtime_inputs=lambda **kw: None))
+    with pytest.raises(RuntimeError, match='stop after actual metadata call'):
+        bundle.refresh_state(tmp_path)
+    assert observed == [date(2026, 10, 30)]

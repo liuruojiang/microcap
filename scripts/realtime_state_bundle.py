@@ -1182,7 +1182,7 @@ def refresh_state(
             metadata_result = refresh_metadata_after_notice(
                 root=root, freq_mod=v2_0.base_mod.freq_mod,
                 target=target_end_date.isoformat(), notice_result=notice_result,
-                consumed_through=v2_0.base_mod.read_csv_last_date(args.index_csv),
+                consumed_through=_parse_date(v2_0.base_mod.read_csv_last_date(args.index_csv)),
             )
             if metadata_result["requires_full_rebuild"]:
                 args.allow_full_rebuild = True
