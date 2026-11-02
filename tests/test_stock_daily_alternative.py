@@ -104,6 +104,17 @@ def test_failed_parallel_group_joins_active_writer_before_returning():
     assert finished.is_set()
 
 
+def test_flush_failure_does_not_replace_existing_evidence(tmp_path, monkeypatch):
+    path = tmp_path / 'evidence.json'
+    path.write_bytes(b'previous')
+    def fail_flush(fd):
+        raise OSError('durability flush failed')
+    monkeypatch.setattr(daily.os, 'fsync', fail_flush)
+    with pytest.raises(OSError, match='durability flush failed'):
+        daily._write(path, b'candidate')
+    assert path.read_bytes() == b'previous'
+
+
 @pytest.mark.parametrize('permanent', [False, True])
 def test_transient_network_retry_is_bounded_and_keeps_source_contract(monkeypatch, permanent):
     dates = pd.bdate_range('2026-10-16', periods=7)

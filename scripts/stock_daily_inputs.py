@@ -57,7 +57,10 @@ def _sha(raw):
 def _write(path, raw):
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + '.' + uuid.uuid4().hex + '.tmp')
-    tmp.write_bytes(raw)
+    with tmp.open('wb') as stream:
+        stream.write(raw)
+        stream.flush()
+        os.fsync(stream.fileno())
     tmp.replace(path)
 
 
