@@ -1278,6 +1278,7 @@ def refresh_state(
                 "state refresh failed closed because no independent refresh target is available: "
                 + "; ".join(str(error) for error in report.get("errors", []))
             ) from exc
+        print(f"[realtime-state] refresh failure: {type(exc).__name__}: {exc}", flush=True)
         _write_refresh_proof(root, target_end_date)
         report = validate_refreshed_state(root, target_end_date, max_anchor_age_days)
         report["target_end_date"] = target_end_date.isoformat()

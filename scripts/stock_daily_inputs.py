@@ -36,7 +36,11 @@ def _parallel_alternative(symbols, task):
     results = {}
     try:
         for future in as_completed(futures):
-            results[futures[future]] = future.result()
+            try:
+                results[futures[future]] = future.result()
+            except Exception as exc:
+                print(f"[daily-input] failed symbol={futures[future]} cause={type(exc).__name__}: {exc}", flush=True)
+                raise
     except BaseException:
         for future in futures:
             future.cancel()
@@ -84,7 +88,8 @@ def _one(root, symbol, target, sessions, master, get_provider, allow_network, fo
         raise ValueError('Daily raw input extends beyond requested close')
     if price.date.max() > pd.Timestamp(end):
         raise ValueError('Daily raw input extends beyond verified issuer lifecycle')
-    required_tail = {d.strftime('%Y-%m-%d') for d in sessions if price.date.max() <= d <= pd.Timestamp(end)}
+    last_price_date, end_date = price.date.max(), pd.Timestamp(end)
+    required_tail = {d.strftime('%Y-%m-%d') for d in sessions if last_price_date <= d <= end_date}
     verified = set(validated.attrs.get('verified_trade_status_dates', []))
     if not force_source_query and required_tail <= verified and any(json.loads((base / query['path']).read_bytes())['request']['end'] >= end
            for query in record.get('provider_queries', [])):
