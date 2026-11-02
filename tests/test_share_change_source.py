@@ -201,3 +201,33 @@ def test_network_retries_preserve_query_and_bound_failure(tmp_path, monkeypatch,
         source.verify_share_cache(root=tmp_path, symbol='000422', as_of='2026-10-30')
         assert cache.read_bytes() == before[0]
     assert len(attempts) == 3 and attempts[0] == attempts[1] == attempts[2]
+
+
+def test_native_encoder_initialization_is_serialized(monkeypatch):
+    import sys
+    import threading
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+    from types import SimpleNamespace
+    empty_provider(monkeypatch, [])
+    guard = threading.Lock()
+    active = 0
+    peak = 0
+    class Encoder:
+        def __init__(self):
+            nonlocal active, peak
+            with guard:
+                active += 1
+                peak = max(peak, active)
+        def eval(self, text):
+            time.sleep(0.01)
+        def call(self, name):
+            nonlocal active
+            with guard:
+                active -= 1
+            return 'fixture-key'
+    function = sys.modules['akshare'].stock_share_change_cninfo
+    function.__globals__['py_mini_racer'] = SimpleNamespace(MiniRacer=Encoder)
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        assert list(pool.map(lambda _: source._cninfo_request_key(), range(12))) == ['fixture-key'] * 12
+    assert peak == 1 and active == 0

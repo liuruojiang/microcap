@@ -7,12 +7,25 @@ import json
 from pathlib import Path
 import uuid
 import time
+import threading
 
 import numpy as np
 import pandas as pd
 import requests
 
 from scripts.stock_return_basis_store import _extended
+
+_ENCODER_LOCK = threading.Lock()
+
+
+def _cninfo_request_key():
+    # MiniRacer's process-wide native initialization is not concurrency safe.
+    with _ENCODER_LOCK:
+        import akshare as ak
+        namespace = ak.stock_share_change_cninfo.__globals__
+        encoder = namespace["py_mini_racer"].MiniRacer()
+        encoder.eval(namespace["_get_file_content_cninfo"]("cninfo.js"))
+        return encoder.call("getResCode1")
 
 
 def _sha(raw):
@@ -105,13 +118,9 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
         raise ValueError("Share source group stopped after HTTP rate limit")
     start = (pd.Timestamp(state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d") if state else "1990-01-01"
     # Use the installed, pinned AkShare public CNInfo request encoder.
-    import akshare as ak
-    namespace = ak.stock_share_change_cninfo.__globals__
-    encoder = namespace["py_mini_racer"].MiniRacer()
-    encoder.eval(namespace["_get_file_content_cninfo"]("cninfo.js"))
     url = "https://webapi.cninfo.com.cn/api/stock/p_stock2215"
     params = dict(scode=symbol, sdate=start, edate=end)
-    headers = {"Accept-Enckey": encoder.call("getResCode1"), "Origin": "https://webapi.cninfo.com.cn",
+    headers = {"Accept-Enckey": _cninfo_request_key(), "Origin": "https://webapi.cninfo.com.cn",
                "Referer": "https://webapi.cninfo.com.cn/", "User-Agent": "Mozilla/5.0"}
     try:
         deadline = time.monotonic() + 45
