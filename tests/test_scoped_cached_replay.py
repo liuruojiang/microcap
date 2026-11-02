@@ -37,3 +37,17 @@ def test_terminal_close_date_uses_next_exchange_session(monkeypatch,bad):
         out=complete_terminal_return_dates(f,pd.to_datetime(['2026-10-29','2026-10-30','2026-11-02']),'2026-10-29')
         assert out.return_start_date.iloc[0]==pd.Timestamp('2026-10-30')
         assert pd.isna(f.return_start_date.iloc[0])
+
+@pytest.mark.parametrize('changed_return',[False,True])
+def test_proxy_replay_preserves_bytes_but_rejects_return_change(tmp_path,changed_return):
+    import numpy as np
+    import microcap_top100_mom16_biweekly_live_v2_0 as v
+    from scripts.st_metadata_refresh import preserve_verified_replay_prefix
+    old=b'date,close,daily_return\r\n2026-10-29,100.12345678901234,0.01\r\n'
+    p=tmp_path/'index.csv';f=pd.read_csv(__import__('io').BytesIO(old));f.loc[0,'close']=np.nextafter(f.loc[0,'close'],np.inf)
+    if changed_return:f.loc[0,'daily_return']+=1e-8
+    f.to_csv(p,index=False)
+    if changed_return:
+        with pytest.raises(AssertionError):preserve_verified_replay_prefix(v.base_mod,old,p,proxy=True)
+    else:
+        preserve_verified_replay_prefix(v.base_mod,old,p,proxy=True);assert p.read_bytes()==old

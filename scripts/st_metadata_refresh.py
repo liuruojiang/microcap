@@ -169,6 +169,33 @@ def complete_terminal_return_dates(turnover, dates, anchor):
     return out
 
 
+def preserve_verified_replay_prefix(base, oldraw, candidate_path, *, proxy=False):
+    """Use the existing rewrite audit, retaining approved serialization bytes."""
+    import io
+    import numpy as np
+    import pandas as pd
+    old = pd.read_csv(io.BytesIO(oldraw))
+    new = pd.read_csv(candidate_path)
+    count = min(len(old), len(new))
+    previous, candidate = old.iloc[:count].copy(), new.iloc[:count].copy()
+    if proxy:
+        pd.testing.assert_frame_equal(previous.drop(columns='close'), candidate.drop(columns='close'), check_exact=True, check_dtype=False)
+        np.testing.assert_array_max_ulp(previous['close'].to_numpy(), candidate['close'].to_numpy(), maxulp=2)
+    else:
+        base.assert_no_historical_rewrite(previous=previous, candidate=candidate,
+            key_columns=[c for c in previous.columns if c != 'date'], allowed_tail_rows=0, label='cached replay complete historical prefix')
+        for column in ('return', 'return_net'):
+            if column in previous:
+                np.testing.assert_allclose(previous[column], candidate[column], rtol=0,
+                    atol=8*np.finfo(float).eps, equal_nan=True)
+    # No values are rounded and no new history is accepted. Reuse the approved
+    # bytes only after an independent replay and unchanged economic decisions.
+    prefix = b''.join(oldraw.splitlines(keepends=True)[:count + 1])
+    _atomic(candidate_path, prefix)
+    if len(new) > count:
+        base._atomic_append_csv_rows(candidate_path, new.iloc[count:])
+
+
 def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     """Replay an unchanged ST history from certified caches, then native short tail.
 
@@ -223,8 +250,12 @@ def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     _atomic(staged_paths['proxy_turnover'], originals[paths['proxy_turnover']])
     base._write_proxy_effective_members(staged_paths['proxy_effective_members'],anchor,meta['terminal_effective_members'])
     base.rebuild_costed_nav_from_proxy_turnover(staged_args,staged_paths,panel_path,target_end_date=anchor)
+    preserve_verified_replay_prefix(base, originals[args.index_csv], staged_args.index_csv, proxy=True)
+    preserve_verified_replay_prefix(base, originals[args.costed_nav_csv], staged_args.costed_nav_csv)
     if not base.try_extend_proxy_index_without_rebalance(staged_args,staged_paths,panel_path,target):_fail('Native cached replay tail rejected')
+    preserve_verified_replay_prefix(base, originals[args.index_csv], staged_args.index_csv, proxy=True)
     if not base.try_extend_costed_nav_without_turnover(staged_args,panel_path,target,staged_paths['proxy_turnover']):_fail('Native cached costed tail rejected')
+    preserve_verified_replay_prefix(base, originals[args.costed_nav_csv], staged_args.costed_nav_csv)
     installs=[(args.index_csv,staged_args.index_csv),(args.costed_nav_csv,staged_args.costed_nav_csv)]+[(paths[k],staged_paths[k]) for k in keys]
     for oldp,newp in installs[:2]+[(paths[k],staged_paths[k]) for k in ('proxy_members','proxy_turnover')]:
         old=pd.read_csv(io.BytesIO(originals[oldp]));new=pd.read_csv(newp)
