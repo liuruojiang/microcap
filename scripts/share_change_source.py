@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import uuid
+import time
 
 import numpy as np
 import pandas as pd
@@ -113,7 +114,19 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
     headers = {"Accept-Enckey": encoder.call("getResCode1"), "Origin": "https://webapi.cninfo.com.cn",
                "Referer": "https://webapi.cninfo.com.cn/", "User-Agent": "Mozilla/5.0"}
     try:
-        response = requests.post(url, params=params, headers=headers, timeout=15)
+        deadline = time.monotonic() + 45
+        for attempt_index in range(3):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise requests.Timeout('Share source query exceeded its total deadline')
+            try:
+                response = requests.post(url, params=params, headers=headers, timeout=min(15, remaining))
+                break
+            except (requests.Timeout, requests.ConnectionError):
+                if attempt_index == 2:
+                    raise
+                print(f'[share-source] transient network failure symbol={symbol}; retry={attempt_index + 1}/2', flush=True)
+                time.sleep(min(attempt_index + 1, max(0, deadline - time.monotonic())))
     except requests.RequestException as exc:
         failed = dict(symbol=symbol, url=url, params=params,
                       retrieved_at_utc=datetime.now(timezone.utc).isoformat(),

@@ -173,3 +173,31 @@ def test_concurrent_raw_change_during_share_query_is_not_overwritten(tmp_path,mo
     with pytest.raises(ValueError,match='changed during source query'):
         source.refresh_share_change(root=tmp_path,symbol='000422',cache_path=cache,as_of='2026-10-30',allow_network=True)
     assert cache.read_bytes()==changed
+
+
+@pytest.mark.parametrize('permanent', [False, True])
+def test_network_retries_preserve_query_and_bound_failure(tmp_path, monkeypatch, permanent):
+    cache, path, _ = install_fixture(tmp_path)
+    before = cache.read_bytes(), path.read_bytes()
+    successful = []
+    empty_provider(monkeypatch, successful)
+    original = source.requests.post
+    attempts = []
+    def flaky(url, **kwargs):
+        attempts.append(kwargs['params'].copy())
+        if permanent or len(attempts) < 3:
+            raise source.requests.ConnectionError('temporary DNS failure')
+        return original(url, **kwargs)
+    monkeypatch.setattr(source.requests, 'post', flaky)
+    monkeypatch.setattr(source.time, 'sleep', lambda seconds: None)
+    if permanent:
+        with pytest.raises(source.requests.ConnectionError):
+            source.refresh_share_change(root=tmp_path, symbol='000422', cache_path=cache,
+                                        as_of='2026-10-30', allow_network=True)
+        assert (cache.read_bytes(), path.read_bytes()) == before
+    else:
+        source.refresh_share_change(root=tmp_path, symbol='000422', cache_path=cache,
+                                    as_of='2026-10-30', allow_network=True)
+        source.verify_share_cache(root=tmp_path, symbol='000422', as_of='2026-10-30')
+        assert cache.read_bytes() == before[0]
+    assert len(attempts) == 3 and attempts[0] == attempts[1] == attempts[2]
