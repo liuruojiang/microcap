@@ -6,6 +6,8 @@ param([string]$AutomationRoot, [string]$Python = 'python')
 $ErrorActionPreference = 'Stop'
 $StrategyRoot = Split-Path -Parent $PSScriptRoot
 $Runner = @'
+import os
+os.environ.setdefault('MICROCAP_DAILY_STOCK_PROVIDER', 'tencent')
 from scripts import top100_delivery
 for command in ('refresh-all', 'check'):
     result = top100_delivery.main([command])

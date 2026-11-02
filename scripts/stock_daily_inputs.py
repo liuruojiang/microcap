@@ -16,6 +16,7 @@ import shutil
 import socket
 import threading
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
 import pandas as pd
@@ -26,6 +27,23 @@ from scripts.tradeability_evidence import enrich_price_with_trade_status
 
 FIELDS = 'date,code,close,preclose,volume,tradestatus,isST,adjustflag'
 _PROVIDER_MUTEX = threading.Lock()
+
+
+def _parallel_alternative(symbols, task):
+    """Independent issuer files; join all active writes before releasing group lock."""
+    executor = ThreadPoolExecutor(max_workers=4)
+    futures = {executor.submit(task, symbol): symbol for symbol in symbols}
+    results = {}
+    try:
+        for future in as_completed(futures):
+            results[futures[future]] = future.result()
+    except BaseException:
+        for future in futures:
+            future.cancel()
+        raise
+    finally:
+        executor.shutdown(wait=True, cancel_futures=True)
+    return [results[symbol] for symbol in symbols]
 
 
 def _sha(raw):
@@ -81,20 +99,33 @@ def _one(root, symbol, target, sessions, master, get_provider, allow_network, fo
     # Only referenced market evidence belongs to the portable sidecar tree.
     # Prepared pairs/backups/staging must not inflate each cloud state bundle.
     attempt = cache / 'daily_input_attempts' / attempt_id
-    result = get_provider().query_history_k_data_plus(code, FIELDS, start_date=start,
-                                               end_date=end, frequency='d', adjustflag='3')
-    values = []
-    while result.error_code == '0' and result.next():
-        values.append(result.get_row_data())
-    raw = {'request': {'code': code, 'fields': FIELDS, 'start': start, 'end': end,
-                       'frequency': 'd', 'adjustflag': '3'}, 'error_code': result.error_code,
-           'error_msg': result.error_msg, 'fields': result.fields, 'rows': values}
+    source_mode = os.environ.get('MICROCAP_DAILY_STOCK_PROVIDER', 'baostock')
+    if source_mode == 'tencent':
+        from scripts.stock_daily_alternative import query
+        expected_days = [d.strftime('%Y-%m-%d') for d in sessions
+                         if start <= d.strftime('%Y-%m-%d') <= end]
+        prior = price.loc[price.date < pd.Timestamp(start), 'close_raw']
+        raw = query(symbol, start, end, expected_days,
+                    float(prior.iloc[-1] if not prior.empty else price.close_raw.iloc[0]))
+        values = raw['rows']
+    elif source_mode == 'baostock':
+        result = get_provider().query_history_k_data_plus(code, FIELDS, start_date=start,
+                                                   end_date=end, frequency='d', adjustflag='3')
+        values = []
+        while result.error_code == '0' and result.next():
+            values.append(result.get_row_data())
+        raw = {'request': {'code': code, 'fields': FIELDS, 'start': start, 'end': end,
+                           'frequency': 'd', 'adjustflag': '3'}, 'error_code': result.error_code,
+               'error_msg': result.error_msg, 'fields': result.fields, 'rows': values}
+    else:
+        raise ValueError('Unknown explicit daily stock provider')
     response = _json_bytes(raw)
     _write(source_attempt / 'response.json', response)
-    _write(source_attempt / 'receipt.json', _json_bytes({'provider': 'baostock', 'retrieved_at_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
+    _write(source_attempt / 'receipt.json', _json_bytes({'provider': raw.get('provider', 'baostock'), 'retrieved_at_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
            'request': raw['request'], 'response_sha256': _sha(response), 'target': target,
            'old_raw_sha256': _sha(original), 'old_sidecar_sha256': _sha(before_sidecar)}))
-    if raw['error_code'] != '0' or not values or raw['fields'] != FIELDS.split(','):
+    required_fields = FIELDS.split(',') if source_mode == 'baostock' else ['date', 'code', 'close', 'volume', 'tradestatus', 'adjustflag']
+    if raw['error_code'] != '0' or not values or raw['fields'] != required_fields:
         raise ValueError('Daily provider query failed, empty, or wrong schema; group stopped')
     rows = [dict(zip(raw['fields'], r, strict=True)) for r in values]
     dates = [r['date'] for r in rows]
@@ -106,10 +137,11 @@ def _one(root, symbol, target, sessions, master, get_provider, allow_network, fo
     old = price.set_index('date').close_raw
     overlap = 0
     for row in rows:
-        if row['code'] != code or row['adjustflag'] != '3' or row['tradestatus'] not in ('0', '1') or row['isST'] not in ('0', '1'):
+        if row['code'] != code or row['adjustflag'] != '3' or row['tradestatus'] not in ('0', '1') or (source_mode == 'baostock' and row['isST'] not in ('0', '1')):
             raise ValueError('Daily provider row identity/status mismatch')
-        close, preclose = float(row['close']), float(row['preclose'])
-        if not np.isfinite([close, preclose]).all() or min(close, preclose) <= 0:
+        close = float(row['close'])
+        checked_prices = [close, float(row['preclose'])] if source_mode == 'baostock' else [close]
+        if not np.isfinite(checked_prices).all() or min(checked_prices) <= 0:
             raise ValueError('Daily provider invalid close/preclose')
         volume = float(row['volume']) if row['volume'] else None
         if (row['tradestatus'] == '1' and (volume is None or not np.isfinite(volume) or volume <= 0)) or (row['tradestatus'] == '0' and volume not in (None, 0)):
@@ -216,6 +248,9 @@ def refresh_daily_inputs(*, root, symbols, as_of, allow_network=True, force_sour
                     raise ValueError('Daily BaoStock login failed; no retry')
             return provider
         try:
+            if os.environ.get('MICROCAP_DAILY_STOCK_PROVIDER', 'baostock') == 'tencent':
+                return _parallel_alternative(symbols, lambda sym: _one(
+                    root, sym, target, sessions, master, get_provider, allow_network, force_source_query))
             return [_one(root, sym, target, sessions, master, get_provider, allow_network, force_source_query) for sym in symbols]
         finally:
             try:

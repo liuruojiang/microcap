@@ -19,6 +19,7 @@ SOURCE_FILES = (
     "scripts/stock_tail_returns.py",
     "scripts/share_change_source.py",
     "scripts/stock_daily_inputs.py",
+    "scripts/stock_daily_alternative.py",
 )
 
 

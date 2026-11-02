@@ -117,6 +117,9 @@ def enrich_price_with_trade_status(*, root: Path, symbol: str, raw_path: Path,
     used_corrections = set()
     for source in record.get('provider_queries', []):
         payload = json.loads(_read_bound(base, source))
+        if 'provider' in payload or 'native_evidence' in payload:
+            from scripts.stock_daily_alternative import verify
+            verify(payload)
         request = payload['request']
         code = ('sh.' if symbol.startswith('6') else 'sz.') + symbol
         if request.get('code') != code or request.get('adjustflag') != '3' or request.get('frequency') != 'd' or payload['error_code'] != '0':
