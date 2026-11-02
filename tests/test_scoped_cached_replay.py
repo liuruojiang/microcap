@@ -23,3 +23,17 @@ def test_scoped_replay_cannot_assume_equivalence(tmp_path,change):
         with pytest.raises(ValueError):try_cached_history_rebuild(**kw)
     else:assert try_cached_history_rebuild(**kw) is False
     assert not (cache/'scoped_proxy_rebuild').exists()
+
+@pytest.mark.parametrize('bad',[False,True])
+def test_terminal_close_date_uses_next_exchange_session(monkeypatch,bad):
+    from datetime import date
+    from scripts.st_metadata_refresh import complete_terminal_return_dates
+    from scripts import exchange_calendar
+    monkeypatch.setattr(exchange_calendar,'sessions_for_day',lambda d:(date(2026,10,29),date(2026,10,30),date(2026,11,2)))
+    f=pd.DataFrame([dict(rebalance_date='2026-10-29',execution_date='2026-10-29',effective_date='2026-10-28' if bad else '2026-10-29',execution_timing='close',return_start_date=pd.NaT)])
+    if bad:
+        with pytest.raises(ValueError):complete_terminal_return_dates(f,pd.to_datetime(['2026-10-29','2026-10-30','2026-11-02']),'2026-10-29')
+    else:
+        out=complete_terminal_return_dates(f,pd.to_datetime(['2026-10-29','2026-10-30','2026-11-02']),'2026-10-29')
+        assert out.return_start_date.iloc[0]==pd.Timestamp('2026-10-30')
+        assert pd.isna(f.return_start_date.iloc[0])

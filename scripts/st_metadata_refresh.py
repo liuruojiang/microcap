@@ -148,6 +148,27 @@ def refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, cons
     finally:
         lock.unlink()
 
+def complete_terminal_return_dates(turnover, dates, anchor):
+    """Resolve only a replay's terminal close execution using exchange sessions."""
+    import pandas as pd
+    from scripts.exchange_calendar import sessions_for_day
+    out = turnover.copy()
+    missing = pd.to_datetime(out['return_start_date'], format='mixed', errors='raise').isna()
+    if not missing.any():
+        return out
+    anchor = pd.Timestamp(anchor).normalize()
+    for field in ('rebalance_date', 'execution_date', 'effective_date'):
+        if not pd.to_datetime(out.loc[missing, field], format='mixed', errors='raise').eq(anchor).all():
+            _fail('Missing return start outside terminal close execution')
+    if not out.loc[missing, 'execution_timing'].eq('close').all():
+        _fail('Missing return start is not a close execution')
+    following = min(pd.Timestamp(day) for day in sessions_for_day(pd.Timestamp(max(dates)).date()) if pd.Timestamp(day) > anchor)
+    if following not in set(pd.DatetimeIndex(dates)):
+        _fail('Terminal return session absent from verified panel')
+    out.loc[missing, 'return_start_date'] = following
+    return out
+
+
 def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     """Replay an unchanged ST history from certified caches, then native short tail.
 
@@ -191,8 +212,15 @@ def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     print('[cached-replay] local historical rebuild through '+str(anchor.date())+'; no universe network refresh',flush=True)
     with frozen_notice_sources(root):
         index,members,turnover,meta=base.build_local_proxy_bundle(staged_args,dates[dates<=anchor])
+    turnover = complete_terminal_return_dates(turnover, dates, anchor)
+    from scripts.top100_data_contracts import normalise_turnover_table
+    previous_turnover = pd.read_csv(io.BytesIO(originals[paths['proxy_turnover']]))
+    pd.testing.assert_frame_equal(normalise_turnover_table(previous_turnover), normalise_turnover_table(turnover), check_exact=True, check_dtype=False)
     for frame,p in [(index,staged_args.index_csv),(members,staged_paths['proxy_members']),(turnover,staged_paths['proxy_turnover'])]:base._atomic_to_csv(frame,p,index=False,encoding='utf-8')
     base._atomic_write_json(staged_paths['proxy_meta'],meta,encoding='utf-8')
+    # Preserve exact approved event-table bytes after independently recomputing
+    # and checking every event, including the previously unknown terminal date.
+    _atomic(staged_paths['proxy_turnover'], originals[paths['proxy_turnover']])
     base._write_proxy_effective_members(staged_paths['proxy_effective_members'],anchor,meta['terminal_effective_members'])
     base.rebuild_costed_nav_from_proxy_turnover(staged_args,staged_paths,panel_path,target_end_date=anchor)
     if not base.try_extend_proxy_index_without_rebalance(staged_args,staged_paths,panel_path,target):_fail('Native cached replay tail rejected')
