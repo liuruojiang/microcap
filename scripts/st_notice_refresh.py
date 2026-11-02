@@ -13,6 +13,7 @@ from scripts.st_notice_incremental import collect_days, verify_day, _provider_ti
 
 PREFIX = '.microcap_index_cache/st_notice_sources'
 FRESHNESS = PREFIX + '/freshness.json'
+NATIVE_BOUNDARY_REVIEW = True
 
 
 def _sha(raw):
@@ -49,7 +50,7 @@ def _native(folder, day):
     return rows
 
 
-def _boundary_precision_drift(previous, current):
+def _precision_drift_only(previous, current):
     """Only tolerate sub-second same-day provider display-time precision drift."""
     error = 'ST boundary native events changed; exact-hash history review required; pointer preserved'
     if previous.keys() != current.keys():
@@ -75,6 +76,24 @@ def _boundary_precision_drift(previous, current):
                 changed_event_count=len(changed), maximum_delta_microseconds=maximum,
                 crossed_integer_second_count=crossed,
                 changed_event_ids_sha256=_sha(json.dumps(sorted(changed), separators=(',', ':')).encode()))
+
+
+def _boundary_precision_drift(previous, current):
+    if previous.keys() == current.keys():
+        return _precision_drift_only(previous, current)
+    from scripts.st_notice_boundary_review import reviewed_additions
+    return reviewed_additions(previous, current, _precision_drift_only)
+
+
+def _boundary_summary_matches(recorded, drift, previous, current):
+    if recorded == drift:
+        return True
+    if (not isinstance(recorded, dict)
+            or recorded.get('policy') != 'exact_reviewed_non_st_addition_plus_original_precision_v1'
+            or drift.get('policy') != 'document_reviewed_non_st_boundary_additions_v1'):
+        return False
+    from scripts.st_notice_boundary_review import legacy_summary
+    return recorded == legacy_summary(previous, current, _precision_drift_only, drift)
 
 
 def freshness_source_files(root):
@@ -134,10 +153,11 @@ def freshness_source_files(root):
             raise StNoticeEvidenceError('ST freshness proof omits queried source files')
         if day['date'] == boundary.isoformat():
             old_folder = _bound(root, old['daily_increments'][-1]['manifest']['path']).parent
-            drift = _boundary_precision_drift(_native(old_folder, day['date']), _native(folder, day['date']))
+            previous_rows, current_rows = _native(old_folder, day['date']), _native(folder, day['date'])
+            drift = _boundary_precision_drift(previous_rows, current_rows)
             recorded = proof.get('boundary_display_time_precision_drift')
             if ((recorded is None and drift['changed_event_count'])
-                    or (recorded is not None and recorded != drift)
+                    or (recorded is not None and not _boundary_summary_matches(recorded, drift, previous_rows, current_rows))
                     or proof.get('boundary_native_content_unchanged') is not (drift['changed_event_count'] == 0)):
                 raise StNoticeEvidenceError('ST freshness boundary precision summary differs from source')
         else:

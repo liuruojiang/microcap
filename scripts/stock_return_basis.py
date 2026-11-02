@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 
 RETURN_BASIS_REVISION = "sina_ratio_ex_reference_v1"
+CSV_LINE_TERMINATOR = "\r\n"  # Preserve approved candidate bytes on every OS.
 
 
 def _hash(data: bytes) -> str:
@@ -113,7 +114,7 @@ def build_ratio_return_basis(
         anchor_date=str(anchor.date()), rows=len(out), first=str(out.date.min().date()),
         last=str(out.date.max().date()), excluded_raw_dates=excluded,
         future_factor_rows_excluded=future, qfq_hfq_return_max_abs_difference=0. if pd.isna(error) else float(error),
-        candidate_sha256=_hash(out.to_csv(index=False).encode("utf-8")),
+        candidate_sha256=_hash(out.to_csv(index=False, lineterminator=CSV_LINE_TERMINATOR).encode("utf-8")),
         cash_dividend_wealth_accounting=False)
     return out, manifest
 

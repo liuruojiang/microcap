@@ -43,7 +43,8 @@ def workspace(tmp_path, monkeypatch):
     chosen = {"1225251716", "AN201203010004601977"}
     registry["events"] = [event for event in registry["events"] if event["announcement_id"] in chosen]
     assert {event["announcement_id"] for event in registry["events"]} == chosen
-    source_files = {"scripts/st_notice_evidence.py", "scripts/st_notice_archive.py"}
+    from scripts.st_notice_boundary_review import SOURCE_FILES as review_files
+    source_files = {"scripts/st_notice_evidence.py", "scripts/st_notice_archive.py", *review_files}
     for event in registry["events"]:
         source_files.add("data/st_notice_evidence/" + (event.get("relative_html_path") or event["relative_pdf_path"]))
         for key in ("conflict_evidence", "unavailable_evidence", "native_evidence", "exchange_evidence"):

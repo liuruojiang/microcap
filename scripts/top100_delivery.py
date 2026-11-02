@@ -37,6 +37,7 @@ RELEASE_FILES = [
 ] + [f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in COSTED]
 RELEASE_FILES += evidence_source_files(Path(__file__).resolve().parents[1])
 RETURN_BASIS_FILES = [
+    "scripts/bounded_market_data.py",
     "scripts/stock_return_basis.py", "scripts/stock_return_basis_store.py",
     "scripts/stock_return_pipeline.py", "fetch_wind_microcap_index.py",
     "scripts/tradeability_evidence.py",

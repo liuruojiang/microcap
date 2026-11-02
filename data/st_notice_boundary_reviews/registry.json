@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "reviews": {
+    "AN202611011831295457": {
+      "decision": "no_stock_st_action",
+      "symbol": "601611",
+      "boundary_day": "2026-10-30",
+      "native_row": {
+        "art_code": "AN202611011831295457",
+        "codes": [
+          {
+            "ann_type": "A,SHA",
+            "inner_code": "30806807181029",
+            "market_code": "1",
+            "short_name": "中国核建",
+            "stock_code": "601611"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "010002009001",
+            "column_name": "上交所股票监管关注"
+          }
+        ],
+        "display_time": "2026-11-01 17:16:27:255",
+        "eiTime": "2026-11-01 17:15:59:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-10-30 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-10-30 12:00:00",
+        "source_type": "31",
+        "title": "关于对中国核工业建设股份有限公司及有关责任人予以监管警示的决定",
+        "title_ch": "关于对中国核工业建设股份有限公司及有关责任人予以监管警示的决定",
+        "title_en": ""
+      },
+      "native_without_display_time_sha256": "be26424da020373f4bd1fc9d17bb66d14372ca13900d67f58da1a5ad59697c46",
+      "document": "document.pdf",
+      "document_sha256": "471321f47c6c49fac9ccb8b71e9e0a223e8ff653a2b55ff14fdb7c0e1f3b7a4e",
+      "text": "document.txt",
+      "text_sha256": "503236762d3a2ac607c61b08ae0c1224604756badc26ef3a1cefc915a39c744c",
+      "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611011831295457_1.pdf",
+      "issuer": "上海证券交易所",
+      "document_number": "上证公监函〔2026〕0171号",
+      "decision_date": "2026-10-15",
+      "reviewed_conclusion": "The three-page decision concerns delayed disclosure of litigation/arbitration. Its operative measure is regulatory warning to issuer601611 and its board secretary; no stock ST entry or exit is ordered. Provider notice_date10/30 and publication11/01 remain separate from decision_date10/15.",
+      "reviewed_by": "assistant executing user instruction to resolve deferred issues, 2026-11-02",
+      "legacy_certificate_sha256": "1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9",
+      "legacy_adapter_canonical_lf_sha256": "faf53729539649a679e2f05236b90204630908e5a8926e6304dbc98eed25855b"
+    }
+  }
+}

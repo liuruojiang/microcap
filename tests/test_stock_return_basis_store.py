@@ -86,7 +86,7 @@ def test_factor_rewrite_cannot_change_existing_adjusted_prefix(tmp_path,monkeypa
     def changed(**kwargs):
         frame,manifest=original(**kwargs)
         frame.loc[1,'close_adj']*=1.01
-        manifest['candidate_sha256']=hashlib.sha256(frame.to_csv(index=False).encode()).hexdigest()
+        manifest['candidate_sha256']=hashlib.sha256(frame.to_csv(index=False,lineterminator="\r\n").encode()).hexdigest()
         return frame,manifest
     monkeypatch.setattr(store,'build_ratio_return_basis',changed)
     before=(tmp_path/'prices_adj/000418.csv').read_bytes()

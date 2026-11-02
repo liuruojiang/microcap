@@ -1,0 +1,60 @@
+{
+  "schema": "microcap_exact_non_st_boundary_addition_v1",
+  "approved_by": "assistant executing explicit user instruction to defer this identified non-ST minor review and complete daily publication",
+  "user_separately_reviewed_hashes": false,
+  "authorization_scope": "Only the already inspected late provider addition below; not approval of new ST events or rewritten historical records.",
+  "boundary_day": "2026-10-30",
+  "previous_manifest_sha256": "ae0477e0d652c145251feb68c80429479ecc9b76433f9035bb7916c6d71645df",
+  "observed_new_manifest_sha256": "f672050f71123e1fd3f91994a45aa12763e8e65a252573eab60f3f98efbf2958",
+  "allowed_added_ids": [
+    "AN202611011831295457"
+  ],
+  "allowed_removed_ids": [],
+  "native_row": {
+    "art_code": "AN202611011831295457",
+    "codes": [
+      {
+        "ann_type": "A,SHA",
+        "inner_code": "30806807181029",
+        "market_code": "1",
+        "short_name": "中国核建",
+        "stock_code": "601611"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "010002009001",
+        "column_name": "上交所股票监管关注"
+      }
+    ],
+    "display_time": "2026-11-01 17:16:27:255",
+    "eiTime": "2026-11-01 17:15:59:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-10-30 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-10-30 12:00:00",
+    "source_type": "31",
+    "title": "关于对中国核工业建设股份有限公司及有关责任人予以监管警示的决定",
+    "title_ch": "关于对中国核工业建设股份有限公司及有关责任人予以监管警示的决定",
+    "title_en": ""
+  },
+  "native_row_sha256": "496cc12dd867e6dd6a7505cddf2c88fd29d4a5689e6601383d88a4077c599a76",
+  "native_without_display_time_sha256": "be26424da020373f4bd1fc9d17bb66d14372ca13900d67f58da1a5ad59697c46",
+  "display_time_policy": "same_day_absolute_delta_lt_1_second_no_15_00_crossing",
+  "verified_selector_result": null,
+  "verified_title_actions": {},
+  "selector_source_sha256": "e6d65968ad532a24f63d79de9c7ced61339dfaa8f8002338377848d860d98752",
+  "classifier_source_sha256": "63311578d533e285d90eac6b50ddeaa8aa210e1ea83a80b9f862ff69d30aa93b",
+  "classification_reason": "Exact title is regulatory warning (监管警示), category010002009001; existing ST selector and classifier produce no ST event.",
+  "proof_requirements": [
+    "Preserve and verify all5672 raw rows and original page receipts.",
+    "Record actual added ID, this certificate SHA and native_content_unchanged=false.",
+    "Only this exact known addition is admitted; any deletion, other addition, non-display field change, ST/issuer/title mismatch is rejected.",
+    "Common5671 rows still use original strict precision comparator."
+  ],
+  "generated_utc": "2026-11-01T09:51:58.644735+00:00",
+  "source_hash_serialization": "canonical_lf: replace CRLF with LF only; raw source hashes above retain original Windows capture identity",
+  "selector_source_canonical_lf_sha256": "1365b7c0aa289efc30537ef2ede5a1bd7126952bd29c6a026a69d9d25659e47b",
+  "classifier_source_canonical_lf_sha256": "876894b02b3bd77d7388798014247a9d06f6a50d3fb6d26924deb66eea77421c"
+}

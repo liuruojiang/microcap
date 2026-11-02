@@ -15,6 +15,8 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from typing import Iterable
 
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 MANIFEST_NAME = "top100_realtime_state_manifest.json"
 

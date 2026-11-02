@@ -46,7 +46,7 @@ def test_real_raw_tail_update_preserves_anchor_and_returns():
     pd.testing.assert_frame_equal(updated.iloc[:2],short)
     assert previous["raw_sha256"] != after["raw_sha256"]
     with pytest.raises(ValueError,match="provenance"):
-        validate_cached_candidate(short.to_csv(index=False).encode(),previous,expected_manifest=after)
+        validate_cached_candidate(short.to_csv(index=False,lineterminator="\r\n").encode(),previous,expected_manifest=after)
 
 
 @pytest.mark.parametrize("change", ["status", "hash", "symbol", "revision", "raw_negative", "anchor"])
@@ -62,7 +62,7 @@ def test_fail_closed_for_wrong_identity_and_basis(change):
 
 
 def test_cache_rejects_changed_payload_and_missing_revision():
-    out,m=build_ratio_return_basis(**inputs());data=out.to_csv(index=False).encode()
+    out,m=build_ratio_return_basis(**inputs());data=out.to_csv(index=False,lineterminator="\r\n").encode()
     validate_cached_candidate(data,m,expected_manifest=m)
     with pytest.raises(ValueError):validate_cached_candidate(data+b"\n",m,expected_manifest=m)
     old=dict(m);old.pop("return_basis_revision")

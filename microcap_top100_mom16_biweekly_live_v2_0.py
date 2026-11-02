@@ -1292,11 +1292,11 @@ def fetch_active_universe(force_refresh: bool = False) -> pd.DataFrame:
     if UNIVERSE_CACHE.exists() and not force_refresh:
         return pd.read_csv(UNIVERSE_CACHE, dtype=str)
 
-    ak = get_akshare()
+    from scripts.bounded_market_data import fetch_akshare_frame
     last_error: Exception | None = None
-    for fetcher in (ak.stock_zh_a_spot_em, ak.stock_zh_a_spot):
+    for provider in ("stock_zh_a_spot_em", "stock_zh_a_spot"):
         try:
-            spot = fetcher()
+            spot = fetch_akshare_frame(provider)
             frame = spot[[COL_CODE, COL_NAME]].copy()
             break
         except Exception as exc:
@@ -1310,6 +1310,8 @@ def fetch_active_universe(force_refresh: bool = False) -> pd.DataFrame:
     frame = frame.loc[prefixed | frame["code"].str.match(r"^\d{6}$")].copy()
     inferred_prefix = np.where(frame["code"].str.startswith(("5", "6", "9")), "sh", "sz")
     frame["symbol"] = np.where(prefixed.reindex(frame.index).fillna(False), frame["symbol"], inferred_prefix + frame["code"])
+    if frame.empty:
+        raise RuntimeError("provider returned no active A-share universe")
     frame.to_csv(UNIVERSE_CACHE, index=False, encoding="utf-8")
     return frame
 
@@ -1319,9 +1321,9 @@ def fetch_current_st_codes(force_refresh: bool = False) -> set[str]:
         frame = pd.read_csv(CURRENT_ST_CACHE, dtype=str)
         return set(frame["code"].dropna())
 
-    ak = get_akshare()
+    from scripts.bounded_market_data import fetch_akshare_frame
     try:
-        st = ak.stock_zh_a_st_em()
+        st = fetch_akshare_frame("stock_zh_a_st_em")
         frame = st[[COL_CODE, COL_NAME]].copy()
         frame.columns = ["code", "name"]
     except Exception:

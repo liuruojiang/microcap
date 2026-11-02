@@ -164,12 +164,25 @@ def fetch_active_universe(force_refresh: bool = False) -> pd.DataFrame:
     if UNIVERSE_CACHE.exists() and not force_refresh:
         return pd.read_csv(UNIVERSE_CACHE, dtype=str)
 
-    ak = get_akshare()
-    spot = ak.stock_zh_a_spot()
-    frame = spot[[COL_CODE, COL_NAME]].copy()
+    from scripts.bounded_market_data import fetch_akshare_frame
+    last_error = None
+    for provider in ("stock_zh_a_spot", "stock_zh_a_spot_em"):
+        try:
+            spot = fetch_akshare_frame(provider)
+            frame = spot[[COL_CODE, COL_NAME]].copy()
+            break
+        except Exception as exc:
+            last_error = exc
+    else:
+        raise RuntimeError(f"failed to fetch active A-share universe: {last_error}") from last_error
     frame.columns = ["symbol", "name"]
     frame = frame.drop_duplicates(subset="symbol")
+    frame["symbol"] = frame["symbol"].astype(str)
+    bare = frame["symbol"].str.fullmatch(r"[036]\d{5}")
+    frame.loc[bare, "symbol"] = np.where(frame.loc[bare, "symbol"].str.startswith("6"), "sh", "sz") + frame.loc[bare, "symbol"]
     frame = frame[frame["symbol"].str.startswith(("sh", "sz"))].copy()
+    if frame.empty:
+        raise RuntimeError("provider returned no Shanghai/Shenzhen A-share universe")
     frame["code"] = frame["symbol"].str[-6:]
     frame.to_csv(UNIVERSE_CACHE, index=False, encoding="utf-8")
     return frame
@@ -180,9 +193,9 @@ def fetch_current_st_codes(force_refresh: bool = False) -> set[str]:
         frame = pd.read_csv(CURRENT_ST_CACHE, dtype=str)
         return set(frame["code"].dropna())
 
-    ak = get_akshare()
+    from scripts.bounded_market_data import fetch_akshare_frame
     try:
-        st = ak.stock_zh_a_st_em()
+        st = fetch_akshare_frame("stock_zh_a_st_em")
         frame = st[[COL_CODE, COL_NAME]].copy()
         frame.columns = ["code", "name"]
     except Exception:

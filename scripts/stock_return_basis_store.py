@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 import requests
 
-from scripts.stock_return_basis import build_ratio_return_basis, validate_cached_candidate, RETURN_BASIS_REVISION
+from scripts.stock_return_basis import build_ratio_return_basis, validate_cached_candidate, RETURN_BASIS_REVISION, CSV_LINE_TERMINATOR
 
 
 def _hash(data):
@@ -127,7 +127,7 @@ def _load_or_build(*, basis_root, symbol, raw_path, as_of, sessions, list_date,
             raise ValueError("Historical adjusted-price/factor rewrite requires explicit new-root migration")
     elif old:
         raise ValueError("Previous adjusted candidate missing; explicit recovery required")
-    payload=frame.to_csv(index=False).encode()
+    payload=frame.to_csv(index=False, lineterminator=CSV_LINE_TERMINATOR).encode("utf-8")
     # Publish content-addressed complete bundle first, then the current pointers.
     bundle=root/"bundles"/symbol/_hash(json.dumps(manifest,sort_keys=True).encode())
     _write(bundle/"candidate.csv",payload);_json(bundle/"manifest.json",manifest)

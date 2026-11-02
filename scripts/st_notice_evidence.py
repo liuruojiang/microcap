@@ -390,7 +390,9 @@ def evidence_source_files(root: Path | str) -> list[str]:
         for evidence_key in ("conflict_evidence", "unavailable_evidence", "native_evidence", "exchange_evidence"):
             for artifact in record.get(evidence_key, {}).values():
                 paths.add("data/st_notice_evidence/" + Path(artifact["relative_path"]).as_posix())
-    return ["scripts/st_notice_evidence.py", "scripts/st_notice_archive.py", "data/st_notice_evidence/registry.json"] + sorted(paths)
+    from scripts.st_notice_boundary_review import SOURCE_FILES as boundary_review_files
+    return (["scripts/st_notice_evidence.py", "scripts/st_notice_archive.py", "data/st_notice_evidence/registry.json"]
+            + sorted(paths) + boundary_review_files)
 
 
 def load_verified_events(root: Path | str, symbol: str, first_trade: Any,

@@ -24,3 +24,6 @@ tests/fixtures/delisting_parity_actual/** -text
 
 # Preserve exact migration approval and release evidence hashes.
 docs/release_evidence_20261101/*.json -text
+
+# Document-bound late-notice evidence is transported byte-for-byte.
+data/st_notice_boundary_reviews/** -text -whitespace
