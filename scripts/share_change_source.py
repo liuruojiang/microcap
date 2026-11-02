@@ -8,6 +8,9 @@ from pathlib import Path
 import uuid
 import time
 import threading
+import ipaddress
+import subprocess
+from urllib.parse import urlencode
 
 import numpy as np
 import pandas as pd
@@ -16,6 +19,58 @@ import requests
 from scripts.stock_return_basis_store import _extended
 
 _ENCODER_LOCK = threading.Lock()
+_DNS_LOCK = threading.Lock()
+_DNS_CACHE = {}
+
+
+def _post_with_dns_fallback(url, *, params, headers, timeout):
+    """Keep the original HTTPS origin/TLS identity when the OS resolver fails."""
+    deadline = time.monotonic() + timeout
+    try:
+        return requests.post(url, params=params, headers=headers, timeout=timeout)
+    except requests.ConnectionError as exc:
+        if 'getaddrinfo failed' not in str(exc) and 'NameResolutionError' not in str(exc):
+            raise
+    host = 'webapi.cninfo.com.cn'
+    if url != f'https://{host}/api/stock/p_stock2215':
+        raise ValueError('DNS fallback is restricted to the CNInfo share endpoint')
+    with _DNS_LOCK:
+        if _DNS_CACHE.get('expires', 0) <= time.monotonic():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise requests.Timeout('CNInfo DNS fallback deadline exhausted')
+            answer = requests.get('https://dns.google/resolve', params={'name': host, 'type': 'A'},
+                                  timeout=min(5, remaining))
+            answer.raise_for_status()
+            payload = answer.json()
+            if payload.get('Status') != 0 or not any(q.get('name', '').rstrip('.') == host and q.get('type') == 1 for q in payload.get('Question', [])):
+                raise ValueError('CNInfo DNS response identity failed')
+            records = [r for r in payload.get('Answer', []) if r.get('name', '').rstrip('.') == host and r.get('type') == 1]
+            if not records or not ipaddress.ip_address(records[0]['data']).is_global or int(records[0]['TTL']) <= 0:
+                raise ValueError('CNInfo DNS response has no valid public address')
+            _DNS_CACHE.update(address=records[0]['data'], expires=time.monotonic() + min(300, int(records[0]['TTL'])))
+        address = _DNS_CACHE['address']
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise requests.Timeout('CNInfo DNS fallback deadline exhausted')
+    command = ['curl', '--silent', '--show-error', '--connect-timeout', str(min(5, remaining)),
+               '--max-time', str(remaining), '--resolve', f'{host}:443:{address}',
+               '--request', 'POST', '--write-out', '\n%{http_code}']
+    for key, value in headers.items():
+        command.extend(['--header', f'{key}: {value}'])
+    command.append(url + '?' + urlencode(params))
+    try:
+        result = subprocess.run(command, capture_output=True, timeout=remaining + 1, check=False)
+    except subprocess.TimeoutExpired as exc:
+        raise requests.Timeout('CNInfo DNS fallback transport timed out') from exc
+    if result.returncode:
+        raise requests.ConnectionError('CNInfo DNS fallback transport failed: ' + result.stderr.decode(errors='replace')[:300])
+    body, status = result.stdout.rsplit(b'\n', 1)
+    response = requests.Response()
+    response.status_code = int(status)
+    response._content = body
+    response.url = url
+    return response
 
 
 def _cninfo_request_key():
@@ -129,7 +184,7 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
             if remaining <= 0:
                 raise requests.Timeout('Share source query exceeded its total deadline')
             try:
-                response = requests.post(url, params=params, headers=headers, timeout=min(15, remaining))
+                response = _post_with_dns_fallback(url, params=params, headers=headers, timeout=min(15, remaining))
                 break
             except (requests.Timeout, requests.ConnectionError):
                 if attempt_index == 2:

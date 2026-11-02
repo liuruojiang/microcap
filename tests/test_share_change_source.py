@@ -231,3 +231,28 @@ def test_native_encoder_initialization_is_serialized(monkeypatch):
     with ThreadPoolExecutor(max_workers=4) as pool:
         assert list(pool.map(lambda _: source._cninfo_request_key(), range(12))) == ['fixture-key'] * 12
     assert peak == 1 and active == 0
+
+
+@pytest.mark.parametrize('tls_failure', [False, True])
+def test_dns_fallback_preserves_hostname_and_tls_validation(monkeypatch, tls_failure):
+    from types import SimpleNamespace
+    monkeypatch.setattr(source, '_DNS_CACHE', {})
+    def unresolved(*args, **kwargs):
+        raise source.requests.ConnectionError('getaddrinfo failed')
+    monkeypatch.setattr(source.requests, 'post', unresolved)
+    dns = {'Status': 0, 'Question': [{'name': 'webapi.cninfo.com.cn.', 'type': 1}],
+           'Answer': [{'name': 'webapi.cninfo.com.cn.', 'type': 1, 'data': '8.8.8.8', 'TTL': 6}]}
+    monkeypatch.setattr(source.requests, 'get', lambda *a, **k: SimpleNamespace(json=lambda: dns, raise_for_status=lambda: None))
+    def curl(command, **kwargs):
+        assert '--insecure' not in command and '-k' not in command
+        assert command[command.index('--resolve') + 1] == 'webapi.cninfo.com.cn:443:8.8.8.8'
+        assert command[-1] == 'https://webapi.cninfo.com.cn/api/stock/p_stock2215?scode=000001'
+        return SimpleNamespace(returncode=60 if tls_failure else 0, stdout=b'{"resultcode":200}\n200', stderr=b'certificate failure')
+    monkeypatch.setattr(source.subprocess, 'run', curl)
+    args = dict(params={'scode': '000001'}, headers={'Accept-Enckey': 'fixture'}, timeout=15)
+    if tls_failure:
+        with pytest.raises(source.requests.ConnectionError, match='certificate failure'):
+            source._post_with_dns_fallback('https://webapi.cninfo.com.cn/api/stock/p_stock2215', **args)
+    else:
+        response = source._post_with_dns_fallback('https://webapi.cninfo.com.cn/api/stock/p_stock2215', **args)
+        assert response.status_code == 200 and response.content == b'{"resultcode":200}'
