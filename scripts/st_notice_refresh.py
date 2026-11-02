@@ -80,7 +80,10 @@ def _precision_drift_only(previous, current):
 
 def _boundary_precision_drift(previous, current):
     if previous.keys() == current.keys():
-        return _precision_drift_only(previous, current)
+        try:
+            return _precision_drift_only(previous, current)
+        except StNoticeEvidenceError:
+            pass
     from scripts.st_notice_boundary_review import reviewed_additions
     return reviewed_additions(previous, current, _precision_drift_only)
 

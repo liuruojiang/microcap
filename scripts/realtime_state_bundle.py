@@ -1233,7 +1233,7 @@ def refresh_state(
         return report
     except Exception as exc:
         if target_end_date is not None and notice_refresh_required and not notice_refresh_completed:
-            raise RuntimeError("state refresh failed closed: current ST notice refresh did not complete") from exc
+            raise RuntimeError(f"state refresh failed closed: current ST notice refresh did not complete: {type(exc).__name__}: {exc}") from exc
         if target_end_date is None:
             report = validate_state(root, max_anchor_age_days=max_anchor_age_days)
             report.setdefault("errors", []).append(

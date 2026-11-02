@@ -48,5 +48,189 @@
       "legacy_certificate_sha256": "1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9",
       "legacy_adapter_canonical_lf_sha256": "faf53729539649a679e2f05236b90204630908e5a8926e6304dbc98eed25855b"
     }
+  },
+  "metadata_changes": {
+    "AN202610291831173818": {
+      "symbol": "600521",
+      "boundary_day": "2026-10-30",
+      "decision": "no_stock_st_action",
+      "previous_row": {
+        "art_code": "AN202610291831173818",
+        "codes": [
+          {
+            "ann_type": "KZZ,Bond",
+            "inner_code": "15321248554523",
+            "market_code": "1",
+            "short_name": "华海转债",
+            "stock_code": "110076"
+          },
+          {
+            "ann_type": "A,SHA",
+            "inner_code": "29039873599637",
+            "market_code": "1",
+            "short_name": "华海药业",
+            "stock_code": "600521"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001002008",
+            "column_name": "其他"
+          },
+          {
+            "column_code": "003014",
+            "column_name": "其它"
+          }
+        ],
+        "display_time": "2026-10-29 16:48:21:825",
+        "eiTime": "2026-10-29 16:49:31:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-10-30 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-10-30 12:00:00",
+        "source_type": "31",
+        "title": "华海药业:浙江华海药业股份有限公司关于2026前三季度计提资产减值准备的公告",
+        "title_ch": "华海药业:浙江华海药业股份有限公司关于2026前三季度计提资产减值准备的公告",
+        "title_en": ""
+      },
+      "current_row": {
+        "art_code": "AN202610291831173818",
+        "codes": [
+          {
+            "ann_type": "KZZ,Bond",
+            "inner_code": "15321248554523",
+            "market_code": "1",
+            "short_name": "华海转债",
+            "stock_code": "110076"
+          },
+          {
+            "ann_type": "A,SHA",
+            "inner_code": "29039873599637",
+            "market_code": "1",
+            "short_name": "华海药业",
+            "stock_code": "600521"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001002008",
+            "column_name": "其他"
+          },
+          {
+            "column_code": "003014",
+            "column_name": "其它"
+          }
+        ],
+        "display_time": "2026-10-29 16:48:21:825",
+        "eiTime": "2026-10-29 16:49:31:000",
+        "language": "0",
+        "listing_state": "2",
+        "notice_date": "2026-10-30 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-10-30 12:00:00",
+        "source_type": "31",
+        "title": "华海药业:浙江华海药业股份有限公司关于2026前三季度计提资产减值准备的公告",
+        "title_ch": "华海药业:浙江华海药业股份有限公司关于2026前三季度计提资产减值准备的公告",
+        "title_en": ""
+      },
+      "changed_field": "listing_state",
+      "reviewed_conclusion": "Full issuer documents concern quarterly asset impairment and board approval; no stock ST entry/exit. Exact provider metadata transition only; no generic interpretation of listing_state.",
+      "document": "AN202610291831173818.pdf",
+      "document_sha256": "ce552ad975011ec97069ab2ee184e386b064ac23aca371e577dbd1203c6d167f",
+      "text": "AN202610291831173818.txt",
+      "text_sha256": "df47847c6a6b0ce17f2a48dc737631be6655297d993c9131b73a1391f485fd28"
+    },
+    "AN202610291831173819": {
+      "symbol": "600521",
+      "boundary_day": "2026-10-30",
+      "decision": "no_stock_st_action",
+      "previous_row": {
+        "art_code": "AN202610291831173819",
+        "codes": [
+          {
+            "ann_type": "KZZ,Bond",
+            "inner_code": "15321248554523",
+            "market_code": "1",
+            "short_name": "华海转债",
+            "stock_code": "110076"
+          },
+          {
+            "ann_type": "A,SHA",
+            "inner_code": "29039873599637",
+            "market_code": "1",
+            "short_name": "华海药业",
+            "stock_code": "600521"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001002009",
+            "column_name": "董事会决议公告"
+          },
+          {
+            "column_code": "003014",
+            "column_name": "其它"
+          }
+        ],
+        "display_time": "2026-10-29 16:48:21:795",
+        "eiTime": "2026-10-29 16:49:31:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-10-30 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-10-30 12:00:00",
+        "source_type": "31",
+        "title": "华海药业:浙江华海药业股份有限公司第九届董事会第十八次临时会议决议公告",
+        "title_ch": "华海药业:浙江华海药业股份有限公司第九届董事会第十八次临时会议决议公告",
+        "title_en": ""
+      },
+      "current_row": {
+        "art_code": "AN202610291831173819",
+        "codes": [
+          {
+            "ann_type": "KZZ,Bond",
+            "inner_code": "15321248554523",
+            "market_code": "1",
+            "short_name": "华海转债",
+            "stock_code": "110076"
+          },
+          {
+            "ann_type": "A,SHA",
+            "inner_code": "29039873599637",
+            "market_code": "1",
+            "short_name": "华海药业",
+            "stock_code": "600521"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001002009",
+            "column_name": "董事会决议公告"
+          },
+          {
+            "column_code": "003014",
+            "column_name": "其它"
+          }
+        ],
+        "display_time": "2026-10-29 16:48:21:795",
+        "eiTime": "2026-10-29 16:49:31:000",
+        "language": "0",
+        "listing_state": "2",
+        "notice_date": "2026-10-30 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-10-30 12:00:00",
+        "source_type": "31",
+        "title": "华海药业:浙江华海药业股份有限公司第九届董事会第十八次临时会议决议公告",
+        "title_ch": "华海药业:浙江华海药业股份有限公司第九届董事会第十八次临时会议决议公告",
+        "title_en": ""
+      },
+      "changed_field": "listing_state",
+      "reviewed_conclusion": "Full issuer documents concern quarterly asset impairment and board approval; no stock ST entry/exit. Exact provider metadata transition only; no generic interpretation of listing_state.",
+      "document": "AN202610291831173819.pdf",
+      "document_sha256": "6afaba34d4e5dad6b2456002b9bae25a4314fee521eb982aa9e7efe4f535ece9",
+      "text": "AN202610291831173819.txt",
+      "text_sha256": "8285502e6943f149a76d14461c7713c2749b7851efd8a65f75b7c3357ff535ba"
+    }
   }
 }

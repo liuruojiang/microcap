@@ -110,3 +110,21 @@ def test_universe_falls_back_and_failure_preserves_existing_cache(tmp_path, monk
     monkeypatch.setattr(bounded, "fetch_akshare_frame", fail)
     with pytest.raises(RuntimeError): market.fetch_active_universe(force_refresh=True)
     assert path.read_bytes()==before
+
+
+def test_exact_reviewed_provider_metadata_transition():
+    entries = json.loads((review.DIRECTORY / "registry.json").read_bytes())["metadata_changes"]
+    old = {key: value["previous_row"] for key, value in entries.items()}
+    new = {key: value["current_row"] for key, value in entries.items()}
+    result = notice._boundary_precision_drift(old, new)
+    assert result["changed_event_count"] == 2
+    assert set(result["reviewed_metadata_changes"]) == set(entries)
+    for key in entries:
+        bad = copy.deepcopy(new)
+        bad[key]["listing_state"] = "3"
+        with pytest.raises(notice.StNoticeEvidenceError):
+            notice._boundary_precision_drift(old, bad)
+        bad = copy.deepcopy(new)
+        bad[key]["title"] += "风险警示"
+        with pytest.raises(notice.StNoticeEvidenceError):
+            notice._boundary_precision_drift(old, bad)
