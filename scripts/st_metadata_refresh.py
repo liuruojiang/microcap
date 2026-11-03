@@ -221,7 +221,7 @@ def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     dates=pd.DatetimeIndex(dates[dates<=target])
     scheduled=base.build_biweekly_rebalance_dates(dates)
     if ((scheduled>anchor)&(scheduled<=target)).any():return False
-    allowed={'notice_query_end_date','st_notice_archive_sha256','st_notice_archive_manifest_path','notice_count','last_trade_date'}
+    allowed={'notice_query_end_date','st_notice_archive_sha256','st_notice_archive_manifest_path','notice_count','last_trade_date','current_st_snapshot_name'}
     backup=_bound(root,marker['work'])/'backup'
     for symbol,digest in marker['new_hashes'].items():
         oldraw=(backup/(symbol+'.json')).read_bytes()
@@ -229,6 +229,8 @@ def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
         if _sha(oldraw)!=marker['old_hashes'][symbol] or _sha(raw)!=digest:_fail('Changed cached replay metadata: '+symbol)
         old,new=json.loads(oldraw),json.loads(raw)
         if not _history_equal(old,new,str(target.date())):return False
+        if (old.get('current_st_snapshot_name') != new.get('current_st_snapshot_name')
+                and new.get('current_st_history_resolved') is not True):return False
         if any(old.get(k)!=new.get(k) for k in (old.keys()|new.keys())-allowed):return False
     stage=root/'.microcap_index_cache/scoped_proxy_rebuild'/uuid.uuid4().hex;stage.mkdir(parents=True)
     keys=('proxy_members','proxy_turnover','proxy_meta','proxy_effective_members')

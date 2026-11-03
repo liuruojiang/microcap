@@ -1,0 +1,10 @@
+{
+  "kind": "actual_native_metadata_stage_before_install",
+  "captured_at": "2026-11-03T10:48:26.279924+00:00",
+  "source_file": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\st_metadata_refresh\\exact_b6bf_6e1b8607b1c94e3eb7f6b0e5534f0fad\\stage\\000972.json",
+  "strategy_commit": "b07c0cff267253a572dfc38150ba3a288363137d",
+  "sha256": "ebf8ea1566967365433801d5d90fea386f44afdbeeadfbaa6fd444fbf416e6f0",
+  "notice_archive_sha256": "72bfc255a3c3e5d8f4d42b55f0bce505ebd191affc2d9a374e3531ea85ecfa29",
+  "test_usage": "unchanged real baseline; isolated derived snapshot-name fault injections are not market evidence",
+  "fixture_storage": "base64 exact original bytes; JSON container newline differences do not alter decoded source identity"
+}
