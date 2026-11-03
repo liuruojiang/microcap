@@ -9,6 +9,86 @@ import microcap_top100_mom16_biweekly_live_v2_0 as v2
 from scripts import realtime_state_bundle as state
 
 
+@pytest.mark.parametrize("change", ["new_st_label", "updated_st_label", "unknown_field",
+                                   "changed_interval", "unresolved_history", "tampered_bytes"])
+def test_cached_replay_snapshot_label_preserves_semantic_guards(tmp_path, monkeypatch, change):
+    """A real approved 000972 baseline; derived labels are isolated guard inputs."""
+    from contextlib import nullcontext
+    import base64
+    import copy
+    from pathlib import Path
+    from scripts import st_metadata_refresh as metadata
+
+    fixture = Path(__file__).parent / "fixtures/st_snapshot_label_replay_20261103"
+    container = json.loads((fixture / "000972.json").read_bytes())
+    assert container["schema"] == "exact_native_metadata_bytes_v1"
+    raw = base64.b64decode(container["raw_utf8_base64"], validate=True)
+    provenance = json.loads((fixture / "provenance.json").read_bytes())
+    assert hashlib.sha256(raw).hexdigest() == provenance["sha256"]
+    old = json.loads(raw)
+    assert old["symbol"] == "000972" and old["current_st_snapshot_name"] is None
+    assert old["current_st_history_resolved"] is True
+    if change == "updated_st_label":
+        old["current_st_snapshot_name"] = "*ST中基"
+    if change == "unresolved_history":
+        old["current_st_history_resolved"] = False
+    new = copy.deepcopy(old)
+    new["current_st_snapshot_name"] = "ST中基" if change == "updated_st_label" else "*ST中基"
+    if change == "unknown_field":
+        new["board"] = "unapproved board change"
+    if change == "changed_interval":
+        new["st_intervals"][-1]["start"] = "2026-11-04"
+    semantic_match = metadata._history_equal(old, new, "2026-11-04")
+    assert semantic_match is (change != "changed_interval")
+    cache = tmp_path / ".microcap_index_cache"
+    (cache / "backup").mkdir(parents=True)
+    (cache / "security_meta").mkdir()
+    oldraw, newraw = json.dumps(old).encode(), json.dumps(new).encode()
+    (cache / "backup/000972.json").write_bytes(oldraw)
+    current = cache / "security_meta/000972.json"
+    current.write_bytes(newraw + (b" " if change == "tampered_bytes" else b""))
+    marker = dict(status="complete", target="2026-11-04", work=".microcap_index_cache",
+                  old_hashes={"000972": metadata._sha(oldraw)},
+                  new_hashes={"000972": metadata._sha(newraw)})
+    (tmp_path / metadata.MARKER).write_text(json.dumps(marker))
+    paths = {k: tmp_path / (k + ".csv") for k in
+             ("proxy_meta", "proxy_members", "proxy_turnover", "proxy_effective_members")}
+    for path in paths.values():
+        path.write_text("date\n2026-11-03\n")
+    paths["proxy_meta"].write_text(json.dumps({"return_basis_consumption": {
+        "revision": "stock_return_consumption_v1", "full_rebuild_anchor": "2026-11-03"}}))
+    panel = tmp_path / "panel.csv"
+    panel.write_text("date\n2026-11-03\n2026-11-04\n")
+    args = SimpleNamespace(index_csv=tmp_path / "index.csv", costed_nav_csv=tmp_path / "nav.csv",
+                           allow_full_rebuild=False)
+    args.index_csv.write_text("date\n2026-11-03\n")
+    args.costed_nav_csv.write_text("date\n2026-11-03\n")
+
+    class ReachedNativeBuilder(BaseException):
+        pass
+
+    def native_boundary(staged_args, dates):
+        assert staged_args.allow_full_rebuild is False
+        assert list(dates) == [pd.Timestamp("2026-11-03")]
+        raise ReachedNativeBuilder()
+
+    base = SimpleNamespace(proxy_meta_matches_execution_model=lambda meta: False,
+                           build_biweekly_rebalance_dates=lambda dates: pd.DatetimeIndex([]),
+                           build_local_proxy_bundle=native_boundary)
+    monkeypatch.setattr(metadata, "frozen_notice_sources", lambda root: nullcontext())
+    kwargs = dict(root=tmp_path, base=base, args=args, paths=paths, panel_path=panel, target="2026-11-04")
+    if change in ("new_st_label", "updated_st_label"):
+        with pytest.raises(ReachedNativeBuilder):
+            metadata.try_cached_history_rebuild(**kwargs)
+    elif change == "tampered_bytes":
+        with pytest.raises(ValueError, match="Changed cached replay metadata"):
+            metadata.try_cached_history_rebuild(**kwargs)
+    else:
+        assert metadata.try_cached_history_rebuild(**kwargs) is False
+        assert not (cache / "scoped_proxy_rebuild").exists()
+    assert args.allow_full_rebuild is False
+
+
 @pytest.mark.parametrize("cached_replay", [False, True])
 @pytest.mark.parametrize("explicit_full_rebuild", [False, True])
 def test_metadata_refresh_never_grants_implicit_full_rebuild(
