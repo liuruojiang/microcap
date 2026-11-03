@@ -90,6 +90,59 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _verify_share_source_json_protocol(root: Path, symbol: str, proof: dict) -> None:
+    """Check native CNInfo JSON types in the already-verified share source chain.
+
+    This adds transport validation after the original parser/merge/chain checks;
+    it does not change share history, provider routing, or the economic sources.
+    """
+    directory = (_extended(root) / ".microcap_index_cache/share_sources").resolve()
+    source_files = dict(proof["source_files"])
+    readbacks: dict[Path, bytes] = {}
+
+    def bound(relative: str, expected: str | None = None) -> bytes:
+        path = (directory / _repo_path(relative)).resolve()
+        if not path.is_relative_to(directory):
+            raise ValueError("share source JSON protocol: source path escapes root")
+        digest = source_files.get(path.relative_to(directory).as_posix())
+        raw = path.read_bytes()
+        if (digest is None or (expected is not None and digest != expected)
+                or hashlib.sha256(raw).hexdigest() != digest
+                or (path in readbacks and readbacks[path] != raw)):
+            raise ValueError("share source JSON protocol: original verified closure changed")
+        readbacks[path] = raw
+        return raw
+
+    relative, expected = f"{symbol}.json", None
+    seen: set[str] = set()
+    for _ in range(10001):
+        raw = bound(relative, expected)
+        identity = hashlib.sha256(raw).hexdigest()
+        if identity in seen:
+            raise ValueError("share source JSON protocol: source chain cycle")
+        seen.add(identity)
+        state = json.loads(raw)
+        if state.get("schema_version") == 1 and state.get("kind") != "approved_baseline":
+            payload = json.loads(bound(state["response_path"], state["response_sha256"]))
+            if not isinstance(payload, dict):
+                raise ValueError("share source JSON protocol: native response is not an object")
+            rows = payload.get("records")
+            if (any(type(payload.get(key)) is not int for key in ("resultcode", "total", "count"))
+                    or payload["resultcode"] != 200 or not isinstance(rows, list)
+                    or payload["total"] != len(rows) or payload["count"] != len(rows)):
+                raise ValueError("share source JSON protocol: result/count fields must be exact JSON integers")
+            if any(not isinstance(row, dict) or type(row.get("F003N")) is bool for row in rows):
+                raise ValueError("share source JSON protocol: total shares cannot be a JSON boolean")
+        previous = state.get("previous_state")
+        if not previous:
+            break
+        relative, expected = previous["path"], previous["sha256"]
+    else:
+        raise ValueError("share source JSON protocol: source chain depth exceeded")
+    if any(path.read_bytes() != raw for path, raw in readbacks.items()):
+        raise ValueError("share source JSON protocol: source changed during validation")
+
+
 def _iter_bundle_files(root: Path) -> list[str]:
     root = _extended(root)
     found: set[str] = set()
@@ -115,6 +168,7 @@ def _iter_bundle_files(root: Path) -> list[str]:
         manifest = json.loads(path.read_bytes())
         from scripts.share_change_source import verify_share_cache
         proof = verify_share_cache(root=root, symbol=path.stem, as_of=manifest["query_end"])
+        _verify_share_source_json_protocol(root, path.stem, proof)
         for relative, digest in proof["source_files"].items():
             response = (share_root / relative).resolve()
             if not response.is_relative_to(share_root.resolve()) or _sha256(response) != digest:
@@ -914,7 +968,8 @@ def validate_state(
             _verify_return_basis_transport_memoized(root, price_anchor, _transport_universe_symbols(root))
             from scripts.share_change_source import verify_share_cache
             for symbol in _transport_member_symbols(root, require_effective=True):
-                verify_share_cache(root=root, symbol=symbol, as_of=price_anchor)
+                proof = verify_share_cache(root=root, symbol=symbol, as_of=price_anchor)
+                _verify_share_source_json_protocol(root, symbol, proof)
     except (OSError, ValueError, KeyError, RuntimeError) as exc:
         errors.append(f"stock return basis transport: {exc}")
     if not current_symbols:

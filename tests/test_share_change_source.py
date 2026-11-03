@@ -10,6 +10,123 @@ from scripts import share_change_source as source
 FIXTURE = Path(__file__).parent / "fixtures/share_change_real"
 
 
+def _protocol_empty_tail(root, monkeypatch, field, value):
+    """Mutate only an isolated native source chain, including its authentic hashes."""
+    cache, path, _ = install_fixture(root)
+    empty_provider(monkeypatch, [])
+    source.refresh_share_change(root=root, symbol='000422', cache_path=cache,
+                               as_of='2026-10-30', allow_network=True)
+    current=json.loads(path.read_bytes())
+    response=path.parent/current['response_path']
+    payload=json.loads(response.read_bytes());payload[field]=value
+    response.write_bytes(json.dumps(payload).encode())
+    current['response_sha256']=hashlib.sha256(response.read_bytes()).hexdigest()
+    path.write_bytes(json.dumps(current).encode())
+    return cache,path,current
+
+
+@pytest.mark.parametrize('field',['total','count'])
+def test_delivery_rejects_boolean_empty_native_counts_after_original_chain_validation(tmp_path,monkeypatch,field):
+    from scripts import realtime_state_bundle as state
+    _protocol_empty_tail(tmp_path,monkeypatch,field,False)
+    # Retain the original verifier; the regression is that False equals integer zero.
+    assert source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-30')['source_files']
+    with pytest.raises(ValueError,match='share source JSON protocol'):
+        state._iter_bundle_files(tmp_path)
+
+
+def test_delivery_rejects_boolean_native_share_quantity_after_original_chain_validation(tmp_path):
+    from scripts import realtime_state_bundle as state
+    cache,path,current=install_fixture(tmp_path)
+    response=path.parent/current['response_path'];payload=json.loads(response.read_bytes())
+    payload['records'][0]['F003N']=True
+    response.write_bytes(json.dumps(payload).encode())
+    parsed=source.parse_source(response.read_bytes(),symbol='000422',start=current['params']['sdate'],end=current['query_end'])
+    cache.write_bytes(parsed.to_csv(index=False).encode())
+    current.update(response_sha256=hashlib.sha256(response.read_bytes()).hexdigest(),candidate_sha256=hashlib.sha256(cache.read_bytes()).hexdigest())
+    path.write_bytes(json.dumps(current).encode())
+    assert source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-29')['source_files']
+    with pytest.raises(ValueError,match='share source JSON protocol'):
+        state._iter_bundle_files(tmp_path)
+
+
+@pytest.mark.parametrize('field,value',[('resultcode',200.0),('total',0.0),('count',0.0)])
+def test_delivery_requires_json_integer_counts_without_native_float_coercion(tmp_path,monkeypatch,field,value):
+    from scripts import realtime_state_bundle as state
+    _protocol_empty_tail(tmp_path,monkeypatch,field,value)
+    assert source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-30')['source_files']
+    with pytest.raises(ValueError,match='share source JSON protocol'):
+        state._iter_bundle_files(tmp_path)
+
+
+def test_delivery_keeps_real_native_frame_and_integer_empty_query_compatible(tmp_path,monkeypatch):
+    from scripts import realtime_state_bundle as state
+    cache,path,current=install_fixture(tmp_path)
+    assert state._iter_bundle_files(tmp_path)
+    empty_provider(monkeypatch,[])
+    source.refresh_share_change(root=tmp_path,symbol='000422',cache_path=cache,as_of='2026-10-30',allow_network=True)
+    assert state._iter_bundle_files(tmp_path)
+
+
+def test_delivery_does_not_expand_unknown_json_key_or_numeric_string_contract(tmp_path):
+    from scripts import realtime_state_bundle as state
+    cache,path,current=install_fixture(tmp_path)
+    response=path.parent/current['response_path'];payload=json.loads(response.read_bytes())
+    payload['provider_extension']={'unreviewed_server_detail':'retained, not a source of policy'}
+    payload['records'][0]['F003N']=str(payload['records'][0]['F003N'])
+    response.write_bytes(json.dumps(payload).encode())
+    current['response_sha256']=hashlib.sha256(response.read_bytes()).hexdigest()
+    path.write_bytes(json.dumps(current).encode())
+    assert source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-29')['source_files']
+    assert state._iter_bundle_files(tmp_path)
+
+
+def test_delivery_checks_old_native_response_beneath_later_valid_chain(tmp_path,monkeypatch):
+    from scripts import realtime_state_bundle as state
+    cache,path,current=_protocol_empty_tail(tmp_path,monkeypatch,'count',False)
+    empty_provider(monkeypatch,[])
+    source.refresh_share_change(root=tmp_path,symbol='000422',cache_path=cache,as_of='2026-11-02',allow_network=True)
+    latest=json.loads(path.read_bytes())
+    assert json.loads((path.parent/latest['response_path']).read_bytes())['count']==0
+    proof=source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-11-02')
+    with pytest.raises(ValueError,match='share source JSON protocol'):
+        state._verify_share_source_json_protocol(tmp_path,'000422',proof)
+
+
+def test_delivery_guard_rejects_raw_changed_after_original_native_verification(tmp_path):
+    from scripts import realtime_state_bundle as state
+    _,path,current=install_fixture(tmp_path)
+    proof=source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-29')
+    response=path.parent/current['response_path'];response.write_bytes(response.read_bytes()+b'\n')
+    with pytest.raises(ValueError,match='original verified closure changed'):
+        state._verify_share_source_json_protocol(tmp_path,'000422',proof)
+
+
+def test_delivery_guard_requires_response_present_in_original_verified_closure(tmp_path):
+    from scripts import realtime_state_bundle as state
+    _,_,current=install_fixture(tmp_path)
+    proof=source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-29')
+    proof['source_files'].pop(current['response_path'])
+    with pytest.raises(ValueError,match='original verified closure changed'):
+        state._verify_share_source_json_protocol(tmp_path,'000422',proof)
+
+
+def test_validate_state_keeps_native_protocol_failure_visible(tmp_path,monkeypatch):
+    from scripts import realtime_state_bundle as state
+    from scripts.stock_return_basis import RETURN_BASIS_REVISION
+    _protocol_empty_tail(tmp_path,monkeypatch,'total',False)
+    outputs=tmp_path/'outputs';outputs.mkdir()
+    (outputs/'wind_microcap_top_100_biweekly_thursday_16y_cached.csv').write_text('date,close\n2026-10-30,100\n')
+    (outputs/'microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json').write_text(json.dumps({'core_params':{'stock_return_basis_revision':RETURN_BASIS_REVISION}}))
+    # This partial fixture tests the original share validation branch, not a
+    # successful whole state or replacement economic-validation certificate.
+    monkeypatch.setattr(state,'_verify_return_basis_transport_memoized',lambda *args:None)
+    monkeypatch.setattr(state,'_transport_member_symbols',lambda *args,**kwargs:{'000422'})
+    result=state.validate_state(tmp_path,require_current_refresh_proof=False)
+    assert result['ok'] is False
+    assert any('stock return basis transport: share source JSON protocol' in error for error in result['errors'])
+
+
 def real_history():
     return source.parse_source((FIXTURE / "response.json").read_bytes(), symbol="000422",
                                start="2025-01-01", end="2026-10-29")
