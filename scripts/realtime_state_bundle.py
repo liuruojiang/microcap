@@ -803,6 +803,7 @@ def validate_state(
         all(value == _parse_date(str(target_text or "")) for name, value in anchor_dates.items()
             if name != "proxy_turnover")
     )
+    stale_age_errors: list[str] = []
     if not errors:
         for name in ("proxy_index", "costed_nav", "panel_shadow"):
             value = anchor_dates.get(name)
@@ -810,10 +811,10 @@ def validate_state(
                 continue
             age_days = (today_value - value).days
             if max_anchor_age_days is not None and age_days > max_anchor_age_days and not independently_current:
-                errors.append(
-                    f"{name} is stale: last_date={value.isoformat()} age_days={age_days} "
-                    f"max_anchor_age_days={max_anchor_age_days}"
-                )
+                message = (f"{name} is stale: last_date={value.isoformat()} age_days={age_days} "
+                           f"max_anchor_age_days={max_anchor_age_days}")
+                stale_age_errors.append(message)
+                errors.append(message)
             elif age_days < 0:
                 errors.append(f"{name} has a future date: last_date={value.isoformat()}")
 
@@ -918,6 +919,19 @@ def validate_state(
             "the latest proxy-members rebalance"
         )
 
+    close_evidence = isinstance(evidence, dict) and (
+        evidence.get("member_name_audit_mode") == "close_state_latest_completed_session"
+        or evidence.get("preflight_publication_mode") == "close-confirmed-check"
+        or "member_name_close_quotes" in evidence or "close_state_input_identity" in evidence)
+    if require_current_refresh_proof and close_evidence:
+        try:
+            _validate_close_refresh_proof(refresh_proof, anchor_dates, current_symbols, files, price_cache_files, today_value,
+                                          allow_dated_archive=close_confirmed_session is not None)
+            if refresh_proof.get("verified_on") == today_value.isoformat():
+                errors = [message for message in errors if message not in stale_age_errors]
+        except (ValueError, TypeError, KeyError, RuntimeError) as exc:
+            errors.append(f"invalid explicit close-state refresh proof: {exc}")
+
     return {
         "ok": not errors,
         "scope": "base_state_only",
@@ -951,20 +965,38 @@ def _preflight_now():
     return datetime.now(ZoneInfo("Asia/Shanghai"))
 
 
-def _preflight_request_guard(publication_mode):
+def _preflight_request_guard(publication_mode, expected_date=None):
     if publication_mode not in {"intraday", "close-confirmed-check"}:
         raise ValueError("Unknown preflight publication mode")
+    if publication_mode == "close-confirmed-check" and type(expected_date) is not date:
+        raise ValueError("close-confirmed-check requires an explicit expected_date")
     started = _preflight_now()
     deadline = started.replace(hour=15, minute=0, second=0, microsecond=0)
     def before_request():
         current = _preflight_now()
         if publication_mode == "intraday" and current >= deadline:
             raise RuntimeError("Preflight intraday request cutoff: no new network request at/after 15:00 Beijing")
-        if publication_mode == "close-confirmed-check" and current.hour < 15:
-            raise RuntimeError("close-confirmed-check requires actual time at/after 15:00 Beijing")
+        if publication_mode == "close-confirmed-check":
+            from scripts.exchange_calendar import latest_completed_session
+            for _ in range(2):
+                if current.tzinfo is None:
+                    raise RuntimeError("close-confirmed-check clock lacks timezone")
+                completed = latest_completed_session(now=current)
+                checked = _preflight_now()
+                if checked.tzinfo is None:
+                    raise RuntimeError("close-confirmed-check clock lacks timezone")
+                local_before = current.astimezone(timezone(timedelta(hours=8)))
+                local_after = checked.astimezone(timezone(timedelta(hours=8)))
+                if (local_before.date(), local_before.hour < 15) == (local_after.date(), local_after.hour < 15):
+                    if expected_date != completed:
+                        raise RuntimeError(f"close-confirmed-check expected {expected_date} differs from latest completed session {completed}")
+                    return
+                current = checked
+            raise RuntimeError("close-confirmed-check clock crossed a session boundary during calendar validation")
     # The existing calendar runs in a child. Carry the same absolute deadline
     # so dependency imports cannot move its actual HTTP call past the cutoff.
     before_request.intraday_deadline = deadline if publication_mode == "intraday" else None
+    before_request.close_confirmed_session = expected_date if publication_mode == "close-confirmed-check" else None
     return before_request
 
 
@@ -972,7 +1004,7 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None,
                     expected_date: date | None = None, *,
                     publication_mode: str = "intraday") -> dict[str, object]:
     """Independently recheck existing state without refreshing/rebuilding its NAV."""
-    before_request = _preflight_request_guard(publication_mode)
+    before_request = _preflight_request_guard(publication_mode, expected_date=expected_date)
     before_request()
     from scripts.exchange_calendar import preflight_request_window
     with preflight_request_window(before_request):
@@ -985,6 +1017,7 @@ def _preflight_state_with_request_guard(root, max_anchor_age_days, expected_date
     root = root.resolve()
     before = validate_state(root, max_anchor_age_days=None if expected_date else max_anchor_age_days,
                             require_current_refresh_proof=False)
+    before_request()
     anchor = _parse_date(str(before.get("anchor_dates", {}).get("proxy_index", "")))
     if anchor is not None:
         before.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
@@ -1003,12 +1036,18 @@ def _preflight_state_with_request_guard(root, max_anchor_age_days, expected_date
     if expected_date is not None and target != expected_date:
         raise RuntimeError(f"Independent history {target} differs from expected calendar day {expected_date}")
     before_request()
-    evidence = verify_live_member_names(base, before["current_member_symbols"], before_request=before_request)
+    if publication_mode == "close-confirmed-check":
+        evidence = verify_close_member_names(base, before["current_member_symbols"], target, before_request=before_request)
+    else:
+        evidence = verify_live_member_names(base, before["current_member_symbols"], before_request=before_request)
     evidence["independent_completed_day"] = target.isoformat()
     evidence["independent_history_rows"] = len(history)
     evidence.update(history.attrs)
     if expected_date is not None:
         evidence["expected_calendar_day"] = expected_date.isoformat()
+    if publication_mode == "close-confirmed-check":
+        evidence["preflight_publication_mode"] = publication_mode
+        evidence["close_state_input_identity"] = _close_state_input_identity(before["files"], before["price_cache_files"])
     if publication_mode == "intraday":
         from scripts.realtime_member_notice_audit import audit_current_member_notices
         before_request()
@@ -1041,6 +1080,149 @@ def verify_live_member_names(base, symbols: list[str], *, before_request=None) -
     return {"member_name_quote_day": today, "member_name_count": len(valid),
             "member_name_source": quotes.attrs.get("quote_source", "unknown"),
             "current_st_name_intersection": 0}
+
+
+def verify_close_member_names(base, symbols: list[str], target: date, *, before_request) -> dict[str, object]:
+    """Audit real completed-session quotes without intraday-age substitution."""
+    import pandas as pd
+    from concurrent.futures import ThreadPoolExecutor
+    expected = set(symbols)
+    if len(symbols) != TOP_N or len(expected) != TOP_N:
+        raise RuntimeError("close member audit requires 100 unique original members")
+    accepted = {}
+    def consume(frame):
+        before_request()
+        if frame is None or frame.empty:
+            return
+        if frame["code"].astype(str).duplicated().any():
+            raise RuntimeError("duplicate close member quote codes")
+        now = _preflight_now()
+        close = datetime.fromisoformat(target.isoformat() + "T15:00:00+08:00")
+        for row in frame.to_dict("records"):
+            code = str(row.get("code", ""))
+            if code not in expected or code in accepted:
+                continue
+            quoted = base.parse_realtime_source_timestamp(row.get("quoted_at"))
+            fetched = base.parse_realtime_source_timestamp(row.get("fetched_at"))
+            try:
+                if type(row.get("rt_price")) not in (int, float):
+                    continue
+                price = float(row.get("rt_price"))
+            except (ValueError, TypeError):
+                continue
+            if (not math.isfinite(price) or price <= 0 or row.get("price_origin") != "provider_latest"
+                    or not str(row.get("name", "")).strip() or not str(row.get("quote_source", "")).strip()
+                    or str(row.get("trade_date", "")) != target.isoformat()
+                    or quoted is None or fetched is None or quoted.date() != target
+                    or not close <= quoted <= fetched <= now):
+                continue
+            accepted[code] = {"code": code, "name": str(row["name"]), "rt_price": price,
+                              "trade_date": target.isoformat(), "price_origin": "provider_latest",
+                              "quote_source": str(row["quote_source"]),
+                              "quoted_at": quoted.isoformat(), "fetched_at": fetched.isoformat()}
+    before_request()
+    consume(base.fetch_eastmoney_batch_realtime_quotes(symbols, before_request=before_request))
+    missing = sorted(expected - set(accepted))
+    if missing:
+        before_request()
+        consume(base.fetch_tencent_realtime_quotes(missing, before_request=before_request))
+    missing = sorted(expected - set(accepted))
+    if missing:
+        def fetch_one(code):
+            before_request()
+            row = base.fetch_eastmoney_stock_spot(code, before_request=before_request)
+            before_request()
+            return row
+        with ThreadPoolExecutor(max_workers=min(8, len(missing))) as pool:
+            for row in pool.map(fetch_one, missing):
+                if row is not None:
+                    consume(pd.DataFrame([row]))
+    before_request()
+    if set(accepted) != expected:
+        raise RuntimeError(f"close member-name audit requires {TOP_N}/{TOP_N} genuine {target} closing quotes; got {len(accepted)}")
+    valid = pd.DataFrame([accepted[code] for code in symbols])
+    base.assert_no_st_members(valid, "independent completed-session member names")
+    return {"member_name_quote_day": target.isoformat(), "member_name_count": len(valid),
+            "member_name_source": "+".join(sorted(set(valid["quote_source"].astype(str)))),
+            "current_st_name_intersection": 0, "member_name_audit_mode": "close_state_latest_completed_session",
+            "member_name_quoted_at_min": min(valid["quoted_at"]), "member_name_quoted_at_max": max(valid["quoted_at"]),
+            "member_name_fetched_at_min": min(valid["fetched_at"]), "member_name_fetched_at_max": max(valid["fetched_at"]),
+            "member_name_close_quotes": valid.to_dict("records")}
+
+
+def _close_state_input_identity(files, price_cache_files):
+    """Bind the original native state/hash inventory without another format."""
+    import re
+    identity = {}
+    for item in [*files, *price_cache_files]:
+        path, digest = item.get("path"), item.get("sha256")
+        if not isinstance(path, str) or not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError("close-state proof lacks complete native file/hash fields")
+        _repo_path(path)
+        if path in identity and identity[path] != digest:
+            raise ValueError("conflicting close-state native file hashes")
+        identity[path] = digest
+    if not identity:
+        raise ValueError("close-state native input identity is empty")
+    payload = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return {"file_count": len(identity), "sha256": hashlib.sha256(payload).hexdigest()}
+
+
+def _validate_close_refresh_proof(proof, anchors, symbols, files, price_cache_files, today, *, allow_dated_archive=False):
+    """Allow natural holiday age only for today's fully rechecked close proof."""
+    import pandas as pd
+    import microcap_top100_mom16_biweekly_live_v2_0 as v2_0
+    from scripts.exchange_calendar import latest_completed_session
+    evidence = proof["preflight_evidence"]
+    target = date.fromisoformat(proof["target_end_date"])
+    now = _preflight_now()
+    generated = datetime.fromisoformat(proof["verified_at_utc"])
+    verified_day = date.fromisoformat(proof["verified_on"])
+    if (generated.tzinfo is None or now.tzinfo is None or generated > now
+            or generated.astimezone(timezone(timedelta(hours=8))).date() != verified_day
+            or not target <= verified_day <= today or (not allow_dated_archive and verified_day != today)
+            or now.astimezone(timezone(timedelta(hours=8))).date() != today
+            or proof.get("version") != REFRESH_PROOF_VERSION or proof.get("source") != REFRESH_PROOF_SOURCE
+            or evidence.get("preflight_publication_mode") != "close-confirmed-check"
+            or evidence.get("member_name_audit_mode") != "close_state_latest_completed_session"
+            or evidence.get("expected_calendar_day") != target.isoformat()
+            or evidence.get("independent_completed_day") != target.isoformat()
+            or evidence.get("member_name_quote_day") != target.isoformat()
+            or type(evidence.get("member_name_count")) is not int or evidence.get("member_name_count") != TOP_N
+            or type(evidence.get("current_st_name_intersection")) is not int or evidence.get("current_st_name_intersection") != 0
+            or latest_completed_session(now=now) != target
+            or any(anchors.get(name) != target for name in ("proxy_index", "costed_nav", "panel_shadow"))
+            or evidence.get("close_state_input_identity") != _close_state_input_identity(files, price_cache_files)):
+        raise ValueError("close-state proof identity/session/generation clock differs")
+    rows = evidence.get("member_name_close_quotes")
+    keys = {"code", "name", "rt_price", "trade_date", "price_origin", "quote_source", "quoted_at", "fetched_at"}
+    if (not isinstance(rows, list) or len(rows) != TOP_N or len(symbols) != TOP_N
+            or len(set(symbols)) != TOP_N or any(not isinstance(row, dict) or set(row) != keys for row in rows)
+            or len({row["code"] for row in rows}) != TOP_N or {row["code"] for row in rows} != set(symbols)):
+        raise ValueError("close-state proof needs 100 unique exact member quote rows")
+    close = datetime.fromisoformat(target.isoformat() + "T15:00:00+08:00")
+    quoted_values, fetched_values = [], []
+    for row in rows:
+        quoted = v2_0.base_mod.parse_realtime_source_timestamp(row["quoted_at"])
+        fetched = v2_0.base_mod.parse_realtime_source_timestamp(row["fetched_at"])
+        price = float(row["rt_price"])
+        if (type(row["rt_price"]) not in (int, float) or not math.isfinite(price) or price <= 0
+                or row["price_origin"] != "provider_latest" or not isinstance(row["name"], str) or not row["name"].strip()
+                or not isinstance(row["quote_source"], str) or not row["quote_source"].strip()
+                or row["trade_date"] != target.isoformat() or quoted is None or fetched is None or quoted.date() != target
+                or not close <= quoted <= fetched <= generated <= now):
+            raise ValueError("invalid close-state member quote price/origin/date/clock")
+        quoted_values.append(quoted.isoformat()); fetched_values.append(fetched.isoformat())
+    v2_0.base_mod.assert_no_st_members(pd.DataFrame(rows), "persisted completed-session member names")
+    expected = {"member_name_quoted_at_min": min(quoted_values), "member_name_quoted_at_max": max(quoted_values),
+                "member_name_fetched_at_min": min(fetched_values), "member_name_fetched_at_max": max(fetched_values),
+                "member_name_source": "+".join(sorted({row["quote_source"] for row in rows}))}
+    if any(evidence.get(key) != value for key, value in expected.items()):
+        raise ValueError("close-state member quote aggregate conflicts with original rows")
+    _preflight_request_guard("close-confirmed-check", expected_date=target)()
+    final_now = _preflight_now()
+    if final_now.tzinfo is None or generated > final_now:
+        raise ValueError("close-state proof generation exceeds final real validation clock")
 
 
 def certify_existing_state(root: Path, before: dict[str, object], target: date,
