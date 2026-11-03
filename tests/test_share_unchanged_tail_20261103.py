@@ -134,7 +134,8 @@ def test_rebound_receipt_constraints(evidence, mutate):
         verify(evidence)
 
 
-def test_original_legacy_and_new_mixed_chain_native_roundtrip(evidence, tmp_path):
+@pytest.mark.parametrize('boolean_native_ancestor', [False, True])
+def test_original_legacy_and_new_mixed_chain_native_roundtrip(evidence, tmp_path, boolean_native_ancestor):
     data, manifest, bodies, candidate, _ = evidence
     tmp_path = native._extended(tmp_path)
     directory = tmp_path / ".microcap_index_cache/share_sources"
@@ -148,6 +149,15 @@ def test_original_legacy_and_new_mixed_chain_native_roundtrip(evidence, tmp_path
     csv.parent.mkdir(parents=True)
     csv.write_bytes(candidate)
     assert native.verify_share_cache(root=tmp_path, symbol="002144", as_of="2026-11-02")
+    if boolean_native_ancestor:
+        old = json.loads((directory / "002144.json").read_bytes())
+        path = directory / old['response_path']
+        payload = json.loads(path.read_bytes())
+        assert payload['count'] == 0 and payload['records'] == []
+        payload['count'] = False
+        path.write_bytes(json.dumps(payload).encode())
+        old['response_sha256'] = source.sha(path.read_bytes())
+        (directory / "002144.json").write_bytes(json.dumps(old).encode())
     old_state = (directory / "002144.json").read_bytes()
     previous = "states/" + source.sha(old_state) + ".json"
     (directory / previous).write_bytes(old_state)
@@ -168,6 +178,12 @@ def test_original_legacy_and_new_mixed_chain_native_roundtrip(evidence, tmp_path
     assert csv.read_bytes() == candidate
     assert len(proof["source_files"]) >= len(bodies) + 13
     assert (directory / previous).read_bytes() == old_state
+    from scripts import realtime_state_bundle as delivery
+    if boolean_native_ancestor:
+        with pytest.raises(ValueError, match='share source JSON protocol'):
+            delivery._verify_share_source_json_protocol(tmp_path, '002144', proof)
+    else:
+        delivery._verify_share_source_json_protocol(tmp_path, '002144', proof)
     state["query_start"] = "2026-11-04"
     (directory / "002144.json").write_text(json.dumps(state), encoding="utf8")
     with pytest.raises(ValueError, match="gap"):
