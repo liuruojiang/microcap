@@ -121,6 +121,7 @@ def _iter_bundle_files(root: Path) -> list[str]:
                 raise ValueError(f"Invalid share source closure for {path.stem}")
             found.add(response.relative_to(root.resolve()).as_posix())
     found.update(_st_source_transport_files(root))
+    found.update(_current_notice_audit_transport_files(root))
     if (root / PROXY_EFFECTIVE_MEMBERS_REL).is_file():
         found.add(PROXY_EFFECTIVE_MEMBERS_REL)
     for rel in _iter_current_member_cache_files(root):
@@ -153,8 +154,28 @@ def _st_source_transport_files(root: Path) -> list[str]:
     if not closure or not archive_hashes.issubset(set(closure.values())):
         raise ValueError("ST metadata archive has no matching portable source closure")
     files = set(closure)
-    from scripts.st_notice_refresh import freshness_source_files
-    files.update(freshness_source_files(root))
+    from scripts.st_notice_refresh import FRESHNESS, freshness_source_files
+    freshness_files = freshness_source_files(root)
+    files.update(freshness_files)
+    # Keep the original complete native validator, then enforce the exact
+    # integer pagination protocol only on explicitly declared daily pages.
+    from scripts.st_history_scope import read_bound, resolve_archive_reference
+    reference = resolve_archive_reference(root)
+    archive = json.loads(read_bound(root, dict(path=reference[0], sha256=reference[1])))
+    if archive.get("schema_version") == 3:
+        from scripts.realtime_member_notice_audit import strict_native_pagination
+        declared = {(item["manifest"]["path"], item["manifest"]["sha256"], item["date"])
+                    for item in archive.get("daily_increments", [])}
+        freshness_path = root/FRESHNESS
+        if freshness_path.is_file():
+            raw = freshness_path.read_bytes()
+            if hashlib.sha256(raw).hexdigest() != freshness_files.get(FRESHNESS):
+                raise ValueError("ST freshness changed before strict native protocol check")
+            freshness = json.loads(raw)
+            declared.update((item["manifest_path"], freshness["source_files"][item["manifest_path"]], item["date"])
+                            for item in freshness["queried_days"])
+        for path, digest, day in sorted(declared):
+            strict_native_pagination(root, dict(path=path, sha256=digest), day)
     if pointer.is_file():
         files.add(pointer.relative_to(root).as_posix())
     else:
@@ -193,7 +214,8 @@ def _build_refresh_proof(target_end_date: date) -> dict[str, object]:
     }
 
 
-def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, object] | None = None) -> dict[str, object]:
+def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, object] | None = None,
+                         *, before_commit=None) -> dict[str, object]:
     proof = _build_refresh_proof(target_end_date)
     if evidence is not None:
         proof["preflight_evidence"] = evidence
@@ -211,6 +233,8 @@ def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, 
         ) as handle:
             json.dump(proof, handle, ensure_ascii=False, indent=2)
             temp_path = Path(handle.name)
+        if before_commit is not None:
+            before_commit()
         temp_path.replace(path)
     finally:
         if temp_path is not None:
@@ -319,6 +343,48 @@ def _current_member_symbols(root: Path) -> list[str]:
     if not symbols:
         symbols.update(_latest_proxy_member_symbols(root))
     return sorted(symbols)
+
+
+def current_notice_member_symbols(root: Path) -> list[str]:
+    """Reuse the native actual-position and current-target transport union."""
+    return _transport_member_symbols(root, require_effective=True)
+
+
+def verify_intraday_notice_refresh_proof(root: Path, proof: dict, *, signal_day=None,
+                                         previous_session=None, before_request=None) -> dict:
+    from scripts.realtime_member_notice_audit import verify_current_member_notice_audit
+    reference = proof.get("preflight_evidence", {}).get("current_member_notice_audit")
+    if not isinstance(reference, dict):
+        raise RuntimeError("Realtime current-member notice audit is missing from preflight proof")
+    signal_day = signal_day or _preflight_now().date()
+    previous_session = previous_session or _parse_date(str(proof.get("target_end_date", "")))
+    guard = before_request or _preflight_request_guard("intraday")
+    guard()
+    try:
+        verified = verify_current_member_notice_audit(
+            root, reference, current_notice_member_symbols(root), signal_day, previous_session,
+            before_request=guard)
+    except Exception as error:
+        raise RuntimeError("Realtime current-member notice audit verification failed: " + str(error)) from error
+    guard()
+    return {
+        "notice_audit_required": True,
+        "notice_audit_id": verified["audit_id"],
+        "notice_audit_policy_revision": verified["policy_revision"],
+        "notice_observation_start": verified["observation_start"],
+        "notice_observation_end": verified["observation_end"],
+        "notice_audit_manifest_path": verified["manifest_path"],
+        "notice_audit_manifest_sha256": verified["manifest_sha256"],
+    }
+
+
+def _current_notice_audit_transport_files(root: Path) -> list[str]:
+    proof = _load_refresh_proof(root)
+    reference = (proof or {}).get("preflight_evidence", {}).get("current_member_notice_audit")
+    if reference is None:
+        return []
+    from scripts.realtime_member_notice_audit import current_member_notice_audit_files
+    return sorted(current_member_notice_audit_files(root, reference))
 
 
 def _current_v2_static_member_paths(root: Path) -> tuple[Path, Path]:
@@ -880,9 +946,42 @@ def enforce_anchor_target(report: dict[str, object], target_end_date: date) -> d
     return report
 
 
+def _preflight_now():
+    from zoneinfo import ZoneInfo
+    return datetime.now(ZoneInfo("Asia/Shanghai"))
+
+
+def _preflight_request_guard(publication_mode):
+    if publication_mode not in {"intraday", "close-confirmed-check"}:
+        raise ValueError("Unknown preflight publication mode")
+    started = _preflight_now()
+    deadline = started.replace(hour=15, minute=0, second=0, microsecond=0)
+    def before_request():
+        current = _preflight_now()
+        if publication_mode == "intraday" and current >= deadline:
+            raise RuntimeError("Preflight intraday request cutoff: no new network request at/after 15:00 Beijing")
+        if publication_mode == "close-confirmed-check" and current.hour < 15:
+            raise RuntimeError("close-confirmed-check requires actual time at/after 15:00 Beijing")
+    # The existing calendar runs in a child. Carry the same absolute deadline
+    # so dependency imports cannot move its actual HTTP call past the cutoff.
+    before_request.intraday_deadline = deadline if publication_mode == "intraday" else None
+    return before_request
+
+
 def preflight_state(root: Path, max_anchor_age_days: int | None = None,
-                    expected_date: date | None = None) -> dict[str, object]:
+                    expected_date: date | None = None, *,
+                    publication_mode: str = "intraday") -> dict[str, object]:
     """Independently recheck existing state without refreshing/rebuilding its NAV."""
+    before_request = _preflight_request_guard(publication_mode)
+    before_request()
+    from scripts.exchange_calendar import preflight_request_window
+    with preflight_request_window(before_request):
+        return _preflight_state_with_request_guard(
+            root, max_anchor_age_days, expected_date, publication_mode, before_request)
+
+
+def _preflight_state_with_request_guard(root, max_anchor_age_days, expected_date,
+                                       publication_mode, before_request):
     root = root.resolve()
     before = validate_state(root, max_anchor_age_days=None if expected_date else max_anchor_age_days,
                             require_current_refresh_proof=False)
@@ -898,21 +997,42 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None,
     base = v2_0.base_mod
     anchor = _parse_date(str(before["anchor_dates"]["proxy_index"]))
     from scripts.index_history_preflight import fetch_preflight_history
-    history = fetch_preflight_history(anchor - timedelta(days=20), expected_date)
+    before_request()
+    history = fetch_preflight_history(anchor - timedelta(days=20), expected_date, before_request=before_request)
     target = base.latest_closed_history_date(history).date()
     if expected_date is not None and target != expected_date:
         raise RuntimeError(f"Independent history {target} differs from expected calendar day {expected_date}")
-    evidence = verify_live_member_names(base, before["current_member_symbols"])
+    before_request()
+    evidence = verify_live_member_names(base, before["current_member_symbols"], before_request=before_request)
     evidence["independent_completed_day"] = target.isoformat()
     evidence["independent_history_rows"] = len(history)
     evidence.update(history.attrs)
     if expected_date is not None:
         evidence["expected_calendar_day"] = expected_date.isoformat()
-    return certify_existing_state(root, before, target, max_anchor_age_days, evidence)
+    if publication_mode == "intraday":
+        from scripts.realtime_member_notice_audit import audit_current_member_notices
+        before_request()
+        evidence["current_member_notice_audit"] = audit_current_member_notices(
+            root, current_notice_member_symbols(root), _preflight_now().date(), target,
+            before_request)
+        before_request()
+    def before_proof_commit():
+        before_request()
+        if publication_mode == "intraday":
+            verify_intraday_notice_refresh_proof(
+                root, {"target_end_date": target.isoformat(), "preflight_evidence": evidence},
+                signal_day=_preflight_now().date(), previous_session=target,
+                before_request=before_request)
+    before_proof_commit()
+    return certify_existing_state(root, before, target, max_anchor_age_days, evidence,
+                                  before_commit=before_proof_commit)
 
 
-def verify_live_member_names(base, symbols: list[str]) -> dict[str, object]:
-    quotes = base.fetch_member_realtime_quotes(symbols)
+def verify_live_member_names(base, symbols: list[str], *, before_request=None) -> dict[str, object]:
+    options = {"before_request": before_request} if before_request is not None else {}
+    quotes = base.fetch_member_realtime_quotes(symbols, **options)
+    if before_request is not None:
+        before_request()
     today = _cn_today().isoformat()
     valid = quotes.loc[quotes["trade_date"].astype(str).eq(today)].copy()
     if len(valid) != TOP_N or set(valid["code"]) != set(symbols):
@@ -925,7 +1045,8 @@ def verify_live_member_names(base, symbols: list[str]) -> dict[str, object]:
 
 def certify_existing_state(root: Path, before: dict[str, object], target: date,
                            max_anchor_age_days: int | None = None,
-                           evidence: dict[str, object] | None = None) -> dict[str, object]:
+                           evidence: dict[str, object] | None = None, *,
+                           before_commit=None) -> dict[str, object]:
     """Commit proof only after independent history and unchanged state agree."""
     calendar_match = evidence is not None and evidence.get("expected_calendar_day") == target.isoformat()
     after = validate_state(root, max_anchor_age_days=None if calendar_match else max_anchor_age_days,
@@ -941,7 +1062,10 @@ def certify_existing_state(root: Path, before: dict[str, object], target: date,
     if after.get("errors"):
         after["ok"] = False
         return after
-    if evidence is None:
+    if before_commit is not None:
+        before_commit()
+        _write_refresh_proof(root, target, evidence, before_commit=before_commit)
+    elif evidence is None:
         _write_refresh_proof(root, target)
     else:
         _write_refresh_proof(root, target, evidence)
@@ -1427,6 +1551,9 @@ def main(argv: list[str] | None = None) -> int:
     preflight_parser.add_argument("--expected-date", type=date.fromisoformat,
                                   help="latest completed date from the formal exchange calendar")
 
+    preflight_parser.add_argument("--publication-mode", choices=("intraday", "close-confirmed-check"),
+                                  default="intraday", help="intraday forbids each new request at/after 15:00 Beijing")
+
     pack_parser = subparsers.add_parser("pack")
     add_common(pack_parser)
     pack_parser.add_argument("--bundle", type=Path, required=True)
@@ -1451,7 +1578,7 @@ def main(argv: list[str] | None = None) -> int:
         report = validate_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "preflight":
         report = preflight_state(args.root, max_anchor_age_days=args.max_anchor_age_days,
-                                 expected_date=args.expected_date)
+                                 expected_date=args.expected_date, publication_mode=args.publication_mode)
     elif args.command == "pack":
         report = pack_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "refresh":

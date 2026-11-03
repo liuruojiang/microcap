@@ -144,26 +144,29 @@ def test_holiday_requires_full_independent_proof(tmp_path, monkeypatch, missing)
 
 @pytest.mark.parametrize("expected", [date(2026, 8, 7), date(2026, 8, 14)])
 def test_preflight_uses_external_calendar_and_independent_history(tmp_path, monkeypatch, expected):
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    monkeypatch.setattr(state, "_preflight_now", lambda: datetime(2026, 8, 17, 15, 30, tzinfo=ZoneInfo("Asia/Shanghai")))
     import pandas as pd
     valid_state(tmp_path, monkeypatch, date(2026, 8, 17))
     from scripts import index_history_preflight
     monkeypatch.setattr(index_history_preflight, "fetch_preflight_history",
-                        lambda *a: pd.DataFrame({"date": ["2026-08-07"]}))
+                        lambda *a, **kw: pd.DataFrame({"date": ["2026-08-07"]}))
     base = SimpleNamespace(
         pd=pd, fetch_eastmoney_index_history=lambda *a: ["history"],
         latest_closed_history_date=lambda history: pd.Timestamp("2026-08-07"),
     )
     module = SimpleNamespace(_sync_embedded_base_config=lambda: None, base_mod=base)
     monkeypatch.setitem(sys.modules, "microcap_top100_mom16_biweekly_live_v2_0", module)
-    monkeypatch.setattr(state, "verify_live_member_names", lambda *a: {
+    monkeypatch.setattr(state, "verify_live_member_names", lambda *a, **kw: {
         "member_name_quote_day": "2026-08-17", "member_name_count": 100,
         "current_st_name_intersection": 0})
     proof_before = (tmp_path / state.REFRESH_PROOF_REL).read_bytes()
     if expected == date(2026, 8, 7):
-        assert state.preflight_state(tmp_path, 5, expected_date=expected)["ok"]
+        assert state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")["ok"]
     else:
         with pytest.raises(RuntimeError, match="calendar"):
-            state.preflight_state(tmp_path, 5, expected_date=expected)
+            state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")
         assert (tmp_path / state.REFRESH_PROOF_REL).read_bytes() == proof_before
 
 

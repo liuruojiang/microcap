@@ -1346,10 +1346,13 @@ def build_tradeability_series(
     tradeable = pd.Series(trading_dates.isin(actual_price_dates), index=trading_dates, dtype=bool) & listed_mask
     buyable = tradeable.copy()
     sellable = tradeable.copy()
+    aligned_st = None  # Evaluate once, only when an actual constraint check needs ST.
     if trade_constraint_mode == TRADE_CONSTRAINT_MODE_CLOSE:
         prev_close = close_calendar.shift(1)
         for dt in trading_dates[tradeable.to_numpy()]:
-            is_st = False if st_series is None else bool(st_series.reindex(trading_dates).fillna(False).loc[dt])
+            if st_series is not None and aligned_st is None:
+                aligned_st = st_series.reindex(trading_dates).fillna(False)
+            is_st = False if st_series is None else bool(aligned_st.loc[dt])
             up_blocked, down_blocked = detect_close_limit_blocks(
                 symbol=symbol,
                 trade_date=pd.Timestamp(dt),
@@ -1366,7 +1369,9 @@ def build_tradeability_series(
         for dt in trading_dates[tradeable.to_numpy()]:
             if pd.isna(ohlc_lookup.loc[dt].get("open")):
                 continue
-            is_st = False if st_series is None else bool(st_series.reindex(trading_dates).fillna(False).loc[dt])
+            if st_series is not None and aligned_st is None:
+                aligned_st = st_series.reindex(trading_dates).fillna(False)
+            is_st = False if st_series is None else bool(aligned_st.loc[dt])
             up_locked, down_locked = detect_limit_locks(
                 symbol,
                 pd.Timestamp(dt),

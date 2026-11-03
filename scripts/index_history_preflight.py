@@ -14,15 +14,17 @@ from scripts import exchange_calendar
 REQUEST_TIMEOUT = 8
 
 
-def _get(url, **kwargs):
+def _get(url, *, before_request=None, **kwargs):
+    exchange_calendar.before_network_request(before_request)
     response = requests.get(url, timeout=REQUEST_TIMEOUT,
                             headers={"User-Agent": "Mozilla/5.0"}, **kwargs)
     response.raise_for_status()
     return response
 
 
-def sina_static(start: date, end: date) -> pd.DataFrame:
-    response = _get("https://finance.sina.com.cn/realstock/company/sh000852/hisdata/klc_kl.js")
+def sina_static(start: date, end: date, *, before_request=None) -> pd.DataFrame:
+    options = {"before_request": before_request} if before_request is not None else {}
+    response = _get("https://finance.sina.com.cn/realstock/company/sh000852/hisdata/klc_kl.js", **options)
     # Execute only the installed decoder, never JavaScript received over HTTP.
     from akshare.index.index_stock_zh import hk_js_decode, py_mini_racer
     encoded, _ = json.JSONDecoder().raw_decode(response.text.split("=", 1)[1].lstrip())
@@ -37,9 +39,10 @@ def sina_static(start: date, end: date) -> pd.DataFrame:
     return frame
 
 
-def tencent(start: date, end: date) -> pd.DataFrame:
+def tencent(start: date, end: date, *, before_request=None) -> pd.DataFrame:
+    options = {"before_request": before_request} if before_request is not None else {}
     payload = _get("https://proxy.finance.qq.com/ifzqgtimg/appstock/app/newfqkline/get",
-                   params={"param": f"sh000852,day,{start},{end},640,qfq"}).json()
+                   params={"param": f"sh000852,day,{start},{end},640,qfq"}, **options).json()
     if payload.get("code") != 0:
         raise ValueError("Tencent history unsuccessful")
     # Index raw 'day' only; never substitute adjusted equity qfqday data.
@@ -96,16 +99,17 @@ def validate_history(frame: pd.DataFrame, start: date, end: date,
     return frame.sort_values("date").reset_index(drop=True)
 
 
-def _fetch_history(start: date, expected_date: date | None, providers) -> pd.DataFrame:
-    end = exchange_calendar.latest_completed_session()
+def _fetch_history(start: date, expected_date: date | None, providers, *, before_request=None) -> pd.DataFrame:
+    options = {"before_request": before_request} if before_request is not None else {}
+    end = exchange_calendar.latest_completed_session(**options)
     if expected_date is not None and expected_date != end:
         raise RuntimeError(f"Expected calendar day {expected_date} differs from completed session {end}")
-    sessions = exchange_calendar.sessions_for_day(end)
+    sessions = exchange_calendar.sessions_for_day(end, **options)
     attempts = []
     for name, provider in providers:
         began = time.monotonic()
         try:
-            frame = validate_history(provider(start, end), start, end, sessions)
+            frame = validate_history(provider(start, end, **options), start, end, sessions)
         except Exception as exc:
             attempts.append({"source": name, "ok": False, "error": f"{type(exc).__name__}: {exc}",
                              "elapsed_seconds": round(time.monotonic() - began, 3)})
@@ -120,8 +124,8 @@ def _fetch_history(start: date, expected_date: date | None, providers) -> pd.Dat
     raise RuntimeError(f"All independent preflight history sources failed: {attempts}")
 
 
-def fetch_preflight_history(start: date, expected_date: date | None = None) -> pd.DataFrame:
-    return _fetch_history(start, expected_date, (("sina_static", sina_static), ("tencent", tencent)))
+def fetch_preflight_history(start: date, expected_date: date | None = None, *, before_request=None) -> pd.DataFrame:
+    return _fetch_history(start, expected_date, (("sina_static", sina_static), ("tencent", tencent)), before_request=before_request)
 
 
 def fetch_delivery_history(start: date, expected_date: date | None = None) -> pd.DataFrame:

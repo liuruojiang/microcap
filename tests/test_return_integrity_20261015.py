@@ -127,6 +127,61 @@ def _validated_synthetic_adjustment(raw, values=None):
     return adjusted
 
 
+@pytest.mark.parametrize('route', ['embedded', 'standalone'])
+@pytest.mark.parametrize('mode', ['close', 'next_open'])
+@pytest.mark.parametrize('case', ['ST', 'none', 'missing', 'empty', 'empty_price', 'no_tradeable',
+                                 'missing_open', 'duplicate_ST', 'duplicate_price', 'duplicate_dates'])
+def test_tradeability_aligns_ST_once_only_when_original_path_needs_it(raw_price, monkeypatch, route, mode, case):
+    """Only IO is replaced; all original return/limit mathematical functions run."""
+    import ast
+    from pathlib import Path
+    adjusted = _validated_synthetic_adjustment(raw_price, [50, 51, 51, 52, 53])
+    dates = pd.DatetimeIndex(raw_price.date)
+    price = raw_price.copy()
+    ohlc = pd.DataFrame({'date': dates, 'open': price.close_raw, 'close': price.close_raw,
+                         'high': price.close_raw, 'low': price.close_raw})
+    class Counted(pd.Series):
+        _metadata = ['alignment_calls']
+        @property
+        def _constructor(self):return pd.Series
+        def reindex(self, *args, **kwargs):
+            self.alignment_calls[0] += 1
+            return super().reindex(*args, **kwargs)
+    st = Counted([True]*len(dates), index=dates);st.alignment_calls = [0]
+    if case == 'none':st = None
+    if case == 'missing':st = Counted([True],index=dates[:1]);st.alignment_calls = [0]
+    if case == 'empty':st = Counted(dtype=bool);st.alignment_calls = [0]
+    if case in ('duplicate_ST','empty_price','no_tradeable','missing_open'):
+        st = Counted([True,False],index=[dates[0],dates[0]]);st.alignment_calls = [0]
+    if case == 'empty_price':price = price.iloc[:0]
+    if case == 'no_tradeable':price['tradestatus'] = 0
+    if case == 'missing_open':ohlc['open'] = np.nan
+    if case == 'duplicate_price':price = pd.concat([price,price.iloc[:1]],ignore_index=True)
+    if case == 'duplicate_dates':dates = dates.insert(0,dates[0])
+    namespace = dict(v20.freq_mod.build_tradeability_series.__globals__)
+    namespace['read_ohlc_cache'] = lambda *_args: ohlc.copy()
+    if route == 'standalone':
+        tree = ast.parse((Path(__file__).resolve().parents[1]/'analyze_top100_rebalance_frequency.py').read_text(encoding='utf-8-sig'))
+        node = next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='build_tradeability_series')
+    else:
+        tree = ast.parse(v20.FREQ_SOURCE)
+        node = next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='build_tradeability_series')
+    exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual_tradeability_function>','exec'),namespace)
+    call = lambda: namespace['build_tradeability_series']('600000',price,dates,adjusted,st,mode)
+    rejected = case in ('duplicate_ST','duplicate_price','duplicate_dates') or (case=='missing_open' and mode=='close')
+    if rejected:
+        with pytest.raises(ValueError):call()
+    else:
+        result = call()
+        assert len(result) == 4
+        if case in ('empty_price','no_tradeable'):
+            assert all(not values.any() for values in result[1:])
+        elif mode=='close' or case!='missing_open':
+            assert all(values.all() for values in result[1:])
+        expected = 0 if case in ('none','empty_price','no_tradeable','missing_open') else 1
+        assert st is None or st.alignment_calls[0] == expected
+
+
 def test_complete_adjustment_uses_one_price_basis(raw_price):
     adjusted = _validated_synthetic_adjustment(raw_price, [50, 51, 51, 52, 53])
     np.testing.assert_allclose(_tradeability(raw_price, adjusted)[0],

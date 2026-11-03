@@ -244,7 +244,8 @@ def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     turnover = complete_terminal_return_dates(turnover, dates, anchor)
     from scripts.top100_data_contracts import normalise_turnover_table
     previous_turnover = pd.read_csv(io.BytesIO(originals[paths['proxy_turnover']]))
-    pd.testing.assert_frame_equal(normalise_turnover_table(previous_turnover), normalise_turnover_table(turnover), check_exact=True, check_dtype=False)
+    persisted_turnover = pd.read_csv(io.StringIO(turnover.to_csv(index=False)))
+    pd.testing.assert_frame_equal(normalise_turnover_table(previous_turnover), normalise_turnover_table(persisted_turnover), check_exact=True, check_dtype=False)
     for frame,p in [(index,staged_args.index_csv),(members,staged_paths['proxy_members']),(turnover,staged_paths['proxy_turnover'])]:base._atomic_to_csv(frame,p,index=False,encoding='utf-8')
     base._atomic_write_json(staged_paths['proxy_meta'],meta,encoding='utf-8')
     # Preserve exact approved event-table bytes after independently recomputing
