@@ -12,6 +12,13 @@ import pytest
 
 from scripts import share_unchanged_tail as source
 from scripts import share_change_source as native
+from frozen_exchange_calendar import frozen_exchange_sessions
+
+
+@pytest.fixture(autouse=True)
+def frozen_real_regression_sessions(frozen_exchange_sessions):
+    """Preserved real calendar for offline regression, never live freshness."""
+    return frozen_exchange_sessions
 
 
 @pytest.fixture
@@ -278,3 +285,36 @@ def test_native_fingerprint_excludes_only_exact_control_marker(tmp_path):
     assert fingerprint() != before
     from scripts import top100_delivery
     assert set(SOURCE_FILES).issubset(top100_delivery.RELEASE_FILES)
+
+
+@pytest.mark.parametrize("previous,end", [("2026-10-30", "2026-11-03"), ("2026-11-01", "2026-11-03"),
+                                           ("2026-10-30", "2026-11-01")])
+def test_skipped_session_or_holiday_not_promoted(previous, end):
+    with pytest.raises(ValueError, match="adjacent"):
+        source.require_adjacent(previous, end)
+
+
+def test_long_weekend_adjacent_sessions_not_calendar_day_age():
+    source.require_adjacent("2026-10-30", "2026-11-02")
+
+
+@pytest.mark.parametrize("mutation", [
+    lambda d: d.update(tls_verify_configuration=False),
+    lambda d: d.pop("tls_verify_configuration"),
+    lambda d: d.update(final_url="https://invalid.example/other.pdf"),
+    lambda d: d.update(final_url=d["final_url"] + "?token=not-allowed"),
+    lambda d: d.update(final_url=None),
+    lambda d: d.update(redirects_allowed=True),
+    lambda d: d.update(response_headers={"Set-Cookie": "private"}),
+    lambda d: d.update(response_headers={"Content-Type": "application/pdf\r\nSet-Cookie: private"}),
+])
+def test_reviewed_pdf_actual_tls_redirect_and_header_constraints(future_evidence, mutation):
+    item = future_evidence[1]["future_plan_documents"][0]
+    bodies = future_evidence[2]
+    receipt = json.loads(bodies[item["receipt_path"]])
+    mutation(receipt)
+    raw = json.dumps(receipt).encode()
+    bodies[item["receipt_path"]] = raw
+    item["receipt_sha256"] = source.sha(raw)
+    with pytest.raises(ValueError):
+        verify(future_evidence)

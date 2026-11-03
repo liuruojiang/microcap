@@ -85,6 +85,14 @@ def quote_params(symbol):
                 secid=("1." if symbol.startswith(("5", "6", "9")) else "0.") + symbol)
 
 
+def require_adjacent(previous_day, end):
+    from scripts.exchange_calendar import sessions_for_day
+    previous, target = day(previous_day), day(end)
+    sessions = sessions_for_day(target)
+    before = [value for value in sessions if value < target]
+    require(target in sessions and before and before[-1] == previous, "unchanged-tail requires adjacent exchange sessions")
+
+
 def _artifact(entry, bound, *, url, params, end, now):
     raw = bound(entry["raw_path"], entry["raw_sha256"])
     receipt_raw = bound(entry["receipt_path"], entry["receipt_sha256"])
@@ -174,7 +182,7 @@ def plan_reviews(root=None):
             and isinstance(registry["records"], list), "future plan registry schema differs")
     required = {"symbol", "announcement_id", "notice_number", "provider_notice_date", "document_signature_date",
                 "planned_date", "before_total_shares", "after_total_shares", "change_total_shares", "status",
-                "pdf_url", "pdf_sha256", "pdf_bytes"}
+                "pdf_url", "pdf_alternate_urls", "pdf_sha256", "pdf_bytes"}
     identities = set()
     for item in registry["records"]:
         require(isinstance(item, dict) and set(item) == required, "future plan registry fields differ")
@@ -193,6 +201,12 @@ def plan_reviews(root=None):
                 and item["pdf_url"] == "https://pdf.dfcfw.com/pdf/H2_" + item["announcement_id"] + "_1.pdf"
                 and re.fullmatch(r"[0-9a-f]{64}", item["pdf_sha256"])
                 and integer(item["pdf_bytes"]) > 0, "reviewed PDF identity differs")
+        alternatives = item["pdf_alternate_urls"]
+        require(isinstance(alternatives, list) and len(alternatives) == len(set(alternatives)), "reviewed alternate PDF URLs differ")
+        for url in alternatives:
+            parsed = urlparse(url)
+            require(parsed.scheme == "https" and parsed.netloc and parsed.username is None and parsed.password is None
+                    and not parsed.query and not parsed.fragment and url != item["pdf_url"], "unsafe reviewed PDF URL")
     return registry["records"]
 
 
@@ -201,9 +215,9 @@ def _reviewed_future_plans(manifest, future, *, symbol, end, boundary, bound, no
     require(isinstance(documents, list), "future document inventory not list")
     require(len(documents) == len(future), "missing/extra reviewed future document")
     if not future:
-        return []
+        return [], []
     reviews = plan_reviews(root)
-    allowed, used = [], set()
+    allowed, used, disclosures = [], set(), []
     for row in future:
         end_day, listing, notice = (_em_date(row[key]) for key in DATE_FIELDS)
         require(end_day == listing and end_day > day(end) and notice <= day(end), "ambiguous future plan dates")
@@ -223,14 +237,36 @@ def _reviewed_future_plans(manifest, future, *, symbol, end, boundary, bound, no
         require(document["raw_sha256"] == review["pdf_sha256"] and len(raw) == review["pdf_bytes"]
                 and raw.startswith(b"%PDF-") and b"%%EOF" in raw[-1024:], "reviewed PDF bytes differ")
         receipt = json.loads(bound(document["receipt_path"], document["receipt_sha256"]))
-        require("request_headers" not in receipt and "headers" not in receipt
-                and all(k.lower() in SAFE_HEADERS for k in receipt.get("response_headers", {})), "private PDF receipt headers")
-        require(receipt.get("url") == review["pdf_url"] and receipt.get("http_status") == 200
-                and receipt.get("raw_sha256") == review["pdf_sha256"] and receipt.get("bytes") == review["pdf_bytes"], "reviewed PDF receipt differs")
-        start, complete = clock(receipt["http_start"]), clock(receipt["http_complete"])
+        headers = receipt.get("response_headers", {})
+        require("request_headers" not in receipt and "headers" not in receipt and isinstance(headers, dict)
+                and all(isinstance(k, str) and k.lower() in SAFE_HEADERS and isinstance(v, str)
+                        and "\r" not in v and "\n" not in v for k, v in headers.items()), "private PDF receipt headers")
+        schema = receipt.get("original_receipt_schema", receipt.get("schema"))
+        if schema == "issuer_pdf_observation_v1":
+            requested, actual = receipt.get("requested_url"), receipt.get("final_url")
+            require(actual is not None and receipt.get("redirects_allowed") is False,
+                    "issuer PDF receipt missing recorded final URL/redirect configuration")
+            tls, status, size = receipt.get("tls_verify_configuration"), receipt.get("status"), receipt.get("raw_bytes")
+            start, complete = clock(receipt["observation_start"]), clock(receipt["observation_end"])
+        else:
+            requested = receipt.get("url")
+            actual = receipt.get("actual_url", receipt.get("final_url"))
+            tls, status, size = receipt.get("tls_verification"), receipt.get("http_status"), receipt.get("bytes")
+            start, complete = clock(receipt["http_start"]), clock(receipt["http_complete"])
+        trusted_urls = [review["pdf_url"], *review["pdf_alternate_urls"]]
+        require(requested in trusted_urls and tls is True and status == 200
+                and receipt.get("raw_sha256") == review["pdf_sha256"] and size == review["pdf_bytes"], "reviewed PDF receipt/TLS differs")
+        require(actual is None or actual == requested, "reviewed PDF redirected to a different endpoint")
+        if actual is not None:
+            parsed = urlparse(actual)
+            require(parsed.scheme == "https" and not parsed.query and not parsed.fragment, "reviewed PDF actual endpoint differs")
         require(datetime.fromisoformat(end + "T15:00:00+08:00") <= start <= complete <= now, "PDF observation clock differs")
+        disclosures.append(dict(announcement_id=review["announcement_id"], requested_url=requested,
+                                actual_url=actual, actual_url_recorded=actual is not None,
+                                actual_url_basis="recorded_final_url" if actual is not None else "request_url_only_final_endpoint_not_recorded",
+                                tls_configuration_recorded=True, tls_handshake_proof_recorded=False))
         allowed.append(dict(date=end_day.isoformat(), total_shares_10k=str(Decimal(review["after_total_shares"]) / 10000)))
-    return allowed
+    return allowed, disclosures
 
 
 def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, now=None, root=None):
@@ -240,6 +276,7 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
     require(d < t and manifest.get("schema") == KIND and manifest.get("symbol") == symbol
             and manifest.get("previous_day") == previous_day and manifest.get("query_end") == end,
             "manifest identity/window differs")
+    require_adjacent(previous_day, end)
     old = pd.read_csv(io.BytesIO(candidate), dtype=str, keep_default_na=False)
     require(not old.empty and "change_date" in old and "total_shares_10k" in old, "missing original candidate")
     old_dates = [day(value[:10]) for value in old.change_date]
@@ -251,7 +288,7 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
     projection = [row for row in unfiltered if _em_date(row["END_DATE"]) <= t]
     require(projection == bounded, "EM bounded/full inventory drift or wrong asof projection")
     future = [row for row in unfiltered if _em_date(row["END_DATE"]) > t]
-    future_plans = _reviewed_future_plans(manifest, future, symbol=symbol, end=end, boundary=boundary,
+    future_plans, future_transport = _reviewed_future_plans(manifest, future, symbol=symbol, end=end, boundary=boundary,
                                            bound=bound, now=now, root=root)
     for row in projection:
         ds = [_em_date(row[key]) for key in DATE_FIELDS]
@@ -283,12 +320,13 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                 total_shares_10k=str(boundary), unchanged_observations=True,
                 frame_time=stamp.isoformat(), f84_independent_asof_guarantee_proven=False,
                 provider_latency_guaranteed=False, old_candidate_sha256=sha(candidate),
-                future_plans_preserved_not_consumed=future_plans)
+                future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport)
 
 
 def collect_manifest(*, root, symbol, previous_day, end, candidate):
     """Real public HTTPS observations; only immutable evidence is created."""
     require(day(previous_day) < day(end), "invalid collection window")
+    require_adjacent(previous_day, end)
     source = Path(root) / ".microcap_index_cache/share_sources"
     require(source.resolve().is_relative_to(Path(root).resolve()), "source root escapes workspace")
     directory = source / "providers" / KIND / symbol / uuid.uuid4().hex

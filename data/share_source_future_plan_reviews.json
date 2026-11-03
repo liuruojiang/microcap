@@ -13,6 +13,9 @@
       "change_total_shares": -310000,
       "status": "verified_future_plan_not_executed",
       "pdf_url": "https://pdf.dfcfw.com/pdf/H2_AN202610301831245917_1.pdf",
+      "pdf_alternate_urls": [
+        "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-10/2026-10-31/12685303.PDF"
+      ],
       "pdf_sha256": "efb3ccab1dd352fed15404936b03d44c949aeabee74f235e64cff0b4a60d8964",
       "pdf_bytes": 115925
     }

@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 SOURCE_FILES = (
+    "scripts/exchange_calendar.py",
     "scripts/stock_input_contract.py",
     "scripts/stock_return_basis.py",
     "scripts/stock_return_basis_store.py",
