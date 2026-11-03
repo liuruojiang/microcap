@@ -318,3 +318,106 @@ def test_reviewed_pdf_actual_tls_redirect_and_header_constraints(future_evidence
     item["receipt_sha256"] = source.sha(raw)
     with pytest.raises(ValueError):
         verify(future_evidence)
+
+
+def prepare_real_legacy(evidence, tmp_path):
+    data, _, _, candidate, _ = evidence
+    root = native._extended(tmp_path)
+    directory = root / ".microcap_index_cache/share_sources"
+    for name, compressed in data["old_source_files_zlib_b64"].items():
+        path = directory / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(zlib.decompress(base64.b64decode(compressed)))
+    csv = root / ".microcap_index_cache/share_change/002144.csv"
+    csv.parent.mkdir(parents=True)
+    csv.write_bytes(candidate)
+    return root, csv, directory
+
+
+def denied_primary(monkeypatch, status):
+    calls = []
+    monkeypatch.setattr(native, "_cninfo_request_key", lambda: "unit-control-flow-not-a-token")
+    def post(url, **kwargs):
+        calls.append(kwargs["params"])
+        response = native.requests.Response()
+        response.status_code = status
+        response.url = url
+        response._content = b"Synthetic denied response for routing regression only"
+        return response
+    monkeypatch.setattr(native.requests, "post", post)
+    return calls
+
+
+@pytest.mark.parametrize("status", [403, 429])
+def test_first_denial_same_call_fallback_native_verifies_and_preserves_stop(evidence, tmp_path, monkeypatch, status):
+    root, csv, directory = prepare_real_legacy(evidence, tmp_path)
+    old_state = (directory / "002144.json").read_bytes()
+    before = csv.read_bytes()
+    calls = denied_primary(monkeypatch, status)
+    collected = []
+    def existing_real_evidence(**kwargs):
+        collected.append(kwargs)
+        for name, raw in evidence[2].items():
+            p = directory / name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(raw)
+        raw = json.dumps(evidence[1]).encode()
+        (directory / "manifest.json").write_bytes(raw)
+        return dict(path="manifest.json", sha256=source.sha(raw))
+    monkeypatch.setattr(source, "collect_manifest", existing_real_evidence)
+    native.refresh_share_change(root=root, symbol="002144", cache_path=csv, as_of="2026-11-03", allow_network=True)
+    assert len(calls) == len(collected) == 1
+    proof = native.verify_share_cache(root=root, symbol="002144", as_of="2026-11-03")
+    assert proof["candidate_sha256"] == source.sha(before) and csv.read_bytes() == before
+    assert (directory / "states" / (source.sha(old_state) + ".json")).read_bytes() == old_state
+    stop_bytes = (directory / "RATE_LIMIT_STOP.json").read_bytes()
+    stop = json.loads(stop_bytes)
+    assert stop["status"] == status
+    assert source.sha((directory / stop["response_path"]).read_bytes()) == stop["response_sha256"]
+    native.refresh_share_change(root=root, symbol="002144", cache_path=csv, as_of="2026-11-03", allow_network=False)
+    assert len(calls) == 1 and (directory / "RATE_LIMIT_STOP.json").read_bytes() == stop_bytes
+
+
+@pytest.mark.parametrize("status", [403, 429])
+def test_first_denial_fallback_failure_keeps_primary_cause_and_old_bytes(evidence, tmp_path, monkeypatch, status):
+    root, csv, directory = prepare_real_legacy(evidence, tmp_path)
+    old = csv.read_bytes(), (directory / "002144.json").read_bytes()
+    calls = denied_primary(monkeypatch, status)
+    def failed(**kwargs):
+        raise ValueError("qualified fallback rejected the real evidence")
+    monkeypatch.setattr(source, "collect_manifest", failed)
+    with pytest.raises(native.requests.HTTPError) as error:
+        native.refresh_share_change(root=root, symbol="002144", cache_path=csv, as_of="2026-11-03", allow_network=True)
+    assert isinstance(error.value.__cause__, ValueError) and len(calls) == 1
+    assert old == (csv.read_bytes(), (directory / "002144.json").read_bytes())
+    diagnostic = [json.loads(p.read_bytes()) for p in (directory / "failures/002144").glob("*.json")]
+    assert len(diagnostic) == 1 and diagnostic[0]["primary_status"] == status
+    assert diagnostic[0]["fallback_error_type"] == "ValueError"
+    assert diagnostic[0]["stop_sha256"] == source.sha((directory / "RATE_LIMIT_STOP.json").read_bytes())
+
+
+@pytest.mark.parametrize("interrupt", [KeyboardInterrupt, SystemExit])
+def test_fallback_does_not_swallow_process_interruption(evidence, tmp_path, monkeypatch, interrupt):
+    root, csv, directory = prepare_real_legacy(evidence, tmp_path)
+    old = csv.read_bytes(), (directory / "002144.json").read_bytes()
+    calls = denied_primary(monkeypatch, 403)
+    def interrupted(**kwargs):
+        raise interrupt("unit-interruption")
+    monkeypatch.setattr(source, "collect_manifest", interrupted)
+    with pytest.raises(interrupt):
+        native.refresh_share_change(root=root, symbol="002144", cache_path=csv, as_of="2026-11-03", allow_network=True)
+    assert len(calls) == 1 and old == (csv.read_bytes(), (directory / "002144.json").read_bytes())
+    assert (directory / "RATE_LIMIT_STOP.json").exists()
+
+
+@pytest.mark.parametrize("status", [403, 429])
+def test_denied_source_without_previous_authority_still_fails_closed(tmp_path, monkeypatch, status):
+    calls = denied_primary(monkeypatch, status)
+    def forbidden(**kwargs):
+        raise AssertionError("empty deployment cannot acquire a fallback baseline")
+    monkeypatch.setattr(source, "collect_manifest", forbidden)
+    csv = tmp_path / ".microcap_index_cache/share_change/002144.csv"
+    with pytest.raises(native.requests.HTTPError):
+        native.refresh_share_change(root=tmp_path, symbol="002144", cache_path=csv, as_of="2026-11-03", allow_network=True)
+    assert len(calls) == 1 and not csv.exists()
+    assert not (tmp_path / ".microcap_index_cache/share_sources/002144.json").exists()

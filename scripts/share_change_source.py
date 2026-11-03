@@ -263,6 +263,28 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
     _atomic(attempt.with_suffix(".receipt.json"), json.dumps(receipt, ensure_ascii=False, indent=2).encode())
     if response.status_code in (403, 429):
         _atomic(source_root / "RATE_LIMIT_STOP.json", json.dumps(receipt).encode())
+        if state is not None:
+            try:
+                response.raise_for_status()
+            except requests.HTTPError as primary_error:
+                try:
+                    # The real stop now exists, so this private re-entry can
+                    # only take the qualified fallback, never query CNINFO or
+                    # re-enter the public per-symbol lock.
+                    return _refresh_share_change(root=root, symbol=symbol, cache_path=cache_path,
+                                                 as_of=as_of, allow_network=allow_network)
+                except Exception as fallback_error:
+                    diagnostic = dict(status="primary_denial_and_fallback_failure", symbol=symbol,
+                                      query_end=end, primary_status=response.status_code,
+                                      primary_error_type=type(primary_error).__name__,
+                                      primary_error=str(primary_error), fallback_error_type=type(fallback_error).__name__,
+                                      fallback_error=str(fallback_error),
+                                      stop_sha256=_sha((source_root / "RATE_LIMIT_STOP.json").read_bytes()),
+                                      response_sha256=receipt["response_sha256"],
+                                      recorded_at_utc=datetime.now(timezone.utc).isoformat())
+                    failed_path = source_root / "failures" / symbol / (uuid.uuid4().hex + ".json")
+                    _atomic(failed_path, json.dumps(diagnostic, ensure_ascii=False, indent=2).encode())
+                    raise primary_error from fallback_error
     response.raise_for_status()
     incoming = parse_source(raw, symbol=symbol, start=start, end=end)
     combined = merge_preserving_history(old, incoming)

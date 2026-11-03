@@ -24,8 +24,11 @@ approved baseline over an existing state.
 
 The original CNINFO denial marker and private diagnostics are preserved.
 Existing denial or a prior fallback state selects the fallback for that symbol.
-A first CNINFO403 still preserves the real denial and fails that call; a later
-authorized failed-component retry observes the marker and selects fallback.
+A first CNINFO403/429 preserves the real denial and, only with a verified prior
+state, attempts the qualified fallback once inside the same per-symbol lock.
+It does not repeat CNINFO. A fallback failure preserves both errors and a private
+diagnostic; interruption is not swallowed. Without a verified prior state, the
+original source failure remains closed.
 The private marker is excluded only from the economic fingerprint, not deleted
 or promoted to evidence that the primary API is healthy.
 
