@@ -15,7 +15,7 @@ jobs:
         run: |
           import hashlib,json,subprocess,zipfile
           from pathlib import Path
-          V={'base': 'microcap-audit-fixed-whole-delivery-20261102.zip', 'delta': 'st-notice-state-delta.zip', 'target': 'microcap-st-notice-whole-delivery-20261103.zip', 'tag': 'top100-st-notice-20261103', 'base_sha': '99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93', 'base_size': 605202401, 'delta_sha': '88cd631fb85a6871ef7889ba8af178b0a4d89c5a239906bb6b5473c90a7607c1', 'delta_size': 21307739, 'target_sha': 'c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911', 'target_size': 609746827}
+          V={'release_id': 433245443, 'source_sha': 'd7615a3e3383e02f2b1e0eedfadfcb499ae7317a', 'base': 'microcap-audit-fixed-whole-delivery-20261102.zip', 'delta': 'st-notice-state-delta.zip', 'target': 'microcap-st-notice-whole-delivery-20261103.zip', 'tag': 'top100-st-notice-20261103', 'base_sha': '99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93', 'base_size': 605202401, 'delta_sha': '88cd631fb85a6871ef7889ba8af178b0a4d89c5a239906bb6b5473c90a7607c1', 'delta_size': 21307739, 'target_sha': 'c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911', 'target_size': 609746827}
           repo="liuruojiang/microcap"
           def gh(*args): return subprocess.check_output(["gh",*args],timeout=600)
           def verify(path,expected,size):
@@ -23,6 +23,25 @@ jobs:
               if len(raw)!=size or hashlib.sha256(raw).hexdigest()!=expected:
                   raise RuntimeError("Exact archive verification failed: "+str(path))
               return raw
+          def release_metadata():
+              meta=json.loads(gh("api","repos/"+repo+"/releases/"+str(V["release_id"])))
+              if (type(meta.get("id")) is not int or meta["id"]!=V["release_id"]
+                      or meta.get("tag_name")!=V["tag"] or meta.get("target_commitish")!=V["source_sha"]
+                      or type(meta.get("draft")) is not bool or not isinstance(meta.get("assets"),list)):
+                  raise RuntimeError("Release ID/tag/source metadata differs or is incomplete")
+              return meta
+          
+          def target_asset(meta):
+              rows=[a for a in meta["assets"] if a.get("name")==V["target"]]
+              if (len(rows)!=1 or rows[0].get("size")!=V["target_size"]
+                      or rows[0].get("state")!="uploaded"
+                      or rows[0].get("digest") not in (None,"","sha256:"+V["target_sha"])):
+                  raise RuntimeError("Published target asset identity differs")
+              return rows[0]
+          
+          initial_release=release_metadata()
+          release_id=initial_release["id"]
+          
           gh("release","download","top100-audit-fixes-20261103","--repo",repo,"--pattern",V["base"])
           gh("release","download",V["tag"],"--repo",repo,"--pattern",V["delta"])
           old=verify(V["base"],V["base_sha"],V["base_size"])
@@ -40,7 +59,9 @@ jobs:
               result.extend(source[start:start+size])
           Path(V["target"]).write_bytes(result)
           verify(V["target"],V["target_sha"],V["target_size"])
-          assets=json.loads(gh("api","repos/"+repo+"/releases/tags/"+V["tag"]))["assets"]
+          current_release=release_metadata()
+          if current_release["id"]!=release_id: raise RuntimeError("Release ID changed before asset write")
+          assets=current_release["assets"]
           existing=[a for a in assets if a["name"]==V["target"]]
           if existing:
               if len(existing)!=1 or existing[0]["size"]!=V["target_size"]: raise RuntimeError("Remote asset identity conflict")
@@ -52,5 +73,12 @@ jobs:
               saved=Path("remote-upload-readback");saved.mkdir()
               gh("release","download",V["tag"],"--repo",repo,"--pattern",V["target"],"--dir",str(saved))
               verify(saved/V["target"],V["target_sha"],V["target_size"])
+          ready_release=release_metadata()
+          if ready_release["id"]!=release_id: raise RuntimeError("Release ID changed before publish")
+          target_asset(ready_release)
           gh("release","edit",V["tag"],"--repo",repo,"--draft=false")
+          published_release=release_metadata()
+          if published_release["id"]!=release_id or published_release["draft"] is not False:
+              raise RuntimeError("Release publish outcome unknown")
+          target_asset(published_release)
           print(json.dumps({"exact_archive_published":True,"sha256":V["target_sha"],"bytes":V["target_size"]}))
