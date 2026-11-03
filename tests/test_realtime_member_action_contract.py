@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
@@ -15,6 +16,11 @@ def test_standalone_realtime_refresh_route_exports_default_anchor_age(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from scripts import realtime_state_bundle
+
+    monkeypatch.setattr(
+        realtime_state_bundle, "_preflight_now",
+        lambda: datetime(2026, 11, 3, 14, 30, tzinfo=ZoneInfo("Asia/Shanghai")),
+    )
 
     calls: list[tuple[object, int, int]] = []
 
@@ -33,6 +39,13 @@ def test_standalone_realtime_refresh_route_exports_default_anchor_age(
 def test_state_only_realtime_route_never_starts_implicit_refresh(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    from scripts import realtime_state_bundle
+
+    monkeypatch.setattr(
+        realtime_state_bundle, "_preflight_now",
+        lambda: datetime(2026, 11, 3, 14, 30, tzinfo=ZoneInfo("Asia/Shanghai")),
+    )
+
     monkeypatch.setenv("TOP100_REALTIME_REQUIRE_STATE", "1")
     monkeypatch.setattr(
         v2_0,

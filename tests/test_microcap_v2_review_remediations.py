@@ -6,6 +6,8 @@ import hashlib
 import subprocess
 import shutil
 from pathlib import Path
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from types import SimpleNamespace
 
 import pandas as pd
@@ -437,6 +439,11 @@ def test_cached_proxy_context_distinguishes_validated_state_from_fallback(
 
 def test_realtime_query_refresh_uses_base_stale_anchor_default(monkeypatch: pytest.MonkeyPatch) -> None:
     from scripts import realtime_state_bundle
+
+    monkeypatch.setattr(
+        realtime_state_bundle, "_preflight_now",
+        lambda: datetime(2026, 11, 3, 14, 30, tzinfo=ZoneInfo("Asia/Shanghai")),
+    )
 
     calls: dict[str, object] = {}
 
