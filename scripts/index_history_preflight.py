@@ -15,8 +15,7 @@ REQUEST_TIMEOUT = 8
 
 
 def _get(url, *, before_request=None, **kwargs):
-    if before_request is not None:
-        before_request()
+    exchange_calendar.before_network_request(before_request)
     response = requests.get(url, timeout=REQUEST_TIMEOUT,
                             headers={"User-Agent": "Mozilla/5.0"}, **kwargs)
     response.raise_for_status()

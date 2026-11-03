@@ -89,3 +89,53 @@ def test_turnover_date_format_compatibility_keeps_values_exact(field, value):
     with pytest.raises(AssertionError):
         pd.testing.assert_frame_equal(normalise_turnover_table(old), normalise_turnover_table(new),
                                       check_exact=True, check_dtype=False)
+
+
+def _actual_cached_replay_turnover_comparison(previous_raw, candidate):
+    """Execute the real three comparison statements without running a replay."""
+    import ast
+    import inspect
+    import io
+    from scripts import st_metadata_refresh as metadata
+    from scripts.top100_data_contracts import normalise_turnover_table
+    tree = ast.parse(inspect.getsource(metadata.try_cached_history_rebuild)).body[0]
+    start = next(i for i,node in enumerate(tree.body) if isinstance(node,ast.Assign)
+                 and any(isinstance(t,ast.Name) and t.id=='previous_turnover' for t in node.targets))
+    body = tree.body[start:start+3]
+    assert isinstance(body[-1],ast.Expr) and isinstance(body[-1].value,ast.Call)
+    assert ast.unparse(body[-1].value.func)=='pd.testing.assert_frame_equal'
+    scope = dict(pd=pd,io=io,originals={'turnover':previous_raw},paths={'proxy_turnover':'turnover'},
+                 turnover=candidate,normalise_turnover_table=normalise_turnover_table)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=body,type_ignores=[])),
+                 '<actual-cached-turnover-comparison>','exec'),scope)
+
+
+def _turnover_representation_case():
+    return pd.DataFrame([dict(rebalance_date=pd.Timestamp('2026-10-29'),execution_timing='close',
+        constraint_trade_date=pd.Timestamp('2026-10-29'),execution_date=pd.Timestamp('2026-10-29'),
+        effective_date=pd.Timestamp('2026-10-29'),return_start_date=pd.Timestamp('2026-10-30'),
+        exit_count=5,entry_count=5,blocked_entry_count=0,blocked_exit_count=0,buy_turnover_frac=.05,
+        sell_turnover_frac=.05,turnover_frac_one_side=.05,two_side_cost_rate=.0003*1.2,holding_count_after=100)])
+
+
+def test_real_cached_turnover_comparison_uses_exact_persisted_values():
+    import io
+    from scripts.top100_data_contracts import normalise_turnover_table
+    candidate = _turnover_representation_case()
+    raw = candidate.to_csv(index=False).encode('utf8')
+    previous = pd.read_csv(io.BytesIO(raw))
+    # The original mixed in-memory/CSV comparison really rejects this same event.
+    with pytest.raises(AssertionError):
+        pd.testing.assert_frame_equal(normalise_turnover_table(previous),normalise_turnover_table(candidate),
+                                      check_exact=True,check_dtype=False)
+    _actual_cached_replay_turnover_comparison(raw,candidate)
+
+
+@pytest.mark.parametrize('field,value',[('two_side_cost_rate',.000360000001),('buy_turnover_frac',.051),
+    ('constraint_trade_date','2026-10-30'),('entry_count',6),('holding_count_after',99)])
+def test_real_cached_turnover_persisted_comparison_still_rejects_changed_events(field,value):
+    old = _turnover_representation_case()
+    candidate = old.copy()
+    candidate.loc[0,field] = pd.Timestamp(value) if field.endswith('_date') else value
+    with pytest.raises(AssertionError):
+        _actual_cached_replay_turnover_comparison(old.to_csv(index=False).encode('utf8'),candidate)

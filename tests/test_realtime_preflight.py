@@ -58,6 +58,61 @@ def _request_clock(monkeypatch, hour=14, minute=59, second=59):
     return current
 
 
+@pytest.mark.parametrize("scenario", ["already_closed", "validation_crossed"])
+def test_native_initial_validation_calendar_is_inside_request_scope(tmp_path, monkeypatch, scenario):
+    from scripts import exchange_calendar
+    import json
+    output = tmp_path/"outputs"; output.mkdir()
+    for name in ("wind_microcap_top_100_biweekly_thursday_16y_cached.csv",
+                 "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv",
+                 "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"):
+        (output/name).write_text("date,close\n2026-11-02,1\n")
+    (output/"microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json").write_text(
+        json.dumps({"core_params":{"stock_return_basis_revision":"sina_ratio_ex_reference_v1"}}))
+    current = _request_clock(monkeypatch, hour=21 if scenario=="already_closed" else 14)
+    original = state._sha256
+    hashes = []
+    def actual_hash(path):
+        value = original(path); hashes.append(path)
+        if scenario=="validation_crossed":
+            current[0] = current[0].replace(hour=15,minute=0,second=0)
+        return value
+    monkeypatch.setattr(state,"_sha256",actual_hash)
+    requests = []
+    def forbidden(*args,**kwargs):
+        requests.append(args)
+        raise RuntimeError("uncaught calendar transport")
+    monkeypatch.setattr(exchange_calendar.subprocess,"run",forbidden)
+    exchange_calendar.sessions_for_day.cache_clear()
+    previous = dict(exchange_calendar._PREFLIGHT_REQUEST_GUARDS)
+    try:
+        result = state.preflight_state(tmp_path,expected_date=date(2026,11,2))
+    except RuntimeError as error:
+        assert "cutoff" in str(error)
+    else:
+        assert result["ok"] is False
+    assert requests==[]
+    assert exchange_calendar._PREFLIGHT_REQUEST_GUARDS==previous
+    assert bool(hashes) == (scenario=="validation_crossed")
+
+
+def test_native_request_scope_reaches_worker_threads_and_does_not_relax_explicit_limit(monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from scripts import exchange_calendar
+    current = _request_clock(monkeypatch)
+    strict = state._preflight_request_guard("intraday")
+    def wider(): pass
+    wider.intraday_deadline = current[0].replace(hour=16)
+    previous = dict(exchange_calendar._PREFLIGHT_REQUEST_GUARDS)
+    with exchange_calendar.preflight_request_window(strict):
+        current[0] = current[0].replace(hour=15,minute=0,second=0)
+        with exchange_calendar.preflight_request_window(wider):
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                with pytest.raises(RuntimeError,match="cutoff"):
+                    pool.submit(exchange_calendar.before_network_request,wider).result()
+    assert exchange_calendar._PREFLIGHT_REQUEST_GUARDS==previous
+
+
 def test_preflight_validation_crossing_cutoff_starts_no_history_request(monkeypatch, tmp_path):
     import sys
     from types import SimpleNamespace
@@ -214,15 +269,56 @@ def _quote_functions(embedded):
     else:
         source = (root/"microcap_top100_mom16_biweekly_live.py").read_text(encoding="utf-8-sig")
     wanted = {"fetch_eastmoney_batch_realtime_quotes", "fetch_tencent_realtime_quotes",
-              "fetch_eastmoney_stock_spot", "fetch_member_realtime_quotes"}
+              "fetch_eastmoney_stock_spot", "fetch_member_realtime_quotes", "fetch_hedge_realtime_quote_fast",
+              "fetch_tencent_realtime_smallcap_members", "fetch_realtime_smallcap_members_fast"}
     nodes = [node for node in ast.parse(source).body if isinstance(node, ast.FunctionDef) and node.name in wanted]
     assert {node.name for node in nodes} == wanted
-    namespace = {"pd": pd, "eastmoney_secid": lambda symbol: symbol,
+    namespace = {"pd": pd, "TOP_N": 100, "eastmoney_secid": lambda symbol: symbol,
                  "tencent_quote_symbol": lambda symbol: symbol,
                  "_normalize_realtime_quote_frame": lambda frame: frame,
                  "_cn_timestamp": lambda: pd.Timestamp("2026-11-03T15:00:00+08:00")}
     exec(compile(ast.fix_missing_locations(ast.Module(body=nodes, type_ignores=[])), "<actual-quote-transports>", "exec"), namespace)
     return namespace
+
+
+@pytest.mark.parametrize("embedded", [False, True])
+def test_active_native_scope_blocks_implicit_hedge_fallback_after_cutoff(monkeypatch, embedded):
+    from scripts import exchange_calendar
+    from types import SimpleNamespace
+    current = _request_clock(monkeypatch)
+    guard = state._preflight_request_guard("intraday")
+    namespace = _quote_functions(embedded)
+    calls = []
+    def get(url, **kwargs):
+        calls.append(url)
+        current[0] = current[0].replace(hour=15,minute=0,second=0)
+        raise RuntimeError("failed primary completed at cutoff")
+    namespace["requests"] = SimpleNamespace(get=get)
+    with exchange_calendar.preflight_request_window(guard):
+        with pytest.raises(RuntimeError, match="intraday request cutoff"):
+            namespace["fetch_hedge_realtime_quote_fast"]()
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("embedded", [False, True])
+@pytest.mark.parametrize("function", ["fetch_tencent_realtime_smallcap_members","fetch_realtime_smallcap_members_fast"])
+def test_active_native_scope_blocks_each_member_preview_transport(monkeypatch, embedded, function):
+    from scripts import exchange_calendar
+    from types import SimpleNamespace
+    current = _request_clock(monkeypatch)
+    guard = state._preflight_request_guard("intraday")
+    current[0] = current[0].replace(hour=15,minute=0,second=0)
+    namespace = _quote_functions(embedded)
+    namespace["load_realtime_eligible_codes"] = lambda: {"000001"}
+    calls = []
+    namespace["requests"] = SimpleNamespace(get=lambda *a, **k:calls.append(a))
+    kwargs = dict(effective_date=None,capital=None,target_size=1)
+    if function.startswith("fetch_tencent"):
+        kwargs["eligible_codes"] = {"000001"}
+    with exchange_calendar.preflight_request_window(guard):
+        with pytest.raises(RuntimeError,match="intraday request cutoff"):
+            namespace[function](**kwargs)
+    assert calls == []
 
 
 @pytest.mark.parametrize("embedded", [False, True])
@@ -297,3 +393,49 @@ def test_close_preflight_mode_cannot_start_before_close(monkeypatch):
     guard = state._preflight_request_guard("close-confirmed-check")
     with pytest.raises(RuntimeError, match="close-confirmed-check"):
         guard()
+
+
+@pytest.mark.parametrize("version", ["2_0","2_3","2_5"])
+def test_official_realtime_entry_cannot_fetch_hedge_after_members_complete_at_cutoff(monkeypatch, capsys, version):
+    """Actual entry wrapper and quote code; no new policy gate is mocked as PASS."""
+    import importlib
+    import pandas as pd
+    import requests
+    import test_realtime_quote_integrity_20261024 as quotes
+    module = importlib.import_module("microcap_top100_mom16_biweekly_live_v"+version)
+    v20 = module if version == "2_0" else module.v2_0
+    base = v20.base_mod
+    clock = [pd.Timestamp(quotes.DAY+"T14:59:59+08:00")]
+    monkeypatch.setattr(quotes,"NOW",clock[0])
+    monkeypatch.setattr(state,"_preflight_now",lambda:clock[0].to_pydatetime())
+    namespace = base.build_realtime_signal_fast.__globals__
+    original = namespace["_cn_timestamp"]
+    monkeypatch.setitem(namespace,"_cn_timestamp",lambda value=None:clock[0] if value is None else original(value))
+    monkeypatch.setitem(namespace,"_cn_local_day",lambda value=None:pd.Timestamp(clock[0].date()))
+    monkeypatch.setitem(namespace,"REALTIME_QUOTE_FETCH_ATTEMPTS",1)
+    monkeypatch.setitem(namespace,"ensure_realtime_last_close_map",lambda *a,**k:dict.fromkeys(quotes.SYMBOLS,10.))
+    provider = quotes.Quotes()
+    hedge_calls = []
+    member_calls = []
+    def get(url,**kwargs):
+        response = provider(url,**kwargs)
+        if "ulist.np" in url:
+            member_calls.append(url)
+            if len(member_calls)==2:
+                clock[0]=clock[0].replace(hour=15,minute=0,second=0)
+        if "/stock/get" in url or "sh000852" in url:
+            hedge_calls.append(url)
+        return response
+    monkeypatch.setattr(requests,"get",get)
+    monkeypatch.setenv("TOP100_REALTIME_REQUIRE_STATE","1")
+    entry = (v20.overlay_mod._print_realtime_signal_query if version=="2_0" else module._print_realtime_signal_query)
+    key = "build_realtime_v"+version+"_outputs"
+    def quote_builder():
+        signal, metadata, close, _result = base.build_realtime_signal_fast(quotes.context())
+        base.assert_realtime_meta_is_actionable(metadata)
+        return signal, metadata, close
+    monkeypatch.setitem(entry.__globals__,key,quote_builder)
+    entry()
+    assert len(member_calls)==2
+    assert hedge_calls==[]
+    assert "blocked" in capsys.readouterr().out.lower()

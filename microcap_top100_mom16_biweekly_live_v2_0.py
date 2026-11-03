@@ -3468,10 +3468,13 @@ def build_tradeability_series(
     tradeable = pd.Series(trading_dates.isin(actual_price_dates), index=trading_dates, dtype=bool) & listed_mask
     buyable = tradeable.copy()
     sellable = tradeable.copy()
+    aligned_st = None  # Evaluate once, only when an actual constraint check needs ST.
     if trade_constraint_mode == TRADE_CONSTRAINT_MODE_CLOSE:
         prev_close = close_calendar.shift(1)
         for dt in trading_dates[tradeable.to_numpy()]:
-            is_st = False if st_series is None else bool(st_series.reindex(trading_dates).fillna(False).loc[dt])
+            if st_series is not None and aligned_st is None:
+                aligned_st = st_series.reindex(trading_dates).fillna(False)
+            is_st = False if st_series is None else bool(aligned_st.loc[dt])
             up_blocked, down_blocked = detect_close_limit_blocks(
                 symbol=symbol,
                 trade_date=pd.Timestamp(dt),
@@ -3488,7 +3491,9 @@ def build_tradeability_series(
         for dt in trading_dates[tradeable.to_numpy()]:
             if pd.isna(ohlc_lookup.loc[dt].get("open")):
                 continue
-            is_st = False if st_series is None else bool(st_series.reindex(trading_dates).fillna(False).loc[dt])
+            if st_series is not None and aligned_st is None:
+                aligned_st = st_series.reindex(trading_dates).fillna(False)
+            is_st = False if st_series is None else bool(aligned_st.loc[dt])
             up_locked, down_locked = detect_limit_locks(
                 symbol,
                 pd.Timestamp(dt),
@@ -8452,6 +8457,39 @@ def build_realtime_refresh_proof_fields(target_end_date: object) -> dict[str, ob
     }
 
 
+NOTICE_AUDIT_META_FIELDS = (
+    "notice_audit_id", "notice_audit_policy_revision", "notice_observation_start",
+    "notice_observation_end", "notice_audit_manifest_path", "notice_audit_manifest_sha256",
+)
+
+
+def _requires_realtime_notice_audit(meta=None):
+    from scripts.exchange_calendar import intraday_request_window_active
+    return (intraday_request_window_active()
+            or str((meta or {}).get("notice_audit_required", "")).lower() == "true")
+
+
+def assert_realtime_notice_audit_matches_meta(meta):
+    if not _requires_realtime_notice_audit(meta):
+        return
+    proof = load_realtime_refresh_proof(meta.get("latest_anchor_trade_date"))
+    summary = proof.get("current_member_notice_audit_summary")
+    if not isinstance(summary, dict):
+        raise RuntimeError("Realtime current-member notice audit lacks a current intraday observation")
+    for field in NOTICE_AUDIT_META_FIELDS:
+        if not summary.get(field) or meta.get(field) != summary[field]:
+            raise RuntimeError("Realtime current-member notice audit differs from shared proof: " + field)
+
+
+def assert_realtime_notice_audit_matches_signal(signal_row, meta):
+    if not _requires_realtime_notice_audit(meta):
+        return
+    assert_realtime_notice_audit_matches_meta(meta)
+    for field in NOTICE_AUDIT_META_FIELDS:
+        if field not in signal_row or not signal_row[field].astype(str).eq(str(meta[field])).all():
+            raise RuntimeError("Realtime current-member notice audit missing or changed in final CSV: " + field)
+
+
 def load_realtime_refresh_proof(expected_target_end_date: object) -> dict[str, object]:
     if not REALTIME_REFRESH_PROOF_PATH.is_file():
         raise RuntimeError(
@@ -8468,6 +8506,10 @@ def load_realtime_refresh_proof(expected_target_end_date: object) -> dict[str, o
                 "Realtime state independent refresh proof is stale or inconsistent: "
                 f"field={field} actual={proof.get(field)!r} expected={expected[field]!r}"
             )
+    if _cn_timestamp().hour < 15:
+        from scripts.realtime_state_bundle import verify_intraday_notice_refresh_proof
+        root = Path(REALTIME_REFRESH_PROOF_PATH).resolve().parents[2]
+        proof["current_member_notice_audit_summary"] = verify_intraday_notice_refresh_proof(root, proof)
     return proof
 
 
@@ -8532,6 +8574,7 @@ def assert_realtime_anchor_precedes_quote_trade_date(meta: dict[str, object]) ->
             "latest_anchor_trade_date does not equal the official previous completed trading day before snapshot: "
             f"anchor={anchor_day.date()} expected={official_previous} quote={quote_day.date()}"
         )
+    assert_realtime_notice_audit_matches_meta(meta)
     # Local NAV/proxy dates are data, never an independent exchange calendar.
 
 
@@ -8546,6 +8589,8 @@ def realtime_meta_is_actionable(meta: dict[str, object]) -> bool:
 REALTIME_ACTIONABILITY_ERROR_FRAGMENTS = (
     "Realtime quote integrity",
     "Realtime publication deadline",
+    "Preflight intraday request cutoff",
+    "Realtime current-member notice audit",
     "synthetic last-close fallback quotes",
     "independent refresh proof",
     "independently refreshed latest completed trade date",
@@ -10100,8 +10145,8 @@ def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 
             f"?fltt=2&secids={','.join(batch)}"
             "&fields=f12,f14,f2,f18,f124,f297"
         )
-        if before_request is not None:
-            before_request()
+        from scripts.exchange_calendar import before_network_request
+        before_network_request(before_request)
         try:
             response = requests.get(
                 url,
@@ -10164,8 +10209,8 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80, *, b
         if not batch:
             continue
         url = f"https://qt.gtimg.cn/q={','.join(batch)}"
-        if before_request is not None:
-            before_request()
+        from scripts.exchange_calendar import before_network_request
+        before_network_request(before_request)
         try:
             response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
             response.raise_for_status()
@@ -10212,8 +10257,8 @@ def fetch_eastmoney_stock_spot(symbol: str, *, before_request=None) -> dict[str,
         f"?secid={market}.{code}"
         "&fields=f43,f44,f45,f46,f57,f58,f60,f86"
     )
-    if before_request is not None:
-        before_request()
+    from scripts.exchange_calendar import before_network_request
+    before_network_request(before_request)
     try:
         response = requests.get(
             url,
@@ -10309,6 +10354,8 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
         "?secid=1.000852"
         "&fields=f43,f60,f86"
     )
+    from scripts.exchange_calendar import before_network_request
+    before_network_request()
     try:
         response = requests.get(
             url,
@@ -10326,6 +10373,7 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
             return RealtimeHedgeQuote(row["rt_price"], "eastmoney_stock_get", row["trade_date"], row)
     except Exception:
         pass
+    before_network_request()
     try:
         quotes = fetch_tencent_realtime_quotes(["sh000852"])
         if not quotes.empty:
@@ -11046,6 +11094,10 @@ def build_realtime_signal_fast(
         meta["realtime_base_source"] = realtime_base_source
     if realtime_base_note:
         meta["realtime_base_note"] = realtime_base_note
+    for field in ("notice_audit_required", *NOTICE_AUDIT_META_FIELDS):
+        if field in context:
+            meta[field] = context[field]
+            signal_df[field] = context[field]
     apply_realtime_quote_integrity_to_signal(signal_df, meta)
     return signal_df, meta, rt_close_df, rt_result
 
@@ -11107,6 +11159,8 @@ def fetch_tencent_realtime_smallcap_members(
     for offset in range(0, len(codes), 500):
         batch = codes[offset : offset + 500]
         quote_keys = ",".join(("sh" if code.startswith("6") else "sz") + code for code in batch)
+        from scripts.exchange_calendar import before_network_request
+        before_network_request()
         response = requests.get(
             f"https://qt.gtimg.cn/q={quote_keys}",
             timeout=30,
@@ -11195,6 +11249,8 @@ def fetch_realtime_smallcap_members_fast(
         data: dict[str, object] | None = None
         last_error: Exception | None = None
         for host in ("push2.eastmoney.com", "82.push2.eastmoney.com", "28.push2.eastmoney.com"):
+            from scripts.exchange_calendar import before_network_request
+            before_network_request()
             try:
                 response = requests.get(
                     f"https://{host}/api/qt/clist/get{query}",
@@ -12572,7 +12628,12 @@ def run_realtime_query_with_fresh_state(action):
         _refresh_realtime_state_for_local_query()
     os.environ["TOP100_REALTIME_REQUIRE_STATE"] = "1"
     try:
-        return action()
+        from scripts.realtime_state_bundle import _preflight_request_guard
+        from scripts.exchange_calendar import preflight_request_window
+        before_request = _preflight_request_guard("intraday")
+        before_request()
+        with preflight_request_window(before_request):
+            return action()
     finally:
         if previous is None:
             os.environ.pop("TOP100_REALTIME_REQUIRE_STATE", None)
@@ -12706,6 +12767,9 @@ def load_realtime_context() -> tuple[dict[str, object], pd.DataFrame, dict[str, 
         member_context["expected_latest_completed_trade_date"] = pd.Timestamp(target_end_date).normalize()
         member_context["expected_latest_completed_trade_date_source"] = refresh_proof.get("source", "")
         member_context["expected_latest_completed_trade_date_verified_on"] = refresh_proof.get("verified_on", "")
+        notice_summary = refresh_proof.get("current_member_notice_audit_summary")
+        if isinstance(notice_summary, dict):
+            member_context.update(notice_summary)
         turnover_df = pd.read_csv(base_paths["proxy_turnover"])
         from scripts.top100_data_contracts import normalise_turnover_table
         turnover_df = normalise_turnover_table(turnover_df)
@@ -12929,6 +12993,7 @@ MEMBER_REBALANCE_META_COLS = {
     "member_rebalance_official",
 }
 REALTIME_META_FORCE_COLS = {
+    "notice_audit_required", *realtime_core.base_mod.NOTICE_AUDIT_META_FIELDS,
     *realtime_core.base_mod.REALTIME_QUOTE_INTEGRITY_META_FIELDS,
     "fallback_warning",
     "realtime_base_source",
@@ -13308,6 +13373,7 @@ def _assert_realtime_signal_ready_to_commit(signal_row: pd.DataFrame, meta: dict
     # must not publish a now-expired quote or cross the intraday close deadline.
     realtime_core.base_mod.assert_realtime_meta_is_actionable(meta)
     realtime_core.base_mod.assert_realtime_quote_integrity_matches_signal(signal_row, meta)
+    realtime_core.base_mod.assert_realtime_notice_audit_matches_signal(signal_row, meta)
 
 
 def _apply_realtime_meta_columns_to_signal_row(signal_row: pd.DataFrame, meta: dict[str, object]) -> None:

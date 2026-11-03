@@ -146,7 +146,7 @@ def test_holiday_requires_full_independent_proof(tmp_path, monkeypatch, missing)
 def test_preflight_uses_external_calendar_and_independent_history(tmp_path, monkeypatch, expected):
     from datetime import datetime
     from zoneinfo import ZoneInfo
-    monkeypatch.setattr(state, "_preflight_now", lambda: datetime(2026, 8, 17, 14, 30, tzinfo=ZoneInfo("Asia/Shanghai")))
+    monkeypatch.setattr(state, "_preflight_now", lambda: datetime(2026, 8, 17, 15, 30, tzinfo=ZoneInfo("Asia/Shanghai")))
     import pandas as pd
     valid_state(tmp_path, monkeypatch, date(2026, 8, 17))
     from scripts import index_history_preflight
@@ -163,10 +163,10 @@ def test_preflight_uses_external_calendar_and_independent_history(tmp_path, monk
         "current_st_name_intersection": 0})
     proof_before = (tmp_path / state.REFRESH_PROOF_REL).read_bytes()
     if expected == date(2026, 8, 7):
-        assert state.preflight_state(tmp_path, 5, expected_date=expected)["ok"]
+        assert state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")["ok"]
     else:
         with pytest.raises(RuntimeError, match="calendar"):
-            state.preflight_state(tmp_path, 5, expected_date=expected)
+            state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")
         assert (tmp_path / state.REFRESH_PROOF_REL).read_bytes() == proof_before
 
 

@@ -126,6 +126,7 @@ def _shared_pack_inventory(root: Path) -> set[str]:
         paths.add(state.PROXY_EFFECTIVE_MEMBERS_REL)
     # Includes both effective/historical members and the full ranking universe.
     paths.update(state._iter_current_member_cache_files(root))
+    paths.update(state._current_notice_audit_transport_files(root))
     return paths
 
 

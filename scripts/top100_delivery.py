@@ -46,6 +46,8 @@ RETURN_BASIS_FILES = [
     "scripts/st_history_scope.py",
     "scripts/st_notice_incremental.py",
     "scripts/st_notice_refresh.py",
+    "scripts/realtime_member_notice_audit.py",
+    "scripts/index_history_preflight.py",
     "scripts/st_metadata_refresh.py",
     "scripts/stock_tail_returns.py",
     "scripts/share_change_source.py",

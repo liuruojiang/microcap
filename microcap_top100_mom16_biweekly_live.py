@@ -4709,8 +4709,8 @@ def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 
             f"?fltt=2&secids={','.join(batch)}"
             "&fields=f12,f14,f2,f18,f124,f297"
         )
-        if before_request is not None:
-            before_request()
+        from scripts.exchange_calendar import before_network_request
+        before_network_request(before_request)
         try:
             response = requests.get(
                 url,
@@ -4773,8 +4773,8 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80, *, b
         if not batch:
             continue
         url = f"https://qt.gtimg.cn/q={','.join(batch)}"
-        if before_request is not None:
-            before_request()
+        from scripts.exchange_calendar import before_network_request
+        before_network_request(before_request)
         try:
             response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
             response.raise_for_status()
@@ -4821,8 +4821,8 @@ def fetch_eastmoney_stock_spot(symbol: str, *, before_request=None) -> dict[str,
         f"?secid={market}.{code}"
         "&fields=f43,f44,f45,f46,f57,f58,f60,f86"
     )
-    if before_request is not None:
-        before_request()
+    from scripts.exchange_calendar import before_network_request
+    before_network_request(before_request)
     try:
         response = requests.get(
             url,
@@ -5203,6 +5203,8 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
         "?secid=1.000852"
         "&fields=f43,f60,f86"
     )
+    from scripts.exchange_calendar import before_network_request
+    before_network_request()
     try:
         response = requests.get(
             url,
@@ -5220,6 +5222,7 @@ def fetch_hedge_realtime_quote_fast() -> tuple[float, str, str]:
             return RealtimeHedgeQuote(row["rt_price"], "eastmoney_stock_get", row["trade_date"], row)
     except Exception:
         pass
+    before_network_request()
     try:
         quotes = fetch_tencent_realtime_quotes(["sh000852"])
         if not quotes.empty:
@@ -5923,6 +5926,8 @@ def fetch_tencent_realtime_smallcap_members(
     for offset in range(0, len(codes), 500):
         batch = codes[offset : offset + 500]
         quote_keys = ",".join(("sh" if code.startswith("6") else "sz") + code for code in batch)
+        from scripts.exchange_calendar import before_network_request
+        before_network_request()
         response = requests.get(
             f"https://qt.gtimg.cn/q={quote_keys}",
             timeout=30,
@@ -6011,6 +6016,8 @@ def fetch_realtime_smallcap_members_fast(
         data: dict[str, object] | None = None
         last_error: Exception | None = None
         for host in ("push2.eastmoney.com", "82.push2.eastmoney.com", "28.push2.eastmoney.com"):
+            from scripts.exchange_calendar import before_network_request
+            before_network_request()
             try:
                 response = requests.get(
                     f"https://{host}/api/qt/clist/get{query}",
