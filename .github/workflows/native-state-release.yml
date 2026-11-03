@@ -10,31 +10,47 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Download exact base and delta
-        run: |
-          gh release download top100-tencent-daily-20261102 --repo liuruojiang/microcap --pattern microcap-tencent-whole-delivery-20261102.zip
-          gh release download top100-audit-fixes-20261103 --repo liuruojiang/microcap --pattern audit-fixes-state-delta.zip
-      - name: Reconstruct and verify identical bundle
+      - name: Reconstruct exact completed package and verify remote bytes
         shell: python
         run: |
-          import hashlib,json,zipfile
+          import hashlib,json,subprocess,zipfile
           from pathlib import Path
-          old=Path('microcap-tencent-whole-delivery-20261102.zip').read_bytes()
-          delta=Path('audit-fixes-state-delta.zip').read_bytes()
-          assert hashlib.sha256(old).hexdigest()=='9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864'
-          assert hashlib.sha256(delta).hexdigest()=='40b386136f0973cebe77e8de1294cb56f938b0486db6f702d3004329b614c033'
-          with zipfile.ZipFile('audit-fixes-state-delta.zip') as z:
-              r=json.loads(z.read('recipe.json'));literal=z.read('literals.bin')
+          V={'base': 'microcap-audit-fixed-whole-delivery-20261102.zip', 'delta': 'st-notice-state-delta.zip', 'target': 'microcap-st-notice-whole-delivery-20261103.zip', 'tag': 'top100-st-notice-20261103', 'base_sha': '99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93', 'base_size': 605202401, 'delta_sha': '88cd631fb85a6871ef7889ba8af178b0a4d89c5a239906bb6b5473c90a7607c1', 'delta_size': 21307739, 'target_sha': 'c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911', 'target_size': 609746827}
+          repo="liuruojiang/microcap"
+          def gh(*args): return subprocess.check_output(["gh",*args],timeout=600)
+          def verify(path,expected,size):
+              raw=Path(path).read_bytes()
+              if len(raw)!=size or hashlib.sha256(raw).hexdigest()!=expected:
+                  raise RuntimeError("Exact archive verification failed: "+str(path))
+              return raw
+          gh("release","download","top100-audit-fixes-20261103","--repo",repo,"--pattern",V["base"])
+          gh("release","download",V["tag"],"--repo",repo,"--pattern",V["delta"])
+          old=verify(V["base"],V["base_sha"],V["base_size"])
+          verify(V["delta"],V["delta_sha"],V["delta_size"])
+          with zipfile.ZipFile(V["delta"]) as archive:
+              recipe=json.loads(archive.read("recipe.json")); literal=archive.read("literals.bin")
+          if (recipe["base_sha256"],recipe["target_sha256"],recipe["target_size"])!=(V["base_sha"],V["target_sha"],V["target_size"]):
+              raise RuntimeError("Recipe identity differs from official completed pack")
           result=bytearray()
-          for kind,start,size in r['ops']:
-              assert kind in ('copy','literal') and start>=0 and size>=0
-              source=old if kind=='copy' else literal
-              assert start+size<=len(source)
+          for kind,start,size in recipe["ops"]:
+              if kind not in ("copy","literal") or type(start) is not int or type(size) is not int or start<0 or size<0:
+                  raise RuntimeError("Invalid delta operation")
+              source=old if kind=="copy" else literal
+              if start+size>len(source): raise RuntimeError("Delta operation exceeds source")
               result.extend(source[start:start+size])
-          assert len(result)==605202401
-          assert hashlib.sha256(result).hexdigest()=='99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93'
-          Path('microcap-audit-fixed-whole-delivery-20261102.zip').write_bytes(result)
-      - name: Upload exact bundle and publish release
-        run: |
-          gh release upload top100-audit-fixes-20261103 microcap-audit-fixed-whole-delivery-20261102.zip --repo liuruojiang/microcap
-          gh release edit top100-audit-fixes-20261103 --repo liuruojiang/microcap --draft=false
+          Path(V["target"]).write_bytes(result)
+          verify(V["target"],V["target_sha"],V["target_size"])
+          assets=json.loads(gh("api","repos/"+repo+"/releases/tags/"+V["tag"]))["assets"]
+          existing=[a for a in assets if a["name"]==V["target"]]
+          if existing:
+              if len(existing)!=1 or existing[0]["size"]!=V["target_size"]: raise RuntimeError("Remote asset identity conflict")
+              saved=Path("remote-existing");saved.mkdir()
+              gh("release","download",V["tag"],"--repo",repo,"--pattern",V["target"],"--dir",str(saved))
+              verify(saved/V["target"],V["target_sha"],V["target_size"])
+          else:
+              gh("release","upload",V["tag"],V["target"],"--repo",repo)
+              saved=Path("remote-upload-readback");saved.mkdir()
+              gh("release","download",V["tag"],"--repo",repo,"--pattern",V["target"],"--dir",str(saved))
+              verify(saved/V["target"],V["target_sha"],V["target_size"])
+          gh("release","edit",V["tag"],"--repo",repo,"--draft=false")
+          print(json.dumps({"exact_archive_published":True,"sha256":V["target_sha"],"bytes":V["target_size"]}))
