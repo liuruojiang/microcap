@@ -19,9 +19,20 @@ SOURCE = "akshare.tool_trade_date_hist_sina"
 
 
 @lru_cache(maxsize=4)
-def sessions_for_day(day: date) -> tuple[date, ...]:
+def sessions_for_day(day: date, *, before_request=None) -> tuple[date, ...]:
     code = ("import json,akshare as ak; "
             "print(json.dumps([str(d) for d in ak.tool_trade_date_hist_sina()['trade_date']]))")
+    deadline = getattr(before_request, "intraday_deadline", None)
+    if deadline is not None:
+        if not isinstance(deadline, datetime) or deadline.tzinfo is None:
+            raise ValueError("Calendar request deadline lacks timezone")
+        code = ("import json,akshare as ak\nfrom datetime import datetime,timezone\n"
+                f"deadline=datetime.fromisoformat({deadline.isoformat()!r})\n"
+                "if datetime.now(timezone.utc)>=deadline:\n"
+                " raise RuntimeError('Preflight intraday request cutoff before calendar HTTP')\n"
+                "print(json.dumps([str(d) for d in ak.tool_trade_date_hist_sina()['trade_date']]))")
+    if before_request is not None:
+        before_request()
     try:
         process = subprocess.run([sys.executable, "-X", "utf8", "-c", code],
                                  capture_output=True, text=True, encoding="utf-8",
@@ -37,11 +48,12 @@ def sessions_for_day(day: date) -> tuple[date, ...]:
         raise RuntimeError(f"Independent exchange calendar unavailable for {day}: {type(exc).__name__}") from exc
 
 
-def latest_completed_session(now: datetime | None = None) -> date:
+def latest_completed_session(now: datetime | None = None, *, before_request=None) -> date:
     current = datetime.now(BJ) if now is None else now
     current = current.replace(tzinfo=BJ) if current.tzinfo is None else current.astimezone(BJ)
     day = current.date()
-    sessions = sessions_for_day(day)
+    options = {"before_request": before_request} if before_request is not None else {}
+    sessions = sessions_for_day(day, **options)
     completed = [value for value in sessions if value < day or (
         value == day and current.time().replace(tzinfo=None) >= CLOSE_CONFIRMED)]
     if not completed:

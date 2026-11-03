@@ -82,7 +82,7 @@ def normalise_turnover_table(frame: pd.DataFrame) -> pd.DataFrame:
     missing = required.difference(out.columns)
     if missing:
         raise ValueError(f"turnover table missing columns: {sorted(missing)}")
-    for field in ("rebalance_date", "execution_date", "effective_date", "return_start_date"):
+    for field in ("rebalance_date", "constraint_trade_date", "execution_date", "effective_date", "return_start_date"):
         if field not in out:
             continue
         raw = out[field]

@@ -4691,7 +4691,7 @@ def add_last_close_flat_fallback_quotes(
     return supplemented, len(rows)
 
 
-def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 80) -> pd.DataFrame:
+def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 80, *, before_request=None) -> pd.DataFrame:
     clean_secids = []
     seen = set()
     for symbol in symbols:
@@ -4709,6 +4709,8 @@ def fetch_eastmoney_batch_realtime_quotes(symbols: list[str], batch_size: int = 
             f"?fltt=2&secids={','.join(batch)}"
             "&fields=f12,f14,f2,f18,f124,f297"
         )
+        if before_request is not None:
+            before_request()
         try:
             response = requests.get(
                 url,
@@ -4757,7 +4759,7 @@ def tencent_quote_symbol(symbol: str) -> str:
     return f"{prefix}{code}"
 
 
-def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> pd.DataFrame:
+def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80, *, before_request=None) -> pd.DataFrame:
     quote_symbols = []
     seen = set()
     for symbol in symbols:
@@ -4771,6 +4773,8 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> p
         if not batch:
             continue
         url = f"https://qt.gtimg.cn/q={','.join(batch)}"
+        if before_request is not None:
+            before_request()
         try:
             response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
             response.raise_for_status()
@@ -4809,7 +4813,7 @@ def fetch_tencent_realtime_quotes(symbols: list[str], batch_size: int = 80) -> p
     return out
 
 
-def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
+def fetch_eastmoney_stock_spot(symbol: str, *, before_request=None) -> dict[str, object] | None:
     code = str(symbol).zfill(6)
     market = "1" if code.startswith(("5", "6", "9")) else "0"
     url = (
@@ -4817,6 +4821,8 @@ def fetch_eastmoney_stock_spot(symbol: str) -> dict[str, object] | None:
         f"?secid={market}.{code}"
         "&fields=f43,f44,f45,f46,f57,f58,f60,f86"
     )
+    if before_request is not None:
+        before_request()
     try:
         response = requests.get(
             url,
@@ -5129,21 +5135,22 @@ def fetch_qveris_realtime_quotes(
     return out, "qveris_cn_financial_pro_realtime"
 
 
-def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24) -> pd.DataFrame:
+def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24, *, before_request=None) -> pd.DataFrame:
     clean_symbols = [str(symbol).zfill(6) for symbol in symbols if str(symbol).strip()]
     if not clean_symbols:
         return _empty_realtime_quote_frame()
     source_parts: list[str] = []
     frames: list[pd.DataFrame] = []
 
-    eastmoney_batch_df = fetch_eastmoney_batch_realtime_quotes(clean_symbols)
+    request_options = {"before_request": before_request} if before_request is not None else {}
+    eastmoney_batch_df = fetch_eastmoney_batch_realtime_quotes(clean_symbols, **request_options)
     if not eastmoney_batch_df.empty:
         frames.append(eastmoney_batch_df)
         source_parts.append(str(eastmoney_batch_df.attrs.get("quote_source") or "eastmoney_ulist_free"))
 
     valid_free_codes = _valid_quote_code_set(pd.concat(frames, ignore_index=True) if frames else pd.DataFrame())
     tencent_symbols = [symbol for symbol in clean_symbols if symbol not in valid_free_codes]
-    tencent_df = fetch_tencent_realtime_quotes(tencent_symbols) if tencent_symbols else _empty_realtime_quote_frame()
+    tencent_df = fetch_tencent_realtime_quotes(tencent_symbols, **request_options) if tencent_symbols else _empty_realtime_quote_frame()
     if not tencent_df.empty:
         frames.append(tencent_df)
         source_parts.append(str(tencent_df.attrs.get("quote_source") or "tencent_batch_free"))
@@ -5153,7 +5160,7 @@ def fetch_member_realtime_quotes(symbols: list[str], max_workers: int = 24) -> p
     rows: list[dict[str, object]] = []
     if per_symbol_symbols:
         with ThreadPoolExecutor(max_workers=max(1, min(int(max_workers), 32))) as pool:
-            futures = {pool.submit(fetch_eastmoney_stock_spot, symbol): symbol for symbol in per_symbol_symbols}
+            futures = {pool.submit(fetch_eastmoney_stock_spot, symbol, **request_options): symbol for symbol in per_symbol_symbols}
             for fut in as_completed(futures):
                 row = fut.result()
                 if row is not None:

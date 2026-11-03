@@ -51,3 +51,41 @@ def test_proxy_replay_preserves_bytes_but_rejects_return_change(tmp_path,changed
         with pytest.raises(AssertionError):preserve_verified_replay_prefix(v.base_mod,old,p,proxy=True)
     else:
         preserve_verified_replay_prefix(v.base_mod,old,p,proxy=True);assert p.read_bytes()==old
+
+
+@pytest.mark.parametrize('representation', ['string', 'timestamp', 'numpy64'])
+def test_turnover_constraint_date_uses_same_strict_daily_normalisation(representation):
+    import numpy as np
+    from scripts.top100_data_contracts import normalise_turnover_table
+    old = pd.DataFrame([dict(rebalance_date='2026-10-29', execution_timing='close',
+                            constraint_trade_date='2026-10-29', two_side_cost_rate=0.0003)])
+    new = old.copy()
+    value = {'string': '2026-10-29T00:00:00.000000000',
+             'timestamp': pd.Timestamp('2026-10-29'),
+             'numpy64': np.datetime64('2026-10-29', 'ns')}[representation]
+    new['constraint_trade_date'] = [value]
+    pd.testing.assert_frame_equal(normalise_turnover_table(old), normalise_turnover_table(new),
+                                  check_exact=True, check_dtype=False)
+
+
+@pytest.mark.parametrize('value', ['not-a-date', '2026-10-29T00:00:01', '2026-10-29T00:00:00+08:00'])
+def test_turnover_constraint_date_does_not_truncate_or_drop_invalid_values(value):
+    from scripts.top100_data_contracts import normalise_turnover_table
+    frame = pd.DataFrame([dict(rebalance_date='2026-10-29', execution_timing='close',
+                              constraint_trade_date=value, two_side_cost_rate=0.0003)])
+    with pytest.raises(ValueError):
+        normalise_turnover_table(frame)
+
+
+@pytest.mark.parametrize('field,value', [('constraint_trade_date', '2026-10-30'),
+                                       ('two_side_cost_rate', 0.000300000001), ('entry_count', 6)])
+def test_turnover_date_format_compatibility_keeps_values_exact(field, value):
+    from scripts.top100_data_contracts import normalise_turnover_table
+    old = pd.DataFrame([dict(rebalance_date='2026-10-29', execution_timing='close',
+                            constraint_trade_date='2026-10-29', two_side_cost_rate=0.0003,
+                            entry_count=5)])
+    new = old.copy()
+    new.loc[0, field] = value
+    with pytest.raises(AssertionError):
+        pd.testing.assert_frame_equal(normalise_turnover_table(old), normalise_turnover_table(new),
+                                      check_exact=True, check_dtype=False)

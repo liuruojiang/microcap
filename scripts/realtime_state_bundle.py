@@ -193,7 +193,8 @@ def _build_refresh_proof(target_end_date: date) -> dict[str, object]:
     }
 
 
-def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, object] | None = None) -> dict[str, object]:
+def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, object] | None = None,
+                         *, before_commit=None) -> dict[str, object]:
     proof = _build_refresh_proof(target_end_date)
     if evidence is not None:
         proof["preflight_evidence"] = evidence
@@ -211,6 +212,8 @@ def _write_refresh_proof(root: Path, target_end_date: date, evidence: dict[str, 
         ) as handle:
             json.dump(proof, handle, ensure_ascii=False, indent=2)
             temp_path = Path(handle.name)
+        if before_commit is not None:
+            before_commit()
         temp_path.replace(path)
     finally:
         if temp_path is not None:
@@ -880,9 +883,33 @@ def enforce_anchor_target(report: dict[str, object], target_end_date: date) -> d
     return report
 
 
+def _preflight_now():
+    from zoneinfo import ZoneInfo
+    return datetime.now(ZoneInfo("Asia/Shanghai"))
+
+
+def _preflight_request_guard(publication_mode):
+    if publication_mode not in {"intraday", "close-confirmed-check"}:
+        raise ValueError("Unknown preflight publication mode")
+    started = _preflight_now()
+    deadline = started.replace(hour=15, minute=0, second=0, microsecond=0)
+    def before_request():
+        current = _preflight_now()
+        if publication_mode == "intraday" and current >= deadline:
+            raise RuntimeError("Preflight intraday request cutoff: no new network request at/after 15:00 Beijing")
+        if publication_mode == "close-confirmed-check" and current.hour < 15:
+            raise RuntimeError("close-confirmed-check requires actual time at/after 15:00 Beijing")
+    # The existing calendar runs in a child. Carry the same absolute deadline
+    # so dependency imports cannot move its actual HTTP call past the cutoff.
+    before_request.intraday_deadline = deadline if publication_mode == "intraday" else None
+    return before_request
+
+
 def preflight_state(root: Path, max_anchor_age_days: int | None = None,
-                    expected_date: date | None = None) -> dict[str, object]:
+                    expected_date: date | None = None, *,
+                    publication_mode: str = "intraday") -> dict[str, object]:
     """Independently recheck existing state without refreshing/rebuilding its NAV."""
+    before_request = _preflight_request_guard(publication_mode)
     root = root.resolve()
     before = validate_state(root, max_anchor_age_days=None if expected_date else max_anchor_age_days,
                             require_current_refresh_proof=False)
@@ -898,21 +925,28 @@ def preflight_state(root: Path, max_anchor_age_days: int | None = None,
     base = v2_0.base_mod
     anchor = _parse_date(str(before["anchor_dates"]["proxy_index"]))
     from scripts.index_history_preflight import fetch_preflight_history
-    history = fetch_preflight_history(anchor - timedelta(days=20), expected_date)
+    before_request()
+    history = fetch_preflight_history(anchor - timedelta(days=20), expected_date, before_request=before_request)
     target = base.latest_closed_history_date(history).date()
     if expected_date is not None and target != expected_date:
         raise RuntimeError(f"Independent history {target} differs from expected calendar day {expected_date}")
-    evidence = verify_live_member_names(base, before["current_member_symbols"])
+    before_request()
+    evidence = verify_live_member_names(base, before["current_member_symbols"], before_request=before_request)
     evidence["independent_completed_day"] = target.isoformat()
     evidence["independent_history_rows"] = len(history)
     evidence.update(history.attrs)
     if expected_date is not None:
         evidence["expected_calendar_day"] = expected_date.isoformat()
-    return certify_existing_state(root, before, target, max_anchor_age_days, evidence)
+    before_request()
+    return certify_existing_state(root, before, target, max_anchor_age_days, evidence,
+                                  before_commit=before_request)
 
 
-def verify_live_member_names(base, symbols: list[str]) -> dict[str, object]:
-    quotes = base.fetch_member_realtime_quotes(symbols)
+def verify_live_member_names(base, symbols: list[str], *, before_request=None) -> dict[str, object]:
+    options = {"before_request": before_request} if before_request is not None else {}
+    quotes = base.fetch_member_realtime_quotes(symbols, **options)
+    if before_request is not None:
+        before_request()
     today = _cn_today().isoformat()
     valid = quotes.loc[quotes["trade_date"].astype(str).eq(today)].copy()
     if len(valid) != TOP_N or set(valid["code"]) != set(symbols):
@@ -925,7 +959,8 @@ def verify_live_member_names(base, symbols: list[str]) -> dict[str, object]:
 
 def certify_existing_state(root: Path, before: dict[str, object], target: date,
                            max_anchor_age_days: int | None = None,
-                           evidence: dict[str, object] | None = None) -> dict[str, object]:
+                           evidence: dict[str, object] | None = None, *,
+                           before_commit=None) -> dict[str, object]:
     """Commit proof only after independent history and unchanged state agree."""
     calendar_match = evidence is not None and evidence.get("expected_calendar_day") == target.isoformat()
     after = validate_state(root, max_anchor_age_days=None if calendar_match else max_anchor_age_days,
@@ -941,7 +976,10 @@ def certify_existing_state(root: Path, before: dict[str, object], target: date,
     if after.get("errors"):
         after["ok"] = False
         return after
-    if evidence is None:
+    if before_commit is not None:
+        before_commit()
+        _write_refresh_proof(root, target, evidence, before_commit=before_commit)
+    elif evidence is None:
         _write_refresh_proof(root, target)
     else:
         _write_refresh_proof(root, target, evidence)
@@ -1427,6 +1465,9 @@ def main(argv: list[str] | None = None) -> int:
     preflight_parser.add_argument("--expected-date", type=date.fromisoformat,
                                   help="latest completed date from the formal exchange calendar")
 
+    preflight_parser.add_argument("--publication-mode", choices=("intraday", "close-confirmed-check"),
+                                  default="intraday", help="intraday forbids each new request at/after 15:00 Beijing")
+
     pack_parser = subparsers.add_parser("pack")
     add_common(pack_parser)
     pack_parser.add_argument("--bundle", type=Path, required=True)
@@ -1451,7 +1492,7 @@ def main(argv: list[str] | None = None) -> int:
         report = validate_state(args.root, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "preflight":
         report = preflight_state(args.root, max_anchor_age_days=args.max_anchor_age_days,
-                                 expected_date=args.expected_date)
+                                 expected_date=args.expected_date, publication_mode=args.publication_mode)
     elif args.command == "pack":
         report = pack_state(args.root, args.bundle, max_anchor_age_days=args.max_anchor_age_days)
     elif args.command == "refresh":
