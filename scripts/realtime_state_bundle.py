@@ -139,6 +139,10 @@ def _verify_share_source_json_protocol(root: Path, symbol: str, proof: dict) -> 
         relative, expected = previous["path"], previous["sha256"]
     else:
         raise ValueError("share source JSON protocol: source chain depth exceeded")
+    # The original proof also authenticates snapshots and baseline evidence.
+    # Recheck every declared byte, without interpreting unrelated JSON schemas.
+    for relative, digest in source_files.items():
+        bound(relative, digest)
     if any(path.read_bytes() != raw for path, raw in readbacks.items()):
         raise ValueError("share source JSON protocol: source changed during validation")
 

@@ -18,8 +18,10 @@ previous states and checks only native schema1 CNInfo response bodies:
 - `records` remains an array of objects; a total-share `F003N` value cannot be
   a JSON boolean. Existing valid numerical strings and provider extension keys
   retain their existing native interpretation.
-- Every inspected body/state must match the original native verified closure
-  and declared hash. Readback detects a change during the additional check.
+- Every declared source, ancestral snapshot, and baseline-evidence file must
+  match the original native verified closure and hash. A final complete
+  readback detects changes during the additional check; only declared native
+  CNInfo responses receive the JSON protocol classification above.
 
 The new guard runs immediately after the original native verification in both
 bundle enumeration and `validate_state`. Existing whole-delivery checks,

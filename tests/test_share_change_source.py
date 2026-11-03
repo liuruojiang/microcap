@@ -102,6 +102,18 @@ def test_delivery_guard_rejects_raw_changed_after_original_native_verification(t
         state._verify_share_source_json_protocol(tmp_path,'000422',proof)
 
 
+def test_delivery_guard_rejects_ancestor_snapshot_change_after_original_native_verification(tmp_path,monkeypatch):
+    from scripts import realtime_state_bundle as state
+    _protocol_empty_tail(tmp_path,monkeypatch,'count',0)
+    proof=source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-30')
+    snapshots=[name for name in proof['source_files'] if name.startswith('snapshots/') and name.endswith('.csv')]
+    assert snapshots
+    path=tmp_path/'.microcap_index_cache/share_sources'/snapshots[0]
+    path.write_bytes(path.read_bytes()+b'\n')
+    with pytest.raises(ValueError,match='original verified closure changed'):
+        state._verify_share_source_json_protocol(tmp_path,'000422',proof)
+
+
 def test_delivery_guard_requires_response_present_in_original_verified_closure(tmp_path):
     from scripts import realtime_state_bundle as state
     _,_,current=install_fixture(tmp_path)
