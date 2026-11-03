@@ -5,6 +5,12 @@ import json
 import pytest
 
 from scripts import realtime_state_bundle as state, st_notice_refresh as notice
+from frozen_exchange_calendar import frozen_exchange_sessions
+
+
+@pytest.fixture(autouse=True)
+def recorded_calendar_acquisition(frozen_exchange_sessions):
+    return frozen_exchange_sessions
 
 
 def setup_proof(root, **changes):

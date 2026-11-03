@@ -673,6 +673,101 @@ def test_archive_dated_close_proof_is_not_todays_live_proof(persisted_close_case
     state._validate_close_refresh_proof(proof, anchors, symbols, files, [], now[0].date(), allow_dated_archive=True)
 
 
+@pytest.fixture
+def today_notice_observation(tmp_path, monkeypatch, frozen_exchange_sessions):
+    """Control-flow fixture: preserve source timestamps, never a new observation."""
+    import json
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    from scripts import st_notice_refresh as notice
+    now = [datetime(2026, 11, 4, 1, 30, tzinfo=ZoneInfo("Asia/Shanghai"))]
+    monkeypatch.setattr(state, "_preflight_now", lambda: now[0])
+    path = tmp_path / notice.FRESHNESS
+    path.parent.mkdir(parents=True)
+    proof = dict(target="2026-11-03", required_asof="2026-11-04T01:00:00+08:00",
+                 completed_at="2026-11-04T01:01:00+08:00", authority=["archive.json", "a" * 64])
+    path.write_text(json.dumps(proof), encoding="utf8")
+    calls = []
+    monkeypatch.setattr(notice, "freshness_source_files", lambda root: calls.append(root) or {"bound-source": "hash"})
+    return tmp_path, path, proof, now, calls, notice
+
+
+def test_today_observation_of_previous_completed_session_reused_without_retiming(today_notice_observation):
+    root, path, _, _, calls, _ = today_notice_observation
+    before = path.read_bytes()
+    result = state._reuse_same_day_notice_proof(root, date(2026, 11, 3))
+    assert result["reused_observation_day"] == "2026-11-04" and result["authority_changed"] is False
+    assert calls == [root] and path.read_bytes() == before
+
+
+@pytest.mark.parametrize("change", ["yesterday", "split_days", "future", "naive", "stale_target"])
+def test_notice_reuse_requires_today_complete_real_observation(today_notice_observation, change):
+    import json
+    root, path, proof, _, calls, _ = today_notice_observation
+    target = date(2026, 11, 3)
+    if change == "yesterday": proof.update(required_asof="2026-11-03T18:33:00+08:00", completed_at="2026-11-03T18:34:00+08:00")
+    if change == "split_days": proof["required_asof"] = "2026-11-03T23:59:00+08:00"
+    if change == "future": proof["completed_at"] = "2026-11-04T02:00:00+08:00"
+    if change == "naive": proof["required_asof"] = "2026-11-04T01:00:00"
+    if change == "stale_target": target = date(2026, 11, 2)
+    path.write_text(json.dumps(proof), encoding="utf8")
+    assert state._reuse_same_day_notice_proof(root, target) is None and calls == []
+
+
+def test_notice_reuse_changed_source_is_not_silently_refetched(today_notice_observation, monkeypatch):
+    root, path, _, _, _, notice = today_notice_observation
+    before = path.read_bytes()
+    def changed(root):
+        raise ValueError("authentic source hash changed")
+    monkeypatch.setattr(notice, "freshness_source_files", changed)
+    with pytest.raises(ValueError, match="source hash"):
+        state._reuse_same_day_notice_proof(root, date(2026, 11, 3))
+    assert path.read_bytes() == before
+
+
+def test_notice_reuse_new_close_during_source_validation_rejected(today_notice_observation, monkeypatch):
+    root, path, _, now, _, notice = today_notice_observation
+    before = path.read_bytes()
+    now[0] = now[0].replace(hour=14, minute=59, second=59)
+    def changed_session(root):
+        now[0] = now[0].replace(hour=15, minute=0, second=0)
+        return {"bound-source": "hash"}
+    monkeypatch.setattr(notice, "freshness_source_files", changed_session)
+    with pytest.raises(RuntimeError, match="completed session"):
+        state._reuse_same_day_notice_proof(root, date(2026, 11, 3))
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("boundary", ["midnight_after_guard", "close_after_guard", "clock_rollback"])
+def test_notice_reuse_final_clock_remains_observation_day_and_after_completion(today_notice_observation, monkeypatch, boundary):
+    import json
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    root, path, proof, now, _, _ = today_notice_observation
+    target = date(2026, 11, 3)
+    if boundary == "midnight_after_guard":
+        now[0] = datetime(2026, 11, 6, 23, 59, 59, tzinfo=ZoneInfo("Asia/Shanghai"))
+        target = date(2026, 11, 6)
+        proof.update(target="2026-11-06", required_asof="2026-11-06T16:00:00+08:00", completed_at="2026-11-06T17:00:00+08:00")
+        path.write_text(json.dumps(proof), encoding="utf8")
+    if boundary == "close_after_guard":
+        now[0] = now[0].replace(hour=14, minute=59, second=59)
+    original = state._preflight_request_guard
+    def slow_final_guard(*a, **k):
+        actual = original(*a, **k)
+        def checked():
+            actual()
+            now[0] = (now[0].replace(day=7, hour=0, minute=0, second=1) if boundary == "midnight_after_guard"
+                      else now[0].replace(hour=15, minute=0, second=0) if boundary == "close_after_guard"
+                      else now[0].replace(hour=0, minute=59, second=0))
+        return checked
+    monkeypatch.setattr(state, "_preflight_request_guard", slow_final_guard)
+    before = path.read_bytes()
+    with pytest.raises(RuntimeError, match="observation|clock"):
+        state._reuse_same_day_notice_proof(root, target)
+    assert path.read_bytes() == before
+
+
 @pytest.mark.parametrize("version", ["2_0","2_3","2_5"])
 def test_official_realtime_entry_cannot_fetch_hedge_after_members_complete_at_cutoff(monkeypatch, capsys, version):
     """Actual entry wrapper and quote code; no new policy gate is mocked as PASS."""

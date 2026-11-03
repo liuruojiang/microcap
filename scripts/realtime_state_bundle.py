@@ -1488,19 +1488,22 @@ def _log_refresh_phase(phase: str) -> None:
 
 
 def _reuse_same_day_notice_proof(root: Path, target: date, now=None):
-    """Resume an authenticated same-day post-close snapshot without changing it.
+    """Resume today's authenticated observation of the latest closed session.
 
     This is not a new observation: retain the original observation timestamps.
-    Old dates, pre-close snapshots and future receipts cannot qualify. Once a
+    Yesterday's observations, pre-close snapshots and future receipts cannot qualify. Once a
     snapshot qualifies, any altered bound evidence must fail rather than refetch.
     """
     from scripts.st_notice_refresh import FRESHNESS, freshness_source_files
     path = root / FRESHNESS
     if not path.is_file():
         return None
-    current = now or datetime.now(timezone.utc)
+    current = now or _preflight_now()
     close = datetime.fromisoformat(target.isoformat() + "T15:00:00+08:00")
-    if current.astimezone(close.tzinfo).date() != target or current < close:
+    if current.tzinfo is None or current < close:
+        return None
+    from scripts.exchange_calendar import latest_completed_session
+    if latest_completed_session(now=current) != target:
         return None
     proof = json.loads(path.read_bytes())
     if proof.get("target") != target.isoformat():
@@ -1509,11 +1512,30 @@ def _reuse_same_day_notice_proof(root: Path, target: date, now=None):
     completed = datetime.fromisoformat(proof["completed_at"])
     if started.tzinfo is None or completed.tzinfo is None or not close <= started <= completed <= current:
         return None
+    observation_day = current.astimezone(close.tzinfo).date()
+    if (started.astimezone(close.tzinfo).date() != observation_day
+            or completed.astimezone(close.tzinfo).date() != observation_day):
+        return None
     files = freshness_source_files(root)
+    checked = now or _preflight_now()
+    if (checked.tzinfo is None or checked.astimezone(close.tzinfo).date() != observation_day
+            or latest_completed_session(now=checked) != target):
+        raise RuntimeError("ST observation reuse crossed its real day/completed session during validation")
+    if now is None:
+        _preflight_request_guard("close-confirmed-check", expected_date=target)()
+    final_now = now or _preflight_now()
+    if final_now.tzinfo is None:
+        raise RuntimeError("ST observation reuse final clock lacks timezone")
+    final_local = final_now.astimezone(close.tzinfo)
+    checked_local = checked.astimezone(close.tzinfo)
+    if (final_local.date() != observation_day or completed > final_now
+            or (final_local.date(), final_local.hour < 15) != (checked_local.date(), checked_local.hour < 15)):
+        raise RuntimeError("ST observation reuse real final clock no longer matches its observation day/session")
     manifest_path, digest = proof["authority"]
     return dict(authority_changed=False, target=target.isoformat(),
                 manifest_path=manifest_path, manifest_sha256=digest,
-                freshness_files=files, reused_same_day_close_proof=True)
+                freshness_files=files, reused_same_day_close_proof=True,
+                reused_observation_day=observation_day.isoformat())
 
 
 def refresh_state(
