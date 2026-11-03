@@ -98,7 +98,11 @@ def _verify_share_source_json_protocol(root: Path, symbol: str, proof: dict) -> 
     """
     directory = (_extended(root) / ".microcap_index_cache/share_sources").resolve()
     source_files = dict(proof["source_files"])
-    readbacks: dict[Path, bytes] = {}
+    cache = (_extended(root) / SHARE_CACHE_DIR / f"{symbol}.csv").resolve()
+    candidate = cache.read_bytes()
+    if hashlib.sha256(candidate).hexdigest() != proof["candidate_sha256"]:
+        raise ValueError("share source JSON protocol: active candidate changed after native verification")
+    readbacks: dict[Path, bytes] = {cache: candidate}
 
     def bound(relative: str, expected: str | None = None) -> bytes:
         path = (directory / _repo_path(relative)).resolve()

@@ -22,6 +22,8 @@ previous states and checks only native schema1 CNInfo response bodies:
   match the original native verified closure and hash. A final complete
   readback detects changes during the additional check; only declared native
   CNInfo responses receive the JSON protocol classification above.
+- The active share-change CSV is separately bound to the native proof's
+  `candidate_sha256` and included in that final complete readback.
 
 The new guard runs immediately after the original native verification in both
 bundle enumeration and `validate_state`. Existing whole-delivery checks,

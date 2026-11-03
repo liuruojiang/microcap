@@ -114,6 +114,15 @@ def test_delivery_guard_rejects_ancestor_snapshot_change_after_original_native_v
         state._verify_share_source_json_protocol(tmp_path,'000422',proof)
 
 
+def test_delivery_guard_rejects_active_share_csv_change_after_original_native_verification(tmp_path):
+    from scripts import realtime_state_bundle as state
+    cache,_,_=install_fixture(tmp_path)
+    proof=source.verify_share_cache(root=tmp_path,symbol='000422',as_of='2026-10-29')
+    cache.write_bytes(cache.read_bytes()+b'\n')
+    with pytest.raises(ValueError,match='share source JSON protocol'):
+        state._verify_share_source_json_protocol(tmp_path,'000422',proof)
+
+
 def test_delivery_guard_requires_response_present_in_original_verified_closure(tmp_path):
     from scripts import realtime_state_bundle as state
     _,_,current=install_fixture(tmp_path)
