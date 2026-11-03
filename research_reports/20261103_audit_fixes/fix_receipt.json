@@ -1,0 +1,139 @@
+{
+  "scope": "repair_20261103_adversarial_findings",
+  "started_at_utc": "2026-11-03T02:42:11.609321+00:00",
+  "phase": "complete",
+  "runtime_parent": "604c23fcc4ea4ea8840565d02670df4b50080efc",
+  "automation_parent": "b8465db723ad5c34d4a442e2d0ad1a594c8878d4",
+  "target_session": "2026-11-02",
+  "target_date_subject_to_independent_gate": true,
+  "targeted_tests": {
+    "pack": 43,
+    "mail": 81,
+    "shared_inputs": 24,
+    "notice_boundary": 28,
+    "archive_inventory_cases": 4,
+    "shared_input_failure_status": 9
+  },
+  "production_mail": "skipped_validation_only_no_new_email",
+  "local_refresh_all": "passed",
+  "local_check": "passed",
+  "cloud_validation": "passed",
+  "strategy_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+  "local_refresh_started_at": "2026-11-03T02:43:21.320180+00:00",
+  "local_check_started_at": "2026-11-03T03:21:37.140232+00:00",
+  "local_refresh_completed_at": "2026-11-03T03:20:39.348966+00:00",
+  "notice_boundary_review": "passed_exact_449_non_risk_3_existing_ST_progress_10_IPO_metadata",
+  "notice_authority_changed": false,
+  "local_check_completed_at": "2026-11-03T03:38:22.241137+00:00",
+  "pack_started_at": "2026-11-03T03:38:22.241168+00:00",
+  "pack_completed_at": "2026-11-03T03:54:42.686764+00:00",
+  "pack": {
+    "ok": true,
+    "expected_date": "2026-11-02",
+    "release_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+    "bundle": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261103_audit_fixes\\microcap-audit-fixed-whole-delivery-20261102.zip",
+    "scope": "whole_workspace_delivery",
+    "files": 150674,
+    "shared_base": true,
+    "sha256": "99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93",
+    "bytes": 605202401,
+    "completed_at": "2026-11-03T03:54:42.676370+00:00"
+  },
+  "refresh_started_strategy_sha": "28ddf277c146be30e1e6d805e36f496a1a69b22f",
+  "release_assembly_run": 41575352489,
+  "release_published": true,
+  "release_tag": "top100-audit-fixes-20261103",
+  "strategy_remote_main": "2e68445434740e54d478e75e6c024e36de8d3598",
+  "automation_sha": "14af52a4c01e8b62eb73fe89605457086a1bbba9",
+  "preserved_remote_parent": "55bdf904de779ec736cae67c4846f2f351172b60",
+  "cloud_run": 41575594283,
+  "remote_asset_sha256": "99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93",
+  "remote_asset_sha256_matches": true,
+  "cloud_regression": {
+    "status": "passed",
+    "tested_strategy_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+    "counts": {
+      "regression.xml": {
+        "tests": 1088,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "automation-tests.xml": {
+        "tests": 469,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "cloud_stage": "complete",
+  "cloud_seed_restore": {
+    "status": "passed",
+    "started_at": "2026-11-03T04:08:39Z",
+    "completed_at": "2026-11-03T04:25:12Z"
+  },
+  "cloud_refresh": "passed",
+  "cloud_shared_input_comparison": "passed",
+  "cloud_three_version_generation": "passed",
+  "scope_status": "complete",
+  "cloud_run_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/41575594283",
+  "cloud_metadata_status": "OK",
+  "cloud_whole_delivery": {
+    "ok": true,
+    "expected_date": "2026-11-02",
+    "release_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+    "bundle": "/home/runner/work/_temp/microcap-whole-delivery-state.zip",
+    "scope": "whole_workspace_delivery",
+    "files": 150674,
+    "shared_base": true
+  },
+  "csv_comparison": {
+    "exact_all_columns": true,
+    "versions": {
+      "0": {
+        "date": "2026-11-02",
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_execution_date": "2026-10-30",
+        "overheat_enabled": "False",
+        "target_vol_enabled": "False"
+      },
+      "3": {
+        "date": "2026-11-02",
+        "version": "2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_execution_date": "2026-10-30",
+        "overheat_enabled": "False",
+        "target_vol_enabled": "False"
+      },
+      "5": {
+        "date": "2026-11-02",
+        "version": "2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_execution_date": "2026-10-30",
+        "overheat_enabled": "False",
+        "target_vol_enabled": "False"
+      }
+    }
+  },
+  "production_orders": "none",
+  "published_candidate_full_ci": {
+    "run": 41575593847,
+    "status": "passed"
+  },
+  "completed_at": "2026-11-03T04:41:04.290499+00:00",
+  "remaining_blockers": []
+}
