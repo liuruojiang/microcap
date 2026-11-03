@@ -1,0 +1,36 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "300477",
+    "announcement_id": "AN202611031831369567",
+    "notice_date": "2026-11-03",
+    "title": "关于公司股票被叠加实施其他风险警示相关事项的进展公告",
+    "provider_title": "ST合纵:关于公司股票被叠加实施其他风险警示相关事项的进展公告",
+    "removed_issuer_prefix": "ST合纵:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611031831369567_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611031831369567_1.pdf",
+    "body_notice_number": "2026-069",
+    "relative_pdf_path": "AN202611031831369567.pdf",
+    "sha256": "98aaa64f7d1fff9ef9ce951e73574f5c16f9e371d069b330aa0a72309ebeb15d",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "2026-11-03_page_0002.json",
+      "sha256": "559c410da310b2af8c7e3c5d40c0c776c384233e5e3ecfd76296bc715399bcb2",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    },
+    "issuer_corroboration": {
+      "relative_path": "300477_1225654962_cninfo.pdf",
+      "sha256": "98aaa64f7d1fff9ef9ce951e73574f5c16f9e371d069b330aa0a72309ebeb15d",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-11-03/1225654962.PDF"
+    }
+  },
+  "review_notes": "原文第1页回顾既有内控意见和2026/04/28银行账户冻结叠加其他风险警示；第2页确认主要账户仍冻结，第3页署日11/03。本次仅进展，未有新的实施或撤销决定；继续沿用既有ST区间。",
+  "issuer": "合纵科技股份有限公司",
+  "decision": "no_new_event",
+  "source_scope": "exact_native_row_and_original_body_with_identical_official_CNInfo_bytes",
+  "production_adoption": "not_approved_or_applied"
+}

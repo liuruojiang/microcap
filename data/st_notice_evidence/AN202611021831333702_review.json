@@ -1,0 +1,38 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "000972",
+    "announcement_id": "AN202611021831333702",
+    "notice_date": "2026-11-03",
+    "title": "关于法院裁定受理公司及子公司红色番茄重整及指定管理人暨公司股票交易将停牌一天并被实施退市风险警示的公告",
+    "provider_title": "中基健康:关于法院裁定受理公司及子公司红色番茄重整及指定管理人暨公司股票交易将停牌一天并被实施退市风险警示的公告",
+    "removed_issuer_prefix": "中基健康:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831333702_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831333702_1.pdf",
+    "body_notice_number": "2026-073",
+    "relative_pdf_path": "AN202611021831333702.pdf",
+    "sha256": "b868b032a014d663043fb0f77951106e6f60ec32eaa408a135ca06971b022877",
+    "risk_actions": {
+      "delisting": true
+    },
+    "actual_effective_date": "2026-11-04"
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "2026-11-03_page_0004.json",
+      "sha256": "a9a2572b41a7c640b2332cafa54819023f709ae9819ffccaa03188f9cd263290",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    },
+    "issuer_corroboration": {
+      "relative_path": "000972_1225654160_cninfo.pdf",
+      "sha256": "b868b032a014d663043fb0f77951106e6f60ec32eaa408a135ca06971b022877",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-11-03/1225654160.PDF"
+    }
+  },
+  "review_notes": "原文第1页确认法院受理上市公司及子公司重整；上市公司000972于11/03停牌一天，11/04复牌并更名*ST中基。公告日11/03与实际实施日11/04分别保留，策略仍沿用公告日排除，不把子公司事件误作上市公司股票证据。",
+  "issuer": "中基健康产业股份有限公司",
+  "decision": "new_delisting_risk_warning",
+  "source_scope": "exact_native_row_and_original_body_with_identical_official_CNInfo_bytes",
+  "production_adoption": "not_approved_or_applied"
+}

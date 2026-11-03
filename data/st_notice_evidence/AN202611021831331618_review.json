@@ -1,0 +1,36 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002592",
+    "announcement_id": "AN202611021831331618",
+    "notice_date": "2026-11-03",
+    "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+    "provider_title": "ST八菱:关于公司股票被实施其他风险警示相关事项的进展公告",
+    "removed_issuer_prefix": "ST八菱:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831331618_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831331618_1.pdf",
+    "body_notice_number": "2026-070",
+    "relative_pdf_path": "AN202611021831331618.pdf",
+    "sha256": "e00aaf141f632be6536b82835dc18bc4e3b5c25f43fa527e3bf08ab40b3dc714",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "2026-11-03_page_0006.json",
+      "sha256": "96b5c8041de6be93851f462865bb519b6533d6577e967752a1171c15b33a6536",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    },
+    "issuer_corroboration": {
+      "relative_path": "002592_1225653590_cninfo.pdf",
+      "sha256": "e00aaf141f632be6536b82835dc18bc4e3b5c25f43fa527e3bf08ab40b3dc714",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-11-03/1225653590.PDF"
+    }
+  },
+  "review_notes": "原文第1页明确既有2020/07/02其他风险警示；第3页明确暂未满足撤销其他风险警示条件。本次系诉讼、追偿进展，没有新实施或撤销事件。",
+  "issuer": "南宁八菱科技股份有限公司",
+  "decision": "no_new_event",
+  "source_scope": "exact_native_row_and_original_body_with_identical_official_CNInfo_bytes",
+  "production_adoption": "not_approved_or_applied"
+}

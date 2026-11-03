@@ -1,0 +1,36 @@
+{
+  "status": "native_provider_and_body_verified",
+  "event": {
+    "symbol": "002082",
+    "announcement_id": "AN202611021831322760",
+    "notice_date": "2026-11-03",
+    "title": "关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+    "provider_title": "ST万邦:关于公司股票交易被实施其他风险警示相关事项的进展及风险提示公告",
+    "removed_issuer_prefix": "ST万邦:",
+    "source_provider": "eastmoney",
+    "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831322760_1.pdf",
+    "body_source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831322760_1.pdf",
+    "body_notice_number": "2026-077",
+    "relative_pdf_path": "AN202611021831322760.pdf",
+    "sha256": "558d2845714e04015f622f42d5ead3cb974d70bd986be204e1444dd76faf6382",
+    "risk_actions": {},
+    "actual_effective_date": null
+  },
+  "evidence": {
+    "provider_response": {
+      "relative_path": "2026-11-03_page_0008.json",
+      "sha256": "7edacb77fd54f93f2453ce83f7d8444a4cc06908d7cb4f8204fcf27fd5ab92b9",
+      "source_url": "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    },
+    "issuer_corroboration": {
+      "relative_path": "002082_1225652777_cninfo.pdf",
+      "sha256": "558d2845714e04015f622f42d5ead3cb974d70bd986be204e1444dd76faf6382",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-11-03/1225652777.PDF"
+    }
+  },
+  "review_notes": "原文第1页为2025年度内控否定意见触发的既有其他风险警示；第2页说明下一个年度再出相应意见才会有退市风险警示，为条件性未来风险。本次无新实施/撤销或已发生退市风险警示。",
+  "issuer": "万邦德医药控股集团股份有限公司",
+  "decision": "no_new_event",
+  "source_scope": "exact_native_row_and_original_body_with_identical_official_CNInfo_bytes",
+  "production_adoption": "not_approved_or_applied"
+}
