@@ -16,6 +16,7 @@ from scripts import top100_cloud_delivery as cloud
 from scripts import top100_delivery as delivery
 from test_top100_delivery import workspace, certify, write  # noqa: F401
 from test_top100_cloud_delivery import prepare
+from frozen_exchange_calendar import frozen_exchange_sessions  # noqa: F401
 from test_realtime_member_snapshot_fallback import (
     _write_minimal_required_state, _write_current_v2_static_context, _proxy_member_rows,
 )
@@ -143,29 +144,52 @@ def test_holiday_requires_full_independent_proof(tmp_path, monkeypatch, missing)
 
 
 @pytest.mark.parametrize("expected", [date(2026, 8, 7), date(2026, 8, 14)])
-def test_preflight_uses_external_calendar_and_independent_history(tmp_path, monkeypatch, expected):
+def test_preflight_uses_external_calendar_and_independent_history(
+        tmp_path, monkeypatch, expected, frozen_exchange_sessions):
     from datetime import datetime
     from zoneinfo import ZoneInfo
-    monkeypatch.setattr(state, "_preflight_now", lambda: datetime(2026, 8, 17, 15, 30, tzinfo=ZoneInfo("Asia/Shanghai")))
+    now = datetime(2026, 8, 10, 8, 30, tzinfo=ZoneInfo("Asia/Shanghai"))
+    class RecordedClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return now.astimezone(tz) if tz is not None else now.replace(tzinfo=None)
+    # Keep request validation and the persisted proof's generation clock aligned.
+    monkeypatch.setattr(state, "datetime", RecordedClock)
     import pandas as pd
-    valid_state(tmp_path, monkeypatch, date(2026, 8, 17))
+    valid_state(tmp_path, monkeypatch, now.date())
     from scripts import index_history_preflight
     monkeypatch.setattr(index_history_preflight, "fetch_preflight_history",
                         lambda *a, **kw: pd.DataFrame({"date": ["2026-08-07"]}))
+    import microcap_top100_mom16_biweekly_live_v2_0 as real_v20
+    # Only acquisition is a fixture: the native completed-session quote,
+    # source-clock and ST validators must still inspect all 100 original rows.
+    quotes = pd.DataFrame({
+        "code": [f"{value:06d}" for value in range(1, 101)],
+        "name": [f"member-{value}" for value in range(1, 101)],
+        "rt_price": [10.] * 100, "price_origin": ["provider_latest"] * 100,
+        "trade_date": ["2026-08-07"] * 100, "quote_source": ["offline_contract_fixture"] * 100,
+        "quoted_at": ["2026-08-07T15:00:00+08:00"] * 100,
+        "fetched_at": [now.isoformat()] * 100,
+    })
+    def unexpected_fallback(*args, **kwargs):
+        pytest.fail("Complete original-member quote fixture must not use a fallback")
     base = SimpleNamespace(
         pd=pd, fetch_eastmoney_index_history=lambda *a: ["history"],
         latest_closed_history_date=lambda history: pd.Timestamp("2026-08-07"),
+        fetch_eastmoney_batch_realtime_quotes=lambda *a, **kw: quotes.copy(),
+        fetch_tencent_realtime_quotes=unexpected_fallback,
+        fetch_eastmoney_stock_spot=unexpected_fallback,
+        parse_realtime_source_timestamp=real_v20.base_mod.parse_realtime_source_timestamp,
+        assert_no_st_members=real_v20.base_mod.assert_no_st_members,
     )
     module = SimpleNamespace(_sync_embedded_base_config=lambda: None, base_mod=base)
     monkeypatch.setitem(sys.modules, "microcap_top100_mom16_biweekly_live_v2_0", module)
-    monkeypatch.setattr(state, "verify_live_member_names", lambda *a, **kw: {
-        "member_name_quote_day": "2026-08-17", "member_name_count": 100,
-        "current_st_name_intersection": 0})
     proof_before = (tmp_path / state.REFRESH_PROOF_REL).read_bytes()
     if expected == date(2026, 8, 7):
-        assert state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")["ok"]
+        result = state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")
+        assert result["ok"], result
     else:
-        with pytest.raises(RuntimeError, match="calendar"):
+        with pytest.raises(RuntimeError, match="latest completed session"):
             state.preflight_state(tmp_path, 5, expected_date=expected, publication_mode="close-confirmed-check")
         assert (tmp_path / state.REFRESH_PROOF_REL).read_bytes() == proof_before
 
