@@ -3,6 +3,7 @@ import json
 import shutil
 from pathlib import Path
 from scripts.st_notice_evidence import evidence_fingerprint, evidence_source_files
+from scripts.st_notice_boundary_review import SOURCE_FILES as BOUNDARY_SOURCE_FILES
 
 
 def copy_real_evidence_subset(source_root, destination_root, event_ids):
@@ -13,6 +14,10 @@ def copy_real_evidence_subset(source_root, destination_root, event_ids):
     registry['events'] = [event for event in registry['events'] if event['announcement_id'] in selected]
     assert {event['announcement_id'] for event in registry['events']} == selected
     files = {'scripts/st_notice_evidence.py', 'scripts/st_notice_archive.py'}
+    # The real source contract includes boundary reviews independently of the
+    # selected event list. Copy their authentic bytes and retain the closure
+    # equality assertion below; an incomplete fixture must still fail closed.
+    files.update(BOUNDARY_SOURCE_FILES)
     for event in registry['events']:
         files.add('data/st_notice_evidence/' + (event.get('relative_html_path') or event['relative_pdf_path']))
         for category in ('conflict_evidence', 'unavailable_evidence', 'native_evidence', 'exchange_evidence'):

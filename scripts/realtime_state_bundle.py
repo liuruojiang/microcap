@@ -1270,7 +1270,6 @@ def refresh_state(
                 try_cached_history_rebuild(root=root, base=v2_0.base_mod, args=args,
                                            paths=base_paths, panel_path=panel_path,
                                            target=target_end_ts)
-                args.allow_full_rebuild = True
             notice_refresh_completed = True
         _log_refresh_phase("rebuild_or_extend_proxy_state")
         v2_0.base_mod.ensure_strategy_files(args, base_paths, panel_path, target_end_ts)

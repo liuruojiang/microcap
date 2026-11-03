@@ -9,6 +9,59 @@ import microcap_top100_mom16_biweekly_live_v2_0 as v2
 from scripts import realtime_state_bundle as state
 
 
+@pytest.mark.parametrize("cached_replay", [False, True])
+@pytest.mark.parametrize("explicit_full_rebuild", [False, True])
+def test_metadata_refresh_never_grants_implicit_full_rebuild(
+    tmp_path, monkeypatch, cached_replay, explicit_full_rebuild
+):
+    """Exercise the real refresh driver through its downstream strategy call."""
+    import sys
+    from scripts import st_metadata_refresh, st_notice_refresh
+
+    for name in ("MICROCAP_ST_NOTICE_ARCHIVE", "MICROCAP_ST_NOTICE_ARCHIVE_SHA256"):
+        monkeypatch.delenv(name, raising=False)
+    pointer = tmp_path / ".microcap_index_cache/st_notice_archive_pointer.json"
+    pointer.parent.mkdir()
+    pointer.write_text("{}")
+    calls = []
+
+    class ReachedStrategyBoundary(BaseException):
+        pass
+
+    def replay(**kwargs):
+        calls.append(("cached_replay", kwargs["args"].allow_full_rebuild))
+        return cached_replay
+
+    def strategy(args, *unused):
+        calls.append(("strategy", args.allow_full_rebuild))
+        assert args.allow_full_rebuild is explicit_full_rebuild
+        raise ReachedStrategyBoundary()
+
+    base = SimpleNamespace(
+        DEFAULT_OUTPUT_PREFIX="isolated", freq_mod=object(),
+        build_output_paths=lambda prefix: {},
+        build_refreshed_panel_shadow=lambda *args: (tmp_path / "panel.csv", "2026-11-03"),
+        read_csv_last_date=lambda path: "2026-11-02", ensure_strategy_files=strategy,
+    )
+    runtime = SimpleNamespace(
+        _sync_embedded_base_config=lambda: None,
+        _build_base_args=lambda **kwargs: SimpleNamespace(index_csv=tmp_path / "index.csv"),
+        base_mod=base,
+    )
+    monkeypatch.setitem(sys.modules, "microcap_top100_mom16_biweekly_live_v2_0", runtime)
+    monkeypatch.setitem(sys.modules, "run_top100_v1_6_v1_8_realtime_signals",
+                        SimpleNamespace(ensure_static_realtime_inputs=lambda **kwargs: None))
+    monkeypatch.setattr(state, "_reuse_same_day_notice_proof", lambda *args: None)
+    monkeypatch.setattr(st_notice_refresh, "refresh_notice_archive", lambda **kwargs: {})
+    monkeypatch.setattr(st_metadata_refresh, "refresh_metadata_after_notice",
+                        lambda **kwargs: {"requires_full_rebuild": True})
+    monkeypatch.setattr(st_metadata_refresh, "try_cached_history_rebuild", replay)
+    with pytest.raises(ReachedStrategyBoundary):
+        state.refresh_state(tmp_path, allow_full_rebuild=explicit_full_rebuild)
+    assert calls == [("cached_replay", explicit_full_rebuild),
+                     ("strategy", explicit_full_rebuild)]
+
+
 @pytest.mark.parametrize("failure", ["missing", "hedge", "metadata", "none"])
 def test_real_base_guard_preserves_files_and_never_refreshes(tmp_path, monkeypatch, failure):
     ns = v2.realtime_core.load_realtime_base.__globals__
