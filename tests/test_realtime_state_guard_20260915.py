@@ -880,3 +880,65 @@ def test_fingerprint_scandir_pending_directory_redirect_rejected(fingerprint_io_
         assert changed[0]
     finally:
         if nested.is_symlink():nested.unlink();saved.rename(nested)
+
+
+@pytest.fixture
+def fingerprint_parallel_probe(monkeypatch):
+    import concurrent.futures
+    import threading
+    import time
+    original=concurrent.futures.ThreadPoolExecutor
+    probe=SimpleNamespace(submitted=[],completed=[],outstanding=0,max_outstanding=0,
+                          running=0,max_running=0,slow=False,fail=None)
+    lock=threading.Lock()
+    class Future:
+        def __init__(self,value):self.value=value
+        def result(self):
+            try:return self.value.result()
+            finally:
+                with lock:probe.outstanding-=1
+    class Readers:
+        def __init__(self,max_workers):
+            assert max_workers==4
+            self.real=original(max_workers=max_workers)
+        def __enter__(self):return self
+        def __exit__(self,*args):return self.real.__exit__(*args)
+        def submit(self,function,name):
+            with lock:
+                probe.submitted.append(name);probe.outstanding+=1
+                probe.max_outstanding=max(probe.max_outstanding,probe.outstanding)
+            def run():
+                with lock:
+                    probe.running+=1;probe.max_running=max(probe.max_running,probe.running)
+                try:
+                    if probe.slow and name.endswith('deep.dat'):time.sleep(0.025)
+                    if probe.fail is not None and name.endswith(probe.fail):raise OSError('injected owned reader failure')
+                    return function(name)
+                finally:
+                    with lock:probe.running-=1;probe.completed.append(name)
+            return Future(self.real.submit(run))
+    monkeypatch.setattr(concurrent.futures,'ThreadPoolExecutor',Readers)
+    return probe
+
+
+def test_fingerprint_parallel_each_file_once_bounded_eight(fingerprint_io_case,fingerprint_parallel_probe):
+    c=fingerprint_io_case;p=fingerprint_parallel_probe
+    assert c.candidate(c.root)==c.reference(c.root)
+    assert len(p.submitted)==12 and len(set(p.submitted))==12
+    assert sorted(p.submitted)==sorted(p.completed)
+    assert p.max_outstanding<=8 and p.outstanding==0 and p.running==0
+    assert 1<=p.max_running<=4
+
+
+def test_fingerprint_parallel_completion_order_cannot_change_digest(fingerprint_io_case,fingerprint_parallel_probe):
+    c=fingerprint_io_case;p=fingerprint_parallel_probe;p.slow=True
+    assert c.candidate(c.root)==c.reference(c.root)
+    assert p.completed!=p.submitted
+    assert sorted(p.completed)==sorted(p.submitted)
+
+
+def test_fingerprint_parallel_reader_exception_joins_owned_tasks(fingerprint_io_case,fingerprint_parallel_probe):
+    c=fingerprint_io_case;p=fingerprint_parallel_probe;p.slow=True;p.fail='root.dat'
+    with pytest.raises(OSError,match='owned reader failure'):c.candidate(c.root)
+    assert p.running==0 and sorted(p.completed)==sorted(p.submitted)
+    assert p.max_outstanding<=8 and 1<=p.max_running<=4

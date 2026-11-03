@@ -604,6 +604,8 @@ _RETURN_BASIS_SUCCESS_MEMO: dict[str, tuple] = {}
 
 def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...]):
     import stat
+    from collections import deque
+    from concurrent.futures import ThreadPoolExecutor
     from scripts import stock_return_pipeline as pipeline
     from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar
     root = _extended(root)
@@ -665,23 +667,38 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     digest = hashlib.sha256()
     digest.update(json.dumps([target, symbols, calendar], separators=(",", ":")).encode())
     unlocked = True
-    for relative, kind in before:
-        digest.update((relative + "\0" + kind + "\0").encode())
-        if kind == "file":
-            if any(relative.startswith(tree + "/") for tree in trees):
-                # The root is canonical once, and both complete inventories
-                # reject redirected ancestors/entries. Still hash every byte;
-                # do not resolve/stat each tree file again or use metadata as
-                # a substitute for its contents.
-                content = hashlib.sha256()
-                with (root / relative).open("rb") as handle:
-                    for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-                        content.update(chunk)
-                digest.update(content.hexdigest().encode())
-            else:
-                digest.update(_sha256(root / relative).encode())
-            if relative.startswith(".microcap_index_cache/return_basis/locks/"):
-                unlocked = False
+    def file_sha(relative):
+        if not any(relative.startswith(tree + "/") for tree in trees):
+            return _sha256(root / relative)
+        # Canonical root + complete before/after link inventories; every byte
+        # remains mandatory. Fixed paths keep the original resolving helper.
+        content = hashlib.sha256()
+        with (root / relative).open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                content.update(chunk)
+        return content.hexdigest()
+    file_names = iter(relative for relative, kind in before if kind == "file")
+    pending = deque()
+    # At most four readers and eight outstanding tasks, independent of tree
+    # size. Consume strictly in the old sorted inventory order, never completion
+    # order. Executor exit joins every owned reader, including on exceptions.
+    with ThreadPoolExecutor(max_workers=4) as readers:
+        for _ in range(8):
+            name = next(file_names, None)
+            if name is not None:
+                pending.append((name, readers.submit(file_sha, name)))
+        for relative, kind in before:
+            digest.update((relative + "\0" + kind + "\0").encode())
+            if kind == "file":
+                name, future = pending.popleft()
+                if name != relative:
+                    raise RuntimeError("Return-basis file hashing order changed")
+                digest.update(future.result().encode())
+                if relative.startswith(".microcap_index_cache/return_basis/locks/"):
+                    unlocked = False
+                name = next(file_names, None)
+                if name is not None:
+                    pending.append((name, readers.submit(file_sha, name)))
     modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
     for module in modules:
         digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
