@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import http.client
 import json
 import os
@@ -70,6 +71,9 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
     for root in unique_roots:
         if (root / delivery.LOCK).exists():
             raise RuntimeError("A whole-delivery refresh is active")
+    if len(unique_roots) == 1:
+        return _pack_shared(primary, bundle, expected, before["0"])
+    for root in unique_roots:
         require_ok(delivery.validate_base_state_for_session(root, expected))
     with tempfile.TemporaryDirectory(prefix="top100-pack-") as directory:
         staged = Path(directory)
@@ -96,6 +100,58 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
         return {"ok": True, "expected_date": expected, "release_sha": report["release_sha"],
                 "bundle": str(bundle), "scope": "whole_workspace_delivery",
                 "files": len(packed["bundle_files"])}
+
+
+def _pack_shared(root: Path, bundle: Path, expected: str, before: dict) -> dict:
+    """One physical base, three final streams: validate once and stream directly."""
+    lock = root / delivery.LOCK
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    handle = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+    try:
+        with os.fdopen(handle, "w") as stream:
+            stream.write(str(os.getpid()))
+        return _pack_shared_locked(root, bundle, expected, before)
+    finally:
+        lock.unlink()
+
+
+def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -> dict:
+    report = delivery.inspect_outputs(root, expected)
+    require_ok(report)
+    release = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    report.update(status="complete", verified_at=datetime.now(timezone.utc).isoformat(), release_sha=release)
+    extras = (set(report["artifacts"]) | set(report["inputs"]) |
+              {delivery.MANIFEST}) - set(SOURCE_FILES)
+    bundle.parent.mkdir(parents=True, exist_ok=True)
+    # An unsuccessful attempt never publishes a partial replacement bundle.
+    with tempfile.TemporaryDirectory(prefix="top100-zip-", dir=bundle.parent) as directory:
+        temporary = Path(directory) / bundle.name
+        packed = state.pack_state(root, temporary, None, extra_files=extras,
+                                  close_confirmed_session=state._parse_date(expected),
+                                  delivery_manifest=json.dumps(report, ensure_ascii=False, indent=2).encode("utf-8"))
+        require_ok(packed)
+        with zipfile.ZipFile(temporary) as archive:
+            state._verify_bundle_manifest(archive)
+            names = set(archive.namelist())
+            for name, expected_hash in {**report["inputs"], **report["artifacts"]}.items():
+                if name not in names and name in SOURCE_FILES and name not in report["artifacts"]:
+                    continue  # Receiver verifies its checked-out source identity.
+                payload = archive.read(name)
+                if not name.startswith("data/st_notice_evidence/"):
+                    payload = payload.replace(b"\r\n", b"\n")
+                if hashlib.sha256(payload).hexdigest() != expected_hash:
+                    raise RuntimeError(f"Packed content differs from validated delivery: {name}")
+        if delivery.input_hashes(root) != before:
+            raise RuntimeError("Inputs changed during cloud packing")
+        after = delivery.inspect_outputs(root, expected)
+        require_ok(after)
+        if any(after[key] != report[key] for key in ("inputs", "artifacts", "expected_date")):
+            raise RuntimeError("Final streams changed during cloud packing")
+        os.replace(temporary, bundle)
+    return {"ok": True, "expected_date": expected,
+            "release_sha": release,
+            "bundle": str(bundle), "scope": "whole_workspace_delivery",
+            "files": len(packed["bundle_files"]), "shared_base": True}
 
 
 def _validate_no_date_rollback(root: Path, expected: str) -> None:

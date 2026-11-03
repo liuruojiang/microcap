@@ -137,13 +137,14 @@ def test_pack_accepts_long_holiday_when_anchors_match_completed_session(
 
 
 def test_pack_rejects_anchor_that_differs_from_completed_session(workspace, monkeypatch):
+    monkeypatch.setattr(cloud.subprocess, "check_output", lambda *a, **kw: "a" * 40)
     monkeypatch.setattr(state, "validate_state", lambda *a, **kw: {
         "ok": True, "errors": [], "anchor_dates": {
-            "proxy_index": "2026-09-30", "costed_nav": "2026-09-30",
-            "panel_shadow": "2026-09-24"}})
+            "proxy_index": "2026-09-03", "costed_nav": "2026-09-03",
+            "panel_shadow": "2026-09-02"}})
     with pytest.raises(RuntimeError, match="panel_shadow is not aligned with latest completed session"):
         cloud.pack({v: workspace for v in delivery.COSTED},
-                   workspace.parent / "stale-anchor.zip", "2026-09-30")
+                   workspace.parent / "stale-anchor.zip", "2026-09-03")
 
 
 @settings(max_examples=20, deadline=None)
@@ -200,5 +201,46 @@ def test_pack_validates_each_resolved_root_once_and_hashes_before_and_after(work
     monkeypatch.setattr(delivery,'input_hashes',counted_hashes)
     monkeypatch.setattr(delivery,'validate_base_state_for_session',counted_validate)
     assert cloud.pack(roots,workspace.parent/('unique-'+str(distinct)+'.zip'),'2026-09-03')['ok']
-    assert hash_calls==Counter({root:2 for root in unique})
+    # Direct streaming also inspects the three finals before and after writing.
+    assert hash_calls==Counter({root:(2 if distinct else 4) for root in unique})
     assert validation_calls==Counter({root:1 for root in unique})
+
+
+def test_shared_pack_streams_without_copying_or_mutating_source(workspace, monkeypatch):
+    bundle, _ = prepare(workspace, monkeypatch)
+    manifest = workspace / delivery.MANIFEST
+    before = manifest.read_bytes() if manifest.exists() else None
+    validations = []
+    original = delivery.validate_base_state_for_session
+    def validate(root, expected):
+        validations.append(root.resolve())
+        return original(root, expected)
+    def forbidden_copy(*args, **kwargs):
+        raise AssertionError('Shared delivery must not copy a historical workspace')
+    monkeypatch.setattr(delivery, 'validate_base_state_for_session', validate)
+    monkeypatch.setattr(cloud, 'copy_file', forbidden_copy)
+    result = cloud.pack({v:workspace for v in delivery.COSTED}, bundle, '2026-09-03')
+    assert result['shared_base'] is True
+    assert validations == [workspace.resolve()]
+    assert (manifest.read_bytes() if manifest.exists() else None) == before
+    assert not (workspace / delivery.LOCK).exists()
+
+
+def test_shared_pack_rejects_transient_final_change_and_preserves_published_bundle(workspace, monkeypatch):
+    bundle, _ = prepare(workspace, monkeypatch)
+    original_bundle = bundle.read_bytes()
+    original_pack = state.pack_state
+    final = workspace / 'outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv'
+    original_final = final.read_bytes()
+    def transient_change(*args, **kwargs):
+        final.write_bytes(original_final + b'changed_during_pack\n')
+        try:
+            return original_pack(*args, **kwargs)
+        finally:
+            final.write_bytes(original_final)
+    monkeypatch.setattr(state, 'pack_state', transient_change)
+    with pytest.raises(RuntimeError, match='Packed content differs'):
+        cloud.pack({v:workspace for v in delivery.COSTED}, bundle, '2026-09-03')
+    assert final.read_bytes() == original_final
+    assert bundle.read_bytes() == original_bundle
+    assert not (workspace / delivery.LOCK).exists()

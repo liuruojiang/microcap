@@ -996,11 +996,17 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
 
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
                extra_files: Iterable[str] = (), *,
-               close_confirmed_session: date | None = None) -> dict[str, object]:
+               close_confirmed_session: date | None = None,
+               delivery_manifest: bytes | None = None) -> dict[str, object]:
+    validation_root = root.resolve()
     root, bundle = _extended(root), _extended(bundle)
     validation_options = ({"close_confirmed_session": close_confirmed_session}
                           if close_confirmed_session is not None else {})
-    report = validate_state(root, max_anchor_age_days=max_anchor_age_days, **validation_options)
+    if close_confirmed_session is not None:
+        from scripts.top100_delivery import validate_base_state_for_session
+        report = validate_base_state_for_session(validation_root, close_confirmed_session.isoformat())
+    else:
+        report = validate_state(root, max_anchor_age_days=max_anchor_age_days, **validation_options)
     anchor = _parse_date(str(report.get("anchor_dates", {}).get("proxy_index", "")))
     if anchor is not None:
         report.setdefault("errors", []).extend(validate_reference_summary(root, anchor))
@@ -1014,14 +1020,17 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
     bundle.parent.mkdir(parents=True, exist_ok=True)
     file_names = sorted(set(_iter_bundle_files(root)) |
                         {_repo_path(name).as_posix() for name in extra_files})
+    virtual_name = "outputs/top100_delivery_manifest.json"
+    if delivery_manifest is not None:
+        file_names = sorted(set(file_names) | {virtual_name})
     manifest = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "required_files": list(REQUIRED_FILES),
         "files": [
             {
                 "path": rel,
-                "bytes": (root / rel).stat().st_size,
-                "sha256": _sha256(root / rel),
+                "bytes": len(delivery_manifest) if rel == virtual_name and delivery_manifest is not None else (root / rel).stat().st_size,
+                "sha256": hashlib.sha256(delivery_manifest).hexdigest() if rel == virtual_name and delivery_manifest is not None else _sha256(root / rel),
             }
             for rel in file_names
         ],
@@ -1029,7 +1038,10 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
     }
     with zipfile.ZipFile(bundle, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for rel in file_names:
-            archive.write(root / rel, rel)
+            if rel == virtual_name and delivery_manifest is not None:
+                archive.writestr(rel, delivery_manifest)
+            else:
+                archive.write(root / rel, rel)
         archive.writestr(MANIFEST_NAME, json.dumps(manifest, ensure_ascii=False, indent=2))
     return {**report, "bundle": str(bundle), "bundle_files": file_names}
 
