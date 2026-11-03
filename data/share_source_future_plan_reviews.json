@@ -1,0 +1,20 @@
+{
+  "schema": "share_future_plan_reviews_v1",
+  "records": [
+    {
+      "symbol": "603028",
+      "announcement_id": "AN202610301831245917",
+      "notice_number": "2026-064",
+      "provider_notice_date": "2026-10-31",
+      "document_signature_date": "2026-10-30",
+      "planned_date": "2026-11-04",
+      "before_total_shares": 285145200,
+      "after_total_shares": 284835200,
+      "change_total_shares": -310000,
+      "status": "verified_future_plan_not_executed",
+      "pdf_url": "https://pdf.dfcfw.com/pdf/H2_AN202610301831245917_1.pdf",
+      "pdf_sha256": "efb3ccab1dd352fed15404936b03d44c949aeabee74f235e64cff0b4a60d8964",
+      "pdf_bytes": 115925
+    }
+  ]
+}

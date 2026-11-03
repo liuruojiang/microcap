@@ -5377,6 +5377,7 @@ def stock_input_evidence_fingerprint() -> dict[str, object]:
     paths = [ROOT / ".microcap_index_cache/security_master.csv"]
     for folder in ("return_basis/manifests", "trade_status", "share_sources"):
         paths.extend(sorted((ROOT / ".microcap_index_cache" / folder).glob("*.json")))
+    paths = [path for path in paths if path != ROOT / ".microcap_index_cache/share_sources/RATE_LIMIT_STOP.json"]
     digest = hashlib.sha256()
     for path in sorted(paths):
         if not path.is_file():

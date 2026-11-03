@@ -1108,6 +1108,7 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
         stock_paths = [root / ".microcap_index_cache/security_master.csv"]
         for folder in ("return_basis/manifests", "trade_status", "share_sources"):
             stock_paths.extend(sorted((root / ".microcap_index_cache" / folder).glob("*.json")))
+        stock_paths = [path for path in stock_paths if path != root / ".microcap_index_cache/share_sources/RATE_LIMIT_STOP.json"]
         stock_digest = hashlib.sha256()
         for path in sorted(stock_paths):
             stock_digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
