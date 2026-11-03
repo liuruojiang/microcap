@@ -244,3 +244,35 @@ def test_shared_pack_rejects_transient_final_change_and_preserves_published_bund
     assert final.read_bytes() == original_final
     assert bundle.read_bytes() == original_bundle
     assert not (workspace / delivery.LOCK).exists()
+
+
+@pytest.mark.parametrize("directory", [state.PRICE_CACHE_DIR, state.SHARE_CACHE_DIR])
+def test_shared_pack_rejects_transient_cache_change_after_validation(workspace, monkeypatch, directory):
+    """Cached inputs outside report.inputs must share the validated ZIP identity."""
+    bundle, _ = prepare(workspace, monkeypatch)
+    original_bundle = bundle.read_bytes()
+    cache = workspace / directory / "000001.csv"
+    original_cache = cache.read_bytes()
+    original_validate = state.validate_universe_cache_transport
+    original_pack = state.pack_state
+
+    def change_after_validation(root):
+        errors = original_validate(root)
+        assert not errors
+        # Same-size replacement also requires a hash comparison, not just size.
+        cache.write_bytes(original_cache.replace(b"2026-09", b"2020-09"))
+        return errors
+
+    def restore_after_archiving(*args, **kwargs):
+        try:
+            return original_pack(*args, **kwargs)
+        finally:
+            cache.write_bytes(original_cache)
+
+    monkeypatch.setattr(state, "validate_universe_cache_transport", change_after_validation)
+    monkeypatch.setattr(state, "pack_state", restore_after_archiving)
+    with pytest.raises(RuntimeError, match="Packed content differs from validated delivery"):
+        cloud.pack({v: workspace for v in delivery.COSTED}, bundle, "2026-09-03")
+    assert cache.read_bytes() == original_cache
+    assert bundle.read_bytes() == original_bundle
+    assert not (workspace / delivery.LOCK).exists()

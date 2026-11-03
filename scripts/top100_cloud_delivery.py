@@ -131,7 +131,10 @@ def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -
                                   delivery_manifest=json.dumps(report, ensure_ascii=False, indent=2).encode("utf-8"))
         require_ok(packed)
         with zipfile.ZipFile(temporary) as archive:
-            state._verify_bundle_manifest(archive)
+            try:
+                state._verify_bundle_manifest(archive)
+            except ValueError as exc:
+                raise RuntimeError(f"Packed content differs from validated delivery: {exc}") from exc
             names = set(archive.namelist())
             for name, expected_hash in {**report["inputs"], **report["artifacts"]}.items():
                 if name not in names and name in SOURCE_FILES and name not in report["artifacts"]:

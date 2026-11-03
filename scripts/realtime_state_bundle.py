@@ -1000,6 +1000,26 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
                delivery_manifest: bytes | None = None) -> dict[str, object]:
     validation_root = root.resolve()
     root, bundle = _extended(root), _extended(bundle)
+    virtual_name = "outputs/top100_delivery_manifest.json"
+
+    def inventory():
+        names = sorted(set(_iter_bundle_files(root)) |
+                       {_repo_path(name).as_posix() for name in extra_files})
+        if delivery_manifest is not None:
+            names = sorted(set(names) | {virtual_name})
+        entries = [
+            {"path": rel,
+             "bytes": len(delivery_manifest) if rel == virtual_name and delivery_manifest is not None else (root / rel).stat().st_size,
+             "sha256": hashlib.sha256(delivery_manifest).hexdigest() if rel == virtual_name and delivery_manifest is not None else _sha256(root / rel)}
+            for rel in names
+        ]
+        return names, entries
+
+    # Shared delivery reads live files rather than an isolated staged copy.
+    # Bind the archive to its pre-validation bytes, including price/factor caches
+    # outside the delivery CSV input map. Reuse the existing ZIP manifest hashes;
+    # do not add another historical reconstruction or payload hash pass.
+    captured = inventory() if delivery_manifest is not None else None
     validation_options = ({"close_confirmed_session": close_confirmed_session}
                           if close_confirmed_session is not None else {})
     if close_confirmed_session is not None:
@@ -1018,22 +1038,11 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
         return report
     root = root.resolve()
     bundle.parent.mkdir(parents=True, exist_ok=True)
-    file_names = sorted(set(_iter_bundle_files(root)) |
-                        {_repo_path(name).as_posix() for name in extra_files})
-    virtual_name = "outputs/top100_delivery_manifest.json"
-    if delivery_manifest is not None:
-        file_names = sorted(set(file_names) | {virtual_name})
+    file_names, entries = captured if captured is not None else inventory()
     manifest = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "required_files": list(REQUIRED_FILES),
-        "files": [
-            {
-                "path": rel,
-                "bytes": len(delivery_manifest) if rel == virtual_name and delivery_manifest is not None else (root / rel).stat().st_size,
-                "sha256": hashlib.sha256(delivery_manifest).hexdigest() if rel == virtual_name and delivery_manifest is not None else _sha256(root / rel),
-            }
-            for rel in file_names
-        ],
+        "files": entries,
         "validation": report,
     }
     with zipfile.ZipFile(bundle, "w", compression=zipfile.ZIP_DEFLATED) as archive:
