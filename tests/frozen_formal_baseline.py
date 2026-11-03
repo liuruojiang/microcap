@@ -41,9 +41,10 @@ def load_frozen_formal_baseline(root: Path | None = None) -> dict:
     for name, expected_hash in expected.items():
         path = (root / name).resolve()
         assert path.is_relative_to(root), name
-        # Delivery authenticates CRLF/LF-equivalent content. Preserve that exact
-        # contract, then separately pin raw bytes for read-only teardown checks.
-        assert delivery.sha(path) == expected_hash, f"Frozen delivery baseline hash mismatch: {name}"
+        # Original ST evidence is authenticated byte-for-byte by the producer;
+        # other delivery inputs retain its CRLF/LF-equivalent hash contract.
+        actual_hash = digest(path) if name.startswith("data/st_notice_evidence/") else delivery.sha(path)
+        assert actual_hash == expected_hash, f"Frozen delivery baseline hash mismatch: {name}"
     report = delivery.inspect_outputs(root, target)
     assert report["ok"], report["errors"]
     for key in ("inputs", "artifacts", "streams", "expected_date"):
