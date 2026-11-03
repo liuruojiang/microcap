@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 SOURCE_FILES = (
+    "scripts/exchange_calendar.py",
     "scripts/stock_input_contract.py",
     "scripts/stock_return_basis.py",
     "scripts/stock_return_basis_store.py",
@@ -18,6 +19,9 @@ SOURCE_FILES = (
     "scripts/st_metadata_refresh.py",
     "scripts/stock_tail_returns.py",
     "scripts/share_change_source.py",
+    "scripts/share_unchanged_tail.py",
+    "data/share_source_future_plan_reviews.json",
+    "scripts/sina_share_history.py",
     "scripts/stock_daily_inputs.py",
     "scripts/stock_daily_alternative.py",
 )

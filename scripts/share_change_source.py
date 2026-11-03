@@ -189,8 +189,42 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
         raise ValueError("Share source freshness requires explicit refresh")
     if datetime.now(timezone.utc) < datetime.fromisoformat(end + "T15:00:00+08:00"):
         raise ValueError("Share source close is not eligible")
-    if (source_root / "RATE_LIMIT_STOP.json").exists():
-        raise ValueError("Share source group stopped after HTTP rate limit")
+    if (source_root / "RATE_LIMIT_STOP.json").exists() or (state and state.get("kind") == "dual_source_unchanged_tail_v1"):
+        if not state:
+            raise ValueError("Unchanged-tail fallback requires an existing verified share chain")
+        if (cache_path.resolve() != (root / ".microcap_index_cache/share_change" / (symbol + ".csv")).resolve()
+                or not source_root.resolve().is_relative_to(root.resolve())):
+            raise ValueError("Unchanged-tail source/cache path differs")
+        from scripts.share_unchanged_tail import collect_manifest
+        manifest = collect_manifest(root=root, symbol=symbol, previous_day=state["query_end"],
+                                    end=end, candidate=old_bytes)
+        if state_path.read_bytes() != original_state_bytes or cache_path.read_bytes() != old_bytes:
+            raise ValueError("Share inputs changed during unchanged-tail collection")
+        previous_path = source_root / "states" / (_sha(original_state_bytes) + ".json")
+        for immutable, raw in ((previous_path, original_state_bytes),
+                               (source_root / "snapshots" / symbol / (_sha(old_bytes) + ".csv"), old_bytes)):
+            if immutable.exists() and immutable.read_bytes() != raw:
+                raise ValueError("Conflicting immutable unchanged-tail evidence")
+            if not immutable.exists():
+                _atomic(immutable, raw)
+        receipt = dict(schema_version=2, kind="dual_source_unchanged_tail_v1", symbol=symbol,
+                       query_start=(pd.Timestamp(state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
+                       query_end=end, candidate_sha256=_sha(old_bytes), evidence_manifest=manifest,
+                       previous_state=dict(path=previous_path.relative_to(source_root).as_posix(), sha256=_sha(original_state_bytes)),
+                       primary_source_health="unknown_original_denial_preserved")
+        published = json.dumps(receipt, ensure_ascii=False, indent=2).encode()
+        try:
+            _atomic(state_path, published)
+            verify_share_cache(root=root, symbol=symbol, as_of=end)
+        except BaseException:
+            if state_path.read_bytes() != published:
+                _atomic(failure_marker, json.dumps(dict(status="unknown_concurrent_state", original_sha256=_sha(original_state_bytes),
+                                                       published_sha256=_sha(published))).encode())
+                raise RuntimeError("Unchanged-tail publication state changed concurrently; owner recovery required")
+            _atomic(state_path, original_state_bytes)
+            raise
+        return old
+
     start = (pd.Timestamp(state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d") if state else "1990-01-01"
     # Use the installed, pinned AkShare public CNInfo request encoder.
     url = "https://webapi.cninfo.com.cn/api/stock/p_stock2215"
@@ -229,6 +263,28 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
     _atomic(attempt.with_suffix(".receipt.json"), json.dumps(receipt, ensure_ascii=False, indent=2).encode())
     if response.status_code in (403, 429):
         _atomic(source_root / "RATE_LIMIT_STOP.json", json.dumps(receipt).encode())
+        if state is not None:
+            try:
+                response.raise_for_status()
+            except requests.HTTPError as primary_error:
+                try:
+                    # The real stop now exists, so this private re-entry can
+                    # only take the qualified fallback, never query CNINFO or
+                    # re-enter the public per-symbol lock.
+                    return _refresh_share_change(root=root, symbol=symbol, cache_path=cache_path,
+                                                 as_of=as_of, allow_network=allow_network)
+                except Exception as fallback_error:
+                    diagnostic = dict(status="primary_denial_and_fallback_failure", symbol=symbol,
+                                      query_end=end, primary_status=response.status_code,
+                                      primary_error_type=type(primary_error).__name__,
+                                      primary_error=str(primary_error), fallback_error_type=type(fallback_error).__name__,
+                                      fallback_error=str(fallback_error),
+                                      stop_sha256=_sha((source_root / "RATE_LIMIT_STOP.json").read_bytes()),
+                                      response_sha256=receipt["response_sha256"],
+                                      recorded_at_utc=datetime.now(timezone.utc).isoformat())
+                    failed_path = source_root / "failures" / symbol / (uuid.uuid4().hex + ".json")
+                    _atomic(failed_path, json.dumps(diagnostic, ensure_ascii=False, indent=2).encode())
+                    raise primary_error from fallback_error
     response.raise_for_status()
     incoming = parse_source(raw, symbol=symbol, start=start, end=end)
     combined = merge_preserving_history(old, incoming)
@@ -363,11 +419,26 @@ def verify_share_cache(*, root, symbol, as_of):
         day = state["query_end"]
         if datetime.fromisoformat(day + "T15:00:00+08:00") > datetime.now(timezone.utc):
             raise ValueError("Share certified cutoff is not close-confirmed")
-        if (state.get("schema_version") != 1 or state.get("symbol") != symbol
+        if (state.get("schema_version") not in (1, 2) or state.get("symbol") != symbol
                 or state.get("candidate_sha256") != _sha(candidate)):
             raise ValueError("Share source/cache identity or cutoff mismatch")
         actual = frame(candidate, day)
-        if state.get("kind") == "approved_baseline":
+        if state.get("schema_version") == 2:
+            if state.get("kind") != "dual_source_unchanged_tail_v1":
+                raise ValueError("Unknown share provider/schema")
+            previous = state["previous_state"]
+            previous_state = json.loads(bound(previous["path"], previous["sha256"]))
+            previous_raw = bound(f"snapshots/{symbol}/{previous_state['candidate_sha256']}.csv", previous_state['candidate_sha256'])
+            verify(previous_state, previous_raw, depth+1)
+            expected = (pd.Timestamp(previous_state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+            if state.get("query_start") != expected or day < expected or candidate != previous_raw:
+                raise ValueError("Unchanged share tail changed history or has a query gap")
+            from scripts.share_unchanged_tail import verify_manifest
+            reference = state["evidence_manifest"]
+            manifest = json.loads(bound(reference["path"], reference["sha256"]))
+            verify_manifest(manifest, symbol=symbol, previous_day=previous_state["query_end"],
+                            end=day, candidate=candidate, bound=bound, root=root)
+        elif state.get("kind") == "approved_baseline":
             raw = bound(state["approval_path"], state["approval_sha256"])
             approval = json.loads(raw)
             if approval.get("schema") != "share_baseline_approval_v1" or approval.get("approved") is not True:
