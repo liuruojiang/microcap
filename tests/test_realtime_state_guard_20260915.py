@@ -701,3 +701,182 @@ def test_metadata_transport_and_changed_bytes_are_checked(tmp_path):
     meta.unlink()
     with pytest.raises(ValueError, match="fingerprint mismatch"):
         state.validate_security_metadata(tmp_path)
+
+
+# Exact original 30a function is retained here as an executable I/O parity
+# oracle. Its native modules and function objects are shared with the candidate.
+_FINGERPRINT_REFERENCE_30A = 'def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...]):\n    from scripts import stock_return_pipeline as pipeline\n    from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar\n    root = _extended(root)\n    calendar = tuple(day.isoformat() for day in pipeline.sessions_for_day(date.fromisoformat(target)))\n    fixed = [".microcap_index_cache/security_master.csv",\n             "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv"]\n    prefix = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_"\n    fixed += [prefix + suffix for suffix in ("meta.json", "effective_members.csv", "members.csv", "turnover.csv")]\n    trees = [".microcap_index_cache/" + name for name in ("prices_raw", "return_basis", "trade_status")]\n\n    def linked(path):\n        return path.is_symlink() or getattr(path, "is_junction", lambda: False)()\n\n    def inventory():\n        entries = []\n        for relative in fixed:\n            path = root / relative\n            # Linked ancestors can redirect an otherwise identical relative tree.\n            if any(linked(parent) for parent in (path, *path.parents) if parent != root):\n                return None\n            entries.append((relative, "file" if path.is_file() else "missing"))\n        for relative in trees:\n            base = root / relative\n            if linked(base):\n                return None\n            if not base.exists():\n                entries.append((relative, "missing")); continue\n            for folder, dirs, files in os.walk(base, followlinks=False):\n                path = Path(folder)\n                if linked(path) or any(linked(path / name) for name in dirs + files):\n                    return None\n                entries.append((path.relative_to(root).as_posix(), "directory"))\n                entries.extend(((path / name).relative_to(root).as_posix(), "file") for name in files)\n        return sorted(entries)\n\n    before = inventory()\n    if before is None:\n        return None, False\n    digest = hashlib.sha256()\n    digest.update(json.dumps([target, symbols, calendar], separators=(",", ":")).encode())\n    unlocked = True\n    for relative, kind in before:\n        digest.update((relative + "\\0" + kind + "\\0").encode())\n        if kind == "file":\n            digest.update(_sha256(root / relative).encode())\n            if relative.startswith(".microcap_index_cache/return_basis/locks/"):\n                unlocked = False\n    modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)\n    for module in modules:\n        digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())\n        # Also invalidate test/runtime replacements of the functions actually used.\n        for name, value in sorted(vars(module).items()):\n            if hasattr(value, "__code__"):\n                digest.update((name + ":" + str(id(value))).encode())\n    if inventory() != before:\n        raise RuntimeError("Return-basis inputs changed during fingerprint scan")\n    return digest.hexdigest(), unlocked\n'
+_FINGERPRINT_REFERENCE_30A_SHA256 = '6ba3628f8cbe06fff31b3fb77bf941269b3e6f2306b5bb42ef7fce5657891444'
+
+
+@pytest.fixture
+def fingerprint_io_case(tmp_path, monkeypatch):
+    from datetime import date
+    from pathlib import Path
+    from frozen_exchange_calendar import _load_sessions
+    from scripts import stock_return_pipeline as pipeline
+    sessions = _load_sessions()  # authenticated original acquisition fixture
+    monkeypatch.setattr(pipeline, 'sessions_for_day', lambda day: sessions)
+    def reference(root, target='2026-11-03', symbols=('000001',)):
+        assert hashlib.sha256(_FINGERPRINT_REFERENCE_30A.encode()).hexdigest() == _FINGERPRINT_REFERENCE_30A_SHA256
+        namespace = dict(vars(state))
+        exec(compile(_FINGERPRINT_REFERENCE_30A, '<original30a-fingerprint>', 'exec'), namespace)
+        return namespace['_return_basis_input_fingerprint'](root, target, symbols)
+    def make(root):
+        fixed = ['.microcap_index_cache/security_master.csv',
+                 'outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv']
+        prefix = 'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_'
+        fixed += [prefix+suffix for suffix in ('meta.json','effective_members.csv','members.csv','turnover.csv')]
+        for i,name in enumerate(fixed):
+            path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(('fixed'+str(i)).encode())
+        for directory in ('prices_raw','return_basis','trade_status'):
+            base=root/'.microcap_index_cache'/directory
+            (base/'nested'/'empty').mkdir(parents=True)
+            (base/'root.dat').write_bytes(bytes(range(256))*9)
+            (base/'nested'/'deep.dat').write_bytes(b'content\x00\xff'*8193)
+        return root
+    def candidate(root, target='2026-11-03', symbols=('000001',)):
+        return state._return_basis_input_fingerprint(root,target,symbols)
+    return SimpleNamespace(root=make(tmp_path/'tree'),make=make,reference=reference,candidate=candidate)
+
+
+def test_fingerprint_scandir_actual_tree_digest_and_unlocked_exact(fingerprint_io_case):
+    c=fingerprint_io_case
+    assert c.candidate(c.root) == c.reference(c.root)
+    assert c.candidate(c.root)[1] is True
+
+
+def test_fingerprint_scandir_missing_fixed_and_tree_exact(fingerprint_io_case):
+    import shutil
+    c=fingerprint_io_case
+    (c.root/'.microcap_index_cache/security_master.csv').unlink()
+    shutil.rmtree(c.root/'.microcap_index_cache/trade_status')
+    assert c.candidate(c.root) == c.reference(c.root)
+
+
+def test_fingerprint_scandir_full_bytes_not_size_or_mtime(fingerprint_io_case):
+    import os
+    c=fingerprint_io_case; path=c.root/'.microcap_index_cache/prices_raw/root.dat'
+    before=c.candidate(c.root);stamp=path.stat();body=path.read_bytes()
+    path.write_bytes(bytes([body[0]^1])+body[1:]);os.utime(path,ns=(stamp.st_atime_ns,stamp.st_mtime_ns))
+    after=c.candidate(c.root)
+    assert before != after and after == c.reference(c.root)
+
+
+def test_fingerprint_scandir_lock_file_exact(fingerprint_io_case):
+    c=fingerprint_io_case;path=c.root/'.microcap_index_cache/return_basis/locks/000001.lock'
+    path.parent.mkdir();path.write_bytes(b'owner')
+    assert c.candidate(c.root) == c.reference(c.root)
+    assert c.candidate(c.root)[1] is False
+
+
+def test_fingerprint_scandir_empty_directory_is_part_of_digest(fingerprint_io_case):
+    c=fingerprint_io_case;before=c.candidate(c.root)
+    (c.root/'.microcap_index_cache/prices_raw/new-empty').mkdir()
+    after=c.candidate(c.root)
+    assert before != after and after == c.reference(c.root)
+
+
+def test_fingerprint_scandir_long_unicode_path_exact(fingerprint_io_case):
+    from pathlib import Path
+    c=fingerprint_io_case;folder=state._extended(c.root)/'.microcap_index_cache/return_basis'
+    for i in range(14):folder=folder/('长路径节点'+str(i)+'_'*12)
+    folder.mkdir(parents=True);(folder/'证据.dat').write_bytes(b'long-path-source')
+    assert c.candidate(c.root) == c.reference(c.root)
+
+
+def test_fingerprint_scandir_runtime_function_identity_invalidates(fingerprint_io_case,monkeypatch):
+    from scripts import stock_return_pipeline as pipeline
+    c=fingerprint_io_case;before=c.candidate(c.root)
+    def different_function():return None
+    monkeypatch.setattr(pipeline,'load_return_prices',different_function)
+    after=c.candidate(c.root)
+    assert before != after and after == c.reference(c.root)
+
+
+def test_fingerprint_scandir_full_post_inventory_rejects_new_path(fingerprint_io_case,monkeypatch):
+    c=fingerprint_io_case;original=state._sha256;changed=[False]
+    def change(path):
+        result=original(path)
+        if not changed[0]:
+            changed[0]=True
+            (c.root/'.microcap_index_cache/trade_status/new.json').write_bytes(b'new-object')
+        return result
+    monkeypatch.setattr(state,'_sha256',change)
+    with pytest.raises(RuntimeError,match='changed during fingerprint'):c.candidate(c.root)
+
+
+def test_fingerprint_scandir_no_per_tree_file_resolve(fingerprint_io_case,monkeypatch):
+    c=fingerprint_io_case;original=state._extended;calls=[]
+    def counted(path):calls.append(str(path));return original(path)
+    monkeypatch.setattr(state,'_extended',counted)
+    assert c.candidate(c.root) == c.reference(c.root)
+    # Candidate calls extended only for root + 6 fixed + 5 module source files.
+    calls.clear()
+    c.candidate(c.root);candidate_count=len(calls)
+    c.reference(c.root);reference_count=len(calls)-candidate_count
+    assert candidate_count == 12 and reference_count > candidate_count
+
+
+def test_fingerprint_scandir_actual_symlink_rejected(fingerprint_io_case):
+    import os
+    from pathlib import Path
+    c=fingerprint_io_case;target=c.root/'outside';target.mkdir();(target/'source').write_bytes(b'external')
+    link=c.root/'.microcap_index_cache/trade_status/linked'
+    link.symlink_to(target,target_is_directory=True)
+    try:
+        assert c.candidate(c.root)==(None,False)==c.reference(c.root)
+    finally:
+        link.unlink()
+
+
+def test_fingerprint_scandir_fixed_linked_ancestor_rejected(fingerprint_io_case):
+    c=fingerprint_io_case;folder=c.root/'outputs';destination=c.root/'real-outputs'
+    folder.rename(destination);folder.symlink_to(destination,target_is_directory=True)
+    try:
+        assert c.candidate(c.root)==(None,False)==c.reference(c.root)
+    finally:folder.unlink();destination.rename(folder)
+
+
+def test_fingerprint_scandir_unknown_reparse_is_not_reused(fingerprint_io_case,monkeypatch):
+    import os
+    c=fingerprint_io_case;original=os.scandir
+    class Entry:
+        def __init__(self,value):self.value=value;self.path=value.path;self.name=value.name
+        def stat(self,**kwargs):
+            value=self.value.stat(**kwargs)
+            return SimpleNamespace(st_mode=value.st_mode,st_file_attributes=0x400)
+    class Scan:
+        def __init__(self,path):self.inner=original(path)
+        def __enter__(self):return (Entry(value) for value in self.inner.__enter__())
+        def __exit__(self,*args):return self.inner.__exit__(*args)
+    monkeypatch.setattr(os,'scandir',Scan)
+    assert c.candidate(c.root)==(None,False)
+
+
+def test_fingerprint_scandir_nondirectory_tree_fails_closed(fingerprint_io_case):
+    import shutil
+    c=fingerprint_io_case;path=c.root/'.microcap_index_cache/trade_status'
+    shutil.rmtree(path);path.write_bytes(b'not-a-directory')
+    assert c.candidate(c.root)==(None,False)
+
+
+def test_fingerprint_scandir_pending_directory_redirect_rejected(fingerprint_io_case,monkeypatch):
+    import os
+    c=fingerprint_io_case;original=os.scandir;folder=c.root/'.microcap_index_cache/prices_raw'
+    nested=folder/'nested';saved=folder/'saved-nested';target=c.root/'elsewhere';target.mkdir()
+    changed=[False]
+    class Scan:
+        def __init__(self,path):self.path=str(path);self.inner=original(path)
+        def __enter__(self):return self.inner.__enter__()
+        def __exit__(self,*args):
+            result=self.inner.__exit__(*args)
+            if self.path==str(state._extended(folder)) and not changed[0]:
+                changed[0]=True;nested.rename(saved);nested.symlink_to(target,target_is_directory=True)
+            return result
+    monkeypatch.setattr(os,'scandir',Scan)
+    try:
+        assert c.candidate(c.root)==(None,False)
+        assert changed[0]
+    finally:
+        if nested.is_symlink():nested.unlink();saved.rename(nested)
