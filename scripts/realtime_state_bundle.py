@@ -603,6 +603,9 @@ _RETURN_BASIS_SUCCESS_MEMO: dict[str, tuple] = {}
 
 
 def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...]):
+    import stat
+    from collections import deque
+    from concurrent.futures import ThreadPoolExecutor
     from scripts import stock_return_pipeline as pipeline
     from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar
     root = _extended(root)
@@ -630,12 +633,32 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
                 return None
             if not base.exists():
                 entries.append((relative, "missing")); continue
-            for folder, dirs, files in os.walk(base, followlinks=False):
-                path = Path(folder)
-                if linked(path) or any(linked(path / name) for name in dirs + files):
+            if not base.is_dir():
+                return None
+            pending = [(str(base), relative)]
+            while pending:
+                folder, prefix = pending.pop()
+                info = os.stat(folder, follow_symlinks=False)
+                if (not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode)
+                        or getattr(info, "st_file_attributes", 0) & 0x400):
                     return None
-                entries.append((path.relative_to(root).as_posix(), "directory"))
-                entries.extend(((path / name).relative_to(root).as_posix(), "file") for name in files)
+                entries.append((prefix, "directory"))
+                with os.scandir(folder) as children:
+                    for entry in children:
+                        info = entry.stat(follow_symlinks=False)
+                        # Windows find-data already carries lstat/reparse flags.
+                        # Reject every reparse/special object, including unknown
+                        # kinds, rather than following a redirected subtree.
+                        if (stat.S_ISLNK(info.st_mode)
+                                or getattr(info, "st_file_attributes", 0) & 0x400):
+                            return None
+                        name = prefix + "/" + entry.name
+                        if stat.S_ISDIR(info.st_mode):
+                            pending.append((entry.path, name))
+                        elif stat.S_ISREG(info.st_mode):
+                            entries.append((name, "file"))
+                        else:
+                            return None
         return sorted(entries)
 
     before = inventory()
@@ -644,12 +667,38 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     digest = hashlib.sha256()
     digest.update(json.dumps([target, symbols, calendar], separators=(",", ":")).encode())
     unlocked = True
-    for relative, kind in before:
-        digest.update((relative + "\0" + kind + "\0").encode())
-        if kind == "file":
-            digest.update(_sha256(root / relative).encode())
-            if relative.startswith(".microcap_index_cache/return_basis/locks/"):
-                unlocked = False
+    def file_sha(relative):
+        if not any(relative.startswith(tree + "/") for tree in trees):
+            return _sha256(root / relative)
+        # Canonical root + complete before/after link inventories; every byte
+        # remains mandatory. Fixed paths keep the original resolving helper.
+        content = hashlib.sha256()
+        with (root / relative).open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                content.update(chunk)
+        return content.hexdigest()
+    file_names = iter(relative for relative, kind in before if kind == "file")
+    pending = deque()
+    # At most four readers and eight outstanding tasks, independent of tree
+    # size. Consume strictly in the old sorted inventory order, never completion
+    # order. Executor exit joins every owned reader, including on exceptions.
+    with ThreadPoolExecutor(max_workers=4) as readers:
+        for _ in range(8):
+            name = next(file_names, None)
+            if name is not None:
+                pending.append((name, readers.submit(file_sha, name)))
+        for relative, kind in before:
+            digest.update((relative + "\0" + kind + "\0").encode())
+            if kind == "file":
+                name, future = pending.popleft()
+                if name != relative:
+                    raise RuntimeError("Return-basis file hashing order changed")
+                digest.update(future.result().encode())
+                if relative.startswith(".microcap_index_cache/return_basis/locks/"):
+                    unlocked = False
+                name = next(file_names, None)
+                if name is not None:
+                    pending.append((name, readers.submit(file_sha, name)))
     modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
     for module in modules:
         digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
