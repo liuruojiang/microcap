@@ -13,12 +13,14 @@ import microcap_top100_mom16_biweekly_live_v2_5 as v25
 
 @pytest.fixture
 def oracle(monkeypatch):
+    from scripts import exchange_calendar as formal_calendar
     calls = []
     def completed(now):
         stamp = pd.Timestamp(now)
         calls.append(stamp)
         return date(2026, 10, 8) if stamp.hour * 60 + stamp.minute >= 930 else date(2026, 9, 30)
-    module = SimpleNamespace(latest_completed_session=completed, is_trading_day=lambda day: day == date(2026, 10, 8))
+    module = SimpleNamespace(latest_completed_session=completed, is_trading_day=lambda day: day == date(2026, 10, 8),
+                             intraday_request_window_active=formal_calendar.intraday_request_window_active)
     monkeypatch.setitem(sys.modules, "scripts.exchange_calendar", module)
     original = v2.base_mod.assess_realtime_anchor_freshness.__globals__["_cn_timestamp"]
     clock = pd.Timestamp("2026-10-08 14:30", tz="Asia/Shanghai")
