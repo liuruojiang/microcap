@@ -115,6 +115,20 @@ def _pack_shared(root: Path, bundle: Path, expected: str, before: dict) -> dict:
         lock.unlink()
 
 
+def _shared_pack_inventory(root: Path) -> set[str]:
+    """Pure path inventory; never repeat source hashes or historical validation."""
+    root = state._extended(root)
+    paths = {name for name in state.REQUIRED_FILES if (root / name).is_file()}
+    for pattern in state.OPTIONAL_GLOBS:
+        paths.update(path.relative_to(root).as_posix()
+                     for path in root.glob(pattern) if path.is_file())
+    if (root / state.PROXY_EFFECTIVE_MEMBERS_REL).is_file():
+        paths.add(state.PROXY_EFFECTIVE_MEMBERS_REL)
+    # Includes both effective/historical members and the full ranking universe.
+    paths.update(state._iter_current_member_cache_files(root))
+    return paths
+
+
 def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -> dict:
     report = delivery.inspect_outputs(root, expected)
     require_ok(report)
@@ -122,6 +136,7 @@ def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -
     report.update(status="complete", verified_at=datetime.now(timezone.utc).isoformat(), release_sha=release)
     extras = (set(report["artifacts"]) | set(report["inputs"]) |
               {delivery.MANIFEST}) - set(SOURCE_FILES)
+    inventory_before = _shared_pack_inventory(root)
     bundle.parent.mkdir(parents=True, exist_ok=True)
     # An unsuccessful attempt never publishes a partial replacement bundle.
     with tempfile.TemporaryDirectory(prefix="top100-zip-", dir=bundle.parent) as directory:
@@ -136,6 +151,9 @@ def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -
             except ValueError as exc:
                 raise RuntimeError(f"Packed content differs from validated delivery: {exc}") from exc
             names = set(archive.namelist())
+            inventory_after = _shared_pack_inventory(root)
+            if inventory_after != inventory_before or not inventory_after.issubset(names):
+                raise RuntimeError("Shared delivery file inventory changed or is missing from archive")
             for name, expected_hash in {**report["inputs"], **report["artifacts"]}.items():
                 if name not in names and name in SOURCE_FILES and name not in report["artifacts"]:
                     continue  # Receiver verifies its checked-out source identity.

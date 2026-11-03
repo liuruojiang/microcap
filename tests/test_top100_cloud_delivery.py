@@ -276,3 +276,39 @@ def test_shared_pack_rejects_transient_cache_change_after_validation(workspace, 
     assert cache.read_bytes() == original_cache
     assert bundle.read_bytes() == original_bundle
     assert not (workspace / delivery.LOCK).exists()
+
+
+@pytest.mark.parametrize("directory", [state.PRICE_CACHE_DIR, state.SHARE_CACHE_DIR])
+@pytest.mark.parametrize("symbol", ["000001", "999999"])
+def test_shared_pack_rejects_cache_created_between_inventory_and_validation(workspace, monkeypatch, directory, symbol):
+    """An initially missing payload cannot escape ZIP completeness checks."""
+    if symbol == "999999":
+        # Ranking-universe security outside all 100 current/historical positions.
+        meta = workspace / ".microcap_index_cache/security_meta/999999.json"
+        meta.parent.mkdir(parents=True, exist_ok=True)
+        meta.write_text("{}", encoding="utf-8")
+        for cache_dir in (state.PRICE_CACHE_DIR, state.SHARE_CACHE_DIR):
+            target = workspace / cache_dir / f"{symbol}.csv"
+            target.write_bytes((workspace / cache_dir / "000001.csv").read_bytes())
+    bundle, _ = prepare(workspace, monkeypatch)
+    original_bundle = bundle.read_bytes()
+    cache = workspace / directory / f"{symbol}.csv"
+    original_cache = cache.read_bytes()
+    original_validate = state.validate_state
+    original_pack = state.pack_state
+
+    def create_before_validation(*args, **kwargs):
+        cache.write_bytes(original_cache)
+        return original_validate(*args, **kwargs)
+
+    def remove_before_inventory(*args, **kwargs):
+        cache.unlink()
+        return original_pack(*args, **kwargs)
+
+    monkeypatch.setattr(state, "validate_state", create_before_validation)
+    monkeypatch.setattr(state, "pack_state", remove_before_inventory)
+    with pytest.raises(RuntimeError, match="inventory changed or is missing from archive"):
+        cloud.pack({v: workspace for v in delivery.COSTED}, bundle, "2026-09-03")
+    assert cache.read_bytes() == original_cache
+    assert bundle.read_bytes() == original_bundle
+    assert not (workspace / delivery.LOCK).exists()
