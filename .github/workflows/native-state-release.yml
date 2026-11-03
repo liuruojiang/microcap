@@ -1,40 +1,58 @@
-name: Assemble verified native state release
+name: Source-only CNInfo share handoff
 on:
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
-  assemble:
+  share-source-only:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 120
     env:
       GH_TOKEN: ${{ github.token }}
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
-      - name: Download exact base and delta
+      - uses: actions/checkout@v6
+        with:
+          path: operator
+          sparse-checkout: research_reports/20261103_share_source_handoff
+      - uses: actions/checkout@v6
+        with:
+          ref: b5ac304790aa8644407de4c0712920f2c8ea2fb0
+          path: source
+          sparse-checkout: |
+            scripts/share_change_source.py
+            scripts/stock_return_basis_store.py
+            scripts/stock_return_basis.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install the existing pinned public source dependencies
+        run: python -m pip install numpy 'pandas<3' requests 'akshare==1.18.46'
+      - name: Fetch exact public source input and verify adapter
         run: |
-          gh release download top100-tencent-daily-20261102 --repo liuruojiang/microcap --pattern microcap-tencent-whole-delivery-20261102.zip
-          gh release download top100-audit-fixes-20261103 --repo liuruojiang/microcap --pattern audit-fixes-state-delta.zip
-      - name: Reconstruct and verify identical bundle
-        shell: python
+          mkdir -p "${RUNNER_TEMP}/input"
+          gh release download share-source-handoff-20261103 --repo liuruojiang/microcap --pattern share-source-public-input-20261103.zip --dir "${RUNNER_TEMP}/input"
+          python -B -c 'from pathlib import Path; import hashlib; p=Path("operator/research_reports/20261103_share_source_handoff/share_source_handoff.py"); expected="a76eca68304703c5bb50a325cc48dc44e9ccb42cf93e7e83acf3d5dff2889f0b"; actual=hashlib.sha256(p.read_bytes()).hexdigest(); actual==expected or (_ for _ in ()).throw(RuntimeError("Operator byte identity changed"))'
+      - name: Refresh only native share sources serially; no history, signal or mail
         run: |
-          import hashlib,json,zipfile
-          from pathlib import Path
-          old=Path('microcap-tencent-whole-delivery-20261102.zip').read_bytes()
-          delta=Path('audit-fixes-state-delta.zip').read_bytes()
-          assert hashlib.sha256(old).hexdigest()=='9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864'
-          assert hashlib.sha256(delta).hexdigest()=='40b386136f0973cebe77e8de1294cb56f938b0486db6f702d3004329b614c033'
-          with zipfile.ZipFile('audit-fixes-state-delta.zip') as z:
-              r=json.loads(z.read('recipe.json'));literal=z.read('literals.bin')
-          result=bytearray()
-          for kind,start,size in r['ops']:
-              assert kind in ('copy','literal') and start>=0 and size>=0
-              source=old if kind=='copy' else literal
-              assert start+size<=len(source)
-              result.extend(source[start:start+size])
-          assert len(result)==605202401
-          assert hashlib.sha256(result).hexdigest()=='99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93'
-          Path('microcap-audit-fixed-whole-delivery-20261102.zip').write_bytes(result)
-      - name: Upload exact bundle and publish release
-        run: |
-          gh release upload top100-audit-fixes-20261103 microcap-audit-fixed-whole-delivery-20261102.zip --repo liuruojiang/microcap
-          gh release edit top100-audit-fixes-20261103 --repo liuruojiang/microcap --draft=false
+          set -o pipefail
+          python -B -u operator/research_reports/20261103_share_source_handoff/share_source_handoff.py run-cloud \
+            --source-root source \
+            --input-zip "${RUNNER_TEMP}/input/share-source-public-input-20261103.zip" \
+            --input-sha256 9b4b8e402b892dcd84b47d2a6550eb27bc51957d03400b4b4bdb2446bd46e763 \
+            --work-root "${RUNNER_TEMP}/native-share-source" \
+            --output-zip "${RUNNER_TEMP}/share-source-output-20261103.zip" \
+            --interval-seconds 3 \
+            2>&1 | tee "${RUNNER_TEMP}/share-source-handoff.log"
+      - name: Preserve isolated source result or failure evidence only
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: share-source-only-20261103-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/share-source-output-20261103.zip
+            ${{ runner.temp }}/share-source-output-20261103.receipt.json
+            ${{ runner.temp }}/share-source-handoff.log
+          if-no-files-found: warn
+          retention-days: 90
