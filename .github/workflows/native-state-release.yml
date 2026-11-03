@@ -12,18 +12,18 @@ jobs:
     steps:
       - name: Download exact base and delta
         run: |
-          gh release download top100-native-daily-20261102 --repo liuruojiang/microcap --pattern microcap-native-whole-delivery-20261030.zip
-          gh release download top100-tencent-daily-20261102 --repo liuruojiang/microcap --pattern scoped-state-delta.zip
+          gh release download top100-tencent-daily-20261102 --repo liuruojiang/microcap --pattern microcap-tencent-whole-delivery-20261102.zip
+          gh release download top100-audit-fixes-20261103 --repo liuruojiang/microcap --pattern audit-fixes-state-delta.zip
       - name: Reconstruct and verify identical bundle
         shell: python
         run: |
           import hashlib,json,zipfile
           from pathlib import Path
-          old=Path('microcap-native-whole-delivery-20261030.zip').read_bytes()
-          delta=Path('scoped-state-delta.zip').read_bytes()
-          assert hashlib.sha256(old).hexdigest()=='2c673040c8d919476f8896e5596b7a693db6443304d4ad9e3f50925383c8a140'
-          assert hashlib.sha256(delta).hexdigest()=='f4117c11aa0d555cfbc7c3c2924bbcbbda86f319cc82611e77f2185589d2fb2f'
-          with zipfile.ZipFile('scoped-state-delta.zip') as z:
+          old=Path('microcap-tencent-whole-delivery-20261102.zip').read_bytes()
+          delta=Path('audit-fixes-state-delta.zip').read_bytes()
+          assert hashlib.sha256(old).hexdigest()=='9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864'
+          assert hashlib.sha256(delta).hexdigest()=='40b386136f0973cebe77e8de1294cb56f938b0486db6f702d3004329b614c033'
+          with zipfile.ZipFile('audit-fixes-state-delta.zip') as z:
               r=json.loads(z.read('recipe.json'));literal=z.read('literals.bin')
           result=bytearray()
           for kind,start,size in r['ops']:
@@ -31,10 +31,10 @@ jobs:
               source=old if kind=='copy' else literal
               assert start+size<=len(source)
               result.extend(source[start:start+size])
-          assert len(result)==605642042
-          assert hashlib.sha256(result).hexdigest()=='9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864'
-          Path('microcap-tencent-whole-delivery-20261102.zip').write_bytes(result)
+          assert len(result)==605202401
+          assert hashlib.sha256(result).hexdigest()=='99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93'
+          Path('microcap-audit-fixed-whole-delivery-20261102.zip').write_bytes(result)
       - name: Upload exact bundle and publish release
         run: |
-          gh release upload top100-tencent-daily-20261102 microcap-tencent-whole-delivery-20261102.zip --repo liuruojiang/microcap
-          gh release edit top100-tencent-daily-20261102 --repo liuruojiang/microcap --draft=false
+          gh release upload top100-audit-fixes-20261103 microcap-audit-fixed-whole-delivery-20261102.zip --repo liuruojiang/microcap
+          gh release edit top100-audit-fixes-20261103 --repo liuruojiang/microcap --draft=false
