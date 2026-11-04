@@ -6,6 +6,10 @@ on:
         description: Resume only the exact validated Nov4 package from run41845742478; no data refresh or email
         type: boolean
         default: false
+      notice_diagnosis_only:
+        description: Capture only the failed November4 ST catalog boundary comparison; no state refresh or send
+        type: boolean
+        default: false
 permissions:
   contents: write
   actions: read
@@ -14,7 +18,7 @@ defaults:
     shell: bash
 jobs:
   build:
-    if: inputs.publication_only != true
+    if: inputs.publication_only != true && inputs.notice_diagnosis_only != true
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -169,7 +173,7 @@ jobs:
           compression-level: 0
           retention-days: 30
   publish-only:
-    if: inputs.publication_only == true
+    if: inputs.publication_only == true && inputs.notice_diagnosis_only != true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -191,6 +195,44 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: microcap-postclose-publication-only-20261104
+          path: repair/
+          if-no-files-found: error
+          retention-days: 30
+  notice-diagnosis-only:
+    if: inputs.notice_diagnosis_only == true && inputs.publication_only != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: controller
+          persist-credentials: false
+          sparse-checkout: docs/postclose_repair_tools_20261104
+      - uses: actions/checkout@v6
+        with:
+          ref: 14b896a0915f700e5b999ff6c47676e6f8acaca1
+          path: source
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/
+            /data/
+            /*.py
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install the same necessary native source dependencies
+        run: python -m pip install numpy 'pandas<3' requests 'akshare==1.18.46' 'baostock==0.9.1' matplotlib
+      - name: Compare only actual prior and current November4 notice source
+        run: python -B -X utf8 controller/docs/postclose_repair_tools_20261104/diagnose_notice_boundary.py --source source --out repair
+      - name: Preserve exact source-only comparison and HTTP observations
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: microcap-notice-boundary-comparison-20261104
           path: repair/
           if-no-files-found: error
           retention-days: 30
