@@ -86,7 +86,9 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
         for version, root in roots.items():
             for name in final_files(version):
                 copy_file(root / name, staged / name)
-        report = delivery.inspect_outputs(staged, expected)
+        if (primary / delivery.MANIFEST).is_file():
+            copy_file(primary / delivery.MANIFEST, staged / delivery.MANIFEST)
+        report = delivery.inspect_outputs(staged, expected, new_generation=True)
         require_ok(report)
         if before_by_root != {root: delivery.input_hashes(root) for root in unique_roots}:
             raise RuntimeError("Inputs changed during cloud packing")
@@ -135,7 +137,7 @@ def _shared_pack_inventory(root: Path) -> set[str]:
 
 
 def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -> dict:
-    report = delivery.inspect_outputs(root, expected)
+    report = delivery.inspect_outputs(root, expected, new_generation=True)
     require_ok(report)
     release = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     report.update(status="complete", verified_at=datetime.now(timezone.utc).isoformat(), release_sha=release)
@@ -169,10 +171,12 @@ def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -
                     raise RuntimeError(f"Packed content differs from validated delivery: {name}")
         if delivery.input_hashes(root) != before:
             raise RuntimeError("Inputs changed during cloud packing")
-        after = delivery.inspect_outputs(root, expected)
+        after = delivery.inspect_outputs(root, expected, new_generation=True)
         require_ok(after)
         if any(after[key] != report[key] for key in ("inputs", "artifacts", "expected_date")):
             raise RuntimeError("Final streams changed during cloud packing")
+        if after.get("previous_source_validation") != report.get("previous_source_validation"):
+            raise RuntimeError("Previous source validation changed during cloud packing")
         os.replace(temporary, bundle)
     return {"ok": True, "expected_date": expected,
             "release_sha": release,

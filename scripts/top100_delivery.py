@@ -303,7 +303,7 @@ def validate_final_signal(signal: dict, nav: dict, version: str) -> None:
             raise ValueError(f"v2.{version} final signal/NAV {key} mismatch")
 
 
-def inspect_outputs(root: Path, expected: str) -> dict:
+def inspect_outputs(root: Path, expected: str, *, new_generation: bool = False) -> dict:
     """Read written files, not stdout or a successful base-only report."""
     errors, streams, artifacts = [], {}, {}
     try:
@@ -482,16 +482,62 @@ def inspect_outputs(root: Path, expected: str) -> dict:
     # A newly packed report must retain the distinction between the original
     # producer and a separately certified validator, rather than dropping it.
     try:
-        saved = json.loads((root / MANIFEST).read_bytes())
-    except (OSError, ValueError):
+        saved_bytes = (root / MANIFEST).read_bytes()
+        saved = json.loads(saved_bytes)
+        if not isinstance(saved, dict):
+            raise ValueError("Whole manifest is not an object")
+    except (OSError, ValueError) as exc:
+        if new_generation and (root / MANIFEST).exists():
+            report["errors"].append(f"Unreadable predecessor whole manifest: {exc}")
+            report["ok"] = False
         saved = {}
-    if "source_validation_compatibility" in saved:
+    if "source_validation_compatibility" in saved and "previous_source_validation" in saved:
+        report["errors"].append("Ambiguous active and previous source validation")
+        report["ok"] = False
+    elif "source_validation_compatibility" in saved:
         try:
-            report["source_validation_compatibility"] = validate_source_compatibility(root, report, saved)
+            if new_generation:
+                # New data is checked by the complete whole/base/transport gates.
+                # Authenticate the exact old receipt as ancestry, not as a rule
+                # that tomorrow's inputs/outputs must equal yesterday's.
+                previous = {"manifest_sha256": hashlib.sha256(saved_bytes).hexdigest(),
+                            "manifest_utf8": saved_bytes.decode("utf-8")}
+                report["previous_source_validation"] = validate_previous_source_validation(root, report, previous)
+            else:
+                report["source_validation_compatibility"] = validate_source_compatibility(root, report, saved)
         except (OSError, ValueError, KeyError, TypeError) as exc:
             report["errors"].append(f"invalid source validation compatibility: {exc}")
             report["ok"] = False
+    elif "previous_source_validation" in saved:
+        try:
+            report["previous_source_validation"] = validate_previous_source_validation(
+                root, report, saved["previous_source_validation"])
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            report["errors"].append(f"invalid previous source validation: {exc}")
+            report["ok"] = False
     return report
+
+
+def validate_previous_source_validation(root: Path, current: dict, previous: dict) -> dict:
+    """Preserve and authenticate the exact predecessor without freezing new data."""
+    if not isinstance(previous, dict) or set(previous) != {"manifest_sha256", "manifest_utf8"}:
+        raise ValueError("Incomplete previous source validation")
+    if not isinstance(previous["manifest_utf8"], str):
+        raise ValueError("Invalid previous source manifest bytes")
+    raw = previous["manifest_utf8"].encode("utf-8")
+    if hashlib.sha256(raw).hexdigest() != previous["manifest_sha256"]:
+        raise ValueError("Previous source manifest bytes differ")
+    saved = json.loads(raw)
+    if not isinstance(saved, dict):
+        raise ValueError("Previous source manifest is not an object")
+    if "previous_source_validation" in saved:
+        raise ValueError("Nested previous source validation is not supported")
+    validate_source_compatibility(root, saved, saved)
+    prior_day = daily_session_date(saved["expected_date"])
+    current_day = daily_session_date(current["expected_date"])
+    if prior_day is None or current_day is None or current_day < prior_day:
+        raise ValueError("Previous source validation is after the current delivery")
+    return copy.deepcopy(previous)
 
 
 def _require_source_only_transition(original: dict, current: dict, review: dict) -> None:
