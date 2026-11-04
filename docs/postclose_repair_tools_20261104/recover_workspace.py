@@ -58,15 +58,26 @@ def validate_archive(path, root):
                 actual[name] = {"sha256": hashlib.sha256(raw).hexdigest(), "git_blob": blob, "existing_git_symlink_only": True}
                 continue
             digest = hashlib.sha256()
+            native_digest = hashlib.sha256()
+            carry = b""
             blob = hashlib.sha1(b"blob " + str(member.size).encode() + b"\0")
             captured = bytearray() if name == "outputs/top100_delivery_manifest.json" else None
             with archive.extractfile(member) as stream:
                 for chunk in iter(lambda: stream.read(1024 * 1024), b""):
                     digest.update(chunk)
                     blob.update(chunk)
+                    normalized = carry + chunk
+                    carry = b"\r" if normalized.endswith(b"\r") else b""
+                    if carry:
+                        normalized = normalized[:-1]
+                    native_digest.update(normalized.replace(b"\r\n", b"\n"))
                     if captured is not None:
                         captured.extend(chunk)
-            actual[name] = {"sha256": digest.hexdigest(), "git_blob": blob.hexdigest()}
+            native_digest.update(carry)
+            # Exactly top100_delivery.input_hashes/sha: raw ST evidence;
+            # all other registered inputs and final artifacts use CRLF->LF.
+            native = digest.hexdigest() if name.startswith("data/st_notice_evidence/") else native_digest.hexdigest()
+            actual[name] = {"sha256": digest.hexdigest(), "native_sha256": native, "git_blob": blob.hexdigest()}
             if captured is not None:
                 manifest = json.loads(captured)
     if not manifest or manifest.get("status") != "complete" or manifest.get("expected_date") != "2026-11-03" or manifest.get("errors"):
@@ -76,7 +87,7 @@ def validate_archive(path, root):
         if not group:
             raise RuntimeError("Preserved native manifest is missing a group")
         for name, digest in group.items():
-            if name not in actual or actual[name]["sha256"] != digest:
+            if name not in actual or actual[name].get("native_sha256") != digest:
                 raise RuntimeError("Preserved native manifest binding differs: " + name)
             bound[name] = digest
     count = 0

@@ -110,3 +110,18 @@ def test_only_exact_historical_git_symlink_is_accepted_and_never_created(preserv
   with pytest.raises(RuntimeError,match='Git symlink differs'):module.validate_archive(archive,root)
  else:
   manifest,actual,count=module.validate_archive(archive,root);assert count==5;module.extract_verified(archive,root,actual);assert not (root/name).exists() and not (root/name).is_symlink()
+
+
+def test_native_manifest_newline_policy_keeps_original_state_bytes(preserved):
+ module,root,pack=preserved
+ for name in ('outputs/input.csv','outputs/result.csv'):(root/name).write_bytes((root/name).read_bytes().replace(b'\n',b'\r\n'))
+ manifest,actual,count=module.validate_archive(pack(),root);assert actual['outputs/input.csv']['sha256']!=actual['outputs/input.csv']['native_sha256'];module.extract_verified(pack(),root,actual);assert (root/'outputs/input.csv').read_bytes()==b'certified input\r\n'
+
+
+@pytest.mark.parametrize('wrong', [False,True])
+def test_native_st_notice_evidence_keeps_raw_hash_requirement(preserved,wrong):
+ module,root,pack=preserved;name='data/st_notice_evidence/receipt.json';path=root/name;path.parent.mkdir(parents=True);path.write_bytes(b'unit evidence\r\n');m=root/'outputs/top100_delivery_manifest.json';manifest=json.loads(m.read_bytes());manifest['inputs'][name]=hashlib.sha256(b'unit evidence\n' if wrong else path.read_bytes()).hexdigest();m.write_text(json.dumps(manifest));subprocess.run(['git','-C',str(root),'add','outputs/top100_delivery_manifest.json'],check=True)
+ if wrong:
+  with pytest.raises(RuntimeError,match='native manifest binding differs'):module.validate_archive(pack(),root)
+ else:
+  _,actual,_=module.validate_archive(pack(),root);assert actual[name]['native_sha256']==hashlib.sha256(path.read_bytes()).hexdigest()
