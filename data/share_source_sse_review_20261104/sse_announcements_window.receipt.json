@@ -1,0 +1,23 @@
+{
+  "url": "https://query.sse.com.cn/security/stock/queryCompanyBulletinNew.do",
+  "params": {
+    "isPagination": "true",
+    "pageHelp.pageSize": "20",
+    "pageHelp.cacheSize": "1",
+    "pageHelp.pageNo": "1",
+    "pageHelp.beginPage": "1",
+    "pageHelp.endPage": "1",
+    "START_DATE": "2026-10-30",
+    "END_DATE": "2026-11-04",
+    "SECURITY_CODE": "603028",
+    "TITLE": "",
+    "BULLETIN_TYPE": ""
+  },
+  "actual_url": "https://query.sse.com.cn/security/stock/queryCompanyBulletinNew.do?isPagination=true&pageHelp.pageSize=20&pageHelp.cacheSize=1&pageHelp.pageNo=1&pageHelp.beginPage=1&pageHelp.endPage=1&START_DATE=2026-10-30&END_DATE=2026-11-04&SECURITY_CODE=603028&TITLE=&BULLETIN_TYPE=",
+  "status": 200,
+  "http_start": "2026-11-04T13:20:30.858352+00:00",
+  "http_complete": "2026-11-04T13:20:32.757468+00:00",
+  "tls_verification": true,
+  "raw_sha256": "cb7a2ab78e336a66f43a0aee9dc5ebc9fac23624494995f89a8fda7c89599c41",
+  "bytes": 6125
+}

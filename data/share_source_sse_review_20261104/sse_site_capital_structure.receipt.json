@@ -1,0 +1,15 @@
+{
+  "url": "https://query.sse.com.cn/commonQuery.do",
+  "params": {
+    "isPagination": "false",
+    "sqlId": "COMMON_SSE_CP_GPJCTPZ_GPLB_GPGK_GBJG_C",
+    "COMPANY_CODE": "603028"
+  },
+  "actual_url": "https://query.sse.com.cn/commonQuery.do?isPagination=false&sqlId=COMMON_SSE_CP_GPJCTPZ_GPLB_GPGK_GBJG_C&COMPANY_CODE=603028",
+  "status": 200,
+  "http_start": "2026-11-04T13:12:34.131247+00:00",
+  "http_complete": "2026-11-04T13:12:35.969151+00:00",
+  "tls_verification": true,
+  "raw_sha256": "184a22d01fadaf75859d1d156e74759b8cef878149b783c83a093ce6b68c28c1",
+  "bytes": 697
+}

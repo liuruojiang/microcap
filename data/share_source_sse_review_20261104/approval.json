@@ -1,0 +1,19 @@
+{
+  "schema": "exact_share_source_priority_approval_v1",
+  "approved": true,
+  "recorded_at": "2026-11-04T13:29:01.855340+00:00",
+  "recorded_time_is_receipt_not_claimed_user_click_time": true,
+  "review_sha256": "8ecabf6af932b1ab0c158675098087414a951936c4b30a07a359aad86998bb7a",
+  "review_zip_sha256": "e7f44f91c2c788e99fcaba9b601fad32d295094772721215a9b54852e78bd573",
+  "user_answer": "授权采用上交所当日表并披露分歧（推荐）",
+  "symbol": "603028",
+  "previous_session": "2026-11-03",
+  "signal_day": "2026-11-04",
+  "selected_source": "SSE capital-structure table with TRADE_DATE20261104",
+  "selected_total_shares": 285145200,
+  "conflicting_total_shares": 284835200,
+  "history_csv_sha256_unchanged": "5c3f892bdde3b61df14ff392836f80c315abf262f68b96f3ad001e4e810cf1bc",
+  "disclosure_required": true,
+  "legal_cancellation_completion_not_claimed": true,
+  "other_symbols_dates_and_unreviewed_changes_not_authorized": true
+}

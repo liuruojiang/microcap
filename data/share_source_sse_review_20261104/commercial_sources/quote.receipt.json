@@ -1,0 +1,24 @@
+{
+  "url": "https://push2.eastmoney.com/api/qt/stock/get",
+  "actual_url": "https://push2delay.eastmoney.com/api/qt/stock/get?fltt=2&invt=2&fields=f57%2Cf58%2Cf84%2Cf85%2Cf124%2Cf86%2Cf43%2Cf59%2Cf152%2Cf189&secid=1.603028",
+  "params": {
+    "fltt": "2",
+    "invt": "2",
+    "fields": "f57,f58,f84,f85,f124,f86,f43,f59,f152,f189",
+    "secid": "1.603028"
+  },
+  "http_start": "2026-11-04T12:59:19.634626+00:00",
+  "http_complete": "2026-11-04T12:59:23.612529+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_sha256": "0529508c626cb9069d6b6e5d00b279e2b8a4225138d492c3a82190ed13a81372",
+  "bytes": 227,
+  "schema": "share_unchanged_tail_receipt_v1",
+  "header_scope": "allowlisted_no_cookies",
+  "response_headers": {
+    "Date": "Wed, 04 Nov 2026 12:59:23 GMT",
+    "Content-Type": "application/json; charset=UTF-8",
+    "Cache-Control": "no-cache",
+    "Content-Encoding": "gzip"
+  }
+}

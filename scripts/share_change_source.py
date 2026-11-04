@@ -189,7 +189,7 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
         raise ValueError("Share source freshness requires explicit refresh")
     if datetime.now(timezone.utc) < datetime.fromisoformat(end + "T15:00:00+08:00"):
         raise ValueError("Share source close is not eligible")
-    if (source_root / "RATE_LIMIT_STOP.json").exists() or (state and state.get("kind") == "dual_source_unchanged_tail_v1"):
+    if (source_root / "RATE_LIMIT_STOP.json").exists() or (state and state.get("kind") in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1")):
         if not state:
             raise ValueError("Unchanged-tail fallback requires an existing verified share chain")
         if (cache_path.resolve() != (root / ".microcap_index_cache/share_change" / (symbol + ".csv")).resolve()
@@ -207,7 +207,10 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
                 raise ValueError("Conflicting immutable unchanged-tail evidence")
             if not immutable.exists():
                 _atomic(immutable, raw)
-        receipt = dict(schema_version=2, kind="dual_source_unchanged_tail_v1", symbol=symbol,
+        manifest_kind=json.loads((source_root/manifest["path"]).read_bytes())["schema"]
+        if manifest_kind not in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1"):
+            raise ValueError("Unknown collected share-source schema")
+        receipt = dict(schema_version=2, kind=manifest_kind, symbol=symbol,
                        query_start=(pd.Timestamp(state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
                        query_end=end, candidate_sha256=_sha(old_bytes), evidence_manifest=manifest,
                        previous_state=dict(path=previous_path.relative_to(source_root).as_posix(), sha256=_sha(original_state_bytes)),
@@ -424,7 +427,7 @@ def verify_share_cache(*, root, symbol, as_of):
             raise ValueError("Share source/cache identity or cutoff mismatch")
         actual = frame(candidate, day)
         if state.get("schema_version") == 2:
-            if state.get("kind") != "dual_source_unchanged_tail_v1":
+            if state.get("kind") not in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1"):
                 raise ValueError("Unknown share provider/schema")
             previous = state["previous_state"]
             previous_state = json.loads(bound(previous["path"], previous["sha256"]))
@@ -436,6 +439,8 @@ def verify_share_cache(*, root, symbol, as_of):
             from scripts.share_unchanged_tail import verify_manifest
             reference = state["evidence_manifest"]
             manifest = json.loads(bound(reference["path"], reference["sha256"]))
+            if manifest.get("schema") != state["kind"]:
+                raise ValueError("Share state/provider manifest kind differs")
             verify_manifest(manifest, symbol=symbol, previous_day=previous_state["query_end"],
                             end=day, candidate=candidate, bound=bound, root=root)
         elif state.get("kind") == "approved_baseline":

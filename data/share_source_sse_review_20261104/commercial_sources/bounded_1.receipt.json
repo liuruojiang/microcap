@@ -1,0 +1,29 @@
+{
+  "url": "https://datacenter.eastmoney.com/securities/api/data/v1/get",
+  "actual_url": "https://datacenter.eastmoney.com/securities/api/data/v1/get?reportName=RPT_F10_EH_EQUITY&columns=ALL&filter=%28SECUCODE%3D%22603028.SH%22%29%28END_DATE%3C%3D%272026-11-04%27%29&pageNumber=1&pageSize=500&sortTypes=-1&sortColumns=END_DATE&source=HSF10&client=PC",
+  "params": {
+    "reportName": "RPT_F10_EH_EQUITY",
+    "columns": "ALL",
+    "filter": "(SECUCODE=\"603028.SH\")(END_DATE<='2026-11-04')",
+    "pageNumber": "1",
+    "pageSize": "500",
+    "sortTypes": "-1",
+    "sortColumns": "END_DATE",
+    "source": "HSF10",
+    "client": "PC"
+  },
+  "http_start": "2026-11-04T12:59:16.045452+00:00",
+  "http_complete": "2026-11-04T12:59:17.378342+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_sha256": "e20432e6a863b9a1d0003537a3fcf2feff40b387571196213319a6859ab63799",
+  "bytes": 18373,
+  "schema": "share_unchanged_tail_receipt_v1",
+  "header_scope": "allowlisted_no_cookies",
+  "response_headers": {
+    "Date": "Wed, 04 Nov 2026 12:59:17 GMT",
+    "Content-Type": "text/plain;charset=UTF-8",
+    "Cache-Control": "no-cache",
+    "Content-Encoding": "gzip"
+  }
+}

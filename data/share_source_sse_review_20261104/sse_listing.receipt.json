@@ -1,0 +1,25 @@
+{
+  "url": "https://query.sse.com.cn/sseQuery/commonQuery.do",
+  "params": {
+    "STOCK_TYPE": "1",
+    "REG_PROVINCE": "",
+    "CSRC_CODE": "",
+    "STOCK_CODE": "603028",
+    "sqlId": "COMMON_SSE_CP_GPJCTPZ_GPLB_GP_L",
+    "COMPANY_STATUS": "2,4,5,7,8",
+    "type": "inParams",
+    "isPagination": "true",
+    "pageHelp.cacheSize": "1",
+    "pageHelp.beginPage": "1",
+    "pageHelp.pageSize": "50",
+    "pageHelp.pageNo": "1",
+    "pageHelp.endPage": "1"
+  },
+  "actual_url": "https://query.sse.com.cn/sseQuery/commonQuery.do?STOCK_TYPE=1&REG_PROVINCE=&CSRC_CODE=&STOCK_CODE=603028&sqlId=COMMON_SSE_CP_GPJCTPZ_GPLB_GP_L&COMPANY_STATUS=2%2C4%2C5%2C7%2C8&type=inParams&isPagination=true&pageHelp.cacheSize=1&pageHelp.beginPage=1&pageHelp.pageSize=50&pageHelp.pageNo=1&pageHelp.endPage=1",
+  "status": 200,
+  "http_start": "2026-11-04T13:02:57.424961+00:00",
+  "http_complete": "2026-11-04T13:03:02.274038+00:00",
+  "tls_verification": true,
+  "raw_sha256": "c39a66d5196c85619b5e1646c056b26a0ca6c99e5505d7da9158fc074c7f4325",
+  "bytes": 1591
+}

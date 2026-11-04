@@ -1,0 +1,20 @@
+{
+  "url": "https://money.finance.sina.com.cn/corp/go.php/vCI_StockStructureHistory/stockid/603028/stocktype/TotalStock.phtml",
+  "actual_url": "https://money.finance.sina.com.cn/corp/go.php/vCI_StockStructureHistory/stockid/603028/stocktype/TotalStock.phtml",
+  "params": {},
+  "http_start": "2026-11-04T12:59:17.383466+00:00",
+  "http_complete": "2026-11-04T12:59:19.632248+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_sha256": "33a5a7e7550a9c96a4e4cfb46c864c7423bf7e91fdf77e48d594bd15aab521bb",
+  "bytes": 52086,
+  "schema": "share_unchanged_tail_receipt_v1",
+  "header_scope": "allowlisted_no_cookies",
+  "response_headers": {
+    "Content-Type": "text/html; charset=gbk",
+    "Date": "Wed, 04 Nov 2026 12:59:19 GMT",
+    "Cache-Control": "max-age=1800",
+    "Last-Modified": "Wed, 04 Nov 2026 12:59:19 GMT",
+    "Content-Encoding": "gzip"
+  }
+}
