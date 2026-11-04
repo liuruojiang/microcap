@@ -84,6 +84,13 @@ def test_staged_batch_defers_mutation_detection_until_exit(scope_case,monkeypatc
  for name in [event['relative_html_path']]+[x['relative_path'] for x in event['exchange_evidence'].values()]:(folder/name).write_bytes((source/name).read_bytes())
  for name in ('scripts/st_notice_evidence.py','scripts/st_notice_archive.py'):
   p=root/name;p.parent.mkdir(exist_ok=True);p.write_bytes((ROOT/name).read_bytes())
+ # The staged batch authenticates the complete declared source closure, including
+ # boundary-review evidence added after this single-event fixture was introduced.
+ # Install original published bytes; preserve the deliberately narrowed registry.
+ for name in ev.evidence_source_files(root):
+  p=root/name
+  if not p.exists():
+   p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes((ROOT/name).read_bytes())
  raw=json.dumps(scope).encode();(root/'scope.json').write_bytes(raw);manifest=dict(schema_version=3,scope=dict(path='scope.json',sha256=hashlib.sha256(raw).hexdigest()),symbols={},daily_increments=[])
  raw=json.dumps(manifest).encode();(root/'archive.json').write_bytes(raw);p=root/'.microcap_index_cache';p.mkdir();(p/'st_notice_archive_pointer.json').write_text(json.dumps(dict(manifest_path='archive.json',manifest_sha256=hashlib.sha256(raw).hexdigest())))
  with validated_source_batch(root):

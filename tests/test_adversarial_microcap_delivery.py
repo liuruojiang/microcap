@@ -101,13 +101,21 @@ def test_verify_release_fetches_remote_object_not_present_locally(workspace, mon
             if not fetched:
                 raise subprocess.CalledProcessError(1, args)
             return b""
-        if args[1] == "show":
-            if not fetched:
-                raise subprocess.CalledProcessError(128, args)
-            return (workspace / args[2].split(":", 1)[1]).read_bytes()
         raise AssertionError(args)
+    def run(args, **kw):
+        if args[1] == "fetch":
+            fetched.append(args)
+            return subprocess.CompletedProcess(args, 0)
+        assert args == ["git", "cat-file", "--batch"] and fetched
+        expected = "".join(f"{sha}:{name}\n" for name in delivery.RELEASE_FILES).encode()
+        assert kw["input"] == expected
+        for name in delivery.RELEASE_FILES:
+            payload = (workspace/name).read_bytes()
+            identity = hashlib.sha1(b"blob " + str(len(payload)).encode() + b"\0" + payload).hexdigest()
+            kw["stdout"].write(f"{identity} blob {len(payload)}\n".encode() + payload + b"\n")
+        return subprocess.CompletedProcess(args, 0)
     monkeypatch.setattr(delivery.subprocess, "check_output", check_output)
-    monkeypatch.setattr(delivery.subprocess, "run", lambda args, **kw: fetched.append(args))
+    monkeypatch.setattr(delivery.subprocess, "run", run)
     assert delivery.verify_release(workspace) == sha
     assert fetched and "fetch" in fetched[0]
 

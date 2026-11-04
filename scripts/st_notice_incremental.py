@@ -43,7 +43,9 @@ def verify_day(folder, day, *, required_asof=None):
     """Reconstruct completeness from bound raw pages, never trust derived totals."""
     folder = Path(folder)
     day = date.fromisoformat(day).isoformat()
-    manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+    manifest_path = folder / "manifest.json"
+    manifest_raw = manifest_path.read_bytes()
+    manifest = json.loads(manifest_raw.decode("utf-8"))
     if manifest.get("schema") != SCHEMA or manifest.get("date") != day:
         raise StNoticeEvidenceError("Daily notice manifest identity differs")
     total = None
@@ -102,9 +104,11 @@ def verify_day(folder, day, *, required_asof=None):
         for symbol in {c.get("stock_code") for c in row.get("codes", []) if isinstance(c, dict)}:
             if isinstance(symbol, str) and re.fullmatch(r"[036]\d{5}", symbol) and is_equity_issuer(row, symbol):
                 by_symbol.setdefault(symbol, []).append(row)
+    if manifest_path.read_bytes() != manifest_raw:
+        raise StNoticeEvidenceError("Daily notice manifest changed during verification")
     return dict(date=day, total_hits=total, pages=len(manifest["pages"]),
                 by_symbol=by_symbol, source_files=files,
-                manifest_sha256=_sha((folder / "manifest.json").read_bytes()),
+                manifest_sha256=_sha(manifest_raw),
                 observation_start=min(observations).isoformat(), observation_end=max(observations).isoformat(),
                 scope="provider_all_market_pages_not_PIT_event_adjudication")
 

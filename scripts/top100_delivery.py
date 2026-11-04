@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -538,20 +539,50 @@ def reusable_confirmed_today(root: Path, now: datetime | None = None) -> str | N
 def verify_release(root: Path) -> str:
     """Compare core code and authority to live remote main, not a stale tracking ref."""
     remote = subprocess.check_output(["git", "ls-remote", "origin", "refs/heads/main"], cwd=root, text=True).split()[0]
+    if re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", remote) is None:
+        raise ValueError("Invalid remote release object identity")
     try:
         subprocess.check_output(["git", "cat-file", "-e", f"{remote}^{{commit}}"],
                                 cwd=root, stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError:
         # Fetch only the immutable object: never merge, checkout or alter dirty files.
         subprocess.run(["git", "fetch", "--no-tags", "origin", remote], cwd=root, check=True)
-    for name in RELEASE_FILES:
-        payload = subprocess.check_output(["git", "show", f"{remote}:{name}"], cwd=root)
-        if name.startswith("data/st_notice_evidence/"):
-            matches = payload == (root / name).read_bytes()
-        else:
-            matches = hashlib.sha256(payload.replace(b"\r\n", b"\n")).hexdigest() == sha(root / name)
-        if not matches:
-            raise ValueError(f"Local core/authority differs from remote release: {name}")
+    names = tuple(RELEASE_FILES)
+    if any(not isinstance(name, str) or not name or any(char in name for char in "\r\n\0")
+           for name in names):
+        raise ValueError("Invalid release path for Git batch protocol")
+    requests = "".join(f"{remote}:{name}\n" for name in names).encode("utf-8")
+    # One fixed-commit Git reader replaces one process per source file. Keep the
+    # output on a temporary file, so all original evidence need not fit in RAM.
+    # run() kills and reaps its own child on timeout; no reader survives a failure.
+    with tempfile.TemporaryFile(mode="w+b") as objects:
+        subprocess.run(["git", "cat-file", "--batch"], cwd=root, input=requests,
+                       stdout=objects, stderr=subprocess.PIPE, check=True, timeout=300)
+        total_bytes = objects.tell()
+        objects.seek(0)
+        for name in names:
+            header = objects.readline(128)
+            match = re.fullmatch(rb"([0-9a-f]{40}|[0-9a-f]{64}) blob ([0-9]+)\n", header)
+            if match is None:
+                raise ValueError(f"Missing/non-blob or invalid Git release response: {name}")
+            identity, length = match[1], int(match[2])
+            if length > total_bytes - objects.tell() - 1:
+                raise ValueError(f"Truncated Git release blob: {name}")
+            payload = objects.read(length)
+            if len(payload) != length or objects.read(1) != b"\n":
+                raise ValueError(f"Truncated Git release blob or invalid delimiter: {name}")
+            algorithm = "sha1" if len(identity) == 40 else "sha256"
+            actual = hashlib.new(algorithm, b"blob " + str(length).encode("ascii") + b"\0" + payload).hexdigest()
+            if actual.encode("ascii") != identity:
+                raise ValueError(f"Git release blob identity mismatch: {name}")
+            if name.startswith("data/st_notice_evidence/"):
+                matches = payload == (root / name).read_bytes()
+            else:
+                matches = hashlib.sha256(payload.replace(b"\r\n", b"\n")).hexdigest() == sha(root / name)
+            if not matches:
+                raise ValueError(f"Local core/authority differs from remote release: {name}")
+        if objects.read(1):
+            raise ValueError("Unexpected trailing Git release response")
     return remote
 
 

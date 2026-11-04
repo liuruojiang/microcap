@@ -249,8 +249,11 @@ def _read_csv_header_and_rows(path: Path) -> tuple[list[str], int, dict[str, str
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         header = list(reader.fieldnames or [])
-        rows = list(reader)
-    return header, len(rows), rows[-1] if rows else None
+        count = 0
+        last = None
+        for count, last in enumerate(reader, 1):
+            pass
+    return header, count, last
 
 
 def _parse_date(value: str) -> date | None:
