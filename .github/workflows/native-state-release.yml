@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
 defaults:
   run:
     shell: bash
@@ -37,21 +38,18 @@ jobs:
           python-version: '3.11'
       - name: Install unchanged production dependencies
         run: python -m pip install numpy 'pandas<3' requests 'akshare==1.18.46' 'baostock==0.9.1' matplotlib
-      - name: Restore original approved archive through verified compatible transport
+      - name: Recover verified already-restored workspace from authenticated failed run
         shell: bash
         run: |
           mkdir -p repair
-          python -B -X utf8 automation/scripts/restore_approved_microcap_state.py \
-            --root microcap --bundle "${RUNNER_TEMP}/approved-original.zip" \
-            --url https://github.com/liuruojiang/microcap/releases/download/top100-st-notice-20261103/microcap-st-notice-whole-delivery-20261103.zip \
-            --sha256 c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911 \
-            --seed-date 2026-11-03 2>&1 | tee repair/original_restore.log
+          python -B -X utf8 controller/docs/postclose_repair_tools_20261104/recover_workspace.py \
+            --root microcap --artifact-dir carry --audit repair/workspace_recovery.json
       - name: Verify exact source-only transition and unchanged restored state
         run: >-
           python -B -X utf8 controller/docs/postclose_repair_tools_20261104/source_bridge.py
           --root microcap
           --manifest controller/docs/postclose_repair_tools_20261104/transition.json
-          --manifest-sha256 c1f4de241daf8253a06aee006a8a245e617349b5b288433e14277dd2fdcf194a
+          --manifest-sha256 28284cb3df585fe3ebdd8338802bc4418f15641a0693c11c12e16b64e9b3e69e
           --audit repair/source_transition.json
       - name: Resolve actual completed session
         shell: bash
