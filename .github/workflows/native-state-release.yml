@@ -24,13 +24,13 @@ jobs:
       - uses: actions/checkout@v6
         with:
           repository: liuruojiang/codex-daily-automation-probe
-          ref: 517e81dbeb25e4d724a45c9e559b7d5724af73f9
+          ref: 843298a0750f8134bb77e7c9f4084ff3baf90167
           path: automation
           persist-credentials: false
       - uses: actions/checkout@v6
         with:
           repository: liuruojiang/microcap
-          ref: e525cb8325a1c11c2dfa3540c3a679d28230986a
+          ref: 62ed737527030de1a9c5f2897b58bc8670ce1c99
           path: microcap
           persist-credentials: false
       - uses: actions/setup-python@v6
@@ -49,7 +49,7 @@ jobs:
           python -B -X utf8 controller/docs/postclose_repair_tools_20261104/source_bridge.py
           --root microcap
           --manifest controller/docs/postclose_repair_tools_20261104/transition.json
-          --manifest-sha256 28284cb3df585fe3ebdd8338802bc4418f15641a0693c11c12e16b64e9b3e69e
+          --manifest-sha256 d5768321a5c6317ed1391269f65d7f5d1420c2cb63cc92ceda587565799ffa6b
           --audit repair/source_transition.json
       - name: Resolve actual completed session
         shell: bash
@@ -57,6 +57,12 @@ jobs:
           day=$(cd microcap && python -B -X utf8 -c 'from scripts.exchange_calendar import latest_completed_session; print(latest_completed_session().isoformat())')
           [[ "$day" == '2026-11-04' ]] || { echo 'Not the authorized completed session'; exit 1; }
           echo "$day" > repair/expected_date.txt
+      - name: Adopt already-verified 31 native source successors with exact prefix
+        run: |
+          gh release download microcap-share-inputs-20261104-approved-sse --repo liuruojiang/microcap --pattern verified-share-source-extension-31-20261104.zip --dir repair
+          python -B -X utf8 controller/docs/postclose_repair_tools_20261104/adopt_source_capsule.py \
+            --root microcap --archive repair/verified-share-source-extension-31-20261104.zip \
+            --backup repair/share_adoption_backup --audit repair/source_capsule_adoption.json
       - name: Prepare and verify native current share evidence before whole refresh
         run: >-
           python -B -X utf8 controller/docs/postclose_repair_tools_20261104/prepare_share_sources.py
@@ -85,6 +91,10 @@ jobs:
             --root microcap --v23-root microcap --v25-root microcap \
             --bundle repair/microcap-postclose-repaired-whole-20261104.zip \
             --expected-date 2026-11-04 2>&1 | tee repair/whole_pack.log
+      - name: Verify actual source authority disclosures from native chain
+        run: >-
+          python -B -X utf8 microcap/scripts/sse_share_daily_unchanged_20261104.py
+          --root microcap --expected-date 2026-11-04 --out repair/share_source_disclosures.json
       - name: Render and validate normal consumer without SMTP
         shell: bash
         run: |
@@ -93,8 +103,9 @@ jobs:
             --signal-csv v2.0=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv \
             --signal-csv v2.3=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv \
             --signal-csv v2.5=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv \
+            --share-source-disclosures repair/share_source_disclosures.json \
             --out-dir repair/digest --publication-mode close_confirmed --expected-signal-date 2026-11-04 \
-            --strategy-sha 62ed737527030de1a9c5f2897b58bc8670ce1c99 --subject-prefix '[修复验证][未发送]' \
+            --strategy-sha 14b896a0915f700e5b999ff6c47676e6f8acaca1 --subject-prefix '[修复验证][未发送]' \
             --exit-code v2.0=0 --exit-code v2.3=0 --exit-code v2.5=0
           python - <<'PY'
           import json
@@ -107,7 +118,7 @@ jobs:
         run: |
           import hashlib,json,subprocess
           from pathlib import Path
-          repo='liuruojiang/microcap'; tag='microcap-postclose-repair-20261104-62ed7375'; source='62ed737527030de1a9c5f2897b58bc8670ce1c99'
+          repo='liuruojiang/microcap'; tag='microcap-postclose-repair-20261104-14b896a0'; source='14b896a0915f700e5b999ff6c47676e6f8acaca1'
           path=Path('repair/microcap-postclose-repaired-whole-20261104.zip'); expected=hashlib.sha256(path.read_bytes()).hexdigest(); size=path.stat().st_size
           def gh(*args):return subprocess.check_output(['gh',*args],timeout=600)
           q=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)

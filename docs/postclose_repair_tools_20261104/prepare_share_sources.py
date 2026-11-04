@@ -11,7 +11,7 @@ import sys
 
 def prepare(root, target):
     root = root.resolve()
-    expected = "62ed737527030de1a9c5f2897b58bc8670ce1c99"
+    expected = "14b896a0915f700e5b999ff6c47676e6f8acaca1"
     actual = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
     if actual != expected or target != "2026-11-04":
         raise RuntimeError("Not the reviewed repair source/date")
@@ -29,7 +29,9 @@ def prepare(root, target):
     def one(symbol):
         cache = root / ".microcap_index_cache/share_change" / (symbol + ".csv")
         before = cache.read_bytes()
-        refresh_share_change(root=root, symbol=symbol, cache_path=cache, as_of=target, allow_network=True)
+        # All successful sources are preserved or adopted as exact successors.
+        # This final pass is deliberately offline; never repeat successful HTTP.
+        refresh_share_change(root=root, symbol=symbol, cache_path=cache, as_of=target, allow_network=False)
         verify_share_cache(root=root, symbol=symbol, as_of=target)
         if cache.read_bytes() != before:
             raise RuntimeError("Native unchanged-tail unexpectedly changed share history: " + symbol)

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "old_restore_runtime": "e525cb8325a1c11c2dfa3540c3a679d28230986a",
-  "new_runtime": "62ed737527030de1a9c5f2897b58bc8670ce1c99",
+  "old_restore_runtime": "62ed737527030de1a9c5f2897b58bc8670ce1c99",
+  "new_runtime": "14b896a0915f700e5b999ff6c47676e6f8acaca1",
   "expected_date": "2026-11-04",
   "original_archive_url": "https://github.com/liuruojiang/microcap/releases/download/top100-st-notice-20261103/microcap-st-notice-whole-delivery-20261103.zip",
   "original_archive_sha256": "c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911",
@@ -9,161 +9,161 @@
   "original_archive_date": "2026-11-03",
   "original_archive_author_runtime": "d7615a3e3383e02f2b1e0eedfadfcb499ae7317a",
   "changes": {
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831316469.pdf": {
-      "old": null,
-      "new": "b182683be37f6adebf2bd1ae04dadcd5b6440c83016082b2da8ec84a60a4f912"
+    ".gitattributes": {
+      "old": "493b3219fe99209e28669ae590fcd4e2614f9b41bb67ff94b881c5bd6e37bed5",
+      "new": "61a68e0677007092b0f9eaa66bbca540164843bdc2d5c63e382c3099055f0d6d"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831316469.receipt.json": {
+    "data/share_source_sse_review_20261104/REVIEW.md": {
       "old": null,
-      "new": "ca54a2232e29242161bf63b4cb198b5e1492bd57e5953606df8f1bbf8bf3b118"
+      "new": "be3822c7e0eca039e81a8a6efa74ce2d43283b17c24f1eb01c38fa343b66c104"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831316469.txt": {
+    "data/share_source_sse_review_20261104/approval.json": {
       "old": null,
-      "new": "89b297cc7abb8ea11d9e08d334ee8edb130b33222e274cda22d05cda2ea40674"
+      "new": "89a0e9f07057ec85674ce41a91fc8c9f7220838196b8a964dc9d87c31c6c3b43"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831317290.pdf": {
+    "data/share_source_sse_review_20261104/commercial_sources/bounded_1.raw": {
       "old": null,
-      "new": "dd627d4e318fc51ce5db251953087595314c5b5b4ee95f09949f25c1595cbf6d"
+      "new": "e20432e6a863b9a1d0003537a3fcf2feff40b387571196213319a6859ab63799"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831317290.receipt.json": {
+    "data/share_source_sse_review_20261104/commercial_sources/bounded_1.receipt.json": {
       "old": null,
-      "new": "477d69282bf8c6218e5e7fd3a84c8d8d9afd5b1116f6446581a5006ba7aad173"
+      "new": "ea918b969a797609997b429d04d3515452b6d051330ded88e0900bab7a7b3579"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831317290.txt": {
+    "data/share_source_sse_review_20261104/commercial_sources/quote.raw": {
       "old": null,
-      "new": "fdebc27bc25cc029ea217108da4ec0353ecc54c02ac50cc02750b9e1e21a8a73"
+      "new": "0529508c626cb9069d6b6e5d00b279e2b8a4225138d492c3a82190ed13a81372"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831319809.pdf": {
+    "data/share_source_sse_review_20261104/commercial_sources/quote.receipt.json": {
       "old": null,
-      "new": "8424e165e798c65d2b5ffa475126d999ef2680bddda406645fbfa08fdf2e9d6e"
+      "new": "7ed95d031a140783152fc4557dd344f257d04e18a554929cb1805253f2c9bde4"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831319809.receipt.json": {
+    "data/share_source_sse_review_20261104/commercial_sources/sina.raw": {
       "old": null,
-      "new": "7929b132d78d1c85f4e7cd25bfbe3ae02af670b8bca9da70bf7f996acac1373d"
+      "new": "33a5a7e7550a9c96a4e4cfb46c864c7423bf7e91fdf77e48d594bd15aab521bb"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831319809.txt": {
+    "data/share_source_sse_review_20261104/commercial_sources/sina.receipt.json": {
       "old": null,
-      "new": "1faeec1651f186f25a4d0c959ddc2c740669d00cd6d579dfc42889cb19c4044a"
+      "new": "09546098d85fdf510b9b749edeaa8de8fabc1445f0b0f10c90c99c54091ce54b"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831320660.pdf": {
+    "data/share_source_sse_review_20261104/commercial_sources/unfiltered_1.raw": {
       "old": null,
-      "new": "147fe671a7ae62ec4aac157dc8c603d871cc6234df2334ba14c5ddbbe4748bfa"
+      "new": "e20432e6a863b9a1d0003537a3fcf2feff40b387571196213319a6859ab63799"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831320660.receipt.json": {
+    "data/share_source_sse_review_20261104/commercial_sources/unfiltered_1.receipt.json": {
       "old": null,
-      "new": "f8811251395c8bc79a438c4633c52bd83044020c95a1a4c47a449e1e754e86dd"
+      "new": "5f070fd910cba7887dd1a8c1149ddd148743c820d3dfc023dcc5e84f8fb23714"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831320660.txt": {
+    "data/share_source_sse_review_20261104/issuer_2026_064.pdf": {
       "old": null,
-      "new": "4b017c02e0d62cda554d1f019e6a8e629f908f62e7201e5b1242ef43b8928a7d"
+      "new": "efb3ccab1dd352fed15404936b03d44c949aeabee74f235e64cff0b4a60d8964"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831322946.pdf": {
+    "data/share_source_sse_review_20261104/issuer_2026_064.receipt.json": {
       "old": null,
-      "new": "ed8778ee08e425bdc424190f04efd7aacdef427fe58ecdcbb5e12026f7f407ee"
+      "new": "090158186ae28301ec9d701e664f671cde545e45117c3b03336791e72b4bd985"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831322946.receipt.json": {
+    "data/share_source_sse_review_20261104/issuer_2026_064.txt": {
       "old": null,
-      "new": "f77d2453798f1d60bff9aca6d00fe6aa283ab7d95665e7d857cc375ff0346a15"
+      "new": "aef9a1f91dbfaa25228a3db3589bf1f01d45c0fc02893c1514e924dfe2aa4866"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831322946.txt": {
+    "data/share_source_sse_review_20261104/issuer_legal_opinion.pdf": {
       "old": null,
-      "new": "670492f33126bec4473d12f18cd187a827e3d191896d69274e2d35105b79748c"
+      "new": "624b54274e79b0ec1353317d2f9821761e2b5e9e63ff8fdbf93e443c10bd0594"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331482.pdf": {
+    "data/share_source_sse_review_20261104/issuer_legal_opinion.receipt.json": {
       "old": null,
-      "new": "be0e0cf3ed0a72dee154568b0b4c3e6c6f27614c1baa9fbb5498d369bb64f17e"
+      "new": "95df3d63a77c65cdd2ef7c8aa700e4433db26ba00cb87231d8dfec0b55798f24"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331482.receipt.json": {
+    "data/share_source_sse_review_20261104/observation.json": {
       "old": null,
-      "new": "4f5d52361eb83054fe3f1857e4da3aedd47b48a03b4e0fa0a8b71bfd171f40f1"
+      "new": "0f13e7ac0d134ccf4f4dc10b8135bf452400df4334e8866318817ed17b536aeb"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331482.txt": {
+    "data/share_source_sse_review_20261104/original_candidate_603028.csv": {
       "old": null,
-      "new": "d6435b0af0450cc112067be39222ee04471ffc677a2030f2a99a4681dab1ef69"
+      "new": "5c3f892bdde3b61df14ff392836f80c315abf262f68b96f3ad001e4e810cf1bc"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331965.pdf": {
+    "data/share_source_sse_review_20261104/review.json": {
       "old": null,
-      "new": "ce902551fadfec991544103d18b52ba24eef3a41019f6dc7d0855a9cd541279e"
+      "new": "8ecabf6af932b1ab0c158675098087414a951936c4b30a07a359aad86998bb7a"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331965.receipt.json": {
+    "data/share_source_sse_review_20261104/search_stocksDepositoryReceipts_2021.js": {
       "old": null,
-      "new": "fcf8b0ae9c46a4559b9c0722df86ed16adc3e6477797fced35010a65a321fd4b"
+      "new": "478fb2a72fc5a3725088adb208756e88171f79628956a9f5ca67c900d37def2f"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331965.txt": {
+    "data/share_source_sse_review_20261104/source_comparison.json": {
       "old": null,
-      "new": "41db56fb4ea82253cda69aec7071a698d2b050fe2920c873f2489eaa57fb670a"
+      "new": "50e7f851deb8155987563080bd9ce648ba1eefecee91458be299895f1945d68f"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831333770.pdf": {
+    "data/share_source_sse_review_20261104/sse_announcements_window.raw": {
       "old": null,
-      "new": "970ff7e35e80364ec7ea358c8936dc5c03794624156008ff7e6f9f80ce1f389d"
+      "new": "cb7a2ab78e336a66f43a0aee9dc5ebc9fac23624494995f89a8fda7c89599c41"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831333770.receipt.json": {
+    "data/share_source_sse_review_20261104/sse_announcements_window.receipt.json": {
       "old": null,
-      "new": "d9ae7fc2df310c2ab3086ba9441fae8bdc8bed547f5ba010d4e7c620c85acf57"
+      "new": "71bd88c5df2479e6363dfbec36471ece24fc06aa5221cfefc1bc31039640b68e"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831333770.txt": {
+    "data/share_source_sse_review_20261104/sse_capital_changes.raw": {
       "old": null,
-      "new": "f46079fb79575577b8993264285eb46a8037ec8e57f4690959bab700d87b654d"
+      "new": "f47e703834469f099719f3ec5c46203c3d15bc1ba004651edaae8c0361fa9e33"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611031831370699.pdf": {
+    "data/share_source_sse_review_20261104/sse_capital_changes.receipt.json": {
       "old": null,
-      "new": "c74d539c9aca4463fb58a08e1801f327ed8bf52444abf8fa3d3600e8d94cb7cf"
+      "new": "214652d87e632002e8dbe78db66b8388ffedd898a095a409071a3b234b1101c1"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611031831370699.receipt.json": {
+    "data/share_source_sse_review_20261104/sse_company_page.html": {
       "old": null,
-      "new": "e0c5790c4738b57c7f97f3735fd902c9bbf00958b7bb46e00a859ebaf389364f"
+      "new": "83acf880b65fe3a6909f6cce90f25e12406e1e2ce7dd20f2949842422b045f26"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611031831370699.txt": {
+    "data/share_source_sse_review_20261104/sse_current_announcements.raw": {
       "old": null,
-      "new": "850381fa57fce2e210317ad4a79334e1a56a70a87bf336f1b82edf7f639b3143"
+      "new": "7fd0c3d611e839c56e2f15d85d85470a1dd596cb66f120d81d0a0237bc6a1da9"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611041831390838.pdf": {
+    "data/share_source_sse_review_20261104/sse_current_announcements.receipt.json": {
       "old": null,
-      "new": "ced53234bb150e8cd6b74ed1fff316fddee7ac899606dc47fa477154d7ae165d"
+      "new": "797fa4dbecdd0ab51f0199fbf84bab559737aead4c8d6872c8583eea9e92a603"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611041831390838.receipt.json": {
+    "data/share_source_sse_review_20261104/sse_listing.raw": {
       "old": null,
-      "new": "1fac196c7d5bc4f0cd49c41da62e1d18aab81e9aea6c460f4fa59d05ee58d5f9"
+      "new": "c39a66d5196c85619b5e1646c056b26a0ca6c99e5505d7da9158fc074c7f4325"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/AN202611041831390838.txt": {
+    "data/share_source_sse_review_20261104/sse_listing.receipt.json": {
       "old": null,
-      "new": "8c4712c3f83161f68d129a8d7d20f12c5a47d18f922fd7e486b5a74e9e274c69"
+      "new": "89498bce99bf168d759e21a04041deac0a7240197e3800b63cb1612b1fcab22e"
     },
-    "data/st_notice_boundary_reviews/postclose_20261104/candidate.json": {
+    "data/share_source_sse_review_20261104/sse_site_capital_structure.raw": {
       "old": null,
-      "new": "8a8d39a226af84f78a285649135b080112cd985337d7361181e1c2cf8e1c8af6"
+      "new": "184a22d01fadaf75859d1d156e74759b8cef878149b783c83a093ce6b68c28c1"
     },
-    "docs/postclose_exact_catalog_20261104.md": {
+    "data/share_source_sse_review_20261104/sse_site_capital_structure.receipt.json": {
       "old": null,
-      "new": "b6dfbfaf8158e7163f042781ec6b75430cc12cf27d53e9ec36a5fa90014eae28"
+      "new": "e4fd0ef1a49117c1e21257bea25553f07cf6dc23ca7c14925c3b610f6e77dea7"
     },
-    "docs/postclose_restore_test_source_20261104.md": {
+    "docs/sse_share_source_exact_20261104.md": {
       "old": null,
-      "new": "29128245999f129c12ed140ef123863e948307db671589f5a7da3bcd2609e579"
+      "new": "c428747c81ae3bebbdb0d64b36c8b52bb6fad63854807459beceda73b51caf79"
     },
-    "docs/postclose_share_http_retry_20261104.md": {
-      "old": null,
-      "new": "2a1084489323e18186608789407c138df8c4b7c4290d456d75ff572c30e57150"
+    "scripts/share_change_source.py": {
+      "old": "3148cd159d4ba01e4dbb9da08d6439dfbf958030fd61139436fcc7d335839339",
+      "new": "2231debbff5ed1d85ecb31ac25ba5db4bfd7050d6d7f55920e0dde5299a68517"
     },
     "scripts/share_unchanged_tail.py": {
-      "old": "8d1638cab867c3fd812edb36845af9f17dcfa55df2e62c808898121b90847fa5",
-      "new": "b8d0555f1452d3e6d0df86c8e35a654214f3061594d7be6a67252f4a58f9483f"
+      "old": "b8d0555f1452d3e6d0df86c8e35a654214f3061594d7be6a67252f4a58f9483f",
+      "new": "cf66976ca3cea83c5fe9fa67cfe816948141479cda00320e70e6406444c1a6fd"
     },
-    "scripts/st_notice_boundary_review.py": {
-      "old": "2fef55d6834ba7b7cf45c4bc7c393cc9e017ee44658ccba1436aa7f071247e08",
-      "new": "cf3db386ef65edc85e423d3be241f800038fafa2061dcaba931dc21c3ee5f286"
-    },
-    "scripts/st_notice_postclose_boundary_20261104.py": {
+    "scripts/sse_share_daily_unchanged_20261104.py": {
       "old": null,
-      "new": "bc885b478a60ef207ba73bbca4ec184411ca78242e9386f50dae8429e6b112a2"
+      "new": "33b6eaf8b50e026701203d7a48b2366034462cede12865716ad06b6ada7ef0ab"
     },
-    "tests/test_postclose_boundary_transport_20261104.py": {
+    "scripts/top100_delivery.py": {
+      "old": "9aaab8c0b45210a07d14a034ec915c5a2e08a146c60906025fe01b954c5abadd",
+      "new": "524524a0de5225e6004ccf32c261148e0b3af865a9c21195d687e4abab3eaf73"
+    },
+    "tests/fixtures/sse_603028_actual_20261104.json.zlib.b64": {
       "old": null,
-      "new": "aa788d39b9976bb59ee43705098cf1a34954731a5ba84ef573c83b66d11ddf86"
+      "new": "dc602ae0ce769446a120c6780cde3d26cdc9da630a72cf3f59799eecb1d7b615"
     },
-    "tests/test_share_unchanged_tail_20261103.py": {
-      "old": "d63bd80775874e6b8470388cb7cb5ca736f27631f52e00c7e13f814d10c1bd20",
-      "new": "e61cd90ee15c34da477911b05234b316a84867eff062a4285dabbb93112804df"
+    "tests/test_sse_share_daily_unchanged_20261104.py": {
+      "old": null,
+      "new": "d7b62db1a888930b9600f9f46c6618e0f1902627630c9bcae540c054ca60cdd1"
     }
   }
 }

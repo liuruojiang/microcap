@@ -10,7 +10,7 @@ def verify_scope(root,cfg):
     changed=git(root,'diff','--name-only',old,new).decode().splitlines()
     if set(changed)!=set(cfg['changes']):raise RuntimeError('Unreviewed Git source change')
     for name,spec in cfg['changes'].items():
-        if not (name.startswith(('tests/','docs/','data/st_notice_boundary_reviews/postclose_20261104/')) or name in ('scripts/st_notice_boundary_review.py','scripts/st_notice_postclose_boundary_20261104.py','scripts/share_unchanged_tail.py')):
+        if not (name.startswith(('tests/','docs/','data/share_source_sse_review_20261104/')) or name in ('.gitattributes','scripts/share_change_source.py','scripts/share_unchanged_tail.py','scripts/top100_delivery.py','scripts/sse_share_daily_unchanged_20261104.py')):
             raise RuntimeError('Protected source/data change: '+name)
         for ref,key in ((old,'old'),(new,'new')):
             q=subprocess.run(['git','-C',str(root),'show',ref+':'+name],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)

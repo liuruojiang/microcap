@@ -6,12 +6,15 @@ from pathlib import Path, PurePosixPath
 import shutil
 import subprocess
 import tarfile
+import re
+import sys
 
 REPO = "liuruojiang/microcap"
-RUN = 41824319041
-HEAD = "bf033affc6b85a25a8401242493f66859cc08bf0"
-OLD = "e525cb8325a1c11c2dfa3540c3a679d28230986a"
-ARTIFACT = 13318752531
+RUN = 41831828946
+HEAD = "01cfef626c98216d5ffde0b5b001cd4c9ae25b61"
+OLD = "62ed737527030de1a9c5f2897b58bc8670ce1c99"
+PRIOR = "e525cb8325a1c11c2dfa3540c3a679d28230986a"
+ARTIFACT = 13324051173
 
 
 def sha(path):
@@ -31,7 +34,7 @@ def checked_name(member, allow_git_symlink=False):
     return PurePosixPath(*name.parts[1:]).as_posix()
 
 
-def validate_archive(path, root):
+def validate_archive(path, root, transition=None):
     tracked = subprocess.check_output(["git", "-C", str(root), "ls-files", "--stage", "-z"])
     identities = {}
     for entry in tracked.split(b"\0"):
@@ -83,12 +86,28 @@ def validate_archive(path, root):
     if not manifest or manifest.get("status") != "complete" or manifest.get("expected_date") != "2026-11-03" or manifest.get("errors"):
         raise RuntimeError("Preserved workspace is not the completed original restored day")
     bound = {}
+    allowed = set()
+    if transition is not None:
+        if (transition.get('ok') is not True or transition.get('old_restore_runtime') != PRIOR
+                or transition.get('new_runtime') != OLD or transition.get('protected_state_unchanged') is not True):
+            raise RuntimeError('Preserved source transition identity differs')
+        changes = subprocess.check_output(['git','-C',str(root),'diff','--name-only',PRIOR,OLD]).decode().splitlines()
+        if sorted(changes) != sorted(transition['reviewed_changed_paths']):
+            raise RuntimeError('Preserved source transition scope differs')
+        allowed = set(changes)
+        for name, digest in transition['protected_files'].items():
+            if name not in actual or actual[name]['sha256'] != digest:
+                raise RuntimeError('Source-only transition protected state differs: '+name)
     for group in (manifest["inputs"], manifest["artifacts"]):
         if not group:
             raise RuntimeError("Preserved native manifest is missing a group")
         for name, digest in group.items():
             if name not in actual or actual[name].get("native_sha256") != digest:
-                raise RuntimeError("Preserved native manifest binding differs: " + name)
+                if name not in allowed or name.startswith(('outputs/','.microcap_index_cache/')):
+                    raise RuntimeError("Preserved native manifest binding differs: " + name)
+                old_raw = subprocess.check_output(['git','-C',str(root),'show',PRIOR+':'+name])
+                if hashlib.sha256(old_raw.replace(b'\r\n',b'\n')).hexdigest() != digest:
+                    raise RuntimeError('Original manifest source binding differs: '+name)
             bound[name] = digest
     count = 0
     for name, (mode, blob, stage) in identities.items():
@@ -140,15 +159,18 @@ def recover(root, artifact_dir):
         raise RuntimeError("Original failed producer identity differs")
     jobs = json.loads(gh("api", f"repos/{REPO}/actions/runs/{RUN}/jobs"))
     steps = {s["name"]: s["conclusion"] for j in jobs["jobs"] for s in j["steps"]}
-    required = {"Restore original approved archive through verified compatible transport": "success",
-                "Verify exact source-only transition and unchanged restored state": "failure",
-                "Prepare and verify native current share evidence before whole refresh": "skipped",
+    required = {"Recover verified already-restored workspace from authenticated failed run": "success",
+                "Verify exact source-only transition and unchanged restored state": "success",
+                "Prepare and verify native current share evidence before whole refresh": "failure",
                 "Official strict incremental whole refresh and three-version generation": "skipped"}
     if any(steps.get(name) != status for name, status in required.items()):
         raise RuntimeError("Original workspace did not stop at the verified pre-mutation stage")
     failed_log = gh("run", "view", str(RUN), "--repo", REPO, "--log-failed")
-    if b"RuntimeError: Source transition approval changed" not in failed_log:
-        raise RuntimeError("Original failure is not the pre-mutation byte check")
+    if b"Unchanged share tail: EM new or ambiguous tail event" not in failed_log:
+        raise RuntimeError("Original failure is not the reviewed 603028 event")
+    completed = set(re.findall(rb'\[native-share-preparation\] verified ([0-9]{6}) 2026-11-04', failed_log))
+    if len(completed) != 71 or b'603028' in completed:
+        raise RuntimeError('Original successful native share inventory differs')
     metadata = json.loads(gh("api", f"repos/{REPO}/actions/artifacts/{ARTIFACT}"))
     if metadata["workflow_run"]["id"] != RUN or metadata["name"] != "microcap-postclose-repair-20261104" or metadata["expired"]:
         raise RuntimeError("Preserved artifact identity differs")
@@ -161,14 +183,37 @@ def recover(root, artifact_dir):
     expected = archive.with_name("failed_workspace_NOT_APPROVED.sha256").read_text().split()[0]
     if sha(archive) != expected:
         raise RuntimeError("Preserved workspace archive digest differs")
-    manifest, actual, tracked = validate_archive(archive, root)
+    transitions = list(artifact_dir.rglob('source_transition.json'))
+    if len(transitions) != 1:
+        raise RuntimeError('Expected one preserved source transition')
+    transition = json.loads(transitions[0].read_bytes())
+    subprocess.run(['git','-C',str(root),'fetch','--no-tags','origin',PRIOR],check=True)
+    manifest, actual, tracked = validate_archive(archive, root, transition)
     extract_verified(archive, root, actual)
+    sys.path.insert(0,str(root))
+    from scripts.share_change_source import verify_share_cache
+    from scripts.realtime_state_bundle import current_notice_member_symbols, _verify_share_source_json_protocol
+    symbols = current_notice_member_symbols(root)
+    if len(symbols) != 102:
+        raise RuntimeError('Recovered native member scope differs')
+    recovered_current = set()
+    for symbol in symbols:
+        state = json.loads((root/'.microcap_index_cache/share_sources'/(symbol+'.json')).read_bytes())
+        end = state['query_end']
+        if end not in ('2026-11-03','2026-11-04'):
+            raise RuntimeError('Unexpected recovered share date')
+        proof = verify_share_cache(root=root,symbol=symbol,as_of=end)
+        _verify_share_source_json_protocol(root,symbol,proof)
+        if end == '2026-11-04': recovered_current.add(symbol.encode())
+    if recovered_current != completed:
+        raise RuntimeError('Recovered native successful share scope differs from actual log')
     return {"ok": True, "original_restore_run": RUN, "original_restore_head": HEAD,
             "original_runtime": OLD, "artifact_id": ARTIFACT, "archive_sha256": expected,
             "workspace_files": len(actual), "verified_tracked_files": tracked,
             "native_manifest_inputs_and_artifacts_verified": True, "expected_date": manifest["expected_date"],
             "original_run": run, "artifact_metadata": metadata,
-            "scope": "verified original restore reuse only; no current data, manifest rewrite, SMTP or marker"}
+            "native_current_share_states_preserved": len(recovered_current),
+            "scope": "D3 whole state plus 71 actual verified D4 share sources; not a D4 whole approval; no manifest rewrite, SMTP or marker"}
 
 
 if __name__ == "__main__":
