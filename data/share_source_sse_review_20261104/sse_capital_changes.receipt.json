@@ -1,0 +1,19 @@
+{
+  "url": "https://query.sse.com.cn/security/stock/queryEquityChangeAndReason.do",
+  "params": {
+    "isPagination": "true",
+    "pageHelp.pageSize": "5",
+    "pageHelp.pageNo": "1",
+    "pageHelp.beginPage": "1",
+    "pageHelp.cacheSize": "1",
+    "pageHelp.endPage": "1",
+    "companyCode": "603028"
+  },
+  "actual_url": "https://query.sse.com.cn/security/stock/queryEquityChangeAndReason.do?isPagination=true&pageHelp.pageSize=5&pageHelp.pageNo=1&pageHelp.beginPage=1&pageHelp.cacheSize=1&pageHelp.endPage=1&companyCode=603028",
+  "status": 200,
+  "http_start": "2026-11-04T13:10:49.767067+00:00",
+  "http_complete": "2026-11-04T13:10:51.596239+00:00",
+  "tls_verification": true,
+  "raw_sha256": "f47e703834469f099719f3ec5c46203c3d15bc1ba004651edaae8c0361fa9e33",
+  "bytes": 1935
+}

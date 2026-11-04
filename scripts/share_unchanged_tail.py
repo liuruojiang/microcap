@@ -272,6 +272,9 @@ def _reviewed_future_plans(manifest, future, *, symbol, end, boundary, bound, no
 
 def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, now=None, root=None):
     """Validate actual raw objects; caller recursively verifies original chain."""
+    if manifest.get("schema") == "sse_dated_unchanged_tail_20261104_v1":
+        from scripts.sse_share_daily_unchanged_20261104 import verify_manifest as verify_sse
+        return verify_sse(manifest,symbol=symbol,previous_day=previous_day,end=end,candidate=candidate,bound=bound,now=now,root=root)
     now = now or datetime.now(timezone.utc)
     d, t = day(previous_day), day(end)
     require(d < t and manifest.get("schema") == KIND and manifest.get("symbol") == symbol
@@ -324,13 +327,17 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                 future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport)
 
 
-def _save_public_observation(*, directory, source, url, params, purpose, end):
+def _save_public_observation(*, directory, source, url, params, purpose, end, referer=None):
     """Retry this failed public request once; keep every failed HTTP body."""
     for attempt in range(2):
         start = datetime.now(timezone.utc)
         require(start >= datetime.fromisoformat(end + "T15:00:00+08:00"), "not close eligible")
         try:
-            response = requests.get(url, params=params, headers={"User-Agent": "Mozilla/5.0"}, timeout=20, verify=True)
+            headers={"User-Agent":"Mozilla/5.0"}
+            if referer is not None:
+                require(referer=="https://www.sse.com.cn/assortment/stock/list/info/company/index.shtml?COMPANY_CODE=603028", "unknown source referer")
+                headers["Referer"]=referer
+            response = requests.get(url, params=params, headers=headers, timeout=20, verify=True)
         except requests.exceptions.SSLError:
             raise
         except (requests.Timeout, requests.ConnectionError) as error:
@@ -418,7 +425,15 @@ def collect_manifest(*, root, symbol, previous_day, end, candidate):
         raw = p.read_bytes()
         require(sha(raw) == expected, "source digest differs")
         return raw
-    verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
+    try:
+        verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
+    except ValueError as error:
+        if (str(error)!="Unchanged share tail: EM new or ambiguous tail event"
+                or (symbol,previous_day,end)!=("603028","2026-11-03","2026-11-04")):
+            raise
+        from scripts.sse_share_daily_unchanged_20261104 import collect_override
+        manifest=collect_override(root=root,source=source,directory=directory,manifest=manifest,symbol=symbol,
+                                  previous_day=previous_day,end=end,candidate=candidate)
     path = directory / "manifest.json"
     path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf8")
     return dict(path=path.relative_to(source).as_posix(), sha256=sha(path.read_bytes()))

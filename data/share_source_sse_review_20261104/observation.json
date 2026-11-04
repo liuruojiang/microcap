@@ -1,0 +1,12 @@
+{
+  "native_unchanged_observation_passed": false,
+  "error_type": "ValueError",
+  "error": "Unchanged share tail: EM new or ambiguous tail event",
+  "actual_started": "2026-11-04T12:59:11.192688+00:00",
+  "actual_completed": "2026-11-04T12:59:23.672596+00:00",
+  "runtime_sha": "62ed737527030de1a9c5f2897b58bc8670ce1c99",
+  "collector_git_blob_sha256": "b8d0555f1452d3e6d0df86c8e35a654214f3061594d7be6a67252f4a58f9483f",
+  "candidate_sha256": "5c3f892bdde3b61df14ff392836f80c315abf262f68b96f3ad001e4e810cf1bc",
+  "production_modified": false,
+  "scope": "fresh current observation; not the old cloud response; no accepted changed-share proof"
+}

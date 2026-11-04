@@ -27,3 +27,4 @@ docs/release_evidence_20261101/*.json -text
 
 # Document-bound late-notice evidence is transported byte-for-byte.
 data/st_notice_boundary_reviews/** -text -whitespace
+data/share_source_sse_review_20261104/** -text -whitespace

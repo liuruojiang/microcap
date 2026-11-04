@@ -1,0 +1,77 @@
+{
+  "em_latest": [
+    {
+      "SECUCODE": "603028.SH",
+      "SECURITY_CODE": "603028",
+      "END_DATE": "2026-11-04 00:00:00",
+      "CHANGE_REASON": "回购",
+      "TOTAL_SHARES": 284835200,
+      "NOTICE_DATE": "2026-10-31 00:00:00",
+      "LISTING_DATE": "2026-11-04 00:00:00",
+      "CHANGE_REASON_EXPLAIN": "回购"
+    },
+    {
+      "SECUCODE": "603028.SH",
+      "SECURITY_CODE": "603028",
+      "END_DATE": "2026-10-14 00:00:00",
+      "CHANGE_REASON": "回购",
+      "TOTAL_SHARES": 285145200,
+      "NOTICE_DATE": "2026-10-10 00:00:00",
+      "LISTING_DATE": "2026-10-14 00:00:00",
+      "CHANGE_REASON_EXPLAIN": "回购"
+    },
+    {
+      "SECUCODE": "603028.SH",
+      "SECURITY_CODE": "603028",
+      "END_DATE": "2026-09-02 00:00:00",
+      "CHANGE_REASON": "股权激励限售流通股上市",
+      "TOTAL_SHARES": 287040000,
+      "NOTICE_DATE": "2026-08-27 00:00:00",
+      "LISTING_DATE": "2026-09-02 00:00:00",
+      "CHANGE_REASON_EXPLAIN": "股权激励限售流通股上市"
+    }
+  ],
+  "sina_latest": [
+    {
+      "provider_date": "2026-09-02",
+      "total_shares_10k": "28704",
+      "total_shares": "287040000"
+    },
+    {
+      "provider_date": "2026-10-14",
+      "total_shares_10k": "28514.52",
+      "total_shares": "285145200"
+    },
+    {
+      "provider_date": "2026-11-04",
+      "total_shares_10k": "28483.52",
+      "total_shares": "284835200"
+    }
+  ],
+  "quote": {
+    "rc": 0,
+    "rt": 4,
+    "svr": 177622155,
+    "lt": 2,
+    "full": 1,
+    "dlmkts": "8,10,128",
+    "dsc": "0",
+    "data": {
+      "f43": 7.11,
+      "f57": "603028",
+      "f58": "赛福天",
+      "f59": 2,
+      "f84": 284835200.0,
+      "f85": 283565200.0,
+      "f86": 1793779903,
+      "f124": 0.0,
+      "f152": 2,
+      "f189": 20160331
+    }
+  },
+  "native_old_candidate": [
+    "2025-12-31,28704.0,定期报告",
+    "2026-09-02,28704,Eastmoney END_DATE candidate; effective timing pending",
+    "2026-10-14,28514.52,Eastmoney END_DATE candidate; effective timing pending"
+  ]
+}
