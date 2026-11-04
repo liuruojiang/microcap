@@ -5418,8 +5418,10 @@ def proxy_meta_matches_execution_model(meta: dict[str, object]) -> bool:
     if not _proxy_meta_core_matches_execution_model(meta):
         return False
     core_params = meta["core_params"]
+    from scripts.realtime_state_bundle import stock_input_evidence_matches_validated_source
     return (core_params.get("security_meta_cache_fingerprint") == security_meta_cache_fingerprint()
-            and core_params.get("stock_input_evidence_fingerprint") == stock_input_evidence_fingerprint())
+            and stock_input_evidence_matches_validated_source(
+                core_params.get("stock_input_evidence_fingerprint"), stock_input_evidence_fingerprint()))
 
 
 def _file_sha256(path: Path) -> str:

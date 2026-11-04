@@ -24,3 +24,26 @@ Local test evidence is retained under `D:/Codex/test-lifecycle/records`. Final r
 An approved D4 bundle and completed historical computation should be reused. This patch does not authorize skipping historical recomputation when input identities genuinely differ. A future narrow metadata-only continuation would need exact old/new universe semantics, old metadata binding, unchanged complete historical inputs, authenticated outputs and real parity evidence. It is not implemented here.
 
 End-to-end timing must include preflight, validate, whole check, all three official serial signals, result validation and actual Codex publication. A local speedup is not evidence of the entire report finishing within its window. Already delivered normal mail and its intent/receipt/marker must not be repeated for this acceptance.
+# Exact completed-state source adoption
+
+The additional `recertify-validation-source --expected-date 2026-11-04`
+entry authenticates the original approved D4 whole manifest and the reviewed
+four software identities. It does not fetch data, replay history, change
+authority, or rewrite any economic output. Original proxy metadata retains its
+producer fingerprint; the new manifest carries the original manifest bytes,
+their SHA, the exact validator transition, and actual validation time.
+
+Before the atomic commit, every cache leaf and its inventory are reread, in
+addition to the normal whole/base checks. Independent counterexamples exposed
+nonmember-cache mutation and post-commit readback failure; both are now covered.
+The transaction saves the original manifest and rolls back only its own
+identified commit while still owning the lock. An uncertain rollback retains a
+review blocker and never authorizes packaging. Normal next-session refresh
+expires this one-session receipt and follows the unchanged data gates.
+
+Targeted source-identity coverage: 44 cases. Native adoption/independent
+transaction coverage: 46 cases. Complete extra2 regression: 110 cases; old
+fixtures now read the authenticated D4 baseline and immutable seed through the
+native paths. These results do not replace the final daily gate, matched package,
+local activation, cloud recovery, or a future actual intraday publication.
+

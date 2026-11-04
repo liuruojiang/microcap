@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import hashlib
 import json
@@ -476,8 +477,235 @@ def inspect_outputs(root: Path, expected: str) -> dict:
     except (OSError, ValueError, KeyError, TypeError, RuntimeError) as exc:
         errors.append(str(exc))
         inputs = {}
-    return {"ok": not errors, "scope": "whole_workspace_delivery", "errors": errors,
-            "expected_date": expected, "streams": streams, "inputs": inputs, "artifacts": artifacts}
+    report = {"ok": not errors, "scope": "whole_workspace_delivery", "errors": errors,
+              "expected_date": expected, "streams": streams, "inputs": inputs, "artifacts": artifacts}
+    # A newly packed report must retain the distinction between the original
+    # producer and a separately certified validator, rather than dropping it.
+    try:
+        saved = json.loads((root / MANIFEST).read_bytes())
+    except (OSError, ValueError):
+        saved = {}
+    if "source_validation_compatibility" in saved:
+        try:
+            report["source_validation_compatibility"] = validate_source_compatibility(root, report, saved)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            report["errors"].append(f"invalid source validation compatibility: {exc}")
+            report["ok"] = False
+    return report
+
+
+def _require_source_only_transition(original: dict, current: dict, review: dict) -> None:
+    """Only the four exact reviewed code hashes may differ from original D4."""
+    if (original.get("status") != "complete" or original.get("ok") is not True
+            or original.get("errors") != [] or current.get("ok") is not True
+            or current.get("errors") != [] or original.get("scope") != "whole_workspace_delivery"
+            or current.get("scope") != "whole_workspace_delivery" or "source_validation_compatibility" in original):
+        raise ValueError("Source recertification requires complete original and current whole checks")
+    for key in ("expected_date", "artifacts", "streams"):
+        if key not in original or original[key] != current.get(key):
+            raise ValueError("Source-only recertification changed " + key)
+    if original["expected_date"] != review["expected_date"]:
+        raise ValueError("Source-only recertification is limited to its reviewed session")
+    old, new = original.get("inputs"), current.get("inputs")
+    if (not isinstance(old, dict) or not isinstance(new, dict) or not old
+            or set(old) != set(new) or not original["artifacts"] or not original["streams"]):
+        raise ValueError("Source recertification requires identical complete input/artifact keys")
+    changed = {name for name in old if old[name] != new[name]}
+    if changed != set(review["changes"]) or any(
+            (old[name], new[name]) != tuple(review["changes"][name]) for name in changed):
+        raise ValueError("Source recertification has an unreviewed input/hash change")
+
+
+def validate_source_compatibility(root: Path, current: dict, saved: dict) -> dict:
+    """Authenticate portable provenance without trusting a claimed old SHA alone."""
+    receipt = saved.get("source_validation_compatibility")
+    keys = {"revision", "expected_date", "original_manifest_sha256", "original_manifest_utf8",
+            "stock_fingerprint_sha256", "source_changes", "validated_at", "validation_release_sha"}
+    if not isinstance(receipt, dict) or set(receipt) != keys:
+        raise ValueError("Incomplete source recertification receipt")
+    review = state.validation_source_review(root)
+    if (receipt["revision"] != review["revision"] or receipt["expected_date"] != review["expected_date"]
+            or receipt["original_manifest_sha256"] != review["manifest_sha256"]
+            or receipt["stock_fingerprint_sha256"] != review["stock_fingerprint_sha256"]
+            or receipt["source_changes"] != {name: list(pair) for name, pair in review["changes"].items()}
+            or not isinstance(receipt["original_manifest_utf8"], str)
+            or re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", str(receipt["validation_release_sha"])) is None):
+        raise ValueError("Source recertification receipt differs from exact review")
+    raw = receipt["original_manifest_utf8"].encode("utf-8")
+    if hashlib.sha256(raw).hexdigest() != review["manifest_sha256"]:
+        raise ValueError("Original producer manifest bytes differ from reviewed SHA")
+    stamp = datetime.fromisoformat(receipt["validated_at"])
+    close = datetime.fromisoformat(review["expected_date"] + "T15:00:00+08:00")
+    if stamp.tzinfo is None or not close <= stamp <= datetime.now(timezone.utc):
+        raise ValueError("Source recertification clock is naive/before session close/future")
+    if saved.get("status") != "complete" or saved.get("ok") is not True or saved.get("errors") != []:
+        raise ValueError("Source recertification manifest is incomplete")
+    for key in ("expected_date", "inputs", "artifacts", "streams"):
+        if key not in saved or saved[key] != current.get(key):
+            raise ValueError("Certified source manifest/current mismatch: " + key)
+    _require_source_only_transition(json.loads(raw), current, review)
+    return copy.deepcopy(receipt)
+
+
+def _recertification_raw_identity(root: Path, report: dict) -> dict:
+    names = set(RELEASE_FILES) | set(report["inputs"]) | set(report["artifacts"])
+    # This one-time source transition must also freeze nonmember inputs. The
+    # ordinary whole report authenticates final streams/member transport; it is
+    # not an inventory of every raw/share/ST/return-basis cache leaf.
+    cache = root / ".microcap_index_cache"
+    if cache.exists():
+        if cache.is_symlink() or getattr(cache, "is_junction", lambda: False)():
+            raise ValueError("Linked recertification cache")
+        for directory, folders, files in os.walk(cache, followlinks=False):
+            for name in folders:
+                child = Path(directory) / name
+                if child.is_symlink() or getattr(child, "is_junction", lambda: False)():
+                    raise ValueError("Linked recertification cache directory: " + str(child))
+            names.update((Path(directory) / name).relative_to(root).as_posix() for name in files)
+    result = {}
+    for name in sorted(names):
+        path = root / name
+        if not path.resolve().is_relative_to(root) or not path.is_file():
+            raise ValueError("Missing or escaping recertification file: " + name)
+        if any(parent.is_symlink() or getattr(parent, "is_junction", lambda: False)()
+               for parent in (path, *path.parents) if parent.is_relative_to(root) and parent != root):
+            raise ValueError("Linked recertification input: " + name)
+        result[name] = state._sha256(path)
+    return result
+
+
+def recertify_validation_source(root: Path, expected_date: str) -> dict:
+    """One exact, source-only adoption; never refresh data or rewrite history."""
+    root = Path(root).resolve()
+    lock = root / LOCK
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        descriptor = os.open(lock, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+    except FileExistsError as exc:
+        raise RuntimeError("Another group writer is active; source recertification refused") from exc
+    lock_identity = os.fstat(descriptor).st_ino
+    lock_body = str(os.getpid()).encode("ascii")
+    retain_lock = False
+    try:
+        with os.fdopen(descriptor, "wb") as owner:
+            owner.write(lock_body); owner.flush()
+            review = state.validation_source_review(root)
+            if expected_date != review["expected_date"] or independent_target(root) != expected_date:
+                raise ValueError("Source recertification expected/latest completed session differs")
+            original_bytes = (root / MANIFEST).read_bytes()
+            saved = json.loads(original_bytes)
+            already = "source_validation_compatibility" in saved
+            if not already and hashlib.sha256(original_bytes).hexdigest() != review["manifest_sha256"]:
+                raise ValueError("Source recertification original manifest is not the exact approved D4")
+            release = verify_release(root)
+            current = inspect_outputs(root, expected_date)
+            if current.get("ok") is not True or current.get("errors") != []:
+                raise ValueError("Source recertification whole check failed: " + str(current.get("errors")))
+            if already:
+                validate_source_compatibility(root, current, saved)
+            else:
+                _require_source_only_transition(saved, current, review)
+            before = _recertification_raw_identity(root, current)
+            base = validate_base_state_for_session(root, expected_date)
+            if base.get("ok") is not True or base.get("errors") != []:
+                raise ValueError("Source recertification base check failed: " + str(base.get("errors")))
+            final = inspect_outputs(root, expected_date)
+            for key in ("ok", "errors", "expected_date", "inputs", "artifacts", "streams"):
+                if final.get(key) != current.get(key):
+                    raise ValueError("Source recertification changed during validation: " + key)
+            if (state.validation_source_review(root) != review
+                    or _recertification_raw_identity(root, final) != before
+                    or (root / MANIFEST).read_bytes() != original_bytes
+                    or independent_target(root) != expected_date
+                    or lock.stat().st_ino != lock_identity or lock.read_bytes() != lock_body):
+                raise ValueError("Source recertification input/source/date/owner changed before commit")
+            if already:
+                validate_source_compatibility(root, final, saved)
+                return {**saved, "recertification_action": "already_complete_revalidated"}
+            receipt = {"revision": review["revision"], "expected_date": expected_date,
+                       "original_manifest_sha256": review["manifest_sha256"],
+                       "original_manifest_utf8": original_bytes.decode("utf-8"),
+                       "stock_fingerprint_sha256": review["stock_fingerprint_sha256"],
+                       "source_changes": {name: list(pair) for name, pair in review["changes"].items()},
+                       "validated_at": datetime.now(timezone.utc).isoformat(), "validation_release_sha": release}
+            result = {**saved, **final, "status": "complete", "release_sha": release,
+                      "verified_at": receipt["validated_at"], "source_validation_compatibility": receipt}
+            validate_source_compatibility(root, final, result)
+            # Keep original bytes outside the delivered manifest before the
+            # commit. A failed readback is not proof that replacement failed.
+            manifest_path = root / MANIFEST
+            backup = manifest_path.with_name("source_recertification_" +
+                hashlib.sha256(original_bytes).hexdigest() + ".original")
+            try:
+                with backup.open("xb") as stream:
+                    stream.write(original_bytes); stream.flush(); os.fsync(stream.fileno())
+            except FileExistsError:
+                pass
+            if backup.is_symlink() or backup.read_bytes() != original_bytes:
+                raise ValueError("Source recertification original backup differs")
+            committed_bytes = json.dumps(result, ensure_ascii=False, indent=2).replace("\n", os.linesep).encode("utf-8")
+
+            def owns_lock():
+                return lock.stat().st_ino == lock_identity and lock.read_bytes() == lock_body
+
+            try:
+                write_manifest(root, result)
+                if manifest_path.read_bytes() != committed_bytes:
+                    raise ValueError("Source recertification manifest readback differs")
+            except Exception as commit_error:
+                recovery_error = None
+                recovery_status = "original_preserved"
+                try:
+                    if not owns_lock():
+                        raise RuntimeError("Source recertification owner changed after commit")
+                    observed = manifest_path.read_bytes()
+                    if observed != original_bytes:
+                        if observed != committed_bytes:
+                            raise RuntimeError("Manifest is not this transaction's committed object")
+                        rollback = manifest_path.with_name(manifest_path.name + f".{os.getpid()}.rollback.tmp")
+                        with rollback.open("xb") as stream:
+                            stream.write(original_bytes); stream.flush(); os.fsync(stream.fileno())
+                        if not owns_lock() or manifest_path.read_bytes() != observed:
+                            raise RuntimeError("Owner/manifest changed before source recertification rollback")
+                        rollback.replace(manifest_path)
+                        recovery_status = "rolled_back"
+                    if manifest_path.read_bytes() != original_bytes:
+                        raise RuntimeError("Source recertification rollback readback differs")
+                except Exception as exc:
+                    recovery_status, recovery_error = "unknown", str(exc)
+                    retain_lock = True
+                    # Existing/replacement locks remain untouched. If the lock
+                    # vanished, establish only an exclusive review blocker.
+                    try:
+                        with lock.open("xb") as blocker:
+                            blocker.write(b"source-recertification-unknown; inspect original backup")
+                            blocker.flush(); os.fsync(blocker.fileno())
+                    except FileExistsError:
+                        pass
+                    except OSError as lock_error:
+                        recovery_error += "; could not retain review lock: " + str(lock_error)
+                failure = backup.with_name(backup.name + "." +
+                    datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + ".failure.json")
+                evidence = {"status": recovery_status, "original_backup": str(backup),
+                            "original_sha256": hashlib.sha256(original_bytes).hexdigest(),
+                            "attempted_sha256": hashlib.sha256(committed_bytes).hexdigest(),
+                            "commit_error": str(commit_error), "recovery_error": recovery_error}
+                try:
+                    with failure.open("x", encoding="utf-8") as stream:
+                        json.dump(evidence, stream, ensure_ascii=False, indent=2)
+                        stream.flush(); os.fsync(stream.fileno())
+                except OSError as evidence_error:
+                    commit_error.add_note("Could not persist recovery evidence: " + str(evidence_error))
+                if recovery_status == "unknown":
+                    raise RuntimeError("Source recertification COMMIT_STATE_UNKNOWN; pack forbidden; "
+                                       f"backup={backup}; recovery={recovery_error}") from commit_error
+                commit_error.add_note(f"Source recertification {recovery_status}; evidence={failure}")
+                raise
+            return {**result, "recertification_action": "completed"}
+    finally:
+        # Never remove a replacement lock owned by another writer.
+        if not retain_lock and lock.exists() and lock.stat().st_ino == lock_identity and lock.read_bytes() == lock_body:
+            lock.unlink()
 
 
 def validate_manifest(root: Path, report: dict) -> dict:
@@ -669,11 +897,16 @@ def refresh_all(root: Path) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "refresh-all"))
+    parser.add_argument("command", choices=("check", "refresh-all", "recertify-validation-source"))
+    parser.add_argument("--expected-date")
     args = parser.parse_args(argv)
+    if (args.command == "recertify-validation-source") != (args.expected_date is not None):
+        parser.error("--expected-date is required only for recertify-validation-source")
     root = Path(__file__).resolve().parents[1]
     try:
-        if args.command == "refresh-all":
+        if args.command == "recertify-validation-source":
+            report = recertify_validation_source(root, args.expected_date)
+        elif args.command == "refresh-all":
             report = refresh_all(root)
         else:
             release = verify_release(root)
