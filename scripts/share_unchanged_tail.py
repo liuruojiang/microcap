@@ -12,6 +12,7 @@ import io
 import json
 from pathlib import Path
 import re
+import time
 import uuid
 from urllib.parse import parse_qs, urlparse
 
@@ -323,6 +324,54 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                 future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport)
 
 
+def _save_public_observation(*, directory, source, url, params, purpose, end):
+    """Retry this failed public request once; keep every failed HTTP body."""
+    for attempt in range(2):
+        start = datetime.now(timezone.utc)
+        require(start >= datetime.fromisoformat(end + "T15:00:00+08:00"), "not close eligible")
+        try:
+            response = requests.get(url, params=params, headers={"User-Agent": "Mozilla/5.0"}, timeout=20, verify=True)
+        except requests.exceptions.SSLError:
+            raise
+        except (requests.Timeout, requests.ConnectionError) as error:
+            failure = dict(url=url, params=params, http_start=start.isoformat(),
+                           http_complete=datetime.now(timezone.utc).isoformat(),
+                           error_type=type(error).__name__, status="transport_failure_no_response")
+            (directory / f"{purpose}_attempt{attempt + 1}.transport.json").write_text(
+                json.dumps(failure, ensure_ascii=False, indent=2), encoding="utf8")
+            if attempt:
+                raise
+            print(f"[share-source] transient public request {purpose}; retry=1/1", flush=True)
+            time.sleep(1)
+            continue
+        try:
+            raw = response.content
+            complete = datetime.now(timezone.utc)
+            stem = purpose if response.status_code < 400 else f"{purpose}_attempt{attempt + 1}"
+            path = directory / (stem + ".raw")
+            path.write_bytes(raw)
+            receipt = dict(url=url, actual_url=response.url, params=params, http_start=start.isoformat(),
+                           http_complete=complete.isoformat(), http_status=response.status_code, tls_verification=True,
+                           raw_sha256=sha(raw), bytes=len(raw), schema="share_unchanged_tail_receipt_v1",
+                           header_scope="allowlisted_no_cookies",
+                           response_headers={k: v for k, v in response.headers.items() if k.lower() in SAFE_HEADERS})
+            rp = directory / (stem + ".receipt.json")
+            rp.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf8")
+            try:
+                response.raise_for_status()
+            except requests.HTTPError:
+                if attempt == 0 and response.status_code in (500, 502, 503, 504):
+                    print(f"[share-source] HTTP {response.status_code} {purpose}; retry=1/1", flush=True)
+                    time.sleep(1)
+                    continue
+                raise
+            return dict(raw_path=path.relative_to(source).as_posix(), raw_sha256=sha(raw),
+                        receipt_path=rp.relative_to(source).as_posix(), receipt_sha256=sha(rp.read_bytes())), raw
+        finally:
+            response.close()
+    raise RuntimeError("Public share-source request did not complete")
+
+
 def collect_manifest(*, root, symbol, previous_day, end, candidate):
     """Real public HTTPS observations; only immutable evidence is created."""
     require(day(previous_day) < day(end), "invalid collection window")
@@ -332,24 +381,8 @@ def collect_manifest(*, root, symbol, previous_day, end, candidate):
     directory = source / "providers" / KIND / symbol / uuid.uuid4().hex
     directory.mkdir(parents=True)
     def save(url, params, purpose):
-        start = datetime.now(timezone.utc)
-        require(start >= datetime.fromisoformat(end + "T15:00:00+08:00"), "not close eligible")
-        response = requests.get(url, params=params, headers={"User-Agent": "Mozilla/5.0"}, timeout=20, verify=True)
-        raw = response.content
-        complete = datetime.now(timezone.utc)
-        name = purpose + ".raw"
-        path = directory / name
-        path.write_bytes(raw)
-        receipt = dict(url=url, actual_url=response.url, params=params, http_start=start.isoformat(),
-                       http_complete=complete.isoformat(), http_status=response.status_code, tls_verification=True,
-                       raw_sha256=sha(raw), bytes=len(raw), schema="share_unchanged_tail_receipt_v1",
-                       header_scope="allowlisted_no_cookies",
-                       response_headers={k: v for k, v in response.headers.items() if k.lower() in SAFE_HEADERS})
-        rp = directory / (purpose + ".receipt.json")
-        rp.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf8")
-        response.raise_for_status()
-        return dict(raw_path=path.relative_to(source).as_posix(), raw_sha256=sha(raw),
-                    receipt_path=rp.relative_to(source).as_posix(), receipt_sha256=sha(rp.read_bytes())), raw
+        return _save_public_observation(directory=directory, source=source, url=url,
+                                        params=params, purpose=purpose, end=end)
     files = {}
     for bounded, name in ((False, "unfiltered"), (True, "bounded")):
         entries, raw = [], None
