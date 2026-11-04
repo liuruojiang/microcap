@@ -1,6 +1,11 @@
 name: Build repaired November 4 close state without sending
 on:
   workflow_dispatch:
+    inputs:
+      publication_only:
+        description: Resume only the exact validated Nov4 package from run41845742478; no data refresh or email
+        type: boolean
+        default: false
 permissions:
   contents: write
   actions: read
@@ -9,6 +14,7 @@ defaults:
     shell: bash
 jobs:
   build:
+    if: inputs.publication_only != true
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -161,4 +167,30 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           compression-level: 0
+          retention-days: 30
+  publish-only:
+    if: inputs.publication_only == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: controller
+          persist-credentials: false
+          sparse-checkout: docs/postclose_repair_tools_20261104
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Publish only the exact already-native-validated artifact
+        run: python -B -X utf8 controller/docs/postclose_repair_tools_20261104/publish_verified_artifact.py --out repair
+      - name: Preserve small publication and native-result evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: microcap-postclose-publication-only-20261104
+          path: repair/
+          if-no-files-found: error
           retention-days: 30
