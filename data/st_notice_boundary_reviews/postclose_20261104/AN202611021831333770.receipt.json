@@ -1,0 +1,45 @@
+{
+  "requested_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831333770_1.pdf",
+  "final_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831333770_1.pdf",
+  "status": 200,
+  "tls_verify_configuration": true,
+  "redirects_allowed": false,
+  "observation_start": "2026-11-04T10:09:56.876431+00:00",
+  "observation_end": "2026-11-04T10:09:58.777355+00:00",
+  "raw_sha256": "970ff7e35e80364ec7ea358c8936dc5c03794624156008ff7e6f9f80ce1f389d",
+  "raw_bytes": 156078,
+  "response_headers": {
+    "Content-Length": "156078",
+    "Content-Type": "application/pdf",
+    "Date": "Wed, 04 Nov 2026 10:09:57 GMT"
+  },
+  "native_row": {
+    "art_code": "AN202611021831333770",
+    "codes": [
+      {
+        "ann_type": "A,SZA",
+        "inner_code": "48415786000118",
+        "market_code": "0",
+        "short_name": "卓翼科技",
+        "stock_code": "002369"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002005004",
+        "column_name": "公司关联方基本资料变更"
+      }
+    ],
+    "display_time": "2026-11-02 20:01:06:330",
+    "eiTime": "2026-11-02 20:03:28:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-03 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-03 12:00:00",
+    "source_type": "331",
+    "title": "卓翼科技:关于子公司增资扩股暨公司放弃优先认购权的公告",
+    "title_ch": "卓翼科技:关于子公司增资扩股暨公司放弃优先认购权的公告",
+    "title_en": ""
+  }
+}

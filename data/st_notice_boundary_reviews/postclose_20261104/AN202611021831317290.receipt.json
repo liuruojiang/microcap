@@ -1,0 +1,45 @@
+{
+  "requested_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831317290_1.pdf",
+  "final_url": "https://pdf.dfcfw.com/pdf/H2_AN202611021831317290_1.pdf",
+  "status": 200,
+  "tls_verify_configuration": true,
+  "redirects_allowed": false,
+  "observation_start": "2026-11-04T10:09:52.420311+00:00",
+  "observation_end": "2026-11-04T10:09:55.209044+00:00",
+  "raw_sha256": "dd627d4e318fc51ce5db251953087595314c5b5b4ee95f09949f25c1595cbf6d",
+  "raw_bytes": 81340,
+  "response_headers": {
+    "Content-Length": "81340",
+    "Content-Type": "application/pdf",
+    "Date": "Wed, 04 Nov 2026 10:09:54 GMT"
+  },
+  "native_row": {
+    "art_code": "AN202611021831317290",
+    "codes": [
+      {
+        "ann_type": "A,SHA",
+        "inner_code": "32125489337611",
+        "market_code": "1",
+        "short_name": "中央商场",
+        "stock_code": "600280"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002008",
+        "column_name": "其他"
+      }
+    ],
+    "display_time": "2026-11-02 16:29:32:183",
+    "eiTime": "2026-11-02 16:30:39:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-03 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-03 12:00:00",
+    "source_type": "31",
+    "title": "中央商场:南京中央商场(集团)股份有限公司关于控股子公司诉讼进展情况公告",
+    "title_ch": "中央商场:南京中央商场(集团)股份有限公司关于控股子公司诉讼进展情况公告",
+    "title_en": ""
+  }
+}

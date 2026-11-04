@@ -1,0 +1,45 @@
+{
+  "requested_url": "https://pdf.dfcfw.com/pdf/H2_AN202611041831390838_1.pdf",
+  "final_url": "https://pdf.dfcfw.com/pdf/H2_AN202611041831390838_1.pdf",
+  "status": 200,
+  "tls_verify_configuration": true,
+  "redirects_allowed": false,
+  "observation_start": "2026-11-04T10:10:27.522655+00:00",
+  "observation_end": "2026-11-04T10:10:28.993801+00:00",
+  "raw_sha256": "ced53234bb150e8cd6b74ed1fff316fddee7ac899606dc47fa477154d7ae165d",
+  "raw_bytes": 129375,
+  "response_headers": {
+    "Content-Length": "129375",
+    "Content-Type": "application/pdf",
+    "Date": "Wed, 04 Nov 2026 10:10:28 GMT"
+  },
+  "native_row": {
+    "art_code": "AN202611041831390838",
+    "codes": [
+      {
+        "ann_type": "INV",
+        "inner_code": "15157434351574",
+        "market_code": "0",
+        "short_name": "新华都",
+        "stock_code": "002264"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "050003",
+        "column_name": "调研活动"
+      }
+    ],
+    "display_time": "2026-11-04 09:02:09:736",
+    "eiTime": "2026-11-04 09:01:33:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-03 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-03 12:00:00",
+    "source_type": "324",
+    "title": "新华都:2026年11月3日投资者关系活动记录表",
+    "title_ch": "新华都:2026年11月3日投资者关系活动记录表",
+    "title_en": ""
+  }
+}
