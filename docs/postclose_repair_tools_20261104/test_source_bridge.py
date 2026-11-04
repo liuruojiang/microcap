@@ -6,7 +6,7 @@ spec=importlib.util.spec_from_file_location('bridge',HERE/'source_bridge.py');br
 
 def test_actual_git_scope_matches_only_reviewed_source_paths():
  root=HERE.parents[1];cfg=json.loads((HERE/'transition.json').read_bytes());bridge.verify_scope(root,cfg)
- assert len(cfg['changes'])==36
+ assert len(cfg['changes'])==39
 
 @pytest.fixture
 def pair(tmp_path):
@@ -40,3 +40,13 @@ def test_workflow_is_manual_finite_and_has_no_smtp_or_markers():
  import yaml
  w=yaml.load((HERE.parents[1]/'.github/workflows/native-state-release.yml').read_text(encoding='utf-8-sig'),Loader=yaml.BaseLoader)
  assert set(w['on'])=={'workflow_dispatch'};assert w['defaults']['run']['shell']=='bash';steps=w['jobs']['build']['steps'];names=[s.get('name') for s in steps];assert names.index('Restore original approved archive through verified compatible transport')<names.index('Verify exact source-only transition and unchanged restored state')<names.index('Official strict incremental whole refresh and three-version generation');raw=str(w);assert 'send_report.py' not in raw and 'MAIL_PASSWORD' not in raw and 'send-intent' not in raw;assert 'allow-full-rebuild' not in raw
+ assert names.index('Prepare and verify native current share evidence before whole refresh')<names.index('Official strict incremental whole refresh and three-version generation')
+ refresh=next(s['run'] for s in steps if s.get('name')=='Official strict incremental whole refresh and three-version generation');assert 'for attempt' not in refresh
+
+
+@pytest.mark.parametrize('wrong', ['source', 'date'])
+def test_share_preparation_rejects_wrong_source_or_date_before_state_operations(tmp_path, monkeypatch, wrong):
+ spec=importlib.util.spec_from_file_location('share_prepare',HERE/'prepare_share_sources.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+ monkeypatch.setattr(module.subprocess,'check_output',lambda *a,**kw: '0'*40 if wrong=='source' else '62ed737527030de1a9c5f2897b58bc8670ce1c99')
+ with pytest.raises(RuntimeError,match='reviewed repair source/date'):module.prepare(tmp_path,'2026-11-03' if wrong=='date' else '2026-11-04')
+ assert not list(tmp_path.iterdir())

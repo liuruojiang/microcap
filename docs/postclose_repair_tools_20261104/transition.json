@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "old_restore_runtime": "e525cb8325a1c11c2dfa3540c3a679d28230986a",
-  "new_runtime": "1794f104c5766bdc6fed4b32753ec6750fa72653",
+  "new_runtime": "62ed737527030de1a9c5f2897b58bc8670ce1c99",
   "expected_date": "2026-11-04",
   "original_archive_url": "https://github.com/liuruojiang/microcap/releases/download/top100-st-notice-20261103/microcap-st-notice-whole-delivery-20261103.zip",
   "original_archive_sha256": "c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911",
@@ -141,6 +141,14 @@
       "old": null,
       "new": "29128245999f129c12ed140ef123863e948307db671589f5a7da3bcd2609e579"
     },
+    "docs/postclose_share_http_retry_20261104.md": {
+      "old": null,
+      "new": "2a1084489323e18186608789407c138df8c4b7c4290d456d75ff572c30e57150"
+    },
+    "scripts/share_unchanged_tail.py": {
+      "old": "8d1638cab867c3fd812edb36845af9f17dcfa55df2e62c808898121b90847fa5",
+      "new": "b8d0555f1452d3e6d0df86c8e35a654214f3061594d7be6a67252f4a58f9483f"
+    },
     "scripts/st_notice_boundary_review.py": {
       "old": "2fef55d6834ba7b7cf45c4bc7c393cc9e017ee44658ccba1436aa7f071247e08",
       "new": "cf3db386ef65edc85e423d3be241f800038fafa2061dcaba931dc21c3ee5f286"
@@ -152,6 +160,10 @@
     "tests/test_postclose_boundary_transport_20261104.py": {
       "old": null,
       "new": "aa788d39b9976bb59ee43705098cf1a34954731a5ba84ef573c83b66d11ddf86"
+    },
+    "tests/test_share_unchanged_tail_20261103.py": {
+      "old": "d63bd80775874e6b8470388cb7cb5ca736f27631f52e00c7e13f814d10c1bd20",
+      "new": "e61cd90ee15c34da477911b05234b316a84867eff062a4285dabbb93112804df"
     }
   }
 }

@@ -51,7 +51,7 @@ jobs:
           python -B -X utf8 controller/docs/postclose_repair_tools_20261104/source_bridge.py
           --root microcap
           --manifest controller/docs/postclose_repair_tools_20261104/transition.json
-          --manifest-sha256 7877fc28d96a7f48f63ffddaa6adc8c1369d988697e002784984c9cf13eedbdd
+          --manifest-sha256 c1f4de241daf8253a06aee006a8a245e617349b5b288433e14277dd2fdcf194a
           --audit repair/source_transition.json
       - name: Resolve actual completed session
         shell: bash
@@ -59,20 +59,15 @@ jobs:
           day=$(cd microcap && python -B -X utf8 -c 'from scripts.exchange_calendar import latest_completed_session; print(latest_completed_session().isoformat())')
           [[ "$day" == '2026-11-04' ]] || { echo 'Not the authorized completed session'; exit 1; }
           echo "$day" > repair/expected_date.txt
+      - name: Prepare and verify native current share evidence before whole refresh
+        run: >-
+          python -B -X utf8 controller/docs/postclose_repair_tools_20261104/prepare_share_sources.py
+          --root microcap --target 2026-11-04 --audit repair/share_preparation.json
       - name: Official strict incremental whole refresh and three-version generation
         working-directory: microcap
         shell: bash
         run: |
-          for attempt in 1 2; do
-            set +e
-            python -B -X utf8 scripts/top100_delivery.py refresh-all 2>&1 | tee "../repair/refresh_attempt_${attempt}.log"
-            code=${PIPESTATUS[0]}
-            set -e
-            if [[ "$code" -eq 0 ]]; then break; fi
-            if grep -Eiq 'StNoticeEvidenceError|SecurityMetaHistoryCorrectionRequired|exact-hash|historical rewrite|source group stopped|Share-count history changed|Share source|Fixed anchor|Full rebuild|FULL_REBUILD|frozen|Member authorities changed' "../repair/refresh_attempt_${attempt}.log"; then exit "$code"; fi
-            if [[ "$attempt" -ge 2 ]] || ! grep -Eiq 'ReadTimeout|ConnectTimeout|ConnectionError|timed out|HTTP(Error| error)?[: ]+(429|500|502|503|504)|temporary failure in name resolution' "../repair/refresh_attempt_${attempt}.log"; then exit "$code"; fi
-            sleep 20
-          done
+          python -B -X utf8 scripts/top100_delivery.py refresh-all 2>&1 | tee ../repair/refresh_attempt_1.log
       - name: Independent official whole delivery check
         working-directory: microcap
         run: python -B -X utf8 scripts/top100_delivery.py check 2>&1 | tee ../repair/whole_check.log
@@ -101,7 +96,7 @@ jobs:
             --signal-csv v2.3=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv \
             --signal-csv v2.5=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv \
             --out-dir repair/digest --publication-mode close_confirmed --expected-signal-date 2026-11-04 \
-            --strategy-sha 1794f104c5766bdc6fed4b32753ec6750fa72653 --subject-prefix '[修复验证][未发送]' \
+            --strategy-sha 62ed737527030de1a9c5f2897b58bc8670ce1c99 --subject-prefix '[修复验证][未发送]' \
             --exit-code v2.0=0 --exit-code v2.3=0 --exit-code v2.5=0
           python - <<'PY'
           import json
@@ -114,7 +109,7 @@ jobs:
         run: |
           import hashlib,json,subprocess
           from pathlib import Path
-          repo='liuruojiang/microcap'; tag='microcap-postclose-repair-20261104-1794f104'; source='1794f104c5766bdc6fed4b32753ec6750fa72653'
+          repo='liuruojiang/microcap'; tag='microcap-postclose-repair-20261104-62ed7375'; source='62ed737527030de1a9c5f2897b58bc8670ce1c99'
           path=Path('repair/microcap-postclose-repaired-whole-20261104.zip'); expected=hashlib.sha256(path.read_bytes()).hexdigest(); size=path.stat().st_size
           def gh(*args):return subprocess.check_output(['gh',*args],timeout=600)
           q=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -135,6 +130,14 @@ jobs:
           receipt={'ok':True,'state_url':f'https://github.com/{repo}/releases/download/{tag}/{path.name}','state_sha256':expected,'state_bytes':size,'state_date':'2026-11-04','strategy_sha':source,'release_api':m,'source_transition':json.loads(Path('repair/source_transition.json').read_text()),'smtp_invoked':False,'normal_markers_modified':False}
           Path('repair/new_state_release.json').write_text(json.dumps(receipt,indent=2))
           print(json.dumps({k:v for k,v in receipt.items() if k not in ('release_api','source_transition')}))
+      - name: Preserve failed workspace for verified component recovery
+        if: failure()
+        run: |
+          mkdir -p repair
+          if [[ -d microcap ]]; then
+            tar --exclude=microcap/.git -czf repair/failed_workspace_NOT_APPROVED.tar.gz microcap
+            sha256sum repair/failed_workspace_NOT_APPROVED.tar.gz > repair/failed_workspace_NOT_APPROVED.sha256
+          fi
       - name: Preserve exact results and diagnostics
         if: always()
         uses: actions/upload-artifact@v7

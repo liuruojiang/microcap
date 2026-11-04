@@ -1,0 +1,57 @@
+"""Establish native current share-source evidence before the long whole refresh."""
+import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+
+def prepare(root, target):
+    root = root.resolve()
+    expected = "62ed737527030de1a9c5f2897b58bc8670ce1c99"
+    actual = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
+    if actual != expected or target != "2026-11-04":
+        raise RuntimeError("Not the reviewed repair source/date")
+    sys.path.insert(0, str(root))
+    from scripts.share_change_source import refresh_share_change, verify_share_cache
+    directory = root / ".microcap_index_cache/share_sources"
+    symbols = sorted(p.stem for p in directory.glob("*.json") if re.fullmatch(r"\d{6}", p.stem))
+    if len(symbols) != 102:
+        raise RuntimeError("Restored 102-stock share-source inventory differs")
+    def one(symbol):
+        cache = root / ".microcap_index_cache/share_change" / (symbol + ".csv")
+        before = cache.read_bytes()
+        refresh_share_change(root=root, symbol=symbol, cache_path=cache, as_of=target, allow_network=True)
+        verify_share_cache(root=root, symbol=symbol, as_of=target)
+        if cache.read_bytes() != before:
+            raise RuntimeError("Native unchanged-tail unexpectedly changed share history: " + symbol)
+        print("[native-share-preparation] verified " + symbol + " " + target, flush=True)
+        return {"symbol": symbol, "query_end": target, "share_csv_sha256": hashlib.sha256(before).hexdigest()}
+    complete = []
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = {pool.submit(one, symbol): symbol for symbol in symbols}
+        try:
+            for future in as_completed(futures):
+                complete.append(future.result())
+        except BaseException:
+            for pending in futures:
+                pending.cancel()
+            raise
+    return {"ok": True, "records": sorted(complete, key=lambda row: row["symbol"]),
+            "recorded_at": datetime.now(timezone.utc).isoformat(), "native_verification": True,
+            "scope": "official per-symbol share-source freshness; no panel, NAV, manifest, SMTP or marker operation"}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--target", required=True)
+    parser.add_argument("--audit", type=Path, required=True)
+    args = parser.parse_args()
+    result = prepare(args.root, args.target)
+    args.audit.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    print(json.dumps({"ok": result["ok"], "verified_stocks": len(result["records"])}))
