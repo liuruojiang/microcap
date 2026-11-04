@@ -125,3 +125,7 @@ def test_native_st_notice_evidence_keeps_raw_hash_requirement(preserved,wrong):
   with pytest.raises(RuntimeError,match='native manifest binding differs'):module.validate_archive(pack(),root)
  else:
   _,actual,_=module.validate_archive(pack(),root);assert actual[name]['native_sha256']==hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_native_restored_mutable_summary_is_not_compared_to_git_seed(preserved):
+ module,root,pack=preserved;p=root/'outputs/base_summary.json';p.write_bytes(b'unit old Git seed');subprocess.run(['git','-C',str(root),'add','outputs/base_summary.json'],check=True);p.write_bytes(b'unit restored native state');_,actual,count=module.validate_archive(pack(),root);assert count==5;module.extract_verified(pack(),root,actual);assert p.read_bytes()==b'unit restored native state'

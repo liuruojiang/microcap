@@ -96,7 +96,12 @@ def validate_archive(path, root):
             raise RuntimeError("Preserved tracked inventory differs: " + name)
         if mode == "120000" and not actual[name].get("existing_git_symlink_only"):
             raise RuntimeError("Preserved Git symlink type differs: " + name)
-        if name not in bound or name.endswith((".py", ".pyw")):
+        # Original native restore replaces mutable state with the approved
+        # archive. Those files must not equal Git's older seed snapshots.
+        # Their registered native hashes were verified above; all remaining
+        # state bytes are bound by the authenticated post-restore archive.
+        mutable_state = name.startswith(("outputs/", ".microcap_index_cache/"))
+        if not mutable_state or name.endswith((".py", ".pyw")):
             if actual[name]["git_blob"] != blob:
                 raise RuntimeError("Preserved Git source differs: " + name)
         count += 1
