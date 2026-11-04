@@ -22,25 +22,41 @@ def sha(path):
     return h.hexdigest()
 
 
-def checked_name(member):
+def checked_name(member, allow_git_symlink=False):
     name = PurePosixPath(member.name)
     if (name.is_absolute() or not name.parts or name.parts[0] != "microcap"
             or ".." in name.parts or ".git" in name.parts or "\\" in member.name
-            or not (member.isdir() or member.isfile())):
-        raise RuntimeError("Unsafe preserved workspace member")
+            or not (member.isdir() or member.isfile() or (allow_git_symlink and member.issym()))):
+        raise RuntimeError("Unsafe preserved workspace member: " + member.name)
     return PurePosixPath(*name.parts[1:]).as_posix()
 
 
 def validate_archive(path, root):
+    tracked = subprocess.check_output(["git", "-C", str(root), "ls-files", "--stage", "-z"])
+    identities = {}
+    for entry in tracked.split(b"\0"):
+        if entry:
+            identity, raw_name = entry.split(b"\t", 1)
+            identities[raw_name.decode("utf-8")] = identity.decode().split()
+    git_links = {name: values[1] for name, values in identities.items()
+                 if values[0] == "120000" and values[2] == "0" and name.startswith("research_reports/")}
     actual = {}
     manifest = None
     with tarfile.open(path, "r|gz") as archive:
         for member in archive:
-            name = checked_name(member)
+            relative = PurePosixPath(*PurePosixPath(member.name).parts[1:]).as_posix()
+            name = checked_name(member, relative in git_links)
             if member.isdir():
                 continue
             if name in actual:
                 raise RuntimeError("Duplicate workspace member")
+            if member.issym():
+                raw = member.linkname.encode("utf-8")
+                blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+                if blob != git_links[name]:
+                    raise RuntimeError("Preserved historical Git symlink differs: " + name)
+                actual[name] = {"sha256": hashlib.sha256(raw).hexdigest(), "git_blob": blob, "existing_git_symlink_only": True}
+                continue
             digest = hashlib.sha256()
             blob = hashlib.sha1(b"blob " + str(member.size).encode() + b"\0")
             captured = bytearray() if name == "outputs/top100_delivery_manifest.json" else None
@@ -63,16 +79,12 @@ def validate_archive(path, root):
             if name not in actual or actual[name]["sha256"] != digest:
                 raise RuntimeError("Preserved native manifest binding differs: " + name)
             bound[name] = digest
-    tracked = subprocess.check_output(["git", "-C", str(root), "ls-files", "--stage", "-z"])
     count = 0
-    for entry in tracked.split(b"\0"):
-        if not entry:
-            continue
-        identity, raw_name = entry.split(b"\t", 1)
-        mode, blob, stage = identity.decode().split()
-        name = raw_name.decode("utf-8")
-        if stage != "0" or mode not in ("100644", "100755") or name not in actual:
+    for name, (mode, blob, stage) in identities.items():
+        if stage != "0" or mode not in ("100644", "100755", "120000") or name not in actual:
             raise RuntimeError("Preserved tracked inventory differs: " + name)
+        if mode == "120000" and not actual[name].get("existing_git_symlink_only"):
+            raise RuntimeError("Preserved Git symlink type differs: " + name)
         if name not in bound or name.endswith((".py", ".pyw")):
             if actual[name]["git_blob"] != blob:
                 raise RuntimeError("Preserved Git source differs: " + name)
@@ -83,8 +95,13 @@ def validate_archive(path, root):
 def extract_verified(path, root, actual):
     with tarfile.open(path, "r|gz") as archive:
         for member in archive:
-            name = checked_name(member)
+            relative = PurePosixPath(*PurePosixPath(member.name).parts[1:]).as_posix()
+            name = checked_name(member, actual.get(relative, {}).get("existing_git_symlink_only", False))
             if member.isdir():
+                continue
+            if member.issym():
+                # Preserve the fresh official checkout's existing historical
+                # link; never create or follow a link from the archive.
                 continue
             destination = root.joinpath(*PurePosixPath(name).parts)
             if destination.is_symlink() or any(p.is_symlink() for p in destination.parents):

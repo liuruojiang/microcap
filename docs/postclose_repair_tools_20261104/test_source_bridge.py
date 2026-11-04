@@ -95,3 +95,18 @@ def test_preserved_archive_unsafe_members_are_rejected(preserved,kind):
  else:member.size=1
  with tarfile.open(archive,'w:gz') as out:out.addfile(member,io.BytesIO(b'x') if member.isfile() else None)
  with pytest.raises(RuntimeError,match='Unsafe'):module.validate_archive(archive,root)
+
+
+@pytest.mark.parametrize('tamper', [False, True])
+def test_only_exact_historical_git_symlink_is_accepted_and_never_created(preserved,tamper):
+ import tarfile
+ module,root,pack=preserved;name='research_reports/old_test/current';target='/archived/pytest/test0';blob=subprocess.check_output(['git','-C',str(root),'hash-object','-w','--stdin'],input=target.encode()).decode().strip();subprocess.run(['git','-C',str(root),'update-index','--add','--cacheinfo','120000',blob,name],check=True)
+ archive=root.parent/'with_link.tar.gz'
+ with tarfile.open(archive,'w:gz') as out:
+  for path in root.rglob('*'):
+   if '.git' not in path.relative_to(root).parts:out.add(path,arcname='microcap/'+path.relative_to(root).as_posix(),recursive=False)
+  link=tarfile.TarInfo('microcap/'+name);link.type=tarfile.SYMTYPE;link.linkname=target+'/tampered' if tamper else target;out.addfile(link)
+ if tamper:
+  with pytest.raises(RuntimeError,match='Git symlink differs'):module.validate_archive(archive,root)
+ else:
+  manifest,actual,count=module.validate_archive(archive,root);assert count==5;module.extract_verified(archive,root,actual);assert not (root/name).exists() and not (root/name).is_symlink()
