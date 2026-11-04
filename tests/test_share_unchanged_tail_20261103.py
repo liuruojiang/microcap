@@ -437,3 +437,103 @@ def test_denied_source_without_previous_authority_still_fails_closed(tmp_path, m
         native.refresh_share_change(root=tmp_path, symbol="002144", cache_path=csv, as_of="2026-11-03", allow_network=True)
     assert len(calls) == 1 and not csv.exists()
     assert not (tmp_path / ".microcap_index_cache/share_sources/002144.json").exists()
+
+
+def public_response(status, body):
+    response = source.requests.Response()
+    response.status_code = status
+    response.url = source.QUOTE_URL + "?secid=0.003042"
+    response._content = body
+    response._content_consumed = True
+    response.headers = {"Content-Type": "application/json", "Set-Cookie": "private"}
+    return response
+
+
+def save_public_probe(tmp_path):
+    return source._save_public_observation(directory=tmp_path, source=tmp_path,
+        url=source.QUOTE_URL, params={"secid": "0.003042"}, purpose="quote", end="2026-11-03")
+
+
+@pytest.mark.parametrize("status", [500, 502, 503, 504])
+def test_public_share_transient_http_retries_only_failed_request_and_keeps_raw(tmp_path, monkeypatch, status):
+    replies = [public_response(status, b"unit transient response"), public_response(200, b"unit successful response")]
+    calls = []
+    def get(url, **kwargs):
+        calls.append((url, kwargs))
+        return replies.pop(0)
+    monkeypatch.setattr(source.requests, "get", get)
+    monkeypatch.setattr(source.time, "sleep", lambda _: None)
+    entry, raw = save_public_probe(tmp_path)
+    assert len(calls) == 2 and calls[0] == calls[1]
+    assert calls[0][1]["verify"] is True and calls[0][1]["timeout"] == 20
+    assert raw == b"unit successful response" and (tmp_path / entry["raw_path"]).read_bytes() == raw
+    failed = json.loads((tmp_path / "quote_attempt1.receipt.json").read_bytes())
+    assert failed["http_status"] == status
+    assert source.sha((tmp_path / "quote_attempt1.raw").read_bytes()) == failed["raw_sha256"]
+    assert "Set-Cookie" not in failed["response_headers"]
+    assert json.loads((tmp_path / entry["receipt_path"]).read_bytes())["http_status"] == 200
+
+
+@pytest.mark.parametrize("status", [400, 401, 403, 404, 429, 501])
+def test_public_share_denial_or_permanent_http_is_not_retried(tmp_path, monkeypatch, status):
+    calls = []
+    def get(*args, **kwargs):
+        calls.append(1)
+        return public_response(status, b"unit non-retryable response")
+    monkeypatch.setattr(source.requests, "get", get)
+    with pytest.raises(source.requests.HTTPError):
+        save_public_probe(tmp_path)
+    assert len(calls) == 1 and (tmp_path / "quote_attempt1.raw").is_file()
+    assert not (tmp_path / "quote.raw").exists()
+
+
+def test_public_share_second_502_still_fails_and_keeps_both_bodies(tmp_path, monkeypatch):
+    calls = []
+    def get(*args, **kwargs):
+        calls.append(1)
+        return public_response(502, f"unit failure {len(calls)}".encode())
+    monkeypatch.setattr(source.requests, "get", get)
+    monkeypatch.setattr(source.time, "sleep", lambda _: None)
+    with pytest.raises(source.requests.HTTPError):
+        save_public_probe(tmp_path)
+    assert len(calls) == 2
+    assert (tmp_path / "quote_attempt1.raw").read_bytes() != (tmp_path / "quote_attempt2.raw").read_bytes()
+    assert not (tmp_path / "quote.raw").exists()
+
+
+@pytest.mark.parametrize("error", [source.requests.Timeout, source.requests.ConnectionError])
+def test_public_share_connection_failure_has_one_retry_and_diagnostic(tmp_path, monkeypatch, error):
+    calls = []
+    def get(*args, **kwargs):
+        calls.append(1)
+        raise error("unit connection failure")
+    monkeypatch.setattr(source.requests, "get", get)
+    monkeypatch.setattr(source.time, "sleep", lambda _: None)
+    with pytest.raises(error):
+        save_public_probe(tmp_path)
+    assert len(calls) == 2 and len(list(tmp_path.glob("*.transport.json"))) == 2
+
+
+def test_public_share_certificate_failure_is_not_retried(tmp_path, monkeypatch):
+    calls = []
+    def get(*args, **kwargs):
+        calls.append(1)
+        raise source.requests.exceptions.SSLError("unit certificate failure")
+    monkeypatch.setattr(source.requests, "get", get)
+    with pytest.raises(source.requests.exceptions.SSLError):
+        save_public_probe(tmp_path)
+    assert len(calls) == 1
+
+
+def test_public_share_successful_http_with_invalid_data_is_not_retried_or_published(tmp_path, monkeypatch):
+    calls = []
+    def get(*args, **kwargs):
+        calls.append(1)
+        return public_response(200, b"unit invalid provider JSON")
+    monkeypatch.setattr(source.requests, "get", get)
+    with pytest.raises(json.JSONDecodeError):
+        source.collect_manifest(root=tmp_path, symbol="003042", previous_day="2026-11-02",
+                                end="2026-11-03", candidate=b"unit unchanged candidate")
+    assert len(calls) == 1
+    assert not list(tmp_path.rglob("manifest.json"))
+    assert not (tmp_path / ".microcap_index_cache/share_sources/003042.json").exists()
