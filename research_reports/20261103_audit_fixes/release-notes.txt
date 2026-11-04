@@ -1,0 +1,1 @@
+Adversarial repair delivery; session 2026-11-02; runtime 94a0116dae3ef2d9be129e266405bb368fe02f2a. Primary native refresh-all and independent check passed. Whole-delivery ZIP integrity verified. ZIP SHA-256 99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93. Cloud normal-path validation and mail status are recorded separately; no extra acceptance mail.

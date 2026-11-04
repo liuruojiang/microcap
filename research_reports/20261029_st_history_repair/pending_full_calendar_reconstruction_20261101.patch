@@ -1,0 +1,16 @@
+diff --git a/microcap_top100_mom16_biweekly_live_v2_0.py b/microcap_top100_mom16_biweekly_live_v2_0.py
+--- a/microcap_top100_mom16_biweekly_live_v2_0.py
++++ b/microcap_top100_mom16_biweekly_live_v2_0.py
+@@ -5733,7 +5733,11 @@ def _reconstruct_effective_members_from_saved_targets(
+     )
+     if len(rebalance_dates) == 0:
+         return []
+-    trade_dates = _minimal_tradeability_dates(panel_dates, rebalance_dates)
++    # Evidence validation and prior-close limit checks require the complete
++    # session calendar, not only rebalance days and their immediate predecessors.
++    trade_dates = pd.DatetimeIndex(panel_dates)
++    trade_dates = trade_dates[(trade_dates >= pd.Timestamp(freq_mod.START_DATE))
++                             & (trade_dates <= pd.Timestamp(as_of_date).normalize())]
+     if len(trade_dates) == 0:
+         return []
+     symbols = sorted({symbol for dt in rebalance_dates for symbol in target_members_map[pd.Timestamp(dt).normalize()]})

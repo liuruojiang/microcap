@@ -1,0 +1,122 @@
+{
+  "status": "PASS_ISOLATED_CANDIDATE_PENDING_EXACT_HASH_APPROVAL",
+  "approved": false,
+  "primary_written": false,
+  "source_sha": "75dd463e0a724af0b55e0f029f0468de1feed3c2",
+  "seed_sha256": "8d6af3322aeb693f0bcee2e61281d6389c21b496b8305f3e1f1c27834fdc8664",
+  "old_meta_sha256": "8a1fd2de6799a814eed82c5c61eda043f4fff0654a745c14889026d1e273c667",
+  "source_changes": {
+    "scripts/st_notice_refresh.py": {
+      "before": "fcd2a0c7b7884f05f680871b6fa7eb3b063d4e163a5c4a575bdd1d7ebe84ef5c",
+      "after": "629ef0a87a65673f68d960d3bdb62faedca84e2a8010b766289d98b4749133dc"
+    },
+    "scripts/stock_return_basis.py": {
+      "before": "725c07cda707e59ccb62e297ada9a544cf24133fdca9b1d5c69f3f7d6bbb499c",
+      "after": "4e67e8a31a216e6d0f8069fe869c9b6961ff52e503e1921a75e75e00c6046e59"
+    },
+    "scripts/stock_return_basis_store.py": {
+      "before": "24dd9c33eea26b75809aa307a2e3a6f0eec876f15a6807a9741efe8a177e1382",
+      "after": "fe1dfce2c961cff1e63ff9f2a1284f4b150897b83b521d85795a0aaf210fff39"
+    }
+  },
+  "candidate_meta_sha256": "c30a92f3c072a87767284c036b43f5c866b8712c55edb2978279249e42853317",
+  "native_reconstruction": {
+    "verified_symbols": 5438,
+    "rows": 14146077,
+    "proof_sha256": "844235075a4b5c8b0d217a28641fbc589c188bdbc62b0f9ed36d127ee0b1b956"
+  },
+  "whole_bundle": {
+    "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\microcap-native-whole-delivery-20261030.zip",
+    "sha256": "2c673040c8d919476f8896e5596b7a693db6443304d4ad9e3f50925383c8a140",
+    "bytes": 452877430
+  },
+  "historical_parity": [
+    {
+      "path": "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+      "rows": 4049,
+      "identical_values": true,
+      "old_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+      "new_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+      "rows": 4049,
+      "identical_values": true,
+      "old_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+      "new_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv",
+      "rows": 4049,
+      "identical_values": true,
+      "old_sha256": "aa42a74b1f9a9fd62d64e2236962b5789dde537de7d9de6d0a393c5d0a2a4827",
+      "new_sha256": "aa42a74b1f9a9fd62d64e2236962b5789dde537de7d9de6d0a393c5d0a2a4827"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "rows": 1,
+      "identical_values": true,
+      "old_sha256": "23aa756f9f465cb13deaabd3588320b064599e5307028d7f6a2cc981275a1d1f",
+      "new_sha256": "23aa756f9f465cb13deaabd3588320b064599e5307028d7f6a2cc981275a1d1f"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+      "rows": 4004,
+      "identical_values": true,
+      "old_sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e",
+      "new_sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv",
+      "rows": 4004,
+      "identical_values": true,
+      "old_sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e",
+      "new_sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv",
+      "rows": 4004,
+      "identical_values": true,
+      "old_sha256": "fd42ea3af32e557594961f65e023f0de7e21c84ad9a68449a8d0fda55861b01e",
+      "new_sha256": "fd42ea3af32e557594961f65e023f0de7e21c84ad9a68449a8d0fda55861b01e"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "rows": 1,
+      "identical_values": true,
+      "old_sha256": "2be81db75d259eed79bd239bb5e42c69726fadfbd272068b18409f928a7b22e8",
+      "new_sha256": "2be81db75d259eed79bd239bb5e42c69726fadfbd272068b18409f928a7b22e8"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+      "rows": 4004,
+      "identical_values": true,
+      "old_sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac",
+      "new_sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+      "rows": 4004,
+      "identical_values": true,
+      "old_sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac",
+      "new_sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv",
+      "rows": 4004,
+      "identical_values": true,
+      "old_sha256": "9f8e92205b0068c693a88cf20670c7b4c68c13cc5c3d110e108ba2f5a71198b6",
+      "new_sha256": "9f8e92205b0068c693a88cf20670c7b4c68c13cc5c3d110e108ba2f5a71198b6"
+    },
+    {
+      "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "rows": 1,
+      "identical_values": true,
+      "old_sha256": "09d895552fefcb7cd99f8421a580da955a94e7fe4fa80daf6b8dab8805296c6b",
+      "new_sha256": "09d895552fefcb7cd99f8421a580da955a94e7fe4fa80daf6b8dab8805296c6b"
+    }
+  ],
+  "new_meta_sha256": "c30a92f3c072a87767284c036b43f5c866b8712c55edb2978279249e42853317",
+  "delivery_manifest_sha256": "3ea4d9d3b7ad8c061d7fdf8b1cb070da1b64dcb3273a719e190f7e20e1f18b5e",
+  "completed_at_utc": "2026-11-02T06:02:59.371255+00:00"
+}

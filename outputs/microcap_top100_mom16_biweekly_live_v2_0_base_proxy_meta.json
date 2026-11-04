@@ -225,7 +225,7 @@
   "terminal_member_derivation": "actual_simulate_rebalance_path_final_current_members",
   "delisting_valuation_policy": "delist_zero_writeoff_equal_survivors_v1",
   "source_used": "local_cache_proxy",
-  "universe_source": "explicit_symbols",
+  "universe_source": "backtest_cache_security_master",
   "universe_symbol_count": 5438,
   "symbol_load_stats": {
     "requested_count": 5438,
@@ -261,32 +261,37 @@
     "security_meta_cache_fingerprint": {
       "present_count": 5438,
       "missing_count": 0,
-      "sha256": "2347e3d8da6ec7da7c12cb7b5d53e68660a150cb70835c6fc9f19f9f0cdd3329"
+      "sha256": "f41e2777ef832bbf2c65e64de53f93e9b03035223b2269eab27d5e7019512005"
     },
     "security_master_enabled": true,
     "stock_return_basis_revision": "sina_ratio_ex_reference_v1",
     "stock_input_evidence_fingerprint": {
-      "file_count": 10979,
-      "sha256": "897a4cfe048815016cdb1f72b63e727bf631bee5a2578e2e30378777c18ec034",
+      "file_count": 16315,
+      "sha256": "188aab4e5aea57f2cc230c22fee462fa96533e53edb02458c32997f1411afe3a",
       "code": {
-        "scripts/stock_input_contract.py": "c2adedc18633f2d5853ea086da95eac52d1877dda64c33a1e346dbb7a6601393",
-        "scripts/stock_return_basis.py": "725c07cda707e59ccb62e297ada9a544cf24133fdca9b1d5c69f3f7d6bbb499c",
-        "scripts/stock_return_basis_store.py": "24dd9c33eea26b75809aa307a2e3a6f0eec876f15a6807a9741efe8a177e1382",
-        "scripts/stock_return_pipeline.py": "357169368d7f8b590c5a4d2f1aa9264c253b95ed42cb56fe9c13827bac19feb1",
-        "scripts/tradeability_evidence.py": "8a0bce2253b0ed0a511122b692063ab52e7d38edc671faeea8bff0c7e31d65c7",
+        "scripts/exchange_calendar.py": "9eb3ef9dee3298ab0ec5d7792dd607d3a1a07c55c93a1442af1779c44ca9067b",
+        "scripts/stock_input_contract.py": "b39102cf9a2be829dc1adf6c9305bf29fd5f2119d2ab42db91e363d87aec0e23",
+        "scripts/stock_return_basis.py": "4e67e8a31a216e6d0f8069fe869c9b6961ff52e503e1921a75e75e00c6046e59",
+        "scripts/stock_return_basis_store.py": "fe1dfce2c961cff1e63ff9f2a1284f4b150897b83b521d85795a0aaf210fff39",
+        "scripts/stock_return_pipeline.py": "19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d",
+        "scripts/tradeability_evidence.py": "9fbccd9b30003cc6bf590f678ba95da56e7bfc96f1488369d093285055159832",
         "scripts/st_notice_archive.py": "625483138aebda935a852953a1645ec95eeff9fdf10ab259c463af198c7b7c9c",
         "scripts/st_history_scope.py": "1365b7c0aa289efc30537ef2ede5a1bd7126952bd29c6a026a69d9d25659e47b",
         "scripts/st_notice_incremental.py": "d1b0f043137e0627f0510b95be42722e1018f0d40bcf59d8655687f63ceafae8",
-        "scripts/st_notice_refresh.py": "fcd2a0c7b7884f05f680871b6fa7eb3b063d4e163a5c4a575bdd1d7ebe84ef5c",
-        "scripts/st_metadata_refresh.py": "9d9f31a0f3223d997920adf4fadeb924d03c19c4701ed279b318ec78d1dee995",
+        "scripts/st_notice_refresh.py": "629ef0a87a65673f68d960d3bdb62faedca84e2a8010b766289d98b4749133dc",
+        "scripts/st_metadata_refresh.py": "26537556d2cc58d899052ca0027f575b9f6d64fe03ca75651bf9f5f9a17dd0e8",
         "scripts/stock_tail_returns.py": "fc5875bdb53ed1786c7c851b8e3c9b8028f79f49a71c72cd4eb22c8f1c14d5c6",
-        "scripts/share_change_source.py": "522b49cf595b9f647229678c11ae50d17ab3de1f83747a51c1cac263833c5571",
-        "scripts/stock_daily_inputs.py": "243b26275fd18926ff65bb9c47cd096a1eadcc4f81f83e1e02a99cb9fb9db497"
+        "scripts/share_change_source.py": "2231debbff5ed1d85ecb31ac25ba5db4bfd7050d6d7f55920e0dde5299a68517",
+        "scripts/share_unchanged_tail.py": "cf66976ca3cea83c5fe9fa67cfe816948141479cda00320e70e6406444c1a6fd",
+        "data/share_source_future_plan_reviews.json": "db9799bfc30a2108a523f3b7654db7de4cad326b232d7e72828f8b11be437f7a",
+        "scripts/sina_share_history.py": "fe726fa2ba56a8321d2ded915ed8c20d71a1666b4eef375ab3707a6c0380c702",
+        "scripts/stock_daily_inputs.py": "d5a7f4b496798ef4e2c834b9317ebf435cf8600de0f880a202a4fc5ce6e381f5",
+        "scripts/stock_daily_alternative.py": "261e03ecc279011e21de8a7b1ee27114740c73da61d5b26b078f5be9e032efc6"
       }
     }
   },
   "start_date": "2010-01-05",
-  "end_date": "2026-10-30",
+  "end_date": "2026-11-04",
   "rebalance_dates_count": 434,
   "return_basis_consumption": {
     "revision": "stock_return_consumption_v1",
@@ -294,7 +299,7 @@
     "tail_extensions": [
       {
         "start_exclusive": "2026-10-29",
-        "end": "2026-10-30",
+        "end": "2026-11-04",
         "symbols": [
           "000663",
           "000702",
@@ -397,14 +402,22 @@
           "688737",
           "688793"
         ],
-        "effective_members_sha256": "9793dcb7b72e0502e164374efc6eb69cbfcbb1aaf8b33cb1604d90e5bce0a001",
-        "proxy_members_sha256": "7a87f802d00baf7f1381637e1dd5f255b2f68816fb91adced397ce4476fb8929",
+        "effective_members_sha256": "3315716bd2cd40539ad52e7887f18086242647d6d5db5367e7b1f8434e578738",
+        "proxy_members_sha256": "13fc2763e5eba10fad728ce9ed0d780393d569be748b63f107ddffac35267a70",
         "proxy_turnover_sha256": "a87ee0f76c90f08304bceda6805eca277bf101ca05dcbe2b3b0e0d3d63ed68d7"
       }
     ]
   },
   "effective_start_date": "2010-01-05",
-  "scope": "diagnostic_only",
-  "approved": false,
-  "formal_written": false
+  "tail_extension_method": "no_new_rebalance_saved_target_replay",
+  "tail_extension_start": "2026-10-29",
+  "tail_extension_end": "2026-11-04",
+  "tail_extension_rows": 4,
+  "tail_extension_effective_member_count": 100,
+  "tail_extension_replaced_flat_placeholder": false,
+  "tail_extension_return_source_counts": {
+    "adjusted": 100,
+    "raw": 0
+  },
+  "tail_extension_authority_sha256": "fffaf6691eaad9ce6140fe3db88f9ee77a776e006d8309c5b5abb1859032e92e"
 }

@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "checks": {
+    "metadata_hash": true,
+    "subject_hash": true,
+    "body_hash": true,
+    "message_id": true,
+    "subject": true,
+    "body": true,
+    "inbox": true,
+    "historical_disclaimer": true,
+    "unique_test_id": true,
+    "v2.0_all_csv_fields_equal": true,
+    "v2.3_all_csv_fields_equal": true,
+    "v2.5_all_csv_fields_equal": true,
+    "workflow_success": true,
+    "send_step_success": true
+  },
+  "run": 40831593852,
+  "gmail_id": "1a18678165c2e298",
+  "signal_date": "2026-10-28",
+  "accepted_at": "2026-10-29T07:03:00+00:00",
+  "exact_test_search_count": 1,
+  "dedupe_should_send": false
+}

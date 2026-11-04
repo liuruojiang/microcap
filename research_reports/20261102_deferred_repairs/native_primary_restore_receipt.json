@@ -1,0 +1,16 @@
+{
+  "scope": "code_only_cache_recertification",
+  "historical_values_changed": false,
+  "strategy_parameters_changed": false,
+  "history_rewrite_migration_option_used": false,
+  "authorization": "existing user request to fix deferred issues and synchronize Git/local/cloud daily reports; no new financial assumption or historical rewrite",
+  "candidate_report_sha256": "2c3d8694f90b5ca15aa167bfddd33a94ad12a31c138cffef81ca5a33e609b009",
+  "source_sha": "75dd463e0a724af0b55e0f029f0468de1feed3c2",
+  "remote_main_sha": "75dd463e0a724af0b55e0f029f0468de1feed3c2",
+  "bundle_sha256": "2c673040c8d919476f8896e5596b7a693db6443304d4ad9e3f50925383c8a140",
+  "old_meta_sha256": "8a1fd2de6799a814eed82c5c61eda043f4fff0654a745c14889026d1e273c667",
+  "new_meta_sha256": "c30a92f3c072a87767284c036b43f5c866b8712c55edb2978279249e42853317",
+  "restored_files": 98844,
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\native_recertification_20261102T060535492244Z",
+  "restored_at_utc": "2026-11-02T06:26:12.073528+00:00"
+}

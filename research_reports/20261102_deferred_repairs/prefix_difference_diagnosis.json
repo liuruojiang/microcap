@@ -1,0 +1,50 @@
+[
+  {
+    "file": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+    "column": "microcap_mom",
+    "index": 4002,
+    "date": "2026-10-29",
+    "before": "-1.8543555914149856",
+    "after": "-1.8543555914149852"
+  },
+  {
+    "file": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+    "column": "momentum_gap",
+    "index": 4002,
+    "date": "2026-10-29",
+    "before": "-1.8543555914149856",
+    "after": "-1.8543555914149852"
+  },
+  {
+    "file": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+    "column": "annualized_log_wls_score",
+    "index": 4002,
+    "date": "2026-10-29",
+    "before": "-1.8543555914149856",
+    "after": "-1.8543555914149852"
+  },
+  {
+    "file": "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+    "column": "microcap_mom",
+    "index": 4002,
+    "date": "2026-10-29",
+    "before": "-1.8543555914149856",
+    "after": "-1.8543555914149852"
+  },
+  {
+    "file": "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+    "column": "momentum_gap",
+    "index": 4002,
+    "date": "2026-10-29",
+    "before": "-1.8543555914149856",
+    "after": "-1.8543555914149852"
+  },
+  {
+    "file": "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+    "column": "annualized_log_wls_score",
+    "index": 4002,
+    "date": "2026-10-29",
+    "before": "-1.8543555914149856",
+    "after": "-1.8543555914149852"
+  }
+]

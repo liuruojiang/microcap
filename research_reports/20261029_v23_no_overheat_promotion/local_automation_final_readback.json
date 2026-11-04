@@ -1,0 +1,18 @@
+{
+  "id": "ic-im",
+  "name": "微盘股与 IC/IM 每日实时信号（独立）",
+  "status": "ACTIVE",
+  "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=14;BYMINUTE=30;BYSECOND=0",
+  "model": "gpt-6.1-terra",
+  "reasoning_effort": "max",
+  "execution_environment": "local",
+  "target": {
+    "type": "project",
+    "project_id": "01a052df-9e19-7e81-9057-40c01071d56b"
+  },
+  "cwds": [
+    "D:\\动量策略\\IC和IM滚动套利"
+  ],
+  "new_strategy_sha_present": true,
+  "old_strategy_sha_absent": true
+}

@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "expected_date": "2026-11-02",
+  "release_sha": "9c4228653398a8a1eb16bcb91335abf752e4dafc",
+  "bundle": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261102_deferred_repairs\\microcap-tencent-whole-delivery-20261102.zip",
+  "scope": "whole_workspace_delivery",
+  "files": 150775,
+  "sha256": "9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864",
+  "bytes": 605642042
+}

@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "scope": "whole_workspace_delivery",
+  "errors": [
+    "Local core/authority differs from remote release: scripts/top100_delivery.py"
+  ]
+}

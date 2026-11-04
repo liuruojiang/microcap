@@ -1,0 +1,44 @@
+{
+  "legacy_proof_native_readback": "PASS",
+  "source_files": 118,
+  "old_policy": "exact_reviewed_non_st_addition_plus_original_precision_v1",
+  "st_registry_sha256": "9198b474b95443c520cb82d111fcbfa58d832ade5d985abf85a2c4cefa2a2f1a",
+  "000796_registered_events": [
+    {
+      "symbol": "000796",
+      "id": "1216704370",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "source_provider": null
+    },
+    {
+      "symbol": "000796",
+      "id": "1218817918",
+      "risk_actions": {
+        "delisting": true,
+        "other": true
+      },
+      "source_provider": null
+    },
+    {
+      "symbol": "000796",
+      "id": "1220378276",
+      "risk_actions": {
+        "delisting": false,
+        "other": true
+      },
+      "source_provider": null
+    },
+    {
+      "symbol": "000796",
+      "id": "1221526180",
+      "risk_actions": {
+        "delisting": false,
+        "other": false
+      },
+      "source_provider": null
+    }
+  ]
+}

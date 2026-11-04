@@ -1,0 +1,211 @@
+{
+  "ok": true,
+  "scope": "local_artifact_acceptance_not_whole_delivery_or_remote_deployment",
+  "errors": [],
+  "expected_date": "2026-10-28",
+  "streams": {
+    "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": {
+      "rows": 8752,
+      "latest_date": "2026-10-28",
+      "sha256": "aadbf3d4dc768b42aa1d35c3955789c137ee00cef41cb1626923dd4d5a328d4d"
+    },
+    "wind_microcap_top_100_biweekly_thursday_16y_cached.csv": {
+      "rows": 4081,
+      "latest_date": "2026-10-28",
+      "sha256": "14e5171a27f885514453b73c09ed313f0d008e6321b17cf76f6bdc35b31cb1a7"
+    },
+    "microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": {
+      "rows": 4064,
+      "latest_date": "2026-10-28",
+      "sha256": "72c77da822936c35a69829f1499bf284f22cc1205afa823ede29ffd4326f9bbd"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": {
+      "rows": 433,
+      "latest_date": "2026-10-15",
+      "sha256": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da"
+    },
+    "microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": {
+      "rows": 4047,
+      "latest_date": "2026-10-28",
+      "sha256": "53bba12fe113a522baf9713a3744d2f5ab680636faf5baeac24e58bd984466e7"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_nav.csv": {
+      "rows": 4047,
+      "latest_date": "2026-10-28",
+      "sha256": "53bba12fe113a522baf9713a3744d2f5ab680636faf5baeac24e58bd984466e7"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": {
+      "rows": 4047,
+      "latest_date": "2026-10-28",
+      "sha256": "c53f4701a451bcdc82e898036249b816866bf5af900ca29eb146e9ebcdca7063"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-10-28",
+      "sha256": "9d9b6c039d715cfdcefee02307e9ac947a2ff0220ddc186a9e0a3f04ec01cde9"
+    },
+    "microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv": {
+      "rows": 4002,
+      "latest_date": "2026-10-28",
+      "sha256": "c35ad4de8104118831a622919d54d8a16f6b0e612995559c27178bee2b90d156"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_nav.csv": {
+      "rows": 4002,
+      "latest_date": "2026-10-28",
+      "sha256": "c35ad4de8104118831a622919d54d8a16f6b0e612995559c27178bee2b90d156"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": {
+      "rows": 4002,
+      "latest_date": "2026-10-28",
+      "sha256": "c6e3c5767911642620c96e3fd08fb1ef291537f99f9698abaff202e5564042c8"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-10-28",
+      "sha256": "281398c5afb9aab6be8a1c212f243923674d7c259ec957493e6b8eb1556ea1d5"
+    },
+    "microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": {
+      "rows": 4002,
+      "latest_date": "2026-10-28",
+      "sha256": "3078a7fed295399fa1823585723ca0eabf0a95af72609f6d0698e2fb41f9eab6"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_nav.csv": {
+      "rows": 4002,
+      "latest_date": "2026-10-28",
+      "sha256": "3078a7fed295399fa1823585723ca0eabf0a95af72609f6d0698e2fb41f9eab6"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": {
+      "rows": 4002,
+      "latest_date": "2026-10-28",
+      "sha256": "f9f2981e6f83145f1c51b91cabc1546efba2cdc33e625cc83212edbdf2ba4e00"
+    },
+    "microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": {
+      "rows": 1,
+      "latest_date": "2026-10-28",
+      "sha256": "ddd9f588c33295ccc852c6340a270d12ed30852d90ff854e3c74c0b76255c396"
+    }
+  },
+  "inputs": {
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "14e5171a27f885514453b73c09ed313f0d008e6321b17cf76f6bdc35b31cb1a7",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "72c77da822936c35a69829f1499bf284f22cc1205afa823ede29ffd4326f9bbd",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json": "df76ae0fa7e64171b9d63b47ddeb55f89871b9a1969c08271f7add2562b588f5",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv": "69f484e969c0f25815294e3fe939c85737252e566079153c59a01f20ef9a7580",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv": "f9d3a3b15715e83370173acfbae3aff95e5fe1f69e095a72ec0e9e4bb0686549",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "aadbf3d4dc768b42aa1d35c3955789c137ee00cef41cb1626923dd4d5a328d4d",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json": "a8ac182b96a976e5f33a38ed88de9b2555e81173c07b0d6c2f5b267a80dc313e",
+    "microcap_top100_mom16_biweekly_live_v2_0.py": "0c4ef8356d0a61c1690b9751d0b003d0121e24fe89d82df693bd1c1232e910c1",
+    "microcap_top100_mom16_biweekly_live_v2_3.py": "db1f635f291473775d20aca2a57886512b2494c4fa871a534a0ea9f2c5568063",
+    "microcap_top100_mom16_biweekly_live_v2_5.py": "c39b8fa5b4fe44142fb470944bf87c875c18dcc480cad0f705b4e653bba64f50",
+    "scripts/top100_data_contracts.py": "df659bbe5c48874ca45e659699d88a73a036cb624afdb466c60331f307b258ab"
+  },
+  "artifacts": {
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_summary.json": "5d6eefb6d88f3dec4309edc64660a2636516ebf6d65afaec83988ca6965645be",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.json": "79ec9701f6ccfe7f19d68f1a91489839083a49354ddbed4cf0b9e823c2f96220",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_summary.csv": "33503567321e8565c89d6bb0c88325d9173321606c7efef858eb3a3d3502a010",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_yearly.csv": "f6aee7be68b686080aa6668e35e201592fe6dc05fcee3fd5fda8b252d3bc3384",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_summary.json": "4f21e245e65632e3328e0f4c3f25041cffcce55c7e4ee34d7c055d2c2b07316c",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.json": "16652ab7af50924151e48d20161c248ec476b8197f1226c4767001de8e74104a",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_summary.csv": "1b060b26b5400c7954d3e07f59dd56211daeb9d8ba84d8d07457cf53a2bba419",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_yearly.csv": "7ccc6f5f7a4640852fe4c2ec80953fbd93fdcb8b64f5b02c3952d59f1df4223f",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_summary.json": "1be09712b02565a273603634afa0db1fb7868152faebc5102c6e4f323c681f17",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.json": "a4fe97b85ac10ded5b5cfa794eb68c2b0cbbfd47c3b2abd51facb71888fbba10",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_summary.csv": "1202c900089c7940246bcf9aa5abfceabd22eec299dd35f08b2dc3c84915b78b",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_yearly.csv": "f33e37921a502001d110a96630b3d9690b3d13e080a3304d395defbf057b50b0",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv": "aadbf3d4dc768b42aa1d35c3955789c137ee00cef41cb1626923dd4d5a328d4d",
+    "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv": "14e5171a27f885514453b73c09ed313f0d008e6321b17cf76f6bdc35b31cb1a7",
+    "outputs/microcap_top100_mom16_hedge_zz1000_0p8x_biweekly_thursday_16y_v2_0_base_costed_nav.csv": "72c77da822936c35a69829f1499bf284f22cc1205afa823ede29ffd4326f9bbd",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv": "65d6e2cb2e0601e403b4df87b5164c2e7ddac3d05ebf828c3c3efb4aad7d15da",
+    "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv": "53bba12fe113a522baf9713a3744d2f5ab680636faf5baeac24e58bd984466e7",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv": "53bba12fe113a522baf9713a3744d2f5ab680636faf5baeac24e58bd984466e7",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv": "c53f4701a451bcdc82e898036249b816866bf5af900ca29eb146e9ebcdca7063",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv": "9d9b6c039d715cfdcefee02307e9ac947a2ff0220ddc186a9e0a3f04ec01cde9",
+    "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv": "c35ad4de8104118831a622919d54d8a16f6b0e612995559c27178bee2b90d156",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv": "c35ad4de8104118831a622919d54d8a16f6b0e612995559c27178bee2b90d156",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv": "c6e3c5767911642620c96e3fd08fb1ef291537f99f9698abaff202e5564042c8",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv": "281398c5afb9aab6be8a1c212f243923674d7c259ec957493e6b8eb1556ea1d5",
+    "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv": "3078a7fed295399fa1823585723ca0eabf0a95af72609f6d0698e2fb41f9eab6",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv": "3078a7fed295399fa1823585723ca0eabf0a95af72609f6d0698e2fb41f9eab6",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv": "f9f2981e6f83145f1c51b91cabc1546efba2cdc33e625cc83212edbdf2ba4e00",
+    "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv": "ddd9f588c33295ccc852c6340a270d12ed30852d90ff854e3c74c0b76255c396"
+  },
+  "oracle_parity": {
+    "return_net": 0.0,
+    "nav_net": 0.0,
+    "total_cost": 0.0
+  },
+  "unaffected_v20_v25_parity": true,
+  "windows": [
+    {
+      "start_date": "2010-05-05",
+      "end_date": "2026-10-28",
+      "days": 4002,
+      "final_nav": 32.07307711921026,
+      "total_return_pct": 3107.307711921026,
+      "annual_pct": 23.545992894620937,
+      "max_drawdown_pct": -14.975523114480483,
+      "sharpe": 1.987379751752668,
+      "vol_pct": 11.847757266247557,
+      "window": "full",
+      "required_start_date": "2010-05-05",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2016-10-28",
+      "end_date": "2026-10-28",
+      "days": 2428,
+      "final_nav": 5.9499976555283585,
+      "total_return_pct": 494.99976555283587,
+      "annual_pct": 19.628448962573675,
+      "max_drawdown_pct": -14.975523114480394,
+      "sharpe": 1.4629244276549807,
+      "vol_pct": 13.417267899502797,
+      "window": "last_10y",
+      "required_start_date": "2016-10-28",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2021-10-28",
+      "end_date": "2026-10-28",
+      "days": 1212,
+      "final_nav": 2.907167800354398,
+      "total_return_pct": 190.71678003543983,
+      "annual_pct": 23.966934421764474,
+      "max_drawdown_pct": -14.975523114480449,
+      "sharpe": 1.4944653141610889,
+      "vol_pct": 16.037129931796514,
+      "window": "last_5y",
+      "required_start_date": "2021-10-28",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2023-10-30",
+      "end_date": "2026-10-28",
+      "days": 726,
+      "final_nav": 1.6373816342100653,
+      "total_return_pct": 63.73816342100653,
+      "annual_pct": 18.024793595326074,
+      "max_drawdown_pct": -14.975523114480405,
+      "sharpe": 1.0601647546923105,
+      "vol_pct": 17.00187967535043,
+      "window": "last_3y",
+      "required_start_date": "2023-10-28",
+      "unavailable_reason": ""
+    },
+    {
+      "start_date": "2025-10-28",
+      "end_date": "2026-10-28",
+      "days": 243,
+      "final_nav": 1.0965791538739456,
+      "total_return_pct": 9.657915387394556,
+      "annual_pct": 9.699528068954177,
+      "max_drawdown_pct": -14.975523114480428,
+      "sharpe": 0.5525842052731627,
+      "vol_pct": 17.55303169434484,
+      "window": "last_1y",
+      "required_start_date": "2025-10-28",
+      "unavailable_reason": ""
+    }
+  ],
+  "backup": "D:\\动量策略\\微盘股对冲策略\\.codex_backups\\20261029_142117"
+}

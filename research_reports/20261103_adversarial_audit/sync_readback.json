@@ -1,0 +1,47 @@
+{
+  "manifest_status": "complete",
+  "manifest_release_sha": "9c4228653398a8a1eb16bcb91335abf752e4dafc",
+  "expected_date": "2026-11-02",
+  "inspect_ok": true,
+  "errors": [],
+  "inputs_match": true,
+  "artifacts_match": true,
+  "versions": {
+    "0": {
+      "date": "2026-11-02",
+      "version": "2.0",
+      "strategy_revision": "plain_mom16_fixed1_20260904",
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "trade_state": "hold",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_execution_date": "2026-10-30",
+      "overheat_enabled": "False",
+      "target_vol_enabled": "False"
+    },
+    "3": {
+      "date": "2026-11-02",
+      "version": "2.3",
+      "strategy_revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "trade_state": "hold",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_execution_date": "2026-10-30",
+      "overheat_enabled": "False",
+      "target_vol_enabled": "False"
+    },
+    "5": {
+      "date": "2026-11-02",
+      "version": "2.5",
+      "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "current_holding": "cash",
+      "next_holding": "cash",
+      "trade_state": "hold",
+      "member_rebalance_actionable": "False",
+      "member_rebalance_execution_date": "2026-10-30",
+      "overheat_enabled": "False",
+      "target_vol_enabled": "False"
+    }
+  }
+}

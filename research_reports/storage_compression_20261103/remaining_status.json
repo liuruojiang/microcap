@@ -1,0 +1,35 @@
+{
+  "method": "FSCTL_SET_COMPRESSION LZNT1; only file compression state changes",
+  "source": "https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ni-winioctl-fsctl_set_compression",
+  "started_at": "2026-11-03T05:46:13.229395+00:00",
+  "verified_files": 2242,
+  "saved_bytes_api": 1575046062,
+  "failures": [],
+  "content_mismatches": [],
+  "groups": [
+    {
+      "name": ".codex_backups",
+      "long_paths_only": true,
+      "verified_files": 1671,
+      "saved_bytes_api": 1546051275
+    },
+    {
+      "name": "research_reports",
+      "long_paths_only": true,
+      "verified_files": 44,
+      "saved_bytes_api": 6864161
+    },
+    {
+      "name": "data",
+      "long_paths_only": false,
+      "verified_files": 512,
+      "saved_bytes_api": 21805545
+    },
+    {
+      "name": "tests",
+      "long_paths_only": false,
+      "verified_files": 15,
+      "saved_bytes_api": 325081
+    }
+  ]
+}

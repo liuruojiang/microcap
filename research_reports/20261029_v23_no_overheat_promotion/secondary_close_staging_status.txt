@@ -1,0 +1,1 @@
+Interrupted after scope review: fetched secondary-source bars into staging only; no formal cache writes, no complete source-coverage claim. A separate ten-symbol ST historical-lineage blocker prevents promotion.

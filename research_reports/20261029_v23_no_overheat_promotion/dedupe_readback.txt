@@ -1,0 +1,7 @@
+should_send=false
+delivery_date=2026-10-29
+marker_name=microcap-v2-close_confirmed-delivery-test-microcap-20261029-noheat-01
+subject_prefix=发送验收测试
+validation_only=false
+delivery_test_id=microcap-20261029-noheat-01
+recover_marker=false

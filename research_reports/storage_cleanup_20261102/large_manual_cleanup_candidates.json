@@ -1,0 +1,16 @@
+{
+  "manual_delete_candidates": [
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-native-regression-20261102",
+      "bytes": 4713529820,
+      "reason": "completed isolated tests; six changed metadata files preserved; delivered state bundle hash verified"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_st_history_repair\\replay\\runtime_20261029\\.microcap_index_cache",
+      "bytes": 2155736364,
+      "logical_bytes": 3313833517,
+      "reason": "isolated diagnostic replay cache; formal main cache outside target retained"
+    }
+  ],
+  "no_deletion_performed": true
+}

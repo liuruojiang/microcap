@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "id": "ic-im",
+  "preserved_fields": [
+    "name",
+    "status",
+    "rrule",
+    "model",
+    "reasoning_effort",
+    "execution_environment",
+    "target",
+    "cwds"
+  ],
+  "prompt_sha256": "08647dcba5ed034612c3ed2fb9b51241da562f5da88ddeacf9e8d0d45ca7a133",
+  "new_revision_present": true,
+  "old_revision_absent": true
+}

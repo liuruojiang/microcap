@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "diagnostic_frozen_as_of": "2026-10-29",
+  "symbol": "000001",
+  "rows": 4013,
+  "manifest_unchanged": true,
+  "candidate_sha256": "b7e1e634c07427bef55aaf4d31b396229282264dbe99c47a1ce97b13ae7323b6",
+  "host_linesep": "LF",
+  "external_profile": false
+}

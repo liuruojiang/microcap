@@ -1,0 +1,1 @@
+Approved v2.3 volatility-constraint removal. Exact strategy commit: 24712ce3a78d7968386495d605ef11d86e4b54ec. Whole v2.0/v2.3/v2.5 state is independently verified through 2026-10-28. No base lineage change; v2.0 and v2.5 economic streams unchanged. This recovery package is not a trading instruction or an email-delivery receipt.

@@ -1,0 +1,102 @@
+[
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-alt-resume-tests-20261102",
+    "logical_bytes": 182893,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-alt-source-final-tests-20261102",
+    "logical_bytes": 152983,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-alt-source-parallel-tests-20261102",
+    "logical_bytes": 152995,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-alt-source-tests-20261102",
+    "logical_bytes": 152959,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-alternative-delivery-tests-20261102",
+    "logical_bytes": 74831394,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-date-hook-tests-20261102",
+    "logical_bytes": 28436,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-native-automation-tests-20261102-final",
+    "logical_bytes": 2533738,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-native-config-tests-20261102",
+    "logical_bytes": 1107,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-durable-write-20261102",
+    "logical_bytes": 74138,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-parallel-suspensions-20261102",
+    "logical_bytes": 74149,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-resume-retry-20261102",
+    "logical_bytes": 74117,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-resume-speed-20261102b",
+    "logical_bytes": 30021,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-resume-speed-20261102c",
+    "logical_bytes": 44100,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-share-dns-20261102",
+    "logical_bytes": 133864,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-share-dns-nodata-20261102",
+    "logical_bytes": 133864,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-share-encoder-20261102",
+    "logical_bytes": 133864,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-share-network-20261102",
+    "logical_bytes": 133864,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\tmp\\microcap-share-route-20261102",
+    "logical_bytes": 134331,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\Codex\\workspaces\\microcap-no-overheat-daily\\.tmp-native-20261102",
+    "logical_bytes": 1107,
+    "reason": "completed generated pytest fixtures"
+  },
+  {
+    "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\scoped_test_workspace",
+    "logical_bytes": 238507293,
+    "reason": "duplicate isolated workspace; all different files preserved in verified ZIP"
+  }
+]

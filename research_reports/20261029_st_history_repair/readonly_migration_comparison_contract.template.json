@@ -1,0 +1,83 @@
+{
+  "schema": "microcap_readonly_migration_comparison_v1",
+  "source_evidence": [
+    {
+      "role": "source_snapshot",
+      "path": "REQUIRED_REAL_PATH_source_snapshot",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    {
+      "role": "st_install",
+      "path": "REQUIRED_REAL_PATH_st_install",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    {
+      "role": "metadata_install",
+      "path": "REQUIRED_REAL_PATH_metadata_install",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    {
+      "role": "ratio_install",
+      "path": "REQUIRED_REAL_PATH_ratio_install",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    {
+      "role": "base_assembly",
+      "path": "REQUIRED_REAL_PATH_base_assembly",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    {
+      "role": "independent_sessions",
+      "path": "REQUIRED_REAL_PATH_independent_sessions",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    }
+  ],
+  "source_file_manifests": [
+    {
+      "root": "REQUIRED_RUNTIME_ROOT",
+      "files_key": "files",
+      "path": "REQUIRED_REAL_PATH_source_file_manifest",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    }
+  ],
+  "candidate29_result": {
+    "path": "REQUIRED_REAL_PATH_completed29_diagnostic_result",
+    "sha256": "REQUIRED_EXACT_SHA256"
+  },
+  "candidate30_result": {
+    "path": "REQUIRED_REAL_PATH_completed30_diagnostic_result",
+    "sha256": "REQUIRED_EXACT_SHA256"
+  },
+  "old_official_streams": {
+    "v2_0": {
+      "path": "REQUIRED_REAL_PATH_frozen_old_v2_0",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    "v2_3": {
+      "path": "REQUIRED_REAL_PATH_frozen_old_v2_3",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    },
+    "v2_5": {
+      "path": "REQUIRED_REAL_PATH_frozen_old_v2_5",
+      "sha256": "REQUIRED_EXACT_SHA256"
+    }
+  },
+  "old_official_members": {
+    "path": "REQUIRED_REAL_PATH_frozen_old_members",
+    "sha256": "REQUIRED_EXACT_SHA256"
+  },
+  "effective_members30": {
+    "path": "REQUIRED_REAL_PATH_actual30_effective_members",
+    "sha256": "REQUIRED_EXACT_SHA256"
+  },
+  "share_qualification": {
+    "path": "REQUIRED_REAL_PATH_actual_share144_qualification_review",
+    "sha256": "REQUIRED_EXACT_SHA256"
+  },
+  "share_intervals": {
+    "path": "REQUIRED_REAL_PATH_share_dispute_intervals",
+    "sha256": "REQUIRED_EXACT_SHA256"
+  },
+  "share_resolution": null,
+  "share_cache_root": "REQUIRED_REAL_REVIEWED_SHARE_CACHE_ROOT"
+}

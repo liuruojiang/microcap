@@ -1,0 +1,144 @@
+{
+  "completed_at": "2026-11-03T05:48:40.241101+00:00",
+  "operation": "Native NTFS in-place file compression; no deletion or relocation",
+  "verified_files": 230645,
+  "saved_bytes_api": 17025764757,
+  "free_before_bytes": 14101032960,
+  "free_after_bytes": 31113228288,
+  "failures": [],
+  "content_mismatches": [],
+  "groups": {
+    "quant_param_scan_runs": {
+      "verified_files": 1411,
+      "saved_bytes_api": 88758052
+    },
+    "archive": {
+      "verified_files": 80,
+      "saved_bytes_api": 10861408
+    },
+    "归档": {
+      "verified_files": 17,
+      "saved_bytes_api": 3649551
+    },
+    ".codex_backups": {
+      "verified_files": 70076,
+      "saved_bytes_api": 10176121347
+    },
+    "backups": {
+      "verified_files": 1,
+      "saved_bytes_api": 8652
+    },
+    "research_reports": {
+      "verified_files": 93280,
+      "saved_bytes_api": 3890436536
+    },
+    ".microcap_ohlc_cache": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    ".autobuild_top100_cache": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "outputs": {
+      "verified_files": 55,
+      "saved_bytes_api": 67466183
+    },
+    ".microcap_index_cache": {
+      "verified_files": 64726,
+      "saved_bytes_api": 2760573872
+    },
+    "external_test_microcap-alternative-delivery-tests-20261102": {
+      "verified_files": 472,
+      "saved_bytes_api": 5758530
+    },
+    "external_test_microcap-native-automation-tests-20261102-final": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-alt-resume-tests-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-alt-source-parallel-tests-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-alt-source-final-tests-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-alt-source-tests-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-share-route-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-share-dns-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-share-dns-nodata-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-share-encoder-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-share-network-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-parallel-suspensions-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-durable-write-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-resume-retry-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-resume-speed-20261102c": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-resume-speed-20261102b": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-date-hook-tests-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_microcap-native-config-tests-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "external_test_.tmp-native-20261102": {
+      "verified_files": 0,
+      "saved_bytes_api": 0
+    },
+    "data": {
+      "verified_files": 512,
+      "saved_bytes_api": 21805545
+    },
+    "tests": {
+      "verified_files": 15,
+      "saved_bytes_api": 325081
+    }
+  },
+  "deletion_status": "Previous deletion blocked by policy; no retry; all files retained",
+  "evidence": [
+    "result.json",
+    "remaining_result.json",
+    "files.jsonl",
+    "remaining_files.jsonl"
+  ],
+  "status": "complete"
+}

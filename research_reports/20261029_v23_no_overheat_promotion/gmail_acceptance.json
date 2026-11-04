@@ -1,0 +1,69 @@
+{
+  "id": "1a18678165c2e298",
+  "thread_id": "1a18678165c2e298",
+  "label_ids": [
+    "SENT",
+    "INBOX"
+  ],
+  "snippet": "## 新版邮件发送验收测试本邮件为新版验收，仅用于核对新版日报收发链路，数据截至 2026-10-28。下文为历史收盘日报样本，不作为今日交易指令。 验收编号：microcap-20261029-noheat-01 ## 历史收盘日报样本**信号类型：收盘确认** **v2.0：微盘 Top100＋空头中证1000 → 空仓，下一交易日可执行仓位 0.00；v2.3：微盘 Top100＋空头中证",
+  "history_id": "4082291",
+  "internal_date": "1793257378000",
+  "payload": {
+    "part_id": "",
+    "mime_type": "text/plain",
+    "filename": "",
+    "headers": [
+      {
+        "name": "Return-Path",
+        "value": "<liuruojiang@gmail.com>"
+      },
+      {
+        "name": "Received",
+        "value": "from runnervm48cm3.0bstqgub2uperkwdrrb1qd0e0g.cx.internal.cloudapp.net ([145.132.100.180])        by smtp.gmail.com with ESMTPSA id d75a77b69052e-538394c518csm123767601cf.8.2026.10.29.00.02.58        for <liuruojiang@gmail.com>        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);        Thu, 29 Oct 2026 00:02:58 -0700 (PDT)"
+      },
+      {
+        "name": "Subject",
+        "value": "[发送验收测试][收盘确认][新版验收] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-10-28 - microcap-20261029-noheat-01"
+      },
+      {
+        "name": "From",
+        "value": "liuruojiang@gmail.com"
+      },
+      {
+        "name": "To",
+        "value": "liuruojiang@gmail.com"
+      },
+      {
+        "name": "Date",
+        "value": "Thu, 29 Oct 2026 07:02:58 +0000"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<179325737809.3229.16904635016664578550@gmail.com>"
+      },
+      {
+        "name": "Content-Type",
+        "value": "text/plain; charset=\"utf-8\""
+      },
+      {
+        "name": "Content-Transfer-Encoding",
+        "value": "base64"
+      },
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      }
+    ],
+    "body": {
+      "size": 1535,
+      "base64_url_content": null,
+      "content": "## 新版邮件发送验收测试\n\n本邮件为新版验收，仅用于核对新版日报收发链路，数据截至 2026-10-28。下文为历史收盘日报样本，不作为今日交易指令。\n\n验收编号：microcap-20261029-noheat-01\n\n## 历史收盘日报样本\n\n**信号类型：收盘确认**\n\n**v2.0：微盘 Top100＋空头中证1000 → 空仓，下一交易日可执行仓位 0.00；v2.3：微盘 Top100＋空头中证1000 → 空仓，下一交易日可执行仓位 0.00；v2.5：空仓 → 空仓，下一交易日可执行仓位 0.00。**\n\n**下个交易日计划：v2.0 需要平仓；v2.3 需要平仓；其他版本无需新增调仓。**\n\n当前持仓是模型在本交易日的状态，可能承接前次收盘信号；实际账户成交以交易记录为准。\n\n| 版本 | 当前 → 下一持仓 | 下个交易日操作 | 下一交易日仓位 | 核心动量 |\n|---|---|---|---:|---|\n| v2.0 | 微盘 Top100＋空头中证1000 → 空仓 | 平仓 | 0.00 | 微盘 **-10.99%**；对冲 **-10.20%**；动量差 **-0.79%** |\n| v2.3 | 微盘 Top100＋空头中证1000 → 空仓 | 平仓 | 0.00 | 对冲价差年化 WLS 得分 **-15.82%**；R² **0.059** |\n| v2.5 | 空仓 → 空仓 | 无操作 | 0.00 | 微盘年化 WLS 得分 **-165.40%**；R² **0.740** |\n\n## 需要关注\n\n风险/数据异常：无\n\n收盘确认日期：2026-10-28｜策略代码：24712ce3a78d7968386495d605ef11d86e4b54ec\n[查看完整诊断与原始输出](https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/40831593852)\n",
+      "attachment_id": null
+    },
+    "read_attachment_supported": null,
+    "parts": null
+  },
+  "size_estimate": 2949,
+  "classification_label_values": null,
+  "raw": null
+}

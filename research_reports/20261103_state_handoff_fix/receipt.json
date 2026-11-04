@@ -1,0 +1,246 @@
+{
+  "scope": "whole_state_save_and_next_run_restore",
+  "strategy_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+  "automation_before": "14af52a4c01e8b62eb73fe89605457086a1bbba9",
+  "automation_sha": "7a64256ea4408768ba393ceca0fc274e662b9753",
+  "backup": "verified pre-change Git commit 14af52a4c01e8b62eb73fe89605457086a1bbba9; unrelated dirty worktrees preserved",
+  "local_targeted_tests": {
+    "passed": 44,
+    "failed": 0
+  },
+  "bootstrap_run": 41606150206,
+  "published_ci_run": 41606148177,
+  "archive_seed_session": "2026-11-02",
+  "current_market_freshness_claim": false,
+  "mail": {
+    "original_run": 41600113131,
+    "message_id": "1a1a08b68b82ca89",
+    "received_at_bj": "2026-11-03 16:34:12",
+    "labels": [
+      "SENT",
+      "INBOX"
+    ],
+    "subject": "[收盘确认][异常] 微盘股 v2.0/v2.3/v2.5 日报 - 2026-11-03",
+    "normal_signal_report_delivered": false,
+    "refresh_blocker": "ST notice requires verified issuer/body evidence",
+    "new_email_requested": false,
+    "repair_sends": "none",
+    "final_search": "same single abnormal message; no normal November 3 digest or duplicate found"
+  },
+  "phase": "complete",
+  "local_microcap_automation_tests": {
+    "passed": 483,
+    "subtests_passed": 38,
+    "failed": 0
+  },
+  "superseded_attempt": {
+    "run": 41605760223,
+    "phase": "automation_regression",
+    "reason": "old evaluator omitted new workflow input; fixed without removing assertions; cancelled before recovery"
+  },
+  "expected_archive_csvs": {
+    "0": {
+      "file": "outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv",
+      "sha256": "2646b0c03331a6017ec1e0ef6b97372d2008ae2b363045919e77e8ec2c5d9382",
+      "rows": 1,
+      "identity": {
+        "date": "2026-11-02",
+        "version": "2.0",
+        "strategy_revision": "plain_mom16_fixed1_20260904",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_execution_date": "2026-10-30"
+      }
+    },
+    "3": {
+      "file": "outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv",
+      "sha256": "84b88c067d9fe9fc1c79db7b21bae0e884deee9807bacb333c760732f3656965",
+      "rows": 1,
+      "identity": {
+        "date": "2026-11-02",
+        "version": "2.3",
+        "strategy_revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_execution_date": "2026-10-30"
+      }
+    },
+    "5": {
+      "file": "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv",
+      "sha256": "991816409636b4f23b98f5498dc1a1ce028b8bd1ec18e91906132db0629b9049",
+      "rows": 1,
+      "identity": {
+        "date": "2026-11-02",
+        "version": "2.5",
+        "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+        "current_holding": "cash",
+        "next_holding": "cash",
+        "trade_state": "hold",
+        "member_rebalance_actionable": "False",
+        "member_rebalance_execution_date": "2026-10-30"
+      }
+    }
+  },
+  "published_ci": {
+    "run": 41606148177,
+    "conclusion": "success",
+    "automation_tests": 1335,
+    "microcap_strategy_tests": 1088,
+    "icim_strategy_tests": 1193,
+    "icim_supplemental_tests": 105,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "producer": {
+    "run": 41606150206,
+    "conclusion": "success",
+    "recovery_artifact": 13218800329,
+    "identity": {
+      "strategy_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+      "seed_date": "2026-11-02",
+      "bundle_sha256": "99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93",
+      "bundle_bytes": 605202401,
+      "freshness": "verified_archive_only_requires_current_refresh"
+    },
+    "csv_readback": {
+      "0": {
+        "sha256": "2646b0c03331a6017ec1e0ef6b97372d2008ae2b363045919e77e8ec2c5d9382",
+        "exact_source_match": true
+      },
+      "3": {
+        "sha256": "84b88c067d9fe9fc1c79db7b21bae0e884deee9807bacb333c760732f3656965",
+        "exact_source_match": true
+      },
+      "5": {
+        "sha256": "991816409636b4f23b98f5498dc1a1ce028b8bd1ec18e91906132db0629b9049",
+        "exact_source_match": true
+      }
+    },
+    "mail_job": "skipped",
+    "stages": [
+      {
+        "name": "Restore close-confirmed whole delivery",
+        "conclusion": "success",
+        "startedAt": "2026-11-03T09:02:15Z",
+        "completedAt": "2026-11-03T09:02:16Z"
+      },
+      {
+        "name": "Restore approved bootstrap only when no recovery artifact exists",
+        "conclusion": "success",
+        "startedAt": "2026-11-03T09:02:16Z",
+        "completedAt": "2026-11-03T09:13:12Z"
+      },
+      {
+        "name": "Persist close-confirmed whole recovery state",
+        "conclusion": "success",
+        "startedAt": "2026-11-03T09:13:13Z",
+        "completedAt": "2026-11-03T09:13:29Z"
+      }
+    ]
+  },
+  "consumer_run": 41609454917,
+  "consumer_restore_started_at_utc": "2026-11-03T09:20:15Z",
+  "scope_limits": {
+    "archive_session": "2026-11-02",
+    "current_session_refresh": "not_performed_by_recovery_acceptance",
+    "new_email_sends": "none",
+    "strategy_code": "unchanged",
+    "local_realtime_environment": "not_changed_or_recertified"
+  },
+  "consumer": {
+    "run": 41609454917,
+    "conclusion": "success",
+    "recovery": {
+      "strategy_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+      "seed_date": "2026-11-02",
+      "bundle_sha256": "99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93",
+      "bundle_bytes": 605202401,
+      "freshness": "verified_archive_only_requires_current_refresh",
+      "restored": true,
+      "github_artifact": 13218800329,
+      "github_artifact_bytes": 559585085,
+      "github_artifact_sha256": "f03d39eacfb0de7590cdea264bc738c7818421668987f58113007363cce83018",
+      "source_run": 41606150206,
+      "artifact_name": "microcap-whole-delivery-recovery-v1-94a0116dae3ef2d9be129e266405bb368fe02f2a"
+    },
+    "csv_readback": {
+      "0": {
+        "sha256": "2646b0c03331a6017ec1e0ef6b97372d2008ae2b363045919e77e8ec2c5d9382",
+        "identity": {
+          "date": "2026-11-02",
+          "version": "2.0",
+          "strategy_revision": "plain_mom16_fixed1_20260904",
+          "current_holding": "cash",
+          "next_holding": "cash",
+          "trade_state": "hold",
+          "member_rebalance_actionable": "False",
+          "member_rebalance_execution_date": "2026-10-30"
+        },
+        "exact_source_and_producer_match": true
+      },
+      "3": {
+        "sha256": "84b88c067d9fe9fc1c79db7b21bae0e884deee9807bacb333c760732f3656965",
+        "identity": {
+          "date": "2026-11-02",
+          "version": "2.3",
+          "strategy_revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+          "current_holding": "cash",
+          "next_holding": "cash",
+          "trade_state": "hold",
+          "member_rebalance_actionable": "False",
+          "member_rebalance_execution_date": "2026-10-30"
+        },
+        "exact_source_and_producer_match": true
+      },
+      "5": {
+        "sha256": "991816409636b4f23b98f5498dc1a1ce028b8bd1ec18e91906132db0629b9049",
+        "identity": {
+          "date": "2026-11-02",
+          "version": "2.5",
+          "strategy_revision": "plain_lb20_hl3_entry0_exit0_20260905",
+          "current_holding": "cash",
+          "next_holding": "cash",
+          "trade_state": "hold",
+          "member_rebalance_actionable": "False",
+          "member_rebalance_execution_date": "2026-10-30"
+        },
+        "exact_source_and_producer_match": true
+      }
+    },
+    "manifest_exact_match": true,
+    "approved_release_fallback": "skipped",
+    "mail_job": "skipped",
+    "stages": [
+      {
+        "name": "Restore close-confirmed whole delivery",
+        "conclusion": "success",
+        "startedAt": "2026-11-03T09:20:15Z",
+        "completedAt": "2026-11-03T09:34:20Z"
+      },
+      {
+        "name": "Restore approved bootstrap only when no recovery artifact exists",
+        "conclusion": "skipped",
+        "startedAt": "2026-11-03T09:34:20Z",
+        "completedAt": "2026-11-03T09:34:20Z"
+      },
+      {
+        "name": "Persist close-confirmed whole recovery state",
+        "conclusion": "success",
+        "startedAt": "2026-11-03T09:34:21Z",
+        "completedAt": "2026-11-03T09:34:38Z"
+      }
+    ]
+  },
+  "remote_strategy_pin_reachable_from_main": {
+    "status": "ancestor",
+    "ahead_by": 2,
+    "behind_by": 0
+  },
+  "roundtrip_status": "passed_actual_next_run_hit_and_full_restore",
+  "completed_at_utc": "2026-11-03T09:36:37.602410+00:00"
+}

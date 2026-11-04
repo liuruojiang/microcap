@@ -1,0 +1,8 @@
+{
+  "base_sha256": "9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864",
+  "target_sha256": "99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93",
+  "target_size": 605202401,
+  "delta_sha256": "40b386136f0973cebe77e8de1294cb56f938b0486db6f702d3004329b614c033",
+  "delta_size": 12017460,
+  "exact_reconstruction": true
+}

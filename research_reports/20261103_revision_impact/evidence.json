@@ -1,0 +1,108 @@
+{
+  "scope": "frozen dated revision comparison; not current strategy performance or new historical certification",
+  "cutoff": "2026-10-28",
+  "annualization_trading_days": 244,
+  "source": {
+    "metric_source": "microcap_top100_mom16_biweekly_live_v2_3.py",
+    "metric_source_sha256": "db1f635f291473775d20aca2a57886512b2494c4fa871a534a0ea9f2c5568063",
+    "package": "research_reports\\20261029_st_history_repair\\final_delivery_20261101\\microcap-whole-delivery-20261030.zip",
+    "streams": {
+      "v2_0": {
+        "before_path": "research_reports\\20261029_v23_no_overheat_promotion\\frozen_audit_inputs\\outputs\\microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+        "before_sha256": "fb192a7367435399293bdd0acb7382758ab3845cd26361fb60cb38bdd214deda",
+        "after_zip_member": "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+        "after_sha256": "1e2295ed380df22fdf23a9dcb146ccef3807563ed6980fd9afafb59ee38870f0",
+        "current_path": "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+        "current_sha256": "8a02250b820efdb979d0bbd4b5c63a633f11b3f1604e82d5b09f31cc0862a2d7",
+        "current_latest": "2026-11-02"
+      },
+      "v2_3": {
+        "before_path": "research_reports\\20261029_v23_no_overheat_promotion\\frozen_audit_inputs\\outputs\\microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+        "before_sha256": "1d4ac8fbc457bf9e3b67904b5dd4a83e053d04ce9c06392bdd42c489daaf6337",
+        "after_zip_member": "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+        "after_sha256": "a69e3ac150dca962a2bd437fe3b8190a542fdf4e8f33b38ca2eaf6e0fc8f8d0e",
+        "current_path": "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+        "current_sha256": "d1e7ea245f99a566e62d597553368f9f06999f9b21da9c4cb03322864a1c8768",
+        "current_latest": "2026-11-02"
+      },
+      "v2_5": {
+        "before_path": "research_reports\\20261029_v23_no_overheat_promotion\\frozen_audit_inputs\\outputs\\microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+        "before_sha256": "a5817fde3aadaead861348870f22edd09a79f8cee9e042d4cbdb6fc6ea634937",
+        "after_zip_member": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+        "after_sha256": "31d6962d3296c115295e26335f5439175915ed737998a6a2ccef875508f10dac",
+        "current_path": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+        "current_sha256": "cf734bf7d212006f915c14c42c54d9f8200eb52ebeb8ac94ca31b3bab8e9d490",
+        "current_latest": "2026-11-02"
+      }
+    },
+    "v2_3_constraint_on": {
+      "path": "quant_param_scan_runs\\20261029_microcap_top100_v2_3_overheat_vol_window_trigger_recovery\\daily_outputs\\w10_t0.26_r0.20.csv",
+      "sha256": "167f573d639a55f454901887796ab9b5bbbd7928179c8c943841b9457ed86535"
+    }
+  },
+  "details": {
+    "v2_0": {
+      "changed_return_rows": 3116,
+      "compared_rows": 4047,
+      "first_changed_return": "2010-03-02",
+      "changed_holding_days": 300,
+      "before_max_drawdown_period": {
+        "peak": "2011-11-23",
+        "trough": "2013-07-09",
+        "recovery": "2013-12-30"
+      },
+      "after_max_drawdown_period": {
+        "peak": "2020-09-09",
+        "trough": "2021-02-22",
+        "recovery": "2021-12-21"
+      },
+      "current_prefix_economic_max_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0
+      }
+    },
+    "v2_3": {
+      "changed_return_rows": 2979,
+      "compared_rows": 4002,
+      "first_changed_return": "2010-05-05",
+      "changed_holding_days": 290,
+      "before_max_drawdown_period": {
+        "peak": "2025-11-18",
+        "trough": "2026-07-09",
+        "recovery": "2026-08-03"
+      },
+      "after_max_drawdown_period": {
+        "peak": "2024-01-09",
+        "trough": "2024-06-24",
+        "recovery": "2024-10-16"
+      },
+      "current_prefix_economic_max_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0
+      }
+    },
+    "v2_5": {
+      "changed_return_rows": 2616,
+      "compared_rows": 4002,
+      "first_changed_return": "2010-05-31",
+      "changed_holding_days": 182,
+      "before_max_drawdown_period": {
+        "peak": "2015-06-12",
+        "trough": "2015-09-25",
+        "recovery": "2015-11-06"
+      },
+      "after_max_drawdown_period": {
+        "peak": "2019-04-19",
+        "trough": "2021-02-23",
+        "recovery": "2022-01-04"
+      },
+      "current_prefix_economic_max_difference": {
+        "return_net": 0.0,
+        "nav_net": 0.0,
+        "total_cost": 0.0
+      }
+    }
+  }
+}

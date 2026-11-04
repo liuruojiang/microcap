@@ -1,0 +1,40 @@
+{
+  "scope": "delivery_pipeline_optimization_only",
+  "strategy_runtime_sha": "193d9309fcfa0ac365d3016b5c804ff07190ecd7",
+  "strategy_remote_main": "604c23fcc4ea4ea8840565d02670df4b50080efc",
+  "automation_sha": "b8465db723ad5c34d4a442e2d0ad1a594c8878d4",
+  "remote_refs_verified": true,
+  "cloud_regression": {
+    "run": 41564424096,
+    "conclusion": "success",
+    "counts": {
+      "automation-tests.xml": {
+        "tests": 1264,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "regression.xml": {
+        "tests": 1073,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "local_targeted_regressions": "passed",
+  "frozen_pack_comparison": {
+    "status": "cancelled_optional_benchmark",
+    "reason": "Actual pack invokes unchanged whole-history return-basis reconstruction; no new production data package is needed for this code-only release. Do not repeat full historical audit for timing.",
+    "comparison_passed": false,
+    "speedup_claim": null,
+    "production_data_modified": false
+  },
+  "production_mail": "not_sent_this_optimization",
+  "latest_market_refresh": "not_run_known_notice_lineage_block_preserved",
+  "unchanged_approved_seed_sha256": "9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864",
+  "recorded_at": "2026-11-03T02:17:29.547760+00:00",
+  "completed_at": "2026-11-03T02:21:23.803798+00:00",
+  "scope_status": "complete_code_and_process_release",
+  "whole_workspace_latest_delivery_status": "not_claimed_known_notice_block"
+}

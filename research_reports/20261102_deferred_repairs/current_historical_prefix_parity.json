@@ -1,0 +1,94 @@
+[
+  {
+    "path": "outputs/microcap_top100_mom16_plain_fixed1_v2_0_costed_nav.csv",
+    "unchanged_economic_history_rows": 4049,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_nav.csv",
+    "unchanged_economic_history_rows": 4049,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_biweekly_live_v2_0_performance_nav.csv",
+    "unchanged_economic_history_rows": 4049,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_lb25_hl2p5_r2off_eb0p08_no_overheat_exec0p8_v2_3_costed_nav.csv",
+    "unchanged_economic_history_rows": 4004,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_nav.csv",
+    "unchanged_economic_history_rows": 4004,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_biweekly_live_v2_3_performance_nav.csv",
+    "unchanged_economic_history_rows": 4004,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_lb20_hl3_entry0_exit0_no_targetvol_v2_5_costed_nav.csv",
+    "unchanged_economic_history_rows": 4004,
+    "new_rows": 1,
+    "diagnostic_score_rounding": [
+      {
+        "date": "2026-10-29",
+        "column": "microcap_mom",
+        "before": -1.8543555914149856,
+        "after": -1.8543555914149852
+      },
+      {
+        "date": "2026-10-29",
+        "column": "momentum_gap",
+        "before": -1.8543555914149856,
+        "after": -1.8543555914149852
+      },
+      {
+        "date": "2026-10-29",
+        "column": "annualized_log_wls_score",
+        "before": -1.8543555914149856,
+        "after": -1.8543555914149852
+      }
+    ]
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_nav.csv",
+    "unchanged_economic_history_rows": 4004,
+    "new_rows": 1,
+    "diagnostic_score_rounding": [
+      {
+        "date": "2026-10-29",
+        "column": "microcap_mom",
+        "before": -1.8543555914149856,
+        "after": -1.8543555914149852
+      },
+      {
+        "date": "2026-10-29",
+        "column": "momentum_gap",
+        "before": -1.8543555914149856,
+        "after": -1.8543555914149852
+      },
+      {
+        "date": "2026-10-29",
+        "column": "annualized_log_wls_score",
+        "before": -1.8543555914149856,
+        "after": -1.8543555914149852
+      }
+    ]
+  },
+  {
+    "path": "outputs/microcap_top100_mom16_biweekly_live_v2_5_performance_nav.csv",
+    "unchanged_economic_history_rows": 4004,
+    "new_rows": 1,
+    "diagnostic_score_rounding": []
+  }
+]

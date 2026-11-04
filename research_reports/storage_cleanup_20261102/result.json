@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-02",
+  "method": "Windows NTFS in-place compression; no deletion",
+  "results": [
+    {
+      "group": "replay",
+      "files": 11816,
+      "before_bytes": 2123446128,
+      "after_bytes": 885100544,
+      "saved_bytes": 1238345584,
+      "hash_checks": 12,
+      "failures": []
+    },
+    {
+      "group": "evidence",
+      "files": 1909,
+      "before_bytes": 1477862735,
+      "after_bytes": 481329152,
+      "saved_bytes": 996533583,
+      "hash_checks": 12,
+      "failures": []
+    }
+  ],
+  "test_directories": [
+    {
+      "directory": "test-failure-diagnosis",
+      "logical_bytes": 2130,
+      "compressed_bytes": 2130
+    },
+    {
+      "directory": "test-native-metadata",
+      "logical_bytes": 74416313,
+      "compressed_bytes": 65014792
+    },
+    {
+      "directory": "test-required",
+      "logical_bytes": 108714271,
+      "compressed_bytes": 91347914
+    },
+    {
+      "directory": "test-run-1",
+      "logical_bytes": 796865,
+      "compressed_bytes": 792294
+    },
+    {
+      "directory": "test-run-2",
+      "logical_bytes": 32192139,
+      "compressed_bytes": 25740709
+    },
+    {
+      "directory": "test-run-3",
+      "logical_bytes": 55982956,
+      "compressed_bytes": 46955770
+    }
+  ],
+  "verified_saved_bytes": 2234879167,
+  "drive_free_bytes": 4232019968,
+  "deletion_status": "blocked by policy; six test directories retained and compressed, no alternate deletion attempted",
+  "preserved": "production outputs, primary source data, running repair inputs, recovery backups, Git objects, test source and logs"
+}

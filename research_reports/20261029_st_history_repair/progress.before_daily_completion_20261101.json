@@ -1,0 +1,314 @@
+{
+  "status": "ACTIVE_RESUME_20261101",
+  "versions": [
+    "v2.0",
+    "v2.3",
+    "v2.5"
+  ],
+  "commit": "225533ea1c460a48f403147096db53f04c2122b5",
+  "remote_branch": "codex/st-history-shared-repair-20261029",
+  "regression_passed": 446,
+  "independent_passed": 103,
+  "test_sets_overlap": true,
+  "diagnostic_path": "replay/frozen4975_parallel_diagnostic",
+  "formal_migration_approved": false,
+  "ready_for_migration": false,
+  "additional_email_sent": false,
+  "blockers": [
+    "Full source acquisition and latest master/share/raw coverage pending",
+    "Strict ratio pipeline and cloud transport integration undergoing independent audit",
+    "Exact-hash formal migration report/approval and clean second run pending",
+    "All-version local/cloud delivery acceptance pending"
+  ],
+  "a_share_missing_scope": 465,
+  "b_share_excluded": 23,
+  "share_provider_complete_codes": 465,
+  "share_records": 14114,
+  "share_pages": 922,
+  "share_independent_artifact_audit_pass": 465,
+  "resume_note": "Current continuation: consume completed 20261029 full basis; rebuild isolated three-version history after ST coverage closes, then actual-member no-rebalance tail to 20261030 if calendar and schedule gates pass. No formal migration or extra email.",
+  "registry_events": 53,
+  "registry_sha256": "8106ca5d418ba9e3ad62660e3968fc74c4a5f721d2d25ffd085890bff9094483",
+  "latest_regression_passed": 235,
+  "notice_archives_complete": 143,
+  "offline_metadata_candidate": 142,
+  "offline_metadata_blocked": 1,
+  "missing_complete_notice_archives": 364,
+  "repair_code_commit": "8413ec0740689eac2200365554cb14d78a1bbf55",
+  "price_acquisition_attempts_complete": true,
+  "price_result_counts": {
+    "failed": 8,
+    "partial_coverage": 20,
+    "received": 435
+  },
+  "price_artifact_audit_pass": true,
+  "return_basis_certified": false,
+  "active_task_processes": 3,
+  "whole_delivery_pass": false,
+  "updated_at": "2026-11-01T01:23:19.769409+00:00",
+  "resume_20261101": {
+    "price_basis_20261029_count": 5438,
+    "price_basis_reaudit": "5438/5438 PASS",
+    "st_priority507": "last5_replay_passed; whole_pool_coverage_pending",
+    "target_close": "2026-10-30",
+    "tail_tests": 3,
+    "automation_retry_tests": 41,
+    "delivery_regression": "74 original pass; 3 cloud roundtrip rerun pass; 2 holiday fixture corrections rerun pass; no live acceptance",
+    "share_latest_conflicts": "002592 and 003004 supported by issuer documents; source chain repair in progress",
+    "ratio_install_files": 70694,
+    "base_install_files": 21796,
+    "installed_five_symbol_integration": "5/5 PASS",
+    "new_source": "EM RPT_IPO_ABSTOCK full 31 pages / 15131 rows complete; all 5438 sample securities covered; provider name history is not by itself announcement-day ST certification",
+    "source_user_reply": "No WindPy or complete local ST history; continue alternative sources",
+    "history_approval": "No exact-hash migration approval yet; preparation is not release",
+    "integrated_regression_tests": 116,
+    "latest_cloud_status": "2026-10-30 run41023622702 failed on old strategy5fc79f8; failure notice delivered; new candidate not deployed",
+    "name_history_manifest_sha256": "8b22885a8ee137be49104d77183096fd13e482db6cd675843531bc3e58f636b1",
+    "st_full_name_coverage": {
+      "normal_chain": 4508,
+      "risk_history": 925,
+      "normal_notice_review": 5,
+      "needs_additional_announcement_date_codes": 399
+    },
+    "st_existing539": "539 actual archive parses passed; name crosscheck found35 pre-sample category unknown and21 long disagreements, not final PIT certification",
+    "st_regression": "360 test_st tests passed; extended boundary tests separate",
+    "cninfo_name_attempts": {
+      "actual_confirmed_requests": 26,
+      "nonempty_success": 13,
+      "timeout": 12,
+      "http403": 1,
+      "unrequested": 373,
+      "additional56_unstarted": true
+    },
+    "daily_notice_20261030": {
+      "pages": 57,
+      "rows": 5671,
+      "manifest_sha256": "ae0477e0d652c145251feb68c80429479ecc9b76433f9035bb7916c6d71645df",
+      "new_module_tests": 10,
+      "independent_counterexamples_fixed": 4,
+      "scope": "source snapshot; not metadata integration or cloud acceptance"
+    },
+    "current_st_snapshot": "Formal old cache remains unchanged; isolated runtime now has verified 5168 current names /191 ST from real Tencent10/30 snapshot.",
+    "calendar_csv_sha256": "e602ed766beaf8aab4c45cdfc2d8cad6ea182bcc08024142598a4bee96bb1fe2",
+    "current_names": {
+      "eligible": 5168,
+      "observed": 5168,
+      "quote_date": "2026-10-30",
+      "risk_names": 191,
+      "name_chain_state_disagreements": 0,
+      "missing": 0,
+      "isolated_install_report_sha256": "1b717c62137f8ae7cd5b0ec405d2dba408314aee2d05d9fd93268eae8962b745"
+    },
+    "global399_first_pass": {
+      "parsed_before_name_crosscheck": 280,
+      "blocked_first_event": 119,
+      "long_name_disagreements_in280": 34,
+      "first_blocker_body_reviews": 118,
+      "final_PIT_complete": false
+    },
+    "root_body31": {
+      "retains_other_risk": 12,
+      "clears_risk": 19,
+      "source_review_pending_symbol": null,
+      "raw_and_adjudication": "source_recovery/global399_root31_20261101"
+    },
+    "source_transport": "Portable pointer and recursive source closure wired; four transport counterexamples passed; actual candidate deployment pending",
+    "new_daily_source_tests": 10,
+    "new_scope_tests": 11,
+    "latest_targeted_tests": "44 of48 pass initially; four failures UTF8 fixture decoding; explicit encoding fix then7 entrypoint tests pass",
+    "root_long34_half17": {
+      "actual_pdfs": 22,
+      "actual_actions": 20,
+      "application_no_action": 2,
+      "adjudication_sha256": "08751ed5a8aa5ac1e712f35dfc01c5b20671a6a3288cbb1237ebe1b95ad8a0fc"
+    },
+    "daily_notice_refresh_integration": "23 targeted tests PASS; conditional real refresh hook and portable freshness closure installed in code; no production refresh or cloud acceptance",
+    "st_remaining": "Source agent merging final reviewed batches and official SSE600556 HTML; full938 archives/name crosscheck and 5438 metadata installation pending",
+    "replay_status": "Not executed; independent runner audit in progress, awaiting actual ST source installation",
+    "current_name_history_fix": "Two real builders no longer merge current-name snapshots into historical ST intervals; current unresolved ST remains fail-closed.",
+    "sample_boundary_fix": "Two real builders use max(first_trade,START_DATE) for historical ST initialization; raw first date/query prefix retained; v7-sample-start;15 targeted tests PASS.",
+    "daily_metadata_refresh": "35 targeted tests PASS: real all-universe staged rebuild; inclusive old-history/consumed-proxy gates; exact recovery; no partial universe skip. Broader delivery regression running.",
+    "base_inputs_readback": {
+      "files": 21796,
+      "intentional_current_name_overrides": 2,
+      "unexpected": 0,
+      "report_sha256": "80e92ee4a8e8744026207211b403fa68cd42f3e08518f6f6b5dc5d09a7ffab9c"
+    },
+    "st_registry_last_frozen": {
+      "records": 627,
+      "sha256": "9198b474b95443c520cb82d111fcbfa58d832ade5d985abf85a2c4cefa2a2f1a",
+      "last_four_reviews_to_merge": false
+    },
+    "cleanup_blocked": {
+      "path": "C:/Users/Administrator.DESKTOP-95I7VVU/AppData/Local/Temp/pytest-of-Administrator/pytest-793",
+      "status": "blocked by policy; target stopped, no alternate deletion",
+      "scope": "this round interrupted delivery unit test temporary directory",
+      "user_notified": true
+    },
+    "st_final_source_coverage": {
+      "total_symbols": 5438,
+      "full_symbol_archive_parsed": 539,
+      "market_scope_risk_parsed": 399,
+      "other_source_bounded_normal_name_certificates": 4500,
+      "parser_blocked": 0,
+      "market_risk_long_name_disagreements": 0,
+      "full_archive_terminal_delisting_name_disagreements": [
+        "300391",
+        "301139"
+      ],
+      "source_boundary": "complete_returned_public_provider_query_scope_not_absolute_historical_completeness",
+      "registry_sha256": "9198b474b95443c520cb82d111fcbfa58d832ade5d985abf85a2c4cefa2a2f1a",
+      "prior_name_crosscheck_registry_sha256": "3e14aa70604cd8bac794b1679e426d6d3137f2adb48622ca3d39fc8d2ece38ed",
+      "unchanged539_registry_subset": true,
+      "notice_policy": "notice_date_exclusion_inclusive_exit_unchanged",
+      "formal_history_modified": false,
+      "final_parser_evidence": "normalization623_20261101/result.json (directory label retained; actual registry SHA inside is 627 final)"
+    },
+    "replay_source_snapshot": {
+      "files": 1895,
+      "sha256": "771edd8678eb9c7034a609384bfaddcb36bb831a10b08cd1c84d911e971fa2e8"
+    },
+    "source_install_status": "Verified independent identities generation 37be554e4fc4f215dabc61fe2203dc3cad25117e67b846a9ee79e7124d3eafe2;539 actual adapters and verified identity loads pass;raw source bytes retained.",
+    "delivery_regression_latest": "277 unique targets PASS across two runs:243 initial PASS,34 original failures PASS after two fixture repairs; no single full-green-run claim. Production validation unchanged.",
+    "metadata_latest": {
+      "attempt": "independent_identities",
+      "status": "installed_verified;5438/5438;errors0",
+      "prior_attempt": "failed after 6 symbols due to 9 retired crosswalk aliases; preserved",
+      "canary": "11/11 actual builders PASS on prior generation",
+      "processed_stage_files": 5438,
+      "report": "replay/runtime_20261029/st_metadata_build_20261101_independent_identities.json"
+    },
+    "historical_delisted_selector_fix": {
+      "status": "4 regression cases PASS",
+      "formal_history_modified": false,
+      "scope": "v20 embedded historical ranking uses PIT filtered cap;live retains current-name gate;legacy standalone whole-history path not certified"
+    },
+    "st_regression_latest": "529 unique targets PASS across two runs:523 initial and6 after provider fixture fix;not single-run green;production unchanged",
+    "panel_tail_candidate": "panel_tail_20261030_20261101/report.json;8754 rows through2026-10-30;original8753 rows byte identical;Sina/Tencent crosscheck;not installed",
+    "git_sync_preparation": "resume_audit/pending_sync_manifest_20261101.json;1803 candidate paths;5 tracked formal outputs excluded;27 fixture Git byte checks PASS;no commit/push",
+    "three_version_replay": {
+      "status": "completed_verified_diagnostic_only",
+      "session": 31201,
+      "contract": "replay/diagnostic_contract_20261101.json",
+      "runner": "frozen calendar and canonical extended Windows path fixes;3 real ratio canaries PASS",
+      "previous_failed_attempts": [
+        "diagnostic_replay_20261029_failed_calendar_subprocess",
+        "diagnostic_replay_20261029_failed_extended_path"
+      ],
+      "performance": "actual load_symbol_cache600000 profile1.701s;tradeability59pct,metadata27pct,ratio6pct;do not change running logic",
+      "exit_code": 0,
+      "streams_latest": "2026-10-29",
+      "result": "research_reports\\20261029_st_history_repair\\replay\\runtime_20261029\\diagnostic_replay_20261029\\diagnostic_result.json",
+      "promotion_status": "REJECTED pending terminal holdings correction;numeric diagnostic completed but not financial/production acceptance"
+    },
+    "old_formal_comparison": "11 frozen files reused+1 blocked delivery manifest copied;20 observed formal files no hash drift;old streams through10/28",
+    "share144_threshold": {
+      "status": "completed_diagnostic",
+      "report": "research_reports\\20261029_st_history_repair\\replay\\runtime_20261029\\share144_threshold_review\\review.json",
+      "summary": {
+        "affected_symbols": 122,
+        "needs_cross_section_dates": [
+          "2015-02-25",
+          "2018-05-10"
+        ],
+        "rank_change_dates": [
+          "2020-07-30"
+        ],
+        "reviewed_dates": 285,
+        "set_unchanged_dates_count": 283,
+        "intervals_without_sample_rebalance_count": 494
+      },
+      "source_adjudication": "pending three observed dates; no production approval",
+      "refined_sensitivity": "replay/runtime_20261029/share144_threshold_review/refined_sensitivity.json;2015-02-25 enter002076 exit300160;2018-05-10 enter300313 exit600505;2020-07-30 rankonly60326924to4;executed returns not certified"
+    },
+    "executed100_export": {
+      "status": "completed_exact100",
+      "lifecycle": "nine delisted positions confirmed",
+      "report": "replay/runtime_20261029/executed100_stage_input/lifecycle_readback.json",
+      "tail_refresh": "not_started_blocked_by_unresolved_terminal_valuation"
+    },
+    "replay29_independent_audit": "90 checks PASS;resume_audit/replay29_readonly_stream_audit_20261101.json",
+    "share_pit_adjudication": "share144_PIT_dates_20261101/adjudication.json;603269 public issue-result known before observed date;002076/300313 physical totals supported but public completion timing unproved;ready for review not approval",
+    "main_full_calendar_patch": "main_reconstruction_patch_20261101/patch_identity.json;main v20 newSHA374461e5b3bf2699177ed28673c5037c59d97db9ccc04ef354c38c9bf79166e4;runtime unchanged;only reconstruction function AST changed;formal refresh not done",
+    "delist_holdover_audit": {
+      "mechanism": "confirmed pure-memory actual-function counterexample;delist inactive returnNaN/sellFalse;blocked holdings persist;NaN becomes zero return",
+      "evidence": "resume_audit/delist_holdover_mechanism_20261101.json",
+      "actual_impact": "pending executed100 export;constant blocked9 does not prove identities",
+      "policy": "no invented zero writeoff, terminal forced sale or cash proceeds"
+    },
+    "terminal_return_guard": "terminal_return_guard_20261101/repair_report.json;11tests PASS;main source repaired;runtime untouched",
+    "model_decision": "user selected delist_zero_writeoff_equal_survivors_v1; explicitly non-trade conservative valuation; no further scope expansion",
+    "finish_directive": "finish necessary correctness checks, commit/push and synchronize local/cloud daily",
+    "conservative_replay": "four process actual panels loading; source manifest 0aed2574da210dc4590138a2c4892eab90776dad0dfc34036852cefc4615b3c9",
+    "source_commit": "e6482368; branch push in progress; main not deployed",
+    "final_delivery": {
+      "phase": "three formal migrations complete; clean no-migration runs running",
+      "clean_session": 11885,
+      "candidate30_report_sha256": "571021dc025b41330b9ebdc75169a4b1cb9b8eaa112afa816cf52db581ba9331",
+      "formal_meta_sha256": "dd854fae45f16609ddf7fa36bd019aa7427d647b809e40306fa82e4f65a9e2fc",
+      "install_plan_sha256": "bcb459276dcfa5e130ba14654a045b85d454dadc5f9d1e97796a02571e351a8a",
+      "installed_files": 97825,
+      "source_branch_remote": "e6482368952e87085f1db9ba97120dbb5826045f",
+      "automation_branch_remote": "e8eb220a325486539dc53f703c8bf11d41d31e38",
+      "main_deployed": false,
+      "whole_delivery_pass": false,
+      "additional_mail_sent": false,
+      "approval_records": "final_delivery_20261101/migration_decisions",
+      "next": "clean readback; new authority; formal main push; refresh-all/check; whole-state pack and release; automation pin/config/main; validation_only cloud; final adversarial audit"
+    }
+  },
+  "final_delivery_20261101": {
+    "status": "latest_cloud_all_regressions_passed_strict_restore_running_local_gates_running",
+    "source_main": "600286d6db41feeef980a91c0169fa85496bdb86",
+    "required_transport_members": 102,
+    "share_verification": "102 passed through 2026-10-30; all existing CSV bytes unchanged",
+    "target2_cache_verification": "003042 and 300514 extended to 30; all102 transport passed; NAVs unchanged",
+    "official_sync_session": 19144,
+    "official_sync_log": "final_delivery_20261101/official_daily_sync.log",
+    "official_runner": "final_delivery_20261101/run_final_daily_sync.py",
+    "stages": [
+      "unchanged delivery.main refresh-all",
+      "unchanged delivery.main check",
+      "unchanged cloud.pack"
+    ],
+    "cloud_status": "draft pins1559; waiting verified ZIP; validation_only=true close_confirmed; no additional email",
+    "additional_email_sent": false,
+    "official_sync_exit": 0,
+    "bundle": "final_delivery_20261101/microcap-whole-delivery-20261030.zip",
+    "bundle_bytes": 452876240,
+    "bundle_sha256": "8d6af3322aeb693f0bcee2e61281d6389c21b496b8305f3e1f1c27834fdc8664",
+    "release_tag": "top100-shared-history-20261101",
+    "upload_session": 96998,
+    "release_draft_id": 430440242,
+    "automation_ready_commit": "30122d8",
+    "cloud_dispatch": "validation_only=true; publication_mode=close_confirmed",
+    "release_published": true,
+    "upload_exit": 0,
+    "automation_main_sha": "37d4d13ae4c4fc65d8579f5a31dc2bd081b21ec2",
+    "cloud_run": 41296547136,
+    "cloud_run_url": "https://github.com/liuruojiang/codex-daily-automation-probe/actions/runs/41296547136",
+    "production_core_unchanged_from": "1559dba5f0b3349f66e631ac5cc2e83390c3f615",
+    "previous_cloud_run": 41288935942,
+    "previous_failure": "29 old fixture failures in two tests; fixed; 115 tests passed; no production/data changes",
+    "automation_commit_prefix": "7237819",
+    "previous_cloud_runs": [
+      41288935942,
+      41289520770
+    ],
+    "ci_capacity_fix": "core/release pytest timeout 180 to 600 seconds; gates unchanged; 18 contract tests passed",
+    "runtime_compat": "send job only PYTHONPATH sitecustomize with MICROCAP_CSV_LINE_TERMINATOR=crlf; os.linesep CRLF before pandas; no strategy source/data/seed changes",
+    "real_compat_canary": "final_delivery/csv_newline_canary_20261101.json; full manifest identical under CRLF; bad source/candidate still rejected",
+    "previous_failures": [
+      "29 old test fixtures fixed (115 passed)",
+      "CI command time limit 180s raised to600s",
+      "Windows CRLF vs Linux LF candidate hash mismatch",
+      "new automation subprocess tests required pandas in CI; dependency added"
+    ],
+    "known_nonst_deferral": "exact AN202611011831295457 only; certificate79e957bb3dcfd5b09927da67f917ae1a6d03ae5478baeff28ec85cbe5014f318; full raw retained; other changes rejected",
+    "adapter_canonical_lf_sha256": "f8fea3502734dba6036f23a65f11001cd8876518cc7abd2a23d33b3c869774a7",
+    "local_launcher": "scripts/run_top100_daily_synced.ps1",
+    "local_python_pid": 23752,
+    "local_monitor_session": 73108,
+    "local_log": "final_delivery/local_synced_launcher_20261101.log"
+  }
+}

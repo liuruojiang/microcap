@@ -1,0 +1,23 @@
+{
+  "checks": [
+    {
+      "version": "v2.0",
+      "date": "2026-10-28",
+      "revision": "plain_mom16_fixed1_20260904",
+      "differences": {}
+    },
+    {
+      "version": "v2.3",
+      "date": "2026-10-28",
+      "revision": "plain_lb25_hl2p5_r2off_no_overheat_20261029",
+      "differences": {}
+    },
+    {
+      "version": "v2.5",
+      "date": "2026-10-28",
+      "revision": "plain_lb20_hl3_entry0_exit0_20260905",
+      "differences": {}
+    }
+  ],
+  "all_fields_equal": true
+}

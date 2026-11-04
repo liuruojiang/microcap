@@ -1,0 +1,19 @@
+from pathlib import Path
+import csv,json,hashlib
+B=Path('research_reports/20261029_st_history_repair');O=B/'share_impact_priority_20261101/point_review';I=O/'issuer'
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+points=list(csv.DictReader((O.parent/'near_old_formal_cutoff.csv').open(encoding='utf-8-sig')))
+bs=json.loads((O/'point_source_rows.json').read_text()); idx={(r['code'].split('.')[1],r['date']):r for r in bs}
+evidence={'600381':('600381_resume','发行人2014-083明确6/25缩股且继续停牌；6/27除权不等于复牌。'),'002625':('002625_halt_em','发行人2015-002明确2014-12-31起停牌，2015-1-9继续停牌。'),'603377':('603377_st_entry','发行人2024-050明确2024-05-06起ST；所查7点实际来源isST=1。'),'603557':('603557_st_history','发行人2025公告明确2021-04-30起ST，2022至2023继续，2024叠加且继续。'),'603007':('603007_st_history','发行人2023-034回溯2021-05-06起其他风险警示。'),'002076':('002076_registration','登记完成2015-02-13，新总量240513224，上市2015-03-10；两个观察日物理总量支持EM，披露日2015-03-09晚于观察日。'),'300313':('300313_legal','法律意见引用CSDC2018-05-10出具表，截至5/9证券总数量312977396，覆盖5/10观察日；原件5/19披露，未认证严格PIT可知性或全局事件开始日。'),'603269':('603269_listing','发行人2020-059截至7/29配股后股东结构及股本表112518866，覆盖7/30观察日；7/31披露，未认证7/28精确登记日或严格PIT可知性。')}
+out=[]
+for p in points:
+ s=p['symbol'];d=p['rebalance_date'];r=idx[s,d];raw=O/f'{s}_{d[:4]}_baostock.json';rec=O/f'{s}_{d[:4]}_receipt.json';rr=json.loads(rec.read_text());assert sha(raw)==rr['response_sha256'];assert r['adjustflag']=='3'
+ status='不可用_停牌' if r['tradestatus']=='0' else ('不可用_ST' if r['isST']=='1' else '可用_数量支持现有候选_完整PIT待证')
+ if s=='002592': ip=B/'new463_cninfo_shares_20261029/issuer_latest_review/002592.html'; ir=ip.with_name('002592_receipt.json');note='发行人2026三季报标识ST八菱；与10/15真实isST=1一致，非全历史ST区间认证。'
+ else:
+  name,note=evidence[s];ip=I/(name+'.bin');ir=I/(name+'_receipt.json')
+ er=json.loads(ir.read_text());assert sha(ip)==er['sha256'];assert er.get('status',er.get('status_code',200))==200
+ out.append(dict(symbol=s,date=d,point_status=status,tradestatus=r['tradestatus'],isST=r['isST'],volume=r['volume'],close=r['close'],raw_candidate_close=p['raw_close'],raw_close_matches=abs(float(r['close'])-float(p['raw_close']))<1e-8,em_shares=p['em_shares'],cninfo_shares=p['cninfo_shares'],quantity_decision='existing_EM_quantity_supported_at_point' if r['tradestatus']=='1' and r['isST']=='0' else 'not_needed_for_this_ineligible_point',strict_PIT_information_availability='not_certified',complete_ST_interval='not_certified',provider_file=str(raw),provider_sha256=sha(raw),provider_receipt=str(rec),issuer_file=str(ip),issuer_sha256=sha(ip),issuer_receipt=str(ir),issuer_url=er.get('url',''),finding=note))
+with (O/'point_review_results.csv').open('w',encoding='utf-8-sig',newline='') as f:w=csv.DictWriter(f,fieldnames=out[0]);w.writeheader();w.writerows(out)
+report=dict(scope='point_specific_factual_diagnostic_not_formal_migration_or_complete_PIT_certification',points=len(out),symbols=len({x['symbol'] for x in out}),halted=sum(x['tradestatus']=='0' for x in out),ST_only=sum(x['tradestatus']=='1' and x['isST']=='1' for x in out),remaining_quantity_supported=sum(x['quantity_decision']=='existing_EM_quantity_supported_at_point' for x in out),raw_close_mismatches=[x for x in out if not x['raw_close_matches']],limitations=['18 exclusions apply only to these dated points; do not project current ST backward or certify complete intervals.','Four factual quantities supported by issuer documents published later; strict contemporaneous public availability remains unverified.','Does not adjudicate all 144 symbols / 818 intervals, approve historical migration, or replace full rebuild.','603557_st_continue.bin is HTML landing page despite HTTP200 and excluded; two 002625 HTTP405 attempts excluded.'],results=out)
+(O/'point_review_results.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps({k:v for k,v in report.items() if k!='results'},ensure_ascii=False));print('sha',sha(O/'point_review_results.json'))

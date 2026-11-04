@@ -1,0 +1,35 @@
+{
+  "pairs_checked": 5438,
+  "mismatches": [
+    {
+      "symbol": "688600",
+      "error": "'utf-32-be' codec can't decode bytes in position 560-561: truncated data",
+      "size": 562
+    },
+    {
+      "symbol": "688601",
+      "error": "'utf-32-be' codec can't decode bytes in position 560-561: truncated data",
+      "size": 562
+    },
+    {
+      "symbol": "688602",
+      "error": "'utf-32-be' codec can't decode bytes in position 560-561: truncated data",
+      "size": 562
+    },
+    {
+      "symbol": "688603",
+      "error": "'utf-32-be' codec can't decode bytes in position 560-561: truncated data",
+      "size": 562
+    },
+    {
+      "symbol": "688605",
+      "error": "'utf-32-be' codec can't decode bytes in position 560-561: truncated data",
+      "size": 562
+    },
+    {
+      "symbol": "688606",
+      "error": "'utf-32-be' codec can't decode bytes in position 560-561: truncated data",
+      "size": 562
+    }
+  ]
+}

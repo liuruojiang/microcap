@@ -1,0 +1,32 @@
+[
+  {
+    "symbol": "000001",
+    "before_seconds": 0.5682257000007667,
+    "after_seconds": 0.06188259999908041,
+    "exact": true
+  },
+  {
+    "symbol": "000831",
+    "before_seconds": 0.532453899999382,
+    "after_seconds": 0.06102829999872483,
+    "exact": true
+  },
+  {
+    "symbol": "002129",
+    "before_seconds": 0.5923408000016934,
+    "after_seconds": 0.05795840000064345,
+    "exact": true
+  },
+  {
+    "symbol": "002808",
+    "before_seconds": 0.4773740999989968,
+    "after_seconds": 0.038833600003272295,
+    "exact": true
+  },
+  {
+    "symbol": "002805",
+    "before_seconds": 0.475200799999584,
+    "after_seconds": 0.055157700000563636,
+    "exact": true
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "strategy_sha": "a70ee78e3d0c077f3cfaaa06fb2137e1ac992da3",
+  "automation_sha": "cb4d7d03566d9ce43b35fc554b288b2901c969e7",
+  "expected_date": "2026-11-02",
+  "bundle_sha256": "9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864",
+  "cloud_run": 41482188615,
+  "run_attempt": 2,
+  "cloud_success": true,
+  "final_csv_exact_parity": true,
+  "smtp": {
+    "schema_version": 1,
+    "status": "smtp_accepted",
+    "message_id": "<179366999956.4471.10727693665719600563@gmail.com>",
+    "accepted_at": "2026-11-03T01:40:00+00:00",
+    "metadata_sha256": "7ede2a07a947a3d0d3509430d731147a3b8720a69e4b716dda1f918a34e00300",
+    "subject_sha256": "ea14e7db1749d4a07cd9062b8723a220bbcdc2dc733ac9e1294afb0e8b042a95",
+    "body_sha256": "16095662b72df5b179333b61c2f3c6c1fdc4f89a5aa72c82b3d106186f1ad496",
+    "sender": "liuruojiang@gmail.com",
+    "recipients": [
+      "liuruojiang@gmail.com"
+    ]
+  },
+  "gmail_message_id": "1a19f102ffe7d377",
+  "gmail_labels": [
+    "UNREAD",
+    "SENT",
+    "INBOX"
+  ],
+  "formal_mail_delivered": true,
+  "remaining_blocker": "New local notice refresh failed closed: 452 post-close additions and 10 changed native rows. Approved historical snapshot restored unchanged; no history rewrite. Current live incremental refresh not certified.",
+  "local_restored_check": "passed",
+  "local_restored_check_release_sha": "a70ee78e3d0c077f3cfaaa06fb2137e1ac992da3",
+  "local_restored_check_expected_date": "2026-11-02",
+  "completed_at_utc": "2026-11-03T01:49:41.137496+00:00"
+}

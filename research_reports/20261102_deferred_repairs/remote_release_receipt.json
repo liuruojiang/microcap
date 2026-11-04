@@ -1,0 +1,34 @@
+{
+  "assets": [
+    {
+      "apiUrl": "https://api.github.com/repos/liuruojiang/microcap/releases/assets/700742292",
+      "contentType": "application/zip",
+      "createdAt": "2026-11-02T06:19:53Z",
+      "digest": "sha256:2c673040c8d919476f8896e5596b7a693db6443304d4ad9e3f50925383c8a140",
+      "downloadCount": 0,
+      "id": "RA_kwDOR_vYpc4pxHqU",
+      "label": "",
+      "name": "microcap-native-whole-delivery-20261030.zip",
+      "size": 452877430,
+      "state": "uploaded",
+      "updatedAt": "2026-11-02T06:20:17Z",
+      "url": "https://github.com/liuruojiang/microcap/releases/download/top100-native-daily-20261102/microcap-native-whole-delivery-20261030.zip"
+    },
+    {
+      "apiUrl": "https://api.github.com/repos/liuruojiang/microcap/releases/assets/700729306",
+      "contentType": "application/zip",
+      "createdAt": "2026-11-02T06:14:37Z",
+      "digest": "sha256:2c97eb4a6d85612a92c84b2029d7dd73758f55aa09de53844556aa762bf9e884",
+      "downloadCount": 0,
+      "id": "RA_kwDOR_vYpc4pxEfa",
+      "label": "",
+      "name": "native-state-delta.zip",
+      "size": 10299822,
+      "state": "uploaded",
+      "updatedAt": "2026-11-02T06:19:04Z",
+      "url": "https://github.com/liuruojiang/microcap/releases/download/top100-native-daily-20261102/native-state-delta.zip"
+    }
+  ],
+  "isDraft": false,
+  "targetCommitish": "75dd463e0a724af0b55e0f029f0468de1feed3c2"
+}

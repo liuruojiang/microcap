@@ -1,0 +1,48 @@
+"""Summarize completed filesystem compression without rescanning business data."""
+from pathlib import Path
+from datetime import datetime, timezone
+import html
+import json
+import shutil
+
+out = Path(__file__).resolve().parent
+primary = json.loads((out / 'result.json').read_bytes())
+remaining = json.loads((out / 'remaining_result.json').read_bytes())
+groups = {}
+for run in (primary, remaining):
+    for group in run['groups']:
+        row = groups.setdefault(group['name'], {'verified_files': 0, 'saved_bytes_api': 0})
+        row['verified_files'] += group['verified_files']
+        row['saved_bytes_api'] += group['saved_bytes_api']
+summary = {
+    'completed_at': datetime.now(timezone.utc).isoformat(),
+    'operation': 'Native NTFS in-place file compression; no deletion or relocation',
+    'verified_files': primary['verified_files'] + remaining['verified_files'],
+    'saved_bytes_api': primary['saved_bytes_api'] + remaining['saved_bytes_api'],
+    'free_before_bytes': primary['free_before_bytes'],
+    'free_after_bytes': shutil.disk_usage(out).free,
+    'failures': primary['failures'] + remaining['failures'],
+    'content_mismatches': primary['content_mismatches'] + remaining['content_mismatches'],
+    'groups': groups,
+    'deletion_status': 'Previous deletion blocked by policy; no retry; all files retained',
+    'evidence': ['result.json', 'remaining_result.json', 'files.jsonl', 'remaining_files.jsonl'],
+}
+summary['status'] = 'complete' if not summary['failures'] and not summary['content_mismatches'] else 'completed_with_exceptions'
+(out / 'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding='utf-8')
+gib = lambda number: f'{number / 2**30:.2f}'
+rows = ''.join(f'<tr><td>{html.escape(name)}</td><td>{row["verified_files"]:,}</td><td>{gib(row["saved_bytes_api"])}</td></tr>'
+               for name, row in groups.items() if row['verified_files'])
+exceptions = html.escape(json.dumps(summary['failures'] + summary['content_mismatches'], ensure_ascii=False, indent=2))
+page = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>微盘股项目压缩结果</title>
+<style>body{{font:16px/1.7 system-ui;max-width:1000px;margin:40px auto;padding:0 24px;color:#203047}}table{{border-collapse:collapse;width:100%}}td,th{{padding:9px;text-align:left;border-bottom:1px solid #ddd}}.metric{{background:#edf6f3;padding:20px;border-radius:12px}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}</style>
+<h1>微盘股项目压缩结果</h1><p>2026-11-03 · {html.escape(summary['status'])}</p>
+<div class="metric">本轮文件占用减少 <b>{gib(summary['saved_bytes_api'])} GiB</b>；<b>{summary['verified_files']:,}</b> 个文件压缩前后 SHA-256 与长度一致。<br>
+D盘实测可用空间：<b>{gib(summary['free_before_bytes'])} → {gib(summary['free_after_bytes'])} GiB</b>。</div>
+<p>采用 Windows NTFS 原位压缩，保留文件内容、名称和路径，读取时自动解压。未删除、搬移文件，未修改策略逻辑、日报配置或历史数据内容。</p>
+<table><thead><tr><th>目录</th><th>已校验文件数</th><th>减少占用 GiB</th></tr></thead><tbody>{rows}</tbody></table>
+<p>减少占用按 Windows 文件存储接口汇总；磁盘可用空间同时受簇分配和后台写入影响，两者可能略有差别。已压缩文件、压缩包、链接/多硬链接、数据库、程序二进制和不足16KiB的小文件按既定范围保留。超长路径使用 Windows 原生压缩接口补处理。</p>
+<p>此前删除被平台策略拒绝，本轮没有重试删除。待人工清理路径仍见 <a href="../storage_cleanup_20261103/report.html">清理清单</a>。</p>
+<details><summary>异常记录（{len(summary['failures'])} 项操作失败，{len(summary['content_mismatches'])} 项内容不一致）</summary><pre>{exceptions}</pre></details>
+<p>原始证据：<a href="summary.json">汇总</a> · <a href="result.json">主要压缩回执</a> · <a href="remaining_result.json">补充压缩回执</a>。每个处理文件均保留前后哈希记录。</p></html>'''
+(out / 'report.html').write_text(page, encoding='utf-8')
+print(json.dumps({k: v for k, v in summary.items() if k != 'groups'}, ensure_ascii=False))

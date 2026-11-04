@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "expected_date": "2026-11-02",
+  "release_sha": "94a0116dae3ef2d9be129e266405bb368fe02f2a",
+  "bundle": "D:\\\u52a8\u91cf\u7b56\u7565\\\u5fae\u76d8\u80a1\u5bf9\u51b2\u7b56\u7565\\research_reports\\20261103_audit_fixes\\microcap-audit-fixed-whole-delivery-20261102.zip",
+  "scope": "whole_workspace_delivery",
+  "files": 150674,
+  "shared_base": true,
+  "sha256": "99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93",
+  "bytes": 605202401,
+  "completed_at": "2026-11-03T03:54:42.676370+00:00"
+}

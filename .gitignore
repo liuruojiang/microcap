@@ -37,3 +37,18 @@ _poe_sandbox_clean/
 .microcap_ohlc_cache/
 outputs/
 quant_param_scan_runs/
+
+# Reviewed historical delivery/replay archives, retained locally (2026-11-05).
+# Reusable scripts and audit summaries are explicitly tracked; raw copies are not.
+/backups/
+/research_reports/20261029_st_history_repair/
+/research_reports/20261029_v23_no_overheat_promotion/
+/research_reports/20261102_deferred_repairs/
+/research_reports/20261103_adversarial_audit/
+/research_reports/20261103_audit_fixes/
+/research_reports/20261103_delivery_streamline/
+/research_reports/20261103_revision_impact/
+/research_reports/20261103_state_handoff_fix/
+/research_reports/storage_cleanup_20261102/
+/research_reports/storage_cleanup_20261103/
+/research_reports/storage_compression_20261103/

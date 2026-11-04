@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "expected_date": "2026-10-28",
+  "release_sha": "24712ce3a78d7968386495d605ef11d86e4b54ec",
+  "bundle": "research_reports\\20261029_v23_no_overheat_promotion\\microcap-whole-state-20261028-no-overheat.zip",
+  "scope": "whole_workspace_delivery",
+  "files": 14982
+}

@@ -1,0 +1,32 @@
+{
+  "strategy_sha": "e5e73b53bb060ec16d16d58f9e4870072a2d7245",
+  "isolated_metadata_and_scoped_replay_tests": {
+    "passed": 81,
+    "seconds": 508.59,
+    "production_cache_used": false
+  },
+  "verified_notice_horizon_regression": {
+    "passed": 2
+  },
+  "return_basis_and_tail_regression": {
+    "passed": 14
+  },
+  "return_transport_actual_entrypoints_and_memo": {
+    "passed": 50
+  },
+  "automation_workflow_tests": {
+    "passed": 13
+  },
+  "full_delivery_status": "local_refresh_all_and_independent_check_pass_2026-11-02; cloud_pack_in_progress",
+  "mail": "user_authorized_today_close_confirmed_makeup_not_yet_sent",
+  "final_runtime_strategy_sha": "9c4228653398a8a1eb16bcb91335abf752e4dafc",
+  "scoped_replay_terminal_and_serialization_regression": {
+    "passed": 24
+  },
+  "native_tail_mixed_iso_regression": {
+    "passed": 17
+  },
+  "automation_publication_contracts": {
+    "passed": 55
+  }
+}

@@ -1,0 +1,47 @@
+diff --git a/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json b/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json
+index 42620a4b..e7f9ccdf 100644
+--- a/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json
++++ b/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json
+@@ -270,14 +270,14 @@
+       "sha256": "897a4cfe048815016cdb1f72b63e727bf631bee5a2578e2e30378777c18ec034",
+       "code": {
+         "scripts/stock_input_contract.py": "c2adedc18633f2d5853ea086da95eac52d1877dda64c33a1e346dbb7a6601393",
+-        "scripts/stock_return_basis.py": "725c07cda707e59ccb62e297ada9a544cf24133fdca9b1d5c69f3f7d6bbb499c",
+-        "scripts/stock_return_basis_store.py": "24dd9c33eea26b75809aa307a2e3a6f0eec876f15a6807a9741efe8a177e1382",
++        "scripts/stock_return_basis.py": "4e67e8a31a216e6d0f8069fe869c9b6961ff52e503e1921a75e75e00c6046e59",
++        "scripts/stock_return_basis_store.py": "fe1dfce2c961cff1e63ff9f2a1284f4b150897b83b521d85795a0aaf210fff39",
+         "scripts/stock_return_pipeline.py": "357169368d7f8b590c5a4d2f1aa9264c253b95ed42cb56fe9c13827bac19feb1",
+         "scripts/tradeability_evidence.py": "8a0bce2253b0ed0a511122b692063ab52e7d38edc671faeea8bff0c7e31d65c7",
+         "scripts/st_notice_archive.py": "625483138aebda935a852953a1645ec95eeff9fdf10ab259c463af198c7b7c9c",
+         "scripts/st_history_scope.py": "1365b7c0aa289efc30537ef2ede5a1bd7126952bd29c6a026a69d9d25659e47b",
+         "scripts/st_notice_incremental.py": "d1b0f043137e0627f0510b95be42722e1018f0d40bcf59d8655687f63ceafae8",
+-        "scripts/st_notice_refresh.py": "fcd2a0c7b7884f05f680871b6fa7eb3b063d4e163a5c4a575bdd1d7ebe84ef5c",
++        "scripts/st_notice_refresh.py": "629ef0a87a65673f68d960d3bdb62faedca84e2a8010b766289d98b4749133dc",
+         "scripts/st_metadata_refresh.py": "9d9f31a0f3223d997920adf4fadeb924d03c19c4701ed279b318ec78d1dee995",
+         "scripts/stock_tail_returns.py": "fc5875bdb53ed1786c7c851b8e3c9b8028f79f49a71c72cd4eb22c8f1c14d5c6",
+         "scripts/share_change_source.py": "522b49cf595b9f647229678c11ae50d17ab3de1f83747a51c1cac263833c5571",
+@@ -407,4 +407,4 @@
+   "scope": "diagnostic_only",
+   "approved": false,
+   "formal_written": false
+-}
++}
+\ No newline at end of file
+diff --git a/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json b/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json
+index 099ea6eb..5b941f7b 100644
+--- a/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json
++++ b/outputs/microcap_top100_mom16_biweekly_live_v2_0_base_summary.json
+@@ -32,10 +32,10 @@
+   "next_rebalance_date": null,
+   "history_anchor": {
+     "latest_trade_date": "2026-10-30",
+-    "current_date": "2026-11-01",
+-    "stale_calendar_days": 2,
++    "current_date": "2026-11-02",
++    "stale_calendar_days": 3,
+     "stale_trading_days": 0,
+-    "staleness_value": 2,
++    "staleness_value": 3,
+     "staleness_unit": "calendar_days",
+     "max_stale_anchor_days": 5,
+     "is_stale": false,

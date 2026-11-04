@@ -1,0 +1,22 @@
+{
+  "fixtures_only": true,
+  "smtp_calls": 0,
+  "results": [
+    {
+      "finding": "cross_midnight_receipt",
+      "reproduced": true,
+      "result": "BLOCKED: SMTP receipt dates do not match delivery"
+    },
+    {
+      "finding": "recovery_intent_invisible_to_normal_gate",
+      "reproduced": true,
+      "should_send": "true",
+      "queried_names": [
+        "microcap-v2-close_confirmed-digest-delivered-2026-11-02",
+        "microcap-realtime-digest-delivered-2026-11-02",
+        "microcap-v2-close_confirmed-digest-delivered-2026-11-02-smtp-accepted",
+        "microcap-v2-close_confirmed-digest-delivered-2026-11-02-send-intent"
+      ]
+    }
+  ]
+}

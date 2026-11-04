@@ -1,0 +1,208 @@
+{
+  "status": "blocked_by_policy",
+  "deletion_attempt": "exec_command creation rejected before command ran",
+  "reason": "blocked by policy",
+  "files_deleted": 0,
+  "remaining_targets": [
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_v23_no_overheat_promotion\\audit_sync\\isolated_lineage_replay\\research_reports",
+      "bytes": 675193346,
+      "group": "此前孤立副本删除被拒绝",
+      "reason": "只删除这个列出的子目录；保留其父目录、runtime及isolated_source_5fc79f82.zip"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\scoped_test_workspace",
+      "bytes": 238507293,
+      "group": "本轮删除被拒绝",
+      "reason": "duplicate isolated workspace; all different files preserved in verified ZIP"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\test-required",
+      "bytes": 108714312,
+      "group": "此前删除被拒绝",
+      "reason": "已完成测试的临时夹具；上次拒绝后未重试"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_v23_no_overheat_promotion\\audit_sync\\isolated_lineage_replay\\docs",
+      "bytes": 88062505,
+      "group": "此前孤立副本删除被拒绝",
+      "reason": "只删除这个列出的子目录；保留其父目录、runtime及isolated_source_5fc79f82.zip"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-alternative-delivery-tests-20261102",
+      "bytes": 74831394,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\test-native-metadata",
+      "bytes": 74417224,
+      "group": "此前删除被拒绝",
+      "reason": "已完成测试的临时夹具；上次拒绝后未重试"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\test-run-3",
+      "bytes": 55982956,
+      "group": "此前删除被拒绝",
+      "reason": "已完成测试的临时夹具；上次拒绝后未重试"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\test-run-2",
+      "bytes": 32192139,
+      "group": "此前删除被拒绝",
+      "reason": "已完成测试的临时夹具；上次拒绝后未重试"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_v23_no_overheat_promotion\\audit_sync\\isolated_lineage_replay\\archive",
+      "bytes": 28067656,
+      "group": "此前孤立副本删除被拒绝",
+      "reason": "只删除这个列出的子目录；保留其父目录、runtime及isolated_source_5fc79f82.zip"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_v23_no_overheat_promotion\\audit_sync\\isolated_lineage_replay\\outputs",
+      "bytes": 12034283,
+      "group": "此前孤立副本删除被拒绝",
+      "reason": "只删除这个列出的子目录；保留其父目录、runtime及isolated_source_5fc79f82.zip"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_v23_no_overheat_promotion\\audit_sync\\isolated_lineage_replay\\poe_bots",
+      "bytes": 3317681,
+      "group": "此前孤立副本删除被拒绝",
+      "reason": "只删除这个列出的子目录；保留其父目录、runtime及isolated_source_5fc79f82.zip"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-native-automation-tests-20261102-final",
+      "bytes": 2533738,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\test-run-1",
+      "bytes": 796865,
+      "group": "此前删除被拒绝",
+      "reason": "已完成测试的临时夹具；上次拒绝后未重试"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-alt-resume-tests-20261102",
+      "bytes": 182893,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261029_v23_no_overheat_promotion\\audit_sync\\isolated_lineage_replay\\.microcap_index_cache",
+      "bytes": 175792,
+      "group": "此前孤立副本删除被拒绝",
+      "reason": "只删除这个列出的子目录；保留其父目录、runtime及isolated_source_5fc79f82.zip"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-alt-source-parallel-tests-20261102",
+      "bytes": 152995,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-alt-source-final-tests-20261102",
+      "bytes": 152983,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-alt-source-tests-20261102",
+      "bytes": 152959,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-share-route-20261102",
+      "bytes": 134331,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-share-dns-20261102",
+      "bytes": 133864,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-share-dns-nodata-20261102",
+      "bytes": 133864,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-share-encoder-20261102",
+      "bytes": 133864,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-share-network-20261102",
+      "bytes": 133864,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-parallel-suspensions-20261102",
+      "bytes": 74149,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-durable-write-20261102",
+      "bytes": 74138,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-resume-retry-20261102",
+      "bytes": 74117,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-resume-speed-20261102c",
+      "bytes": 44100,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\tmp\\microcap-resume-speed-20261102b",
+      "bytes": 30021,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-date-hook-tests-20261102",
+      "bytes": 28436,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\research_reports\\20261102_deferred_repairs\\test-failure-diagnosis",
+      "bytes": 2130,
+      "group": "此前删除被拒绝",
+      "reason": "已完成测试的临时夹具；上次拒绝后未重试"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-native-config-tests-20261102",
+      "bytes": 1107,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    },
+    {
+      "path": "D:\\Codex\\workspaces\\microcap-no-overheat-daily\\.tmp-native-20261102",
+      "bytes": 1107,
+      "group": "本轮删除被拒绝",
+      "reason": "completed generated pytest fixtures"
+    }
+  ],
+  "estimated_logical_bytes": 1396468106,
+  "free_bytes": 14124781568,
+  "preserved_unique_archive": "D:\\动量策略\\微盘股对冲策略\\research_reports\\storage_cleanup_20261103\\scoped_test_workspace_unique_files.zip",
+  "preserved_unique_archive_bytes": 205641,
+  "scope": "recent Microcap test directories only; production cache, outputs, data evidence, rollback packages and Git objects preserved",
+  "recorded_at": "2026-11-03T13:00:40.317023",
+  "no_alternate_deletion_attempted": true,
+  "formal_approval_channel_provided": null
+}
