@@ -24,7 +24,11 @@ from scripts import top100_delivery as delivery
 
 ARTIFACT = "microcap-whole-delivery-state"
 REPOSITORY = "liuruojiang/codex-daily-automation-probe"
-SOURCE_FILES = [delivery.AUTHORITY, "scripts/top100_data_contracts.py"] + [
+# The native ST source closure also binds the calendar implementation by bytes.
+# Keep it in the isolated restore root; importing it from the checkout is not
+# enough for source_closure(root, ...) to verify the staged evidence.
+SOURCE_FILES = [delivery.AUTHORITY, "scripts/top100_data_contracts.py",
+                "scripts/exchange_calendar.py"] + [
     f"microcap_top100_mom16_biweekly_live_v2_{v}.py" for v in delivery.COSTED
 ]
 SOURCE_FILES += delivery.evidence_source_files(Path(__file__).resolve().parents[1])

@@ -67,6 +67,9 @@ def workspace(tmp_path, monkeypatch):
     monkeypatch.setattr(exchange_calendar, "sessions_for_day",
                         lambda _day: (date(2026, 8, 20), date(2026, 9, 2),
                                       date(2026, 9, 3), date(2026, 9, 4)))
+    calendar_target = tmp_path / "scripts/exchange_calendar.py"
+    calendar_target.parent.mkdir(parents=True, exist_ok=True)
+    calendar_target.write_bytes((source_root / "scripts/exchange_calendar.py").read_bytes())
     contract_source = Path(__file__).resolve().parents[1] / "scripts/top100_data_contracts.py"
     contract_target = tmp_path / "scripts/top100_data_contracts.py"
     contract_target.parent.mkdir(parents=True, exist_ok=True)
