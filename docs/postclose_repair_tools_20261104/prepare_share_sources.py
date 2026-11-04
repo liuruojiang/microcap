@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
-import re
 import subprocess
 import sys
 
@@ -18,10 +17,15 @@ def prepare(root, target):
         raise RuntimeError("Not the reviewed repair source/date")
     sys.path.insert(0, str(root))
     from scripts.share_change_source import refresh_share_change, verify_share_cache
+    from scripts.realtime_state_bundle import current_notice_member_symbols
     directory = root / ".microcap_index_cache/share_sources"
-    symbols = sorted(p.stem for p in directory.glob("*.json") if re.fullmatch(r"\d{6}", p.stem))
+    # The source directory retains the whole ranking universe. Only the native
+    # actual-position/current-target union is this repair's daily share scope.
+    symbols = current_notice_member_symbols(root)
     if len(symbols) != 102:
-        raise RuntimeError("Restored 102-stock share-source inventory differs")
+        raise RuntimeError("Native 102-stock actual-position/target union differs")
+    if any(not (directory / (symbol + ".json")).is_file() for symbol in symbols):
+        raise RuntimeError("Native member share-source state missing")
     def one(symbol):
         cache = root / ".microcap_index_cache/share_change" / (symbol + ".csv")
         before = cache.read_bytes()
@@ -42,6 +46,7 @@ def prepare(root, target):
                 pending.cancel()
             raise
     return {"ok": True, "records": sorted(complete, key=lambda row: row["symbol"]),
+            "native_member_union_sha256": hashlib.sha256("\n".join(symbols).encode()).hexdigest(),
             "recorded_at": datetime.now(timezone.utc).isoformat(), "native_verification": True,
             "scope": "official per-symbol share-source freshness; no panel, NAV, manifest, SMTP or marker operation"}
 
