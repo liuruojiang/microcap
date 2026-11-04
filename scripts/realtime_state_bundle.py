@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -249,8 +250,11 @@ def _read_csv_header_and_rows(path: Path) -> tuple[list[str], int, dict[str, str
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         header = list(reader.fieldnames or [])
-        rows = list(reader)
-    return header, len(rows), rows[-1] if rows else None
+        count = 0
+        last = None
+        for count, last in enumerate(reader, 1):
+            pass
+    return header, count, last
 
 
 def _parse_date(value: str) -> date | None:
@@ -662,6 +666,75 @@ def validate_member_cache_transport(root: Path, anchor: date | None) -> list[str
 # Process-local successes only. Every lookup rehashes the complete dependency
 # trees; no disk certificate or mtime-based shortcut is used.
 _RETURN_BASIS_SUCCESS_MEMO: dict[str, tuple] = {}
+
+# This reviewed transition consumes the exact already-certified D4 inputs with
+# stricter/faster validators. It is not a wildcard for future code or data.
+VALIDATION_SOURCE_REVIEW = {
+    "revision": "validation_only_exact_d4_20261105_v1",
+    "expected_date": "2026-11-04",
+    "manifest_sha256": "fcfd965474103edecb4f87ae976c4caaa6e09c978fb21135196300dc035dd1ed",
+    "stock_fingerprint_sha256": "50d597f4e63502a69e05f583de94f9698f7f66f974a61f75a6e9ae6ec4c3fd49",
+    "changes": {
+        "scripts/st_history_scope.py": (
+            "1365b7c0aa289efc30537ef2ede5a1bd7126952bd29c6a026a69d9d25659e47b",
+            "e4ee3b06d91ba562c68354217def93d1d72482924138963ff34a706b9c15a063"),
+        "scripts/st_notice_incremental.py": (
+            "d1b0f043137e0627f0510b95be42722e1018f0d40bcf59d8655687f63ceafae8",
+            "0592bd87c515af2c7e819681e9c87714737d21c8d833050e4db0403625d2cdc3"),
+        "scripts/st_notice_refresh.py": (
+            "629ef0a87a65673f68d960d3bdb62faedca84e2a8010b766289d98b4749133dc",
+            "42b94db9a41c197bbd9124f83aec955eaa5619938d84cebd951875236d550893"),
+        "microcap_top100_mom16_biweekly_live_v2_0.py": (
+            "a0d57396c61497f139d154cfbfdee6bd3bb8ce73761c6a4bf50cec0c74a31208",
+            "0cdbcc9c2338e1522815dd927b1750b32bbd4ea5891e6f5c7bf59d1ee20f8aef"),
+    },
+}
+
+
+def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
+    """Compare freshly computed inputs; allow only the exact reviewed old code.
+
+    Callers still compute the entire current data/code fingerprint from disk and
+    validate security metadata separately. Historical proxy metadata is never
+    edited to pretend that its original producer was this release.
+    """
+    from scripts.stock_input_contract import SOURCE_FILES
+    keys = {"file_count", "sha256", "code"}
+    if not isinstance(recorded, dict) or not isinstance(current, dict):
+        return False
+    if set(recorded) != keys or set(current) != keys:
+        return False
+    if any(recorded[key] != current[key] for key in ("file_count", "sha256")):
+        return False
+    old, new = recorded["code"], current["code"]
+    if not isinstance(old, dict) or not isinstance(new, dict) or set(old) != set(SOURCE_FILES) or set(new) != set(SOURCE_FILES):
+        return False
+    for value in (recorded, current):
+        if (type(value["file_count"]) is not int or value["file_count"] < 1
+                or not isinstance(value["sha256"], str)
+                or re.fullmatch(r"[0-9a-f]{64}", value["sha256"]) is None
+                or any(not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None
+                       for digest in value["code"].values())):
+            return False
+    if recorded == current:
+        return True
+    identity = hashlib.sha256(json.dumps(recorded, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    if identity != VALIDATION_SOURCE_REVIEW["stock_fingerprint_sha256"]:
+        return False
+    changed = {name for name in old if old[name] != new[name]}
+    allowed = set(VALIDATION_SOURCE_REVIEW["changes"]) & set(SOURCE_FILES)
+    return changed == allowed and all(
+        (old[name], new[name]) == tuple(VALIDATION_SOURCE_REVIEW["changes"][name])
+        for name in changed)
+
+
+def validation_source_review(root: Path) -> dict:
+    """Read back every exact changed source for native one-time certification."""
+    for name, (_before, after) in VALIDATION_SOURCE_REVIEW["changes"].items():
+        actual = hashlib.sha256((Path(root) / name).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+        if actual != after:
+            raise ValueError("Unreviewed validation source: " + name)
+    return copy.deepcopy(VALIDATION_SOURCE_REVIEW)
 
 
 def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...]):
@@ -1408,7 +1481,8 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
             stock_digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
         from scripts.stock_input_contract import source_fingerprint
         stock_actual = {"file_count": len(stock_paths), "sha256": stock_digest.hexdigest(), "code": source_fingerprint(root)}
-        if meta["core_params"].get("stock_input_evidence_fingerprint") != stock_actual:
+        if not stock_input_evidence_matches_validated_source(
+                meta["core_params"].get("stock_input_evidence_fingerprint"), stock_actual):
             raise ValueError("Proxy stock return/trading-state evidence fingerprint mismatch")
     return records
 

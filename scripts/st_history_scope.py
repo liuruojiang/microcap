@@ -211,10 +211,9 @@ def source_closure(root,manifest_path=None,expected_sha=None):
  pointer=root/POINTER_PATH
  if pointer.exists():result[POINTER_PATH]=hashlib.sha256(pointer.read_bytes()).hexdigest()
  def add(spec):
-  read_bound(root,spec)
   if spec['path'] in result and result[spec['path']]!=spec['sha256']:fail('Conflicting ST closure identity')
   result[spec['path']]=spec['sha256']
- spec=dict(path=p.relative_to(root).as_posix(),sha256=expected_sha);add(spec);manifest=json.loads(p.read_bytes())
+ spec=dict(path=p.relative_to(root).as_posix(),sha256=expected_sha);add(spec);manifest=json.loads(read_bound(root,spec))
  def legacy(m):
   for entry in m.get('symbols',{}).values():
    for x in entry.get('source_files',[]):add(x)
@@ -229,9 +228,30 @@ def source_closure(root,manifest_path=None,expected_sha=None):
    add(manifest['legacy_archive']);legacy(json.loads(read_bound(root,manifest['legacy_archive'])))
   from scripts.st_notice_incremental import verify_day
   for day in manifest.get('daily_increments',[]):
-   add(day['manifest']);folder=_path(root,day['manifest']['path']).parent;verified=verify_day(folder,day['date'])
+   add(day['manifest']);read_bound(root,day['manifest'])
+   folder=_path(root,day['manifest']['path']).parent;verified=verify_day(folder,day['date'])
+   if verified.get('manifest_sha256')!=day['manifest']['sha256']:
+    fail('ST daily manifest changed during verification')
    for name,digest in verified['source_files'].items():add(dict(path=(folder/name).relative_to(root).as_posix(),sha256=digest))
  else:fail('Unsupported ST closure schema')
+ # Every unique declared source is still read and hashed on every call. Bound
+ # concurrency removes serial disk/path overhead, without a stat-only cache or
+ # persistence of a previous validation result. Dynamic manifests above are
+ # authenticated before parsing and read back again here to detect replacement.
+ from collections import deque
+ from concurrent.futures import ThreadPoolExecutor
+ def verify(item):
+  relative,digest=item
+  read_bound(root,dict(path=relative,sha256=digest))
+ entries=iter(result.items());pending=deque()
+ with ThreadPoolExecutor(max_workers=4) as readers:
+  for _ in range(8):
+   item=next(entries,None)
+   if item is not None:pending.append(readers.submit(verify,item))
+  while pending:
+   pending.popleft().result()
+   item=next(entries,None)
+   if item is not None:pending.append(readers.submit(verify,item))
  return result
 
 

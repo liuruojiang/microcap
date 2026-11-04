@@ -21,8 +21,14 @@ from immutable_seed_baseline import (
     immutable_seed_baseline,  # noqa: F401
     validate_immutable_seed,
 )
-from frozen_formal_baseline import assert_frozen_baseline_unchanged
+from frozen_formal_baseline import assert_frozen_baseline_unchanged, redirect_native_base_paths
 from scripts import top100_delivery as delivery
+
+
+@pytest.fixture
+def authenticated_terminal_context(monkeypatch, frozen_formal_baseline):
+    """Read real approved policy metadata; writable output staging stays in tmp_path."""
+    redirect_native_base_paths(monkeypatch, frozen_formal_baseline["root"], "0")
 
 
 def _current_realtime_refresh_proof_fields() -> dict[str, str]:
@@ -349,8 +355,12 @@ def test_validate_state_accepts_only_current_matching_refresh_proof(
     monkeypatch.setattr(realtime_state_bundle, "_has_current_v2_static_member_context", lambda _root: True)
     monkeypatch.setattr(realtime_state_bundle, "_load_refresh_proof", lambda _root: dict(proof))
 
+    # Synthetic legacy structure: this case isolates the refresh-proof contract.
+    meta_path = tmp_path / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json"
+    meta_path.parent.mkdir()
+    meta_path.write_text("{}", encoding="utf8")
     current = realtime_state_bundle.validate_state(tmp_path, today=target)
-    assert current["ok"] is True
+    assert current["ok"] is True, current["errors"]
 
     proof["verified_on"] = "2026-08-11"
     stale = realtime_state_bundle.validate_state(tmp_path, today=target)
@@ -376,6 +386,7 @@ def test_refresh_proof_is_packaged_with_realtime_state(tmp_path: Path) -> None:
     assert realtime_state_bundle.REFRESH_PROOF_REL in realtime_state_bundle._iter_bundle_files(tmp_path)
 
 
+@pytest.mark.usefixtures("authenticated_terminal_context")
 def test_realtime_signal_rows_preserve_fallback_and_snapshot_provenance() -> None:
     row = pd.DataFrame([{}])
     v2_0.overlay_mod._apply_realtime_meta_columns_to_signal_row(
@@ -594,6 +605,7 @@ def test_staged_output_bundle_rolls_back_when_post_promotion_validation_fails(tm
     assert summary.read_text(encoding="utf-8") == "old-summary"
 
 
+@pytest.mark.usefixtures("authenticated_terminal_context")
 def test_generate_v2_0_outputs_keeps_atomic_stage_writable_in_long_worktree(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -913,6 +925,7 @@ def _exercise_versioned_formal_stage_in_long_worktree(
         assert Path(getattr(module, name)).exists()
 
 
+@pytest.mark.usefixtures("authenticated_terminal_context")
 def test_generate_v2_3_outputs_keeps_atomic_stage_writable_in_long_worktree(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -920,6 +933,7 @@ def test_generate_v2_3_outputs_keeps_atomic_stage_writable_in_long_worktree(
     _exercise_versioned_formal_stage_in_long_worktree(v2_3, tmp_path, monkeypatch)
 
 
+@pytest.mark.usefixtures("authenticated_terminal_context")
 def test_generate_v2_5_outputs_keeps_atomic_stage_writable_in_long_worktree(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -927,6 +941,7 @@ def test_generate_v2_5_outputs_keeps_atomic_stage_writable_in_long_worktree(
     _exercise_versioned_formal_stage_in_long_worktree(v2_5, tmp_path, monkeypatch)
 
 
+@pytest.mark.usefixtures("authenticated_terminal_context")
 def test_generate_v2_3_outputs_rolls_back_existing_bundle_in_long_worktree(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -939,6 +954,7 @@ def test_generate_v2_3_outputs_rolls_back_existing_bundle_in_long_worktree(
     )
 
 
+@pytest.mark.usefixtures("authenticated_terminal_context")
 def test_generate_v2_5_outputs_rolls_back_existing_bundle_in_long_worktree(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1233,89 +1249,62 @@ def test_no_rebalance_tail_extension_replaces_flat_target_placeholder(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    bridge = pd.Timestamp("2026-09-01")
-    target = pd.Timestamp("2026-09-02")
-    index_path = tmp_path / "proxy.csv"
-    panel_path = tmp_path / "panel.csv"
-    members_path = tmp_path / "members.csv"
-    meta_path = tmp_path / "meta.json"
-    effective_path = tmp_path / "effective.csv"
-    pd.DataFrame(
-        {
-            "date": [bridge, target],
-            "close": [100.0, 100.0],
-            "daily_return": [0.01, 0.0],
-            "holding_count": [2, 2],
-            "holding_effective": [True, True],
-        }
-    ).to_csv(index_path, index=False)
+    # Synthetic one-member portfolio, backed by captured real raw, adjusted and
+    # trading-status source bytes. No production manifest or seed is fabricated.
+    from test_stock_tail_returns import setup_tail
+    from scripts.stock_input_contract import SOURCE_FILES
+    evidence = setup_tail(tmp_path, monkeypatch)
+    bridge, target = evidence["tail_dates"][-2:]
+    source_root = Path(__file__).resolve().parents[1]
+    for relative in SOURCE_FILES:
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source_root / relative, destination)
+    index_path, panel_path = tmp_path / "proxy.csv", tmp_path / "panel.csv"
+    members_path, meta_path = tmp_path / "members.csv", tmp_path / "meta.json"
+    effective_path, turnover_path = tmp_path / "effective.csv", tmp_path / "turnover.csv"
+    pd.DataFrame({"date": [bridge, target], "close": [100.0, 100.0],
+                  "daily_return": [0.01, 0.0], "holding_count": [1, 1],
+                  "holding_effective": [True, True]}).to_csv(index_path, index=False)
     pd.DataFrame({"date": [bridge, target]}).to_csv(panel_path, index=False)
-    members_path.write_text(
-        "rebalance_date,rank,symbol\n2026-08-20,1,000001\n",
-        encoding="utf-8",
-    )
-    meta_path.write_text("{}", encoding="utf-8")
-    cache_paths: dict[str, Path] = {}
-    for symbol, target_close in (("000001", 101.0), ("000002", 103.0)):
-        path = tmp_path / f"{symbol}.csv"
-        pd.DataFrame(
-            {"date": [bridge, target], "close_qfq": [100.0, target_close]}
-        ).to_csv(path, index=False)
-        cache_paths[symbol] = path
-
+    pd.DataFrame([dict(rebalance_date=bridge, rank=1, symbol="000001")]).to_csv(members_path, index=False)
+    pd.DataFrame([dict(as_of_date=bridge, rank=1, symbol="000001")]).to_csv(effective_path, index=False)
+    pd.DataFrame([dict(execution_date=bridge, effective_date=bridge,
+                       return_start_date=target)]).to_csv(turnover_path, index=False)
+    meta_path.write_text(json.dumps({"fixture_scope": "synthetic_portfolio_only",
+        "return_basis_consumption": {"revision": "stock_return_consumption_v1",
+            "full_rebuild_anchor": str(bridge.date()), "tail_extensions": []}}), encoding="utf8")
     extend = v2_0.base_mod.try_extend_proxy_index_without_rebalance
-    monkeypatch.setitem(extend.__globals__, "TOP_N", 2)
-    monkeypatch.setitem(
-        extend.__globals__,
-        "build_biweekly_rebalance_dates",
-        lambda _dates: pd.DatetimeIndex([]),
-    )
-    monkeypatch.setitem(
-        extend.__globals__,
-        "_proxy_target_members_map_from_saved_members",
-        lambda _path: {pd.Timestamp("2026-08-20"): ["000001", "000002"]},
-    )
-    monkeypatch.setitem(
-        extend.__globals__,
-        "_read_proxy_effective_members",
-        lambda _path, _date: ["000001", "000002"],
-    )
-    monkeypatch.setitem(
-        extend.__globals__,
-        "refresh_price_cache_tail",
-        lambda *_args, **_kwargs: None,
-    )
-    monkeypatch.setattr(
-        v2_0.base_mod.freq_mod,
-        "load_current_st_name_map",
-        lambda: {"999999": "ST样例"},
-    )
-    monkeypatch.setattr(
-        v2_0.base_mod.freq_mod,
-        "resolve_cache_path",
-        lambda _primary, _shared, symbol: cache_paths[symbol],
-    )
-
-    extended = extend(
-        SimpleNamespace(index_csv=index_path, max_workers=2, force_refresh=False),
-        {
-            "proxy_members": members_path,
-            "proxy_meta": meta_path,
-            "proxy_effective_members": effective_path,
-        },
-        panel_path,
-        target,
-    )
-
+    monkeypatch.setitem(extend.__globals__, "ROOT", tmp_path)
+    monkeypatch.setitem(extend.__globals__, "TOP_N", 1)
+    monkeypatch.setitem(extend.__globals__, "build_biweekly_rebalance_dates", lambda _: pd.DatetimeIndex([]))
+    # Captured input collection replaces network only; native membership,
+    # consumption, status, return-basis and fingerprint checks all still run.
+    monkeypatch.setitem(extend.__globals__, "refresh_price_cache_tail", lambda *a, **k: None)
+    monkeypatch.setattr(v2_0.base_mod.freq_mod, "load_current_st_name_map", lambda: {"999999": "ST样例"})
+    monkeypatch.setattr(v2_0.base_mod.freq_mod, "resolve_cache_path", lambda *a: evidence["raw_path"])
+    monkeypatch.setattr(v2_0.base_mod.freq_mod, "load_security_master", lambda: evidence["master"])
+    adjusted = pd.read_csv(tmp_path / ".microcap_index_cache/return_basis/prices_adj/000001.csv", parse_dates=["date"]).set_index("date").close_adj
+    expected_return = float(adjusted.loc[target] / adjusted.loc[bridge] - 1)
+    assert expected_return != 0
+    extended = extend(SimpleNamespace(index_csv=index_path, max_workers=1, force_refresh=False),
+        {"proxy_members": members_path, "proxy_meta": meta_path,
+         "proxy_effective_members": effective_path, "proxy_turnover": turnover_path}, panel_path, target)
     repaired = pd.read_csv(index_path, parse_dates=["date"])
-    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    meta = json.loads(meta_path.read_text(encoding="utf8"))
     latest = repaired.loc[repaired["date"].eq(target)].iloc[-1]
     assert extended is True
-    assert float(latest["daily_return"]) == pytest.approx(0.02)
-    assert float(latest["close"]) == pytest.approx(102.0)
-    assert meta["tail_extension_start"] == "2026-09-01"
-    assert meta["tail_extension_end"] == "2026-09-02"
+    assert len(repaired) == 2 and repaired.date.is_unique
+    assert float(latest["daily_return"]) == pytest.approx(expected_return)
+    assert float(latest["close"]) == pytest.approx(100.0 * (1 + expected_return))
+    assert meta["tail_extension_start"] == str(bridge.date())
+    assert meta["tail_extension_end"] == str(target.date())
     assert meta["tail_extension_replaced_flat_placeholder"] is True
+    assert meta["tail_extension_return_source_counts"] == {"adjusted": 1, "raw": 0}
+    for key, path in {"effective_members_sha256": effective_path,
+                      "proxy_members_sha256": members_path,
+                      "proxy_turnover_sha256": turnover_path}.items():
+        assert meta["return_basis_consumption"]["tail_extensions"][-1][key] == hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def test_costed_tail_anchor_accepts_only_vendor_display_rounding() -> None:
@@ -1508,6 +1497,7 @@ def test_empty_name_reject_policy_excludes_unnamed_low_cap_candidate() -> None:
         rebalance_dates=pd.DatetimeIndex([rebalance]),
         name_map={"000001": "", "000002": "valid-name"},
         top_n=1,
+        exclude_current_st_names=True,
     )
 
     assert members[rebalance] == ["000002"]
@@ -1678,8 +1668,17 @@ def test_empty_name_reject_policy_requires_matching_proxy_metadata(monkeypatch) 
         "present_count": 1, "missing_count": 0, "sha256": "isolated-policy-fixture"})
     monkeypatch.setitem(v2_0.base_mod.proxy_meta_matches_execution_model.__globals__,
                         "security_meta_cache_fingerprint", v2_0.base_mod.security_meta_cache_fingerprint)
+    # Complete synthetic evidence identity; the actual matcher remains exercised.
+    from scripts.stock_input_contract import source_fingerprint
+    stock_fp = {"file_count": 1, "sha256": "a" * 64,
+                "code": source_fingerprint(Path(__file__).resolve().parents[1])}
+    monkeypatch.setitem(v2_0.base_mod.proxy_meta_matches_execution_model.__globals__,
+                        "stock_input_evidence_fingerprint", lambda: stock_fp)
     core_params = {
+        "stock_input_evidence_fingerprint": stock_fp,
         "research_stack_version": v2_0.base_mod.RESEARCH_STACK_VERSION,
+        "stock_return_basis_revision": "sina_ratio_ex_reference_v1",
+        "delisting_valuation_policy": v2_0.freq_mod.DELISTING_VALUATION_POLICY,
         "execution_timing": v2_0.base_mod.EXECUTION_TIMING,
         "trade_constraint_mode": v2_0.base_mod.TRADE_CONSTRAINT_MODE,
         "exclude_current_st": False,
@@ -1742,6 +1741,8 @@ def test_existing_base_bundle_is_rebuilt_when_proxy_metadata_is_incompatible(
 def _valid_proxy_core_params() -> dict[str, object]:
     return {
         "research_stack_version": v2_0.base_mod.RESEARCH_STACK_VERSION,
+        "stock_return_basis_revision": "sina_ratio_ex_reference_v1",
+        "delisting_valuation_policy": v2_0.freq_mod.DELISTING_VALUATION_POLICY,
         "execution_timing": v2_0.base_mod.EXECUTION_TIMING,
         "trade_constraint_mode": v2_0.base_mod.TRADE_CONSTRAINT_MODE,
         "exclude_current_st": False,
@@ -1793,7 +1794,14 @@ def test_manifest_verified_current_continuation_preserves_seed_economics(
     # these fields describe the LAST extension, not all history since the seed.
     if meta.get("tail_extension_method") == "no_new_rebalance_saved_target_replay":
         start, end = meta["tail_extension_start"], meta["tail_extension_end"]
-        assert immutable_seed_baseline["authority"]["seed_end_date"] <= start < end
+        consumption = meta["return_basis_consumption"]
+        assert consumption["revision"] == "stock_return_consumption_v1"
+        assert consumption["full_rebuild_anchor"] <= start < end
+        assert consumption["tail_extensions"][-1]["start_exclusive"] == start
+        assert consumption["tail_extensions"][-1]["end"] == end
+        # Certified cache replay can start before the immutable seed ends;
+        # economic overlap is independently checked above, byte/numeric exact.
+        assert immutable_seed_baseline["authority"]["seed_end_date"] <= end
         assert end == meta["end_date"] == frozen_formal_baseline["target"]
         for label in ("proxy_index", "costed_nav"):
             dates = pd.read_csv(root / "outputs" / delivery.BASE_FILES[label], usecols=["date"]).date

@@ -511,21 +511,39 @@ def test_historical_holiday_in_base_panel_blocks_whole_delivery(workspace):
                for error in report["errors"])
 
 
-def test_release_identity_rejects_modified_delivery_guard(tmp_path, monkeypatch):
-    for name in delivery.RELEASE_FILES:
-        write(tmp_path, name, "approved\n")
-    (tmp_path / "scripts/top100_delivery.py").write_text("modified\n", encoding="utf-8")
-
-    def fake_git(args, **_kwargs):
+def _mock_release_batch(monkeypatch, files):
+    """Original offline release tests authenticate bytes without spawning Git."""
+    import hashlib
+    remote = "a" * 40
+    def check_output(args, **kwargs):
         if args[1] == "ls-remote":
-            return "a" * 40 + "\trefs/heads/main\n"
-        if args[1] == "cat-file":
-            return b""
-        if args[1] == "show":
-            return b"approved\n"
-        raise AssertionError(args)
+            return remote + "\trefs/heads/main\n"
+        assert args == ["git", "cat-file", "-e", remote + "^{commit}"]
+        return b""
+    def run(args, **kwargs):
+        assert args == ["git", "cat-file", "--batch"]
+        assert kwargs["input"] == "".join(f"{remote}:{name}\n" for name in delivery.RELEASE_FILES).encode()
+        for name in delivery.RELEASE_FILES:
+            raw = files[name]
+            identity = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+            kwargs["stdout"].write(f"{identity} blob {len(raw)}\n".encode() + raw + b"\n")
+        return subprocess.CompletedProcess(args, 0)
+    monkeypatch.setattr(subprocess, "check_output", check_output)
+    monkeypatch.setattr(subprocess, "run", run)
+    def unexpected_process(*args, **kwargs):
+        pytest.fail("offline core release checks must not spawn an external process")
+    monkeypatch.setattr(subprocess, "Popen", unexpected_process)
+    return remote
 
-    monkeypatch.setattr(delivery.subprocess, "check_output", fake_git)
+
+def test_release_identity_rejects_modified_delivery_guard(tmp_path, monkeypatch):
+    files = {name: b"approved\n" for name in delivery.RELEASE_FILES}
+    for name, raw in files.items():
+        path = tmp_path/name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+    (tmp_path / "scripts/top100_delivery.py").write_bytes(b"modified\n")
+    _mock_release_batch(monkeypatch, files)
     with pytest.raises(ValueError, match="scripts/top100_delivery.py"):
         delivery.verify_release(tmp_path)
 
@@ -533,19 +551,12 @@ def test_release_identity_rejects_modified_delivery_guard(tmp_path, monkeypatch)
 @pytest.mark.parametrize('suffix', ['pdf', 'json', 'html'])
 def test_release_evidence_requires_exact_bytes_across_line_endings(tmp_path, monkeypatch, suffix):
     name = f'data/st_notice_evidence/example.{suffix}'
-    path = tmp_path / name
+    path = tmp_path/name
     path.parent.mkdir(parents=True)
     path.write_bytes(b'archived\r\nbytes\r\n')
     monkeypatch.setattr(delivery, 'RELEASE_FILES', [name])
-
-    def fake_git(args, **kwargs):
-        if args[1] == 'ls-remote': return 'a' * 40 + '\trefs/heads/main\n'
-        if args[1] == 'cat-file': return b''
-        if args[1] == 'show': return b'archived\nbytes\n'
-        raise AssertionError(args)
-
-    monkeypatch.setattr(delivery.subprocess, 'check_output', fake_git)
+    remote = _mock_release_batch(monkeypatch, {name: b'archived\nbytes\n'})
     with pytest.raises(ValueError, match='Local core/authority differs'):
         delivery.verify_release(tmp_path)
     path.write_bytes(b'archived\nbytes\n')
-    assert delivery.verify_release(tmp_path) == 'a' * 40
+    assert delivery.verify_release(tmp_path) == remote
