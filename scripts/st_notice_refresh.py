@@ -78,12 +78,58 @@ def _precision_drift_only(previous, current):
                 changed_event_ids_sha256=_sha(json.dumps(sorted(changed), separators=(',', ':')).encode()))
 
 
+def _reviewed_investor_record_removal_20261104(previous, current):
+    """One exact observed catalog disappearance; never remove archive history.
+
+    Evidence: source-only run41865471442, approved D4 whole ZIP df235b54...
+    The old 1041-row boundary is immutable. Only its non-equity INV/050003
+    record disappeared; every remaining field must retain its exact identity,
+    except display precision still checked by the original native guard.
+    No new runtime evidence dependency or authority/manifest mutation is added.
+    """
+    identity = 'AN202611041831417267'
+    if set(previous) - set(current) != {identity} or set(current) - set(previous):
+        return None
+    canonical = lambda value: json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+    stable = {key: {field: value for field, value in row.items() if field != 'display_time'}
+              for key, row in current.items()}
+    if (len(previous) != 1041 or len(current) != 1040
+            or _sha(canonical(previous)) != 'df3ea42747570be4b1f6e795ed08684a245f1da4a699ea3d8a65a0d9db9c5ceb'
+            or _sha(canonical(stable)) != '1b2cb7bad50f5ab85798706b10bd1e9a73c5f0c8d1aa6948ab8818fa97b4e9f2'):
+        return None
+    row = previous[identity]
+    from scripts.st_notice_evidence import is_equity_issuer
+    import microcap_top100_mom16_biweekly_live_v2_0 as base
+    if (row['notice_date'] != '2026-11-04 00:00:00'
+            or row['title'] != '002639雪人集团投资者关系管理信息20261104'
+            or row['codes'][0]['ann_type'] != 'INV'
+            or row['columns'] != [{'column_code': '050003', 'column_name': '调研活动'}]
+            or is_equity_issuer(row, '002639')
+            or base.freq_mod.classify_st_notice_risk_actions(row['title']) != {}):
+        raise StNoticeEvidenceError('Reviewed non-ST investor record classification changed')
+    common = {key: value for key, value in previous.items() if key != identity}
+    result = _precision_drift_only(common, current)
+    precision_count = result['changed_event_count']
+    changed = sorted({identity} | {key for key in common if common[key] != current[key]})
+    result.update(policy='exact_non_st_investor_removal_20261104_v1',
+                  precision_changed_event_count=precision_count, changed_event_count=len(changed),
+                  changed_event_ids_sha256=_sha(json.dumps(changed, separators=(',', ':')).encode()),
+                  removed_event_ids=[identity], reviewed_non_st_removed_ids=[identity],
+                  boundary_native_content_unchanged=False,
+                  previous_native_sha256=_sha(canonical(previous)),
+                  current_stable_native_sha256=_sha(canonical(stable)))
+    return result
+
+
 def _boundary_precision_drift(previous, current):
     if previous.keys() == current.keys():
         try:
             return _precision_drift_only(previous, current)
         except StNoticeEvidenceError:
             pass
+    reviewed_removal = _reviewed_investor_record_removal_20261104(previous, current)
+    if reviewed_removal is not None:
+        return reviewed_removal
     from scripts.st_notice_boundary_review import reviewed_additions
     return reviewed_additions(previous, current, _precision_drift_only)
 
