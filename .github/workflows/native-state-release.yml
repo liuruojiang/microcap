@@ -1,40 +1,152 @@
-name: Assemble verified native state release
+name: Build repaired November 4 close state without sending
 on:
   workflow_dispatch:
 permissions:
   contents: write
+defaults:
+  run:
+    shell: bash
 jobs:
-  assemble:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 120
     env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      MICROCAP_DAILY_STOCK_PROVIDER: tencent
+      TZ: Asia/Shanghai
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Download exact base and delta
+      - uses: actions/checkout@v6
+        with:
+          path: controller
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          repository: liuruojiang/codex-daily-automation-probe
+          ref: 517e81dbeb25e4d724a45c9e559b7d5724af73f9
+          path: automation
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          repository: liuruojiang/microcap
+          ref: e525cb8325a1c11c2dfa3540c3a679d28230986a
+          path: microcap
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install unchanged production dependencies
+        run: python -m pip install numpy 'pandas<3' requests 'akshare==1.18.46' 'baostock==0.9.1' matplotlib
+      - name: Restore original approved archive through verified compatible transport
+        shell: bash
         run: |
-          gh release download top100-tencent-daily-20261102 --repo liuruojiang/microcap --pattern microcap-tencent-whole-delivery-20261102.zip
-          gh release download top100-audit-fixes-20261103 --repo liuruojiang/microcap --pattern audit-fixes-state-delta.zip
-      - name: Reconstruct and verify identical bundle
+          mkdir -p repair
+          python -B -X utf8 automation/scripts/restore_approved_microcap_state.py \
+            --root microcap --bundle "${RUNNER_TEMP}/approved-original.zip" \
+            --url https://github.com/liuruojiang/microcap/releases/download/top100-st-notice-20261103/microcap-st-notice-whole-delivery-20261103.zip \
+            --sha256 c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911 \
+            --seed-date 2026-11-03 2>&1 | tee repair/original_restore.log
+      - name: Verify exact source-only transition and unchanged restored state
+        run: >-
+          python -B -X utf8 controller/docs/postclose_repair_tools_20261104/source_bridge.py
+          --root microcap
+          --manifest controller/docs/postclose_repair_tools_20261104/transition.json
+          --manifest-sha256 7877fc28d96a7f48f63ffddaa6adc8c1369d988697e002784984c9cf13eedbdd
+          --audit repair/source_transition.json
+      - name: Resolve actual completed session
+        shell: bash
+        run: |
+          day=$(cd microcap && python -B -X utf8 -c 'from scripts.exchange_calendar import latest_completed_session; print(latest_completed_session().isoformat())')
+          [[ "$day" == '2026-11-04' ]] || { echo 'Not the authorized completed session'; exit 1; }
+          echo "$day" > repair/expected_date.txt
+      - name: Official strict incremental whole refresh and three-version generation
+        working-directory: microcap
+        shell: bash
+        run: |
+          for attempt in 1 2; do
+            set +e
+            python -B -X utf8 scripts/top100_delivery.py refresh-all 2>&1 | tee "../repair/refresh_attempt_${attempt}.log"
+            code=${PIPESTATUS[0]}
+            set -e
+            if [[ "$code" -eq 0 ]]; then break; fi
+            if grep -Eiq 'StNoticeEvidenceError|SecurityMetaHistoryCorrectionRequired|exact-hash|historical rewrite|source group stopped|Share-count history changed|Share source|Fixed anchor|Full rebuild|FULL_REBUILD|frozen|Member authorities changed' "../repair/refresh_attempt_${attempt}.log"; then exit "$code"; fi
+            if [[ "$attempt" -ge 2 ]] || ! grep -Eiq 'ReadTimeout|ConnectTimeout|ConnectionError|timed out|HTTP(Error| error)?[: ]+(429|500|502|503|504)|temporary failure in name resolution' "../repair/refresh_attempt_${attempt}.log"; then exit "$code"; fi
+            sleep 20
+          done
+      - name: Independent official whole delivery check
+        working-directory: microcap
+        run: python -B -X utf8 scripts/top100_delivery.py check 2>&1 | tee ../repair/whole_check.log
+      - name: Query official close-confirmed v2.0
+        working-directory: microcap
+        run: python -B -X utf8 microcap_top100_mom16_biweekly_live_v2_0.py 信号 2>&1 | tee ../repair/v2_0.log
+      - name: Query official close-confirmed v2.3
+        working-directory: microcap
+        run: python -B -X utf8 microcap_top100_mom16_biweekly_live_v2_3.py 信号 2>&1 | tee ../repair/v2_3.log
+      - name: Query official close-confirmed v2.5
+        working-directory: microcap
+        run: python -B -X utf8 microcap_top100_mom16_biweekly_live_v2_5.py 信号 2>&1 | tee ../repair/v2_5.log
+      - name: Official whole pack with original validations
+        shell: bash
+        run: |
+          python -B -X utf8 microcap/scripts/top100_cloud_delivery.py pack \
+            --root microcap --v23-root microcap --v25-root microcap \
+            --bundle repair/microcap-postclose-repaired-whole-20261104.zip \
+            --expected-date 2026-11-04 2>&1 | tee repair/whole_pack.log
+      - name: Render and validate normal consumer without SMTP
+        shell: bash
+        run: |
+          python -B -X utf8 automation/scripts/build_microcap_realtime_digest.py \
+            --result v2.0=repair/v2_0.log --result v2.3=repair/v2_3.log --result v2.5=repair/v2_5.log \
+            --signal-csv v2.0=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_0_latest_signal.csv \
+            --signal-csv v2.3=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_3_latest_signal.csv \
+            --signal-csv v2.5=microcap/outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv \
+            --out-dir repair/digest --publication-mode close_confirmed --expected-signal-date 2026-11-04 \
+            --strategy-sha 1794f104c5766bdc6fed4b32753ec6750fa72653 --subject-prefix '[修复验证][未发送]' \
+            --exit-code v2.0=0 --exit-code v2.3=0 --exit-code v2.5=0
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('repair/digest/metadata.json').read_text())
+          assert m['status']=='OK' and m['signal_date']=='2026-11-04',m
+          PY
+      - name: Publish exact completed matching state and verify remote bytes
         shell: python
         run: |
-          import hashlib,json,zipfile
+          import hashlib,json,subprocess
           from pathlib import Path
-          old=Path('microcap-tencent-whole-delivery-20261102.zip').read_bytes()
-          delta=Path('audit-fixes-state-delta.zip').read_bytes()
-          assert hashlib.sha256(old).hexdigest()=='9338d5536584b131d0ee0a78fcf7a604f85970c21c30a33b77c35be6902c0864'
-          assert hashlib.sha256(delta).hexdigest()=='40b386136f0973cebe77e8de1294cb56f938b0486db6f702d3004329b614c033'
-          with zipfile.ZipFile('audit-fixes-state-delta.zip') as z:
-              r=json.loads(z.read('recipe.json'));literal=z.read('literals.bin')
-          result=bytearray()
-          for kind,start,size in r['ops']:
-              assert kind in ('copy','literal') and start>=0 and size>=0
-              source=old if kind=='copy' else literal
-              assert start+size<=len(source)
-              result.extend(source[start:start+size])
-          assert len(result)==605202401
-          assert hashlib.sha256(result).hexdigest()=='99007407df303991522d0f499121f99ddbf8f79cbae37b1d712e753b0aebfc93'
-          Path('microcap-audit-fixed-whole-delivery-20261102.zip').write_bytes(result)
-      - name: Upload exact bundle and publish release
-        run: |
-          gh release upload top100-audit-fixes-20261103 microcap-audit-fixed-whole-delivery-20261102.zip --repo liuruojiang/microcap
-          gh release edit top100-audit-fixes-20261103 --repo liuruojiang/microcap --draft=false
+          repo='liuruojiang/microcap'; tag='microcap-postclose-repair-20261104-1794f104'; source='1794f104c5766bdc6fed4b32753ec6750fa72653'
+          path=Path('repair/microcap-postclose-repaired-whole-20261104.zip'); expected=hashlib.sha256(path.read_bytes()).hexdigest(); size=path.stat().st_size
+          def gh(*args):return subprocess.check_output(['gh',*args],timeout=600)
+          q=subprocess.run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+          if q.returncode:
+              if b'404' not in q.stderr:raise RuntimeError('Unknown release lookup state')
+              gh('release','create',tag,'--repo',repo,'--target',source,'--draft','--title','Verified November 4 post-close repair state','--notes','Official strict incremental refresh, complete three-version delivery/check/pack; unchanged frozen authority and strategy parameters. No SMTP or delivery markers.')
+          m=json.loads(gh('api',f'repos/{repo}/releases/tags/{tag}'))
+          if m['target_commitish']!=source:raise RuntimeError('Release source conflict')
+          matches=[a for a in m['assets'] if a['name']==path.name]
+          if not matches:gh('release','upload',tag,str(path),'--repo',repo)
+          elif len(matches)!=1 or matches[0]['size']!=size:raise RuntimeError('Remote asset identity conflict')
+          saved=Path('repair/remote_readback');saved.mkdir()
+          gh('release','download',tag,'--repo',repo,'--pattern',path.name,'--dir',str(saved))
+          if (saved/path.name).stat().st_size!=size or hashlib.sha256((saved/path.name).read_bytes()).hexdigest()!=expected:raise RuntimeError('Remote whole archive bytes differ')
+          gh('release','edit',tag,'--repo',repo,'--draft=false')
+          m=json.loads(gh('api',f'repos/{repo}/releases/tags/{tag}'));a=[a for a in m['assets'] if a['name']==path.name]
+          assert m['draft'] is False and len(a)==1 and a[0]['size']==size and a[0].get('digest') in (None,'','sha256:'+expected)
+          receipt={'ok':True,'state_url':f'https://github.com/{repo}/releases/download/{tag}/{path.name}','state_sha256':expected,'state_bytes':size,'state_date':'2026-11-04','strategy_sha':source,'release_api':m,'source_transition':json.loads(Path('repair/source_transition.json').read_text()),'smtp_invoked':False,'normal_markers_modified':False}
+          Path('repair/new_state_release.json').write_text(json.dumps(receipt,indent=2))
+          print(json.dumps({k:v for k,v in receipt.items() if k not in ('release_api','source_transition')}))
+      - name: Preserve exact results and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: microcap-postclose-repair-20261104
+          path: |
+            repair/
+            microcap/outputs/*_latest_signal.csv
+            microcap/outputs/*_summary.json
+            microcap/outputs/top100_delivery_manifest.json
+            microcap/.microcap_index_cache/st_notice_sources/refresh_20261104*/
+          include-hidden-files: true
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30

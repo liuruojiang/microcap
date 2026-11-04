@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "old_restore_runtime": "e525cb8325a1c11c2dfa3540c3a679d28230986a",
+  "new_runtime": "1794f104c5766bdc6fed4b32753ec6750fa72653",
+  "expected_date": "2026-11-04",
+  "original_archive_url": "https://github.com/liuruojiang/microcap/releases/download/top100-st-notice-20261103/microcap-st-notice-whole-delivery-20261103.zip",
+  "original_archive_sha256": "c3f98e93770b98b3f1cca7d921f10d69f729e8522cc7777a3769271404913911",
+  "original_archive_bytes": 609746827,
+  "original_archive_date": "2026-11-03",
+  "original_archive_author_runtime": "d7615a3e3383e02f2b1e0eedfadfcb499ae7317a",
+  "changes": {
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831316469.pdf": {
+      "old": null,
+      "new": "b182683be37f6adebf2bd1ae04dadcd5b6440c83016082b2da8ec84a60a4f912"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831316469.receipt.json": {
+      "old": null,
+      "new": "ca54a2232e29242161bf63b4cb198b5e1492bd57e5953606df8f1bbf8bf3b118"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831316469.txt": {
+      "old": null,
+      "new": "89b297cc7abb8ea11d9e08d334ee8edb130b33222e274cda22d05cda2ea40674"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831317290.pdf": {
+      "old": null,
+      "new": "dd627d4e318fc51ce5db251953087595314c5b5b4ee95f09949f25c1595cbf6d"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831317290.receipt.json": {
+      "old": null,
+      "new": "477d69282bf8c6218e5e7fd3a84c8d8d9afd5b1116f6446581a5006ba7aad173"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831317290.txt": {
+      "old": null,
+      "new": "fdebc27bc25cc029ea217108da4ec0353ecc54c02ac50cc02750b9e1e21a8a73"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831319809.pdf": {
+      "old": null,
+      "new": "8424e165e798c65d2b5ffa475126d999ef2680bddda406645fbfa08fdf2e9d6e"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831319809.receipt.json": {
+      "old": null,
+      "new": "7929b132d78d1c85f4e7cd25bfbe3ae02af670b8bca9da70bf7f996acac1373d"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831319809.txt": {
+      "old": null,
+      "new": "1faeec1651f186f25a4d0c959ddc2c740669d00cd6d579dfc42889cb19c4044a"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831320660.pdf": {
+      "old": null,
+      "new": "147fe671a7ae62ec4aac157dc8c603d871cc6234df2334ba14c5ddbbe4748bfa"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831320660.receipt.json": {
+      "old": null,
+      "new": "f8811251395c8bc79a438c4633c52bd83044020c95a1a4c47a449e1e754e86dd"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831320660.txt": {
+      "old": null,
+      "new": "4b017c02e0d62cda554d1f019e6a8e629f908f62e7201e5b1242ef43b8928a7d"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831322946.pdf": {
+      "old": null,
+      "new": "ed8778ee08e425bdc424190f04efd7aacdef427fe58ecdcbb5e12026f7f407ee"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831322946.receipt.json": {
+      "old": null,
+      "new": "f77d2453798f1d60bff9aca6d00fe6aa283ab7d95665e7d857cc375ff0346a15"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831322946.txt": {
+      "old": null,
+      "new": "670492f33126bec4473d12f18cd187a827e3d191896d69274e2d35105b79748c"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331482.pdf": {
+      "old": null,
+      "new": "be0e0cf3ed0a72dee154568b0b4c3e6c6f27614c1baa9fbb5498d369bb64f17e"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331482.receipt.json": {
+      "old": null,
+      "new": "4f5d52361eb83054fe3f1857e4da3aedd47b48a03b4e0fa0a8b71bfd171f40f1"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331482.txt": {
+      "old": null,
+      "new": "d6435b0af0450cc112067be39222ee04471ffc677a2030f2a99a4681dab1ef69"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331965.pdf": {
+      "old": null,
+      "new": "ce902551fadfec991544103d18b52ba24eef3a41019f6dc7d0855a9cd541279e"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331965.receipt.json": {
+      "old": null,
+      "new": "fcf8b0ae9c46a4559b9c0722df86ed16adc3e6477797fced35010a65a321fd4b"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831331965.txt": {
+      "old": null,
+      "new": "41db56fb4ea82253cda69aec7071a698d2b050fe2920c873f2489eaa57fb670a"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831333770.pdf": {
+      "old": null,
+      "new": "970ff7e35e80364ec7ea358c8936dc5c03794624156008ff7e6f9f80ce1f389d"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831333770.receipt.json": {
+      "old": null,
+      "new": "d9ae7fc2df310c2ab3086ba9441fae8bdc8bed547f5ba010d4e7c620c85acf57"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611021831333770.txt": {
+      "old": null,
+      "new": "f46079fb79575577b8993264285eb46a8037ec8e57f4690959bab700d87b654d"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611031831370699.pdf": {
+      "old": null,
+      "new": "c74d539c9aca4463fb58a08e1801f327ed8bf52444abf8fa3d3600e8d94cb7cf"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611031831370699.receipt.json": {
+      "old": null,
+      "new": "e0c5790c4738b57c7f97f3735fd902c9bbf00958b7bb46e00a859ebaf389364f"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611031831370699.txt": {
+      "old": null,
+      "new": "850381fa57fce2e210317ad4a79334e1a56a70a87bf336f1b82edf7f639b3143"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611041831390838.pdf": {
+      "old": null,
+      "new": "ced53234bb150e8cd6b74ed1fff316fddee7ac899606dc47fa477154d7ae165d"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611041831390838.receipt.json": {
+      "old": null,
+      "new": "1fac196c7d5bc4f0cd49c41da62e1d18aab81e9aea6c460f4fa59d05ee58d5f9"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/AN202611041831390838.txt": {
+      "old": null,
+      "new": "8c4712c3f83161f68d129a8d7d20f12c5a47d18f922fd7e486b5a74e9e274c69"
+    },
+    "data/st_notice_boundary_reviews/postclose_20261104/candidate.json": {
+      "old": null,
+      "new": "8a8d39a226af84f78a285649135b080112cd985337d7361181e1c2cf8e1c8af6"
+    },
+    "docs/postclose_exact_catalog_20261104.md": {
+      "old": null,
+      "new": "b6dfbfaf8158e7163f042781ec6b75430cc12cf27d53e9ec36a5fa90014eae28"
+    },
+    "docs/postclose_restore_test_source_20261104.md": {
+      "old": null,
+      "new": "29128245999f129c12ed140ef123863e948307db671589f5a7da3bcd2609e579"
+    },
+    "scripts/st_notice_boundary_review.py": {
+      "old": "2fef55d6834ba7b7cf45c4bc7c393cc9e017ee44658ccba1436aa7f071247e08",
+      "new": "cf3db386ef65edc85e423d3be241f800038fafa2061dcaba931dc21c3ee5f286"
+    },
+    "scripts/st_notice_postclose_boundary_20261104.py": {
+      "old": null,
+      "new": "bc885b478a60ef207ba73bbca4ec184411ca78242e9386f50dae8429e6b112a2"
+    },
+    "tests/test_postclose_boundary_transport_20261104.py": {
+      "old": null,
+      "new": "aa788d39b9976bb59ee43705098cf1a34954731a5ba84ef573c83b66d11ddf86"
+    }
+  }
+}
