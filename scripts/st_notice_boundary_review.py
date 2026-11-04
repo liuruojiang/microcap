@@ -25,6 +25,12 @@ SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261104/registry.jso
 SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261104/" + identity + suffix
                  for identity in ("AN202611031831376420", "AN202611031831373422")
                  for suffix in (".pdf", ".txt", ".receipt.json")]
+# Exact post-close transport extension; original review bytes are retained.
+SOURCE_FILES += ["scripts/st_notice_postclose_boundary_20261104.py",
+                 "data/st_notice_boundary_reviews/postclose_20261104/candidate.json"]
+SOURCE_FILES += ["data/st_notice_boundary_reviews/postclose_20261104/" + identity + suffix
+                 for identity in ['AN202611021831316469', 'AN202611021831317290', 'AN202611021831319809', 'AN202611021831320660', 'AN202611021831322946', 'AN202611021831331482', 'AN202611021831331965', 'AN202611021831333770', 'AN202611031831370699', 'AN202611041831390838']
+                 for suffix in (".pdf", ".txt", ".receipt.json")]
 LEGACY_CERTIFICATE_SHA = "1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9"
 
 
@@ -247,6 +253,10 @@ def _review_exact_20261104_transport(previous, current, precision):
 
 def reviewed_additions(previous, current, precision):
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
+    from scripts.st_notice_postclose_boundary_20261104 import reviewed_extension
+    extension = reviewed_extension(previous, current, precision)
+    if extension is not None:
+        return extension
     exact_transport = _review_exact_20261104_transport(previous, current, precision)
     if exact_transport is not None:
         return exact_transport
