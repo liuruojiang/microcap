@@ -312,3 +312,42 @@ def test_shared_pack_rejects_cache_created_between_inventory_and_validation(work
     assert cache.read_bytes() == original_cache
     assert bundle.read_bytes() == original_bundle
     assert not (workspace / delivery.LOCK).exists()
+
+
+@pytest.mark.parametrize("damage", [False, True])
+def test_restore_stages_calendar_for_native_st_source_closure(workspace, monkeypatch, damage):
+    """Exercise the native byte-bound closure, not an unconditional validator mock."""
+    import hashlib
+    from scripts.st_history_scope import source_closure
+
+    calendar = "scripts/exchange_calendar.py"
+    reference = ".microcap_index_cache/realtime/st_restore_dependency.json"
+    record = ".microcap_index_cache/realtime/st_restore_record.json"
+    (workspace / record).parent.mkdir(parents=True, exist_ok=True)
+    (workspace / record).write_text("{}", encoding="utf-8")
+    def bound(name):
+        return {"path": name, "sha256": hashlib.sha256((workspace / name).read_bytes()).hexdigest()}
+    raw = json.dumps({"schema_version": 2, "symbols": {
+        "000001": {"records": bound(record), "source_files": [bound(calendar)]}}}).encode()
+    (workspace / reference).write_bytes(raw)
+    expected = hashlib.sha256(raw).hexdigest()
+    bundle, target = prepare(workspace, monkeypatch)
+    if damage:
+        (target / calendar).write_bytes(b"# changed after bundle creation")
+    def validate(root, *args, **kwargs):
+        if (root / reference).exists():
+            source_closure(root, reference, expected)
+        return {"ok": True, "errors": []}
+    monkeypatch.setattr(state, "validate_state", validate)
+    if damage:
+        before = {p.relative_to(target): p.read_bytes() for p in target.rglob("*") if p.is_file()}
+        with pytest.raises(Exception, match="ST scope source hash mismatch"):
+            cloud.restore(target, bundle, "2026-09-03")
+        after = {p.relative_to(target): p.read_bytes() for p in target.rglob("*") if p.is_file()}
+        assert before == after
+        assert not (target / ".codex_backups").exists()
+    else:
+        result = cloud.restore(target, bundle, "2026-09-03")
+        assert result["ok"]
+        assert (target / calendar).read_bytes() == (workspace / calendar).read_bytes()
+        assert calendar in source_closure(target, reference, expected)
