@@ -211,11 +211,12 @@ def test_existing_unreadable_metadata_never_disappears_into_non_st(metadata_runt
             "intraday_start": [{"start": "2026-09-02 12:00:00", "end": None}],
             "timezone_end": [{"start": "2026-09-02", "end": "2026-09-03T00:00:00+08:00"}],
         }
+        payload = _metadata_payload(ns)
         bad_text = {
             "invalid_json": '{"symbol":',
             "non_object": "[]",
-            "invalid_intervals": json.dumps({**_metadata_payload(ns), "st_intervals": None}),
-            **{key: json.dumps({**_metadata_payload(ns), "st_intervals": intervals})
+            "invalid_intervals": json.dumps({**payload, "st_intervals": None}),
+            **{key: json.dumps({**payload, "st_intervals": intervals})
                for key, intervals in bad_intervals.items()},
         }[corruption]
         path.write_text(bad_text, encoding="utf-8")
