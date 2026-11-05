@@ -297,7 +297,79 @@ def _reviewed_catalog_columns_20261105(previous, current):
                 risk_projection_unchanged=True)
 
 
+def _non_equity_catalog_metadata(previous, current, precision):
+    """Ignore only non-ST BSE/NEEQ listing/sort metadata in comparison.
+
+    Raw observations and archive history are never rewritten. Native equity and
+    risk selectors, publication clocks, additions/deletions and every other
+    field still pass their original boundary checks.
+    """
+    import copy
+    from datetime import datetime
+    from scripts.st_notice_evidence import is_equity_issuer
+    from scripts.st_notice_refresh import _boundary_precision_drift
+    import microcap_top100_mom16_biweekly_live_v2_0 as base
+
+    normalized = copy.deepcopy(current)
+    changes = {}
+    for identity in previous.keys() & current.keys():
+        old, new = previous[identity], current[identity]
+        fields = {key for key in old.keys() | new.keys()
+                  if key != "display_time" and old.get(key) != new.get(key)}
+        if not fields or not fields <= {"listing_state", "sort_date"}:
+            continue
+        eligible = True
+        for row in (old, new):
+            codes = row.get("codes")
+            if (not isinstance(codes, list) or not codes
+                    or base.freq_mod.classify_st_notice_risk_actions(row.get("title", "")) != {}):
+                eligible = False
+                break
+            for item in codes:
+                symbol = item.get("stock_code", "") if isinstance(item, dict) else ""
+                if (not isinstance(symbol, str) or len(symbol) != 6 or not symbol.isascii()
+                        or not symbol.isdigit() or symbol[0] not in "489"
+                        or set(str(item.get("ann_type", "")).split(",")) not in ({"A", "BJA"}, {"SB"})
+                        or is_equity_issuer(row, symbol)):
+                    eligible = False
+                    break
+            if "listing_state" in fields and row.get("listing_state") not in {"0", "2", "9"}:
+                eligible = False
+            if "sort_date" in fields:
+                try:
+                    value = row["sort_date"]
+                    parsed = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+                    notice = datetime.strptime(row["notice_date"], "%Y-%m-%d %H:%M:%S")
+                    if parsed.strftime("%Y-%m-%d %H:%M:%S") != value or parsed.date() != notice.date():
+                        eligible = False
+                except (KeyError, TypeError, ValueError):
+                    eligible = False
+        if not eligible:
+            continue
+        changes[identity] = {field: {"previous": old[field], "current": new[field]} for field in sorted(fields)}
+        for field in fields:
+            normalized[identity][field] = copy.deepcopy(old[field])
+    if not changes:
+        return None
+    # One bounded recursion: normalized rows have no candidate metadata delta.
+    # Exact previously reviewed catalog corrections and precision remain enforced.
+    result = _boundary_precision_drift(previous, normalized)
+    changed = sorted((previous.keys() ^ current.keys()) |
+                     {key for key in previous.keys() & current.keys() if previous[key] != current[key]})
+    stable = {key: {k: v for k, v in row.items() if k != "display_time"} for key, row in current.items()}
+    return dict(result, policy="non_equity_catalog_metadata_with_native_boundary_v1",
+                underlying_boundary_policy=result["policy"],
+                non_equity_catalog_changes=changes,
+                changed_event_count=len(changed),
+                changed_event_ids_sha256=sha(json.dumps(changed, separators=(",", ":")).encode()),
+                current_stable_native_sha256=sha(canonical(stable)),
+                risk_projection_unchanged=True, boundary_native_content_unchanged=False)
+
+
 def reviewed_additions(previous, current, precision):
+    catalog = _non_equity_catalog_metadata(previous, current, precision)
+    if catalog is not None:
+        return catalog
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
     columns = _reviewed_catalog_columns_20261105(previous, current)
     if columns is not None:

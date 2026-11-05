@@ -1,0 +1,7 @@
+# Non-equity catalog metadata repair, 2026-11-06
+
+Run 42067613529 restored the accepted original state successfully, then rejected the Nov4 boundary: three Senfeng Laser BSE/NEEQ notices changed listing_state and one sort_date. The full native source/receipts and three issuer PDFs are retained under tests/fixtures/non_equity_catalog_20261106. The original rows, historical ST intervals, authority and economic outputs are unchanged.
+
+The repair normalizes only listing_state in {0,2,9} and valid same-notice-day sort_date for comparison of existing BSE/NEEQ rows. Code/venue identity must remain unchanged and outside the native equity selector; native ST risk classification must be empty. All other fields, additions/deletions and publication display_time still go through the existing exact boundary/precision gates. The original risk-removal and 301128 column reviews remain exact. Raw files and archive pointers are never altered by this comparator.
+
+Actual original failure reproduced; patched actual pair and 18 counterexamples/document tests passed alongside all 21 existing catalog cases (40 total, 8.52s). Regressions cover equity/risk reclassification, issuer/title/category/date changes, invalid catalog metadata, new/deleted rows and publication-clock crossings. This is software/source compatibility only, not confirmation of Nov5 market data or email delivery. Nov5 normal delivery remains subject to the original complete state and send gates.
