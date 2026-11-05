@@ -11,6 +11,7 @@ import re
 import shutil
 import sys
 import tempfile
+import time
 import zipfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
@@ -666,6 +667,12 @@ def validate_member_cache_transport(root: Path, anchor: date | None) -> list[str
 # Process-local successes only. Every lookup rehashes the complete dependency
 # trees; no disk certificate or mtime-based shortcut is used.
 _RETURN_BASIS_SUCCESS_MEMO: dict[str, tuple] = {}
+_RETURN_BASIS_SCAN_METRICS: dict[str, dict] = {}
+
+
+def return_basis_scan_metrics(root: Path) -> dict:
+    """Bounded diagnostics only; never an input, certificate or reuse authority."""
+    return copy.deepcopy(_RETURN_BASIS_SCAN_METRICS.get(str(Path(root).resolve()), {}))
 
 # This reviewed transition consumes the exact already-certified D4 inputs with
 # stricter/faster validators. It is not a wildcard for future code or data.
@@ -737,7 +744,8 @@ def validation_source_review(root: Path) -> dict:
     return copy.deepcopy(VALIDATION_SOURCE_REVIEW)
 
 
-def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...]):
+def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...],
+                                    *, _handoff=None, _metrics=None):
     import stat
     from collections import deque
     from concurrent.futures import ThreadPoolExecutor
@@ -755,6 +763,16 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
         return path.is_symlink() or getattr(path, "is_junction", lambda: False)()
 
     def inventory():
+        tick = time.monotonic()
+        if _metrics is not None:
+            _metrics["inventory_scans"] += 1
+        try:
+            return collect_inventory()
+        finally:
+            if _metrics is not None:
+                _metrics["inventory_seconds"] += time.monotonic() - tick
+
+    def collect_inventory():
         entries = []
         for relative in fixed:
             path = root / relative
@@ -796,7 +814,18 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
                             return None
         return sorted(entries)
 
-    before = inventory()
+    # The handoff is private to two adjacent scans in one memo-hit attempt. It
+    # carries only an already checked directory inventory, never file hashes.
+    # Both rounds still read every byte, and the second round ends with a full
+    # independent directory/link inventory. No handoff survives this request.
+    binding = (str(root), target, symbols, calendar)
+    saved = _handoff.pop("inventory", None) if _handoff is not None else None
+    if saved is not None and saved[0] == binding:
+        before = saved[1]
+        if _metrics is not None:
+            _metrics["adjacent_inventory_reuses"] += 1
+    else:
+        before = inventory()
     if before is None:
         return None, False
     digest = hashlib.sha256()
@@ -804,19 +833,23 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     unlocked = True
     def file_sha(relative):
         if not any(relative.startswith(tree + "/") for tree in trees):
-            return _sha256(root / relative)
+            path = root / relative
+            return _sha256(path), path.stat().st_size
         # Canonical root + complete before/after link inventories; every byte
         # remains mandatory. Fixed paths keep the original resolving helper.
         content = hashlib.sha256()
+        byte_count = 0
         with (root / relative).open("rb") as handle:
             for chunk in iter(lambda: handle.read(1024 * 1024), b""):
                 content.update(chunk)
-        return content.hexdigest()
+                byte_count += len(chunk)
+        return content.hexdigest(), byte_count
     file_names = iter(relative for relative, kind in before if kind == "file")
     pending = deque()
     # At most four readers and eight outstanding tasks, independent of tree
     # size. Consume strictly in the old sorted inventory order, never completion
     # order. Executor exit joins every owned reader, including on exceptions.
+    hash_started = time.monotonic()
     with ThreadPoolExecutor(max_workers=4) as readers:
         for _ in range(8):
             name = next(file_names, None)
@@ -828,12 +861,18 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
                 name, future = pending.popleft()
                 if name != relative:
                     raise RuntimeError("Return-basis file hashing order changed")
-                digest.update(future.result().encode())
+                file_digest, byte_count = future.result()
+                digest.update(file_digest.encode())
+                if _metrics is not None:
+                    _metrics["hashed_files"] += 1
+                    _metrics["hashed_bytes"] += byte_count
                 if relative.startswith(".microcap_index_cache/return_basis/locks/"):
                     unlocked = False
                 name = next(file_names, None)
                 if name is not None:
                     pending.append((name, readers.submit(file_sha, name)))
+    if _metrics is not None:
+        _metrics["content_seconds"] += time.monotonic() - hash_started
     modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
     for module in modules:
         digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
@@ -841,9 +880,15 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
         for name, value in sorted(vars(module).items()):
             if hasattr(value, "__code__"):
                 digest.update((name + ":" + str(id(value))).encode())
-    if inventory() != before:
+    after = inventory()
+    if after != before:
         raise RuntimeError("Return-basis inputs changed during fingerprint scan")
+    if _handoff is not None:
+        _handoff["inventory"] = (binding, after)
     return digest.hexdigest(), unlocked
+
+
+_NATIVE_RETURN_BASIS_FINGERPRINT = _return_basis_input_fingerprint
 
 
 def _verify_return_basis_transport_memoized(root: Path, anchor, symbols):
@@ -852,32 +897,74 @@ def _verify_return_basis_transport_memoized(root: Path, anchor, symbols):
     target = pipeline.pd.Timestamp(anchor).strftime("%Y-%m-%d")
     requested = tuple(str(symbol).zfill(6) for symbol in symbols)
     key = str(Path(root).resolve())
+    started = time.monotonic()
+    metrics = {"schema": 1, "target": target, "memo_outcome": "failed",
+               "fingerprint_passes": [], "full_verifier_seconds": 0.0}
+    handoff = {}
+
+    def scan(label, *, adjacent=False):
+        record = {"phase": label, "inventory_scans": 0, "inventory_seconds": 0.0,
+                  "content_seconds": 0.0, "hashed_files": 0, "hashed_bytes": 0,
+                  "adjacent_inventory_reuses": 0, "status": "failed"}
+        metrics["fingerprint_passes"].append(record)
+        tick = time.monotonic()
+        if not adjacent:
+            handoff.clear()
+        try:
+            # Test/runtime replacements retain the old three-argument API and
+            # never gain reuse of an inventory collected by another function.
+            function = _return_basis_input_fingerprint
+            if function is _NATIVE_RETURN_BASIS_FINGERPRINT:
+                result = function(root, target, requested, _handoff=handoff, _metrics=record)
+            else:
+                handoff.clear()
+                result = function(root, target, requested)
+            record["status"] = "passed"
+            return result
+        finally:
+            record["elapsed_seconds"] = time.monotonic() - tick
+
     try:
-        before, unlocked = _return_basis_input_fingerprint(root, target, requested)
+        before, unlocked = scan("initial")
+        now = datetime.now(timezone.utc)
+        cached = _RETURN_BASIS_SUCCESS_MEMO.get(key)
+        metrics["memo_outcome"] = "miss_empty" if cached is None else "miss_changed_or_locked"
+        if before is not None and unlocked and cached is not None and cached[0] == before and now >= cached[1]:
+            _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
+            after, still_unlocked = scan("memo_confirmation", adjacent=True)
+            if after == before and still_unlocked:
+                _RETURN_BASIS_SUCCESS_MEMO[key] = cached
+                metrics["memo_outcome"] = "hit_verified_bytes"
+                return copy.deepcopy(cached[2])
+            # A concurrent content change invalidates reuse; verify it fully.
+            before, unlocked = after, still_unlocked
+            metrics["memo_outcome"] = "miss_changed_between_scans"
+        _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
+        tick = time.monotonic()
+        try:
+            result = verify_return_basis_transport(root, anchor, requested)
+        finally:
+            metrics["full_verifier_seconds"] = time.monotonic() - tick
+        if before is not None and unlocked:
+            # The full verifier intervened; no adjacent directory reuse here.
+            after, still_unlocked = scan("post_full_verifier")
+            if after != before or not still_unlocked:
+                raise RuntimeError("Return-basis inputs changed during full verification")
+            if result.get("read_only") is True and result.get("verified_count") == len(requested):
+                if len(_RETURN_BASIS_SUCCESS_MEMO) >= 8:
+                    _RETURN_BASIS_SUCCESS_MEMO.pop(next(iter(_RETURN_BASIS_SUCCESS_MEMO)))
+                _RETURN_BASIS_SUCCESS_MEMO[key] = (before, datetime.now(timezone.utc), copy.deepcopy(result))
+        return result
     except Exception:
         _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
+        metrics["memo_outcome"] = "failed"
         raise
-    now = datetime.now(timezone.utc)
-    cached = _RETURN_BASIS_SUCCESS_MEMO.get(key)
-    if before is not None and unlocked and cached is not None and cached[0] == before and now >= cached[1]:
-        _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
-        after, still_unlocked = _return_basis_input_fingerprint(root, target, requested)
-        if after == before and still_unlocked:
-            _RETURN_BASIS_SUCCESS_MEMO[key] = cached
-            return copy.deepcopy(cached[2])
-        # A concurrent change invalidates reuse; verify the new content fully.
-        before, unlocked = after, still_unlocked
-    _RETURN_BASIS_SUCCESS_MEMO.pop(key, None)
-    result = verify_return_basis_transport(root, anchor, requested)
-    if before is not None and unlocked:
-        after, still_unlocked = _return_basis_input_fingerprint(root, target, requested)
-        if after != before or not still_unlocked:
-            raise RuntimeError("Return-basis inputs changed during full verification")
-        if result.get("read_only") is True and result.get("verified_count") == len(requested):
-            if len(_RETURN_BASIS_SUCCESS_MEMO) >= 8:
-                _RETURN_BASIS_SUCCESS_MEMO.pop(next(iter(_RETURN_BASIS_SUCCESS_MEMO)))
-            _RETURN_BASIS_SUCCESS_MEMO[key] = (before, datetime.now(timezone.utc), copy.deepcopy(result))
-    return result
+    finally:
+        handoff.clear()
+        metrics["elapsed_seconds"] = time.monotonic() - started
+        if key not in _RETURN_BASIS_SCAN_METRICS and len(_RETURN_BASIS_SCAN_METRICS) >= 8:
+            _RETURN_BASIS_SCAN_METRICS.pop(next(iter(_RETURN_BASIS_SCAN_METRICS)))
+        _RETURN_BASIS_SCAN_METRICS[key] = metrics
 
 
 def _close_confirmed_proof_day(proof: dict, session: date, today: date) -> str:
