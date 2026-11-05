@@ -189,7 +189,7 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
         raise ValueError("Share source freshness requires explicit refresh")
     if datetime.now(timezone.utc) < datetime.fromisoformat(end + "T15:00:00+08:00"):
         raise ValueError("Share source close is not eligible")
-    if (source_root / "RATE_LIMIT_STOP.json").exists() or (state and state.get("kind") in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1")):
+    if (source_root / "RATE_LIMIT_STOP.json").exists() or (state and state.get("kind") in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1","sse_dated_transition_20261105_v1")):
         if not state:
             raise ValueError("Unchanged-tail fallback requires an existing verified share chain")
         if (cache_path.resolve() != (root / ".microcap_index_cache/share_change" / (symbol + ".csv")).resolve()
@@ -208,15 +208,23 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
             if not immutable.exists():
                 _atomic(immutable, raw)
         manifest_kind=json.loads((source_root/manifest["path"]).read_bytes())["schema"]
-        if manifest_kind not in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1"):
+        if manifest_kind not in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1","sse_dated_transition_20261105_v1"):
             raise ValueError("Unknown collected share-source schema")
+        candidate = old_bytes
+        if manifest_kind == "sse_dated_transition_20261105_v1":
+            from scripts.sse_share_daily_unchanged_20261104 import approved_transition
+            candidate, _ = approved_transition(root, symbol=symbol, previous_day=state["query_end"],
+                                               end=end, previous_candidate=old_bytes)
+            _atomic(source_root / "snapshots" / symbol / (_sha(candidate) + ".csv"), candidate)
         receipt = dict(schema_version=2, kind=manifest_kind, symbol=symbol,
                        query_start=(pd.Timestamp(state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"),
-                       query_end=end, candidate_sha256=_sha(old_bytes), evidence_manifest=manifest,
+                       query_end=end, candidate_sha256=_sha(candidate), evidence_manifest=manifest,
                        previous_state=dict(path=previous_path.relative_to(source_root).as_posix(), sha256=_sha(original_state_bytes)),
                        primary_source_health="unknown_original_denial_preserved")
         published = json.dumps(receipt, ensure_ascii=False, indent=2).encode()
         try:
+            if candidate != old_bytes:
+                _atomic(cache_path, candidate)
             _atomic(state_path, published)
             verify_share_cache(root=root, symbol=symbol, as_of=end)
         except BaseException:
@@ -224,9 +232,14 @@ def _refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=Fals
                 _atomic(failure_marker, json.dumps(dict(status="unknown_concurrent_state", original_sha256=_sha(original_state_bytes),
                                                        published_sha256=_sha(published))).encode())
                 raise RuntimeError("Unchanged-tail publication state changed concurrently; owner recovery required")
+            if cache_path.read_bytes() != candidate:
+                _atomic(failure_marker, b'{"status":"concurrent_share_candidate_change"}')
+                raise RuntimeError("Share candidate changed concurrently; owner recovery required")
+            if candidate != old_bytes:
+                _atomic(cache_path, old_bytes)
             _atomic(state_path, original_state_bytes)
             raise
-        return old
+        return pd.read_csv(cache_path, parse_dates=["change_date"]) if candidate != old_bytes else old
 
     start = (pd.Timestamp(state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d") if state else "1990-01-01"
     # Use the installed, pinned AkShare public CNInfo request encoder.
@@ -427,22 +440,28 @@ def verify_share_cache(*, root, symbol, as_of):
             raise ValueError("Share source/cache identity or cutoff mismatch")
         actual = frame(candidate, day)
         if state.get("schema_version") == 2:
-            if state.get("kind") not in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1"):
+            if state.get("kind") not in ("dual_source_unchanged_tail_v1","sse_dated_unchanged_tail_20261104_v1","sse_dated_transition_20261105_v1"):
                 raise ValueError("Unknown share provider/schema")
             previous = state["previous_state"]
             previous_state = json.loads(bound(previous["path"], previous["sha256"]))
             previous_raw = bound(f"snapshots/{symbol}/{previous_state['candidate_sha256']}.csv", previous_state['candidate_sha256'])
             verify(previous_state, previous_raw, depth+1)
             expected = (pd.Timestamp(previous_state["query_end"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
-            if state.get("query_start") != expected or day < expected or candidate != previous_raw:
+            transition = state.get("kind") == "sse_dated_transition_20261105_v1"
+            if state.get("query_start") != expected or day < expected or (not transition and candidate != previous_raw):
                 raise ValueError("Unchanged share tail changed history or has a query gap")
             from scripts.share_unchanged_tail import verify_manifest
             reference = state["evidence_manifest"]
             manifest = json.loads(bound(reference["path"], reference["sha256"]))
             if manifest.get("schema") != state["kind"]:
                 raise ValueError("Share state/provider manifest kind differs")
-            verify_manifest(manifest, symbol=symbol, previous_day=previous_state["query_end"],
-                            end=day, candidate=candidate, bound=bound, root=root)
+            if transition:
+                from scripts.sse_share_daily_unchanged_20261104 import verify_transition
+                verify_transition(manifest, symbol=symbol, previous_day=previous_state["query_end"],
+                                  end=day, candidate=candidate, previous_candidate=previous_raw, bound=bound, root=root)
+            else:
+                verify_manifest(manifest, symbol=symbol, previous_day=previous_state["query_end"],
+                                end=day, candidate=candidate, bound=bound, root=root)
         elif state.get("kind") == "approved_baseline":
             raw = bound(state["approval_path"], state["approval_sha256"])
             approval = json.loads(raw)

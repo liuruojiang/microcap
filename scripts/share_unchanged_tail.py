@@ -182,7 +182,7 @@ def _em_inventory(entries, bound, symbol, end, bounded, now, approved_event=None
 def plan_reviews(root=None):
     root = Path(root) if root is not None else Path(__file__).resolve().parents[1]
     registry = json.loads((root / "data/share_source_future_plan_reviews.json").read_bytes())
-    require(set(registry) in ({"schema", "records"}, {"schema", "records", "unchanged_event_approval"}) and registry["schema"] == "share_future_plan_reviews_v1"
+    require(set(registry) in ({"schema", "records"}, {"schema", "records", "unchanged_event_approval"}, {"schema", "records", "unchanged_event_approval", "sse_transition_approval"}) and registry["schema"] == "share_future_plan_reviews_v1"
             and isinstance(registry["records"], list), "future plan registry schema differs")
     required = {"symbol", "announcement_id", "notice_number", "provider_notice_date", "document_signature_date",
                 "planned_date", "before_total_shares", "after_total_shares", "change_total_shares", "status",
@@ -484,8 +484,18 @@ def collect_manifest(*, root, symbol, previous_day, end, candidate):
         raw = p.read_bytes()
         require(sha(raw) == expected, "source digest differs")
         return raw
+    if (symbol, previous_day, end) == ("603028", "2026-11-04", "2026-11-05"):
+        from scripts.sse_share_daily_unchanged_20261104 import collect_transition
+        manifest = collect_transition(manifest, symbol=symbol, previous_day=previous_day,
+                                      end=end, candidate=candidate, bound=bound, root=root)
     try:
-        verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
+        if manifest.get("schema") == "sse_dated_transition_20261105_v1":
+            from scripts.sse_share_daily_unchanged_20261104 import approved_transition, verify_transition
+            new = approved_transition(root, symbol=symbol, previous_day=previous_day, end=end, previous_candidate=candidate)[0]
+            verify_transition(manifest, symbol=symbol, previous_day=previous_day, end=end,
+                              candidate=new, previous_candidate=candidate, bound=bound, root=root)
+        else:
+            verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
     except ValueError as error:
         if (str(error)!="Unchanged share tail: EM new or ambiguous tail event"
                 or (symbol,previous_day,end)!=("603028","2026-11-03","2026-11-04")):
