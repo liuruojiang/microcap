@@ -9632,8 +9632,17 @@ def _current_publication_name_map() -> dict[str, str]:
         raise RuntimeError("Current name snapshot has invalid or duplicate identity")
     mapping = dict(zip(codes, names))
     current_st = freq_mod.load_current_st_name_map()
-    if not current_st or any(code not in mapping or mapping[code] != name for code, name in current_st.items()):
-        raise RuntimeError("Current name and ST snapshots disagree")
+    # The provider's ST board also includes B shares, Beijing and NEEQ stocks.
+    # Keep its original table intact; compare the same Shanghai/Shenzhen A-share
+    # market as the active-universe provider, not an intersection that could hide
+    # a missing or conflicting A-share identity.
+    import re
+    if any(not re.fullmatch(r"\d{6}", code) or not name.strip() for code, name in current_st.items()):
+        raise RuntimeError("Current ST snapshot has invalid identity")
+    current_st = {code: name for code, name in current_st.items() if re.fullmatch(r"[036]\d{5}", code)}
+    conflicts = [code for code, name in current_st.items() if code not in mapping or mapping[code] != name]
+    if not current_st or conflicts:
+        raise RuntimeError("Current name and ST snapshots disagree: " + ",".join(sorted(conflicts)[:20]))
     risky = {code for code, name in mapping.items() if not is_live_tradable_name(name)}
     if not set(current_st).issubset(risky):
         raise RuntimeError("Current ST snapshot contains inconsistent names")
