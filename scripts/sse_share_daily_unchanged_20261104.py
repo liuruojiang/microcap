@@ -178,6 +178,22 @@ def collect_override(*, root, source, directory, manifest, symbol, previous_day,
 
 def disclosures(root,expected_date):
     from scripts.share_change_source import verify_share_cache
+    if expected_date == "2026-11-05":
+        from scripts.share_unchanged_tail import _approved_unchanged_event
+        source = Path(root)/".microcap_index_cache/share_sources"
+        state_path = source/"301288.json"
+        if not state_path.is_file():
+            return []
+        state = json.loads(state_path.read_bytes())
+        require(state.get("query_end") == expected_date, "301288 disclosure source day differs")
+        proof = verify_share_cache(root=root,symbol="301288",as_of=expected_date)
+        candidate = (Path(root)/".microcap_index_cache/share_change/301288.csv").read_bytes()
+        from datetime import datetime, timezone
+        event = _approved_unchanged_event(root=root,symbol="301288",previous_day="2026-11-04",
+                                         end=expected_date,candidate=candidate,now=datetime.now(timezone.utc))
+        return [{"symbol":"301288","signal_date":expected_date,"review_sha256":event["review_sha256"],
+                 "text":event["disclosure"],"source_files":proof["source_files"],
+                 "selection":{k:v for k,v in event.items() if k!="row"}}]
     source=Path(root)/".microcap_index_cache/share_sources";path=source/"603028.json"
     if not path.is_file():
         return []

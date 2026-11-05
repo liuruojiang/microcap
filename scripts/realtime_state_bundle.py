@@ -723,6 +723,13 @@ SEMANTIC_TAIL_SOURCE_REVIEW = {
 }
 
 
+# Exact approved 301288 zero-total-change notice; all existing data bytes remain
+# bound to the certified D4 fingerprint. The original reviews stay immutable.
+APPROVED_301288_SOURCE_REVIEW = copy.deepcopy(SEMANTIC_TAIL_SOURCE_REVIEW)
+APPROVED_301288_SOURCE_REVIEW["revision"] = "approved_301288_zero_total_20261106_v1"
+APPROVED_301288_SOURCE_REVIEW["changes"].update({'scripts/share_unchanged_tail.py': ['cf66976ca3cea83c5fe9fa67cfe816948141479cda00320e70e6406444c1a6fd', 'd06f70d2961d662bdcdfd414402e47eb32b311cb22edd1ea9796e92f42788d0a'], 'data/share_source_future_plan_reviews.json': ['db9799bfc30a2108a523f3b7654db7de4cad326b232d7e72828f8b11be437f7a', 'c23994a80008f413d7211caf48d24dde66335e2e149d7c9120c3a7187fb940f7']})
+
+
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
@@ -752,10 +759,10 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
         return True
     identity = hashlib.sha256(json.dumps(recorded, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     changed = {name for name in old if old[name] != new[name]}
-    for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW):
+    for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
-        if review is SEMANTIC_TAIL_SOURCE_REVIEW and (
+        if review is not VALIDATION_SOURCE_REVIEW and (
                 recorded["file_count"] != review["file_count"]
                 or recorded["sha256"] != review["data_sha256"]):
             continue

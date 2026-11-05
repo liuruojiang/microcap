@@ -16,6 +16,10 @@ def exact_successor_identities():
     old = json.loads((ROOT / 'tests/fixtures/validation_source_identity_20261104.json').read_text(encoding='utf8'))['stock_input_evidence_fingerprint']
     current = copy.deepcopy(old)
     current['code'] = source_fingerprint(ROOT)
+    # Keep the independently accepted 6fa transition's exact historical targets.
+    for name, pair in state.APPROVED_301288_SOURCE_REVIEW['changes'].items():
+        if name not in state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']:
+            current['code'][name] = pair[0]
     return old, current
 
 
@@ -76,3 +80,18 @@ def test_exact_successor_never_changes_historical_review_authority():
     assert 'scripts/st_metadata_refresh.py' not in state.validation_source_review_metadata()['changes']
     with pytest.raises(ValueError,match='Unreviewed validation source'):
         state.validation_source_review(ROOT)
+
+
+def test_approved_301288_successor_actual_source_keeps_exact_data_identity(exact_successor_identities):
+    old, current = exact_successor_identities
+    current['code'] = source_fingerprint(ROOT)
+    review = state.APPROVED_301288_SOURCE_REVIEW
+    changed = {n for n in old['code'] if old['code'][n] != current['code'][n]}
+    assert changed == set(review['changes']) and len(changed) == 6
+    assert all((old['code'][n], current['code'][n]) == tuple(review['changes'][n]) for n in changed)
+    assert state.stock_input_evidence_matches_validated_source(old, current)
+    for name in changed:
+        bad = copy.deepcopy(current); bad['code'][name] = '0'*64
+        assert not state.stock_input_evidence_matches_validated_source(old, bad)
+    current['sha256'] = '0'*64
+    assert not state.stock_input_evidence_matches_validated_source(old,current)

@@ -9,11 +9,13 @@ from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 import hashlib
 import io
+import base64
 import json
 from pathlib import Path
 import re
 import time
 import uuid
+import zipfile
 from urllib.parse import parse_qs, urlparse
 
 import pandas as pd
@@ -143,7 +145,7 @@ def _em_date(value):
     return day(value[:10])
 
 
-def _em_inventory(entries, bound, symbol, end, bounded, now):
+def _em_inventory(entries, bound, symbol, end, bounded, now, approved_event=None):
     require(isinstance(entries, list) and entries, "missing complete EM inventory")
     rows, counts, versions = [], set(), set()
     for index, entry in enumerate(entries, 1):
@@ -165,7 +167,8 @@ def _em_inventory(entries, bound, symbol, end, bounded, now):
     for row in rows:
         require(row.get("SECUCODE") == em_symbol(symbol) and row.get("SECURITY_CODE") == symbol, "EM issuer differs")
         ds = tuple(_em_date(row.get(key)) for key in DATE_FIELDS)
-        require(ds[2] <= day(end) and (not bounded or ds[0] <= day(end)), "future announcement or wrong bounded inventory")
+        require((ds[2] <= day(end) or _matches_approved_event(row, approved_event))
+                and (not bounded or ds[0] <= day(end)), "future announcement or wrong bounded inventory")
         shares = amount(row.get("TOTAL_SHARES"))
         require(shares == shares.to_integral_value(), "EM total not whole shares")
         identity = ds[0]
@@ -179,7 +182,7 @@ def _em_inventory(entries, bound, symbol, end, bounded, now):
 def plan_reviews(root=None):
     root = Path(root) if root is not None else Path(__file__).resolve().parents[1]
     registry = json.loads((root / "data/share_source_future_plan_reviews.json").read_bytes())
-    require(set(registry) == {"schema", "records"} and registry["schema"] == "share_future_plan_reviews_v1"
+    require(set(registry) in ({"schema", "records"}, {"schema", "records", "unchanged_event_approval"}) and registry["schema"] == "share_future_plan_reviews_v1"
             and isinstance(registry["records"], list), "future plan registry schema differs")
     required = {"symbol", "announcement_id", "notice_number", "provider_notice_date", "document_signature_date",
                 "planned_date", "before_total_shares", "after_total_shares", "change_total_shares", "status",
@@ -209,6 +212,48 @@ def plan_reviews(root=None):
             require(parsed.scheme == "https" and parsed.netloc and parsed.username is None and parsed.password is None
                     and not parsed.query and not parsed.fragment and url != item["pdf_url"], "unsafe reviewed PDF URL")
     return registry["records"]
+
+
+def _approved_unchanged_event(*, root, symbol, previous_day, end, candidate, now):
+    """One user-approved late-disclosure exception; never a generic date waiver.
+
+    The sealed ZIP is the exact reviewed public-source package, not a source of
+    current quotes. Every normal live inventory/quote gate still runs below.
+    """
+    if (symbol, previous_day, end) != ("301288", "2026-11-04", "2026-11-05"):
+        return None
+    root = Path(root) if root is not None else Path(__file__).resolve().parents[1]
+    record = json.loads((root / "data/share_source_future_plan_reviews.json").read_bytes()).get("unchanged_event_approval")
+    require(isinstance(record, dict) and set(record) == {"approval", "package_base64"}, "missing exact event approval")
+    approval = record["approval"]
+    package = base64.b64decode(record["package_base64"], validate=True)
+    digest = "3af53c7fea86b3334321112981747560e9fcea9dba5ee7667c9f011d8a70f4ff"
+    review_sha = "b716606578531dbb67ed5f1ea20d91f25330cac284e5f96818d4ae65bfa4cfc9"
+    require(sha(package) == digest and approval.get("decision") == "approved"
+            and approval.get("package_sha256") == digest and approval.get("review_sha256") == review_sha,
+            "exact event approval/package differs")
+    require(datetime.fromisoformat("2026-11-06T00:00:00+08:00") <= clock(approval["recorded_at"]) <= now,
+            "event approval clock differs")
+    with zipfile.ZipFile(io.BytesIO(package)) as archive:
+        review_raw = archive.read("review.json")
+        require(sha(review_raw) == review_sha, "event review differs")
+        review = json.loads(review_raw)
+        require(review["approved"] is False and sha(candidate) == review["history_candidate_sha256_unchanged"],
+                "event old history differs")
+        pdf = archive.read("issuer_notice.pdf")
+        require(sha(pdf) == review["issuer_pdf_sha256"] and pdf.startswith(b"%PDF-"), "event issuer PDF differs")
+        receipt = json.loads(archive.read("issuer_notice_pdf.receipt.json"))
+        require(clock(receipt["http_start"]) <= clock(receipt["http_complete"]) <= now, "event evidence clock differs")
+        row = json.loads(archive.read("bounded.raw"), parse_float=Decimal)["result"]["data"][0]
+    require(review["before_total_shares"] == review["after_total_shares"] == 108010000
+            and review["share_delta"] == 0, "event changes total shares")
+    return dict(row=row, package_sha256=digest, review_sha256=review_sha,
+                supplemental_verification_day="2026-11-06", signal_day=end,
+                disclosure="301288：11/06补充核验11/05公告事件，总股本108010000股不变；不声称11/05收盘前已取得该公告。")
+
+
+def _matches_approved_event(row, event):
+    return event is not None and row == event["row"]
 
 
 def _reviewed_future_plans(manifest, future, *, symbol, end, boundary, bound, now, root):
@@ -286,9 +331,11 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
     old_dates = [day(value[:10]) for value in old.change_date]
     require(old_dates == sorted(set(old_dates)) and max(old_dates) <= d, "old history after previous cutoff")
     boundary = amount(old.iloc[-1].total_shares_10k)
+    approved_event = _approved_unchanged_event(root=root, symbol=symbol, previous_day=previous_day,
+                                              end=end, candidate=candidate, now=now)
     files = manifest["files"]
-    unfiltered = _em_inventory(files["unfiltered"], bound, symbol, end, False, now)
-    bounded = _em_inventory(files["bounded"], bound, symbol, end, True, now)
+    unfiltered = _em_inventory(files["unfiltered"], bound, symbol, end, False, now, approved_event)
+    bounded = _em_inventory(files["bounded"], bound, symbol, end, True, now, approved_event)
     projection = [row for row in unfiltered if _em_date(row["END_DATE"]) <= t]
     require(projection == bounded, "EM bounded/full inventory drift or wrong asof projection")
     future = [row for row in unfiltered if _em_date(row["END_DATE"]) > t]
@@ -296,12 +343,22 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                                            bound=bound, now=now, root=root)
     for row in projection:
         ds = [_em_date(row[key]) for key in DATE_FIELDS]
+        if _matches_approved_event(row, approved_event):
+            require(amount(row["TOTAL_SHARES"]) / 10000 == boundary, "approved event boundary differs")
+            continue
         require(not any(d < dt <= t for dt in ds), "EM new or ambiguous tail event")
         require(not (min(ds) <= d < max(ds)), "EM event dates cross previous cutoff")
     require(projection and amount(projection[0]["TOTAL_SHARES"]) / 10000 == boundary, "EM boundary total differs")
     sina_raw, _ = _artifact(files["sina"], bound, url=SINA_URL.format(symbol=symbol), params={}, end=end, now=now)
     sina = parse_sina_total_history(sina_raw, symbol=symbol, observed_session=end, allowed_future_plans=future_plans)
-    require(not any(d < day(row["provider_date"]) <= t for row in sina["records"]), "Sina tail event")
+    tail = [row for row in sina["records"] if d < day(row["provider_date"]) <= t]
+    if approved_event is not None:
+        require(sum(_matches_approved_event(row, approved_event) for row in projection) == 1,
+                "approved event absent or duplicated")
+        require(tail == [{"provider_date": end, "total_shares_10k": "10801", "total_shares": "108010000"}],
+                "approved event Sina identity differs")
+    else:
+        require(not tail, "Sina tail event")
     sina_asof = [row for row in sina["records"] if day(row["provider_date"]) <= t]
     require(sina_asof and amount(sina_asof[-1]["total_shares_10k"]) == boundary, "Sina boundary total differs")
     qp = quote_params(symbol)
@@ -324,7 +381,9 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                 total_shares_10k=str(boundary), unchanged_observations=True,
                 frame_time=stamp.isoformat(), f84_independent_asof_guarantee_proven=False,
                 provider_latency_guaranteed=False, old_candidate_sha256=sha(candidate),
-                future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport)
+                future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport,
+                approved_late_unchanged_event={key: value for key, value in approved_event.items() if key != "row"}
+                    if approved_event is not None else None)
 
 
 def _save_public_observation(*, directory, source, url, params, purpose, end, referer=None):

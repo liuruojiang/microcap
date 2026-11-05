@@ -15,6 +15,71 @@ from scripts import share_change_source as native
 from frozen_exchange_calendar import frozen_exchange_sessions
 
 
+def approved_301288_fixture():
+    """Exact approved real observations; contains no successful quote fixture."""
+    import io
+    import zipfile
+    root = Path(source.__file__).resolve().parents[1]
+    registry = json.loads((root / "data/share_source_future_plan_reviews.json").read_bytes())
+    raw = base64.b64decode(registry["unchanged_event_approval"]["package_base64"])
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        bodies = {name: archive.read(name) for name in archive.namelist()}
+    now = datetime(2026, 11, 7, tzinfo=timezone.utc)
+    candidate = bodies["prior_share_history.csv"]
+    return root, registry, bodies, now, candidate
+
+
+def test_exact_approved_301288_real_inventory_and_unchanged_history():
+    root, registry, bodies, now, candidate = approved_301288_fixture()
+    event = source._approved_unchanged_event(root=root, symbol="301288", previous_day="2026-11-04",
+                                           end="2026-11-05", candidate=candidate, now=now)
+    def bound(path, digest):
+        assert source.sha(bodies[path]) == digest
+        return bodies[path]
+    for bounded, name in ((True, "bounded"), (False, "unfiltered")):
+        ref = {"raw_path": name+".raw", "raw_sha256": source.sha(bodies[name+".raw"]),
+               "receipt_path": name+".receipt.json", "receipt_sha256": source.sha(bodies[name+".receipt.json"])}
+        with pytest.raises(ValueError, match="future announcement"):
+            source._em_inventory([ref], bound, "301288", "2026-11-05", bounded, now)
+        rows = source._em_inventory([ref], bound, "301288", "2026-11-05", bounded, now, event)
+        assert len(rows) == 9 and source._matches_approved_event(rows[0], event)
+    assert event["supplemental_verification_day"] == "2026-11-06"
+    assert source.sha(candidate) == "abf7572f5abcb80bdaf73c83d6e6851356e2d3bdd7ed1707d68b7e8b0a83a5f4"
+
+
+@pytest.mark.parametrize("field,value", [("TOTAL_SHARES",108010001), ("NOTICE_DATE","2026-11-07 00:00:00"),
+    ("END_DATE","2026-11-06 00:00:00"),("LISTING_DATE","2026-11-04 00:00:00"),
+    ("SECURITY_CODE","301289"),("INFO_CODE","AN000000000000000000"),("TOTAL_SHARES_CHANGE",1)])
+def test_exact_event_cannot_approve_changed_row(field, value):
+    root, _, _, now, candidate = approved_301288_fixture()
+    event = source._approved_unchanged_event(root=root,symbol="301288",previous_day="2026-11-04",
+                                           end="2026-11-05",candidate=candidate,now=now)
+    changed = {**event["row"], field:value}
+    assert not source._matches_approved_event(changed,event)
+
+
+@pytest.mark.parametrize("failure", ["approval", "package", "candidate", "clock"])
+def test_exact_event_rejects_missing_approval_or_tampering(tmp_path, failure):
+    _, registry, _, now, candidate = approved_301288_fixture()
+    if failure == "approval": registry["unchanged_event_approval"]["approval"]["decision"] = "pending"
+    if failure == "package": registry["unchanged_event_approval"]["package_base64"] = base64.b64encode(b"bad").decode()
+    if failure == "candidate": candidate += b"\n"
+    if failure == "clock": now = datetime(2026,11,5,7,tzinfo=timezone.utc)
+    (tmp_path/"data").mkdir()
+    (tmp_path/"data/share_source_future_plan_reviews.json").write_text(json.dumps(registry),encoding="utf8")
+    with pytest.raises(ValueError):
+        source._approved_unchanged_event(root=tmp_path,symbol="301288",previous_day="2026-11-04",
+                                        end="2026-11-05",candidate=candidate,now=now)
+
+
+@pytest.mark.parametrize("identity",[("301289","2026-11-04","2026-11-05"),
+    ("301288","2026-11-05","2026-11-06"),("301288","2026-11-03","2026-11-05")])
+def test_exact_event_does_not_cover_other_symbols_or_sessions(identity):
+    root, _, _, now, candidate = approved_301288_fixture()
+    assert source._approved_unchanged_event(root=root,symbol=identity[0],previous_day=identity[1],
+        end=identity[2],candidate=candidate,now=now) is None
+
+
 @pytest.fixture(autouse=True)
 def frozen_real_regression_sessions(frozen_exchange_sessions):
     """Preserved real calendar for offline regression, never live freshness."""
