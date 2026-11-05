@@ -942,3 +942,15 @@ def test_fingerprint_parallel_reader_exception_joins_owned_tasks(fingerprint_io_
     with pytest.raises(OSError,match='owned reader failure'):c.candidate(c.root)
     assert p.running==0 and sorted(p.completed)==sorted(p.submitted)
     assert p.max_outstanding<=8 and 1<=p.max_running<=4
+
+
+# Collect the exact catalog repair once through the existing daily core gate.
+from st_notice_columns_review_cases_20261105 import (
+    columns_review_pair,
+    test_actual_source_pages_and_original_failure_reproduce as test_st_catalog_actual_source_pages_and_original_failure_reproduce,
+    test_exact_catalog_change_reuses_original_guard_without_mutation as test_st_catalog_exact_catalog_change_reuses_original_guard_without_mutation,
+    test_unknown_content_or_time_changes_still_rejected as test_st_catalog_unknown_content_or_time_changes_still_rejected,
+    test_real_issuer_documents_bind_frozen_review_and_no_st_semantics as test_st_catalog_real_issuer_documents_bind_frozen_review_and_no_st_semantics,
+    test_native_selector_regression_cannot_self_approve as test_st_catalog_native_selector_regression_cannot_self_approve,
+    test_review_does_not_add_production_authority_dependencies as test_st_catalog_review_does_not_add_production_authority_dependencies,
+)

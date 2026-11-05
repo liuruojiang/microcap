@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "decision": "exact_non_st_catalog_columns_20261105_v1",
+  "boundary_day": "2026-11-04",
+  "previous_native_sha256": "df3ea42747570be4b1f6e795ed08684a245f1da4a699ea3d8a65a0d9db9c5ceb",
+  "observed_current_native_sha256": "01af438221d6323995d23fc7b0b17a93084df79fbc5725ebf5441796731d70b4",
+  "current_stable_native_sha256": "e8a4f1664df17eebf93f596e897120d1eae30df87f2a1d858c3136cee2e63647",
+  "previous_count": 1041,
+  "current_count": 1040,
+  "retained_approved_removed_ids": [
+    "AN202611041831417267"
+  ],
+  "added_ids": [],
+  "changes": {
+    "AN202611041831408711": {
+      "previous_row": {
+        "art_code": "AN202611041831408711",
+        "codes": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "34433935922682",
+            "market_code": "0",
+            "short_name": "强瑞技术",
+            "stock_code": "301128"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001003001001003",
+            "column_name": "专项说明/独立意见"
+          },
+          {
+            "column_code": "001003002001",
+            "column_name": "保荐/核查意见"
+          }
+        ],
+        "display_time": "2026-11-04 16:21:05:307",
+        "eiTime": "2026-11-04 16:22:04:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-11-04 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-11-04 12:00:00",
+        "source_type": "333",
+        "title": "强瑞技术:董事会薪酬与考核委员会关于公司2025年股票期权与限制性股票激励计划预留授予激励对象名单的公示情况说明及核查意见",
+        "title_ch": "强瑞技术:董事会薪酬与考核委员会关于公司2025年股票期权与限制性股票激励计划预留授予激励对象名单的公示情况说明及核查意见",
+        "title_en": ""
+      },
+      "current_row": {
+        "art_code": "AN202611041831408711",
+        "codes": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "34433935922682",
+            "market_code": "0",
+            "short_name": "强瑞技术",
+            "stock_code": "301128"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001003001001003",
+            "column_name": "专项说明/独立意见"
+          }
+        ],
+        "display_time": "2026-11-04 16:21:05:306",
+        "eiTime": "2026-11-04 16:22:04:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-11-04 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-11-04 12:00:00",
+        "source_type": "333",
+        "title": "强瑞技术:董事会薪酬与考核委员会关于公司2025年股票期权与限制性股票激励计划预留授予激励对象名单的公示情况说明及核查意见",
+        "title_ch": "强瑞技术:董事会薪酬与考核委员会关于公司2025年股票期权与限制性股票激励计划预留授予激励对象名单的公示情况说明及核查意见",
+        "title_en": ""
+      }
+    },
+    "AN202611041831408713": {
+      "previous_row": {
+        "art_code": "AN202611041831408713",
+        "codes": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "34433935922682",
+            "market_code": "0",
+            "short_name": "强瑞技术",
+            "stock_code": "301128"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001003001001003",
+            "column_name": "专项说明/独立意见"
+          },
+          {
+            "column_code": "001003002001",
+            "column_name": "保荐/核查意见"
+          }
+        ],
+        "display_time": "2026-11-04 16:21:05:305",
+        "eiTime": "2026-11-04 16:22:04:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-11-04 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-11-04 12:00:00",
+        "source_type": "333",
+        "title": "强瑞技术:董事会薪酬与考核委员会关于公司2026年股票期权激励计划部分预留授予激励对象名单的公示情况说明及核查意见",
+        "title_ch": "强瑞技术:董事会薪酬与考核委员会关于公司2026年股票期权激励计划部分预留授予激励对象名单的公示情况说明及核查意见",
+        "title_en": ""
+      },
+      "current_row": {
+        "art_code": "AN202611041831408713",
+        "codes": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "34433935922682",
+            "market_code": "0",
+            "short_name": "强瑞技术",
+            "stock_code": "301128"
+          }
+        ],
+        "columns": [
+          {
+            "column_code": "001003001001003",
+            "column_name": "专项说明/独立意见"
+          }
+        ],
+        "display_time": "2026-11-04 16:21:05:304",
+        "eiTime": "2026-11-04 16:22:04:000",
+        "language": "0",
+        "listing_state": "0",
+        "notice_date": "2026-11-04 00:00:00",
+        "product_code": "",
+        "sort_date": "2026-11-04 12:00:00",
+        "source_type": "333",
+        "title": "强瑞技术:董事会薪酬与考核委员会关于公司2026年股票期权激励计划部分预留授予激励对象名单的公示情况说明及核查意见",
+        "title_ch": "强瑞技术:董事会薪酬与考核委员会关于公司2026年股票期权激励计划部分预留授予激励对象名单的公示情况说明及核查意见",
+        "title_en": ""
+      }
+    }
+  },
+  "documents": {
+    "AN202611041831408711": {
+      ".pdf": {
+        "path": "AN202611041831408711.pdf",
+        "sha256": "2853e49fba9226cc2aae54b23c4e54fe0a26c931f7aafb5d1b3c951263b0437f"
+      },
+      ".txt": {
+        "path": "AN202611041831408711.txt",
+        "sha256": "ef3c901a99c7f91fb3a3e9ce9b90242083757271c52d6f41ff3cbe456fb431dd"
+      },
+      ".receipt.json": {
+        "path": "AN202611041831408711.receipt.json",
+        "sha256": "e470ba70624642e5c0a50e983d485a7e2b36a2058e148c049e71dfd2a806f428"
+      }
+    },
+    "AN202611041831408713": {
+      ".pdf": {
+        "path": "AN202611041831408713.pdf",
+        "sha256": "cad5dc2e4df5553188c3d993a09007d352d8d3120a7f370d1a65097f5b8671b2"
+      },
+      ".txt": {
+        "path": "AN202611041831408713.txt",
+        "sha256": "f57359998061e5c188a1d5c2561a603ddb933caaaab0ec275c462034b8e52bd6"
+      },
+      ".receipt.json": {
+        "path": "AN202611041831408713.receipt.json",
+        "sha256": "399c15359992f7c5198cb1565a855c2d40342e5d9cc11093a0f8e6a51b087372"
+      }
+    }
+  },
+  "observation": {
+    "date": "2026-11-04",
+    "total_hits": 1040,
+    "pages": 11,
+    "source_files": {
+      "page_0001.json": "af9a0f741c1bedd2824c6984edc87aee634a13b4a25a006a2a41f91bb141618c",
+      "page_0001.receipt.json": "d071f4dffbf089e697a588b757d3fe57ff15e1472114dc626b671b210fdd7c17",
+      "page_0002.json": "75c06dfbd67ef7312a23eecfd2d9d9bb2b2b61d15e40ca647837970895e987d1",
+      "page_0002.receipt.json": "c9f267da65cf5893afadb4d3f3ffe77868238c1de2fccbdd6c9daa133830580e",
+      "page_0003.json": "4442511eaed429d1d2a109e10c4ae6511bdd72ae29c77b9707cd7177a7a68b38",
+      "page_0003.receipt.json": "fe79c854e9d1d6b637e7d2bcf74499a005db954530baa1f416b84347e7b54c6e",
+      "page_0004.json": "161df31710d8103cf54ff41bf125dcfd0f375308a89851525f45ec9e9a825ce7",
+      "page_0004.receipt.json": "768edcd31529b156fbb487b9798cda18e6bb08aaf48b03bb0664963dd6c5c28e",
+      "page_0005.json": "d781b2b5b114da717003e6adecc4cd0f9bb255c32055d44ca699c7b0aa947072",
+      "page_0005.receipt.json": "c6f43d6311506171b83c8caae1ede61f4f8e58e668589e5636ee2e908ed81ada",
+      "page_0006.json": "7b7c4ac417a53f280a6fc5fe9771faa7ebe19e22bbec5f524140d0037f169c7c",
+      "page_0006.receipt.json": "52c799dbe3517952c9eeceaa144b3034a551608d518e5d17ed9b6e48ab5e21a1",
+      "page_0007.json": "8362f348c5e6e239fd5a77b256a2896e390a8cdcf66fef0ed60cd4aeebfe601c",
+      "page_0007.receipt.json": "d17896688875b2ae922b4d6ac365ca28a270bda7b95b5ceb7bdeaa088552316c",
+      "page_0008.json": "61ed5ba2a3ac94f4d5fd135064597c4ad28f03e22b6ba4f9acd87c528e4fd5b1",
+      "page_0008.receipt.json": "f9221c5b7ef59d10495ad918f0d03f072df1ea03d45e58c90d4e441e8c73b66d",
+      "page_0009.json": "bc8341876554f49f5e7f57b7040f39e3a8b216e2cc947dd6fe3bb3ddd4bc4db3",
+      "page_0009.receipt.json": "0e046cc20188a94110fe3a13713f70acbb7d8a5743dfda372b17e89c3c92e76b",
+      "page_0010.json": "74d7744d53fdb5754b0ccfeb6dc10206d602ff56b2dc68901a142e057b64ac3a",
+      "page_0010.receipt.json": "24424c3ce2fc0fb322b5982478c1712b444123648eb6e7474699c67c4bda6e26",
+      "page_0011.json": "56b09da38ad0d954dececc73c3161db0ce6dc5b2c46d5eaa20ec2a5561de706a",
+      "page_0011.receipt.json": "c23cc574afef332b390c6e4e8595f4e2b00549adcae2beaaad389b480473e2b5"
+    },
+    "manifest_sha256": "b031f5966f92074717484453e4941f8596bd6fa4911a84e9cb2f59eaae6417eb",
+    "observation_start": "2026-11-05T08:48:03.186588+00:00",
+    "observation_end": "2026-11-05T08:48:17.033163+00:00",
+    "scope": "provider_all_market_pages_not_PIT_event_adjudication"
+  },
+  "historical_authority_changed": false,
+  "existing_st_intervals_changed": false
+}

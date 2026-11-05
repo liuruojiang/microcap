@@ -251,8 +251,57 @@ def _review_exact_20261104_transport(previous, current, precision):
     return result
 
 
+def _reviewed_catalog_columns_20261105(previous, current):
+    """Exact two non-ST category corrections, retaining the prior INV review.
+
+    Source/PDF acceptance is frozen in tests/fixtures/st_notice_columns_20261105;
+    it introduces no new ST authority, interval or production evidence dependency.
+    The full native old identity and full stable new identity bind every row.
+    """
+    stable = lambda rows: {key: {k: v for k, v in row.items() if k != "display_time"}
+                           for key, row in rows.items()}
+    if (sha(canonical(previous)) != "df3ea42747570be4b1f6e795ed08684a245f1da4a699ea3d8a65a0d9db9c5ceb"
+            or sha(canonical(stable(current))) != "e8a4f1664df17eebf93f596e897120d1eae30df87f2a1d858c3136cee2e63647"):
+        return None
+    import copy
+    from scripts.st_notice_refresh import _reviewed_investor_record_removal_20261104
+    from scripts.st_notice_evidence import is_equity_issuer
+    from scripts import st_history_scope as scope
+    import microcap_top100_mom16_biweekly_live_v2_0 as base
+    identities = ("AN202611041831408711", "AN202611041831408713")
+    normalized = copy.deepcopy(current)
+    for identity in identities:
+        old, new = previous[identity], current[identity]
+        fields = {key for key in old.keys() | new.keys()
+                  if key != "display_time" and old.get(key) != new.get(key)}
+        if (fields != {"columns"}
+                or [item["column_code"] for item in old["columns"]] != ["001003001001003", "001003002001"]
+                or [item["column_code"] for item in new["columns"]] != ["001003001001003"]):
+            raise StNoticeEvidenceError("Exact reviewed catalog categories changed")
+        for row in (old, new):
+            if ([code["stock_code"] for code in row["codes"]] != ["301128"]
+                    or not is_equity_issuer(row, "301128")
+                    or base.freq_mod.classify_st_notice_risk_actions(row["title"]) != {}
+                    or scope._daily_notice_row(row, "301128", "2026-11-04", {}) is not None):
+                raise StNoticeEvidenceError("Catalog correction changed native ST selection")
+        normalized[identity]["columns"] = copy.deepcopy(old["columns"])
+    result = _reviewed_investor_record_removal_20261104(previous, normalized)
+    if result is None:
+        raise StNoticeEvidenceError("Original exact investor deletion did not pass")
+    changed = sorted(set(previous) - set(current) | {key for key in current if previous[key] != current[key]})
+    return dict(result, policy="exact_non_st_catalog_columns_20261105_v1",
+                changed_event_count=len(changed),
+                changed_event_ids_sha256=sha(json.dumps(changed, separators=(",", ":")).encode()),
+                reviewed_metadata_changed_ids=list(identities),
+                current_stable_native_sha256=sha(canonical(stable(current))),
+                risk_projection_unchanged=True)
+
+
 def reviewed_additions(previous, current, precision):
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
+    columns = _reviewed_catalog_columns_20261105(previous, current)
+    if columns is not None:
+        return columns
     from scripts.st_notice_postclose_boundary_20261104 import reviewed_extension
     extension = reviewed_extension(previous, current, precision)
     if extension is not None:

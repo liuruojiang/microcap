@@ -21,6 +21,8 @@ tests/fixtures/st_recovery_listing_real/** -text
 tests/fixtures/stock_return_basis_real/** -text
 tests/fixtures/stock_return_basis_transport_real/** -text
 tests/fixtures/delisting_parity_actual/** -text
+tests/fixtures/st_notice_boundary_20261105/** -text -whitespace
+tests/fixtures/st_notice_columns_20261105/** -text -whitespace
 
 # Preserve exact migration approval and release evidence hashes.
 docs/release_evidence_20261101/*.json -text

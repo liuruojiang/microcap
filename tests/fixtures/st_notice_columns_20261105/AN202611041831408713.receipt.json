@@ -1,0 +1,46 @@
+{
+  "schema": "st_boundary_public_receipt_v1",
+  "requested_url": "https://pdf.dfcfw.com/pdf/H2_AN202611041831408713_1.pdf",
+  "final_url": "https://pdf.dfcfw.com/pdf/H2_AN202611041831408713_1.pdf",
+  "status": 200,
+  "tls_verify_configuration": true,
+  "redirects_allowed": false,
+  "observation_start": "2026-11-05T08:51:14.199863+00:00",
+  "observation_end": "2026-11-05T08:51:18.176056+00:00",
+  "raw_sha256": "cad5dc2e4df5553188c3d993a09007d352d8d3120a7f370d1a65097f5b8671b2",
+  "raw_bytes": 120295,
+  "native_row": {
+    "art_code": "AN202611041831408713",
+    "codes": [
+      {
+        "ann_type": "A,CYB",
+        "inner_code": "34433935922682",
+        "market_code": "0",
+        "short_name": "强瑞技术",
+        "stock_code": "301128"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001003001001003",
+        "column_name": "专项说明/独立意见"
+      }
+    ],
+    "display_time": "2026-11-04 16:21:05:304",
+    "eiTime": "2026-11-04 16:22:04:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-04 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-04 12:00:00",
+    "source_type": "333",
+    "title": "强瑞技术:董事会薪酬与考核委员会关于公司2026年股票期权激励计划部分预留授予激励对象名单的公示情况说明及核查意见",
+    "title_ch": "强瑞技术:董事会薪酬与考核委员会关于公司2026年股票期权激励计划部分预留授予激励对象名单的公示情况说明及核查意见",
+    "title_en": ""
+  },
+  "response_headers": {
+    "content-length": "120295",
+    "content-type": "application/pdf",
+    "date": "Thu, 05 Nov 2026 08:51:16 GMT"
+  }
+}
