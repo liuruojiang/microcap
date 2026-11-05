@@ -12,6 +12,19 @@ from scripts import top100_delivery as delivery
 from scripts import realtime_state_bundle as state
 from test_top100_delivery import workspace, certify  # noqa: F401
 
+# One collection point in the existing daily core suite.
+from archive_pack_cases_20261105 import (
+    archive_workspace, archive_clock, archive_transport,
+    test_normal_d4_close_proof_still_fails_after_d5 as test_archive_normal_d4_guard,
+    test_archive_d4_accepts_only_restore_grade_integrity,
+    test_archive_future_non_session_missing_date_rejected_early,
+    test_archive_state_failure_is_preserved,
+    test_archive_and_current_modes_are_mutually_exclusive,
+    test_archive_native_pack_labels_zip_and_keeps_original_files,
+    test_normal_pack_does_not_enter_archive_mode as test_archive_normal_mode_unchanged,
+    test_archive_native_pack_keeps_data_and_writer_guards,
+)
+
 
 def prepare(workspace, monkeypatch):
     monkeypatch.setattr(state, "validate_state", lambda *a, **kw: {

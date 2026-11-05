@@ -1574,10 +1574,44 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
     return records
 
 
+def validate_archive_session(archive_session: date) -> None:
+    """Reject invalid archival targets before expensive state validation."""
+    from scripts.exchange_calendar import latest_completed_session, sessions_for_day
+    if type(archive_session) is not date:
+        raise ValueError("Archive packing requires an explicit exchange session")
+    latest = latest_completed_session()
+    if archive_session > latest or archive_session not in set(sessions_for_day(archive_session)):
+        raise ValueError("Archive session is future, uncompleted or not an exchange session")
+
+
+def validate_archive_state(root: Path, archive_session: date) -> dict:
+    """Restore-grade integrity for a dated archive, never current signal readiness."""
+    validate_archive_session(archive_session)
+    report = validate_state(root, max_anchor_age_days=None, require_current_refresh_proof=False)
+    errors = list(report.get("errors") or [])
+    anchors = report.get("anchor_dates")
+    if not isinstance(anchors, dict):
+        errors.append("Archive base state has no anchor dates")
+    else:
+        for name in ("proxy_index", "costed_nav", "panel_shadow"):
+            if anchors.get(name) != archive_session.isoformat():
+                errors.append("Archive daily anchor differs from explicit session: " + name)
+    # Turnover remains an event stream; its original validation is retained.
+    report.update(errors=errors, ok=report.get("ok") is True and not errors,
+                  archive_session=archive_session.isoformat(), current_signal_ready=False, signal_ready=False,
+                  freshness="verified_archive_only_requires_current_refresh")
+    return report
+
+
 def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
                extra_files: Iterable[str] = (), *,
                close_confirmed_session: date | None = None,
+               archive_session: date | None = None,
                delivery_manifest: bytes | None = None) -> dict[str, object]:
+    if archive_session is not None and close_confirmed_session is not None:
+        raise ValueError("Archive and close-confirmed packing are mutually exclusive")
+    if archive_session is not None:
+        validate_archive_session(archive_session)
     validation_root = root.resolve()
     root, bundle = _extended(root), _extended(bundle)
     virtual_name = "outputs/top100_delivery_manifest.json"
@@ -1602,7 +1636,9 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
     captured = inventory() if delivery_manifest is not None else None
     validation_options = ({"close_confirmed_session": close_confirmed_session}
                           if close_confirmed_session is not None else {})
-    if close_confirmed_session is not None:
+    if archive_session is not None:
+        report = validate_archive_state(validation_root, archive_session)
+    elif close_confirmed_session is not None:
         from scripts.top100_delivery import validate_base_state_for_session
         report = validate_base_state_for_session(validation_root, close_confirmed_session.isoformat())
     else:

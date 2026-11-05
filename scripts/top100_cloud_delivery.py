@@ -62,7 +62,9 @@ def require_ok(report: dict) -> None:
         raise RuntimeError("; ".join(map(str, report.get("errors", ["verification failed"]))))
 
 
-def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
+def pack(roots: dict[str, Path], bundle: Path, expected: str, *, archive_only: bool = False) -> dict:
+    if archive_only:
+        state.validate_archive_session(state._parse_date(expected))
     if set(roots) != set(delivery.COSTED):
         raise ValueError("All three version roots are required")
     roots = {version: Path(root).resolve() for version, root in roots.items()}
@@ -76,9 +78,12 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
         if (root / delivery.LOCK).exists():
             raise RuntimeError("A whole-delivery refresh is active")
     if len(unique_roots) == 1:
+        if archive_only:
+            return _pack_shared(primary, bundle, expected, before["0"], archive_only=True)
         return _pack_shared(primary, bundle, expected, before["0"])
     for root in unique_roots:
-        require_ok(delivery.validate_base_state_for_session(root, expected))
+        require_ok(state.validate_archive_state(root, state._parse_date(expected)) if archive_only
+                   else delivery.validate_base_state_for_session(root, expected))
     with tempfile.TemporaryDirectory(prefix="top100-pack-") as directory:
         staged = Path(directory)
         for name in set(state._iter_bundle_files(primary)) | set(before["0"]):
@@ -95,20 +100,27 @@ def pack(roots: dict[str, Path], bundle: Path, expected: str) -> dict:
         report.update(status="complete", verified_at=datetime.now(timezone.utc).isoformat(),
                       release_sha=subprocess.check_output(
                           ["git", "rev-parse", "HEAD"], cwd=primary, text=True).strip())
+        if archive_only:
+            report.update(_archive_pack_status(expected))
         delivery.write_manifest(staged, report)
         extras = (set(report["artifacts"]) | set(report["inputs"]) |
                   {delivery.MANIFEST}) - set(SOURCE_FILES)
-        packed = state.pack_state(staged, bundle, None, extra_files=extras,
-                                  close_confirmed_session=state._parse_date(expected))
+        session_option = {"archive_session" if archive_only else "close_confirmed_session": state._parse_date(expected)}
+        packed = state.pack_state(staged, bundle, None, extra_files=extras, **session_option)
         require_ok(packed)
         with zipfile.ZipFile(bundle) as archive:
             state._verify_bundle_manifest(archive)
         return {"ok": True, "expected_date": expected, "release_sha": report["release_sha"],
                 "bundle": str(bundle), "scope": "whole_workspace_delivery",
-                "files": len(packed["bundle_files"])}
+                "files": len(packed["bundle_files"]), **(_archive_pack_status(expected) if archive_only else {})}
 
 
-def _pack_shared(root: Path, bundle: Path, expected: str, before: dict) -> dict:
+def _archive_pack_status(expected: str) -> dict:
+    return {"archive_session": expected, "current_signal_ready": False, "signal_ready": False,
+            "freshness": "verified_archive_only_requires_current_refresh"}
+
+
+def _pack_shared(root: Path, bundle: Path, expected: str, before: dict, *, archive_only: bool = False) -> dict:
     """One physical base, three final streams: validate once and stream directly."""
     lock = root / delivery.LOCK
     lock.parent.mkdir(parents=True, exist_ok=True)
@@ -116,6 +128,8 @@ def _pack_shared(root: Path, bundle: Path, expected: str, before: dict) -> dict:
     try:
         with os.fdopen(handle, "w") as stream:
             stream.write(str(os.getpid()))
+        if archive_only:
+            return _pack_shared_locked(root, bundle, expected, before, archive_only=True)
         return _pack_shared_locked(root, bundle, expected, before)
     finally:
         lock.unlink()
@@ -136,11 +150,13 @@ def _shared_pack_inventory(root: Path) -> set[str]:
     return paths
 
 
-def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -> dict:
+def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict, *, archive_only: bool = False) -> dict:
     report = delivery.inspect_outputs(root, expected, new_generation=True)
     require_ok(report)
     release = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
     report.update(status="complete", verified_at=datetime.now(timezone.utc).isoformat(), release_sha=release)
+    if archive_only:
+        report.update(_archive_pack_status(expected))
     extras = (set(report["artifacts"]) | set(report["inputs"]) |
               {delivery.MANIFEST}) - set(SOURCE_FILES)
     inventory_before = _shared_pack_inventory(root)
@@ -148,8 +164,8 @@ def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -
     # An unsuccessful attempt never publishes a partial replacement bundle.
     with tempfile.TemporaryDirectory(prefix="top100-zip-", dir=bundle.parent) as directory:
         temporary = Path(directory) / bundle.name
-        packed = state.pack_state(root, temporary, None, extra_files=extras,
-                                  close_confirmed_session=state._parse_date(expected),
+        session_option = {"archive_session" if archive_only else "close_confirmed_session": state._parse_date(expected)}
+        packed = state.pack_state(root, temporary, None, extra_files=extras, **session_option,
                                   delivery_manifest=json.dumps(report, ensure_ascii=False, indent=2).encode("utf-8"))
         require_ok(packed)
         with zipfile.ZipFile(temporary) as archive:
@@ -181,7 +197,8 @@ def _pack_shared_locked(root: Path, bundle: Path, expected: str, before: dict) -
     return {"ok": True, "expected_date": expected,
             "release_sha": release,
             "bundle": str(bundle), "scope": "whole_workspace_delivery",
-            "files": len(packed["bundle_files"]), "shared_base": True}
+            "files": len(packed["bundle_files"]), "shared_base": True,
+            **(_archive_pack_status(expected) if archive_only else {})}
 
 
 def _validate_no_date_rollback(root: Path, expected: str) -> None:
@@ -416,7 +433,7 @@ def sync(root: Path, expected: str) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("pack", "restore", "sync"))
+    parser.add_argument("command", choices=("pack", "pack-archive", "restore", "sync"))
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--v23-root", type=Path)
     parser.add_argument("--v25-root", type=Path)
@@ -426,11 +443,12 @@ def main() -> int:
     try:
         if state._parse_date(args.expected_date) is None:
             raise ValueError("Invalid expected date")
-        if args.command == "pack":
+        if args.command in ("pack", "pack-archive"):
             if not args.bundle or not args.v23_root or not args.v25_root:
                 raise ValueError("pack requires bundle and all isolated version roots")
+            options = {"archive_only": True} if args.command == "pack-archive" else {}
             report = pack({"0": args.root, "3": args.v23_root, "5": args.v25_root},
-                          args.bundle, args.expected_date)
+                          args.bundle, args.expected_date, **options)
         elif args.command == "restore":
             if not args.bundle:
                 raise ValueError("restore requires bundle")
