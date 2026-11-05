@@ -1,5 +1,6 @@
 """Independent tests of the exact D4 validation-source compatibility boundary."""
 import copy
+import gzip
 import hashlib
 import json
 from pathlib import Path
@@ -11,18 +12,41 @@ from scripts.stock_input_contract import SOURCE_FILES, source_fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests/fixtures/validation_source_identity_20261104.json"
+REVIEWED_V20 = ROOT / "tests/fixtures/validation_source_identity/v20_reviewed_b657.py.gz"
+REVIEWED_METADATA = ROOT / "tests/fixtures/validation_source_identity/st_metadata_reviewed_b657.py.gz"
+
+
+def reviewed_v20_source():
+    """Exact published Git bytes, never today's changed producer implementation."""
+    raw = gzip.decompress(REVIEWED_V20.read_bytes())
+    expected = state.VALIDATION_SOURCE_REVIEW["changes"]["microcap_top100_mom16_biweekly_live_v2_0.py"][1]
+    assert hashlib.sha256(raw).hexdigest() == expected
+    return raw
 
 
 @pytest.fixture
-def identities():
+def identities(tmp_path):
     evidence = json.loads(FIXTURE.read_text(encoding="utf8"))
     old = evidence["stock_input_evidence_fingerprint"]
     current = copy.deepcopy(old)
-    current["code"] = source_fingerprint(ROOT)
+    # Preserve this test's original three-source review role with authenticated
+    # historical metadata code. Actual new four-source execution is tested by
+    # exact_semantic_tail_source_cases_20261105 in the permanent core entrypoint.
+    for name in SOURCE_FILES:
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        raw = gzip.decompress(REVIEWED_METADATA.read_bytes()) if name == "scripts/st_metadata_refresh.py" else (ROOT / name).read_bytes()
+        if name in ("scripts/share_unchanged_tail.py", "data/share_source_future_plan_reviews.json"):
+            raw = gzip.decompress((ROOT / "tests/fixtures/validation_source_identity" / (Path(name).name + ".6fa.gz")).read_bytes())
+            assert hashlib.sha256(raw).hexdigest() == old["code"][name]
+        if name == "scripts/st_metadata_refresh.py":
+            assert hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest() == old["code"][name]
+        path.write_bytes(raw)
+    current["code"] = source_fingerprint(tmp_path)
     return old, current
 
 
-def test_real_published_identity_and_actual_current_source_match_exact_review(identities):
+def test_real_published_identity_and_actual_current_source_match_exact_review(identities, reviewed_root):
     old, current = identities
     assert len(SOURCE_FILES) == len(old["code"]) == len(current["code"]) == 18
     assert set(old["code"]) == set(current["code"]) == set(SOURCE_FILES)
@@ -33,7 +57,7 @@ def test_real_published_identity_and_actual_current_source_match_exact_review(id
     for name in changed:
         assert (old["code"][name], current["code"][name]) == tuple(state.VALIDATION_SOURCE_REVIEW["changes"][name])
     assert state.stock_input_evidence_matches_validated_source(old, current)
-    assert state.validation_source_review(ROOT) == state.VALIDATION_SOURCE_REVIEW
+    assert state.validation_source_review(reviewed_root) == state.VALIDATION_SOURCE_REVIEW
 
 
 @pytest.mark.parametrize("side", ["recorded", "current"])
@@ -98,12 +122,12 @@ def test_equal_but_malformed_identities_are_not_evidence(identities, kind):
     assert not state.stock_input_evidence_matches_validated_source(value, copy.deepcopy(value))
 
 
-def test_review_result_is_deep_copy_and_not_authorization_mutable_by_caller():
-    review = state.validation_source_review(ROOT)
+def test_review_result_is_deep_copy_and_not_authorization_mutable_by_caller(reviewed_root):
+    review = state.validation_source_review(reviewed_root)
     review["changes"]["scripts/st_history_scope.py"] = ("0" * 64, "0" * 64)
     review["stock_fingerprint_sha256"] = "0" * 64
-    assert state.validation_source_review(ROOT) == state.VALIDATION_SOURCE_REVIEW
-    assert state.validation_source_review(ROOT) != review
+    assert state.validation_source_review(reviewed_root) == state.VALIDATION_SOURCE_REVIEW
+    assert state.validation_source_review(reviewed_root) != review
 
 
 @pytest.fixture
@@ -111,7 +135,9 @@ def reviewed_root(tmp_path):
     for name in state.VALIDATION_SOURCE_REVIEW["changes"]:
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes((ROOT / name).read_bytes())
+        raw = reviewed_v20_source() if name == "microcap_top100_mom16_biweekly_live_v2_0.py" else (ROOT / name).read_bytes()
+        assert hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest() == state.VALIDATION_SOURCE_REVIEW["changes"][name][1]
+        target.write_bytes(raw)
     return tmp_path
 
 
@@ -193,3 +219,10 @@ def test_state_validator_reads_real_data_and_calls_same_identity_predicate(tmp_p
     with pytest.raises(ValueError, match="stock return/trading-state"):
         state.validate_security_metadata(tmp_path)
     assert len(calls) == 2 and calls[-1][0] != calls[-1][1]
+
+
+def test_current_runtime_does_not_inherit_historical_source_review_authority():
+    current = (ROOT / "microcap_top100_mom16_biweekly_live_v2_0.py").read_bytes()
+    assert hashlib.sha256(current.replace(b"\r\n", b"\n")).hexdigest() != hashlib.sha256(reviewed_v20_source()).hexdigest()
+    with pytest.raises(ValueError, match="Unreviewed validation source: microcap_top100_mom16_biweekly_live_v2_0.py"):
+        state.validation_source_review(ROOT)
