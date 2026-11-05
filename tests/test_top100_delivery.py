@@ -573,3 +573,13 @@ from source_review_ancestry_cases_20261105 import (
     test_source_ancestry_metadata_is_a_deep_copy_without_execution_authority,
     test_source_ancestry_history_never_calls_current_source_permission,
 )
+
+# One collection point in the unchanged core30 file list.
+from exact_semantic_tail_source_cases_20261105 import (
+    exact_successor_identities,
+    test_exact_successor_real_d4_identity_and_actual_source,
+    test_exact_successor_rejects_all_other_identity_changes,
+    test_exact_successor_requires_all_four_exact_targets,
+    test_exact_successor_cannot_chain_reverse_or_authorize_future_code,
+    test_exact_successor_never_changes_historical_review_authority,
+)

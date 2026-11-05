@@ -698,6 +698,31 @@ VALIDATION_SOURCE_REVIEW = {
 }
 
 
+# Independently reviewed successor of the same certified D4 data identity.
+# This does not alter the sealed historical validation certificate above.
+SEMANTIC_TAIL_SOURCE_REVIEW = {
+    "revision": "semantic_metadata_tail_exact_d4_20261105_v1",
+    "expected_date": "2026-11-04",
+    "stock_fingerprint_sha256": "50d597f4e63502a69e05f583de94f9698f7f66f974a61f75a6e9ae6ec4c3fd49",
+    "file_count": 16315,
+    "data_sha256": "188aab4e5aea57f2cc230c22fee462fa96533e53edb02458c32997f1411afe3a",
+    "changes": {
+        "scripts/st_history_scope.py": (
+            "1365b7c0aa289efc30537ef2ede5a1bd7126952bd29c6a026a69d9d25659e47b",
+            "e4ee3b06d91ba562c68354217def93d1d72482924138963ff34a706b9c15a063"),
+        "scripts/st_notice_incremental.py": (
+            "d1b0f043137e0627f0510b95be42722e1018f0d40bcf59d8655687f63ceafae8",
+            "0592bd87c515af2c7e819681e9c87714737d21c8d833050e4db0403625d2cdc3"),
+        "scripts/st_notice_refresh.py": (
+            "629ef0a87a65673f68d960d3bdb62faedca84e2a8010b766289d98b4749133dc",
+            "42b94db9a41c197bbd9124f83aec955eaa5619938d84cebd951875236d550893"),
+        "scripts/st_metadata_refresh.py": (
+            "26537556d2cc58d899052ca0027f575b9f6d64fe03ca75651bf9f5f9a17dd0e8",
+            "5ecf65d6124310a777f62f3c8ac76c72000acce6482b99ce2359f52ffc34a992"),
+    },
+}
+
+
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
@@ -726,13 +751,20 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     if recorded == current:
         return True
     identity = hashlib.sha256(json.dumps(recorded, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-    if identity != VALIDATION_SOURCE_REVIEW["stock_fingerprint_sha256"]:
-        return False
     changed = {name for name in old if old[name] != new[name]}
-    allowed = set(VALIDATION_SOURCE_REVIEW["changes"]) & set(SOURCE_FILES)
-    return changed == allowed and all(
-        (old[name], new[name]) == tuple(VALIDATION_SOURCE_REVIEW["changes"][name])
-        for name in changed)
+    for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW):
+        if identity != review["stock_fingerprint_sha256"]:
+            continue
+        if review is SEMANTIC_TAIL_SOURCE_REVIEW and (
+                recorded["file_count"] != review["file_count"]
+                or recorded["sha256"] != review["data_sha256"]):
+            continue
+        allowed = set(review["changes"]) & set(SOURCE_FILES)
+        if changed == allowed and all(
+                (old[name], new[name]) == tuple(review["changes"][name])
+                for name in changed):
+            return True
+    return False
 
 
 def validation_source_review_metadata() -> dict:
