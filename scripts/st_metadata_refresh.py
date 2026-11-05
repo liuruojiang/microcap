@@ -196,6 +196,268 @@ def preserve_verified_replay_prefix(base, oldraw, candidate_path, *, proxy=False
         base._atomic_append_csv_rows(candidate_path, new.iloc[count:])
 
 
+def _semantic_metadata_binding(root, base, prior, target):
+    """Authenticate a completed renewal without reinterpreting approved history."""
+    import hashlib
+    import pandas as pd
+    root = Path(root).resolve()
+    target = pd.Timestamp(target).normalize()
+    marker_path = root / MARKER
+    raw_marker = marker_path.read_bytes()
+    marker = json.loads(raw_marker)
+    symbols = sorted(str(x).zfill(6) for x in base.freq_mod.list_backtest_universe_symbols())
+    if (not symbols or len(symbols) != len(set(symbols))
+            or marker.get('status') != 'complete' or marker.get('target') != str(target.date())
+            or marker.get('symbols') != symbols
+            or set(marker.get('old_hashes', {})) != set(symbols)
+            or set(marker.get('new_hashes', {})) != set(symbols)):
+        _fail('Incomplete semantic metadata transaction')
+    current_ref = list(resolve_archive_reference(root))
+    previous_ref = marker.get('previous_authority')
+    if (marker.get('authority') != current_ref or not isinstance(previous_ref, list)
+            or len(previous_ref) != 2):
+        _fail('Semantic metadata archive identity mismatch')
+    for ref in (previous_ref, current_ref):
+        if _sha(_bound(root, ref[0]).read_bytes()) != ref[1]:
+            _fail('Semantic metadata archive bytes changed')
+    consumed = pd.Timestamp(base.read_csv_last_date(prior['_index_path'])).normalize()
+    if not consumed < target or marker.get('boundary') != str(consumed.date()):
+        _fail('Semantic metadata boundary does not match consumed proxy')
+    work_path = root / marker['work']
+    for path in (work_path, *work_path.parents):
+        if path == root: break
+        if path.is_symlink() or getattr(path, 'is_junction', lambda: False)():
+            _fail('Linked semantic metadata transaction')
+    backup = _bound(root, marker['work']) / 'backup'
+    allowed = {'notice_query_end_date', 'st_notice_archive_sha256',
+               'st_notice_archive_manifest_path', 'notice_count', 'last_trade_date',
+               'current_st_snapshot_name', 'st_intervals'}
+    if sorted(p.stem for p in (root / '.microcap_index_cache/security_meta').glob('*.json')) != symbols:
+        _fail('Semantic metadata directory universe mismatch')
+    old_digest, new_digest = hashlib.sha256(), hashlib.sha256()
+    observed = {marker_path: raw_marker}
+    for symbol in symbols:
+        old_path = backup / (symbol + '.json')
+        new_path = root / '.microcap_index_cache/security_meta' / (symbol + '.json')
+        for leaf in (old_path, new_path):
+            for path in (leaf, *leaf.parents):
+                if path == root: break
+                if path.is_symlink() or getattr(path, 'is_junction', lambda: False)():
+                    _fail('Linked semantic metadata evidence')
+        oldraw, newraw = old_path.read_bytes(), new_path.read_bytes()
+        if (_sha(oldraw) != marker['old_hashes'][symbol]
+                or _sha(newraw) != marker['new_hashes'][symbol]):
+            _fail('Semantic metadata transaction bytes changed: ' + symbol)
+        old, new = json.loads(oldraw), json.loads(newraw)
+        for payload, ref, horizon in ((old, previous_ref, consumed), (new, current_ref, target)):
+            if (payload.get('symbol') != symbol or not payload.get('notice_source_complete')
+                    or payload.get('st_notice_archive_sha256') != ref[1]
+                    or payload.get('st_notice_archive_manifest_path') != ref[0]
+                    or not base.freq_mod._notice_horizon_covers(payload, horizon)
+                    or pd.Timestamp(payload['notice_query_end_date']) > horizon
+                    or pd.Timestamp(payload['last_trade_date']) > horizon):
+                _fail('Unverified semantic metadata horizon: ' + symbol)
+        if (not _history_equal(old, new, str(target.date()))
+                or any(old.get(k) != new.get(k) for k in (old.keys() | new.keys()) - allowed)
+                or new.get('current_st_history_resolved') is not True):
+            _fail('Metadata semantics changed or unknown field: ' + symbol)
+        before, after = old['st_intervals'], new['st_intervals']
+        if before != after:
+            if len(before) != len(after):
+                _fail('Unreviewed interval shape: ' + symbol)
+            for left, right in zip(before, after):
+                if left == right:
+                    continue
+                if (left.get('end') is not None or right.get('end') != str(target.date())
+                        or {k:v for k,v in left.items() if k != 'end'} !=
+                           {k:v for k,v in right.items() if k != 'end'}):
+                    _fail('Unreviewed interval transition: ' + symbol)
+        for digest, raw in ((old_digest, oldraw), (new_digest, newraw)):
+            digest.update(symbol.encode('ascii') + b'\0' + raw + b'\0')
+        observed[old_path], observed[new_path] = oldraw, newraw
+    fingerprint = lambda digest: dict(present_count=len(symbols), missing_count=0, sha256=digest.hexdigest())
+    if prior.get('core_params', {}).get('security_meta_cache_fingerprint') != fingerprint(old_digest):
+        _fail('Old proxy does not authenticate metadata backups')
+    current = fingerprint(new_digest)
+    if base.security_meta_cache_fingerprint() != current:
+        _fail('Metadata universe differs from completed transaction')
+    return current, observed, current_ref
+
+
+def try_semantic_metadata_tail(*, root, base, args, paths, panel_path, target):
+    """Native tail-only continuation after an exact, economically unchanged renewal.
+
+    Builds candidate outputs in a stage, never calls the historical proxy builder,
+    and installs only after source/CAS checks and exact approved-prefix readback.
+    """
+    import copy
+    import pandas as pd
+    from scripts.realtime_state_bundle import stock_input_evidence_matches_validated_source
+    root = Path(root).resolve()
+    target = pd.Timestamp(target).normalize()
+    from scripts.realtime_state_bundle import validate_archive_session
+    validate_archive_session(target.date())
+    lock = root / '.microcap_index_cache/st_metadata_refresh.lock'
+    fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, 'O_BINARY', 0))
+    owner = _bytes(dict(pid=os.getpid(), owner=uuid.uuid4().hex, target=str(target.date())))
+    os.write(fd, owner)
+    os.fsync(fd)
+    identity = os.fstat(fd)
+    keep_lock = False
+    def check_owner():
+        observed = lock.stat()
+        if ((observed.st_dev, observed.st_ino) != (identity.st_dev, identity.st_ino)
+                or lock.read_bytes() != owner):
+            _fail('Semantic tail lock ownership changed')
+    try:
+        prior = json.loads(paths['proxy_meta'].read_bytes())
+        if not base._proxy_meta_core_matches_execution_model(prior):
+            _fail('Semantic continuation execution model mismatch')
+        if not stock_input_evidence_matches_validated_source(
+                prior['core_params'].get('stock_input_evidence_fingerprint'),
+                base.stock_input_evidence_fingerprint()):
+            _fail('Semantic continuation stock input mismatch')
+        current_end = pd.Timestamp(base.read_csv_last_date(args.index_csv)).normalize()
+        if pd.Timestamp(base.read_csv_last_date(args.costed_nav_csv)).normalize() != current_end:
+            _fail('Semantic continuation proxy/NAV anchors differ')
+        dates = pd.DatetimeIndex(pd.to_datetime(pd.read_csv(panel_path)['date'], errors='raise'))
+        if (target not in dates or current_end not in dates or not dates.is_unique
+                or not dates.is_monotonic_increasing or dates.max() > target
+                or ((base.build_biweekly_rebalance_dates(dates) > current_end)
+                    & (base.build_biweekly_rebalance_dates(dates) <= target)).any()):
+            _fail('Semantic continuation requires a verified no-rebalance tail')
+        effective = base._continuation_members_at_bridge(paths, current_end)
+        if len(effective) != base.TOP_N or len(set(effective)) != base.TOP_N:
+            _fail('Semantic tail effective members are incomplete')
+        consumption = prior.get('return_basis_consumption', {})
+        if consumption.get('revision') != 'stock_return_consumption_v1':
+            _fail('Semantic tail consumption proof missing')
+        chain_end = consumption.get('full_rebuild_anchor')
+        for entry in consumption.get('tail_extensions', []):
+            if (entry.get('start_exclusive') != chain_end
+                    or pd.Timestamp(entry['end']) <= pd.Timestamp(chain_end)):
+                _fail('Semantic tail consumption chain is broken')
+            chain_end = entry['end']
+        if chain_end != str(current_end.date()):
+            _fail('Semantic tail consumption does not reach old proxy')
+        if consumption.get('tail_extensions'):
+            last = consumption['tail_extensions'][-1]
+            for field, key in (('effective_members_sha256','proxy_effective_members'),
+                               ('proxy_members_sha256','proxy_members'),
+                               ('proxy_turnover_sha256','proxy_turnover')):
+                if last.get(field) != _sha(paths[key].read_bytes()):
+                    _fail('Semantic tail consumed member authority changed')
+            if last.get('symbols') != sorted(effective):
+                _fail('Semantic tail consumed member set changed')
+        prior['_index_path'] = args.index_csv
+        with frozen_notice_sources(root):
+            fingerprint, observed, archive_ref = _semantic_metadata_binding(root, base, prior, target)
+            prior.pop('_index_path')
+            source_paths = [args.index_csv, args.costed_nav_csv, paths['proxy_meta'],
+                            paths['proxy_members'], paths['proxy_turnover'], paths['proxy_effective_members'],
+                            panel_path, base.FROZEN_TAIL_AUTHORITY_PATH, base.freq_mod.CURRENT_ST]
+            originals = {p:p.read_bytes() for p in source_paths}
+            stage = root / '.microcap_index_cache/semantic_metadata_tail' / uuid.uuid4().hex
+            stage.mkdir(parents=True)
+            staged_args = copy.copy(args)
+            staged_args.index_csv = stage / args.index_csv.name
+            staged_args.costed_nav_csv = stage / args.costed_nav_csv.name
+            staged_paths = dict(paths)
+            for key in ('proxy_meta', 'proxy_members', 'proxy_turnover', 'proxy_effective_members'):
+                staged_paths[key] = stage / paths[key].name
+            for destination, source in [(staged_args.index_csv, args.index_csv),
+                    (staged_args.costed_nav_csv, args.costed_nav_csv)] + [
+                    (staged_paths[k], paths[k]) for k in ('proxy_meta','proxy_members','proxy_turnover','proxy_effective_members')]:
+                _atomic(destination, originals[source])
+            # A derived candidate identity, authenticated above; original metadata
+            # and all published outputs remain untouched until both native tails pass.
+            candidate = copy.deepcopy(prior)
+            candidate['core_params']['security_meta_cache_fingerprint'] = fingerprint
+            base._atomic_write_json(staged_paths['proxy_meta'], candidate, encoding='utf-8')
+            if not base.try_extend_proxy_index_without_rebalance(staged_args, staged_paths, panel_path, target):
+                _fail('Native semantic proxy tail rejected')
+            if not base.try_extend_costed_nav_without_turnover(staged_args, panel_path, target, staged_paths['proxy_turnover']):
+                _fail('Native semantic NAV tail rejected')
+            for old, new, proxy in ((args.index_csv, staged_args.index_csv, True),
+                                    (args.costed_nav_csv, staged_args.costed_nav_csv, False)):
+                preserve_verified_replay_prefix(base, originals[old], new, proxy=proxy)
+                if not new.read_bytes().startswith(originals[old]):
+                    _fail('Semantic tail changed approved prefix bytes')
+                if pd.Timestamp(base.read_csv_last_date(new)).normalize() != target:
+                    _fail('Semantic tail did not reach target')
+            for key in ('proxy_members','proxy_turnover','proxy_effective_members'):
+                if staged_paths[key].read_bytes() != originals[paths[key]]:
+                    _fail('Semantic tail changed member authority: ' + key)
+            result_meta = json.loads(staged_paths['proxy_meta'].read_bytes())
+            if (result_meta['core_params']['security_meta_cache_fingerprint'] != fingerprint
+                    or not base.proxy_meta_matches_execution_model(result_meta)):
+                _fail('Semantic tail final fingerprint mismatch')
+            if list(resolve_archive_reference(root)) != archive_ref:
+                _fail('Semantic tail archive changed')
+            for path, raw in {**observed, **originals}.items():
+                if path.read_bytes() != raw:
+                    _fail('Concurrent semantic tail evidence change: ' + path.name)
+        # The source context also rechecks its complete closure before installation.
+        installs = [(args.index_csv, staged_args.index_csv),
+                    (args.costed_nav_csv, staged_args.costed_nav_csv),
+                    (paths['proxy_meta'], staged_paths['proxy_meta'])]
+        for path, raw in {**observed, **originals}.items():
+            if path.read_bytes() != raw:
+                _fail('Concurrent semantic tail preinstall change: ' + path.name)
+        rebound, _, reref = _semantic_metadata_binding(
+            root, base, dict(prior, _index_path=args.index_csv), target)
+        if rebound != fingerprint or reref != archive_ref:
+            _fail('Semantic metadata binding changed before install')
+        check_owner()
+        attempted = []
+        try:
+            for destination, candidate_path in installs:
+                check_owner()
+                payload = candidate_path.read_bytes()
+                attempted.append((destination, payload))
+                _atomic(destination, payload)
+                if destination.read_bytes() != payload:
+                    _fail('Semantic tail install readback mismatch')
+            _atomic(stage / 'receipt.json', _bytes(dict(status='verified_semantic_tail_only',
+                target=str(target.date()), old_proxy_sha256=_sha(originals[paths['proxy_meta']]),
+                metadata_fingerprint=fingerprint, outputs={p.name:_sha(p.read_bytes()) for p,_ in installs})))
+            check_owner()
+        except BaseException as exc:
+            try:
+                check_owner()
+                for destination, payload in reversed(attempted):
+                    current = destination.read_bytes()
+                    if current not in (payload, originals[destination]):
+                        _fail('Concurrent semantic tail change prevents rollback')
+                    if current != originals[destination]:
+                        _atomic(destination, originals[destination])
+                    if destination.read_bytes() != originals[destination]:
+                        _fail('Semantic tail rollback readback mismatch')
+                _atomic(stage / 'failure_receipt.json', _bytes(dict(status='rolled_back',
+                    error=type(exc).__name__ + ': ' + str(exc))))
+            except BaseException:
+                keep_lock = True
+                raise
+            raise
+        return True
+    finally:
+        import sys
+        pending_error = sys.exc_info()[1]
+        owner_error = None
+        try:
+            check_owner()
+        except BaseException as exc:
+            keep_lock = True
+            owner_error = exc
+        os.close(fd)
+        if owner_error is not None:
+            raise owner_error from pending_error
+        if not keep_lock:
+            check_owner()
+            lock.unlink()
+
+
+
 def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     """Replay an unchanged ST history from certified caches, then native short tail.
 
@@ -212,6 +474,8 @@ def try_cached_history_rebuild(*, root, base, args, paths, panel_path, target):
     if marker.get('status')!='complete' or marker.get('target')!=str(target.date()):return False
     prior=json.loads(paths['proxy_meta'].read_bytes())
     if base.proxy_meta_matches_execution_model(prior):return False
+    if prior.get('core_params', {}).get('security_meta_cache_fingerprint') is not None:
+        return try_semantic_metadata_tail(root=root, base=base, args=args, paths=paths, panel_path=panel_path, target=target)
     proof=prior.get('return_basis_consumption',{})
     anchor=proof.get('full_rebuild_anchor')
     if proof.get('revision')!='stock_return_consumption_v1' or not anchor:return False
