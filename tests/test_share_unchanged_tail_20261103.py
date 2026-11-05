@@ -552,31 +552,53 @@ def test_public_share_denial_or_permanent_http_is_not_retried(tmp_path, monkeypa
     assert not (tmp_path / "quote.raw").exists()
 
 
-def test_public_share_second_502_still_fails_and_keeps_both_bodies(tmp_path, monkeypatch):
+def test_public_share_exhausted_502_is_terminal_and_keeps_all_bodies(tmp_path, monkeypatch):
     calls = []
     def get(*args, **kwargs):
         calls.append(1)
         return public_response(502, f"unit failure {len(calls)}".encode())
     monkeypatch.setattr(source.requests, "get", get)
     monkeypatch.setattr(source.time, "sleep", lambda _: None)
-    with pytest.raises(source.requests.HTTPError):
+    with pytest.raises(RuntimeError, match="SHARE_REQUEST_RETRY_EXHAUSTED") as caught:
         save_public_probe(tmp_path)
-    assert len(calls) == 2
+    assert isinstance(caught.value.__cause__, source.requests.HTTPError)
+    assert len(calls) == 4 and len(list(tmp_path.glob('quote_attempt*.raw'))) == 4
     assert (tmp_path / "quote_attempt1.raw").read_bytes() != (tmp_path / "quote_attempt2.raw").read_bytes()
     assert not (tmp_path / "quote.raw").exists()
 
 
 @pytest.mark.parametrize("error", [source.requests.Timeout, source.requests.ConnectionError])
-def test_public_share_connection_failure_has_one_retry_and_diagnostic(tmp_path, monkeypatch, error):
+def test_public_share_connection_failure_has_bounded_request_budget_and_diagnostic(tmp_path, monkeypatch, error):
     calls = []
     def get(*args, **kwargs):
         calls.append(1)
         raise error("unit connection failure")
     monkeypatch.setattr(source.requests, "get", get)
     monkeypatch.setattr(source.time, "sleep", lambda _: None)
-    with pytest.raises(error):
+    with pytest.raises(RuntimeError, match="SHARE_REQUEST_RETRY_EXHAUSTED") as caught:
         save_public_probe(tmp_path)
-    assert len(calls) == 2 and len(list(tmp_path.glob("*.transport.json"))) == 2
+    assert isinstance(caught.value.__cause__, error)
+    assert len(calls) == 4 and len(list(tmp_path.glob("*.transport.json"))) == 4
+
+
+def test_public_share_recovers_third_request_without_repeating_successful_request(tmp_path, monkeypatch):
+    calls = []
+    def get(url, **kwargs):
+        calls.append(url)
+        if url.endswith('/failed') and calls.count(url) <= 2:
+            raise source.requests.ConnectTimeout('actual incident control: two connection timeouts')
+        return public_response(200, b'unit successful response')
+    monkeypatch.setattr(source.requests, 'get', get)
+    monkeypatch.setattr(source.time, 'sleep', lambda _: None)
+    def save(name):
+        return source._save_public_observation(directory=tmp_path, source=tmp_path,
+            url='https://example.invalid/' + name, params={}, purpose=name, end='2026-11-03')
+    first, _ = save('completed')
+    original = (tmp_path / first['receipt_path']).read_bytes()
+    save('failed')
+    assert calls == ['https://example.invalid/completed'] + ['https://example.invalid/failed'] * 3
+    assert (tmp_path / first['receipt_path']).read_bytes() == original
+    assert len(list(tmp_path.glob('failed_attempt*.transport.json'))) == 2
 
 
 def test_public_share_certificate_failure_is_not_retried(tmp_path, monkeypatch):

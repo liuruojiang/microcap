@@ -236,8 +236,11 @@ def test_d5_native_append_preserves_complete_d4_chain_and_roundtrip(evidence,mon
 def test_transition_does_not_waive_live_quote_or_commercial_source(evidence,monkeypatch,fault):
     root,directory,csv=install_d4_chain(evidence);transition_http(evidence,monkeypatch,fault)
     before=csv.read_bytes();state=(directory/'603028.json').read_bytes()
-    with pytest.raises((ValueError,requests.HTTPError)):
+    with pytest.raises(RuntimeError if fault == 'quote502' else ValueError) as caught:
         chain.refresh_share_change(root=root,symbol='603028',cache_path=csv,as_of='2026-11-05',allow_network=True)
+    if fault == 'quote502':
+        assert 'SHARE_REQUEST_RETRY_EXHAUSTED' in str(caught.value)
+        assert isinstance(caught.value.__cause__, requests.HTTPError)
     assert csv.read_bytes()==before and (directory/'603028.json').read_bytes()==state
 
 

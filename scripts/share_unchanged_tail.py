@@ -387,8 +387,13 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
 
 
 def _save_public_observation(*, directory, source, url, params, purpose, end, referer=None):
-    """Retry this failed public request once; keep every failed HTTP body."""
-    for attempt in range(2):
+    """Spend the former two-run transport budget on this request only.
+
+    Four attempts equal the previous two local attempts times two whole-refresh
+    attempts. Exhaustion is terminal to the outer runner; completed inputs and
+    earlier successful requests are never repeated to consume this budget.
+    """
+    for attempt in range(4):
         start = datetime.now(timezone.utc)
         require(start >= datetime.fromisoformat(end + "T15:00:00+08:00"), "not close eligible")
         try:
@@ -405,10 +410,10 @@ def _save_public_observation(*, directory, source, url, params, purpose, end, re
                            error_type=type(error).__name__, status="transport_failure_no_response")
             (directory / f"{purpose}_attempt{attempt + 1}.transport.json").write_text(
                 json.dumps(failure, ensure_ascii=False, indent=2), encoding="utf8")
-            if attempt:
-                raise
-            print(f"[share-source] transient public request {purpose}; retry=1/1", flush=True)
-            time.sleep(1)
+            if attempt == 3:
+                raise RuntimeError("SHARE_REQUEST_RETRY_EXHAUSTED: " + purpose) from error
+            print(f"[share-source] transient public request {purpose}; retry={attempt + 1}/3", flush=True)
+            time.sleep(20 if attempt == 1 else 1)
             continue
         try:
             raw = response.content
@@ -425,10 +430,12 @@ def _save_public_observation(*, directory, source, url, params, purpose, end, re
             rp.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf8")
             try:
                 response.raise_for_status()
-            except requests.HTTPError:
-                if attempt == 0 and response.status_code in (500, 502, 503, 504):
-                    print(f"[share-source] HTTP {response.status_code} {purpose}; retry=1/1", flush=True)
-                    time.sleep(1)
+            except requests.HTTPError as error:
+                if response.status_code in (500, 502, 503, 504):
+                    if attempt == 3:
+                        raise RuntimeError("SHARE_REQUEST_RETRY_EXHAUSTED: " + purpose) from error
+                    print(f"[share-source] HTTP {response.status_code} {purpose}; retry={attempt + 1}/3", flush=True)
+                    time.sleep(20 if attempt == 1 else 1)
                     continue
                 raise
             return dict(raw_path=path.relative_to(source).as_posix(), raw_sha256=sha(raw),

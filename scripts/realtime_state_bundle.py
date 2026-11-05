@@ -732,7 +732,7 @@ APPROVED_301288_SOURCE_REVIEW["changes"].update({'scripts/share_unchanged_tail.p
 
 APPROVED_603028_SOURCE_REVIEW = copy.deepcopy(APPROVED_301288_SOURCE_REVIEW)
 APPROVED_603028_SOURCE_REVIEW["revision"] = "approved_603028_dated_observation_20261106_v1"
-APPROVED_603028_SOURCE_REVIEW["changes"].update({'scripts/share_change_source.py': ['2231debbff5ed1d85ecb31ac25ba5db4bfd7050d6d7f55920e0dde5299a68517', '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3'], 'scripts/share_unchanged_tail.py': ['cf66976ca3cea83c5fe9fa67cfe816948141479cda00320e70e6406444c1a6fd', 'f94a4e68a9a148dde809f4a816ed0dd68a099da7f077728c8a635eb755858c38'], 'data/share_source_future_plan_reviews.json': ['db9799bfc30a2108a523f3b7654db7de4cad326b232d7e72828f8b11be437f7a', '972825f752eb59d274c14e6a009f1b92cbed2e4a3f45ad5adce027f3b174e2e1']})
+APPROVED_603028_SOURCE_REVIEW["changes"].update({'scripts/share_change_source.py': ['2231debbff5ed1d85ecb31ac25ba5db4bfd7050d6d7f55920e0dde5299a68517', '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3'], 'scripts/share_unchanged_tail.py': ['cf66976ca3cea83c5fe9fa67cfe816948141479cda00320e70e6406444c1a6fd', 'f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7'], 'data/share_source_future_plan_reviews.json': ['db9799bfc30a2108a523f3b7654db7de4cad326b232d7e72828f8b11be437f7a', '972825f752eb59d274c14e6a009f1b92cbed2e4a3f45ad5adce027f3b174e2e1']})
 
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
