@@ -532,7 +532,7 @@ def validate_previous_source_validation(root: Path, current: dict, previous: dic
         raise ValueError("Previous source manifest is not an object")
     if "previous_source_validation" in saved:
         raise ValueError("Nested previous source validation is not supported")
-    validate_source_compatibility(root, saved, saved)
+    _validate_source_compatibility_record(saved, saved, state.validation_source_review_metadata())
     prior_day = daily_session_date(saved["expected_date"])
     current_day = daily_session_date(current["expected_date"])
     if prior_day is None or current_day is None or current_day < prior_day:
@@ -563,13 +563,17 @@ def _require_source_only_transition(original: dict, current: dict, review: dict)
 
 
 def validate_source_compatibility(root: Path, current: dict, saved: dict) -> dict:
-    """Authenticate portable provenance without trusting a claimed old SHA alone."""
+    """Current certification still requires every exact reviewed source hash."""
+    return _validate_source_compatibility_record(current, saved, state.validation_source_review(root))
+
+
+def _validate_source_compatibility_record(current: dict, saved: dict, review: dict) -> dict:
+    """Authenticate sealed receipt bytes/relations, not current-source authority."""
     receipt = saved.get("source_validation_compatibility")
     keys = {"revision", "expected_date", "original_manifest_sha256", "original_manifest_utf8",
             "stock_fingerprint_sha256", "source_changes", "validated_at", "validation_release_sha"}
     if not isinstance(receipt, dict) or set(receipt) != keys:
         raise ValueError("Incomplete source recertification receipt")
-    review = state.validation_source_review(root)
     if (receipt["revision"] != review["revision"] or receipt["expected_date"] != review["expected_date"]
             or receipt["original_manifest_sha256"] != review["manifest_sha256"]
             or receipt["stock_fingerprint_sha256"] != review["stock_fingerprint_sha256"]

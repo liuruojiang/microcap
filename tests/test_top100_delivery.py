@@ -560,3 +560,16 @@ def test_release_evidence_requires_exact_bytes_across_line_endings(tmp_path, mon
         delivery.verify_release(tmp_path)
     path.write_bytes(b'archived\nbytes\n')
     assert delivery.verify_release(tmp_path) == remote
+
+
+# Stable single collection point in the existing core30 entrypoint.
+from source_review_ancestry_cases_20261105 import (
+    isolated_source_certificate,
+    test_source_ancestry_real_old_manifest_needs_no_current_source_files,
+    test_source_ancestry_rehashed_old_manifest_mutation_is_rejected,
+    test_source_ancestry_original_bytes_structure_and_date_stay_strict,
+    test_source_ancestry_future_code_fix_does_not_break_sealed_certificate,
+    test_source_ancestry_cannot_authorize_new_recertification,
+    test_source_ancestry_metadata_is_a_deep_copy_without_execution_authority,
+    test_source_ancestry_history_never_calls_current_source_permission,
+)

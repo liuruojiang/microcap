@@ -735,13 +735,19 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
         for name in changed)
 
 
+def validation_source_review_metadata() -> dict:
+    """Sealed historical review metadata; grants no current-source permission."""
+    return copy.deepcopy(VALIDATION_SOURCE_REVIEW)
+
+
 def validation_source_review(root: Path) -> dict:
     """Read back every exact changed source for native one-time certification."""
-    for name, (_before, after) in VALIDATION_SOURCE_REVIEW["changes"].items():
+    review = validation_source_review_metadata()
+    for name, (_before, after) in review["changes"].items():
         actual = hashlib.sha256((Path(root) / name).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
         if actual != after:
             raise ValueError("Unreviewed validation source: " + name)
-    return copy.deepcopy(VALIDATION_SOURCE_REVIEW)
+    return review
 
 
 def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str, ...],
