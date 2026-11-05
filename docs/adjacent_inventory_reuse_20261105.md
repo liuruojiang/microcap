@@ -22,5 +22,5 @@ Targeted verification: lifecycle records 32ff6b04b8df48dfb6a8179c4edb7eda
 same-size/same-mtime changes, links, inventory changes, locks, calendar/module
 changes, frozen original-fingerprint parity, and both complete hash passes.
 The existing portable archive test from a911fa239b995031dcd1d8324c62d03f63e77374
-is included unchanged so test and runtime source no longer need separate pins.
+remains a separately declared test source; the existing two-role verification contract is retained.
 These are targeted software checks, not a new market signal or historical replay.

@@ -9,7 +9,9 @@ import hashlib
 import io
 import json
 import sys
-from types import SimpleNamespace
+import subprocess
+from pathlib import Path
+from types import SimpleNamespace, ModuleType
 import zipfile
 
 import pandas as pd
@@ -157,15 +159,21 @@ def test_normal_pack_does_not_waive_old_provenance_or_new_validation(certified, 
     assert not bundle.exists()
 
 
-def test_strict_receipt_still_rejects_advanced_normal_outputs(certified, monkeypatch):
-    """Keep the legacy exact-receipt boundary without requiring a Git checkout.
-
-    The original e41 modules were separately executed in lifecycle a798bd30;
-    daily materialized source intentionally contains neither .git nor old refs.
-    """
+def test_published_normal_path_reproduces_next_session_receipt_failure(certified, monkeypatch):
     root, prior = certified
     normal_refresh_and_generate(root, "2026-09-04", monkeypatch)
-    report = delivery.inspect_outputs(root, "2026-09-04")
-    assert report["ok"] is False
-    assert any("Certified source manifest/current mismatch: expected_date" in error for error in report["errors"])
-    assert (root / delivery.MANIFEST).read_bytes() == prior
+    repository = Path(__file__).resolve().parents[1]
+    modules = []
+    for name in ("top100_delivery", "top100_cloud_delivery"):
+        source = subprocess.run(["git", "show", "e41cf520167dbeb86f935010affa57b77afdff4b:scripts/" + name + ".py"],
+                                cwd=repository, check=True, capture_output=True).stdout
+        module = ModuleType("published_" + name)
+        module.__file__ = str(repository / "scripts" / (name + ".py"))
+        exec(compile(source, module.__file__, "exec"), module.__dict__)
+        modules.append(module)
+    published_delivery, published_cloud = modules
+    published_cloud.delivery = published_delivery
+    bundle = root.parent / (root.name + "-published.zip")
+    with pytest.raises(RuntimeError, match="source validation compatibility"):
+        published_cloud.pack({v: root for v in delivery.COSTED}, bundle, "2026-09-04")
+    assert not bundle.exists()
