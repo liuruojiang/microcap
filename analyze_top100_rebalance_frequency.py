@@ -1075,7 +1075,13 @@ def build_security_meta(symbol: str, *, as_of: pd.Timestamp | str | None = None)
     # historical interval at last_trade (which can precede the snapshot date).
     st_intervals = merge_st_intervals([*name_intervals, *notice_intervals])
     evidence_intervals = [*name_intervals, *notice_intervals]
-    current_st_history_resolved = (not current_st_name) or any(item.get("end") is None for item in evidence_intervals)
+    # Exit dates are inclusive: a withdrawal-day ST snapshot is still valid.
+    # Use the requested notice horizon, never a potentially stale price date.
+    current_st_history_resolved = (not current_st_name) or any(
+        pd.Timestamp(item["start"]) <= notice_end
+        and (item.get("end") is None or notice_end <= pd.Timestamp(item["end"]))
+        for item in evidence_intervals
+    )
 
     meta = {
         "meta_version": SECURITY_META_VERSION,

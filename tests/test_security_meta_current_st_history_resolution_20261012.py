@@ -162,3 +162,6 @@ def test_official_cache_panel_loader_fails_closed_on_unresolved_history(tmp_path
         )
     assert "688496" in str(exc.value)
     assert "SecurityMetaHistoryEvidenceUnresolved" in str(exc.value)
+
+# Exact exit-day regression, collected once by the existing daily core file.
+from st_inclusive_exit_20261105_cases import (inclusive_exit_builder, test_inclusive_exit_real_300237_builder_accepts_exit_day, test_inclusive_exit_expired_interval_cannot_use_old_price_day, test_inclusive_exit_invalid_evidence_still_rejected, test_inclusive_exit_future_exit_does_not_clear_today)

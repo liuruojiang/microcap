@@ -1,0 +1,67 @@
+{
+  "rows": [
+    {
+      "notice_date": "2025-09-27",
+      "title": "关于公司股票被实施其他风险警示暨停复牌的公告",
+      "announcement_id": "AN202509261751064457",
+      "issuer_symbol": "300237",
+      "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202509261751064457_1.pdf",
+      "source_provider": "eastmoney"
+    },
+    {
+      "notice_date": "2025-10-09",
+      "title": "关于公司股票被实施其他风险警示相关事项的进展公告",
+      "announcement_id": "AN202510091758948743",
+      "issuer_symbol": "300237",
+      "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202510091758948743_1.pdf",
+      "source_provider": "eastmoney"
+    },
+    {
+      "notice_date": "2026-10-28",
+      "title": "关于申请撤销其他风险警示的公告",
+      "announcement_id": "AN202610271831038655",
+      "issuer_symbol": "300237",
+      "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202610271831038655_1.pdf",
+      "source_provider": "eastmoney"
+    },
+    {
+      "notice_date": "2026-11-05",
+      "title": "关于撤销其他风险警示暨股票停复牌的公告",
+      "announcement_id": "AN202611041831418741",
+      "issuer_symbol": "300237",
+      "source_url": "https://pdf.dfcfw.com/pdf/H2_AN202611041831418741_1.pdf",
+      "source_provider": "eastmoney"
+    }
+  ],
+  "name_changes": [
+    {
+      "change_date": "2011-06-29",
+      "old_name": "",
+      "new_name": "美晨科技"
+    }
+  ],
+  "sources": [
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\st_notice_sources\\objects\\361d0f97671a891c1b1b.json",
+      "sha256": "ffd6fe48d9d1e9db8c91f30584c53c36852c26a61fb6eb30968c3226a0669959",
+      "announcement_id": "AN202509261751064457"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\st_notice_sources\\objects\\12eb09b42adb72868a55.json",
+      "sha256": "00b2c92a739a8476a16df3fda7f7fa6e4aef825e225ae6903b96948162e16b8c",
+      "announcement_id": "AN202510091758948743"
+    },
+    {
+      "path": "D:\\动量策略\\微盘股对冲策略\\.microcap_index_cache\\st_notice_sources\\objects\\2cddf2f53db875dca418.json",
+      "sha256": "f85d11d119b2fd2449e97c10d14be0621d2e25c4f408cf8be1128fd75f6eb676",
+      "announcement_id": "AN202610271831038655"
+    },
+    {
+      "path": "D:\\Codex\\home\\automations\\ic-im\\runs\\20261105\\postclose_delay_review\\normal_failure_42016112300\\13412075739\\new_generations\\.microcap_index_cache\\st_notice_sources\\refresh_20261105T113533403003Z_ede02d9a4035\\2026-11-05\\page_0004.json",
+      "sha256": "aec6e71cb3c3fa0834be508a13171c223659184cdc32bab6050fd095d6e00d83",
+      "announcement_id": "AN202611041831418741"
+    }
+  ],
+  "original_pdf": "https://static.cninfo.com.cn/finalpage/2026-11-05/1225658367.PDF",
+  "note": "Real archived provider titles. Test-only evidence; no production registry, authority or history mutation."
+}
