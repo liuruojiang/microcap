@@ -367,9 +367,6 @@ def _non_equity_catalog_metadata(previous, current, precision):
 
 
 def reviewed_additions(previous, current, precision):
-    catalog = _non_equity_catalog_metadata(previous, current, precision)
-    if catalog is not None:
-        return catalog
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
     columns = _reviewed_catalog_columns_20261105(previous, current)
     if columns is not None:
@@ -384,6 +381,9 @@ def reviewed_additions(previous, current, precision):
     exact = _review_exact_20261103_batch(previous, current, precision)
     if exact is not None:
         return exact
+    catalog = _non_equity_catalog_metadata(previous, current, precision)
+    if catalog is not None:
+        return catalog
     added = sorted(set(current) - set(previous))
     if set(previous) - set(current):
         raise StNoticeEvidenceError(error)
