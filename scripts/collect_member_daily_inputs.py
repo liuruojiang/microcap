@@ -60,6 +60,119 @@ def collect_hedge(base, day, mode, out):
     except Exception as exc:
         return dict(market_date=day,error=f'{type(exc).__name__}: {exc}')
 
+def _save_json(path, value):
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf8')
+
+
+def close_tail_member_rows(symbol, basis, days, daily, bodies, receipts, completed):
+    """Reuse one verified native response and one factor pair for a short tail."""
+    from scripts.stock_daily_alternative import verify
+    verify(daily)
+    raw = {str(row[0]): float(row[2]) for row in daily['rows']}
+    if len(raw) != len(daily['rows']) or set(raw) != set(days):
+        raise ValueError('Native close tail does not cover the exact missing sessions')
+    previous_date, previous_raw = str(basis['previous_raw_date']), float(basis['previous_raw_close'])
+    result = {}
+    for session in days:
+        try:
+            pair = adjusted_pair(symbol, previous_date, session, previous_raw, raw[session], bodies, receipts)
+            result[session] = dict(symbol=symbol, trade_date=session, previous_date=previous_date,
+                raw_close=raw[session], previous_raw_close=previous_raw, source=daily['provider']+'+sina_ratio',
+                quote_time=session+'T15:00:00+08:00', collected_at=completed, **pair)
+        except (ValueError, KeyError, TypeError) as exc:
+            result[session] = {'error': f'{type(exc).__name__}: {exc}'}
+        previous_date, previous_raw = session, raw[session]
+    return result
+
+
+def _collect_close_tail(*, cp, members, price_rows, days, out, workers):
+    # Short missing-session replay is independent of global maintenance. All
+    # raw/factor responses retain their actual collection clocks and bytes.
+    import requests
+    from scripts.stock_daily_alternative import query
+    from scripts.index_history_preflight import fetch_delivery_history
+    rows_by_day, errors_by_day = {d: [] for d in days}, {d: {} for d in days}
+    stopped = threading.Event()
+    def one(member):
+        symbol = str(member['symbol']).zfill(6)
+        basis = price_rows[symbol]
+        if basis['previous_raw_date'] != cp['as_of_date']:
+            raise ValueError('Member price basis differs from replay anchor')
+        folder = out / 'factor_sources' / symbol
+        folder.mkdir(parents=True)
+        daily = query(symbol, days[0], days[-1], days, float(basis['previous_raw_close']))
+        _save_json(folder/'daily_raw.json', daily)
+        market = ('sh' if symbol.startswith('6') else 'sz') + symbol
+        bodies, receipts = {}, {}
+        for kind in ('qfq','hfq'):
+            if stopped.is_set():
+                raise ValueError('Factor source stopped after HTTP403/429')
+            url = f'https://finance.sina.com.cn/realstock/company/{market}/{kind}.js'
+            started = datetime.now(CN).isoformat()
+            response = requests.get(url, timeout=15)
+            body = response.content
+            receipt = dict(url=url,status=response.status_code,sha256=hashlib.sha256(body).hexdigest(),
+                observation_start=started,observation_end=datetime.now(CN).isoformat())
+            (folder/(kind+'.js')).write_bytes(body)
+            _save_json(folder/(kind+'.json'),receipt)
+            if response.status_code in (403,429):stopped.set()
+            response.raise_for_status()
+            bodies[kind],receipts[kind]=body,receipt
+        return close_tail_member_rows(symbol,basis,days,daily,bodies,receipts,datetime.now(CN).isoformat())
+    with ThreadPoolExecutor(max_workers=max(1,min(workers,8))) as pool:
+        futures={pool.submit(one,m):str(m['symbol']).zfill(6) for m in members}
+        for future in as_completed(futures):
+            try:
+                result=future.result()
+                for session,row in result.items():
+                    if 'error' in row:errors_by_day[session][futures[future]]=row['error']
+                    else:rows_by_day[session].append(row)
+            except Exception as exc:
+                for session in days:errors_by_day[session][futures[future]]=f'{type(exc).__name__}: {exc}'
+    hedge_by_day = {}
+    try:
+        frame=fetch_delivery_history(date.fromisoformat(days[0]),date.fromisoformat(days[-1]))
+        frame.to_csv(out/'hedge_daily_bar.csv',index=False)
+        bars={str(value.date() if hasattr(value,'date') else value)[:10]:float(close)
+              for value,close in zip(frame['date'],frame['close'],strict=True)}
+        for session in days:
+            if session not in bars:raise ValueError('Hedge tail missing exchange session: '+session)
+            hedge_by_day[session]=dict(market_date=session,close=bars[session],
+                source=frame.attrs['independent_history_source'],collected_at=datetime.now(CN).isoformat(),
+                close_confirmed=True,retrospective_replay=session!=days[-1],
+                source_attempts=frame.attrs['independent_history_attempts'])
+    except Exception as exc:
+        hedge_by_day={d:dict(market_date=d,error=f'{type(exc).__name__}: {exc}') for d in days}
+    (out/'quotes_by_day').mkdir();(out/'hedge_by_day').mkdir()
+    manifest=dict(schema='member_daily_replay_v1',anchor_date=cp['as_of_date'],latest_date=days[-1],mode='close_confirmed',days=[])
+    for session in days:
+        quotes=dict(market_date=session,collected_at=datetime.now(CN).isoformat(),rows=sorted(rows_by_day[session],key=lambda r:r['symbol']),
+            errors=errors_by_day[session],close_confirmed=True,retrospective_replay=session!=days[-1])
+        quote_path='quotes_by_day/'+session+'.json';hedge_path='hedge_by_day/'+session+'.json'
+        _save_json(out/quote_path,quotes);_save_json(out/hedge_path,hedge_by_day[session])
+        manifest['days'].append(dict(date=session,quotes=quote_path,hedge=hedge_path))
+    _save_json(out/'replay_manifest.json',manifest)
+    _save_json(out/'quotes.json',quotes);_save_json(out/'hedge.json',hedge_by_day[days[-1]])
+    return quotes
+
+
+def _collect_intraday_gap(base, symbols, cp, missing_days, day, out):
+    # Preserve today's observations, without treating a multi-day raw movement
+    # as a one-session return or silently skipping the missing confirmed state.
+    errors = {'missing_sessions': 'Confirmed close replay required: '+','.join(missing_days[:-1])}
+    try:
+        raw=base.fetch_member_realtime_quotes(symbols)
+        raw.to_csv(out/'raw_quotes.csv',index=False)
+        observed=json.loads(raw.to_json(orient='records',force_ascii=False,date_format='iso'))
+    except Exception as exc:
+        observed=[];errors['current_quotes']=f'{type(exc).__name__}: {exc}'
+    quotes=dict(market_date=day,collected_at=datetime.now(CN).isoformat(),rows=[],
+        observed_raw_quotes=observed,errors=errors,close_confirmed=False,anchor_date=cp['as_of_date'])
+    _save_json(out/'quotes.json',quotes)
+    _save_json(out/'hedge.json',collect_hedge(base,day,'intraday',out))
+    return quotes
+
+
 def collect(*, root, checkpoint, day, mode, out, workers=8):
     import requests
     root = Path(root).resolve()
@@ -85,10 +198,14 @@ def collect(*, root, checkpoint, day, mode, out, workers=8):
     if day not in sessions:
         raise ValueError('Market date is not a verified session')
     later = sorted(d for d in sessions if cp['as_of_date'] < d <= day)
-    if later != [day]:
-        raise ValueError('Checkpoint requires missing-session replay before current collection')
+    if not later or later[-1] != day:
+        raise ValueError('Checkpoint has no prior session to extend')
     out = Path(out).resolve()
     out.mkdir(parents=True, exist_ok=False)
+    if len(later) > 1:
+        if mode == 'close_confirmed':
+            return _collect_close_tail(cp=cp,members=members,price_rows=price_rows,days=later,out=out,workers=workers)
+        return _collect_intraday_gap(base,symbols,cp,later,day,out)
     import pandas as pd
     raw = base.fetch_member_realtime_quotes(symbols) if mode == 'intraday' else pd.DataFrame()
     raw.to_csv(out / 'raw_quotes.csv', index=False)

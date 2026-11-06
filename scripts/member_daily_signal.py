@@ -48,9 +48,10 @@ def bound_file(checkpoint_path, specification):
     return path, raw
 
 
-def load_checkpoint(path):
+def load_checkpoint(path, *, allow_component=False):
     cp = json.loads(path.read_bytes())
-    if cp.get("schema") != SCHEMA:
+    component = cp.get("schema") == "member_daily_component_observation_v1" and cp.get("component_only") is True
+    if cp.get("schema") != SCHEMA and not (allow_component and component):
         raise ValueError("Unsupported member daily checkpoint")
     files = {key: bound_file(path, cp[key]) for key in ("period", "history", "turnover", "version_state", "prices")}
     period = json.loads(files["period"][1])
@@ -138,14 +139,12 @@ def calculate_native(version, module, history, turnover):
     return renderer._build_signal_row(out, {}), out
 
 
-def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, calendar_sessions=None):
+def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, calendar_sessions=None, allow_component_checkpoint=False):
     now = now or datetime.now(BJ)
     sys.path.insert(0, str(root.resolve()))
-    cp, files, period, symbols, history, turnover, prior_states = load_checkpoint(checkpoint_path)
+    cp, files, period, symbols, history, turnover, prior_states = load_checkpoint(checkpoint_path, allow_component=allow_component_checkpoint)
     if pd.Timestamp(day) <= history.index[-1]:
         raise ValueError("Daily signal must extend the checkpoint, never replay or overwrite it")
-    if cp.get("next_trade_date") and day != cp["next_trade_date"]:
-        raise ValueError("Signal skips checkpoint's next exchange session")
     if period.get("effective_from", cp["as_of_date"]) > day:
         raise ValueError("Period members are not effective on signal day")
     out.mkdir(parents=True, exist_ok=False)
@@ -154,9 +153,25 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
                   member_count=100, quote_coverage="0/100", checkpoint=None,
                   checkpoint_sha256=digest(checkpoint_path.read_bytes()),
                   period_sha256=cp["period"]["sha256"], anchor_date=cp["as_of_date"])
+    observed = set()
+    for row in (quotes or {}).get("rows", []):
+        if not isinstance(row, dict):
+            continue
+        symbol = str(row.get("symbol", "")).zfill(6)
+        try:
+            price = float(row.get("raw_close", row.get("close_adj")))
+            if symbol in symbols and row.get("trade_date") == day and math.isfinite(price) and price > 0:
+                observed.add(symbol)
+        except (ValueError, TypeError):
+            continue
+    result.update(observed_member_count=len(observed), missing_member_symbols=sorted(set(symbols)-observed),
+                  quote_coverage=f"{len(observed)}/100", quote_errors=(quotes or {}).get("errors", []),
+                  collected_at=(quotes or {}).get("collected_at"), basis_error=None)
     extended = history.copy()
     member_error = None
     try:
+        if cp.get("next_trade_date") and day != cp["next_trade_date"]:
+            raise ValueError("Missing confirmed exchange session(s) before today's observation; no intermediate price was filled")
         if calendar_sessions is None:
             from scripts.exchange_calendar import sessions_for_day
             calendar_sessions = sessions_for_day(date.fromisoformat(day))
@@ -172,6 +187,9 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
         result["quote_coverage"] = "100/100"
     except (ValueError, KeyError, TypeError, RuntimeError) as exc:
         member_error = str(exc)
+        result["calculation_error"] = member_error
+        if any(term in member_error.lower() for term in ("basis", "adjusted", "source", "prior checkpoint raw price")):
+            result["basis_error"] = member_error
     hedge_error = None
     try:
         if hedge is None:
@@ -202,6 +220,8 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
         try:
             if error:
                 raise ValueError(error)
+            if cp.get("component_only") and version != "v2.5":
+                raise ValueError("An earlier hedge-dependent close remains unconfirmed; only the unhedged component observation can continue")
             # Full-history parity protects path-dependent threshold state. Never
             # silently restart a shortened window from cash.
             previous, _ = calculate_native(version, module, history, turnover)
@@ -243,7 +263,7 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
         extended.rename_axis("date").to_csv(out / "history.csv", date_format="%Y-%m-%d")
         write_json(out / "version_state.json", dict(schema="member_version_state_v1", versions=signals))
         write_json(out / "member_prices.json", dict(schema="member_price_basis_v1", as_of_date=day, rows=price_rows))
-        next_cp = dict(cp, as_of_date=day, period_status="awaiting_handoff" if period_overdue else "current")
+        next_cp = dict(cp, as_of_date=day, generated_at=now.isoformat(), period_status="awaiting_handoff" if period_overdue else "current")
         next_days = [value.isoformat() for value in sessions if value.isoformat() > day]
         if next_days:
             next_cp["next_trade_date"] = next_days[0]
@@ -253,10 +273,122 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
             next_cp[key] = dict(path=name, sha256=digest((out / name).read_bytes()))
         write_json(out / "checkpoint.json", next_cp)
         result["checkpoint"] = "checkpoint.json"
+    if (allow_component_checkpoint and mode == "close_confirmed" and result["checkpoint"] is None and "v2.5" in signals
+            and member_error is None):
+        try:
+            observed_prices = [{"symbol": str(row["symbol"]).zfill(6), "previous_raw_close": float(row["raw_close"]),
+                                "previous_raw_date": day} for row in quotes["rows"]]
+            if any(not math.isfinite(row["previous_raw_close"]) or row["previous_raw_close"] <= 0 for row in observed_prices):
+                raise ValueError("Invalid component observation raw-price basis")
+            directory = out / "component_observation"
+            directory.mkdir()
+            for key in ("period", "turnover"):
+                (directory / (key + files[key][0].suffix)).write_bytes(files[key][1])
+            extended.rename_axis("date").to_csv(directory / "history.csv", date_format="%Y-%m-%d")
+            # Hedge-dependent states retain their actual original dates.
+            component_states = dict(prior_states)
+            component_states["v2.5"] = signals["v2.5"]
+            write_json(directory / "version_state.json", dict(schema="member_version_state_v1", versions=component_states))
+            write_json(directory / "member_prices.json", dict(schema="member_price_basis_v1", as_of_date=day, rows=observed_prices))
+            observation = dict(cp, schema="member_daily_component_observation_v1", component_only=True,
+                               as_of_date=day, generated_at=now.isoformat(), publishable_shared_checkpoint=False)
+            future = [value.isoformat() for value in sessions if value.isoformat() > day]
+            if future: observation["next_trade_date"] = future[0]
+            else: observation.pop("next_trade_date", None)
+            for key, name in (("period", "period.json"), ("turnover", "turnover.csv"), ("history", "history.csv"),
+                              ("version_state", "version_state.json"), ("prices", "member_prices.json")):
+                observation[key] = dict(path=name, sha256=digest((directory / name).read_bytes()))
+            write_json(directory / "observation.json", observation)
+            result["component_observation"] = "component_observation/observation.json"
+        except (ValueError, KeyError, TypeError) as exc:
+            result["warnings"].append("Current information retained; temporary unhedged continuation unavailable: " + str(exc))
     write_json(out / "quotes.json", quotes)
     if hedge is not None:
         write_json(out / "hedge.json", hedge)
     write_json(out / "result.json", result)
+    return result
+
+
+def replay_from_manifest(root, checkpoint_path, manifest_path, day, mode, out, *, now=None, calendar_sessions=None):
+    """Replay only supplied native close observations, preserving real clocks."""
+    manifest_path = Path(manifest_path).resolve()
+    manifest = json.loads(manifest_path.read_bytes())
+    if manifest.get("schema") != "member_daily_replay_v1":
+        raise ValueError("Unsupported native observation replay manifest")
+    entries = manifest.get("days", [])
+    days = [item.get("date", item.get("day")) for item in entries]
+    if (not days or any(value is None for value in days) or days != sorted(set(days)) or days[-1] != day
+            or manifest.get("latest_date") != day):
+        raise ValueError("Replay observations must be unique, ordered and end on requested signal day")
+    if mode != "close_confirmed" or manifest.get("mode", mode) != "close_confirmed":
+        raise ValueError("Historical observation replay requires confirmed-close mode")
+    if manifest.get("anchor_date") != json.loads(checkpoint_path.read_bytes())["as_of_date"]:
+        raise ValueError("Replay manifest anchor does not bind the input checkpoint")
+
+    def read_observation(item, key):
+        relative = item.get(key)
+        if not relative:
+            return None
+        path = (manifest_path.parent / relative).resolve()
+        if Path(relative).is_absolute() or not path.is_relative_to(manifest_path.parent):
+            raise ValueError("Replay observation path escapes manifest directory")
+        return json.loads(path.read_bytes())
+
+    # Read the final observation first: even if an earlier session cannot be
+    # confirmed, the requested day's actual collected data remains deliverable.
+    latest_quotes = read_observation(entries[-1], "quotes")
+    latest_hedge = read_observation(entries[-1], "hedge")
+    evidence_root = out.with_name(out.name + "_replay")
+    evidence_root.mkdir(parents=True, exist_ok=False)
+    current = checkpoint_path
+    receipts = []
+    result = None
+    for item, session in zip(entries, days):
+        target = out if session == day else evidence_root / session
+        try:
+            quotes = read_observation(item, "quotes")
+            hedge = read_observation(item, "hedge")
+            result = build(root, current, quotes, hedge, session, mode, target, now=now, calendar_sessions=calendar_sessions,
+                           allow_component_checkpoint=True)
+        except (ValueError, KeyError, RuntimeError, TypeError, OSError) as exc:
+            if session == day:
+                raise
+            receipts.append(dict(market_date=session, status="unconfirmed", error=str(exc)))
+            result = None
+        if result is not None:
+            if session != day:
+                result.update(retrospective_replay=True, research_scope="retrospective_state_replay_not_original_publication")
+                for entry in result["versions"]:
+                    if entry.get("signal") is not None:
+                        entry["signal"].update(retrospective_replay=True, research_scope="retrospective_state_replay_not_original_publication")
+                        pd.DataFrame([entry["signal"]]).to_csv(target / (entry["version"].replace(".", "_") + "_signal.csv"), index=False)
+                write_json(target / "result.json", result)
+                if result.get("checkpoint"):
+                    replay_cp_path = target / result["checkpoint"]
+                    replay_cp = json.loads(replay_cp_path.read_bytes())
+                    replay_cp.update(retrospective_replay=True, research_scope="retrospective_state_replay_not_original_publication")
+                    write_json(replay_cp_path, replay_cp)
+            receipts.append(dict(market_date=session, status=result["status"], checkpoint=result.get("checkpoint"),
+                                 retrospective_replay=session != day, generated_at=result["generated_at"]))
+            if result.get("checkpoint"):
+                current = target / result["checkpoint"]
+                continue
+            if session != day and result.get("component_observation"):
+                current = target / result["component_observation"]
+                continue
+            if session == day:
+                break
+        # Do not fake intermediate closes. Produce today's available input
+        # report against the last confirmed checkpoint, which diagnoses the gap.
+        result = build(root, current, latest_quotes, latest_hedge, day, mode, out,
+                       now=now, calendar_sessions=calendar_sessions, allow_component_checkpoint=True)
+        result["warnings"].append("Earlier missing-session replay remains incomplete; today's collected information is retained without fabricated intermediate prices")
+        break
+    result["replay"] = dict(anchor_date=manifest["anchor_date"], generated_at=(now or datetime.now(BJ)).isoformat(),
+                            observations=receipts, manifest_sha256=digest(manifest_path.read_bytes()),
+                            originally_published=False)
+    write_json(out / "result.json", result)
+    write_json(evidence_root / "replay_receipt.json", result["replay"])
     return result
 
 
@@ -316,14 +448,17 @@ def main(argv=None):
     parser.add_argument("--quotes", type=Path)
     parser.add_argument("--hedge", type=Path)
     parser.add_argument("--from-checkpoint", action="store_true")
+    parser.add_argument("--replay-manifest", type=Path)
     parser.add_argument("--date", required=True)
     parser.add_argument("--mode", choices=("intraday", "close_confirmed"), required=True)
     args = parser.parse_args(argv)
     sys.path.insert(0, str(args.root.resolve()))
     if args.from_checkpoint:
-        if args.mode != "close_confirmed" or args.quotes or args.hedge:
+        if args.mode != "close_confirmed" or args.quotes or args.hedge or args.replay_manifest:
             parser.error("--from-checkpoint requires close_confirmed without new quotes or hedge")
         result = saved_close_result(args.checkpoint, args.date, args.out)
+    elif args.replay_manifest:
+        result = replay_from_manifest(args.root, args.checkpoint, args.replay_manifest, args.date, args.mode, args.out)
     else:
         if not args.quotes:
             parser.error("--quotes is required for a new daily calculation")

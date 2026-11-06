@@ -92,6 +92,9 @@ def test_member_input_failure_is_explicit_partial(bundle, tmp_path, case):
     result = run(bundle, tmp_path)
     assert result["status"] == "PARTIAL" and result["checkpoint"] is None
     assert all(row["signal"] is None and row["reason"] for row in result["versions"])
+    if case == "missing":
+        assert result["quote_coverage"] == "99/100" and result["observed_member_count"] == 99
+        assert len(result["missing_member_symbols"]) == 1
 
 
 def test_hashed_input_tampering_is_rejected(bundle, tmp_path):
@@ -220,3 +223,79 @@ def test_saved_close_rejects_unconfirmed_or_unbound_checkpoint(bundle, tmp_path,
     daily.write_json(saved, cp)
     with pytest.raises(ValueError):
         daily.saved_close_result(saved, day, tmp_path / "rejected", now=now)
+
+
+def replay_inputs(bundle, tmp_path, *, failed_first=False):
+    import copy
+    root, _, quotes, hedge, first_day, sessions = bundle
+    last_day = sessions[-1].isoformat()
+    directory = tmp_path / "observations"
+    directory.mkdir()
+    first_quotes, first_hedge = copy.deepcopy(quotes), copy.deepcopy(hedge)
+    # Both days were actually collected after the second close. The first
+    # observation remains a retrospective daily bar, never an earlier report.
+    first_quotes["collected_at"] = last_day + "T16:00:00+08:00"
+    first_hedge["collected_at"] = first_quotes["collected_at"]
+    if failed_first: first_quotes["rows"].pop()
+    final_quotes, final_hedge = copy.deepcopy(quotes), copy.deepcopy(hedge)
+    for row in final_quotes["rows"]:
+        row.update(trade_date=last_day, previous_date=first_day, previous_raw_close=10.1,
+                   previous_close_adj=10.1, close_adj=10.2, raw_close=10.2)
+    final_quotes.update(market_date=last_day, collected_at=last_day+"T16:00:00+08:00")
+    final_hedge.update(market_date=last_day, collected_at=final_quotes["collected_at"], close=final_hedge["close"]*1.001)
+    for name, value in (("q1.json", first_quotes), ("h1.json", first_hedge), ("q2.json", final_quotes), ("h2.json", final_hedge)):
+        daily.write_json(directory / name, value)
+    manifest = dict(schema="member_daily_replay_v1", anchor_date=json.loads((root / "checkpoint.json").read_bytes())["as_of_date"],
+                    latest_date=last_day, mode="close_confirmed", days=[dict(date=first_day, quotes="q1.json", hedge="h1.json"),
+                    dict(date=last_day, quotes="q2.json", hedge="h2.json")])
+    daily.write_json(directory / "replay_manifest.json", manifest)
+    return directory / "replay_manifest.json", last_day, sessions+[(pd.Timestamp(last_day)+pd.offsets.BDay()).date()]
+
+
+def test_missing_close_sessions_replay_only_real_supplied_tail(bundle, tmp_path):
+    from scripts.member_period_handoff import verify
+    manifest, day, sessions = replay_inputs(bundle, tmp_path)
+    result = daily.replay_from_manifest(Path(__file__).resolve().parents[1], bundle[0] / "checkpoint.json", manifest,
+                 day, "close_confirmed", tmp_path / "replayed", now=datetime.fromisoformat(day+"T16:01:00+08:00"),
+                 calendar_sessions=sessions)
+    assert all(row["signal"] is not None for row in result["versions"])
+    verify(tmp_path / "replayed/checkpoint.json")
+    earlier = json.loads((tmp_path / "replayed_replay" / bundle[4] / "result.json").read_bytes())
+    assert earlier["retrospective_replay"] is True and earlier["generated_at"].startswith(day)
+    assert all(row["signal"]["retrospective_replay"] for row in earlier["versions"])
+    assert result["replay"]["originally_published"] is False
+
+
+def test_incomplete_replay_retains_today_information_without_filling_missing_day(bundle, tmp_path):
+    manifest, day, sessions = replay_inputs(bundle, tmp_path, failed_first=True)
+    result = daily.replay_from_manifest(Path(__file__).resolve().parents[1], bundle[0] / "checkpoint.json", manifest,
+                 day, "close_confirmed", tmp_path / "partial_tail", now=datetime.fromisoformat(day+"T16:01:00+08:00"),
+                 calendar_sessions=sessions)
+    assert result["status"] == "PARTIAL" and result["checkpoint"] is None
+    assert all(row["signal"] is None and "Missing confirmed" in row["reason"] for row in result["versions"])
+    retained = json.loads((tmp_path / "partial_tail/quotes.json").read_bytes())
+    assert retained["market_date"] == day and len(retained["rows"]) == 100
+    assert result["warnings"] and not (tmp_path / "partial_tail/history.csv").exists()
+
+
+def test_missing_earlier_hedge_does_not_hide_next_day_unhedged_signal(bundle, tmp_path):
+    from scripts.member_period_handoff import verify
+    manifest_path, day, sessions = replay_inputs(bundle, tmp_path)
+    manifest = json.loads(manifest_path.read_bytes())
+    manifest["days"][0].pop("hedge")
+    daily.write_json(manifest_path, manifest)
+    result = daily.replay_from_manifest(Path(__file__).resolve().parents[1], bundle[0] / "checkpoint.json", manifest_path,
+                 day, "close_confirmed", tmp_path / "hedge_gap", now=datetime.fromisoformat(day+"T16:01:00+08:00"),
+                 calendar_sessions=sessions)
+    assert result["status"] == "PARTIAL" and result["checkpoint"] is None
+    assert [row["status"] for row in result["versions"][:2]] == ["partial", "partial"]
+    assert result["versions"][2]["signal"] is not None
+    observation = tmp_path / "hedge_gap" / result["component_observation"]
+    cp = json.loads(observation.read_bytes())
+    assert cp["component_only"] is True and cp["publishable_shared_checkpoint"] is False
+    state = json.loads((observation.parent / "version_state.json").read_bytes())["versions"]
+    assert pd.Timestamp(state["v2.0"]["date"]).date().isoformat() == json.loads((bundle[0]/"checkpoint.json").read_bytes())["as_of_date"]
+    with pytest.raises(ValueError, match="Unsupported"):
+        verify(observation)
+    with pytest.raises(ValueError, match="Unsupported"):
+        daily.load_checkpoint(observation)
