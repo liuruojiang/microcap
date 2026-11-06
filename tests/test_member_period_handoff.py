@@ -188,7 +188,7 @@ def test_rebalance_close_handoff_then_next_session_uses_new_basket(tmp_path,monk
     h.verify(tmp_path/'N/checkpoint.json')
 
 
-@pytest.mark.parametrize('case',['valid','prefix_changed','prior_state_changed','no_native_acceptance'])
+@pytest.mark.parametrize('case',['valid','prefix_changed','prior_state_changed','no_native_acceptance','previous_session_gap'])
 def test_1510_native_candidate_can_extend_previous_day_before_daily_report(tmp_path,monkeypatch,case):
     # R maintenance is first: there is no R daily checkpoint yet.
     from datetime import date
@@ -217,6 +217,11 @@ def test_1510_native_candidate_can_extend_previous_day_before_daily_report(tmp_p
     if case=='prefix_changed':
         cp=json.loads(candidate.read_bytes());path=candidate.parent/cp['history']['path'];f=pd.read_csv(path);f.loc[0,'microcap']+=1;f.to_csv(path,index=False);cp['history']['sha256']=h.digest(path.read_bytes());candidate.write_bytes(h.encode(cp))
     if case=='prior_state_changed':mutate(old,'version_state',lambda p:p['versions']['v2.3'].update(next_holding='unmatched'))
+    if case=='previous_session_gap':
+        cp=json.loads(old.read_bytes());cp['as_of_date']='2026-10-27'
+        path=old.parent/cp['history']['path'];f=pd.read_csv(path).iloc[:-1];f.to_csv(path,index=False);cp['history']['sha256']=h.digest(path.read_bytes());old.write_bytes(h.encode(cp))
+        mutate(old,'version_state',lambda p:[row.update(date='2026-10-27') for row in p['versions'].values()])
+        mutate(old,'prices',lambda p:(p.update(as_of_date='2026-10-27'),[row.update(previous_raw_date='2026-10-27') for row in p['rows']]))
     if case=='no_native_acceptance':
         cp=json.loads(candidate.read_bytes());cp.pop('bootstrap_source');candidate.write_bytes(h.encode(cp))
     if case!='valid':
