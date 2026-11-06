@@ -6,9 +6,11 @@ candidate checkpoint; publication/adoption belongs to the calling coordinator.
 from __future__ import annotations
 
 import argparse
+import csv
 from datetime import date, datetime
 import hashlib
 import importlib
+import io
 import json
 import math
 from pathlib import Path
@@ -31,6 +33,21 @@ def digest(raw):
 
 def write_json(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+
+
+def append_history_bytes(previous_raw, frame, day):
+    """Preserve the confirmed prefix exactly; serialize only the new session."""
+    header = next(csv.reader(io.StringIO(previous_raw.decode('utf-8-sig'), newline='')))
+    if 'date' not in header or set(header) != {'date', *frame.columns}:
+        raise ValueError('Checkpoint history columns differ from appended frame')
+    newline = '\r\n' if b'\r\n' in previous_raw else '\n'
+    stream = io.StringIO(newline='')
+    writer = csv.writer(stream, lineterminator=newline)
+    current = frame.loc[pd.Timestamp(day)]
+    writer.writerow([day if key == 'date' else ('' if pd.isna(current[key]) else repr(float(current[key])))
+                     for key in header])
+    separator = b'' if previous_raw.endswith((b'\n', b'\r')) else newline.encode()
+    return previous_raw + separator + stream.getvalue().encode('utf-8')
 
 
 def clean(value):
@@ -176,6 +193,16 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
             from scripts.exchange_calendar import sessions_for_day
             calendar_sessions = sessions_for_day(date.fromisoformat(day))
         sessions = sorted(date.fromisoformat(str(value)) for value in calendar_sessions)
+        history_days = [stamp.date() for stamp in history.index]
+        if not sessions or sessions[0] > history_days[0] or sessions[-1] < history_days[-1]:
+            raise ValueError("Independent calendar does not cover the checkpoint history")
+        expected_history = [value for value in sessions if history_days[0] <= value <= history_days[-1]]
+        if history_days != expected_history:
+            missing = sorted(set(expected_history) - set(history_days))
+            extra = sorted(set(history_days) - set(expected_history))
+            raise ValueError("Checkpoint history exchange-session coverage differs; missing="
+                             + ",".join(value.isoformat() for value in missing)
+                             + "; unexpected=" + ",".join(value.isoformat() for value in extra))
         target = date.fromisoformat(day)
         earlier = [value for value in sessions if value < target]
         if target not in sessions or not earlier or earlier[-1].isoformat() != cp["as_of_date"]:
@@ -260,7 +287,7 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
         # Partial observations never advance the shared confirmed checkpoint.
         for key in ("period", "turnover"):
             shutil.copyfile(files[key][0], out / (key + files[key][0].suffix))
-        extended.rename_axis("date").to_csv(out / "history.csv", date_format="%Y-%m-%d")
+        (out / "history.csv").write_bytes(append_history_bytes(files['history'][1], extended, day))
         write_json(out / "version_state.json", dict(schema="member_version_state_v1", versions=signals))
         write_json(out / "member_prices.json", dict(schema="member_price_basis_v1", as_of_date=day, rows=price_rows))
         next_cp = dict(cp, as_of_date=day, generated_at=now.isoformat(), period_status="awaiting_handoff" if period_overdue else "current")
@@ -284,7 +311,7 @@ def build(root, checkpoint_path, quotes, hedge, day, mode, out, *, now=None, cal
             directory.mkdir()
             for key in ("period", "turnover"):
                 (directory / (key + files[key][0].suffix)).write_bytes(files[key][1])
-            extended.rename_axis("date").to_csv(directory / "history.csv", date_format="%Y-%m-%d")
+            (directory / "history.csv").write_bytes(append_history_bytes(files['history'][1], extended, day))
             # Hedge-dependent states retain their actual original dates.
             component_states = dict(prior_states)
             component_states["v2.5"] = signals["v2.5"]

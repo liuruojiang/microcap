@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import csv
 from datetime import date, datetime
+from decimal import Decimal, InvalidOperation
 import hashlib
 import io
 import json
@@ -53,6 +54,34 @@ def read_bound(checkpoint, key):
     if digest(raw) != spec['sha256']:
         raise ValueError('Checkpoint file hash differs: ' + key)
     return raw
+
+
+def _history_values(raw):
+    """Compare exact decimal values, without CSV presentation or float drift."""
+    result = []
+    for row in csv.DictReader(io.StringIO(raw.decode('utf-8-sig'))):
+        values = {key: Decimal(row[key]) for key in ('microcap', 'hedge')}
+        if any(not value.is_finite() or value <= 0 for value in values.values()):
+            raise ValueError('Invalid earned history value')
+        result.append(dict(date=day(row['date']), **values))
+    return result
+
+
+def _turnover_values(raw):
+    result = []
+    date_keys = {'rebalance_date', 'constraint_trade_date', 'execution_date', 'effective_date', 'return_start_date'}
+    for row in csv.DictReader(io.StringIO(raw.decode('utf-8-sig'))):
+        normalized = {}
+        for key, value in row.items():
+            if key in date_keys:
+                normalized[key] = day(value) if value else None
+            else:
+                try:
+                    normalized[key] = Decimal(value) if value else None
+                except InvalidOperation:
+                    normalized[key] = value
+        result.append(normalized)
+    return result
 
 
 def verify(path):
@@ -200,8 +229,16 @@ def bootstrap(root, out):
         if len(values) != 1 or day(values[0]['date']) != anchor:
             raise ValueError('Version date/row differs: ' + version)
         versions[version] = values[0]
-    events = [r for r in turnover if day(r['rebalance_date']) == seed_date]
-    effective_from = day(events[-1]['return_start_date']) if events and events[-1].get('return_start_date') else seed_date
+    events = [dict(r) for r in turnover if day(r['rebalance_date']) == seed_date]
+    # A native close-at-final-row event has no next return row yet. Resolve
+    # that model clock from the independent calendar without rewriting the
+    # native turnover CSV or claiming any next-session trade occurred.
+    for event in events:
+        if event.get('execution_timing') == 'close' and not event.get('return_start_date'):
+            event['derived_return_start_date'] = calendar_links(seed_date)[0]
+            event['return_start_date_source'] = 'independent_calendar_next_session_after_native_close'
+    return_start = (events[-1].get('return_start_date') or events[-1].get('derived_return_start_date')) if events else None
+    effective_from = day(return_start) if return_start else seed_date
     targets = [item for item in rows(paths['members']) if day(item['rebalance_date']) == seed_date]
     if len(targets) != 100 or len({item['symbol'] for item in targets}) != 100:
         raise ValueError('Formal target member snapshot incomplete')
@@ -257,8 +294,8 @@ def handoff(current_path, candidate_path, session, next_session, out):
                 or len(period.get('source_manifest_sha256', '')) != 64
                 or not period.get('source_files')):
             raise ValueError('Prior-day handoff requires native formal-export source acceptance')
-        previous_rows = list(csv.DictReader(io.StringIO(read_bound(current, 'history').decode('utf-8-sig'))))
-        candidate_rows = list(csv.DictReader(io.StringIO(read_bound(candidate, 'history').decode('utf-8-sig'))))
+        previous_rows = _history_values(read_bound(current, 'history'))
+        candidate_rows = _history_values(read_bound(candidate, 'history'))
         if (len(candidate_rows) != len(previous_rows) + 1 or candidate_rows[:-1] != previous_rows
                 or day(candidate_rows[-1]['date']) != session):
             raise ValueError('Handoff cannot revise or skip the earned history prefix')
@@ -272,12 +309,20 @@ def handoff(current_path, candidate_path, session, next_session, out):
             for field in ('current_holding', 'next_holding', 'strategy_revision'):
                 if str(previous_states[version].get(field)) != str(original.iloc[0][field]):
                     raise ValueError('Handoff prior model state does not match its native history: ' + version)
-    elif read_bound(current, 'history') != read_bound(candidate, 'history'):
+    elif _history_values(read_bound(current, 'history')) != _history_values(read_bound(candidate, 'history')):
         raise ValueError('Handoff cannot revise same-day earned return history')
+    old_events = _turnover_values(read_bound(current, 'turnover'))
+    candidate_events = _turnover_values(read_bound(candidate, 'turnover'))
+    old_prefix = [event for event in old_events if event['rebalance_date'] < session]
+    candidate_prefix = [event for event in candidate_events if event['rebalance_date'] < session]
+    if (old_prefix != candidate_prefix or any(event['rebalance_date'] > session for event in candidate_events)
+            or any(event not in candidate_events for event in old_events if event['rebalance_date'] == session)):
+        raise ValueError('Handoff cannot revise existing turnover/cost event history')
     events = period['rebalance_events']
     if (period['anchor_day'] != session or period['effective_from'] != next_session or not events
             or any(e.get('execution_timing') != 'close' or day(e['execution_date']) != session
-                   or day(e['effective_date']) != session or day(e['return_start_date']) != next_session for e in events)):
+                   or day(e['effective_date']) != session or day(e.get('return_start_date') or e.get('derived_return_start_date')) != next_session
+                   or (not e.get('return_start_date') and e.get('return_start_date_source') != 'independent_calendar_next_session_after_native_close') for e in events)):
         raise ValueError('Candidate does not bind original close execution and next-session returns')
     files = {}
     for key in ('period', 'history', 'turnover', 'version_state', 'prices'):
