@@ -735,6 +735,23 @@ APPROVED_603028_SOURCE_REVIEW["revision"] = "approved_603028_dated_observation_2
 APPROVED_603028_SOURCE_REVIEW["changes"].update({'scripts/share_change_source.py': ['2231debbff5ed1d85ecb31ac25ba5db4bfd7050d6d7f55920e0dde5299a68517', '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3'], 'scripts/share_unchanged_tail.py': ['cf66976ca3cea83c5fe9fa67cfe816948141479cda00320e70e6406444c1a6fd', 'f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7'], 'data/share_source_future_plan_reviews.json': ['db9799bfc30a2108a523f3b7654db7de4cad326b232d7e72828f8b11be437f7a', '972825f752eb59d274c14e6a009f1b92cbed2e4a3f45ad5adce027f3b174e2e1']})
 
 
+# Source-only continuation of the freshly rehashed, complete Nov5 input set.
+# No old data, proxy metadata or sealed historical review is rewritten.
+HISTORICAL_CLOSE_D5_SOURCE_REVIEW = {
+    "revision": "dated_historical_share_close_exact_d5_20261109_v1",
+    "expected_date": "2026-11-05",
+    "stock_fingerprint_sha256": "992f1e8a37d3184e61042c01976b9a11ea0ad33ce8daed65bc534747d246d13d",
+    "file_count": 16315,
+    "data_sha256": "cea0c00810a10b3e45877536c38dbb3b98e6ba13dfc3dfe30f9d586d58204b2e",
+    "changes": {"scripts/share_change_source.py": (
+        "98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3",
+        "80d9f25995ea992a87fd619f50721c014c794cb539790e448a25aba46a7b4fb8"),
+        "scripts/share_unchanged_tail.py": (
+        "f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7",
+        "f97d5ef6ed1814f36551579580b4075316dbdd188d70b38c4c9a842e18f3aa27")},
+}
+
+
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
@@ -764,7 +781,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
         return True
     identity = hashlib.sha256(json.dumps(recorded, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     changed = {name for name in old if old[name] != new[name]}
-    for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW, APPROVED_603028_SOURCE_REVIEW):
+    for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW,
+                   APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (

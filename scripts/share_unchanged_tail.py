@@ -26,6 +26,7 @@ from scripts.sina_share_history import parse_sina_total_history
 KIND = "dual_source_unchanged_tail_v1"
 EM_URL = "https://datacenter.eastmoney.com/securities/api/data/v1/get"
 QUOTE_URL = "https://push2.eastmoney.com/api/qt/stock/get"
+HISTORICAL_URL = "https://datacenter-web.eastmoney.com/api/data/v1/get"
 SINA_URL = "https://money.finance.sina.com.cn/corp/go.php/vCI_StockStructureHistory/stockid/{symbol}/stocktype/TotalStock.phtml"
 DATE_FIELDS = ("END_DATE", "LISTING_DATE", "NOTICE_DATE")
 SAFE_HEADERS = frozenset({"date", "last-modified", "content-type", "content-length", "cache-control", "etag", "content-encoding"})
@@ -86,6 +87,46 @@ def em_params(symbol, target, bounded, page=1):
 def quote_params(symbol):
     return dict(fltt="2", invt="2", fields="f57,f58,f84,f85,f124,f86,f43,f59,f152,f189",
                 secid=("1." if symbol.startswith(("5", "6", "9")) else "0.") + symbol)
+
+
+def historical_params(symbol, previous_day, end):
+    em_symbol(symbol)
+    day(previous_day), day(end)
+    return dict(sortColumns="TRADE_DATE", sortTypes="-1", pageSize="5000", pageNumber="1",
+                reportName="RPT_VALUEANALYSIS_DET", columns="ALL", quoteColumns="", source="WEB", client="WEB",
+                filter=f'(SECURITY_CODE="{symbol}")(TRADE_DATE>=\'{previous_day}\')(TRADE_DATE<=\'{end}\')')
+
+
+def _historical_close(entry, bound, *, symbol, previous_day, end, boundary, now):
+    """Read dated raw total shares, never reinterpret a later quote as a close.
+
+    Both adjacent sessions must independently match the authenticated boundary.
+    This supplements, rather than replaces, the complete EM/Sina event checks.
+    """
+    raw, _ = _artifact(entry, bound, url=HISTORICAL_URL,
+                       params=historical_params(symbol, previous_day, end), end=end, now=now)
+    payload = json.loads(raw, parse_float=Decimal)
+    result = payload.get("result")
+    require(payload.get("success") is True and type(payload.get("code")) is int and payload["code"] == 0
+            and isinstance(result, dict), "historical close provider failed")
+    rows = result.get("data")
+    require(isinstance(rows, list) and len(rows) == 2 and integer(result.get("pages")) == 1
+            and integer(result.get("count")) == 2, "historical close inventory incomplete")
+    require([_em_date(row.get("TRADE_DATE")).isoformat() for row in rows] == [end, previous_day],
+            "historical close session inventory differs")
+    for row in rows:
+        require(row.get("SECURITY_CODE") == symbol and row.get("SECUCODE") == em_symbol(symbol),
+                "historical close issuer differs")
+        total = integer(row.get("TOTAL_SHARES"))
+        require(total > 0 and Decimal(total) / 10000 == boundary, "historical close raw total differs")
+        # Provider values are in shares and currency units, not ten-thousand
+        # shares. The independent field relationship also detects unit drift.
+        cap, close = amount(row.get("TOTAL_MARKET_CAP")), amount(row.get("CLOSE_PRICE"))
+        require(abs(cap - Decimal(total) * close) <= Decimal("0.01"), "historical close units/price differ")
+    return dict(source="eastmoney_RPT_VALUEANALYSIS_DET", sessions=[previous_day, end],
+                total_shares=str(boundary * 10000), raw_sha256=sha(raw),
+                basis="provider_trade_date_labelled_raw_total_shares",
+                provider_revision_or_latency_guaranteed=False)
 
 
 def require_adjacent(previous_day, end):
@@ -367,20 +408,35 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
     data = quote.get("data")
     require(quote.get("rc") == 0 and isinstance(data, dict) and data.get("f57") == symbol, "quote issuer/status differs")
     stamp = datetime.fromtimestamp(integer(data.get("f86")), timezone.utc)
-    require(stamp.astimezone(timezone(timedelta(hours=8))).date() == t
-            and datetime.fromisoformat(end + "T15:00:00+08:00") <= stamp <= clock(quote_receipt["http_complete"]), "quote frame not target close")
+    frame_day = stamp.astimezone(timezone(timedelta(hours=8))).date()
+    historical = None
+    if "historical_close" in files:
+        # Only a genuinely later observation may take this path. A missing,
+        # stale, future or conflicting quote clock remains a hard failure.
+        observed_start = clock(quote_receipt["http_start"]).astimezone(timezone(timedelta(hours=8))).date()
+        observed_end = clock(quote_receipt["http_complete"]).astimezone(timezone(timedelta(hours=8))).date()
+        require(t < frame_day == observed_start == observed_end
+                and stamp <= clock(quote_receipt["http_complete"]), "later quote observation clock differs")
+        historical = _historical_close(files["historical_close"], bound, symbol=symbol,
+                                       previous_day=previous_day, end=end, boundary=boundary, now=now)
+    else:
+        require(frame_day == t
+                and datetime.fromisoformat(end + "T15:00:00+08:00") <= stamp <= clock(quote_receipt["http_complete"]), "quote frame not target close")
     extra_clock = data.get("f124")
     if extra_clock is not None:
         extra_epoch = integer(extra_clock)
         if extra_epoch:
             extra_stamp = datetime.fromtimestamp(extra_epoch, timezone.utc)
-            require(extra_stamp.astimezone(timezone(timedelta(hours=8))).date() == t
-                    and datetime.fromisoformat(end + "T15:00:00+08:00") <= extra_stamp <= clock(quote_receipt["http_complete"]), "quote extra clock conflicts")
+            require(extra_stamp.astimezone(timezone(timedelta(hours=8))).date() == frame_day
+                    and (historical is not None or datetime.fromisoformat(end + "T15:00:00+08:00") <= extra_stamp)
+                    and extra_stamp <= clock(quote_receipt["http_complete"]), "quote extra clock conflicts")
     require(amount(data.get("f84")) / 10000 == boundary, "quote total differs")
     return dict(kind=KIND, symbol=symbol, query_end=end, previous_day=previous_day,
                 total_shares_10k=str(boundary), unchanged_observations=True,
                 frame_time=stamp.isoformat(), f84_independent_asof_guarantee_proven=False,
                 provider_latency_guaranteed=False, old_candidate_sha256=sha(candidate),
+                historical_close_evidence=historical,
+                quote_is_target_close_frame=historical is None,
                 future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport,
                 approved_late_unchanged_event={key: value for key, value in approved_event.items() if key != "row"}
                     if approved_event is not None else None)
@@ -482,7 +538,13 @@ def collect_manifest(*, root, symbol, previous_day, end, candidate):
                 future_documents.append({**reference, "announcement_id": review["announcement_id"]})
     files["sina"], _ = save(SINA_URL.format(symbol=symbol), {}, "sina")
     qp = quote_params(symbol)
-    files["quote"], _ = save(QUOTE_URL, qp, "quote")
+    files["quote"], quote_raw = save(QUOTE_URL, qp, "quote")
+    quote = json.loads(quote_raw)
+    quote_data = quote.get("data")
+    if quote.get("rc") == 0 and isinstance(quote_data, dict) and quote_data.get("f57") == symbol:
+        stamp = datetime.fromtimestamp(integer(quote_data.get("f86")), timezone.utc)
+        if stamp.astimezone(timezone(timedelta(hours=8))).date() > day(end):
+            files["historical_close"], _ = save(HISTORICAL_URL, historical_params(symbol, previous_day, end), "historical_close")
     manifest = dict(schema=KIND, symbol=symbol, previous_day=previous_day, query_end=end, files=files,
                     future_plan_documents=future_documents)
     def bound(relative, expected):

@@ -345,6 +345,31 @@ def refresh_share_change(*, root, symbol, cache_path, as_of, allow_network=False
     with lock.open("x", encoding="utf-8") as handle:
         handle.write(str(datetime.now(timezone.utc)))
     try:
+        # A cloud seed can precede several completed sessions. Preserve the
+        # unchanged-tail contract's adjacency: qualify/publish each session in
+        # order under this same symbol lock, never skip an unproved date. A
+        # later failure leaves the last independently verified state reusable.
+        state_path = Path(root) / ".microcap_index_cache/share_sources" / (symbol + ".json")
+        if allow_network and state_path.exists():
+            state = json.loads(state_path.read_bytes())
+            source_root = state_path.parent
+            fallback = (source_root / "RATE_LIMIT_STOP.json").exists() or state.get("kind") in (
+                "dual_source_unchanged_tail_v1", "sse_dated_unchanged_tail_20261104_v1", "sse_dated_transition_20261105_v1")
+            target = pd.Timestamp(as_of).date()
+            previous = pd.Timestamp(state["query_end"]).date()
+            if fallback and previous < target:
+                if datetime.now(timezone.utc) < datetime.fromisoformat(target.isoformat() + "T15:00:00+08:00"):
+                    raise ValueError("Share source close is not eligible")
+                from scripts.exchange_calendar import sessions_for_day
+                sessions = sessions_for_day(target)
+                if previous not in sessions or target not in sessions:
+                    raise ValueError("Share continuation requires verified exchange sessions")
+                pending = [day for day in sessions if previous < day <= target]
+                if len(pending) > 1:
+                    for day in pending:
+                        result = _refresh_share_change(root=root, symbol=symbol, cache_path=cache_path,
+                                                       as_of=day.isoformat(), allow_network=True)
+                    return result
         return _refresh_share_change(root=root, symbol=symbol, cache_path=cache_path,
                                      as_of=as_of, allow_network=allow_network)
     finally:

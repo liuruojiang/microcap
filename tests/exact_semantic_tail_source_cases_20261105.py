@@ -98,10 +98,13 @@ def test_approved_301288_successor_actual_source_keeps_exact_data_identity(exact
     assert not state.stock_input_evidence_matches_validated_source(old,current)
 
 
-def test_approved_603028_actual_source_and_exact_d4_unchanged_inputs(exact_successor_identities):
+def test_approved_603028_sealed_source_and_exact_d4_unchanged_inputs(exact_successor_identities):
     old,current=exact_successor_identities
-    current['code']=source_fingerprint(ROOT)
     review=state.APPROVED_603028_SOURCE_REVIEW
+    # Retain the historical D4 review's exact source targets. The Nov9 source
+    # has a separate exact D5 review tested against actual bytes independently.
+    current['code']=copy.deepcopy(old['code'])
+    current['code'].update({name: pair[1] for name,pair in review['changes'].items()})
     changed={name for name in old['code'] if old['code'][name]!=current['code'][name]}
     assert changed==set(review['changes']) and len(changed)==7
     assert all((old['code'][n],current['code'][n])==tuple(review['changes'][n]) for n in changed)
