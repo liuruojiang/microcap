@@ -809,6 +809,15 @@ RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.p
     '42b94db9a41c197bbd9124f83aec955eaa5619938d84cebd951875236d550893',
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e')
 
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW = copy.deepcopy(RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW)
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW['revision'] = 'unconsumed_exact_301429_future_structure_d5_20261109_v9'
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '996e3eb846894acc03cd0ac62e87bc5bf8fafe16dae686e83f65db71585b1112')
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW['changes']['scripts/share_unchanged_tail.py'] = (
+    'f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7',
+    '85bb77979ecdb179c2f3a71ce17261dd9c4bd0cd60b9a8c90c83d183a79146b2')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -844,7 +853,7 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
                    APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW,
                    LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW, EXACT_STRUCTURE_D5_SOURCE_REVIEW,
                    EXACT_LATER_FUTURE_D5_SOURCE_REVIEW, SCOPED_METADATA_D5_SOURCE_REVIEW,
-                   RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW):
+                   RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW, EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (

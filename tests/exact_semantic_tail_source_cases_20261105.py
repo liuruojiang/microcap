@@ -24,6 +24,9 @@ def exact_successor_identities():
     # caching belongs to the separately reviewed exact D5 successor.
     current['code']['scripts/exchange_calendar.py'] = old['code']['scripts/exchange_calendar.py']
     current['code']['scripts/st_metadata_refresh.py'] = state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']['scripts/st_metadata_refresh.py'][1]
+    # Recovery of unpromoted observations is an exact D5-only successor; it
+    # must not widen this frozen D4 authorization or alter its fault probes.
+    current['code']['scripts/st_notice_refresh.py'] = state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.py'][1]
     current['code']['scripts/stock_daily_alternative.py'] = old['code']['scripts/stock_daily_alternative.py']
     return old, current
 

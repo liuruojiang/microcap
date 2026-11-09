@@ -186,7 +186,7 @@ def _em_date(value):
     return day(value[:10])
 
 
-def _em_inventory(entries, bound, symbol, end, bounded, now, approved_event=None):
+def _em_inventory(entries, bound, symbol, end, bounded, now, approved_event=None, reviewed_future_rows=()):
     require(isinstance(entries, list) and entries, "missing complete EM inventory")
     rows, counts, versions = [], set(), set()
     for index, entry in enumerate(entries, 1):
@@ -204,11 +204,16 @@ def _em_inventory(entries, bound, symbol, end, bounded, now, approved_event=None
     # Version may be null in real responses. Equal counts plus exact independent
     # bounded/unfiltered inventories below provide the cross-query comparison.
     require(len(versions) == 1, "EM version drift")
+    require(isinstance(reviewed_future_rows,(list,tuple)) and len(reviewed_future_rows)<=2
+            and all(isinstance(row,dict) and sum(row==item for item in rows)==1
+                    and _em_date(row['END_DATE'])>day(end) for row in reviewed_future_rows),
+            'reviewed future row inventory differs')
     identities, dates = set(), []
     for row in rows:
         require(row.get("SECUCODE") == em_symbol(symbol) and row.get("SECURITY_CODE") == symbol, "EM issuer differs")
         ds = tuple(_em_date(row.get(key)) for key in DATE_FIELDS)
-        require((ds[2] <= day(end) or _matches_approved_event(row, approved_event))
+        require((ds[2] <= day(end) or _matches_approved_event(row, approved_event)
+                 or any(row==item for item in reviewed_future_rows))
                 and (not bounded or ds[0] <= day(end)), "future announcement or wrong bounded inventory")
         shares = amount(row.get("TOTAL_SHARES"))
         require(shares == shares.to_integral_value(), "EM total not whole shares")

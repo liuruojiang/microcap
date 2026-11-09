@@ -39,6 +39,15 @@ EXACT_FUTURE_PLAN_688092 = dict(symbol='688092', date='2026-11-12',
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611091831555510_1.pdf',
     pdf_sha256='77b5ee10304392ffed474c5e569a932b40bea55b9297bcd98eb2bbb5c1c4d72d',
     pdf_bytes=125835)
+# Original issuer PDF pages 1, 5, 6 reviewed on Nov9. Provider's Nov10
+# three-share lock adjustment is a catalog observation, not a proved execution.
+# Both later rows are total-neutral and are never added to an earlier curve.
+EXACT_FUTURE_STRUCTURE_301429 = dict(symbol='301429', announcement_id='AN202611091831558999',
+    provider_notice_date='2026-11-10', total_shares=118220000,
+    row_sha256_by_day={'2026-11-10':'d2e8743ddf2b2ae0caf571e9057090840d13e791998622275386f4bc3d5e99d3',
+                       '2026-11-12':'1eeabcec4ff5f278a00cd2e4b3e702d5858881c1edec4fc2eb11f761bf959843'},
+    pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611091831558999_1.pdf',
+    pdf_sha256='2d40c57542b84922e0e9c97f7e69bc35b0291f81eed39bd8d166506619c6c65e',pdf_bytes=203662)
 # Observed through Google/Cloudflare/Ali DNS and verified against the real
 # CNInfo HTTPS API on 2026-11-02. This is a route, never a TLS-identity override.
 _KNOWN_CNINFO_IPV4 = '120.48.196.100'
@@ -658,11 +667,42 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
         # to the target and is never used in its candidate or daily totals.
         later_review=dict(row=row)
         later_plan=dict(date=review['date'],total_shares_10k=str(Decimal(review['after_total_shares'])/10000))
-    unfiltered=n._em_inventory(files['unfiltered'],bound,symbol,end,False,now,approved_event=later_review)
+    future_structure_rows=[];optional_structure_plans=[]
+    review=EXACT_FUTURE_STRUCTURE_301429
+    if 'later_structure_documents' in files:
+        need(symbol==review['symbol'] and end<min(review['row_sha256_by_day']),
+             'future structure route cannot authorize an effective event')
+        docs=files['later_structure_documents']
+        need(len(docs)==1 and docs[0].get('announcement_id')==review['announcement_id'],
+             'future structure document inventory differs')
+        pdf,_=n._artifact(docs[0],bound,url=review['pdf_url'],params={},end=end,now=now)
+        need(_sha(pdf)==review['pdf_sha256'] and len(pdf)==review['pdf_bytes']
+             and pdf.startswith(b'%PDF-') and b'%%EOF' in pdf[-1024:],'future structure issuer document differs')
+        for page,entry in enumerate(files['unfiltered'],1):
+            raw,_=n._artifact(entry,bound,url=n.EM_URL,params=n.em_params(symbol,end,False,page),end=end,now=now)
+            for row in json.loads(raw,parse_float=Decimal)['result']['data']:
+                if row['END_DATE'][:10] in review['row_sha256_by_day']:
+                    ds=row['END_DATE'][:10]
+                    need(_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
+                         ==review['row_sha256_by_day'][ds] and row['INFO_CODE']==review['announcement_id']
+                         and row['SECURITY_CODE']==symbol and row['LISTING_DATE'][:10]==ds
+                         and row['NOTICE_DATE'][:10]==review['provider_notice_date']
+                         and n.amount(row['TOTAL_SHARES'])==review['total_shares']==observed[end]*10000
+                         and n.integer(row['TOTAL_SHARES_CHANGE'])==0
+                         and n.amount(row['LIMITED_SHARES'])+n.amount(row['UNLIMITED_SHARES'])==review['total_shares']
+                         and Decimal(str(row['LIMITED_SHARES_CHANGE']))+Decimal(str(row['UNLIMITED_SHARES_CHANGE']))==0,
+                         'future structure exact row/total differs')
+                    future_structure_rows.append(row)
+        need(len(future_structure_rows)==2 and {r['END_DATE'][:10] for r in future_structure_rows}==set(review['row_sha256_by_day']),
+             'future structure exact two-row inventory differs')
+        optional_structure_plans=[dict(date=ds,total_shares_10k=str(Decimal(review['total_shares'])/10000))
+                                  for ds in sorted(review['row_sha256_by_day'])]
+    unfiltered=n._em_inventory(files['unfiltered'],bound,symbol,end,False,now,approved_event=later_review,
+                              reviewed_future_rows=future_structure_rows)
     bounded=n._em_inventory(files['bounded'],bound,symbol,end,True,now)
     need([r for r in unfiltered if n._em_date(r['END_DATE'])<=t]==bounded,'bounded/full event inventory differs')
     future=[r for r in unfiltered if n._em_date(r['END_DATE'])>t
-            and (later_review is None or r!=later_review['row'])]
+            and (later_review is None or r!=later_review['row']) and r not in future_structure_rows]
     plans,_=n._reviewed_future_plans(manifest,future,symbol=symbol,end=end,boundary=observed[end],
                                   bound=bound,now=now,root=root)
     sina_raw,_=n._artifact(files['sina'],bound,url=n.SINA_URL.format(symbol=symbol),params={},end=end,now=now)
@@ -670,14 +710,29 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     try:
         sina=n.parse_sina_total_history(sina_raw,symbol=symbol,observed_session=end,allowed_future_plans=plans)
     except ValueError as error:
-        if later_plan is None or str(error)!='Sina TotalStock: future event/report date without exact reviewed plan':
+        if optional_structure_plans and str(error)=='Sina TotalStock: future event/report date without exact reviewed plan':
+            from itertools import combinations
+            found=False
+            for count in range(1,len(optional_structure_plans)+1):
+                for subset in combinations(optional_structure_plans,count):
+                    try:
+                        sina=n.parse_sina_total_history(sina_raw,symbol=symbol,observed_session=end,allowed_future_plans=plans+list(subset))
+                    except ValueError as mismatch:
+                        if str(mismatch) not in ('Sina TotalStock: future event/report date without exact reviewed plan',
+                                                'Sina TotalStock: unused reviewed future plan or mismatched future inventory'):raise
+                    else:
+                        found=True;break
+                if found:break
+            if not found:raise
+        elif later_plan is None or str(error)!='Sina TotalStock: future event/report date without exact reviewed plan':
             raise
         # The other vendor need not publish a still-unexecuted plan at the same
         # time. If present, all three Sina layers must exactly match that one
         # independently reviewed future date and quantity; unknown futures fail.
-        sina=n.parse_sina_total_history(sina_raw,symbol=symbol,observed_session=end,
-            allowed_future_plans=plans+[later_plan])
-        sina_later_present=True
+        else:
+            sina=n.parse_sina_total_history(sina_raw,symbol=symbol,observed_session=end,
+                allowed_future_plans=plans+[later_plan])
+            sina_later_present=True
     records=sina['records'];prior=[r for r in records if r['provider_date']<=previous_day]
     need(prior and n.amount(prior[-1]['total_shares_10k'])==before,'Sina boundary differs from certified history')
     tail=[r for r in records if previous_day<r['provider_date']<=end]
@@ -768,6 +823,12 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                           changes=events,historical_reobservations=reobservations,
                           old_prefix_preserved=True,legal_effective_date_not_asserted=True)
     if structure_events:facts['structure_events']=structure_events
+    if future_structure_rows:
+        facts['future_structure_not_consumed']=dict(announcement_id=EXACT_FUTURE_STRUCTURE_301429['announcement_id'],
+            provider_dates=sorted(r['END_DATE'][:10] for r in future_structure_rows),
+            total_shares_unchanged=EXACT_FUTURE_STRUCTURE_301429['total_shares'],
+            issuer_document_sha256=EXACT_FUTURE_STRUCTURE_301429['pdf_sha256'],
+            execution_or_legal_effect_not_asserted=True)
     if later_plan is not None:
         later=EXACT_FUTURE_PLAN_688092
         facts['future_plan_not_consumed']=dict(**later_plan,
@@ -860,6 +921,12 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
     for entry in files['unfiltered']:
         for row in json.loads((source/entry['raw_path']).read_bytes())['result']['data']:
             if n._em_date(row['END_DATE'])>n.day(end):
+                structure=EXACT_FUTURE_STRUCTURE_301429
+                if (symbol,row.get('INFO_CODE'))==(structure['symbol'],structure['announcement_id']) and row['END_DATE'][:10] in structure['row_sha256_by_day']:
+                    if 'later_structure_documents' not in files:
+                        ref,_=save(structure['pdf_url'],{},'later_structure_'+structure['announcement_id'])
+                        files['later_structure_documents']=[{**ref,'announcement_id':structure['announcement_id']}]
+                    continue
                 later=EXACT_FUTURE_PLAN_688092
                 if (symbol,row.get('INFO_CODE'),row['END_DATE'][:10])==(later['symbol'],later['announcement_id'],later['date']):
                     ref,_=save(later['pdf_url'],{},'later_future_'+later['announcement_id'])
