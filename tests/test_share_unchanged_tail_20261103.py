@@ -73,7 +73,7 @@ def test_exact_event_rejects_missing_approval_or_tampering(tmp_path, failure):
 
 
 @pytest.mark.parametrize("identity",[("301289","2026-11-04","2026-11-05"),
-    ("301288","2026-11-05","2026-11-06"),("301288","2026-11-03","2026-11-05")])
+    ("301288","2026-11-06","2026-11-09"),("301288","2026-11-03","2026-11-05")])
 def test_exact_event_does_not_cover_other_symbols_or_sessions(identity):
     root, _, _, now, candidate = approved_301288_fixture()
     assert source._approved_unchanged_event(root=root,symbol=identity[0],previous_day=identity[1],

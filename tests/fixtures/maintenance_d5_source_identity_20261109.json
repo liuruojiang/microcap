@@ -24,7 +24,7 @@
     }
   },
   "review": {
-    "revision": "dated_historical_share_close_exact_d5_20261109_v1",
+    "revision": "dated_historical_share_close_exact_d5_20261109_v2",
     "expected_date": "2026-11-05",
     "stock_fingerprint_sha256": "992f1e8a37d3184e61042c01976b9a11ea0ad33ce8daed65bc534747d246d13d",
     "file_count": 16315,
@@ -36,7 +36,7 @@
       ],
       "scripts/share_unchanged_tail.py": [
         "f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7",
-        "f97d5ef6ed1814f36551579580b4075316dbdd188d70b38c4c9a842e18f3aa27"
+        "1266562cb77158266cbba7b1c99b732b6ac8b57002b39b6bab204ed6c3b8f202"
       ]
     }
   },

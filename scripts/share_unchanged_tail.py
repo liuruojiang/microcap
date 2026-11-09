@@ -261,7 +261,9 @@ def _approved_unchanged_event(*, root, symbol, previous_day, end, candidate, now
     The sealed ZIP is the exact reviewed public-source package, not a source of
     current quotes. Every normal live inventory/quote gate still runs below.
     """
-    if (symbol, previous_day, end) != ("301288", "2026-11-04", "2026-11-05"):
+    identity = (symbol, previous_day, end)
+    reobserved = identity == ("301288", "2026-11-05", "2026-11-06")
+    if identity != ("301288", "2026-11-04", "2026-11-05") and not reobserved:
         return None
     root = Path(root) if root is not None else Path(__file__).resolve().parents[1]
     record = json.loads((root / "data/share_source_future_plan_reviews.json").read_bytes()).get("unchanged_event_approval")
@@ -288,9 +290,14 @@ def _approved_unchanged_event(*, root, symbol, previous_day, end, candidate, now
         row = json.loads(archive.read("bounded.raw"), parse_float=Decimal)["result"]["data"][0]
     require(review["before_total_shares"] == review["after_total_shares"] == 108010000
             and review["share_delta"] == 0, "event changes total shares")
-    return dict(row=row, package_sha256=digest, review_sha256=review_sha,
+    result = dict(row=row, package_sha256=digest, review_sha256=review_sha,
                 supplemental_verification_day="2026-11-06", signal_day=end,
                 disclosure="301288：11/06补充核验11/05公告事件，总股本108010000股不变；不声称11/05收盘前已取得该公告。")
+    if reobserved:
+        result.update(signal_day="2026-11-05", qualification_day=end,
+                      reobserved_existing_approved_event=True,
+                      disclosure="301288：11/06资料维护重新观测已精确批准的11/05零总股本变动事件；原批准日期、公告原行及历史CSV保持不变。")
+    return result
 
 
 def _matches_approved_event(row, event):
@@ -396,8 +403,13 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
     if approved_event is not None:
         require(sum(_matches_approved_event(row, approved_event) for row in projection) == 1,
                 "approved event absent or duplicated")
-        require(tail == [{"provider_date": end, "total_shares_10k": "10801", "total_shares": "108010000"}],
-                "approved event Sina identity differs")
+        if approved_event.get("reobserved_existing_approved_event"):
+            require(not tail and sina["records"][-1] == {
+                "provider_date": "2026-11-05", "total_shares_10k": "10801", "total_shares": "108010000"},
+                "reobserved approved event Sina identity differs")
+        else:
+            require(tail == [{"provider_date": end, "total_shares_10k": "10801", "total_shares": "108010000"}],
+                    "approved event Sina identity differs")
     else:
         require(not tail, "Sina tail event")
     sina_asof = [row for row in sina["records"] if day(row["provider_date"]) <= t]
