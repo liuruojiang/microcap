@@ -778,6 +778,63 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     return candidate,facts
 
 
+def _dated_public_observation(*, directory, source, url, params, purpose, end, now=None):
+    """Reuse successes; one cooled recovery for four response-free quote timeouts.
+
+    Keep the original four failures and exhaustion marker. A second process or
+    restart cannot reset the recovery budget. No HTTP, TLS or content error is
+    classified as a response-free transient outage.
+    """
+    from datetime import timedelta
+    from scripts import share_unchanged_tail as n
+    def read(folder):
+        path,rp=folder/(purpose+'.raw'),folder/(purpose+'.receipt.json')
+        if path.exists() and rp.exists():
+            entry=dict(raw_path=path.relative_to(source).as_posix(),raw_sha256=_sha(path.read_bytes()),
+                       receipt_path=rp.relative_to(source).as_posix(),receipt_sha256=_sha(rp.read_bytes()))
+            def bound(relative,digest):
+                p=(source/relative).resolve()
+                n.require(p.is_relative_to(source.resolve()),'dated observation escaped root')
+                raw=p.read_bytes();n.require(_sha(raw)==digest,'dated observation hash differs');return raw
+            raw,_=n._artifact(entry,bound,url=url,params=params,end=end,now=datetime.now(timezone.utc))
+            return entry,raw
+    cached=read(directory)
+    if cached is not None:return cached
+    exhausted=directory/(purpose+'.exhausted.json')
+    folder=directory
+    if exhausted.exists():
+        raw=exhausted.read_bytes();terminal=json.loads(raw)
+        n.require(purpose=='quote' and url==n.QUOTE_URL,'exhausted source requires separate diagnosis')
+        folder=directory/('transport_recovery_'+_sha(raw))
+        cached=read(folder)
+        if cached is not None:return cached
+        clock=now or datetime.now(timezone.utc)
+        ended=datetime.fromisoformat(terminal['recorded_at'])
+        n.require(ended.tzinfo is not None and clock-ended>=timedelta(minutes=30),
+                  'quote transport recovery cooling period is not complete')
+        attempts={}
+        for number in range(1,5):
+            path=directory/f'{purpose}_attempt{number}.transport.json'
+            body=path.read_bytes();record=json.loads(body)
+            start=datetime.fromisoformat(record['http_start']);finish=datetime.fromisoformat(record['http_complete'])
+            n.require(record.get('status')=='transport_failure_no_response' and record.get('url')==url
+                      and record.get('params')==params and record.get('error_type') in {'ReadTimeout','ConnectTimeout','ConnectionError'}
+                      and start.tzinfo is not None and start<=finish<=ended,
+                      'quote recovery initial transport evidence differs')
+            attempts[path.name]=_sha(body)
+        folder.mkdir(exist_ok=True)
+        # Exclusive marker makes this a single bounded recovery even after a crash.
+        with (folder/'started.json').open('xb') as stream:
+            stream.write(json.dumps(dict(started_at=clock.isoformat(),initial_exhaustion_sha256=_sha(raw),
+                                          initial_attempts=attempts,max_attempts=4)).encode())
+    try:
+        return n._save_public_observation(directory=folder,source=source,url=url,params=params,purpose=purpose,end=end)
+    except RuntimeError as error:
+        if str(error).startswith('SHARE_REQUEST_RETRY_EXHAUSTED:'):
+            _atomic(folder/(purpose+'.exhausted.json'),json.dumps(dict(error=str(error),recorded_at=datetime.now(timezone.utc).isoformat())).encode())
+        raise
+
+
 def collect_dated_window(*, root, symbol, previous_day, end, candidate):
     from scripts import share_unchanged_tail as n
     source=Path(root)/'.microcap_index_cache/share_sources'
@@ -789,19 +846,7 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
         n.require(path.is_relative_to(source.resolve()),'dated window source escaped root')
         raw=path.read_bytes();n.require(_sha(raw)==digest,'dated window source hash differs');return raw
     def save(url,params,purpose):
-        path,rp=directory/(purpose+'.raw'),directory/(purpose+'.receipt.json')
-        if path.exists() and rp.exists():
-            entry=dict(raw_path=path.relative_to(source).as_posix(),raw_sha256=_sha(path.read_bytes()),
-                       receipt_path=rp.relative_to(source).as_posix(),receipt_sha256=_sha(rp.read_bytes()))
-            raw,_=n._artifact(entry,bound,url=url,params=params,end=end,now=datetime.now(timezone.utc))
-            return entry,raw
-        exhausted=directory/(purpose+'.exhausted.json')
-        if exhausted.exists():raise RuntimeError('SHARE_REQUEST_RETRY_EXHAUSTED: preserved '+purpose)
-        try:return n._save_public_observation(directory=directory,source=source,url=url,params=params,purpose=purpose,end=end)
-        except RuntimeError as error:
-            if str(error).startswith('SHARE_REQUEST_RETRY_EXHAUSTED:'):
-                _atomic(exhausted,json.dumps(dict(error=str(error),recorded_at=datetime.now(timezone.utc).isoformat())).encode())
-            raise
+        return _dated_public_observation(directory=directory,source=source,url=url,params=params,purpose=purpose,end=end)
     files={}
     # A full window avoids one set of identical issuer queries per missing day.
     # Verification still requires each intervening exchange-session row.

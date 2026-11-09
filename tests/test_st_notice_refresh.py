@@ -92,6 +92,42 @@ def test_new_day_is_contiguous_and_backed_up(seed):
     assert (root / result['manifest_path']).with_name('previous_pointer.json').read_bytes() == before
 
 
+def test_explicit_unpromoted_recovery_reuses_original_observation_clocks(seed, monkeypatch):
+    from datetime import datetime, timezone
+    root, pointer, before = seed
+    original = m._boundary_precision_drift
+    monkeypatch.setattr(m, '_boundary_precision_drift', lambda *args: (_ for _ in ()).throw(StNoticeEvidenceError('review needed')))
+    session = Session()
+    with pytest.raises(StNoticeEvidenceError, match='review needed'):
+        m.refresh_notice_archive(root=root, target='2026-10-30', session=session)
+    generation = next((root / m.PREFIX).glob('refresh_*'))
+    receipts = {p: p.read_bytes() for p in generation.rglob('*.receipt.json')}
+    first_clock = min(datetime.fromisoformat(json.loads(raw)['collected_at']) for raw in receipts.values())
+    monkeypatch.setattr(m, '_boundary_precision_drift', original)
+    no_requests = Session(fail_day='2026-10-29')
+    m.refresh_notice_archive(root=root, target='2026-10-30', session=no_requests,
+                             resume_generation=generation, required_asof=datetime(2026, 10, 30, 7, tzinfo=timezone.utc))
+    assert no_requests.calls == []
+    assert {p: p.read_bytes() for p in receipts} == receipts
+    assert json.loads((root / m.FRESHNESS).read_bytes())['required_asof'] == first_clock.isoformat()
+    assert pointer.read_bytes() != before
+    with pytest.raises(StNoticeEvidenceError, match='Invalid unpromoted'):
+        m.refresh_notice_archive(root=root, target='2026-10-30', resume_generation=generation,
+                                 required_asof=datetime(2026, 10, 30, 7, tzinfo=timezone.utc))
+
+
+def test_recovery_rejects_stale_sources_and_other_directories(seed, monkeypatch):
+    from datetime import datetime, timezone, timedelta
+    root, pointer, before = seed
+    generation = root / m.PREFIX / 'refresh_prepared'
+    collect_days(generation, '2026-10-29', '2026-10-30', session=Session())
+    for folder, floor in [(generation, datetime.now(timezone.utc)),
+                          (generation.parent.parent, datetime(2026, 10, 30, 7, tzinfo=timezone.utc))]:
+        with pytest.raises(StNoticeEvidenceError):
+            m.refresh_notice_archive(root=root, target='2026-10-30', resume_generation=folder, required_asof=floor)
+    assert pointer.read_bytes() == before
+
+
 def test_baseline_without_all_class_boundary_is_rejected(seed):
     root, pointer, before = seed
     reference = json.loads(before)

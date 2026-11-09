@@ -354,6 +354,40 @@ def _reviewed_catalog_boundary_20261109(previous, current, precision):
                 boundary_native_content_unchanged=False)
 
 
+def _reviewed_ipo_boundary_20261109(previous, current, precision):
+    """One exact late pre-listing registration; original observations stay immutable.
+
+    CSRC registration 2026/3108, signed Nov5, was visually checked on both
+    original PDF pages. It approves Guangdong Baolun's IPO registration only.
+    PDF sha256 ec90a6dcb813d0c12283a71c75f10cea1a57cc5d69a6419daa9c6d3338e3bfcd;
+    real source pair and original PDF are frozen in tests/fixtures/ipo_boundary_20261109.
+    """
+    stable = {key: {k: v for k, v in row.items() if k != "display_time"}
+              for key, row in current.items()}
+    if (sha(canonical(previous)) != "88c7e2faa2e90ade0c53ecf6fee91fb50720c05462707c7c2e0f890ac2a712fc"
+            or sha(canonical(stable)) != "c8588f9ab3a6a0c5fe8f906979d12da14b181658ae96acee5096b8f878f10041"):
+        return None
+    from scripts.st_notice_evidence import is_equity_issuer
+    import microcap_top100_mom16_biweekly_live_v2_0 as base
+    identity = "AN202611091831554859"
+    row = current[identity]
+    if (current.keys() - previous.keys() != {identity} or previous.keys() - current.keys()
+            or row["codes"] != [{"ann_type": "A,WA", "market_code": "1",
+                                  "short_name": "保伦股份", "stock_code": "A26111"}]
+            or is_equity_issuer(row, "A26111")
+            or base.freq_mod.classify_st_notice_risk_actions(row["title"]) != {}):
+        raise StNoticeEvidenceError("Reviewed pre-listing registration changed native eligibility")
+    precision({identity: dict(row, display_time="2026-11-09 17:12:27:392")}, {identity: row})
+    result = precision(previous, {key: value for key, value in current.items() if key in previous})
+    changed = sorted({identity} | {key for key in previous if previous[key] != current[key]})
+    return dict(result, policy="exact_prelisting_registration_20261109_v1",
+                precision_changed_event_count=result["changed_event_count"],
+                changed_event_count=len(changed),
+                changed_event_ids_sha256=sha(json.dumps(changed, separators=(",", ":")).encode()),
+                reviewed_non_st_added_ids=[identity], removed_event_ids=[],
+                risk_projection_unchanged=True, boundary_native_content_unchanged=False)
+
+
 def _non_equity_catalog_metadata(previous, current, precision):
     """Ignore only non-ST BSE/NEEQ listing/sort metadata in comparison.
 
@@ -439,6 +473,9 @@ def reviewed_additions(previous, current, precision):
     if exact is not None:
         return exact
     catalog = _reviewed_catalog_boundary_20261109(previous, current, precision)
+    if catalog is not None:
+        return catalog
+    catalog = _reviewed_ipo_boundary_20261109(previous, current, precision)
     if catalog is not None:
         return catalog
     catalog = _non_equity_catalog_metadata(previous, current, precision)

@@ -217,7 +217,7 @@ def freshness_source_files(root):
     return files
 
 
-def refresh_notice_archive(*, root, target, session=None):
+def refresh_notice_archive(*, root, target, session=None, resume_generation=None, required_asof=None):
     """Re-query last certified daily boundary; additions/revisions there block promotion.
 
     Caller must use its independently verified panel target. Baseline-only archives
@@ -256,9 +256,29 @@ def refresh_notice_archive(*, root, target, session=None):
         if target > boundary and (os.environ.get('MICROCAP_ST_NOTICE_ARCHIVE') or os.environ.get('MICROCAP_ST_NOTICE_ARCHIVE_SHA256')):
             raise StNoticeEvidenceError('ST daily advancement requires portable pointer ownership, not pinned environment overrides')
         started = datetime.now(timezone.utc)
-        generation = parent / ('refresh_' + started.strftime('%Y%m%dT%H%M%S%fZ') + '_' + uuid.uuid4().hex[:12])
-        generation.mkdir()
-        collect_days(generation, boundary.isoformat(), target.isoformat(), session=session, required_asof=started)
+        if resume_generation is None:
+            generation = parent / ('refresh_' + started.strftime('%Y%m%dT%H%M%S%fZ') + '_' + uuid.uuid4().hex[:12])
+            generation.mkdir()
+            collect_days(generation, boundary.isoformat(), target.isoformat(), session=session, required_asof=started)
+        else:
+            # Explicit recovery of a fully collected, unpromoted generation.
+            # Never assign a new observation clock to cached HTTP responses.
+            generation = Path(resume_generation).resolve()
+            if (generation.parent != parent.resolve() or not generation.name.startswith('refresh_')
+                    or any((generation / name).exists() for name in ('proof.json', 'archive.json', 'previous_pointer.json'))
+                    or required_asof is None or required_asof.tzinfo is None
+                    or required_asof > started):
+                raise StNoticeEvidenceError('Invalid unpromoted notice recovery generation or freshness floor')
+            clocks = []
+            day = boundary
+            while day <= target:
+                folder = generation / day.isoformat()
+                verify_day(folder, day.isoformat(), required_asof=required_asof)
+                manifest = json.loads((folder / 'manifest.json').read_bytes())
+                clocks.extend(datetime.fromisoformat(json.loads((folder / p['receipt']).read_bytes())['collected_at'])
+                              for p in manifest['pages'])
+                day += timedelta(days=1)
+            started = min(clocks)
         boundary_folder = _bound(root, daily[-1]['manifest']['path']).parent
         boundary_drift = _boundary_precision_drift(
             _native(boundary_folder, boundary.isoformat()), _native(generation / boundary.isoformat(), boundary.isoformat()))
