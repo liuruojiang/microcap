@@ -297,6 +297,63 @@ def _reviewed_catalog_columns_20261105(previous, current):
                 risk_projection_unchanged=True)
 
 
+def _reviewed_catalog_boundary_20261109(previous, current, precision):
+    """One document-reviewed Nov5 boundary; never a general non-ST waiver.
+
+    Three late investor records and five category-only corrections were checked
+    against their actual issuer documents (tests/fixtures/maintenance_boundary_20261109).
+    The immutable archive, publication clocks and native ST selectors are retained.
+    Neither historical intervals nor economic results are approved or rewritten here.
+    """
+    stable = {key: {field: value for field, value in row.items() if field != "display_time"}
+              for key, row in current.items()}
+    if (sha(canonical(previous)) != "8d93923babe7439963ce4bb4ce6d7ee64cd19b2fdb8ef91580411b87cc59cae1"
+            or sha(canonical(stable)) != "570499a26c1e1378ccc2d7ff7fc4b47a61c36045f64d8f56254a4bf31884d7ff"):
+        return None
+    from scripts.st_notice_evidence import is_equity_issuer
+    from scripts import st_history_scope as scope
+    import microcap_top100_mom16_biweekly_live_v2_0 as base
+
+    added = {"AN202611051831449198", "AN202611051831449201", "AN202611051831449217"}
+    metadata = {"AN202611051831458926", "AN202611051831459677", "AN202611051831461094",
+                "AN202611051831461769", "AN202611051831461773"}
+    if current.keys() - previous.keys() != added or previous.keys() - current.keys():
+        raise StNoticeEvidenceError("Reviewed Nov5 catalog event scope changed")
+    normalized = {key: dict(row) for key, row in current.items() if key in previous}
+    for identity in added | metadata:
+        rows = [current[identity]] if identity in added else [previous[identity], current[identity]]
+        for row in rows:
+            if (row["notice_date"] != "2026-11-05 00:00:00"
+                    or base.freq_mod.classify_st_notice_risk_actions(row["title"]) != {}):
+                raise StNoticeEvidenceError("Reviewed Nov5 catalog now has a risk action")
+            for code in row["codes"]:
+                symbol = code["stock_code"]
+                equity = is_equity_issuer(row, symbol)
+                if identity in added and (code["ann_type"] != "INV" or equity):
+                    raise StNoticeEvidenceError("Reviewed investor record became an equity notice")
+                if equity and scope._daily_notice_row(row, symbol, "2026-11-05", {}) is not None:
+                    raise StNoticeEvidenceError("Reviewed category correction changed ST selection")
+        if identity in metadata:
+            old, new = rows
+            fields = {key for key in old.keys() | new.keys()
+                      if key != "display_time" and old.get(key) != new.get(key)}
+            if fields != {"columns"}:
+                raise StNoticeEvidenceError("Reviewed Nov5 category fields changed")
+            normalized[identity]["columns"] = old["columns"]
+    # All common observations still pass the original subsecond/same-day/no-close-crossing rule.
+    result = precision(previous, normalized)
+    changed = sorted(added | {key for key in previous if previous[key] != current[key]})
+    return dict(result, policy="exact_non_st_catalog_boundary_20261109_v1",
+                precision_changed_event_count=result["changed_event_count"],
+                changed_event_count=len(changed),
+                changed_event_ids_sha256=sha(json.dumps(changed, separators=(",", ":")).encode()),
+                previous_native_sha256=sha(canonical(previous)),
+                current_stable_native_sha256=sha(canonical(stable)),
+                reviewed_non_st_added_ids=sorted(added), reviewed_metadata_changed_ids=sorted(metadata),
+                removed_event_ids=[], risk_projection_unchanged=True,
+                boundary_native_content_unchanged=False)
+
+
 def _non_equity_catalog_metadata(previous, current, precision):
     """Ignore only non-ST BSE/NEEQ listing/sort metadata in comparison.
 
@@ -381,6 +438,9 @@ def reviewed_additions(previous, current, precision):
     exact = _review_exact_20261103_batch(previous, current, precision)
     if exact is not None:
         return exact
+    catalog = _reviewed_catalog_boundary_20261109(previous, current, precision)
+    if catalog is not None:
+        return catalog
     catalog = _non_equity_catalog_metadata(previous, current, precision)
     if catalog is not None:
         return catalog
