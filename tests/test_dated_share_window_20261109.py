@@ -213,3 +213,43 @@ def test_exact_structure_event_recursively_reads_back_native_chain(tmp_path,fixt
     source._refresh_dated_window(root=tmp_path,symbol='300743',cache_path=cache,as_of=case['end'])
     assert cache.read_bytes()==old
     assert source.verify_share_cache(root=tmp_path,symbol='300743',as_of=case['end'])
+
+
+def test_later_observed_future_plan_never_changes_the_target_history(fixture):
+    case=fixture[0]['cases'][7]
+    result,facts=verify(fixture,7)
+    assert case['symbol']=='688092'
+    assert result==base64.b64decode(case['previous_candidate_b64'])
+    assert facts==case['verified_facts'] and facts['changes']==[]
+    future=facts['future_plan_not_consumed']
+    assert future['date']=='2026-11-12' and future['observed_after_target'] is True
+    assert future['present_in_sina_future_inventory'] is False
+    assert b'2026-11-12' not in result
+
+
+@pytest.mark.parametrize('field',['END_DATE','NOTICE_DATE','INFO_CODE','TOTAL_SHARES','SECURITY_CODE'])
+def test_later_future_observation_never_waives_another_row_or_date(fixture,field):
+    def mutate(v):
+        row=v['result']['data'][0]
+        row[field]=row[field]+1 if isinstance(row[field],int) else 'unreviewed'
+    rewrite(fixture,'unfiltered',mutate,index=7)
+    with pytest.raises(ValueError):verify(fixture,7)
+
+
+def test_later_future_observation_requires_its_exact_document(fixture):
+    fixture[0]['cases'][7]['manifest']['files'].pop('later_future_documents')
+    with pytest.raises(ValueError,match='lacks original issuer document'):verify(fixture,7)
+
+
+def test_future_announced_quantity_cannot_substitute_for_target_quote(fixture):
+    rewrite(fixture,'quote',lambda v:v['data'].update(f84=82148940),index=7)
+    with pytest.raises(ValueError,match='quote total differs'):verify(fixture,7)
+
+
+def test_exact_future_observation_recursively_reads_back_without_appending_plan(tmp_path,fixture,monkeypatch):
+    case,cache,src,ref=prepare_prefix(tmp_path,fixture,index=7)
+    old=cache.read_bytes()
+    monkeypatch.setattr(source,'collect_dated_window',lambda **kwargs:(old,ref))
+    source._refresh_dated_window(root=tmp_path,symbol='688092',cache_path=cache,as_of=case['end'])
+    assert cache.read_bytes()==old
+    assert source.verify_share_cache(root=tmp_path,symbol='688092',as_of=case['end'])

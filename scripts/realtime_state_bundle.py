@@ -781,6 +781,12 @@ EXACT_STRUCTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = 
     '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
     '0210a25b93f459c96990cf0b16334f264b0d9f9f04f3f5cfee19fa40048bc40c')
 
+EXACT_LATER_FUTURE_D5_SOURCE_REVIEW = copy.deepcopy(EXACT_STRUCTURE_D5_SOURCE_REVIEW)
+EXACT_LATER_FUTURE_D5_SOURCE_REVIEW['revision'] = 'complete_window_exact_unconsumed_688092_plan_d5_20261109_v6'
+EXACT_LATER_FUTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '2850b7ebe49bbdd2bbbb577786017e8b54163d2f61d9784c4c75dfef792e72e7')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -814,7 +820,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW,
                    APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW,
                    APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW,
-                   LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW, EXACT_STRUCTURE_D5_SOURCE_REVIEW):
+                   LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW, EXACT_STRUCTURE_D5_SOURCE_REVIEW,
+                   EXACT_LATER_FUTURE_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
