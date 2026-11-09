@@ -752,6 +752,13 @@ HISTORICAL_CLOSE_D5_SOURCE_REVIEW = {
 }
 
 
+APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW = copy.deepcopy(HISTORICAL_CLOSE_D5_SOURCE_REVIEW)
+APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW["revision"] = "dated_historical_share_close_exact_d5_20261109_v2"
+APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW["changes"]["scripts/share_unchanged_tail.py"] = (
+    "f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7",
+    "1266562cb77158266cbba7b1c99b732b6ac8b57002b39b6bab204ed6c3b8f202")
+
+
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
@@ -782,7 +789,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     identity = hashlib.sha256(json.dumps(recorded, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     changed = {name for name in old if old[name] != new[name]}
     for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW,
-                   APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW):
+                   APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW,
+                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (

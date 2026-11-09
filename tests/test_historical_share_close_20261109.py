@@ -32,15 +32,15 @@ def evidence():
     return fixture, bodies, candidate
 
 
-def verify(evidence):
+def verify(evidence, root=ROOT):
     fixture, bodies, candidate = evidence
     def bound(path, digest):
         raw = bodies[path]
         if source.sha(raw) != digest:
             raise ValueError('source hash mismatch')
         return raw
-    return source.verify_manifest(fixture['manifest'], symbol='002316', previous_day='2026-11-05',
-                                  end='2026-11-06', candidate=candidate, bound=bound, root=ROOT,
+    return source.verify_manifest(fixture['manifest'], symbol=fixture['manifest']['symbol'], previous_day='2026-11-05',
+                                  end='2026-11-06', candidate=candidate, bound=bound, root=root,
                                   now=datetime.fromisoformat(fixture['observed_at']))
 
 
@@ -142,8 +142,7 @@ def identities():
 
 def test_exact_rehashed_d5_data_permits_only_actual_reviewed_source():
     old, current, fixture = identities()
-    assert fixture['review'] == state.HISTORICAL_CLOSE_D5_SOURCE_REVIEW or (
-        json.loads(json.dumps(state.HISTORICAL_CLOSE_D5_SOURCE_REVIEW)) == fixture['review'])
+    assert json.loads(json.dumps(state.APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW)) == fixture['review']
     assert hashlib.sha256(json.dumps(old,sort_keys=True,separators=(',', ':')).encode()).hexdigest() == state.HISTORICAL_CLOSE_D5_SOURCE_REVIEW['stock_fingerprint_sha256']
     assert {n for n in old['code'] if old['code'][n] != current['code'][n]} == {'scripts/share_unchanged_tail.py','scripts/share_change_source.py'}
     before = copy.deepcopy((old,current))
@@ -170,6 +169,44 @@ def test_no_reverse_or_unreviewed_transitive_source_permission():
     future=copy.deepcopy(current);future['code']['scripts/share_unchanged_tail.py']='f'*64
     assert not state.stock_input_evidence_matches_validated_source(old,future)
     assert not state.stock_input_evidence_matches_validated_source(current,future)
+
+
+@pytest.fixture
+def reobserved_evidence():
+    fixture=json.loads((ROOT/'tests/fixtures/historical_share_close_301288_20261109.json').read_bytes())
+    return fixture,{p:base64.b64decode(raw) for p,raw in fixture['artifacts_b64'].items()},base64.b64decode(fixture['candidate_b64'])
+
+
+def test_exact_existing_zero_event_reobservation_keeps_original_approval_and_history(reobserved_evidence):
+    before=copy.deepcopy(reobserved_evidence)
+    result=verify(reobserved_evidence)
+    event=result['approved_late_unchanged_event']
+    assert result['total_shares_10k']=='10801' and result['old_candidate_sha256']=='abf7572f5abcb80bdaf73c83d6e6851356e2d3bdd7ed1707d68b7e8b0a83a5f4'
+    assert event['signal_day']=='2026-11-05' and event['qualification_day']=='2026-11-06'
+    assert event['reobserved_existing_approved_event'] is True
+    assert event['package_sha256']=='3af53c7fea86b3334321112981747560e9fcea9dba5ee7667c9f011d8a70f4ff'
+    assert reobserved_evidence==before
+    assert state.HISTORICAL_CLOSE_D5_SOURCE_REVIEW['changes']['scripts/share_unchanged_tail.py'][1]=='f97d5ef6ed1814f36551579580b4075316dbdd188d70b38c4c9a842e18f3aa27'
+
+
+@pytest.mark.parametrize('field,value',[('NOTICE_DATE','2026-11-07 00:00:00'),('END_DATE','2026-11-06 00:00:00'),
+    ('INFO_CODE','AN000000'),('TOTAL_SHARES',108010001),('TOTAL_SHARES_CHANGE',1),('FREELIQCI_SHARES',41680325)])
+def test_reobserved_event_requires_the_entire_original_exact_row(reobserved_evidence,field,value):
+    for name in ('unfiltered','bounded'):
+        rewrite(reobserved_evidence,name,lambda d:d['result']['data'][0].update({field:value}))
+    with pytest.raises(ValueError):verify(reobserved_evidence)
+
+
+def test_reobserved_event_still_requires_original_approval_and_candidate(reobserved_evidence,tmp_path):
+    fixture,bodies,candidate=reobserved_evidence
+    with pytest.raises(ValueError,match='old history differs'):
+        verify((fixture,bodies,candidate+b'\n'))
+    registry=json.loads((ROOT/'data/share_source_future_plan_reviews.json').read_bytes())
+    registry['unchanged_event_approval']['approval']['decision']='pending'
+    (tmp_path/'data').mkdir()
+    (tmp_path/'data/share_source_future_plan_reviews.json').write_text(json.dumps(registry),encoding='utf8')
+    with pytest.raises(ValueError,match='approval/package differs'):
+        verify(reobserved_evidence,root=tmp_path)
 
 
 @pytest.mark.parametrize('fail_second', [False,True])

@@ -54,3 +54,19 @@ failure/resume, without changing the historical share CSV or old source bytes.
 Rollback uses the preceding committed runtime/config pair; source evidence and
 approved old state are retained. Real complete remote maintenance acceptance
 must be recorded separately before claiming the task repaired.
+
+Run 42558613202 passed the earlier date boundary and reached the already
+approved 301288 zero-total event, then rejected its NOTICE_DATE Nov6 when
+renewing Nov5 to Nov6. The newly observed complete row is exactly equal to the
+sealed approved row (AN202611051831459017), and the old candidate retains SHA
+`abf7572f5abcb80bdaf73c83d6e6851356e2d3bdd7ed1707d68b7e8b0a83a5f4`.
+The additional qualification is limited to this exact next-session observation,
+still requires the original approved package, entire unchanged event row,
+unchanged CSV, exact original Sina Nov5 row and no new Sina tail. It retains
+Nov5 as the original signal day and labels Nov6 separately as qualification day.
+Changed rows, shares, approval, other symbols/days and new events still fail.
+Actual observations are preserved in the 301288 historical-close fixture.
+
+The original v1 exact D5 source review remains immutable. A separate v2 review
+adds the exact reviewed source successor against the same unchanged D5 data
+identity; it does not grant transitive or arbitrary source permission.
