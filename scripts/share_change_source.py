@@ -23,6 +23,15 @@ _ENCODER_LOCK = threading.Lock()
 _DNS_LOCK = threading.Lock()
 _DNS_CACHE = {}
 DATED_WINDOW_KIND = 'dual_source_dated_window_v1'
+# Exact forward structural transfer, independently checked against issuer PDF
+# pages 1 and 8. No legal-effective-date or historical migration is authorized.
+STRUCTURE_ONLY_EVENT_20261105 = dict(symbol='300743', date='2026-11-05',
+    announcement_id='AN202611051831456433', total_shares=151204323,
+    em_row_sha256='8e60250d80578a9788804873854a6055b55a9dd9221eb0f3e3b10f73468f66e5',
+    pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611051831456433_1.pdf',
+    pdf_sha256='0e3d22e681f7e10c7192cb951e0ac1c44f912b9023773c72fc1e31e5223f80cf',
+    pdf_bytes=164308, limited_before=23653195, limited_after=24432195,
+    unlimited_before=127551128, unlimited_after=126772128, transferred=779000)
 # Observed through Google/Cloudflare/Ali DNS and verified against the real
 # CNInfo HTTPS API on 2026-11-02. This is a route, never a TLS-identity override.
 _KNOWN_CNINFO_IPV4 = '120.48.196.100'
@@ -618,14 +627,38 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     records=sina['records'];prior=[r for r in records if r['provider_date']<=previous_day]
     need(prior and n.amount(prior[-1]['total_shares_10k'])==before,'Sina boundary differs from certified history')
     tail=[r for r in records if previous_day<r['provider_date']<=end]
-    latest=before;events=[]
+    latest=before;events=[];structure_events=[]
     for event in tail:
         value=n.amount(event['total_shares_10k'])
-        need(value!=latest,'new zero-change event requires its exact reviewed route')
         matches=[row for row in bounded if n._em_date(row['END_DATE']).isoformat()==event['provider_date']
                  and n._em_date(row['LISTING_DATE']).isoformat()==event['provider_date']
                  and n.amount(row['TOTAL_SHARES'])==value*10000]
         need(len(matches)==1 and matches[0].get('INFO_CODE'),'Sina change lacks unique matching EM issuer event')
+        if value==latest:
+            review=STRUCTURE_ONLY_EVENT_20261105;row=matches[0]
+            row_sha=_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
+            need((symbol,event['provider_date'],row_sha,value*10000)==
+                 (review['symbol'],review['date'],review['em_row_sha256'],review['total_shares']),
+                 'new zero-change event requires its exact reviewed route')
+            docs=files.get('structure_documents',[])
+            need(len(docs)==1 and docs[0].get('announcement_id')==review['announcement_id'],
+                 'exact structural event lacks issuer document')
+            pdf,_=n._artifact(docs[0],bound,url=review['pdf_url'],params={},end=end,now=now)
+            need(len(pdf)==review['pdf_bytes'] and _sha(pdf)==review['pdf_sha256']
+                 and pdf.startswith(b'%PDF-') and b'%%EOF' in pdf[-1024:],
+                 'exact structural event issuer document differs')
+            need(n.integer(row['TOTAL_SHARES_CHANGE'])==0
+                 and n.amount(row['LIMITED_SHARES'])==review['limited_after']
+                 and n.amount(row['UNLIMITED_SHARES'])==review['unlimited_after']
+                 and n.amount(row['LIMITED_SHARES_CHANGE'])==review['transferred']
+                 and row['UNLIMITED_SHARES_CHANGE']==-review['transferred']
+                 and review['limited_before']+review['unlimited_before']==review['total_shares']
+                 and review['limited_after']+review['unlimited_after']==review['total_shares'],
+                 'exact structural event is not total-neutral')
+            structure_events.append(dict(date=event['provider_date'],total_shares_10k=str(value),
+                announcement_id=review['announcement_id'],issuer_document_sha256=review['pdf_sha256'],
+                old_total_unchanged=True))
+            continue
         events.append(dict(date=event['provider_date'],total_shares_10k=str(value),announcement_id=matches[0]['INFO_CODE']))
         latest=value
     tails=[row for row in bounded if max(n._em_date(row[k]) for k in n.DATE_FIELDS)>d]
@@ -643,9 +676,10 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                      'late historical report conflicts with certified share history')
             reobservations.append(dict(announcement_id=row.get('INFO_CODE'),provider_dates=old_dates))
         else:new_tails.append(row)
-    need(len(new_tails)==len(events) and all(any(n._em_date(row['END_DATE']).isoformat()==e['date']
+    proven_events=events+structure_events
+    need(len(new_tails)==len(proven_events) and all(any(n._em_date(row['END_DATE']).isoformat()==e['date']
          and n._em_date(row['LISTING_DATE']).isoformat()==e['date']
-         and n.amount(row['TOTAL_SHARES'])==n.amount(e['total_shares_10k'])*10000 for e in events) for row in new_tails),
+         and n.amount(row['TOTAL_SHARES'])==n.amount(e['total_shares_10k'])*10000 for e in proven_events) for row in new_tails),
          'new/ambiguous EM event not reproduced by independent dated changes')
     for ds in sessions:
         expected=before
@@ -676,9 +710,11 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
             writer.writerow([event['date'],event['total_shares_10k'],
                              'Dated EM/Sina provider event; legal effective date not asserted'])
         candidate+=stream.getvalue().encode('utf8')
-    return candidate,dict(symbol=symbol,previous_day=previous_day,query_end=end,session_count=len(sessions),
+    facts=dict(symbol=symbol,previous_day=previous_day,query_end=end,session_count=len(sessions),
                           changes=events,historical_reobservations=reobservations,
                           old_prefix_preserved=True,legal_effective_date_not_asserted=True)
+    if structure_events:facts['structure_events']=structure_events
+    return candidate,facts
 
 
 def collect_dated_window(*, root, symbol, previous_day, end, candidate):
@@ -724,6 +760,10 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
                 documents.append({**ref,'announcement_id':review['announcement_id']})
     files['sina'],_=save(n.SINA_URL.format(symbol=symbol),{},'sina')
     files['quote'],_=save(n.QUOTE_URL,n.quote_params(symbol),'quote')
+    review=STRUCTURE_ONLY_EVENT_20261105
+    if symbol==review['symbol'] and previous_day<review['date']<=end:
+        ref,_=save(review['pdf_url'],{},'structure_'+review['announcement_id'])
+        files['structure_documents']=[{**ref,'announcement_id':review['announcement_id']}]
     manifest=dict(schema=DATED_WINDOW_KIND,symbol=symbol,previous_day=previous_day,query_end=end,
                   files=files,future_plan_documents=documents,previous_candidate_sha256=_sha(candidate))
     _atomic(directory/'collection.json',json.dumps(manifest,ensure_ascii=False,indent=2).encode('utf8'))

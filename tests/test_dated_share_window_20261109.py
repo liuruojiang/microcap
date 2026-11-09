@@ -52,8 +52,8 @@ def test_real_unchanged_and_five_changed_windows_preserve_exact_prefix(fixture,i
     assert bool(facts['changes'])==(index!=0)
 
 
-def rewrite(fixture,role,mutate,receipt=False):
-    data,bodies,_=fixture;entry=data['cases'][1]['manifest']['files'][role]
+def rewrite(fixture,role,mutate,receipt=False,index=1):
+    data,bodies,_=fixture;entry=data['cases'][index]['manifest']['files'][role]
     if isinstance(entry,list):entry=entry[0]
     name='receipt_path' if receipt else 'raw_path'
     value=json.loads(bodies[entry[name]]);mutate(value)
@@ -116,6 +116,7 @@ def test_unreviewed_future_event_cannot_be_hidden_by_asof_projection(fixture):
 
 
 def prepare_prefix(tmp_path,fixture,index=1):
+    tmp_path=source._extended(tmp_path)
     data,bodies,prefix=fixture;case=data['cases'][index]
     src=tmp_path/'.microcap_index_cache/share_sources';src.mkdir(parents=True)
     for name,raw in {**prefix,**bodies}.items():
@@ -170,3 +171,45 @@ def test_dated_window_is_opt_in_and_legacy_route_does_not_change(tmp_path,fixtur
     monkeypatch.setattr(source,'_refresh_share_change',lambda **kw:calls.append(kw['as_of']))
     source.refresh_share_change(root=tmp_path,symbol=case['symbol'],cache_path=cache,as_of=case['end'],allow_network=True)
     assert calls==['2026-10-30','2026-11-02','2026-11-03','2026-11-04','2026-11-05','2026-11-06']
+
+
+def test_exact_real_structure_transfer_keeps_all_original_share_bytes(fixture):
+    data,_,_=fixture;case=data['cases'][6]
+    result,facts=verify(fixture,6)
+    assert case['symbol']=='300743'
+    assert result==base64.b64decode(case['previous_candidate_b64'])
+    assert facts==case['verified_facts'] and facts['changes']==[]
+    assert facts['structure_events'][0]['old_total_unchanged'] is True
+
+
+@pytest.mark.parametrize('field',['INFO_CODE','CHANGE_REASON','TOTAL_SHARES_CHANGE',
+                                 'LIMITED_SHARES_CHANGE','UNLIMITED_SHARES_CHANGE'])
+def test_other_zero_change_semantics_are_not_covered_by_exact_review(fixture,field):
+    def mutate(v):
+        row=v['result']['data'][0]
+        row[field]=row[field]+1 if isinstance(row[field],int) else 'unreviewed'
+    for role in ('unfiltered','bounded'):rewrite(fixture,role,mutate,index=6)
+    with pytest.raises(ValueError):verify(fixture,6)
+
+
+def test_exact_structural_transfer_requires_the_original_document(fixture):
+    fixture[0]['cases'][6]['manifest']['files'].pop('structure_documents')
+    with pytest.raises(ValueError,match='lacks issuer document'):verify(fixture,6)
+
+
+def test_exact_document_cannot_be_replaced_even_with_rebound_transport_hashes(fixture):
+    entry=fixture[0]['cases'][6]['manifest']['files']['structure_documents'][0]
+    raw=fixture[1][entry['raw_path']]+b'changed'
+    fixture[1][entry['raw_path']]=raw;entry['raw_sha256']=source._sha(raw)
+    receipt=json.loads(fixture[1][entry['receipt_path']]);receipt.update(raw_sha256=source._sha(raw),bytes=len(raw))
+    body=json.dumps(receipt).encode();fixture[1][entry['receipt_path']]=body;entry['receipt_sha256']=source._sha(body)
+    with pytest.raises(ValueError,match='issuer document differs'):verify(fixture,6)
+
+
+def test_exact_structure_event_recursively_reads_back_native_chain(tmp_path,fixture,monkeypatch):
+    case,cache,src,ref=prepare_prefix(tmp_path,fixture,index=6)
+    old=cache.read_bytes()
+    monkeypatch.setattr(source,'collect_dated_window',lambda **kwargs:(old,ref))
+    source._refresh_dated_window(root=tmp_path,symbol='300743',cache_path=cache,as_of=case['end'])
+    assert cache.read_bytes()==old
+    assert source.verify_share_cache(root=tmp_path,symbol='300743',as_of=case['end'])
