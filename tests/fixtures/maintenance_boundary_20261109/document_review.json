@@ -1,0 +1,82 @@
+{
+  "AN202611051831449198": {
+    "suffix": ".docx",
+    "document_sha256": "07dba2fa20025ff3b5bb8c8a09d9f5b7ac66731c5f3eca2b53c916074647b18c",
+    "text_sha256": "95d781688277d1bd1a333d9c289920219d1650bfe2f7a8e0b3800c07066b2ec4",
+    "required_text": [
+      "688809",
+      "投资者关系活动记录表"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831449201": {
+    "suffix": ".docx",
+    "document_sha256": "7d3fc4fddf756893f1594e37b960f8ff65e191de939b3c0a2f2cbd3ff1fddfe0",
+    "text_sha256": "192f19557b6d63acf0995a553f791c156695b2110634a6aa7e923c300ae91d01",
+    "required_text": [
+      "600221",
+      "投资者关系活动记录表"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831449217": {
+    "suffix": ".docx",
+    "document_sha256": "39edf898a7f52490f5497db616abbab6cb43db17bb5ee23f5491f92a041da6a4",
+    "text_sha256": "33fe77dda6dcebfd0937f1e65248ae5845bc27b26b2504b01b2e0ada24cf6f32",
+    "required_text": [
+      "688100",
+      "投资者交流会"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831458926": {
+    "suffix": ".pdf",
+    "document_sha256": "f4b43ca26e228a9292c9a5d89caab0de80027e150ad50b33f046719cd8db08ec",
+    "text_sha256": "3197b0817f89aa3285ad9b457df46963384145d03d38d6a617611229f231afdb",
+    "required_text": [
+      "朗鸿科技",
+      "股票期权"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831459677": {
+    "suffix": ".pdf",
+    "document_sha256": "81c53be24cb772eaff234312b1c35b182381e8c5661f854c0921ff30fd577a8a",
+    "text_sha256": "0ccd1809fcdbf884e7cde5f2bbd869e25f51efaba6b838a46fc4f773535e23c1",
+    "required_text": [
+      "300568",
+      "定点协议"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831461094": {
+    "suffix": ".pdf",
+    "document_sha256": "e94c4e2e65441c39bcb9ee4ded11f10925ac3b3285cd04513c266378dd44f9be",
+    "text_sha256": "243560ddacf709a2be414576ae64573954a219ce8004553a4cbd3e6422cec459",
+    "required_text": [
+      "安徽英力电子科技股份有限公司",
+      "核查意见"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831461769": {
+    "suffix": ".pdf",
+    "document_sha256": "01f649e89aec07b45ab6ab0dbaed35172d12c500ac7b899081d1b11048baf2ba",
+    "text_sha256": "4144bf5f75a09b0523c563983502ff56d99926ae76f710de9072baf5f25ee100",
+    "required_text": [
+      "湖南裕能",
+      "限制性股票"
+    ],
+    "decision": "no_new_stock_st_action"
+  },
+  "AN202611051831461773": {
+    "suffix": ".pdf",
+    "document_sha256": "a6f5e888ade3c873af05191b9dc022f19d7de51db56e1fbfe141e7f9089ea988",
+    "text_sha256": "a89c99095c89e02f384012d1e691ba1e21742924cb40c5537112226e79d73a8a",
+    "required_text": [
+      "301631",
+      "限制性股票"
+    ],
+    "decision": "no_new_stock_st_action"
+  }
+}
