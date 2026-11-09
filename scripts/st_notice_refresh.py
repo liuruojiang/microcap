@@ -152,6 +152,23 @@ def freshness_source_files(root):
     if not path.exists():
         return {}
     raw = path.read_bytes()
+    return _verified_freshness_source_files(root, raw, resolve_archive_reference(root), FRESHNESS)
+
+
+def archived_freshness_source_files(root, proof_path, expected_sha, authority):
+    """Verify an original refresh receipt without promoting its old authority.
+
+    Archived clocks and paths retain their actual identities. This grants no
+    freshness to the current pointer and never rewrites a historical receipt.
+    """
+    root = Path(root).resolve()
+    raw = _bound(root, proof_path).read_bytes()
+    if _sha(raw) != expected_sha:
+        raise StNoticeEvidenceError('Archived ST freshness proof bytes changed')
+    return _verified_freshness_source_files(root, raw, authority, proof_path)
+
+
+def _verified_freshness_source_files(root, raw, reference, proof_path):
     proof = json.loads(raw)
     if proof.get('schema') != 'st_notice_refresh_v1':
         raise StNoticeEvidenceError('Unsupported ST freshness schema')
@@ -160,10 +177,9 @@ def freshness_source_files(root):
     completed = datetime.fromisoformat(proof['completed_at'])
     if required.tzinfo is None or completed.tzinfo is None or not required <= completed <= datetime.now(timezone.utc):
         raise StNoticeEvidenceError('Invalid ST freshness observation interval')
-    reference = resolve_archive_reference(root)
     if tuple(proof['authority']) != tuple(reference):
         raise StNoticeEvidenceError('ST freshness proof belongs to another authority')
-    files = {FRESHNESS: _sha(raw)}
+    files = {proof_path: _sha(raw)}
     for relative, expected in proof['source_files'].items():
         if _sha(_bound(root, relative).read_bytes()) != expected:
             raise StNoticeEvidenceError('ST freshness evidence changed: ' + relative)

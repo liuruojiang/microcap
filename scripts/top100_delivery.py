@@ -58,6 +58,8 @@ RETURN_BASIS_FILES = [
     "scripts/sina_share_history.py",
     "scripts/stock_daily_inputs.py",
     "scripts/stock_daily_alternative.py",
+    "scripts/scoped_source_consumer.py",
+    "scripts/scoped_metadata_consumer.py",
 ]
 RELEASE_FILES += RETURN_BASIS_FILES
 from scripts.sse_share_daily_unchanged_20261104 import SOURCE_FILES as SSE_DATED_SHARE_SOURCE_FILES
