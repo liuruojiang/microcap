@@ -294,12 +294,15 @@ def adoption_transaction(plan):
     transaction. This source transaction intentionally never calls a full rebuild.
     """
     root = plan['root']; cache = root / CACHE
-    lock = cache / 'scoped_native_adoption.lock'
+    role = plan.get('transaction_role', 'scoped_native_adoption')
+    if role not in ('scoped_native_adoption', 'scoped_native_metadata'):
+        raise ValueError('Unknown native scoped transaction role')
+    lock = cache / (role + '.lock')
     owner = encode(dict(pid=os.getpid(), owner=uuid.uuid4().hex))
     fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, 'O_BINARY', 0))
     os.write(fd, owner); os.fsync(fd)
     identity = os.fstat(fd)
-    work = cache / 'scoped_native_adoption' / uuid.uuid4().hex
+    work = cache / role / uuid.uuid4().hex
     work.mkdir(parents=True)
     attempted = []; keep_lock = False
     def check_owner():
@@ -321,7 +324,8 @@ def adoption_transaction(plan):
             final_strategy_delivery=False)))
         for name, digest in plan['files'].items():
             check_owner()
-            raw = bound(plan['staged_root'], name).read_bytes()
+            source_root = plan.get('source_roots', {}).get(name, plan['staged_root'])
+            raw = bound(source_root, name).read_bytes()
             if sha(raw) != digest:
                 raise ValueError('Scoped staged source changed during adoption')
             destination = bound(root, name)

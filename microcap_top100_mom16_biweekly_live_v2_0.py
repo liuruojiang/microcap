@@ -4853,6 +4853,9 @@ def refresh_price_cache_tail(
     if not symbols:
         raise RuntimeError("No backtest-universe symbols available for verified refresh")
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
+    from scripts.scoped_native_consumer import reuse_verified_sources
+    if reuse_verified_sources(ROOT, symbols, end_text):
+        return
     _log_price_cache_refresh(f"verified stock-input refresh end_date={end_text} symbols={len(symbols)}")
     refresh_daily_inputs(root=ROOT, symbols=symbols, as_of=end_text, allow_network=True)
     # Share histories need a query-cutoff receipt even when no new event occurred.

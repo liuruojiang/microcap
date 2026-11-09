@@ -211,10 +211,16 @@ def _st_source_transport_files(root: Path) -> list[str]:
                       or os.environ.get("MICROCAP_ST_NOTICE_ARCHIVE_SHA256"))
     if not archive_hashes and not configured:
         return []  # Existing live-source metadata does not claim an archive.
-    if len(archive_hashes) != 1 or unbound:
+    if unbound:
         raise ValueError("ST metadata archive identity is missing or mixed across universe")
     from scripts.st_history_scope import source_closure
-    closure = source_closure(root)
+    if len(archive_hashes) != 1:
+        from scripts.scoped_native_consumer import ACTIVE, scoped_transport_files
+        if not (root / ACTIVE).is_file():
+            raise ValueError("ST metadata archive identity is missing or mixed across universe")
+        closure = scoped_transport_files(root)
+    else:
+        closure = source_closure(root)
     if not closure or not archive_hashes.issubset(set(closure.values())):
         raise ValueError("ST metadata archive has no matching portable source closure")
     files = set(closure)
@@ -2001,6 +2007,7 @@ def refresh_state(
     force_refresh_static_inputs: bool = False,
     allow_full_rebuild: bool = False,
     max_anchor_age_days: int | None = None,
+    scoped_sources: dict | None = None,
 ) -> dict[str, object]:
     sys.path.insert(0, str(root.resolve()))
     from run_top100_v1_6_v1_8_realtime_signals import ensure_static_realtime_inputs
@@ -2028,7 +2035,13 @@ def refresh_state(
         target_end_date = _parse_date(str(target_end_ts))
         if target_end_date is None:
             raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
-        if notice_refresh_required:
+        if scoped_sources is not None:
+            from scripts.scoped_native_consumer import consume_no_rebalance
+            _log_refresh_phase("adopt_verified_scoped_native_sources")
+            consume_no_rebalance(root=root, base=v2_0.base_mod, args=args,
+                paths=base_paths, panel_path=panel_path, target=target_end_ts, config=scoped_sources)
+            notice_refresh_completed = True
+        elif notice_refresh_required:
             from scripts.st_notice_refresh import refresh_notice_archive
             _log_refresh_phase("refresh_notice_archive")
             from scripts.st_metadata_refresh import MARKER as ST_METADATA_MARKER
