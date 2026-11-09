@@ -95,7 +95,12 @@ def test_eight_actual_issuer_documents_and_reviewed_hashes():
         text = text_raw.decode("utf8")
         assert receipt["status"] == 200 and receipt["bytes"] == len(raw)
         assert hashlib.sha256(raw).hexdigest() == receipt["sha256"] == item["document_sha256"]
-        assert hashlib.sha256(text_raw).hexdigest() == item["text_sha256"]
+        # Extracted text was originally saved with Windows CRLF. Git transports
+        # these text fixtures as LF on Linux. Reconstruct only that documented
+        # newline representation; retain the original reviewed digest exactly.
+        canonical = text_raw.replace(b"\r\n", b"\n")
+        assert b"\r" not in canonical
+        assert hashlib.sha256(canonical.replace(b"\n", b"\r\n")).hexdigest() == item["text_sha256"]
         assert receipt["url"] == receipt["actual_url"] == "https://pdf.dfcfw.com/pdf/H2_" + identity + "_1.pdf"
         assert all(term in text for term in item["required_text"])
         assert not any(term in text for term in ["退市风险警示", "其他风险警示", "实施风险警示", "撤销风险警示"])
