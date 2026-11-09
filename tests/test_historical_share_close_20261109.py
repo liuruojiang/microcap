@@ -145,7 +145,8 @@ def test_exact_rehashed_d5_data_permits_only_actual_reviewed_source():
     assert json.loads(json.dumps(state.APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW)) == fixture['review']
     assert hashlib.sha256(json.dumps(old,sort_keys=True,separators=(',', ':')).encode()).hexdigest() == state.HISTORICAL_CLOSE_D5_SOURCE_REVIEW['stock_fingerprint_sha256']
     assert {n for n in old['code'] if old['code'][n] != current['code'][n]} == {
-        'scripts/share_unchanged_tail.py','scripts/share_change_source.py','scripts/exchange_calendar.py'}
+        'scripts/share_unchanged_tail.py','scripts/share_change_source.py','scripts/exchange_calendar.py',
+        'scripts/st_metadata_refresh.py','scripts/stock_daily_alternative.py'}
     before = copy.deepcopy((old,current))
     assert state.stock_input_evidence_matches_validated_source(old,current)
     assert (old,current) == before

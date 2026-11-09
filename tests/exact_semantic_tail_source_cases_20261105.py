@@ -23,6 +23,8 @@ def exact_successor_identities():
     # This fixture tests the immutable four-source D4 authorization. Calendar
     # caching belongs to the separately reviewed exact D5 successor.
     current['code']['scripts/exchange_calendar.py'] = old['code']['scripts/exchange_calendar.py']
+    current['code']['scripts/st_metadata_refresh.py'] = state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']['scripts/st_metadata_refresh.py'][1]
+    current['code']['scripts/stock_daily_alternative.py'] = old['code']['scripts/stock_daily_alternative.py']
     return old, current
 
 

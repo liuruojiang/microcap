@@ -787,6 +787,17 @@ EXACT_LATER_FUTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py']
     '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
     '2850b7ebe49bbdd2bbbb577786017e8b54163d2f61d9784c4c75dfef792e72e7')
 
+# Opt-in scoped metadata ancestry keeps the default full-market renewal strict.
+# Include the already published transport-only successor from main exactly.
+SCOPED_METADATA_D5_SOURCE_REVIEW = copy.deepcopy(EXACT_LATER_FUTURE_D5_SOURCE_REVIEW)
+SCOPED_METADATA_D5_SOURCE_REVIEW['revision'] = 'scoped_ancestor_metadata_and_published_transport_exact_d5_20261109_v7'
+SCOPED_METADATA_D5_SOURCE_REVIEW['changes']['scripts/st_metadata_refresh.py'] = (
+    '5ecf65d6124310a777f62f3c8ac76c72000acce6482b99ce2359f52ffc34a992',
+    '14f7162e90accc385499155aed55ab540b293ec23a0ad6d357abcd212e64ca6a')
+SCOPED_METADATA_D5_SOURCE_REVIEW['changes']['scripts/stock_daily_alternative.py'] = (
+    '261e03ecc279011e21de8a7b1ee27114740c73da61d5b26b078f5be9e032efc6',
+    '95dad1ffa24d13903fe845990afb2e370308ed44284f4428fd900c634a04be7d')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -821,7 +832,7 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
                    APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW,
                    APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW,
                    LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW, EXACT_STRUCTURE_D5_SOURCE_REVIEW,
-                   EXACT_LATER_FUTURE_D5_SOURCE_REVIEW):
+                   EXACT_LATER_FUTURE_D5_SOURCE_REVIEW, SCOPED_METADATA_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
