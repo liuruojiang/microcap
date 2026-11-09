@@ -9,9 +9,45 @@ import math
 from pathlib import Path
 import sys
 import threading
+from time import sleep
 from zoneinfo import ZoneInfo
 
 CN = ZoneInfo('Asia/Shanghai')
+
+
+def collect_factor(url, folder, kind, stopped, mode):
+    """Preserve failed attempts and retry only this failed factor GET."""
+    import requests
+    for attempt in range(3):
+        if stopped.is_set():
+            raise ValueError('Factor source stopped after HTTP403/429')
+        if mode == 'intraday' and datetime.now(CN).hour >= 15:
+            raise ValueError('Intraday request cutoff reached')
+        started = datetime.now(CN).isoformat()
+        try:
+            response = requests.get(url, timeout=15)
+            body = response.content
+            receipt = dict(url=url, status=response.status_code, sha256=hashlib.sha256(body).hexdigest(),
+                           observation_start=started, observation_end=datetime.now(CN).isoformat())
+            # Failed HTTP evidence survives a later successful attempt.
+            suffixes = (f'.attempt-{attempt + 1}', '') if response.status_code >= 400 else ('',)
+            for suffix in suffixes:
+                (folder / (kind + suffix + '.js')).write_bytes(body)
+                (folder / (kind + suffix + '.json')).write_text(json.dumps(receipt), encoding='utf8')
+            if response.status_code in (403, 429):
+                stopped.set()
+            response.raise_for_status()
+            return body, receipt
+        except requests.HTTPError as exc:
+            if exc.response is None or exc.response.status_code not in {408, 500, 502, 503, 504} or attempt == 2:
+                raise
+        except (requests.Timeout, requests.ConnectionError, requests.exceptions.ChunkedEncodingError) as exc:
+            receipt = dict(url=url, status=None, error_type=type(exc).__name__,
+                           observation_start=started, observation_end=datetime.now(CN).isoformat())
+            (folder / (kind + f'.attempt-{attempt + 1}.json')).write_text(json.dumps(receipt), encoding='utf8')
+            if attempt == 2:
+                raise
+        sleep(0.25 * (attempt + 1))
 
 def read_bound(root, spec):
     p = (root / spec['path']).resolve()
@@ -105,19 +141,8 @@ def _collect_close_tail(*, cp, members, price_rows, days, out, workers):
         market = ('sh' if symbol.startswith('6') else 'sz') + symbol
         bodies, receipts = {}, {}
         for kind in ('qfq','hfq'):
-            if stopped.is_set():
-                raise ValueError('Factor source stopped after HTTP403/429')
             url = f'https://finance.sina.com.cn/realstock/company/{market}/{kind}.js'
-            started = datetime.now(CN).isoformat()
-            response = requests.get(url, timeout=15)
-            body = response.content
-            receipt = dict(url=url,status=response.status_code,sha256=hashlib.sha256(body).hexdigest(),
-                observation_start=started,observation_end=datetime.now(CN).isoformat())
-            (folder/(kind+'.js')).write_bytes(body)
-            _save_json(folder/(kind+'.json'),receipt)
-            if response.status_code in (403,429):stopped.set()
-            response.raise_for_status()
-            bodies[kind],receipts[kind]=body,receipt
+            bodies[kind],receipts[kind]=collect_factor(url, folder, kind, stopped, 'close_confirmed')
         return close_tail_member_rows(symbol,basis,days,daily,bodies,receipts,datetime.now(CN).isoformat())
     with ThreadPoolExecutor(max_workers=max(1,min(workers,8))) as pool:
         futures={pool.submit(one,m):str(m['symbol']).zfill(6) for m in members}
@@ -236,22 +261,8 @@ def collect(*, root, checkpoint, day, mode, out, workers=8):
         bodies, receipts = {}, {}
         market = ('sh' if symbol.startswith('6') else 'sz') + symbol
         for kind in ('qfq', 'hfq'):
-            if source_stopped.is_set():
-                raise ValueError('Factor source stopped after HTTP403/429')
-            if mode == 'intraday' and datetime.now(CN).hour >= 15:
-                raise ValueError('Intraday request cutoff reached')
             url = f'https://finance.sina.com.cn/realstock/company/{market}/{kind}.js'
-            start = datetime.now(CN).isoformat()
-            response = requests.get(url, timeout=15)
-            body = response.content
-            receipt = dict(url=url, status=response.status_code, sha256=hashlib.sha256(body).hexdigest(),
-                           observation_start=start, observation_end=datetime.now(CN).isoformat())
-            (folder / (kind + '.js')).write_bytes(body)
-            (folder / (kind + '.json')).write_text(json.dumps(receipt), encoding='utf8')
-            if response.status_code in (403, 429):
-                source_stopped.set()
-            response.raise_for_status()
-            bodies[kind], receipts[kind] = body, receipt
+            bodies[kind], receipts[kind] = collect_factor(url, folder, kind, source_stopped, mode)
         pair = adjusted_pair(symbol, previous_date, day, float(basis['previous_raw_close']),
                              float(row['rt_price']), bodies, receipts)
         completed = datetime.now(CN)

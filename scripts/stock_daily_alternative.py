@@ -115,7 +115,12 @@ def query(symbol, start, end, sessions, prior_raw_close):
                 r = requests.get(url, params=params, timeout=(min(5, remaining), min(10, remaining)))
                 r.raise_for_status()
                 break
-            except (requests.Timeout, requests.ConnectionError):
+            except requests.HTTPError as exc:
+                if exc.response is None or exc.response.status_code not in {408, 500, 502, 503, 504} or attempt == 2:
+                    raise
+                print(f"[daily-source] transient HTTP failure symbol={symbol}; retry={attempt + 1}/2", flush=True)
+                time.sleep(min(0.25 * (attempt + 1), max(0, deadline - time.monotonic())))
+            except (requests.Timeout, requests.ConnectionError, requests.exceptions.ChunkedEncodingError):
                 if attempt == 2:
                     raise
                 print(f"[daily-source] transient network failure symbol={symbol}; retry={attempt + 1}/2", flush=True)
