@@ -758,6 +758,15 @@ APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW["changes"]["scripts/share_unchange
     "f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7",
     "1266562cb77158266cbba7b1c99b732b6ac8b57002b39b6bab204ed6c3b8f202")
 
+# Forward-window support leaves all pre-existing source protocols unchanged.
+# This is limited to the same freshly rehashed approved D5 data; it cannot
+# authorize another dataset, reverse transition, history rewrite or future code.
+DATED_WINDOW_D5_SOURCE_REVIEW = copy.deepcopy(APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW)
+DATED_WINDOW_D5_SOURCE_REVIEW['revision'] = 'complete_dated_share_window_exact_d5_20261109_v3'
+DATED_WINDOW_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    'fea12d2e9467054251babe6f19f2c0ddf5b50317c5d0a8c9a269df827e8f3ad4')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -790,7 +799,7 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     changed = {name for name in old if old[name] != new[name]}
     for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW,
                    APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW,
-                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW):
+                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
