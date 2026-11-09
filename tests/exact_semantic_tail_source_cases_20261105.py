@@ -20,6 +20,9 @@ def exact_successor_identities():
     for name, pair in state.APPROVED_603028_SOURCE_REVIEW['changes'].items():
         if name not in state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']:
             current['code'][name] = pair[0]
+    # This fixture tests the immutable four-source D4 authorization. Calendar
+    # caching belongs to the separately reviewed exact D5 successor.
+    current['code']['scripts/exchange_calendar.py'] = old['code']['scripts/exchange_calendar.py']
     return old, current
 
 

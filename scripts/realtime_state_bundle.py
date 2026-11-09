@@ -767,6 +767,14 @@ DATED_WINDOW_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
     '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
     'fea12d2e9467054251babe6f19f2c0ddf5b50317c5d0a8c9a269df827e8f3ad4')
 
+# Same provider, arguments, validation, timeout and session contents. Retain
+# verified day keys for a multi-session readback instead of evicting its prefix.
+LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW = copy.deepcopy(DATED_WINDOW_D5_SOURCE_REVIEW)
+LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW['revision'] = 'complete_dated_window_calendar_cache_exact_d5_20261109_v4'
+LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW['changes']['scripts/exchange_calendar.py'] = (
+    '9eb3ef9dee3298ab0ec5d7792dd607d3a1a07c55c93a1442af1779c44ca9067b',
+    '8c5f82f72fee80b8ffb5ca381bb894bdf82eeb267678800ba972bf9bad64abcb')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -799,7 +807,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     changed = {name for name in old if old[name] != new[name]}
     for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW,
                    APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW,
-                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW):
+                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW,
+                   LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (

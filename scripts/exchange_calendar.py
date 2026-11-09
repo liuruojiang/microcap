@@ -71,7 +71,7 @@ def intraday_request_window_active():
         return bool(_PREFLIGHT_REQUEST_GUARDS)
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=32)
 def sessions_for_day(day: date, *, before_request=None) -> tuple[date, ...]:
     code = ("import json,akshare as ak; "
             "print(json.dumps([str(d) for d in ak.tool_trade_date_hist_sina()['trade_date']]))")
