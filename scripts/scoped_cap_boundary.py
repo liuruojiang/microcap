@@ -97,7 +97,25 @@ def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=Fals
     if cursor<=pd.Timestamp(day):raise ValueError('Boundary notice authority does not reach its cap date')
     excluded={}
     for symbol in symbols:
-        notices=pd.DataFrame([r for r in rows[symbol] if r['notice_date']<=day])
+        if symbol in manifest.get('symbols',{}):
+            # Preserve original issuer-specific archives and reviewed identities
+            # omitted by the broad category index; never replace them by an
+            # incomplete global-risk query.
+            native=history.load_scope_archive(root,symbol,data['start_date'],day,manifest,authority[1])
+            symbol_rows=native['rows']
+        else:
+            symbol_rows=[r for r in rows[symbol] if r['notice_date']<=day]
+            for art,event in registry.items():
+                if (event['symbol']!=symbol or not data['start_date']<=event['notice_date']<=day
+                        or any(row['announcement_id']==art for row in symbol_rows)):
+                    continue
+                row=dict(issuer_symbol=symbol,announcement_id=art,notice_date=event['notice_date'],
+                    title=event['title'],source_url=event['source_url'],source_provider=event.get('source_provider','cninfo'))
+                if row['source_provider']=='eastmoney':
+                    row.update(provider_title=event['provider_title'],title_transform=dict(removed_prefix=event['removed_issuer_prefix']),
+                               body_source_url=event['body_source_url'])
+                symbol_rows.append(row)
+        notices=pd.DataFrame(symbol_rows)
         events=evidence.load_verified_events(root,symbol,data['start_date'],day,notices)
         intervals=base.freq_mod.build_st_intervals_from_notices(pd.Timestamp(data['start_date']),
             pd.Timestamp(day),notices,verified_events=events)
