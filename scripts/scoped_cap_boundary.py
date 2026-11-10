@@ -76,6 +76,9 @@ def _positive(value):
 
 def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=False):
     """Source-bounded current-day exclusion, not invented issuer metadata."""
+    if not history._ACTIVE_BATCH:
+        with history.validated_source_batch(root):
+            return st_exclusions(root,base,symbols,day,authority,witness_dir,materialize=materialize)
     manifest=json.loads(sources.bound(root,authority[0]).read_bytes())
     if sources.sha(sources.bound(root,authority[0]).read_bytes())!=authority[1]:
         raise ValueError('Boundary notice archive identity changed')
