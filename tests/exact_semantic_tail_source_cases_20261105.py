@@ -28,6 +28,9 @@ def exact_successor_identities():
     # must not widen this frozen D4 authorization or alter its fault probes.
     current['code']['scripts/st_notice_refresh.py'] = state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.py'][1]
     current['code']['scripts/stock_daily_alternative.py'] = old['code']['scripts/stock_daily_alternative.py']
+    # The sealed D5 input-equivalence reader is a later, D5/N9-only contract.
+    # Keep this historical four-source D4 probe at its original pipeline target.
+    current['code']['scripts/stock_return_pipeline.py'] = old['code']['scripts/stock_return_pipeline.py']
     return old, current
 
 

@@ -103,14 +103,15 @@ def test_current_scoped_metadata_and_published_transport_match_exact_d5_review()
     root=Path(__file__).resolve().parents[1]
     old=json.loads((root/'tests/fixtures/maintenance_d5_source_identity_20261109.json').read_bytes())['stock_input_evidence_fingerprint']
     current=copy.deepcopy(old);current['code']=source_fingerprint(root)
-    review=state.ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW
+    review=state.SEALED_BASIS_CACHE_D5_SOURCE_REVIEW
     changed={n for n in old['code'] if old['code'][n]!=current['code'][n]}
     assert changed==set(review['changes'])&set(SOURCE_FILES)
     assert all((old['code'][n],current['code'][n])==tuple(review['changes'][n]) for n in changed)
     assert state.stock_input_evidence_matches_validated_source(old,current)
     for previous_review in (state.SCOPED_METADATA_D5_SOURCE_REVIEW,
             state.RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW,
-            state.EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW):
+            state.EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW,
+            state.ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW):
         prior=copy.deepcopy(old)
         prior['code'].update({n:p[1] for n,p in previous_review['changes'].items() if n in prior['code']})
         assert state.stock_input_evidence_matches_validated_source(old,prior)

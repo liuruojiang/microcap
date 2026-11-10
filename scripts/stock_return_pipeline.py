@@ -155,6 +155,8 @@ def verify_return_basis_transport(root, anchor, symbols):
     requested=[str(s).zfill(6) for s in symbols]
     if not requested or len(set(requested))!=len(requested):raise ReturnBasisError("Transport symbols empty or duplicated")
     full_anchor,live_symbols,authorities=_consumption_requirements(root,target,set(requested))
+    from scripts.verified_d5_basis_cache import load_reference, REFERENCE
+    reference=load_reference(root,master_bytes) if (root/REFERENCE).is_file() else None
     verified=[];failures={}
     for symbol in requested:
         try:
@@ -170,6 +172,11 @@ def verify_return_basis_transport(root, anchor, symbols):
             if len(rows)!=1:raise ValueError("Missing or ambiguous master symbol")
             row=rows.iloc[0];listed=pd.Timestamp(row.list_date).strftime("%Y-%m-%d")
             delisted=None if pd.isna(row.delist_date) or not str(row.delist_date).strip() else pd.Timestamp(row.delist_date).strftime("%Y-%m-%d")
+            if reference is not None:
+                equivalent=reference.try_symbol(symbol,manifest,sessions,listed,delisted)
+                if equivalent is not None:
+                    verified.append(equivalent)
+                    continue
             folder=basis/"sources"/symbol;bodies={};receipts={}
             for kind in ("qfq","hfq"):
                 bodies[kind]=(folder/f"{kind}.js").read_bytes();receipts[kind]=json.loads((folder/f"{kind}.json").read_text(encoding="utf-8"))
@@ -225,5 +232,8 @@ def verify_return_basis_transport(root, anchor, symbols):
         raise ReturnBasisError(f"Transport ratio basis failed {len(failures)}/{len(requested)} symbols: {sample}")
     if master_path.read_bytes()!=master_bytes:raise ReturnBasisError("Master changed during transport audit")
     if any(p.read_bytes()!=body for p,body in authorities.items()):raise ReturnBasisError("Consumption authorities changed during audit")
+    if reference is not None:reference.finish()
     return dict(return_basis_revision=RETURN_BASIS_REVISION,anchor=target,verified_count=len(verified),
-        master_sha256=sha(master_bytes),symbols=verified,read_only=True)
+        master_sha256=sha(master_bytes),symbols=verified,read_only=True,
+        sealed_source_equivalence_count=reference.reused if reference is not None else 0,
+        freshly_reconstructed_count=len(verified)-(reference.reused if reference is not None else 0))

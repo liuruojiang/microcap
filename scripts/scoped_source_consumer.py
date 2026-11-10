@@ -29,6 +29,9 @@ PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
+SEALED_BASIS_READER = (
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')
 
 
 def sha(raw):
@@ -86,8 +89,9 @@ def validate_source_contract(root, manifest):
         raise ValueError('Scoped source producer/code contract differs')
     current = source_fingerprint(Path(root))
     changed = {name for name in old if old[name] != current[name]}
-    if changed and (changed != {'scripts/st_notice_refresh.py'} or
-            (old['scripts/st_notice_refresh.py'], current['scripts/st_notice_refresh.py']) != ARCHIVED_PROOF_READER):
+    archived={'scripts/st_notice_refresh.py':ARCHIVED_PROOF_READER}
+    cached={**archived,'scripts/stock_return_pipeline.py':SEALED_BASIS_READER}
+    if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in (archived,cached)):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
 

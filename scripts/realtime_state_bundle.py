@@ -832,6 +832,25 @@ ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.
     '42b94db9a41c197bbd9124f83aec955eaa5619938d84cebd951875236d550893',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
 
+SEALED_BASIS_CACHE_D5_SOURCE_REVIEW = copy.deepcopy(ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW)
+SEALED_BASIS_CACHE_D5_SOURCE_REVIEW['revision'] = 'sealed_unchanged_d5_factor_sources_exact_d5_20261109_v11'
+SEALED_BASIS_CACHE_D5_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.py'] = (
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')
+
+# Exact already-computed scoped 9-Nov input identity. The native 7556d588
+# candidate fully reconstructed every issuer; only unchanged D5 source bytes
+# can use the sealed equivalence reader, under the same math/runtime/calendar.
+SEALED_BASIS_CACHE_N9_SOURCE_REVIEW = {
+    'revision':'sealed_d5_equivalence_reader_exact_scoped_n9_20261109',
+    'stock_fingerprint_sha256':'5139db3b0a3958d2f079535fc1f8ac5e39d21f80d992ab2ef2829a640004a36c',
+    'file_count':16315,
+    'data_sha256':'c1e89a5ed0b2cac394528c1fef726a88b765d300708b7769dbc7637d89c8a410',
+    'changes':{'scripts/stock_return_pipeline.py':(
+        '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+        '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')},
+}
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -868,7 +887,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
                    LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW, EXACT_STRUCTURE_D5_SOURCE_REVIEW,
                    EXACT_LATER_FUTURE_D5_SOURCE_REVIEW, SCOPED_METADATA_D5_SOURCE_REVIEW,
                    RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW, EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW,
-                   ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW):
+                   ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW,SEALED_BASIS_CACHE_D5_SOURCE_REVIEW,
+                   SEALED_BASIS_CACHE_N9_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
@@ -904,11 +924,14 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     from collections import deque
     from concurrent.futures import ThreadPoolExecutor
     from scripts import stock_return_pipeline as pipeline
-    from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar
+    from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar, verified_d5_basis_cache
     root = _extended(root)
     calendar = tuple(day.isoformat() for day in pipeline.sessions_for_day(date.fromisoformat(target)))
     fixed = [".microcap_index_cache/security_master.csv",
              "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv"]
+    has_equivalence_reference = (root / verified_d5_basis_cache.REFERENCE).is_file()
+    if has_equivalence_reference:
+        fixed.append(verified_d5_basis_cache.REFERENCE)
     prefix = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_"
     fixed += [prefix + suffix for suffix in ("meta.json", "effective_members.csv", "members.csv", "turnover.csv")]
     trees = [".microcap_index_cache/" + name for name in ("prices_raw", "return_basis", "trade_status")]
@@ -1028,12 +1051,18 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     if _metrics is not None:
         _metrics["content_seconds"] += time.monotonic() - hash_started
     modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
+    if has_equivalence_reference:
+        modules += (verified_d5_basis_cache,)
     for module in modules:
         digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
         # Also invalidate test/runtime replacements of the functions actually used.
         for name, value in sorted(vars(module).items()):
             if hasattr(value, "__code__"):
                 digest.update((name + ":" + str(id(value))).encode())
+            elif module is verified_d5_basis_cache and isinstance(value,type):
+                for member,method in sorted(vars(value).items()):
+                    if hasattr(method,'__code__'):
+                        digest.update((name+'.'+member+':'+str(id(method))).encode())
     after = inventory()
     if after != before:
         raise RuntimeError("Return-basis inputs changed during fingerprint scan")
