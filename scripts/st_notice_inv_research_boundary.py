@@ -1,4 +1,4 @@
-"""Compare past an added, strictly non-equity INV research index record.
+"""Compare past added records the unchanged native ST selector never consumes.
 
 Raw observations, clocks and archive history remain untouched. Every other
 boundary difference still goes through the complete original native review.
@@ -33,11 +33,42 @@ def is_unconsumed_inv_research(identity,row):
     return True
 
 
+def is_unconsumed_equity_notice(identity,row):
+    """No waiver for risk, recovery, changed old rows or unknown asset classes."""
+    from scripts.st_notice_evidence import is_equity_issuer,StNoticeEvidenceError
+    from scripts.st_history_scope import _daily_notice_row
+    from scripts.st_notice_incremental import _provider_time
+    import microcap_top100_mom16_biweekly_live_v2_0 as base
+    if (not isinstance(row,dict) or row.get('art_code')!=identity
+            or re.fullmatch(r'AN[0-9]+',str(identity)) is None or row.get('language')!='0'
+            or not isinstance(row.get('title'),str) or not row['title'].strip()
+            or base.freq_mod.classify_st_notice_risk_actions(row['title'])!={}):return False
+    columns=row.get('columns');codes=row.get('codes')
+    if (not isinstance(columns,list) or not columns or any(not isinstance(c,dict)
+            or re.fullmatch(r'001[0-9]{3,21}',str(c.get('column_code',''))) is None for c in columns)
+            or not isinstance(codes,list) or not codes):return False
+    try:
+        day=_provider_time(row.get('notice_date')).date().isoformat()
+        for code in codes:
+            if not isinstance(code,dict):return False
+            symbol=code.get('stock_code')
+            if (not isinstance(symbol,str) or re.fullmatch(r'[036][0-9]{5}',symbol) is None
+                    or code.get('market_code')!=('1' if symbol.startswith('6') else '0')
+                    or 'A' not in str(code.get('ann_type','')).split(',')
+                    or 'INV' in str(code.get('ann_type','')).split(',') or not is_equity_issuer(row,symbol)
+                    or _daily_notice_row(row,symbol,day,{}) is not None):return False
+    except (StNoticeEvidenceError,ValueError,KeyError):return False
+    return True
+
+
 def reviewed_additions(previous,current):
     from scripts.st_notice_boundary_review import canonical,sha
     from scripts.st_notice_boundary_20261110 import REGISTRY,REGISTRY_SHA
     from scripts.st_notice_evidence import StNoticeEvidenceError
-    candidates={k for k in current.keys()-previous.keys() if is_unconsumed_inv_research(k,current[k])}
+    new=current.keys()-previous.keys()
+    inv={k for k in new if is_unconsumed_inv_research(k,current[k])}
+    equity={k for k in new if is_unconsumed_equity_notice(k,current[k])}
+    candidates=inv|equity
     if not candidates:return None
     raw=(Path(__file__).resolve().parents[1]/REGISTRY).read_bytes()
     if sha(raw)!=REGISTRY_SHA:
@@ -56,7 +87,7 @@ def reviewed_additions(previous,current):
     original=_boundary_precision_drift(previous,comparison)
     changed=sorted((previous.keys()^current.keys())|
                    {key for key in previous.keys()&current.keys() if previous[key]!=current[key]})
-    return dict(original,policy='non_equity_INV_research_additions_with_native_boundary_v1',
+    result=dict(original,policy='non_equity_INV_research_additions_with_native_boundary_v1',
                 underlying_boundary_review=original,
                 non_equity_added_ids=ignored,
                 non_equity_added_rows_sha256=sha(canonical({k:current[k] for k in ignored})),
@@ -65,3 +96,8 @@ def reviewed_additions(previous,current):
                 changed_event_ids_sha256=sha(json.dumps(changed,separators=(',',':')).encode()),
                 removed_event_ids=original.get('removed_event_ids',[]),
                 risk_projection_unchanged=True,boundary_native_content_unchanged=False)
+    if set(ignored)&equity:
+        result.update(policy='native_unconsumed_equity_additions_with_native_boundary_v1',
+            native_unconsumed_equity_added_ids=sorted(set(ignored)&equity),
+            non_equity_added_ids=sorted(set(ignored)&inv))
+    return result
