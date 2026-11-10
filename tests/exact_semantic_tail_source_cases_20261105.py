@@ -20,6 +20,17 @@ def exact_successor_identities():
     for name, pair in state.APPROVED_603028_SOURCE_REVIEW['changes'].items():
         if name not in state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']:
             current['code'][name] = pair[0]
+    # This fixture tests the immutable four-source D4 authorization. Calendar
+    # caching belongs to the separately reviewed exact D5 successor.
+    current['code']['scripts/exchange_calendar.py'] = old['code']['scripts/exchange_calendar.py']
+    current['code']['scripts/st_metadata_refresh.py'] = state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']['scripts/st_metadata_refresh.py'][1]
+    # Recovery of unpromoted observations is an exact D5-only successor; it
+    # must not widen this frozen D4 authorization or alter its fault probes.
+    current['code']['scripts/st_notice_refresh.py'] = state.SEMANTIC_TAIL_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.py'][1]
+    current['code']['scripts/stock_daily_alternative.py'] = old['code']['scripts/stock_daily_alternative.py']
+    # The sealed D5 input-equivalence reader is a later, D5/N9-only contract.
+    # Keep this historical four-source D4 probe at its original pipeline target.
+    current['code']['scripts/stock_return_pipeline.py'] = old['code']['scripts/stock_return_pipeline.py']
     return old, current
 
 

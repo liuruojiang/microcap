@@ -23,6 +23,7 @@ from scripts.restore_approved_top100_seed import BASE_FILES, COSTED
 from scripts.st_notice_evidence import evidence_source_files
 
 MANIFEST = "outputs/top100_delivery_manifest.json"
+CANDIDATE_MANIFEST = "outputs/top100_candidate_delivery_manifest.json"
 LOCK = "outputs/top100_delivery.lock"
 BASE_PANEL = "microcap_top100_mom16_biweekly_live_v2_0_base_panel_refreshed.csv"
 AUTHORITY = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_frozen_tail_authority.json"
@@ -58,6 +59,14 @@ RETURN_BASIS_FILES = [
     "scripts/sina_share_history.py",
     "scripts/stock_daily_inputs.py",
     "scripts/stock_daily_alternative.py",
+    "scripts/scoped_source_consumer.py",
+    "scripts/scoped_metadata_consumer.py",
+    "scripts/scoped_native_consumer.py",
+    "scripts/scoped_forward_consumption.py",
+    "scripts/scoped_cap_boundary.py",
+    "scripts/scoped_same_anchor.py",
+    "scripts/verified_d5_basis_cache.py",
+    "data/verified_d5_basis_source_index_20261109.json.gz",
 ]
 RELEASE_FILES += RETURN_BASIS_FILES
 from scripts.sse_share_daily_unchanged_20261104 import SOURCE_FILES as SSE_DATED_SHARE_SOURCE_FILES
@@ -758,11 +767,11 @@ def recertify_validation_source(root: Path, expected_date: str) -> dict:
             lock.unlink()
 
 
-def validate_manifest(root: Path, report: dict) -> dict:
+def validate_manifest(root: Path, report: dict, *, manifest_relative: str = MANIFEST) -> dict:
     if (root / LOCK).exists():
         report["errors"].append("whole-delivery refresh is running or requires interrupted-run review")
     try:
-        manifest = json.loads((root / MANIFEST).read_text(encoding="utf-8"))
+        manifest = json.loads((root / manifest_relative).read_text(encoding="utf-8"))
         for key in ("expected_date", "inputs", "artifacts"):
             if manifest.get(key) != report.get(key):
                 report["errors"].append(f"delivery manifest mismatch: {key}; run refresh-all")
@@ -825,6 +834,20 @@ def verify_release(root: Path) -> str:
     except subprocess.CalledProcessError:
         # Fetch only the immutable object: never merge, checkout or alter dirty files.
         subprocess.run(["git", "fetch", "--no-tags", "origin", remote], cwd=root, check=True)
+    return _verify_release_files(root, remote)
+
+
+def verify_candidate_release(root: Path, candidate: str) -> str:
+    """Review-only immutable candidate; never grants the live-main release gate."""
+    if re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", candidate) is None:
+        raise ValueError("Candidate validation requires an immutable full commit SHA")
+    actual = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    if actual != candidate:
+        raise ValueError("Candidate validation is not running the requested commit")
+    return _verify_release_files(root, candidate)
+
+
+def _verify_release_files(root: Path, remote: str) -> str:
     names = tuple(RELEASE_FILES)
     if any(not isinstance(name, str) or not name or any(char in name for char in "\r\n\0")
            for name in names):
@@ -864,8 +887,8 @@ def verify_release(root: Path) -> str:
     return remote
 
 
-def write_manifest(root: Path, report: dict) -> None:
-    path = root / MANIFEST
+def write_manifest(root: Path, report: dict, *, manifest_relative: str = MANIFEST) -> None:
+    path = root / manifest_relative
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(f".{os.getpid()}.tmp")
     temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -898,10 +921,17 @@ def validate_base_state_for_session(root: Path, expected_date: str) -> dict:
     return report
 
 
-def _refresh_all_unlocked(root: Path) -> dict:
-    release = verify_release(root)
-    write_manifest(root, {"status": "refreshing", "verified_at": datetime.now(timezone.utc).isoformat()})
-    base_report = state.refresh_state(root, max_anchor_age_days=None)
+def _refresh_all_unlocked(root: Path, *, candidate_sha: str | None = None, scoped_sources: dict | None = None) -> dict:
+    if candidate_sha is None:
+        release = verify_release(root)
+        manifest_relative = MANIFEST
+    else:
+        release = verify_candidate_release(root, candidate_sha)
+        manifest_relative = CANDIDATE_MANIFEST
+    write_manifest(root, {"status": "refreshing", "verified_at": datetime.now(timezone.utc).isoformat()},
+                   manifest_relative=manifest_relative)
+    options = {"scoped_sources": scoped_sources} if scoped_sources is not None else {}
+    base_report = state.refresh_state(root, max_anchor_age_days=None, **options)
     if not base_report.get("ok"):
         raise RuntimeError(f"Base refresh failed: {base_report.get('errors')}")
     target = independent_target(root)
@@ -913,7 +943,7 @@ def _refresh_all_unlocked(root: Path) -> dict:
         subprocess.run([sys.executable, "-X", "utf8", f"microcap_top100_mom16_biweekly_live_v2_{v}.py"], cwd=root, check=True)
     if input_hashes(root) != before:
         raise RuntimeError("Shared inputs changed during generation; rerun whole delivery")
-    report = inspect_outputs(root, target)
+    report = inspect_outputs(root, target, new_generation=candidate_sha is not None)
     if independent_target(root) != target:
         raise RuntimeError("Completed session advanced during generation; rerun whole delivery")
     final_base = validate_base_state_for_session(root, target)
@@ -922,11 +952,14 @@ def _refresh_all_unlocked(root: Path) -> dict:
     report["release_sha"] = release
     report["status"] = "complete" if report["ok"] else "blocked"
     report["verified_at"] = datetime.now(timezone.utc).isoformat()
-    write_manifest(root, report)
+    if candidate_sha is not None:
+        report.update(scope="whole_workspace_candidate_validation", formal_release_verified=False,
+                      sending="skipped", orders_placed=False)
+    write_manifest(root, report, manifest_relative=manifest_relative)
     return report
 
 
-def refresh_all(root: Path) -> dict:
+def refresh_all(root: Path, *, candidate_sha: str | None = None, scoped_sources: dict | None = None) -> dict:
     lock = root / LOCK
     lock.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -936,10 +969,13 @@ def refresh_all(root: Path) -> dict:
     try:
         with os.fdopen(handle, "w") as stream:
             stream.write(str(os.getpid()))
-        return _refresh_all_unlocked(root)
+        if candidate_sha is None and scoped_sources is None:
+            return _refresh_all_unlocked(root)
+        return _refresh_all_unlocked(root,candidate_sha=candidate_sha,scoped_sources=scoped_sources)
     except BaseException as exc:
         write_manifest(root, {"status": "blocked", "errors": [str(exc)],
-                              "verified_at": datetime.now(timezone.utc).isoformat()})
+                              "verified_at": datetime.now(timezone.utc).isoformat()},
+                       manifest_relative=CANDIDATE_MANIFEST if candidate_sha is not None else MANIFEST)
         raise
     finally:
         lock.unlink()
@@ -947,17 +983,36 @@ def refresh_all(root: Path) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "refresh-all", "recertify-validation-source"))
+    parser.add_argument("command", choices=("check", "refresh-all", "recertify-validation-source", "refresh-candidate", "check-candidate"))
     parser.add_argument("--expected-date")
+    parser.add_argument("--candidate-sha")
+    parser.add_argument("--scoped-config", type=Path)
     args = parser.parse_args(argv)
     if (args.command == "recertify-validation-source") != (args.expected_date is not None):
         parser.error("--expected-date is required only for recertify-validation-source")
+    candidate = args.command in ("refresh-candidate", "check-candidate")
+    if candidate != (args.candidate_sha is not None) or (args.scoped_config is not None and args.command not in ("refresh-candidate","refresh-all")):
+        parser.error("Candidate commands require --candidate-sha; --scoped-config is only for refresh commands")
     root = Path(__file__).resolve().parents[1]
     try:
         if args.command == "recertify-validation-source":
             report = recertify_validation_source(root, args.expected_date)
+        elif args.command == "refresh-candidate":
+            config=json.loads(args.scoped_config.read_bytes()) if args.scoped_config else None
+            report=refresh_all(root,candidate_sha=args.candidate_sha,scoped_sources=config)
+        elif args.command == "check-candidate":
+            release=verify_candidate_release(root,args.candidate_sha)
+            target=independent_target(root)
+            report=validate_manifest(root,inspect_outputs(root,target,new_generation=True),manifest_relative=CANDIDATE_MANIFEST)
+            saved=json.loads((root/CANDIDATE_MANIFEST).read_bytes())
+            if saved.get('release_sha')!=release or saved.get('formal_release_verified') is not False:
+                report['errors'].append('Candidate manifest commit/scope differs')
+            report['errors'].extend(state.validate_reference_summary(root,state._parse_date(target)))
+            report['errors'].extend(validate_base_state_for_session(root,target).get('errors',[]))
+            report.update(ok=not report['errors'],release_sha=release,scope='whole_workspace_candidate_validation',formal_release_verified=False,sending='skipped',orders_placed=False)
         elif args.command == "refresh-all":
-            report = refresh_all(root)
+            config=json.loads(args.scoped_config.read_bytes()) if args.scoped_config else None
+            report = refresh_all(root,scoped_sources=config) if config is not None else refresh_all(root)
         else:
             release = verify_release(root)
             cached_target = reusable_confirmed_today(root)

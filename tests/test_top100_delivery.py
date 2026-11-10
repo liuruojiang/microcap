@@ -197,7 +197,13 @@ def test_old_v25_cannot_be_recertified_under_same_version_number(workspace):
 def test_stale_member_count_cannot_pass_whole_delivery(workspace):
     certify(workspace)
     path = workspace / "outputs/microcap_top100_mom16_biweekly_live_v2_5_latest_signal.csv"
-    path.write_text(path.read_text().replace(",0,0,名单不变,", ",19,19,名单调仓（调入 19，调出 19）,"))
+    # Mutate real fields with an explicit UTF-8 CSV roundtrip. A locale-default
+    # text read can make the Chinese replacement a no-op on Windows.
+    before = path.read_bytes()
+    change_csv_cell(path, "member_enter_count", "19")
+    change_csv_cell(path, "member_exit_count", "19")
+    change_csv_cell(path, "member_rebalance_label", "名单调仓（调入 19，调出 19）")
+    assert path.read_bytes() != before
     report = delivery.inspect_outputs(workspace, "2026-09-03")
     assert not report["ok"]
     assert any("formal proxy-member lineage" in error for error in report["errors"])

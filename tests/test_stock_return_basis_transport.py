@@ -39,6 +39,21 @@ def test_real_transport_reconstruction_is_read_only(tmp_path,monkeypatch):
     assert snapshot(tmp_path)==before
 
 
+def test_retired_scope_uses_actual_consumed_horizon_not_the_new_global_target(tmp_path,monkeypatch):
+    anchor,cache=prepare(tmp_path,monkeypatch)
+    target=str((pd.Timestamp(anchor)+pd.Timedelta(days=1)).date())
+    original=pipeline.sessions_for_day
+    days=original(None)+(pd.Timestamp(target).date(),)
+    monkeypatch.setattr(pipeline,'sessions_for_day',lambda *a:days)
+    full=str((pd.Timestamp(anchor)-pd.Timedelta(days=1)).date())
+    monkeypatch.setattr(pipeline,'_consumption_requirements',lambda *a:(full,{'000001':anchor},{}))
+    report=verify_return_basis_transport(tmp_path,target,['000001'])
+    assert report['verified_count']==1 and report['symbols'][0]['last']==anchor
+    monkeypatch.setattr(pipeline,'_consumption_requirements',lambda *a:(full,{'000001':target},{}))
+    with pytest.raises(ReturnBasisError,match='consumption dates'):
+        verify_return_basis_transport(tmp_path,target,['000001'])
+
+
 @pytest.mark.parametrize('fault',['symbols','missing_session','empty_turnover','new_execution','new_effective','unexecuted_first_return','return_before_execution','stale_effective_authority'])
 def test_consumption_proof_requires_independent_complete_authorities(tmp_path,monkeypatch,fault):
     symbols=[str(i).zfill(6) for i in range(1,101)]

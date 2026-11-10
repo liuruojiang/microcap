@@ -23,6 +23,27 @@ def fixture_bundle(tmp_path):
     return dict(root=tmp_path, symbol='000001', raw_path=raw_path, price=price, master=master, trading_dates=dates), sidecar, q, record, query
 
 
+def test_short_window_retains_actual_anchor_for_a_suspended_bridge(tmp_path):
+    args,*_=fixture_bundle(tmp_path)
+    days=args['trading_dates'][1:]
+    args['price']=v.base_mod.freq_mod.price_window_with_valuation_anchor(args['price'],days.min(),days.max())
+    args['trading_dates']=days
+    frame=enrich_price_with_trade_status(**args,require_evidence=True)
+    assert frame.loc[frame.date.isin(days),'close_raw'].tolist()==[10.0,10.0]
+    assert frame.loc[frame.date.isin(days),'tradestatus'].tolist()==[0,0]
+    assert len(args['price'])==1 and args['price'].date.iloc[0]<days.min()
+
+
+def test_short_window_never_invents_a_missing_initial_valuation(tmp_path):
+    args,*_=fixture_bundle(tmp_path)
+    days=args['trading_dates'][1:]
+    args['price']=args['price'].iloc[:0]
+    args['trading_dates']=days
+    args['price']=v.base_mod.freq_mod.price_window_with_valuation_anchor(args['price'],days.min(),days.max())
+    with pytest.raises(ValueError,match='no previous observed valuation'):
+        enrich_price_with_trade_status(**args,require_evidence=True)
+
+
 @pytest.mark.parametrize('module', [v.base_mod.freq_mod, standalone])
 def test_real_tradeability_keeps_suspension_tail_valued_but_not_tradeable(tmp_path, monkeypatch, module):
     args, *_ = fixture_bundle(tmp_path)

@@ -3526,6 +3526,12 @@ def build_all_rebalance_dates(trading_dates: pd.DatetimeIndex) -> dict[str, pd.D
     return out
 
 
+def price_window_with_valuation_anchor(price, start_ts, end_ts):
+    price = price.loc[price['date'] <= end_ts].sort_values('date')
+    prior = price.loc[price['date'] < start_ts].tail(1)
+    return pd.concat([prior, price.loc[price['date'] >= start_ts]], ignore_index=True)
+
+
 def load_symbol_cache(
     symbol: str,
     trading_dates: pd.DatetimeIndex,
@@ -3546,7 +3552,10 @@ def load_symbol_cache(
         price["date"] = pd.to_datetime(price["date"], errors="coerce")
         if price["date"].isna().any():
             raise ValueError(f"raw price cache for {symbol} contains invalid dates")
-        price = price[(price["date"] >= start_ts) & (price["date"] <= end_ts)]
+        # A suspended bridge session still needs its real preceding valuation.
+        # The evidence reader validates the carry; the requested output dates
+        # below remain unchanged. Never manufacture an initial close.
+        price = price_window_with_valuation_anchor(price, start_ts, end_ts)
         if price.empty:
             return None
         price = price.sort_values("date")
@@ -4853,6 +4862,9 @@ def refresh_price_cache_tail(
     if not symbols:
         raise RuntimeError("No backtest-universe symbols available for verified refresh")
     end_text = pd.Timestamp(end_date).strftime("%Y-%m-%d")
+    from scripts.scoped_native_consumer import reuse_verified_sources
+    if reuse_verified_sources(ROOT, symbols, end_text):
+        return
     _log_price_cache_refresh(f"verified stock-input refresh end_date={end_text} symbols={len(symbols)}")
     refresh_daily_inputs(root=ROOT, symbols=symbols, as_of=end_text, allow_network=True)
     # Share histories need a query-cutoff receipt even when no new event occurred.
@@ -4913,6 +4925,10 @@ def select_recent_candidate_symbols(
     dynamic_cap_multiplier: float = 1.5,
     max_dynamic_top_k: int = 1000,
 ) -> list[str]:
+    from scripts.scoped_native_consumer import maintained_candidate_symbols
+    maintained = maintained_candidate_symbols(ROOT, current_index_end, target_end_date)
+    if maintained is not None:
+        return maintained
     symbols = set()
 
     if paths["proxy_members"].exists():
@@ -5275,6 +5291,7 @@ def build_local_proxy_bundle(
         top_n=TOP_N,
     )
     members_df = freq_mod.build_target_members_frame(target_members_map, caps_by_date, name_map=name_map)
+    delist_dates = freq_mod.delist_dates_from_master(freq_mod.load_security_master())
     index_df, turnover_df, effective_members_map = freq_mod.simulate_rebalance_path(
         trading_dates=trading_dates,
         returns_df=returns_df,
@@ -5285,9 +5302,15 @@ def build_local_proxy_bundle(
         one_side_cost_rate=0.003,
         top_n=TOP_N,
         execution_timing=EXECUTION_TIMING,
-        delist_dates=freq_mod.delist_dates_from_master(freq_mod.load_security_master()),
+        delist_dates=delist_dates,
         **({"initial_members": initial_members} if initial_members is not None else {}),
     )
+    from scripts.scoped_native_consumer import capture_forward_calculation
+    capture_forward_calculation(ROOT, trading_dates=trading_dates, returns_df=returns_df,
+        caps_by_date=caps_by_date, buyable_df=buyable_df, sellable_df=sellable_df,
+        initial_members=initial_members, target_members_map=target_members_map,
+        rebalance_dates=rebalance_dates, index_df=index_df, turnover_df=turnover_df,
+        effective_members_map=effective_members_map, delist_dates=delist_dates)
     writeoff_events = list(index_df.attrs.get("delisting_writeoff_events", []))
     terminal_members = list(index_df.attrs["terminal_effective_members"])
     terminal_as_of = index_df.attrs["terminal_as_of"]

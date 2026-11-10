@@ -68,6 +68,20 @@ def test_holiday_is_not_a_trading_day(monkeypatch):
     assert calendar.is_trading_day(date(2026,10,9))
 
 
+def test_multisession_source_readback_reuses_verified_calendar_keys(monkeypatch):
+    calls=[]
+    start=date(2026,10,29)
+    days=[start+timedelta(days=i) for i in range(12)]
+    def fetch(*args,**kwargs):
+        calls.append(args)
+        return SimpleNamespace(stdout=json.dumps([d.isoformat() for d in days]))
+    monkeypatch.setattr(calendar.subprocess,'run',fetch)
+    for _ in range(3):
+        for d in days:
+            assert calendar.sessions_for_day(d)==tuple(days)
+    assert len(calls)==len(days)
+
+
 def test_refreshed_holiday_state_requires_independent_session_and_preflight(monkeypatch, tmp_path):
     from scripts import realtime_state_bundle as state
     anchor = date(2026,9,30)

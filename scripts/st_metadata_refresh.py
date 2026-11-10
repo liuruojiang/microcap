@@ -43,7 +43,37 @@ def _history_equal(old, new, boundary):
     return all(state(old,p)==state(new,p) for p in points if p<=cutoff)
 
 
-def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, consumed_through):
+def _scoped_ancestor_boundary(root, old, current_ref, checked):
+    """Authenticate a cold candidate against an unchanged archive prefix.
+
+    Current/older roster members can have different last maintenance dates.
+    This grants no historical correction: the complete source prefix and the
+    old inclusive ST/active horizon remain protected by the normal builder.
+    """
+    relative=old.get('st_notice_archive_manifest_path');digest=old.get('st_notice_archive_sha256')
+    if not isinstance(relative,str) or not isinstance(digest,str):
+        _fail('Scoped candidate has no authenticated older archive')
+    identity=(relative,digest)
+    if identity in checked:return checked[identity]
+    source_closure(root,manifest_path=relative,expected_sha=digest)
+    oldraw=_bound(root,relative).read_bytes()
+    currentraw=_bound(root,current_ref[0]).read_bytes()
+    if _sha(oldraw)!=digest or _sha(currentraw)!=current_ref[1]:
+        _fail('Scoped candidate archive identity changed')
+    before,after=json.loads(oldraw),json.loads(currentraw)
+    keys=set(before)|set(after)
+    prefix=before.get('daily_increments');full=after.get('daily_increments')
+    if (before.get('schema_version')!=3 or after.get('schema_version')!=3
+            or not isinstance(prefix,list) or not prefix or not isinstance(full,list)
+            or full[:len(prefix)]!=prefix
+            or any(before.get(k)!=after.get(k) for k in keys-{'daily_increments'})):
+        _fail('Scoped candidate archive is not an unchanged authenticated prefix')
+    boundary=prefix[-1]['date'];date.fromisoformat(boundary)
+    checked[identity]=boundary
+    return boundary
+
+
+def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, consumed_through, scoped_preparation=False):
     root=Path(root).resolve();marker=root/MARKER
     if Path(getattr(freq_mod,'ROOT',root)).resolve()!=root:
         _fail('Metadata builder belongs to another runtime root')
@@ -51,6 +81,8 @@ def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, con
     symbols=sorted(str(s).zfill(6) for s in freq_mod.list_backtest_universe_symbols())
     if not symbols or len(symbols)!=len(set(symbols)):
         _fail('ST metadata universe is empty or duplicated')
+    if scoped_preparation and (len(symbols)>300 or not MARKER.startswith('.microcap_index_cache/local_metadata_scopes/')):
+        _fail('Scoped preparation requires at most 300 issuers and an explicit scoped marker')
     if pending and pending['status']=='complete' and pending['authority']==list(resolve_archive_reference(root)) and pending['target']==str(target):
         if sorted(pending['new_hashes'])!=symbols:
             _fail('Completed metadata transaction universe changed')
@@ -70,7 +102,8 @@ def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, con
     ref=resolve_archive_reference(root)
     destination=root/'.microcap_index_cache/security_meta'
     if pending and pending['status']!='complete':
-        if pending['authority']!=list(ref) or pending['target']!=str(target) or pending['symbols']!=symbols:
+        if (pending['authority']!=list(ref) or pending['target']!=str(target) or pending['symbols']!=symbols
+                or bool(pending.get('scoped_preparation',False))!=scoped_preparation):
             _fail('Unfinished ST metadata transaction must be resumed at its exact authority and target')
         work=_bound(root,pending['work']);baseline=pending
     else:
@@ -80,10 +113,15 @@ def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, con
         work=root/'.microcap_index_cache/st_metadata_refresh'/uuid.uuid4().hex
         (work/'backup').mkdir(parents=True)
         baseline=dict(status='incomplete',authority=list(ref),previous_authority=previous,target=str(target),boundary=boundary,symbols=symbols,work=work.relative_to(root).as_posix(),old_hashes={})
+        if scoped_preparation:baseline.update(scoped_preparation=True,old_boundaries={},ancestor_manifests={})
+        checked={}
         for symbol in symbols:
             path=destination/(symbol+'.json');raw=path.read_bytes();old=json.loads(raw)
             if old.get('st_notice_archive_sha256')!=previous[1]:
-                _fail('Metadata seed is not bound to previous archive: '+symbol)
+                if not scoped_preparation:_fail('Metadata seed is not bound to previous archive: '+symbol)
+                old_boundary=_scoped_ancestor_boundary(root,old,ref,checked)
+                baseline['old_boundaries'][symbol]=old_boundary
+                baseline['ancestor_manifests'][old['st_notice_archive_manifest_path']]=old['st_notice_archive_sha256']
             (work/'backup'/path.name).write_bytes(raw);baseline['old_hashes'][symbol]=_sha(raw)
         _atomic(marker,_bytes(baseline))
     stage=work/('stage_'+uuid.uuid4().hex);stage.mkdir()
@@ -112,7 +150,7 @@ def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, con
                 if not freq_mod._notice_horizon_covers(new,__import__('pandas').Timestamp(target)):
                     _fail('Rebuilt ST notice horizon incomplete: '+symbol)
                 old_end=date.fromisoformat(old['notice_query_end_date'])
-                old_boundary=date.fromisoformat(baseline['boundary'])
+                old_boundary=date.fromisoformat(baseline.get('old_boundaries',{}).get(symbol,baseline['boundary']))
                 required=min(consumed,date.fromisoformat(old['delist_date'])) if old.get('delist_date') else consumed
                 if min(old_end,old_boundary)<required:
                     _fail('Metadata seed has an unverified gap inside consumed proxy history: '+symbol)
@@ -125,6 +163,8 @@ def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, con
         builder_globals.update(global_restore)
         for name,value in blocked.items():setattr(freq_mod,name,value)
     if list(resolve_archive_reference(root))!=baseline['authority']:_fail('ST pointer changed before metadata install')
+    for relative,digest in baseline.get('ancestor_manifests',{}).items():
+        if _sha(_bound(root,relative).read_bytes())!=digest:_fail('Scoped ancestor manifest changed before install')
     new_hashes={s:_sha((stage/(s+'.json')).read_bytes()) for s in symbols}
     # Recovery accepts only bytes previously installed by this transaction.
     prior_new=baseline.get('new_hashes',{})
@@ -138,13 +178,13 @@ def _refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, con
     return {'rebuilt':True,'requires_full_rebuild':True,'symbols':len(symbols),'boundary':baseline['boundary']}
 
 
-def refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, consumed_through):
+def refresh_metadata_after_notice(*, root, freq_mod, target, notice_result, consumed_through, scoped_preparation=False):
     root=Path(root).resolve()
     lock=root/'.microcap_index_cache/st_metadata_refresh.lock'
     fd=os.open(lock,os.O_CREAT|os.O_EXCL|os.O_WRONLY)
     os.close(fd)
     try:
-        return _refresh_metadata_after_notice(root=root,freq_mod=freq_mod,target=target,notice_result=notice_result,consumed_through=consumed_through)
+        return _refresh_metadata_after_notice(root=root,freq_mod=freq_mod,target=target,notice_result=notice_result,consumed_through=consumed_through,scoped_preparation=scoped_preparation)
     finally:
         lock.unlink()
 

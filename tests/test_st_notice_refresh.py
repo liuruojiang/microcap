@@ -92,6 +92,83 @@ def test_new_day_is_contiguous_and_backed_up(seed):
     assert (root / result['manifest_path']).with_name('previous_pointer.json').read_bytes() == before
 
 
+def test_archived_original_proof_uses_original_path_and_keeps_current_authority(seed):
+    root, pointer, _ = seed
+    first = m.refresh_notice_archive(root=root, target='2026-10-30', session=Session())
+    authority = [first['manifest_path'], first['manifest_sha256']]
+    second = m.refresh_notice_archive(root=root, target='2026-10-31', session=Session())
+    proof_path = (root / second['manifest_path']).with_name('previous_freshness.json')
+    relative = proof_path.relative_to(root).as_posix()
+    digest = hashlib.sha256(proof_path.read_bytes()).hexdigest()
+    before = pointer.read_bytes()
+    verified = m.archived_freshness_source_files(root, relative, digest, authority)
+    assert verified[relative] == digest
+    assert m.FRESHNESS not in verified
+    assert pointer.read_bytes() == before
+    assert m.freshness_source_files(root)[m.FRESHNESS] != digest
+    with pytest.raises(StNoticeEvidenceError, match='another authority'):
+        m.archived_freshness_source_files(root, relative, digest, m.resolve_archive_reference(root))
+    with pytest.raises(StNoticeEvidenceError, match='bytes changed'):
+        m.archived_freshness_source_files(root, relative, '0'*64, authority)
+
+
+def test_original_multistep_notice_chain_is_contiguous_and_not_reclocked(seed):
+    from scripts.scoped_source_consumer import verify_notice_chain
+    root, pointer, original = seed
+    previous = json.loads(original)
+    first = m.refresh_notice_archive(root=root, target='2026-10-30', session=Session())
+    second = m.refresh_notice_archive(root=root, target='2026-10-31', session=Session())
+    old_path = (root / second['manifest_path']).with_name('previous_freshness.json')
+    current = root / m.FRESHNESS
+    specs = [dict(path=p.relative_to(root).as_posix(), sha256=hashlib.sha256(p.read_bytes()).hexdigest())
+             for p in (old_path, current)]
+    before = {p:p.read_bytes() for p in (pointer, old_path, current)}
+    result = verify_notice_chain(root, [previous['manifest_path'], previous['manifest_sha256']], specs, '2026-10-31')
+    assert result['receipt_count'] == 2 and result['original_clocks_retained']
+    assert result['authority'] == [second['manifest_path'], second['manifest_sha256']]
+    assert all(p.read_bytes() == raw for p,raw in before.items())
+    with pytest.raises(ValueError, match='missing or reordered'):
+        verify_notice_chain(root, [previous['manifest_path'], previous['manifest_sha256']], specs[::-1], '2026-10-31')
+    with pytest.raises(ValueError, match='requested target'):
+        verify_notice_chain(root, [previous['manifest_path'], previous['manifest_sha256']], specs, '2026-11-02')
+
+
+def test_explicit_unpromoted_recovery_reuses_original_observation_clocks(seed, monkeypatch):
+    from datetime import datetime, timezone
+    root, pointer, before = seed
+    original = m._boundary_precision_drift
+    monkeypatch.setattr(m, '_boundary_precision_drift', lambda *args: (_ for _ in ()).throw(StNoticeEvidenceError('review needed')))
+    session = Session()
+    with pytest.raises(StNoticeEvidenceError, match='review needed'):
+        m.refresh_notice_archive(root=root, target='2026-10-30', session=session)
+    generation = next((root / m.PREFIX).glob('refresh_*'))
+    receipts = {p: p.read_bytes() for p in generation.rglob('*.receipt.json')}
+    first_clock = min(datetime.fromisoformat(json.loads(raw)['collected_at']) for raw in receipts.values())
+    monkeypatch.setattr(m, '_boundary_precision_drift', original)
+    no_requests = Session(fail_day='2026-10-29')
+    m.refresh_notice_archive(root=root, target='2026-10-30', session=no_requests,
+                             resume_generation=generation, required_asof=datetime(2026, 10, 30, 7, tzinfo=timezone.utc))
+    assert no_requests.calls == []
+    assert {p: p.read_bytes() for p in receipts} == receipts
+    assert json.loads((root / m.FRESHNESS).read_bytes())['required_asof'] == first_clock.isoformat()
+    assert pointer.read_bytes() != before
+    with pytest.raises(StNoticeEvidenceError, match='Invalid unpromoted'):
+        m.refresh_notice_archive(root=root, target='2026-10-30', resume_generation=generation,
+                                 required_asof=datetime(2026, 10, 30, 7, tzinfo=timezone.utc))
+
+
+def test_recovery_rejects_stale_sources_and_other_directories(seed, monkeypatch):
+    from datetime import datetime, timezone, timedelta
+    root, pointer, before = seed
+    generation = root / m.PREFIX / 'refresh_prepared'
+    collect_days(generation, '2026-10-29', '2026-10-30', session=Session())
+    for folder, floor in [(generation, datetime.now(timezone.utc)),
+                          (generation.parent.parent, datetime(2026, 10, 30, 7, tzinfo=timezone.utc))]:
+        with pytest.raises(StNoticeEvidenceError):
+            m.refresh_notice_archive(root=root, target='2026-10-30', resume_generation=folder, required_asof=floor)
+    assert pointer.read_bytes() == before
+
+
 def test_baseline_without_all_class_boundary_is_rejected(seed):
     root, pointer, before = seed
     reference = json.loads(before)

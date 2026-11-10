@@ -64,6 +64,9 @@ def _consumption_requirements(root, target, requested):
     if not path.exists():return target,set(requested),{}
     payload=path.read_bytes();meta=json.loads(payload);proof=meta.get("return_basis_consumption")
     if proof is None:return target,set(requested),{path:payload}
+    if proof.get('revision')=='stock_return_consumption_v2':
+        from scripts.scoped_forward_consumption import requirements
+        return requirements(root,target,requested,meta,path,payload)
     if proof.get("revision")!="stock_return_consumption_v1":raise ReturnBasisError("Unknown return consumption revision")
     full=proof.get("full_rebuild_anchor")
     if not isinstance(full,str) or str(pd.Timestamp(full).date())!=full or full>target:raise ReturnBasisError("Invalid full rebuild anchor")
@@ -155,6 +158,8 @@ def verify_return_basis_transport(root, anchor, symbols):
     requested=[str(s).zfill(6) for s in symbols]
     if not requested or len(set(requested))!=len(requested):raise ReturnBasisError("Transport symbols empty or duplicated")
     full_anchor,live_symbols,authorities=_consumption_requirements(root,target,set(requested))
+    from scripts.verified_d5_basis_cache import load_reference, REFERENCE
+    reference=load_reference(root,master_bytes) if (root/REFERENCE).is_file() else None
     verified=[];failures={}
     for symbol in requested:
         try:
@@ -162,7 +167,8 @@ def verify_return_basis_transport(root, anchor, symbols):
             mp=basis/"manifests"/f"{symbol}.json";manifest_bytes=mp.read_bytes();manifest=json.loads(manifest_bytes)
             if manifest.get("return_basis_revision")!=RETURN_BASIS_REVISION:raise ValueError("Missing/current basis revision mismatch")
             certified=manifest.get("as_of")
-            if not isinstance(certified,str) or not full_anchor<=certified<=target or (symbol in live_symbols and certified!=target):
+            required_date=live_symbols.get(symbol,full_anchor) if isinstance(live_symbols,dict) else (target if symbol in live_symbols else full_anchor)
+            if not isinstance(certified,str) or not required_date<=certified<=target:
                 raise ValueError("Basis does not cover independently proven consumption dates")
             symbol_close=dt.datetime.fromisoformat(certified+"T15:00:00+08:00")
             if manifest.get("source_package_verified_through") is not None:raise ValueError("Research freshness attestation cannot certify formal transport")
@@ -170,6 +176,11 @@ def verify_return_basis_transport(root, anchor, symbols):
             if len(rows)!=1:raise ValueError("Missing or ambiguous master symbol")
             row=rows.iloc[0];listed=pd.Timestamp(row.list_date).strftime("%Y-%m-%d")
             delisted=None if pd.isna(row.delist_date) or not str(row.delist_date).strip() else pd.Timestamp(row.delist_date).strftime("%Y-%m-%d")
+            if reference is not None:
+                equivalent=reference.try_symbol(symbol,manifest,sessions,listed,delisted)
+                if equivalent is not None:
+                    verified.append(equivalent)
+                    continue
             folder=basis/"sources"/symbol;bodies={};receipts={}
             for kind in ("qfq","hfq"):
                 bodies[kind]=(folder/f"{kind}.js").read_bytes();receipts[kind]=json.loads((folder/f"{kind}.json").read_text(encoding="utf-8"))
@@ -196,7 +207,9 @@ def verify_return_basis_transport(root, anchor, symbols):
             status_sessions=pd.DatetimeIndex([day for day in sessions if day<=certified])
             enriched=enrich_price_with_trade_status(root=root,symbol=symbol,raw_path=cache/'prices_raw'/(symbol+'.csv'),price=raw_frame,master=master,trading_dates=status_sessions,require_evidence=True)
             if symbol in live_symbols:
-                consumed={day for day in sessions if full_anchor<day<=target}
+                consumed={day for day in sessions if full_anchor<day<=required_date} if isinstance(live_symbols,dict) else {day for day in sessions if full_anchor<day<=target}
+                if isinstance(live_symbols,dict):
+                    consumed={day for day in consumed if day>=listed and (delisted is None or day<delisted)}
                 if not consumed.issubset(set(enriched.attrs.get('verified_trade_status_dates',[]))):raise ValueError('Tail consumption lacks explicit verified trade-status dates')
             frame,expected=build_ratio_return_basis(symbol=symbol,raw_csv=raw,qfq_source=bodies["qfq"],hfq_source=bodies["hfq"],
                 qfq_receipt=receipts["qfq"],hfq_receipt=receipts["hfq"],as_of=certified,sessions=sessions,
@@ -225,5 +238,8 @@ def verify_return_basis_transport(root, anchor, symbols):
         raise ReturnBasisError(f"Transport ratio basis failed {len(failures)}/{len(requested)} symbols: {sample}")
     if master_path.read_bytes()!=master_bytes:raise ReturnBasisError("Master changed during transport audit")
     if any(p.read_bytes()!=body for p,body in authorities.items()):raise ReturnBasisError("Consumption authorities changed during audit")
+    if reference is not None:reference.finish()
     return dict(return_basis_revision=RETURN_BASIS_REVISION,anchor=target,verified_count=len(verified),
-        master_sha256=sha(master_bytes),symbols=verified,read_only=True)
+        master_sha256=sha(master_bytes),symbols=verified,read_only=True,
+        sealed_source_equivalence_count=reference.reused if reference is not None else 0,
+        freshly_reconstructed_count=len(verified)-(reference.reused if reference is not None else 0))

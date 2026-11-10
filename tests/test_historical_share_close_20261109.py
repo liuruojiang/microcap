@@ -144,10 +144,25 @@ def test_exact_rehashed_d5_data_permits_only_actual_reviewed_source():
     old, current, fixture = identities()
     assert json.loads(json.dumps(state.APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW)) == fixture['review']
     assert hashlib.sha256(json.dumps(old,sort_keys=True,separators=(',', ':')).encode()).hexdigest() == state.HISTORICAL_CLOSE_D5_SOURCE_REVIEW['stock_fingerprint_sha256']
-    assert {n for n in old['code'] if old['code'][n] != current['code'][n]} == {'scripts/share_unchanged_tail.py','scripts/share_change_source.py'}
+    assert {n for n in old['code'] if old['code'][n] != current['code'][n]} == {
+        'scripts/share_unchanged_tail.py','scripts/share_change_source.py','scripts/exchange_calendar.py',
+        'scripts/st_metadata_refresh.py','scripts/stock_daily_alternative.py','scripts/st_notice_refresh.py'}
     before = copy.deepcopy((old,current))
     assert state.stock_input_evidence_matches_validated_source(old,current)
     assert (old,current) == before
+
+
+def test_calendar_successor_preserves_prior_d5_reviews_and_rejects_unknown_cache_source():
+    old,current,_=identities()
+    calendar='scripts/exchange_calendar.py'
+    prior=copy.deepcopy(old)
+    prior['code'].update({n:p[1] for n,p in state.DATED_WINDOW_D5_SOURCE_REVIEW['changes'].items()
+                          if n in prior['code']})
+    assert state.stock_input_evidence_matches_validated_source(old,prior)
+    prior['code'][calendar]=state.LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW['changes'][calendar][1]
+    assert state.stock_input_evidence_matches_validated_source(old,prior)
+    unreviewed=copy.deepcopy(current);unreviewed['code'][calendar]='f'*64
+    assert not state.stock_input_evidence_matches_validated_source(old,unreviewed)
 
 
 @pytest.mark.parametrize('side', ['old','current','both'])

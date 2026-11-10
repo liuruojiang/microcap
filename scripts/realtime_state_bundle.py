@@ -211,10 +211,16 @@ def _st_source_transport_files(root: Path) -> list[str]:
                       or os.environ.get("MICROCAP_ST_NOTICE_ARCHIVE_SHA256"))
     if not archive_hashes and not configured:
         return []  # Existing live-source metadata does not claim an archive.
-    if len(archive_hashes) != 1 or unbound:
+    if unbound:
         raise ValueError("ST metadata archive identity is missing or mixed across universe")
     from scripts.st_history_scope import source_closure
-    closure = source_closure(root)
+    if len(archive_hashes) != 1:
+        from scripts.scoped_native_consumer import ACTIVE, scoped_transport_files
+        if not (root / ACTIVE).is_file():
+            raise ValueError("ST metadata archive identity is missing or mixed across universe")
+        closure = scoped_transport_files(root)
+    else:
+        closure = source_closure(root)
     if not closure or not archive_hashes.issubset(set(closure.values())):
         raise ValueError("ST metadata archive has no matching portable source closure")
     files = set(closure)
@@ -758,6 +764,106 @@ APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW["changes"]["scripts/share_unchange
     "f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7",
     "1266562cb77158266cbba7b1c99b732b6ac8b57002b39b6bab204ed6c3b8f202")
 
+# Forward-window support leaves all pre-existing source protocols unchanged.
+# This is limited to the same freshly rehashed approved D5 data; it cannot
+# authorize another dataset, reverse transition, history rewrite or future code.
+DATED_WINDOW_D5_SOURCE_REVIEW = copy.deepcopy(APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW)
+DATED_WINDOW_D5_SOURCE_REVIEW['revision'] = 'complete_dated_share_window_exact_d5_20261109_v3'
+DATED_WINDOW_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    'fea12d2e9467054251babe6f19f2c0ddf5b50317c5d0a8c9a269df827e8f3ad4')
+
+# Same provider, arguments, validation, timeout and session contents. Retain
+# verified day keys for a multi-session readback instead of evicting its prefix.
+LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW = copy.deepcopy(DATED_WINDOW_D5_SOURCE_REVIEW)
+LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW['revision'] = 'complete_dated_window_calendar_cache_exact_d5_20261109_v4'
+LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW['changes']['scripts/exchange_calendar.py'] = (
+    '9eb3ef9dee3298ab0ec5d7792dd607d3a1a07c55c93a1442af1779c44ca9067b',
+    '8c5f82f72fee80b8ffb5ca381bb894bdf82eeb267678800ba972bf9bad64abcb')
+
+EXACT_STRUCTURE_D5_SOURCE_REVIEW = copy.deepcopy(LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW)
+EXACT_STRUCTURE_D5_SOURCE_REVIEW['revision'] = 'complete_window_exact_300743_structure_d5_20261109_v5'
+EXACT_STRUCTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '0210a25b93f459c96990cf0b16334f264b0d9f9f04f3f5cfee19fa40048bc40c')
+
+EXACT_LATER_FUTURE_D5_SOURCE_REVIEW = copy.deepcopy(EXACT_STRUCTURE_D5_SOURCE_REVIEW)
+EXACT_LATER_FUTURE_D5_SOURCE_REVIEW['revision'] = 'complete_window_exact_unconsumed_688092_plan_d5_20261109_v6'
+EXACT_LATER_FUTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '2850b7ebe49bbdd2bbbb577786017e8b54163d2f61d9784c4c75dfef792e72e7')
+
+# Opt-in scoped metadata ancestry keeps the default full-market renewal strict.
+# Include the already published transport-only successor from main exactly.
+SCOPED_METADATA_D5_SOURCE_REVIEW = copy.deepcopy(EXACT_LATER_FUTURE_D5_SOURCE_REVIEW)
+SCOPED_METADATA_D5_SOURCE_REVIEW['revision'] = 'scoped_ancestor_metadata_and_published_transport_exact_d5_20261109_v7'
+SCOPED_METADATA_D5_SOURCE_REVIEW['changes']['scripts/st_metadata_refresh.py'] = (
+    '5ecf65d6124310a777f62f3c8ac76c72000acce6482b99ce2359f52ffc34a992',
+    '14f7162e90accc385499155aed55ab540b293ec23a0ad6d357abcd212e64ca6a')
+SCOPED_METADATA_D5_SOURCE_REVIEW['changes']['scripts/stock_daily_alternative.py'] = (
+    '261e03ecc279011e21de8a7b1ee27114740c73da61d5b26b078f5be9e032efc6',
+    '95dad1ffa24d13903fe845990afb2e370308ed44284f4428fd900c634a04be7d')
+
+# Recovery does not change the original source data or historical authority.
+# Both recovery routes preserve genuine observations and remain bounded.
+RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW = copy.deepcopy(SCOPED_METADATA_D5_SOURCE_REVIEW)
+RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW['revision'] = 'recoverable_scoped_sources_exact_d5_20261109_v8'
+RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '9272a521cc7306135f0df2488b85834f9a60374848d7efe3dc5d2bb446d4cdd3')
+RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.py'] = (
+    '42b94db9a41c197bbd9124f83aec955eaa5619938d84cebd951875236d550893',
+    'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e')
+
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW = copy.deepcopy(RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW)
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW['revision'] = 'unconsumed_exact_301429_future_structure_d5_20261109_v9'
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py'] = (
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '996e3eb846894acc03cd0ac62e87bc5bf8fafe16dae686e83f65db71585b1112')
+EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW['changes']['scripts/share_unchanged_tail.py'] = (
+    'f4bf84f795b83817f8113c83ff649545566da51d2fbff9fcf17f194da53bf0f7',
+    '85bb77979ecdb179c2f3a71ce17261dd9c4bd0cd60b9a8c90c83d183a79146b2')
+
+# The public current-authority validator is unchanged; the new reader verifies
+# archived original receipts under their real paths and clocks. Exact D5 only.
+ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW = copy.deepcopy(EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW)
+ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW['revision'] = 'original_archived_refresh_receipt_reader_exact_d5_20261109_v10'
+ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW['changes']['scripts/st_notice_refresh.py'] = (
+    '42b94db9a41c197bbd9124f83aec955eaa5619938d84cebd951875236d550893',
+    '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
+
+SEALED_BASIS_CACHE_D5_SOURCE_REVIEW = copy.deepcopy(ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW)
+SEALED_BASIS_CACHE_D5_SOURCE_REVIEW['revision'] = 'sealed_unchanged_d5_factor_sources_exact_d5_20261109_v11'
+SEALED_BASIS_CACHE_D5_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.py'] = (
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')
+
+# Exact already-computed scoped 9-Nov input identity. The native 7556d588
+# candidate fully reconstructed every issuer; only unchanged D5 source bytes
+# can use the sealed equivalence reader, under the same math/runtime/calendar.
+SEALED_BASIS_CACHE_N9_SOURCE_REVIEW = {
+    'revision':'sealed_d5_equivalence_reader_exact_scoped_n9_20261109',
+    'stock_fingerprint_sha256':'5139db3b0a3958d2f079535fc1f8ac5e39d21f80d992ab2ef2829a640004a36c',
+    'file_count':16315,
+    'data_sha256':'c1e89a5ed0b2cac394528c1fef726a88b765d300708b7769dbc7637d89c8a410',
+    'changes':{'scripts/stock_return_pipeline.py':(
+        '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+        '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')},
+}
+
+# Normal v1 inputs retain the exact old verification path. Only the explicit
+# v2 continuation parser adds archived authorities and per-issuer horizons.
+FORWARD_CONSUMPTION_D5_SOURCE_REVIEW=copy.deepcopy(SEALED_BASIS_CACHE_D5_SOURCE_REVIEW)
+FORWARD_CONSUMPTION_D5_SOURCE_REVIEW['revision']='native_forward_consumption_exact_d5_20261110_v12'
+FORWARD_CONSUMPTION_D5_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.py']=(
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
+FORWARD_CONSUMPTION_N9_SOURCE_REVIEW=copy.deepcopy(SEALED_BASIS_CACHE_N9_SOURCE_REVIEW)
+FORWARD_CONSUMPTION_N9_SOURCE_REVIEW['revision']='native_forward_consumption_exact_n9_20261110'
+FORWARD_CONSUMPTION_N9_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.py']=(
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -790,7 +896,13 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     changed = {name for name in old if old[name] != new[name]}
     for review in (VALIDATION_SOURCE_REVIEW, SEMANTIC_TAIL_SOURCE_REVIEW, APPROVED_301288_SOURCE_REVIEW,
                    APPROVED_603028_SOURCE_REVIEW, HISTORICAL_CLOSE_D5_SOURCE_REVIEW,
-                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW):
+                   APPROVED_EVENT_REOBSERVATION_D5_SOURCE_REVIEW, DATED_WINDOW_D5_SOURCE_REVIEW,
+                   LOCAL_WINDOW_CALENDAR_D5_SOURCE_REVIEW, EXACT_STRUCTURE_D5_SOURCE_REVIEW,
+                   EXACT_LATER_FUTURE_D5_SOURCE_REVIEW, SCOPED_METADATA_D5_SOURCE_REVIEW,
+                   RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW, EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW,
+                   ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW,SEALED_BASIS_CACHE_D5_SOURCE_REVIEW,
+                   SEALED_BASIS_CACHE_N9_SOURCE_REVIEW,FORWARD_CONSUMPTION_D5_SOURCE_REVIEW,
+                   FORWARD_CONSUMPTION_N9_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
@@ -826,13 +938,25 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     from collections import deque
     from concurrent.futures import ThreadPoolExecutor
     from scripts import stock_return_pipeline as pipeline
-    from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar
+    from scripts import stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar, verified_d5_basis_cache
     root = _extended(root)
     calendar = tuple(day.isoformat() for day in pipeline.sessions_for_day(date.fromisoformat(target)))
     fixed = [".microcap_index_cache/security_master.csv",
              "outputs/wind_microcap_top_100_biweekly_thursday_16y_cached.csv"]
+    has_equivalence_reference = (root / verified_d5_basis_cache.REFERENCE).is_file()
+    if has_equivalence_reference:
+        fixed.append(verified_d5_basis_cache.REFERENCE)
     prefix = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_"
     fixed += [prefix + suffix for suffix in ("meta.json", "effective_members.csv", "members.csv", "turnover.csv")]
+    forward_reader=None
+    meta_path=root/(prefix+'meta.json')
+    if meta_path.is_file():
+        proof=json.loads(meta_path.read_bytes()).get('return_basis_consumption',{})
+        if proof.get('revision')=='stock_return_consumption_v2':
+            from scripts import scoped_forward_consumption as forward_reader
+            fixed += forward_reader.dependency_names(root,proof)
+            fixed += ['scripts/scoped_cap_boundary.py','scripts/scoped_forward_consumption.py']
+    fixed=list(dict.fromkeys(fixed))
     trees = [".microcap_index_cache/" + name for name in ("prices_raw", "return_basis", "trade_status")]
 
     def linked(path):
@@ -950,12 +1074,21 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     if _metrics is not None:
         _metrics["content_seconds"] += time.monotonic() - hash_started
     modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
+    if has_equivalence_reference:
+        modules += (verified_d5_basis_cache,)
+    if forward_reader is not None:
+        from scripts import scoped_cap_boundary
+        modules += (forward_reader,scoped_cap_boundary)
     for module in modules:
         digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
         # Also invalidate test/runtime replacements of the functions actually used.
         for name, value in sorted(vars(module).items()):
             if hasattr(value, "__code__"):
                 digest.update((name + ":" + str(id(value))).encode())
+            elif module is verified_d5_basis_cache and isinstance(value,type):
+                for member,method in sorted(vars(value).items()):
+                    if hasattr(method,'__code__'):
+                        digest.update((name+'.'+member+':'+str(id(method))).encode())
     after = inventory()
     if after != before:
         raise RuntimeError("Return-basis inputs changed during fingerprint scan")
@@ -1929,6 +2062,7 @@ def refresh_state(
     force_refresh_static_inputs: bool = False,
     allow_full_rebuild: bool = False,
     max_anchor_age_days: int | None = None,
+    scoped_sources: dict | None = None,
 ) -> dict[str, object]:
     sys.path.insert(0, str(root.resolve()))
     from run_top100_v1_6_v1_8_realtime_signals import ensure_static_realtime_inputs
@@ -1956,7 +2090,13 @@ def refresh_state(
         target_end_date = _parse_date(str(target_end_ts))
         if target_end_date is None:
             raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
-        if notice_refresh_required:
+        if scoped_sources is not None:
+            from scripts.scoped_native_consumer import consume_sources
+            _log_refresh_phase("adopt_verified_scoped_native_sources")
+            consume_sources(root=root, base=v2_0.base_mod, args=args,
+                paths=base_paths, panel_path=panel_path, target=target_end_ts, config=scoped_sources)
+            notice_refresh_completed = True
+        elif notice_refresh_required:
             from scripts.st_notice_refresh import refresh_notice_archive
             _log_refresh_phase("refresh_notice_archive")
             from scripts.st_metadata_refresh import MARKER as ST_METADATA_MARKER
