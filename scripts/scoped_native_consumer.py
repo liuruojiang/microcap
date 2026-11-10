@@ -385,6 +385,9 @@ def _consume(*, root, base, args, paths, panel_path, target, config,allow_forwar
             if revalidation is not None:
                 path=work/'same_anchor_native_replay.json';body=sources.encode(revalidation);sources.atomic(path,body)
                 result_meta['same_anchor_native_revalidation']=dict(path=path.relative_to(root).as_posix(),sha256=sources.sha(body))
+            else:
+                from scripts.scoped_same_anchor import retire_on_advance
+                retire_on_advance(prior,result_meta,target)
             if forward_mode:
                 old_payloads=dict(index=originals[args.index_csv],costed=originals[args.costed_nav_csv],
                     **{k:originals[paths['proxy_'+k]] for k in ('meta','members','turnover')},
@@ -535,12 +538,15 @@ def scoped_transport_files(root):
     if len(effective)!=100 or not set(effective.symbol)<=set(symbols):
         raise ValueError('Actual executed members escape the maintained metadata scope')
     import microcap_top100_mom16_biweekly_live_v2_0 as v
-    from scripts.scoped_same_anchor import validate
+    from scripts.scoped_same_anchor import validate,archived_receipt_files
     paths={key:root/name for key,name in (
         ('proxy_effective_members','outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv'),
         ('proxy_members','outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_members.csv'),
         ('proxy_turnover','outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_turnover.csv'))}
     files.update(validate(root,v.base_mod,proxy,marker,paths))
+    # The immediately previous proxy can hold the last same-close replay.
+    # Its owner is the archived previous marker, not this new-day marker.
+    files.update(archived_receipt_files(root,old_proxy,marker.get('previous_marker')))
     # Preserve original pointer receipts/metadata needed to explain earlier
     # adoptions. They are archival byte evidence, not current ST observations.
     previous=marker.get('previous_marker');seen=set()
@@ -558,11 +564,7 @@ def scoped_transport_files(root):
             if sources.sha(raw)!=spec['sha256']:raise ValueError('Archived original proxy changed')
             files[spec['path']]=spec['sha256']
             old_proxy=json.loads(raw)
-            replay=old_proxy.get('same_anchor_native_revalidation')
-            if replay:
-                data=sources.bound(root,replay['path']).read_bytes()
-                if sources.sha(data)!=replay['sha256']:raise ValueError('Archived native revalidation receipt changed')
-                files[replay['path']]=replay['sha256']
+            files.update(archived_receipt_files(root,old_proxy,old_marker.get('previous_marker')))
         for symbol,change in old_marker['changes'].items():
             name=old_marker['backup_directory']+'/'+symbol+'.json'
             if sources.sha(sources.bound(root,name).read_bytes())!=change['old_sha256']:

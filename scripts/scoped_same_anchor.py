@@ -91,9 +91,18 @@ def recompute(root,base,args,paths,target,prior,effective,context):
         source_bundle_sha256=context['config']['bundle_sha256'],economic_csv_bytes_changed=False)
 
 
-def validate(root,base,proxy,marker,paths):
+def retire_on_advance(prior,updated,target):
+    """A same-close receipt remains evidence of its original state only."""
+    if pd.Timestamp(target)<=pd.Timestamp(prior['end_date']):return
+    spec=updated.get('same_anchor_native_revalidation')
+    if spec is not None and spec!=prior.get('same_anchor_native_revalidation'):
+        raise ValueError('Advancing native state inherited an unexplained same-anchor receipt')
+    updated.pop('same_anchor_native_revalidation',None)
+
+
+def _checked_receipt(root,proxy,marker):
     spec=proxy.get('same_anchor_native_revalidation')
-    if not spec:return {}
+    if not spec:return None
     path=sources.bound(root,spec['path']);raw=path.read_bytes()
     if sources.sha(raw)!=spec['sha256']:raise ValueError('Same-anchor replay receipt changed')
     receipt=json.loads(raw)
@@ -103,6 +112,31 @@ def validate(root,base,proxy,marker,paths):
             or receipt.get('source_bundle_sha256')!=marker['source_bundle_sha256']
             or receipt.get('economic_csv_bytes_changed') is not False):
         raise ValueError('Same-anchor replay binding differs from the actual native state')
+    return spec,raw,receipt
+
+
+def archived_receipt_files(root,proxy,owner):
+    """Authenticate old bytes against their old proxy/marker, never today's state."""
+    if not proxy.get('same_anchor_native_revalidation'):return {}
+    if not owner:raise ValueError('Archived same-anchor replay has no original metadata owner')
+    body=sources.bound(root,owner['path']).read_bytes()
+    if sources.sha(body)!=owner['sha256']:raise ValueError('Archived same-anchor metadata owner changed')
+    marker=json.loads(body)
+    if (marker.get('schema')!='native_scoped_metadata_adoption_v1' or marker.get('status')!='complete'
+            or marker.get('target')!=proxy['end_date']
+            or proxy.get('scoped_metadata_adoption')!={
+                'path':'.microcap_index_cache/scoped_native_consumer.json','sha256':owner['sha256']}):
+        raise ValueError('Archived same-anchor proxy and original metadata owner differ')
+    spec,raw,_receipt=_checked_receipt(root,proxy,marker)
+    original=marker['original_proxy'];previous=sources.bound(root,original['path']).read_bytes()
+    if sources.sha(previous)!=original['sha256']:raise ValueError('Archived same-anchor original proxy changed')
+    return {owner['path']:owner['sha256'],original['path']:original['sha256'],spec['path']:sources.sha(raw)}
+
+
+def validate(root,base,proxy,marker,paths):
+    checked=_checked_receipt(root,proxy,marker)
+    if checked is None:return {}
+    spec,raw,receipt=checked
     prior_path=sources.bound(root,marker['original_proxy']['path']);prior=json.loads(prior_path.read_bytes())
     effective=pd.read_csv(paths['proxy_effective_members'],dtype={'symbol':str}).sort_values('rank').symbol.tolist()
     dates,scope,initial,old=window(root,prior,effective)
