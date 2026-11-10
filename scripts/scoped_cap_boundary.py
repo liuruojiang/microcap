@@ -14,10 +14,9 @@ import re
 import pandas as pd
 
 from scripts import scoped_source_consumer as sources
-from scripts.st_history_scope import (source_closure,read_bound,validate_scope,
-    normalized_risk_rows,symbol_name_changes,_daily_notice_row)
-from scripts.st_notice_incremental import verify_day
-from scripts.st_notice_evidence import _registry,load_verified_events
+from scripts import st_history_scope as history
+from scripts import st_notice_incremental as incremental
+from scripts import st_notice_evidence as evidence
 
 URL='https://datacenter-web.eastmoney.com/api/data/v1/get'
 FIELDS='SECURITY_CODE,SECUCODE,SECURITY_NAME_ABBR,TRADE_DATE,TOTAL_SHARES,TOTAL_MARKET_CAP,CLOSE_PRICE'
@@ -80,26 +79,26 @@ def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=Fals
     manifest=json.loads(sources.bound(root,authority[0]).read_bytes())
     if sources.sha(sources.bound(root,authority[0]).read_bytes())!=authority[1]:
         raise ValueError('Boundary notice archive identity changed')
-    closure=source_closure(root,*authority)
+    closure=history.source_closure(root,*authority)
     closure.pop('.microcap_index_cache/st_notice_archive_pointer.json',None)
-    scope=json.loads(read_bound(root,manifest['scope']));data=validate_scope(root,scope)
-    registry,_=_registry(root);rows={s:normalized_risk_rows(data,s) for s in symbols}
+    scope=json.loads(history.read_bound(root,manifest['scope']));data=history.validate_scope(root,scope)
+    registry,_=evidence._registry(root);rows={s:history.normalized_risk_rows(data,s) for s in symbols}
     cursor=pd.Timestamp(data['end_date'])+pd.Timedelta(days=1)
     for part in manifest.get('daily_increments',[]):
         if part['date']!=str(cursor.date()):raise ValueError('Boundary notice dates are not contiguous')
-        read_bound(root,part['manifest']);folder=sources.bound(root,part['manifest']['path']).parent
-        verified=verify_day(folder,part['date'])
+        history.read_bound(root,part['manifest']);folder=history._path(root,part['manifest']['path']).parent
+        verified=incremental.verify_day(folder,part['date'])
         if part['date']<=day:
             for symbol in symbols:
                 for item in verified['by_symbol'].get(symbol,[]):
-                    row=_daily_notice_row(item,symbol,part['date'],registry)
+                    row=history._daily_notice_row(item,symbol,part['date'],registry)
                     if row:rows[symbol].append(row)
         cursor+=pd.Timedelta(days=1)
     if cursor<=pd.Timestamp(day):raise ValueError('Boundary notice authority does not reach its cap date')
     excluded={}
     for symbol in symbols:
         notices=pd.DataFrame([r for r in rows[symbol] if r['notice_date']<=day])
-        events=load_verified_events(root,symbol,data['start_date'],day,notices)
+        events=evidence.load_verified_events(root,symbol,data['start_date'],day,notices)
         intervals=base.freq_mod.build_st_intervals_from_notices(pd.Timestamp(data['start_date']),
             pd.Timestamp(day),notices,verified_events=events)
         if bool(base.freq_mod.build_st_status_series({'st_intervals':intervals},pd.DatetimeIndex([day])).iloc[0]):
