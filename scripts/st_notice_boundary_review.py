@@ -23,6 +23,7 @@ SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261103/" + identity
                  for suffix in (".pdf", ".txt")]
 SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261104/registry.json"]
 SOURCE_FILES += ["scripts/st_notice_boundary_20261110.py",
+                 "scripts/st_notice_inv_research_boundary.py",
                  "data/st_notice_boundary_reviews/reviewed_20261110/registry.json"]
 SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261110/" + identity + suffix
                  for identity in ("AN202611091831559867", "AN202611091831560025",
@@ -489,6 +490,12 @@ def reviewed_additions(previous, current, precision):
     catalog = _reviewed_ipo_boundary_20261109(previous, current, precision)
     if catalog is not None:
         return catalog
+    # Preserve exact archived proof identities before the new selector-bounded
+    # transport rule. Additional, unreviewed rows cannot match those profiles.
+    from scripts.st_notice_inv_research_boundary import reviewed_additions as inv_research_additions
+    unconsumed_inv = inv_research_additions(previous,current)
+    if unconsumed_inv is not None:
+        return unconsumed_inv
     catalog = _non_equity_catalog_metadata(previous, current, precision)
     if catalog is not None:
         return catalog

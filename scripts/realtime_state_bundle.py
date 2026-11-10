@@ -864,6 +864,29 @@ FORWARD_CONSUMPTION_N9_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.p
     '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
     '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
 
+# Exact source-only acceptance of the unchanged 118,220,000-share provider
+# reobservation. It writes no historical share CSV row and asserts no legal
+# effective date. Original D4 and previous source reviews remain immutable.
+TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW=copy.deepcopy(FORWARD_CONSUMPTION_D5_SOURCE_REVIEW)
+TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW['revision']='exact_total_neutral_301429_source_d5_20261110'
+TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW['changes']['scripts/share_change_source.py']=(
+    '98f8fd4ab69a62bc8b340875fbb9d1f71ff5f974d5310c392419561450225df3',
+    '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b')
+TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW=copy.deepcopy(FORWARD_CONSUMPTION_N9_SOURCE_REVIEW)
+TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW['revision']='exact_total_neutral_301429_source_legacy_n9_20261110'
+TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW['changes']['scripts/share_change_source.py']=(
+    '996e3eb846894acc03cd0ac62e87bc5bf8fafe16dae686e83f65db71585b1112',
+    '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b')
+TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW={
+    'revision':'exact_total_neutral_301429_source_native_n9_20261110',
+    'stock_fingerprint_sha256':'7d69dc19fd4dad6149bdb32f131f3dcc7bd5dc4da9777684b7d7267f27e07cfb',
+    'file_count':16315,
+    'data_sha256':'c1e89a5ed0b2cac394528c1fef726a88b765d300708b7769dbc7637d89c8a410',
+    'changes':{'scripts/share_change_source.py':(
+        '996e3eb846894acc03cd0ac62e87bc5bf8fafe16dae686e83f65db71585b1112',
+        '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b')},
+}
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -902,7 +925,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
                    RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW, EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW,
                    ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW,SEALED_BASIS_CACHE_D5_SOURCE_REVIEW,
                    SEALED_BASIS_CACHE_N9_SOURCE_REVIEW,FORWARD_CONSUMPTION_D5_SOURCE_REVIEW,
-                   FORWARD_CONSUMPTION_N9_SOURCE_REVIEW):
+                   FORWARD_CONSUMPTION_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW,
+                   TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (

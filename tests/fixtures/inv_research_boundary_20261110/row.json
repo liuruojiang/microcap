@@ -1,0 +1,29 @@
+{
+  "art_code": "AN202611101831580875",
+  "codes": [
+    {
+      "ann_type": "INV",
+      "inner_code": "11403917216630",
+      "market_code": "0",
+      "short_name": "兴业银锡",
+      "stock_code": "000426"
+    }
+  ],
+  "columns": [
+    {
+      "column_code": "050003",
+      "column_name": "调研活动"
+    }
+  ],
+  "display_time": "2026-11-10 14:58:06:701",
+  "eiTime": "2026-11-10 14:57:31:000",
+  "language": "0",
+  "listing_state": "0",
+  "notice_date": "2026-11-09 00:00:00",
+  "product_code": "",
+  "sort_date": "2026-11-09 12:00:00",
+  "source_type": "324",
+  "title": "000426兴业银锡投资者关系管理信息20261109",
+  "title_ch": "000426兴业银锡投资者关系管理信息20261109",
+  "title_en": ""
+}

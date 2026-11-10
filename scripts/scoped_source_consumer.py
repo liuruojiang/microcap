@@ -26,7 +26,8 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
-PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e'})
+PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e',
+    'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815'})
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
@@ -35,6 +36,9 @@ SEALED_BASIS_READER = (
     '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')
 FORWARD_CONSUMPTION_READER=(SEALED_BASIS_READER[0],
     '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
+TOTAL_NEUTRAL_SHARE_READER=(
+    '996e3eb846894acc03cd0ac62e87bc5bf8fafe16dae686e83f65db71585b1112',
+    '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b')
 
 
 def sha(raw):
@@ -95,7 +99,10 @@ def validate_source_contract(root, manifest):
     archived={'scripts/st_notice_refresh.py':ARCHIVED_PROOF_READER}
     cached={**archived,'scripts/stock_return_pipeline.py':SEALED_BASIS_READER}
     forward={**archived,'scripts/stock_return_pipeline.py':FORWARD_CONSUMPTION_READER}
-    if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in (archived,cached,forward)):
+    original=(archived,cached,forward)
+    neutral={'scripts/share_change_source.py':TOTAL_NEUTRAL_SHARE_READER}
+    reviews=(*original,neutral,*({**r,**neutral} for r in original))
+    if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
 

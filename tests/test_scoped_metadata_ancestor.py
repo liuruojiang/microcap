@@ -103,7 +103,7 @@ def test_current_scoped_metadata_and_published_transport_match_exact_d5_review()
     root=Path(__file__).resolve().parents[1]
     old=json.loads((root/'tests/fixtures/maintenance_d5_source_identity_20261109.json').read_bytes())['stock_input_evidence_fingerprint']
     current=copy.deepcopy(old);current['code']=source_fingerprint(root)
-    review=state.SEALED_BASIS_CACHE_D5_SOURCE_REVIEW
+    review=state.TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW
     changed={n for n in old['code'] if old['code'][n]!=current['code'][n]}
     assert changed==set(review['changes'])&set(SOURCE_FILES)
     assert all((old['code'][n],current['code'][n])==tuple(review['changes'][n]) for n in changed)
