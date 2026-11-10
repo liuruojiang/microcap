@@ -667,11 +667,13 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
         # to the target and is never used in its candidate or daily totals.
         later_review=dict(row=row)
         later_plan=dict(date=review['date'],total_shares_10k=str(Decimal(review['after_total_shares'])/10000))
-    future_structure_rows=[];optional_structure_plans=[]
+    future_structure_rows=[];current_structure_rows=[];reviewed_structure_rows=[];optional_structure_plans=[]
     review=EXACT_FUTURE_STRUCTURE_301429
     if 'later_structure_documents' in files:
-        need(symbol==review['symbol'] and end<min(review['row_sha256_by_day']),
-             'future structure route cannot authorize an effective event')
+        # A later provider date can become an observed zero-total-change
+        # reobservation. That does not make the Nov12 unlock plan executed,
+        # nor does it authorize a legal effective date or a new share total.
+        need(symbol==review['symbol'],'structure catalog issuer differs')
         docs=files['later_structure_documents']
         need(len(docs)==1 and docs[0].get('announcement_id')==review['announcement_id'],
              'future structure document inventory differs')
@@ -683,20 +685,34 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
             for row in json.loads(raw,parse_float=Decimal)['result']['data']:
                 if row['END_DATE'][:10] in review['row_sha256_by_day']:
                     ds=row['END_DATE'][:10]
+                    # A historical neutral catalog row cannot pin every later
+                    # terminal total forever. Bind it to its own dated total
+                    # or the protected old curve; genuinely later total-share
+                    # changes still take the original strict event path below.
+                    if ds>end:
+                        dated_total=observed[end]
+                    elif ds>=previous_day:
+                        need(ds in observed,'reviewed structural date lacks its independent daily total')
+                        dated_total=observed[ds]
+                    else:
+                        certified=[r for r in old if r['change_date'][:10]<=ds]
+                        need(certified,'reviewed structural date precedes the protected share curve')
+                        dated_total=n.amount(certified[-1]['total_shares_10k'])
                     need(_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
                          ==review['row_sha256_by_day'][ds] and row['INFO_CODE']==review['announcement_id']
                          and row['SECURITY_CODE']==symbol and row['LISTING_DATE'][:10]==ds
                          and row['NOTICE_DATE'][:10]==review['provider_notice_date']
-                         and n.amount(row['TOTAL_SHARES'])==review['total_shares']==observed[end]*10000
+                         and n.amount(row['TOTAL_SHARES'])==review['total_shares']==dated_total*10000
                          and n.integer(row['TOTAL_SHARES_CHANGE'])==0
                          and n.amount(row['LIMITED_SHARES'])+n.amount(row['UNLIMITED_SHARES'])==review['total_shares']
                          and Decimal(str(row['LIMITED_SHARES_CHANGE']))+Decimal(str(row['UNLIMITED_SHARES_CHANGE']))==0,
                          'future structure exact row/total differs')
-                    future_structure_rows.append(row)
-        need(len(future_structure_rows)==2 and {r['END_DATE'][:10] for r in future_structure_rows}==set(review['row_sha256_by_day']),
+                    reviewed_structure_rows.append(row)
+                    (future_structure_rows if ds>end else current_structure_rows).append(row)
+        need(len(reviewed_structure_rows)==2 and {r['END_DATE'][:10] for r in reviewed_structure_rows}==set(review['row_sha256_by_day']),
              'future structure exact two-row inventory differs')
         optional_structure_plans=[dict(date=ds,total_shares_10k=str(Decimal(review['total_shares'])/10000))
-                                  for ds in sorted(review['row_sha256_by_day'])]
+                                  for ds in sorted(review['row_sha256_by_day']) if ds>end]
     unfiltered=n._em_inventory(files['unfiltered'],bound,symbol,end,False,now,approved_event=later_review,
                               reviewed_future_rows=future_structure_rows)
     bounded=n._em_inventory(files['bounded'],bound,symbol,end,True,now)
@@ -736,7 +752,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     records=sina['records'];prior=[r for r in records if r['provider_date']<=previous_day]
     need(prior and n.amount(prior[-1]['total_shares_10k'])==before,'Sina boundary differs from certified history')
     tail=[r for r in records if previous_day<r['provider_date']<=end]
-    latest=before;events=[];structure_events=[]
+    latest=before;events=[];structure_events=[];structure_reobservations=[]
     for event in tail:
         value=n.amount(event['total_shares_10k'])
         matches=[row for row in bounded if n._em_date(row['END_DATE']).isoformat()==event['provider_date']
@@ -744,6 +760,19 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                  and n.amount(row['TOTAL_SHARES'])==value*10000]
         need(len(matches)==1 and matches[0].get('INFO_CODE'),'Sina change lacks unique matching EM issuer event')
         if value==latest:
+            if matches[0] in current_structure_rows:
+                # Both dated market totals and Sina have now observed this
+                # provider date. Its exact reviewed row is total-neutral; keep
+                # the certified CSV byte-for-byte and do not call it execution.
+                review=EXACT_FUTURE_STRUCTURE_301429
+                need(symbol==review['symbol'] and event['provider_date'] in review['row_sha256_by_day']
+                     and value*10000==review['total_shares'],
+                     'current structural reobservation is not the exact reviewed total')
+                structure_reobservations.append(dict(date=event['provider_date'],total_shares_10k=str(value),
+                    announcement_id=review['announcement_id'],issuer_document_sha256=review['pdf_sha256'],
+                    old_total_unchanged=True,provider_date_reobservation=True,
+                    execution_or_legal_effect_not_asserted=True))
+                continue
             review=STRUCTURE_ONLY_EVENT_20261105;row=matches[0]
             row_sha=_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
             need((symbol,event['provider_date'],row_sha,value*10000)==
@@ -785,7 +814,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                      'late historical report conflicts with certified share history')
             reobservations.append(dict(announcement_id=row.get('INFO_CODE'),provider_dates=old_dates))
         else:new_tails.append(row)
-    proven_events=events+structure_events
+    proven_events=events+structure_events+structure_reobservations
     need(len(new_tails)==len(proven_events) and all(any(n._em_date(row['END_DATE']).isoformat()==e['date']
          and n._em_date(row['LISTING_DATE']).isoformat()==e['date']
          and n.amount(row['TOTAL_SHARES'])==n.amount(e['total_shares_10k'])*10000 for e in proven_events) for row in new_tails),
@@ -823,6 +852,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                           changes=events,historical_reobservations=reobservations,
                           old_prefix_preserved=True,legal_effective_date_not_asserted=True)
     if structure_events:facts['structure_events']=structure_events
+    if structure_reobservations:facts['structure_reobservations']=structure_reobservations
     if future_structure_rows:
         facts['future_structure_not_consumed']=dict(announcement_id=EXACT_FUTURE_STRUCTURE_301429['announcement_id'],
             provider_dates=sorted(r['END_DATE'][:10] for r in future_structure_rows),
@@ -920,13 +950,18 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
     documents=[];reviews=n.plan_reviews(root)
     for entry in files['unfiltered']:
         for row in json.loads((source/entry['raw_path']).read_bytes())['result']['data']:
+            structure=EXACT_FUTURE_STRUCTURE_301429
+            if ((symbol,row.get('INFO_CODE'))==(structure['symbol'],structure['announcement_id'])
+                    and row['END_DATE'][:10] in structure['row_sha256_by_day']):
+                # The original issuer document remains required when the
+                # provider date is no longer future. Current dated/Sina/quote
+                # observations must separately qualify the provider date;
+                # neither they nor the document assert legal execution here.
+                if 'later_structure_documents' not in files:
+                    ref,_=save(structure['pdf_url'],{},'later_structure_'+structure['announcement_id'])
+                    files['later_structure_documents']=[{**ref,'announcement_id':structure['announcement_id']}]
+                if n._em_date(row['END_DATE'])>n.day(end):continue
             if n._em_date(row['END_DATE'])>n.day(end):
-                structure=EXACT_FUTURE_STRUCTURE_301429
-                if (symbol,row.get('INFO_CODE'))==(structure['symbol'],structure['announcement_id']) and row['END_DATE'][:10] in structure['row_sha256_by_day']:
-                    if 'later_structure_documents' not in files:
-                        ref,_=save(structure['pdf_url'],{},'later_structure_'+structure['announcement_id'])
-                        files['later_structure_documents']=[{**ref,'announcement_id':structure['announcement_id']}]
-                    continue
                 later=EXACT_FUTURE_PLAN_688092
                 if (symbol,row.get('INFO_CODE'),row['END_DATE'][:10])==(later['symbol'],later['announcement_id'],later['date']):
                     ref,_=save(later['pdf_url'],{},'later_future_'+later['announcement_id'])

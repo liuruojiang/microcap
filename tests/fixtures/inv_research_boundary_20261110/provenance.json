@@ -1,0 +1,19 @@
+{
+  "source_folder": "D:\\Codex\\microcap-close-validation-20261110\\runtime\\.microcap_index_cache\\st_notice_sources\\refresh_20261110T074136818665Z_b689e2946f53\\2026-11-09",
+  "boundary_day": "2026-11-09",
+  "event_id": "AN202611101831580875",
+  "source_page": {
+    "response": "page_0001.json",
+    "receipt": "page_0001.receipt.json",
+    "response_sha256": "540a6f25128757dd6d3196432a7e181f0e2c7c2c42e0d52506dfdde85ab060d5",
+    "receipt_sha256": "037696c45bc8af12cb10d1d1143313bde43674f5d7c86645dd650e2766989af5"
+  },
+  "current_count": 487,
+  "files": {
+    "current_rows.json.gz": "3d109bca92ff9b8912e576325857c76a35f65c9fcef6dd67280374989ad1986a",
+    "page_0001.json": "540a6f25128757dd6d3196432a7e181f0e2c7c2c42e0d52506dfdde85ab060d5",
+    "page_0001.receipt.json": "037696c45bc8af12cb10d1d1143313bde43674f5d7c86645dd650e2766989af5",
+    "row.json": "ffb7b9ff79521ffd0adf8eb26226b850644caad865b282973cf1813750f17095"
+  },
+  "semantics": "software_boundary_evidence_not_absolute_ST_completeness"
+}

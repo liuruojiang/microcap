@@ -119,6 +119,55 @@ def original_notice_chain(source, previous, target):
     return sources.verify_notice_chain(source, previous, chain[::-1], target), chain[::-1]
 
 
+def checked_publication_universe(source,names,floor,symbols):
+    if names.get('schema')!='current_publication_names_v2' or names.get('publication_name_scope')!='maintained_plus_ST_conflicts':
+        raise ValueError('Scoped publication names require an explicit maintained-pool observation')
+    close=datetime.fromisoformat(names['target']+'T15:00:00+08:00');observed=datetime.fromisoformat(names['observed_at'])
+    if observed.tzinfo is None or not max(close,floor)<=observed<=datetime.now(timezone.utc):
+        raise ValueError('Scoped publication name observation clock differs')
+    for key in ('st_observed_at','universe_observed_at'):
+        stamp=datetime.fromisoformat(names[key])
+        if stamp.tzinfo is None or not max(close,floor)<=stamp<=observed:
+            raise ValueError('Scoped publication name sources predate the required observation window')
+    name='.microcap_index_cache/active_universe.csv';universe=sources.bound(source,name).read_bytes()
+    active=list(csv.DictReader(io.StringIO(universe.decode('utf-8-sig'))));mapping={r['code']:r['name'].strip() for r in active}
+    st=sources.bound(source,'.microcap_index_cache/current_st.csv').read_bytes()
+    rows=list(csv.DictReader(io.StringIO(st.decode('utf-8-sig'))))
+    import re
+    if (sources.sha(universe)!=names.get('universe_sha256') or len(active)!=names.get('universe_count')
+            or not active or len(mapping)!=len(active) or sources.sha(st)!=names['cache_sha256']
+            or len(rows)!=names['count'] or not rows
+            or any(not re.fullmatch('[0-9]{6}',s) or not n for s,n in mapping.items())
+            or any(r['code'] not in mapping or mapping[r['code']]!=r['name'].strip()
+                   for r in rows if re.fullmatch('[036][0-9]{5}',r['code']))):
+        raise ValueError('Scoped publication names and ST board disagree')
+    files={name:sources.sha(universe)}
+    if names.get('publication_name_scope')=='maintained_plus_ST_conflicts':
+        witness=names['scoped_observation'];prior=witness['prior_universe']
+        if prior['path']!='.microcap_index_cache/local_current_names/observations/'+prior['sha256']+'.universe.csv':
+            raise ValueError('Original publication name evidence has another file role')
+        previous=sources.bound(source,prior['path']).read_bytes()
+        if sources.sha(previous)!=prior['sha256']:raise ValueError('Original publication name evidence changed')
+        old_rows=list(csv.DictReader(io.StringIO(previous.decode('utf-8-sig'))));old={r['code']:r['name'].strip() for r in old_rows}
+        quotes={r['code']:r for r in witness['quote_rows']}
+        conflicts={r['code'] for r in rows if re.fullmatch('[036][0-9]{5}',r['code']) and old.get(r['code'])!=r['name'].strip()}
+        if (not old_rows or len(old)!=len(old_rows) or set(witness['maintained_symbols'])!=set(symbols)
+                or len(witness['maintained_symbols'])!=300 or len(set(symbols))!=300
+                or set(quotes)!=set(witness['requested_symbols']) or len(quotes)!=len(witness['quote_rows'])
+                or set(witness['conflict_symbols'])!=conflicts or len(witness['conflict_symbols'])!=len(conflicts)
+                or set(quotes)!=set(symbols)|set(witness['conflict_symbols'])):
+            raise ValueError('Scoped publication name quote coverage differs')
+        for row in quotes.values():
+            fetched=datetime.fromisoformat(row['fetched_at'])
+            if (fetched.tzinfo is None or not max(close,floor)<=fetched<=observed
+                    or row.get('quote_source')!='tencent_batch_free' or not row.get('name','').strip()):
+                raise ValueError('Scoped publication quote source or freshness differs')
+        old.update({s:r['name'].strip() for s,r in quotes.items()})
+        if old!=mapping:raise ValueError('Publication names changed outside the witnessed scope')
+        files[prior['path']]=prior['sha256']
+    return files
+
+
 def checked_producer(source, config, manifest):
     runtime = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
     if runtime not in sources.PRODUCERS or runtime!=manifest['runtime_sha']:
@@ -137,6 +186,12 @@ def checked_producer(source, config, manifest):
             raise ValueError('Completed producer metadata bytes changed')
     name_path = '.microcap_index_cache/local_current_names/' + manifest['target'] + '.json'
     raw = sources.bound(source, name_path).read_bytes(); names = json.loads(raw)
+    if names.get('schema') not in (None,'current_publication_names_v2'):
+        raise ValueError('Unreviewed current publication name receipt schema')
+    legacy_morning=(runtime=='706af7ea9186bdb9b3948738deb5a5afda7a331e' and manifest['target']=='2026-11-09'
+        and config['producer_metadata_receipt_sha256']=='56e734d24b0698bad1696304cb07ef80c59aeb691b46e6452faad8468eac244c')
+    if names.get('schema') is None and runtime!=sources.PRODUCER and not legacy_morning:
+        raise ValueError('New source observations require scoped current publication name evidence')
     current = sources.bound(source, '.microcap_index_cache/current_st.csv').read_bytes()
     rows = list(csv.DictReader(io.StringIO(current.decode('utf-8-sig'))))
     observed = datetime.fromisoformat(names['observed_at'])
@@ -150,6 +205,8 @@ def checked_producer(source, config, manifest):
             or not rows or names.get('count') != len(rows)
             or len({row['code'] for row in rows}) != len(rows)):
         raise ValueError('Scoped current-name source clock/identity is unverified')
+    if names.get('schema')=='current_publication_names_v2':
+        checked_publication_universe(source,names,floor,manifest['symbols'])
     return receipt, name_path
 
 
@@ -228,6 +285,16 @@ def _consume(*, root, base, args, paths, panel_path, target, config,allow_forwar
         universe=base.freq_mod.list_backtest_universe_symbols(), native_freq=base.freq_mod)
     notice_files = source_closure(source)
     notice_files.update(chain['source_files'])
+    names=json.loads(sources.bound(source,name_path).read_bytes())
+    publication_universe=('.microcap_index_cache/active_universe.csv'
+                          if names.get('schema')=='current_publication_names_v2' else None)
+    if publication_universe:notice_files[publication_universe]=names['universe_sha256']
+    publication_files={}
+    if publication_universe:
+        publication_files=checked_publication_universe(source,names,
+            datetime.fromisoformat(manifest['producer_context']['observation_floor']),manifest['symbols'])
+        notice_files.update(publication_files)
+        publication_files[name_path]=sources.sha(sources.bound(source,name_path).read_bytes())
     for name in (FRESHNESS, POINTER_PATH, '.microcap_index_cache/current_st.csv', name_path):
         notice_files[name] = sources.sha(sources.bound(source, name).read_bytes())
     meta_files = {'.microcap_index_cache/security_meta/' + s + '.json':sources.sha(raw)
@@ -236,9 +303,10 @@ def _consume(*, root, base, args, paths, panel_path, target, config,allow_forwar
     allowed_prefixes = ('.microcap_index_cache/st_notice_sources/',
         '.microcap_index_cache/security_meta/', '.microcap_index_cache/local_current_names/')
     if any(not name.startswith(allowed_prefixes) and name not in
-            (POINTER_PATH, '.microcap_index_cache/current_st.csv') for name in files):
+            (POINTER_PATH, '.microcap_index_cache/current_st.csv','.microcap_index_cache/active_universe.csv') for name in files):
         raise ValueError('Scoped notice/metadata transport includes another file role')
     mutable = set(meta_files) | {POINTER_PATH, FRESHNESS, '.microcap_index_cache/current_st.csv'}
+    if publication_universe:mutable.add(publication_universe)
     old_files = {name:sources.bound(root, name).read_bytes() for name in mutable}
     for s, raw in meta_plan['old_records'].items():
         old_files['.microcap_index_cache/security_meta/' + s + '.json'] = raw
@@ -341,6 +409,16 @@ def _consume(*, root, base, args, paths, panel_path, target, config,allow_forwar
                 fingerprint=meta_plan['fingerprint'], source_bundle_sha256=config['bundle_sha256'],
                 original_notice_receipts=specs, source_files=chain['source_files'],
                 source_input_files=manifest['files'], final_strategy_delivery=False)
+            if publication_files:
+                snapshot={}
+                for name,digest in publication_files.items():
+                    raw=sources.bound(root,name).read_bytes()
+                    if sources.sha(raw)!=digest:raise ValueError('Publication snapshot changed before archival commit')
+                    destination=work/'publication_snapshot'/name;sources.atomic(destination,raw)
+                    snapshot[name]=dict(path=destination.relative_to(root).as_posix(),sha256=digest)
+                marker.update(publication_files=publication_files,
+                    publication_snapshot=snapshot,
+                    publication_observation_floor=manifest['producer_context']['observation_floor'])
             if previous_marker is not None:marker['previous_marker']=previous_marker
             marker_raw = sources.encode(marker)
             result_meta['scoped_metadata_adoption'] = dict(path=ACTIVE,sha256=sources.sha(marker_raw))
@@ -403,6 +481,22 @@ def scoped_transport_files(root):
     directory = root/'.microcap_index_cache/security_meta'
     current = {p.stem:p.read_bytes() for p in directory.glob('*.json')}; old = dict(current)
     files = {ACTIVE:sources.sha(raw),**marker['source_files'],marker['original_proxy']['path']:marker['original_proxy']['sha256']}
+    publication=marker.get('publication_files',{})
+    if publication:
+        for name,digest in publication.items():
+            if sources.sha(sources.bound(root,name).read_bytes())!=digest:raise ValueError('Current publication name evidence changed')
+        name_path='.microcap_index_cache/local_current_names/'+marker['target']+'.json'
+        names=json.loads(sources.bound(root,name_path).read_bytes())
+        if names['target']!=marker['target']:raise ValueError('Current publication name target differs')
+        checked=checked_publication_universe(root,names,datetime.fromisoformat(marker['publication_observation_floor']),symbols)
+        checked[name_path]=sources.sha(sources.bound(root,name_path).read_bytes())
+        if checked!=publication:raise ValueError('Current publication evidence roles differ')
+        files.update(publication)
+        if set(marker.get('publication_snapshot',{}))!=set(publication):raise ValueError('Publication archival snapshot roles differ')
+        for name,spec in marker['publication_snapshot'].items():
+            if spec['sha256']!=publication[name] or sources.sha(sources.bound(root,spec['path']).read_bytes())!=spec['sha256']:
+                raise ValueError('Publication archival snapshot changed')
+            files[spec['path']]=spec['sha256']
     for symbol in symbols:
         relative = marker['backup_directory']+'/'+symbol+'.json'
         before = sources.bound(root,relative).read_bytes()
@@ -455,6 +549,10 @@ def scoped_transport_files(root):
         seen.add(previous['path']);p=sources.bound(root,previous['path']);body=p.read_bytes()
         if sources.sha(body)!=previous['sha256']:raise ValueError('Archived metadata adoption marker changed')
         files[previous['path']]=previous['sha256'];old_marker=json.loads(body)
+        for spec in old_marker.get('publication_snapshot',{}).values():
+            if sources.sha(sources.bound(root,spec['path']).read_bytes())!=spec['sha256']:
+                raise ValueError('Archived publication name snapshot changed')
+            files[spec['path']]=spec['sha256']
         for spec in [old_marker['original_proxy']]:
             raw=sources.bound(root,spec['path']).read_bytes()
             if sources.sha(raw)!=spec['sha256']:raise ValueError('Archived original proxy changed')
