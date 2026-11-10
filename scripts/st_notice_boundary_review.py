@@ -22,6 +22,13 @@ SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261103/" + identity
                                   "AN202611021831321775", "AN202611021831322365")
                  for suffix in (".pdf", ".txt")]
 SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261104/registry.json"]
+SOURCE_FILES += ["scripts/st_notice_boundary_20261110.py",
+                 "data/st_notice_boundary_reviews/reviewed_20261110/registry.json"]
+SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261110/" + identity + suffix
+                 for identity in ("AN202611091831559867", "AN202611091831560025",
+                                  "AN202611091831560036", "AN202611091831560200",
+                                  "AN202611091831560590", "AN202611091831563826")
+                 for suffix in (".pdf", ".txt", ".receipt.json")]
 SOURCE_FILES += ["data/st_notice_boundary_reviews/reviewed_20261104/" + identity + suffix
                  for identity in ("AN202611031831376420", "AN202611031831373422")
                  for suffix in (".pdf", ".txt", ".receipt.json")]
@@ -459,6 +466,10 @@ def _non_equity_catalog_metadata(previous, current, precision):
 
 def reviewed_additions(previous, current, precision):
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
+    from scripts.st_notice_boundary_20261110 import reviewed_boundary
+    morning = reviewed_boundary(previous, current, precision)
+    if morning is not None:
+        return morning
     columns = _reviewed_catalog_columns_20261105(previous, current)
     if columns is not None:
         return columns

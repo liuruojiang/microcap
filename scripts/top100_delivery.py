@@ -64,6 +64,7 @@ RETURN_BASIS_FILES = [
     "scripts/scoped_native_consumer.py",
     "scripts/scoped_forward_consumption.py",
     "scripts/scoped_cap_boundary.py",
+    "scripts/scoped_same_anchor.py",
     "scripts/verified_d5_basis_cache.py",
     "data/verified_d5_basis_source_index_20261109.json.gz",
 ]
@@ -922,8 +923,6 @@ def validate_base_state_for_session(root: Path, expected_date: str) -> dict:
 
 def _refresh_all_unlocked(root: Path, *, candidate_sha: str | None = None, scoped_sources: dict | None = None) -> dict:
     if candidate_sha is None:
-        if scoped_sources is not None:
-            raise ValueError("Scoped preparation requires explicit immutable candidate validation")
         release = verify_release(root)
         manifest_relative = MANIFEST
     else:
@@ -992,8 +991,8 @@ def main(argv: list[str] | None = None) -> int:
     if (args.command == "recertify-validation-source") != (args.expected_date is not None):
         parser.error("--expected-date is required only for recertify-validation-source")
     candidate = args.command in ("refresh-candidate", "check-candidate")
-    if candidate != (args.candidate_sha is not None) or (args.scoped_config is not None and args.command != "refresh-candidate"):
-        parser.error("Candidate commands require --candidate-sha; --scoped-config is only for refresh-candidate")
+    if candidate != (args.candidate_sha is not None) or (args.scoped_config is not None and args.command not in ("refresh-candidate","refresh-all")):
+        parser.error("Candidate commands require --candidate-sha; --scoped-config is only for refresh commands")
     root = Path(__file__).resolve().parents[1]
     try:
         if args.command == "recertify-validation-source":
@@ -1012,7 +1011,8 @@ def main(argv: list[str] | None = None) -> int:
             report['errors'].extend(validate_base_state_for_session(root,target).get('errors',[]))
             report.update(ok=not report['errors'],release_sha=release,scope='whole_workspace_candidate_validation',formal_release_verified=False,sending='skipped',orders_placed=False)
         elif args.command == "refresh-all":
-            report = refresh_all(root)
+            config=json.loads(args.scoped_config.read_bytes()) if args.scoped_config else None
+            report = refresh_all(root,scoped_sources=config) if config is not None else refresh_all(root)
         else:
             release = verify_release(root)
             cached_target = reusable_confirmed_today(root)

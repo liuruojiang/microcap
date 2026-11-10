@@ -97,7 +97,10 @@ def test_candidate_identity_does_not_call_or_satisfy_live_main_gate(tmp_path,mon
         delivery.verify_candidate_release(tmp_path,'b'*40)
 
 
-def test_scoped_config_cannot_enter_default_formal_release(tmp_path,monkeypatch):
-    monkeypatch.setattr(delivery,'verify_release',lambda _:pytest.fail('explicit candidate required before any source operation'))
-    with pytest.raises(ValueError,match='explicit immutable candidate'):
+def test_formal_scoped_refresh_requires_live_main_before_any_source_operation(tmp_path,monkeypatch):
+    def reject(_):raise ValueError('Exact live main release required')
+    monkeypatch.setattr(delivery,'verify_release',reject)
+    monkeypatch.setattr(delivery.state,'refresh_state',lambda *a,**k:pytest.fail('Release must pass before sources'))
+    with pytest.raises(ValueError,match='Exact live main release required'):
         delivery._refresh_all_unlocked(tmp_path,scoped_sources={})
+    assert not list(tmp_path.iterdir())

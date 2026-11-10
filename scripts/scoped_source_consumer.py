@@ -26,6 +26,7 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
+PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e'})
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
@@ -86,7 +87,7 @@ def validate_source_contract(root, manifest):
     from scripts.stock_input_contract import SOURCE_FILES, source_fingerprint
     context = manifest.get('producer_context', {})
     old = context.get('native_sources')
-    if (manifest.get('runtime_sha') != PRODUCER or context.get('runtime_sha') != PRODUCER
+    if (manifest.get('runtime_sha') not in PRODUCERS or context.get('runtime_sha') != manifest.get('runtime_sha')
             or not isinstance(old, dict) or set(old) != set(SOURCE_FILES)):
         raise ValueError('Scoped source producer/code contract differs')
     current = source_fingerprint(Path(root))
