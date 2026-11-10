@@ -62,6 +62,8 @@ RETURN_BASIS_FILES = [
     "scripts/scoped_source_consumer.py",
     "scripts/scoped_metadata_consumer.py",
     "scripts/scoped_native_consumer.py",
+    "scripts/scoped_forward_consumption.py",
+    "scripts/scoped_cap_boundary.py",
     "scripts/verified_d5_basis_cache.py",
     "data/verified_d5_basis_source_index_20261109.json.gz",
 ]

@@ -851,6 +851,19 @@ SEALED_BASIS_CACHE_N9_SOURCE_REVIEW = {
         '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')},
 }
 
+# Normal v1 inputs retain the exact old verification path. Only the explicit
+# v2 continuation parser adds archived authorities and per-issuer horizons.
+FORWARD_CONSUMPTION_D5_SOURCE_REVIEW=copy.deepcopy(SEALED_BASIS_CACHE_D5_SOURCE_REVIEW)
+FORWARD_CONSUMPTION_D5_SOURCE_REVIEW['revision']='native_forward_consumption_exact_d5_20261110_v12'
+FORWARD_CONSUMPTION_D5_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.py']=(
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
+FORWARD_CONSUMPTION_N9_SOURCE_REVIEW=copy.deepcopy(SEALED_BASIS_CACHE_N9_SOURCE_REVIEW)
+FORWARD_CONSUMPTION_N9_SOURCE_REVIEW['revision']='native_forward_consumption_exact_n9_20261110'
+FORWARD_CONSUMPTION_N9_SOURCE_REVIEW['changes']['scripts/stock_return_pipeline.py']=(
+    '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
+    '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
+
 
 def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
@@ -888,7 +901,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
                    EXACT_LATER_FUTURE_D5_SOURCE_REVIEW, SCOPED_METADATA_D5_SOURCE_REVIEW,
                    RECOVERABLE_PREPARATION_D5_SOURCE_REVIEW, EXACT_FUTURE_STRUCTURE_D5_SOURCE_REVIEW,
                    ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW,SEALED_BASIS_CACHE_D5_SOURCE_REVIEW,
-                   SEALED_BASIS_CACHE_N9_SOURCE_REVIEW):
+                   SEALED_BASIS_CACHE_N9_SOURCE_REVIEW,FORWARD_CONSUMPTION_D5_SOURCE_REVIEW,
+                   FORWARD_CONSUMPTION_N9_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
@@ -934,6 +948,15 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
         fixed.append(verified_d5_basis_cache.REFERENCE)
     prefix = "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_"
     fixed += [prefix + suffix for suffix in ("meta.json", "effective_members.csv", "members.csv", "turnover.csv")]
+    forward_reader=None
+    meta_path=root/(prefix+'meta.json')
+    if meta_path.is_file():
+        proof=json.loads(meta_path.read_bytes()).get('return_basis_consumption',{})
+        if proof.get('revision')=='stock_return_consumption_v2':
+            from scripts import scoped_forward_consumption as forward_reader
+            fixed += forward_reader.dependency_names(root,proof)
+            fixed += ['scripts/scoped_cap_boundary.py','scripts/scoped_forward_consumption.py']
+    fixed=list(dict.fromkeys(fixed))
     trees = [".microcap_index_cache/" + name for name in ("prices_raw", "return_basis", "trade_status")]
 
     def linked(path):
@@ -1053,6 +1076,9 @@ def _return_basis_input_fingerprint(root: Path, target: str, symbols: tuple[str,
     modules = (pipeline, stock_return_basis, stock_return_basis_store, tradeability_evidence, exchange_calendar)
     if has_equivalence_reference:
         modules += (verified_d5_basis_cache,)
+    if forward_reader is not None:
+        from scripts import scoped_cap_boundary
+        modules += (forward_reader,scoped_cap_boundary)
     for module in modules:
         digest.update(module.__name__.encode() + _sha256(Path(module.__file__)).encode())
         # Also invalidate test/runtime replacements of the functions actually used.
@@ -2065,9 +2091,9 @@ def refresh_state(
         if target_end_date is None:
             raise ValueError(f"cannot parse refresh target date: {target_end_ts}")
         if scoped_sources is not None:
-            from scripts.scoped_native_consumer import consume_no_rebalance
+            from scripts.scoped_native_consumer import consume_sources
             _log_refresh_phase("adopt_verified_scoped_native_sources")
-            consume_no_rebalance(root=root, base=v2_0.base_mod, args=args,
+            consume_sources(root=root, base=v2_0.base_mod, args=args,
                 paths=base_paths, panel_path=panel_path, target=target_end_ts, config=scoped_sources)
             notice_refresh_completed = True
         elif notice_refresh_required:

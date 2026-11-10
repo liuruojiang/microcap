@@ -32,6 +32,8 @@ ARCHIVED_PROOF_READER = (
 SEALED_BASIS_READER = (
     '19eb18eecf7a335ce791c3194060caa53f2170a54598f16dd9172fc2dc4a031d',
     '24f668a1fea1570b92c31dcace7f01a0f1e2f8f0f59725166f3a413ce0e706f3')
+FORWARD_CONSUMPTION_READER=(SEALED_BASIS_READER[0],
+    '3c248e53500ea3952057f953bfe8e87e03f47eeb076d7b1a4a224ddf9b599ecb')
 
 
 def sha(raw):
@@ -91,7 +93,8 @@ def validate_source_contract(root, manifest):
     changed = {name for name in old if old[name] != current[name]}
     archived={'scripts/st_notice_refresh.py':ARCHIVED_PROOF_READER}
     cached={**archived,'scripts/stock_return_pipeline.py':SEALED_BASIS_READER}
-    if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in (archived,cached)):
+    forward={**archived,'scripts/stock_return_pipeline.py':FORWARD_CONSUMPTION_READER}
+    if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in (archived,cached,forward)):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
 
@@ -167,7 +170,8 @@ def consumed_boundaries(root, base, args, paths):
     full, latest, stable = _consumption_requirements(root, end, universe)
     # The native validator authenticates all member hashes, actual executions,
     # tail sessions and the complete chain. Cold candidates inherit full only.
-    horizons = {symbol: end if symbol in latest else full for symbol in universe}
+    horizons = {symbol:(latest.get(symbol,full) if isinstance(latest,dict)
+                       else end if symbol in latest else full) for symbol in universe}
     stable[args.costed_nav_csv] = args.costed_nav_csv.read_bytes()
     return horizons, stable
 

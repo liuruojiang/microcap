@@ -28,6 +28,42 @@ ACTIVE = '.microcap_index_cache/scoped_native_consumer.json'
 _CONTEXT = None
 
 
+def maintained_candidate_symbols(root,current_end,target):
+    context=_CONTEXT
+    if context is None or not context.get('forward_mode'):
+        return None
+    if (Path(root).resolve()!=context['root'] or str(pd.Timestamp(current_end).date())!=context['current_end']
+            or str(pd.Timestamp(target).date())!=context['target']):
+        raise ValueError('Native candidate selection escaped its authenticated forward window')
+    return list(context['plan']['symbols'])
+
+
+def capture_forward_calculation(root,**values):
+    context=_CONTEXT
+    if context is None or not context.get('forward_mode'):
+        return
+    if Path(root).resolve()!=context['root'] or context.get('forward_inputs') is not None:
+        raise ValueError('Unexpected or duplicate native forward calculation')
+    from scripts.scoped_forward_consumption import capture
+    from scripts.scoped_cap_boundary import verify
+    data=capture(**values);boundaries={}
+    for day in data['rebalance_dates']:
+        spec=context['config'].get('boundary_snapshots',{}).get(day)
+        if not spec:raise ValueError('A new rebalance needs its real dated whole-market boundary pages: '+day)
+        source=Path(spec['source_root']).resolve()
+        directory=(context['forward_directory']/'boundary'/day).relative_to(context['root']).as_posix()
+        for name,digest in spec['files'].items():
+            if Path(name).name!=name or not name.startswith('page-') or not name.endswith('.json'):
+                raise ValueError('Unsupported boundary source page role')
+            raw=sources.bound(source,spec['directory']+'/'+name).read_bytes()
+            if sources.sha(raw)!=digest:raise ValueError('Configured boundary page bytes changed')
+            sources.atomic(sources.bound(context['root'],directory+'/'+name),raw)
+        saved=dict(directory=directory,files=spec['files'])
+        boundaries[day]=verify(context['root'],context['base'],day,data['caps'][day],
+            context['plan']['symbols'],saved,list(resolve_archive_reference(context['root'])),materialize=True)
+    data['boundaries']=boundaries;context['forward_inputs']=data
+
+
 def reuse_verified_sources(root, symbols, target):
     """Called only at the original native price/share/ratio refresh boundary."""
     context = _CONTEXT
@@ -114,7 +150,15 @@ def checked_producer(source, config, manifest):
     return receipt, name_path
 
 
-def consume_no_rebalance(*, root, base, args, paths, panel_path, target, config):
+def consume_no_rebalance(**kwargs):
+    return _consume(**kwargs,allow_forward=False)
+
+
+def consume_sources(**kwargs):
+    return _consume(**kwargs,allow_forward=True)
+
+
+def _consume(*, root, base, args, paths, panel_path, target, config,allow_forward=False):
     """Earn a forward state from a complete staged source run, never a full rebuild."""
     global _CONTEXT
     if _CONTEXT is not None:
@@ -151,10 +195,12 @@ def consume_no_rebalance(*, root, base, args, paths, panel_path, target, config)
         raise ValueError('Scoped consumer cannot replace newer native outputs')
     dates = pd.DatetimeIndex(pd.to_datetime(pd.read_csv(panel_path)['date'], errors='raise'))
     scheduled = base.build_biweekly_rebalance_dates(dates)
+    crosses=((scheduled > pd.Timestamp(current_end)) & (scheduled <= pd.Timestamp(target))).any()
     if (target not in dates or pd.Timestamp(current_end) not in dates
             or dates.has_duplicates or not dates.is_monotonic_increasing or dates.max() > pd.Timestamp(target)
-            or ((scheduled > pd.Timestamp(current_end)) & (scheduled <= pd.Timestamp(target))).any()):
+            or (crosses and not allow_forward)):
         raise ValueError('Scoped no-rebalance consumer cannot certify a rebalance boundary')
+    forward_mode=bool(crosses or prior.get('return_basis_consumption',{}).get('revision')=='stock_return_consumption_v2')
     consumed, observed = sources.consumed_boundaries(root, base, args, paths)
     # The actual old core/data/metadata gate has just passed, before any input
     # or authority mutation. The original canonical proxy remains byte-identical.
@@ -222,14 +268,28 @@ def consume_no_rebalance(*, root, base, args, paths, panel_path, target, config)
             candidate = copy.deepcopy(prior)
             candidate['core_params']['security_meta_cache_fingerprint'] = meta_plan['fingerprint']
             base._atomic_write_json(staged_paths['proxy_meta'], candidate, encoding='utf-8')
-            _CONTEXT = dict(root=root, target=target, plan=source_plan, stack=stack, adopted=False)
+            from scripts import scoped_forward_consumption as forward
+            forward_directory=root/forward.PREFIX/uuid.uuid4().hex
+            _CONTEXT = dict(root=root, target=target, plan=source_plan, stack=stack, adopted=False,
+                forward_mode=forward_mode,current_end=current_end,base=base,config=config,
+                forward_directory=forward_directory,forward_inputs=None)
             try:
-                if not base.try_extend_proxy_index_without_rebalance(staged_args, staged_paths, panel_path, pd.Timestamp(target)):
+                if forward_mode:
+                    from scripts.st_metadata_refresh import frozen_notice_sources
+                    with frozen_notice_sources(root):
+                        base.extend_index_recent_window(staged_args,staged_paths,panel_path,pd.Timestamp(target))
+                    if _CONTEXT['forward_inputs'] is None:
+                        raise ValueError('Native forward computation did not produce its original input receipt')
+                elif not base.try_extend_proxy_index_without_rebalance(staged_args, staged_paths, panel_path, pd.Timestamp(target)):
                     raise ValueError('Original native scoped proxy continuation rejected')
                 if not _CONTEXT['adopted']:
                     raise ValueError('Native continuation did not cross its source adoption boundary')
                 if not base.try_extend_costed_nav_without_turnover(staged_args, panel_path, pd.Timestamp(target), staged_paths['proxy_turnover']):
-                    raise ValueError('Original native scoped costed NAV continuation rejected')
+                    if forward_mode:
+                        base.rebuild_costed_nav_from_proxy_turnover(staged_args,staged_paths,panel_path,target_end_date=pd.Timestamp(target))
+                    else:
+                        raise ValueError('Original native scoped costed NAV continuation rejected')
+                captured=_CONTEXT['forward_inputs']
             finally:
                 _CONTEXT = None
             for old, new, proxy in ((args.index_csv,staged_args.index_csv,True),
@@ -237,10 +297,19 @@ def consume_no_rebalance(*, root, base, args, paths, panel_path, target, config)
                 preserve_verified_replay_prefix(base, originals[old], new, proxy=proxy)
                 if not new.read_bytes().startswith(originals[old]) or str(pd.Timestamp(base.read_csv_last_date(new)).date()) != target:
                     raise ValueError('Native scoped continuation changed its approved prefix or target')
-            for key in ('proxy_members','proxy_turnover','proxy_effective_members'):
+            for key in (() if forward_mode else ('proxy_members','proxy_turnover','proxy_effective_members')):
                 if staged_paths[key].read_bytes() != originals[paths[key]]:
                     raise ValueError('No-rebalance scoped continuation changed executed member authority')
             result_meta = json.loads(staged_paths['proxy_meta'].read_bytes())
+            if forward_mode:
+                old_payloads=dict(index=originals[args.index_csv],costed=originals[args.costed_nav_csv],
+                    **{k:originals[paths['proxy_'+k]] for k in ('meta','members','turnover')},
+                    effective=originals[paths['proxy_effective_members']])
+                new_payloads=dict(index=staged_args.index_csv.read_bytes(),costed=staged_args.costed_nav_csv.read_bytes(),
+                    **{k:staged_paths['proxy_'+k].read_bytes() for k in ('meta','members','turnover')},
+                    effective=staged_paths['proxy_effective_members'].read_bytes())
+                result_meta['return_basis_consumption']=forward.append(root,forward_directory,prior,
+                    old_payloads,new_payloads,captured,manifest['symbols'],config['bundle_sha256'])
             if not base.proxy_meta_matches_execution_model(result_meta):
                 raise ValueError('Native scoped continuation did not earn the actual new fingerprints')
             original_proxy = work / 'original_proxy.json'; sources.atomic(original_proxy, prior_raw)
@@ -258,14 +327,16 @@ def consume_no_rebalance(*, root, base, args, paths, panel_path, target, config)
             for destination in outputs:
                 if destination.read_bytes() != originals[destination]:
                     raise ValueError('Concurrent native output modification before scoped publish')
-            for destination, staged in ((args.index_csv,staged_args.index_csv),
-                    (args.costed_nav_csv,staged_args.costed_nav_csv),(paths['proxy_meta'],staged_paths['proxy_meta'])):
+            installs=[(args.index_csv,staged_args.index_csv),
+                (args.costed_nav_csv,staged_args.costed_nav_csv),(paths['proxy_meta'],staged_paths['proxy_meta'])]
+            if forward_mode:installs += [(paths[k],staged_paths[k]) for k in ('proxy_members','proxy_turnover','proxy_effective_members')]
+            for destination, staged in installs:
                 payload = staged.read_bytes(); published[destination] = payload
                 sources.atomic(destination, payload)
             published[sources.bound(root,ACTIVE)] = marker_raw
             sources.atomic(sources.bound(root,ACTIVE), marker_raw)
             scoped_transport_files(root)
-        return dict(status='native_scoped_no_rebalance_continuation_passed', target=target,
+        return dict(status='native_scoped_forward_continuation_passed' if forward_mode else 'native_scoped_no_rebalance_continuation_passed', target=target,
                     maintained_issuers=300, final_strategy_delivery=False)
     except BaseException:
         for destination, installed in reversed(list(published.items())):
@@ -347,4 +418,13 @@ def scoped_transport_files(root):
     effective=pd.read_csv(root/'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_effective_members.csv',dtype={'symbol':str})
     if len(effective)!=100 or not set(effective.symbol)<=set(symbols):
         raise ValueError('Actual executed members escape the maintained metadata scope')
+    if proxy.get('return_basis_consumption',{}).get('revision')=='stock_return_consumption_v2':
+        from scripts.scoped_forward_consumption import requirements
+        path=root/'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json'
+        import microcap_top100_mom16_biweekly_live_v2_0 as v
+        universe=set(v.base_mod.freq_mod.list_backtest_universe_symbols())
+        _,_,stable=requirements(root,marker['target'],universe,proxy,path,path.read_bytes())
+        for path,body in stable.items():
+            relative=sources.extended(path).relative_to(sources.extended(root)).as_posix()
+            files[relative]=sources.sha(body)
     return files
