@@ -46,6 +46,11 @@ EXACT_FUTURE_STRUCTURE_301429 = dict(symbol='301429', announcement_id='AN2026110
     provider_notice_date='2026-11-10', total_shares=118220000,
     row_sha256_by_day={'2026-11-10':'d2e8743ddf2b2ae0caf571e9057090840d13e791998622275386f4bc3d5e99d3',
                        '2026-11-12':'1eeabcec4ff5f278a00cd2e4b3e702d5858881c1edec4fc2eb11f761bf959843'},
+    # Nov11 reobserved only FREELIQCI_SHARES 35884736 -> 35884739 in the
+    # still-future Nov12 catalog row. Keep both original exact identities;
+    # this changes neither total shares nor the plan's execution status.
+    additional_row_sha256_by_day={'2026-11-12':(
+        'e3650714e308713862a751c71a551e786a508cae45d3232bdd3aa51ca6c53c8e',)},
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611091831558999_1.pdf',
     pdf_sha256='2d40c57542b84922e0e9c97f7e69bc35b0291f81eed39bd8d166506619c6c65e',pdf_bytes=203662)
 # Observed through Google/Cloudflare/Ali DNS and verified against the real
@@ -698,8 +703,9 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                         certified=[r for r in old if r['change_date'][:10]<=ds]
                         need(certified,'reviewed structural date precedes the protected share curve')
                         dated_total=n.amount(certified[-1]['total_shares_10k'])
+                    accepted={review['row_sha256_by_day'][ds],*review.get('additional_row_sha256_by_day',{}).get(ds,())}
                     need(_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
-                         ==review['row_sha256_by_day'][ds] and row['INFO_CODE']==review['announcement_id']
+                         in accepted and row['INFO_CODE']==review['announcement_id']
                          and row['SECURITY_CODE']==symbol and row['LISTING_DATE'][:10]==ds
                          and row['NOTICE_DATE'][:10]==review['provider_notice_date']
                          and n.amount(row['TOTAL_SHARES'])==review['total_shares']==dated_total*10000
