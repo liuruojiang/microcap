@@ -57,3 +57,52 @@ def test_recovery_cannot_consume_unproved_failure_evidence(exhausted,monkeypatch
         p.write_text(json.dumps(r))
     monkeypatch.setattr(native,'_save_public_observation',lambda **kwargs:pytest.fail('network must remain blocked'))
     with pytest.raises((ValueError,FileNotFoundError)):recover(exhausted,monkeypatch)
+
+
+@pytest.fixture
+def http_exhausted(exhausted):
+    _,folder,clock,params=exhausted
+    for number in range(1,5):
+        (folder/f'quote_attempt{number}.transport.json').unlink()
+        raw=b'<html>502 Bad Gateway</html>'
+        (folder/f'quote_attempt{number}.raw').write_bytes(raw)
+        (folder/f'quote_attempt{number}.receipt.json').write_text(json.dumps(dict(
+            schema='share_unchanged_tail_receipt_v1',url=native.QUOTE_URL,params=params,
+            http_start=(clock-timedelta(minutes=5-number)).isoformat(),http_complete=clock.isoformat(),
+            http_status=502,tls_verification=True,raw_sha256=source._sha(raw),bytes=len(raw))))
+    return exhausted
+
+
+def test_http_5xx_has_one_separately_evidenced_cooled_budget(http_exhausted,monkeypatch):
+    _,folder,_,_=http_exhausted
+    before={p:p.read_bytes() for p in folder.iterdir()};calls=[]
+    def timeout(**kwargs):
+        calls.append(kwargs['directory'])
+        raise RuntimeError('SHARE_REQUEST_RETRY_EXHAUSTED: quote')
+    monkeypatch.setattr(native,'_save_public_observation',timeout)
+    with pytest.raises(ValueError,match='cooling'):recover(http_exhausted,monkeypatch,29)
+    assert not calls
+    with pytest.raises(RuntimeError,match='EXHAUSTED'):recover(http_exhausted,monkeypatch)
+    assert calls[0].name.startswith('http_5xx_recovery_')
+    marker=json.loads((calls[0]/'started.json').read_bytes())
+    assert marker['failure_kind']=='http_5xx' and marker['max_attempts']==4
+    assert len(marker['initial_attempts'])==8
+    assert all(p.read_bytes()==raw for p,raw in before.items())
+    with pytest.raises(FileExistsError):recover(http_exhausted,monkeypatch,120)
+    assert len(calls)==1
+
+
+@pytest.mark.parametrize('fault',['rejected','content','tls','params','body','count','future_clock'])
+def test_http_recovery_never_waives_source_or_refusal_checks(http_exhausted,monkeypatch,fault):
+    _,folder,_,_=http_exhausted
+    path=folder/'quote_attempt1.receipt.json';record=json.loads(path.read_bytes())
+    if fault=='rejected':record['http_status']=403
+    elif fault=='content':record['http_status']=200
+    elif fault=='tls':record['tls_verification']=False
+    elif fault=='params':record['params']={}
+    elif fault=='body':(folder/'quote_attempt1.raw').write_bytes(b'changed original')
+    elif fault=='count':record['bytes']+=1
+    else:record['http_complete']='2099-01-01T00:00:00+00:00'
+    path.write_text(json.dumps(record))
+    monkeypatch.setattr(native,'_save_public_observation',lambda **kwargs:pytest.fail('network must remain blocked'))
+    with pytest.raises(ValueError):recover(http_exhausted,monkeypatch)

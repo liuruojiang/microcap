@@ -27,7 +27,8 @@ CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
 PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e',
-    'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815'})
+    'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
+    'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5'})
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
@@ -39,6 +40,11 @@ FORWARD_CONSUMPTION_READER=(SEALED_BASIS_READER[0],
 TOTAL_NEUTRAL_SHARE_READER=(
     '996e3eb846894acc03cd0ac62e87bc5bf8fafe16dae686e83f65db71585b1112',
     '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b')
+FUTURE_PLAN_SHARE_READER=(TOTAL_NEUTRAL_SHARE_READER[1],
+    '21ab5dddc118c73d118a12dcc5250dde21b767677c42692b5a055eeed051f34f')
+FUTURE_PLAN_REGISTRY_READER=(
+    '972825f752eb59d274c14e6a009f1b92cbed2e4a3f45ad5adce027f3b174e2e1',
+    '86c353677ec35023bc451c00ca1fd13966f117e3cc7352958d0d5b28bd1b7aa8')
 
 
 def sha(raw):
@@ -101,7 +107,12 @@ def validate_source_contract(root, manifest):
     forward={**archived,'scripts/stock_return_pipeline.py':FORWARD_CONSUMPTION_READER}
     original=(archived,cached,forward)
     neutral={'scripts/share_change_source.py':TOTAL_NEUTRAL_SHARE_READER}
-    reviews=(*original,neutral,*({**r,**neutral} for r in original))
+    plans={'scripts/share_change_source.py':FUTURE_PLAN_SHARE_READER,
+           'data/share_source_future_plan_reviews.json':FUTURE_PLAN_REGISTRY_READER}
+    old_plans={**plans,'scripts/share_change_source.py':(
+        TOTAL_NEUTRAL_SHARE_READER[0],FUTURE_PLAN_SHARE_READER[1])}
+    reviews=(*original,neutral,*({**r,**neutral} for r in original),plans,old_plans,
+             *({**r,**p} for r in original for p in (plans,old_plans)))
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current

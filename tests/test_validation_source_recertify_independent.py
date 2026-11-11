@@ -37,7 +37,7 @@ def test_authenticated_cache_change_after_base_validation_cannot_be_recertified(
                 "bytes": len(initial), "sha256": hashlib.sha256(initial).hexdigest()}],
                 "price_cache_files": []}
 
-    def inspect(root, expected):
+    def inspect(root, expected, **_options):
         if validated:
             changed = initial.replace(b":1}", b":2}") if path.suffix == ".json" else initial.replace(b",1\n", b",2\n")
             path.write_bytes(changed)
@@ -65,7 +65,7 @@ def test_native_next_session_refresh_expires_source_only_receipt(adoption, monke
         calls.append("refresh")
         return {"ok": True, "errors": []}
 
-    def inspect(root, expected):
+    def inspect(root, expected, **_options):
         result = case["report"]()
         result["expected_date"] = expected
         for stream in result["streams"].values():
@@ -95,6 +95,9 @@ def test_native_commit_identity_covers_nonmember_raw_even_when_whole_inputs_do_n
     day = "2026-09-03"
     raw = root / state.PRICE_CACHE_DIR / "999998.csv"
     raw.write_bytes(b"date,close_raw\n2026-09-03,1\n")
+    # The native forward reader parses this leaf even in a metadata-free
+    # software case. Use a valid empty object instead of the old literal seed.
+    (root / "outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json").write_bytes(b"{}")
     first = delivery.inspect_outputs(root, day)
     assert first["ok"], first["errors"]
     # Only RELEASE_FILES fixture completeness is substituted; inputs/artifacts

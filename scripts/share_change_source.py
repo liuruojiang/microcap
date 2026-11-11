@@ -46,6 +46,11 @@ EXACT_FUTURE_STRUCTURE_301429 = dict(symbol='301429', announcement_id='AN2026110
     provider_notice_date='2026-11-10', total_shares=118220000,
     row_sha256_by_day={'2026-11-10':'d2e8743ddf2b2ae0caf571e9057090840d13e791998622275386f4bc3d5e99d3',
                        '2026-11-12':'1eeabcec4ff5f278a00cd2e4b3e702d5858881c1edec4fc2eb11f761bf959843'},
+    # Nov11 reobserved only FREELIQCI_SHARES 35884736 -> 35884739 in the
+    # still-future Nov12 catalog row. Keep both original exact identities;
+    # this changes neither total shares nor the plan's execution status.
+    additional_row_sha256_by_day={'2026-11-12':(
+        'e3650714e308713862a751c71a551e786a508cae45d3232bdd3aa51ca6c53c8e',)},
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611091831558999_1.pdf',
     pdf_sha256='2d40c57542b84922e0e9c97f7e69bc35b0291f81eed39bd8d166506619c6c65e',pdf_bytes=203662)
 # Observed through Google/Cloudflare/Ali DNS and verified against the real
@@ -698,8 +703,9 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                         certified=[r for r in old if r['change_date'][:10]<=ds]
                         need(certified,'reviewed structural date precedes the protected share curve')
                         dated_total=n.amount(certified[-1]['total_shares_10k'])
+                    accepted={review['row_sha256_by_day'][ds],*review.get('additional_row_sha256_by_day',{}).get(ds,())}
                     need(_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
-                         ==review['row_sha256_by_day'][ds] and row['INFO_CODE']==review['announcement_id']
+                         in accepted and row['INFO_CODE']==review['announcement_id']
                          and row['SECURITY_CODE']==symbol and row['LISTING_DATE'][:10]==ds
                          and row['NOTICE_DATE'][:10]==review['provider_notice_date']
                          and n.amount(row['TOTAL_SHARES'])==review['total_shares']==dated_total*10000
@@ -896,28 +902,44 @@ def _dated_public_observation(*, directory, source, url, params, purpose, end, n
     if exhausted.exists():
         raw=exhausted.read_bytes();terminal=json.loads(raw)
         n.require(purpose=='quote' and url==n.QUOTE_URL,'exhausted source requires separate diagnosis')
-        folder=directory/('transport_recovery_'+_sha(raw))
+        ended=datetime.fromisoformat(terminal['recorded_at'])
+        n.require(terminal.get('error')=='SHARE_REQUEST_RETRY_EXHAUSTED: quote' and ended.tzinfo is not None,
+                  'quote exhaustion identity differs')
+        attempts={}
+        transport=all((directory/f'{purpose}_attempt{number}.transport.json').exists() for number in range(1,5))
+        kind='transport_recovery_' if transport else 'http_5xx_recovery_'
+        for number in range(1,5):
+            path=directory/f'{purpose}_attempt{number}{".transport" if transport else ".receipt"}.json'
+            body=path.read_bytes();record=json.loads(body)
+            start=datetime.fromisoformat(record['http_start']);finish=datetime.fromisoformat(record['http_complete'])
+            n.require(record.get('url')==url and record.get('params')==params
+                      and start.tzinfo is not None and finish.tzinfo is not None and start<=finish<=ended,
+                      'quote recovery initial transport evidence differs')
+            attempts[path.name]=_sha(body)
+            if transport:
+                n.require(record.get('status')=='transport_failure_no_response'
+                          and record.get('error_type') in {'ReadTimeout','ConnectTimeout','ConnectionError'},
+                          'quote recovery initial transport evidence differs')
+            else:
+                page=directory/f'{purpose}_attempt{number}.raw';page_raw=page.read_bytes()
+                n.require(record.get('schema')=='share_unchanged_tail_receipt_v1'
+                          and record.get('http_status') in {500,502,503,504}
+                          and record.get('tls_verification') is True and record.get('raw_sha256')==_sha(page_raw)
+                          and record.get('bytes')==len(page_raw),
+                          'quote recovery initial HTTP 5xx evidence differs')
+                attempts[page.name]=_sha(page_raw)
+        folder=directory/(kind+_sha(raw))
         cached=read(folder)
         if cached is not None:return cached
         clock=now or datetime.now(timezone.utc)
-        ended=datetime.fromisoformat(terminal['recorded_at'])
-        n.require(ended.tzinfo is not None and clock-ended>=timedelta(minutes=30),
+        n.require(clock-ended>=timedelta(minutes=30),
                   'quote transport recovery cooling period is not complete')
-        attempts={}
-        for number in range(1,5):
-            path=directory/f'{purpose}_attempt{number}.transport.json'
-            body=path.read_bytes();record=json.loads(body)
-            start=datetime.fromisoformat(record['http_start']);finish=datetime.fromisoformat(record['http_complete'])
-            n.require(record.get('status')=='transport_failure_no_response' and record.get('url')==url
-                      and record.get('params')==params and record.get('error_type') in {'ReadTimeout','ConnectTimeout','ConnectionError'}
-                      and start.tzinfo is not None and start<=finish<=ended,
-                      'quote recovery initial transport evidence differs')
-            attempts[path.name]=_sha(body)
         folder.mkdir(exist_ok=True)
         # Exclusive marker makes this a single bounded recovery even after a crash.
         with (folder/'started.json').open('xb') as stream:
             stream.write(json.dumps(dict(started_at=clock.isoformat(),initial_exhaustion_sha256=_sha(raw),
-                                          initial_attempts=attempts,max_attempts=4)).encode())
+                                          initial_attempts=attempts,max_attempts=4,
+                                          failure_kind='no_response' if transport else 'http_5xx')).encode())
     try:
         return n._save_public_observation(directory=folder,source=source,url=url,params=params,purpose=purpose,end=end)
     except RuntimeError as error:

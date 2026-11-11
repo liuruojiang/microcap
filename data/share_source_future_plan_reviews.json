@@ -18,6 +18,38 @@
       ],
       "pdf_sha256": "efb3ccab1dd352fed15404936b03d44c949aeabee74f235e64cff0b4a60d8964",
       "pdf_bytes": 115925
+    },
+    {
+      "symbol": "300535",
+      "announcement_id": "AN202611101831596291",
+      "notice_number": "2026-062",
+      "provider_notice_date": "2026-11-11",
+      "document_signature_date": "2026-11-11",
+      "planned_date": "2026-11-12",
+      "before_total_shares": 107019863,
+      "after_total_shares": 108177343,
+      "change_total_shares": 1157480,
+      "status": "verified_future_plan_not_executed",
+      "pdf_url": "https://pdf.dfcfw.com/pdf/H2_AN202611101831596291_1.pdf",
+      "pdf_alternate_urls": [],
+      "pdf_sha256": "57402fedb9a03fe919e43b4261c95d7a35c4fc2f8481d6a36a94cb9d6f4970ba",
+      "pdf_bytes": 164416
+    },
+    {
+      "symbol": "300644",
+      "announcement_id": "AN202611101831590688",
+      "notice_number": "2026-063",
+      "provider_notice_date": "2026-11-10",
+      "document_signature_date": "2026-11-10",
+      "planned_date": "2026-11-12",
+      "before_total_shares": 110933506,
+      "after_total_shares": 110973506,
+      "change_total_shares": 40000,
+      "status": "verified_future_plan_not_executed",
+      "pdf_url": "https://pdf.dfcfw.com/pdf/H2_AN202611101831590688_1.pdf",
+      "pdf_alternate_urls": [],
+      "pdf_sha256": "00c72869319cb8e8ef844fb7a367ab20c0a4de5259bcaf5eb20181057c0d8b57",
+      "pdf_bytes": 157324
     }
   ],
   "unchanged_event_approval": {
