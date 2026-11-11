@@ -1,0 +1,12 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611101831591478_1.pdf",
+  "actual_url": "https://pdf.dfcfw.com/pdf/H2_AN202611101831591478_1.pdf",
+  "http_status": 200,
+  "http_start": "2026-11-11T14:43:12.902558+00:00",
+  "http_complete": "2026-11-11T14:43:14.757065+00:00",
+  "raw_sha256": "dd34e56de6f9c13f29bcaa0ff93f7aec0bdf4780ad16325cd1a3c9ae421df320",
+  "bytes": 117485,
+  "tls_verification": true,
+  "redirects_allowed": false,
+  "scope": "issuer_document_observation_not_history_adoption"
+}
