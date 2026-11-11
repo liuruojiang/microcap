@@ -121,10 +121,10 @@ def test_corrupt_forward_authority_never_inherits_a_legacy_pass(forward,fault):
 def test_boundary_truncated_market_and_eligible_pool_escape_fail_closed(forward,monkeypatch):
     root,meta,proof,inputs,requested,base=forward
     spec=inputs['boundaries']['2026-10-29']['snapshot']
-    # Even a self-consistent provider count cannot shrink below the active native master.
+    # Even a self-consistent provider count cannot omit an active native issuer.
     master=base.freq_mod.load_security_master()
-    monkeypatch.setattr(base.freq_mod,'load_security_master',lambda:pd.concat([master,master.assign(symbol='000500')]))
-    with pytest.raises(ValueError,match='smaller than the native active master'):
+    monkeypatch.setattr(base.freq_mod,'load_security_master',lambda:pd.concat([master,master.iloc[[0]].assign(symbol='000500')]))
+    with pytest.raises(ValueError,match='missing active native A-share issuers: 000500'):
         boundary.verify(root,base,'2026-10-29',inputs['caps']['2026-10-29'],proof['segments'][0]['symbols'],spec,['fixture','1'*64])
 
 

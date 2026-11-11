@@ -288,3 +288,35 @@ def test_reviewed_source_change_set_exactly_matches_actual_input_paths(frozen):
         assert delivery.sha(ROOT/name)==after
     from scripts.stock_input_contract import SOURCE_FILES
     assert {n for n in a.input_changes() if n in SOURCE_FILES}==set(a.CHANGES)
+
+
+def test_boundary_review_is_exact_nonstock_source_change(frozen):
+    from scripts.stock_input_contract import SOURCE_FILES
+    name='scripts/scoped_cap_boundary.py'
+    original=json.loads(frozen['raw']('bundle-manifest.json'))
+    before,after=a.ARCHIVE_INPUT_CHANGES[name]
+    assert name in delivery.RELEASE_FILES and name not in SOURCE_FILES and name not in a.CHANGES
+    assert before==original['inputs'][name] and after==delivery.sha(ROOT/name)
+    assert before!=after
+    assert a.REVISION=='exact_m3_20261110_boundary_coverage_source_only_v2'
+    a.require_transition(original,current_report(original))
+
+
+@pytest.mark.parametrize('fault',['old_boundary','different_boundary','unreviewed_companion'])
+def test_archive_boundary_review_does_not_accept_other_source_bytes(frozen,fault):
+    name='scripts/scoped_cap_boundary.py'
+    original=json.loads(frozen['raw']('bundle-manifest.json'))
+    current=current_report(original)
+    if fault=='old_boundary':current['inputs'][name]=a.ARCHIVE_INPUT_CHANGES[name][0]
+    elif fault=='different_boundary':current['inputs'][name]='a'*64
+    else:current['inputs']['scripts/scoped_forward_consumption.py']='a'*64
+    with pytest.raises(ValueError,match='unreviewed input bytes'):
+        a.require_transition(original,current)
+
+
+def test_old_active_receipt_does_not_gain_the_new_boundary_review(transaction):
+    root,_,_=transaction
+    saved=a.recertify(root,a.DATE)
+    saved[a.ACTIVE]['revision']='exact_m3_20261110_share_observation_source_only_v1'
+    with pytest.raises(ValueError,match='exact M3 review'):
+        a.checked_receipt(saved[a.ACTIVE])

@@ -18,7 +18,7 @@ DATE = '2026-11-10'
 RELEASE = '872abe41d48f818363d879cdf98b297d230377b4'
 PROXY = 'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json'
 MODULE = 'scripts/scoped_archive_source_revalidation.py'
-REVISION = 'exact_m3_20261110_share_observation_source_only_v1'
+REVISION = 'exact_m3_20261110_boundary_coverage_source_only_v2'
 STOCK_IDENTITY = '7c0520448023df5a318689e59fb9965da7da2239a069b55133f26c52951e5c04'
 CHANGES = {
     'scripts/share_change_source.py': (
@@ -30,7 +30,10 @@ CHANGES = {
 }
 # Exact additional notice-review source changes are frozen here before release.
 # These are outside the 18 stock-reader sources and never relax stock/data gates.
-ARCHIVE_INPUT_CHANGES = {'data/st_notice_boundary_reviews/reviewed_20261111/AN202611091831555385.pdf': (None,
+ARCHIVE_INPUT_CHANGES = {'scripts/scoped_cap_boundary.py': (
+    '54670a424c41ff805c7a87f1116e36975e782aaec56a7b8b7d8a7ea8b6831673',
+    '595950c1532ce927b1707c572ebb88a86e790e8e72afbb342d9e9728f0d9fc11'),
+ 'data/st_notice_boundary_reviews/reviewed_20261111/AN202611091831555385.pdf': (None,
                                                                                 '2143bce97172e6e08c77511595bc6cabdf066848e200ef81d9446f4d2db97752'),
  'data/st_notice_boundary_reviews/reviewed_20261111/AN202611091831555385.receipt.json': (None,
                                                                                          'd07edd7a4ae98745a048900c9c09410603442d4a5eef9861bd4c9138eca81b79'),
@@ -272,7 +275,7 @@ def stock_compatible(recorded, current, root=None):
 
 
 def require_transition(original, current):
-    """Only the two exact source edits plus this new release-verified reader."""
+    """Only the exact reviewed source edits plus this release-verified reader."""
     if current.get('ok') is not True or current.get('errors') != [] or current.get('expected_date') != DATE:
         raise ValueError('Archive source revalidation is limited to the complete 10-Nov archive')
     for key in ('scope', 'artifacts', 'streams'):
