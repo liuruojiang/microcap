@@ -123,6 +123,10 @@ def verify(path):
         raise ValueError('Version state date differs from checkpoint')
     if any(item.get('strategy_revision') != REVISIONS[version] for version, item in state['versions'].items()):
         raise ValueError('Version revision differs from approved strategy')
+    if 'hedge_precision_bridge_v1' in period:
+        from scripts.member_hedge_precision_bridge import checked_bridge
+        checked_bridge(period, read_bound(checkpoint, 'history'), anchor,
+                       version_state_raw=read_bound(checkpoint, 'version_state'))
     return checkpoint
 
 
@@ -261,7 +265,7 @@ def bootstrap(root, out):
     }, dict(as_of_date=anchor, next_trade_date=next_trade_date, strategy_sha=strategy_sha, bootstrap_source='existing_formal_exports'))
 
 
-def handoff(current_path, candidate_path, session, next_session, out):
+def handoff(current_path, candidate_path, session, next_session, out, *, hedge_precision_witness=None):
     current, candidate = verify(current_path), verify(candidate_path)
     session, next_session = day(session), day(next_session)
     if candidate['as_of_date'] != session or current['as_of_date'] > session or next_session <= session:
@@ -286,7 +290,11 @@ def handoff(current_path, candidate_path, session, next_session, out):
     if not len(future) or future[0] != pd.Timestamp(next_session):
         raise ValueError('Return start is not the next actual exchange session')
     period = json.loads(read_bound(candidate, 'period'))
-    if extends_previous:
+    current_period = json.loads(read_bound(current, 'period'))
+    derived_history = derived_state = None
+    bridge = None
+    needs_bridge = hedge_precision_witness is not None or 'hedge_precision_bridge_v1' in current_period
+    if extends_previous or needs_bridge:
         # The 15:10 native maintenance producer finishes R before the 16:00
         # report. Require its existing full-delivery acceptance and an exact
         # old-history prefix; do not manufacture a prior R daily run.
@@ -296,7 +304,17 @@ def handoff(current_path, candidate_path, session, next_session, out):
             raise ValueError('Prior-day handoff requires native formal-export source acceptance')
         previous_rows = _history_values(read_bound(current, 'history'))
         candidate_rows = _history_values(read_bound(candidate, 'history'))
-        if (len(candidate_rows) != len(previous_rows) + 1 or candidate_rows[:-1] != previous_rows
+        if needs_bridge:
+            from scripts import member_hedge_precision_bridge as precision
+            witness = json.loads(Path(hedge_precision_witness).read_bytes()) if hedge_precision_witness is not None else None
+            derived_history, bridge, new_record_dates = precision.bridge_history(
+                current=current, candidate=candidate, current_raw=read_bound(current, 'history'),
+                candidate_raw=read_bound(candidate, 'history'), current_period=current_period,
+                candidate_period=period, current_checkpoint_raw=Path(current_path).read_bytes(),
+                candidate_checkpoint_raw=Path(candidate_path).read_bytes(), witness=witness)
+            candidate_rows = _history_values(derived_history)
+        expected_prefix = candidate_rows[:-1] if extends_previous else candidate_rows
+        if (len(candidate_rows) != len(previous_rows) + int(extends_previous) or expected_prefix != previous_rows
                 or day(candidate_rows[-1]['date']) != session):
             raise ValueError('Handoff cannot revise or skip the earned history prefix')
         from scripts.member_daily_signal import calculate_native, native_modules
@@ -309,6 +327,37 @@ def handoff(current_path, candidate_path, session, next_session, out):
             for field in ('current_holding', 'next_holding', 'strategy_revision'):
                 if str(previous_states[version].get(field)) != str(original.iloc[0][field]):
                     raise ValueError('Handoff prior model state does not match its native history: ' + version)
+        if bridge is not None:
+            from scripts.member_daily_signal import clean
+            frame = pd.read_csv(io.BytesIO(derived_history)).set_index('date')
+            frame.index = pd.to_datetime(frame.index)
+            turnover = pd.read_csv(io.BytesIO(read_bound(candidate, 'turnover')))
+            formal_states = json.loads(read_bound(candidate, 'version_state'))['versions']
+            states = {}
+            for version, module in native_modules().items():
+                calculated, _ = calculate_native(version, module, frame, turnover)
+                states[version] = clean(calculated.iloc[0].to_dict())
+                for field in ('current_holding', 'next_holding', 'strategy_revision'):
+                    if str(states[version].get(field)) != str(formal_states[version].get(field)):
+                        raise ValueError('Hedge precision bridge changes native model state: ' + version)
+            # A late same-close recovery keeps its already delivered state bytes.
+            # The native recalculation above still guards all three identities.
+            derived_state = (encode(dict(schema='member_version_state_v1', versions=states))
+                             if extends_previous else read_bound(current, 'version_state'))
+            for version in VERSIONS:
+                for field in ('current_holding', 'next_holding', 'strategy_revision'):
+                    actual = json.loads(derived_state)['versions'][version].get(field)
+                    if str(actual) != str(states[version].get(field)):
+                        raise ValueError('Hedge precision bridge changes earned same-close state: ' + version)
+            period[precision.KEY] = precision.finish(
+                bridge, history=derived_history, current_checkpoint_raw=Path(current_path).read_bytes(),
+                candidate_checkpoint_raw=Path(candidate_path).read_bytes(),
+                current_history_raw=read_bound(current, 'history'),
+                candidate_history_raw=read_bound(candidate, 'history'),
+                candidate_period_raw=read_bound(candidate, 'period'),
+                current_state_raw=read_bound(current, 'version_state'),
+                candidate_state_raw=read_bound(candidate, 'version_state'), derived_state_raw=derived_state,
+                new_record_dates=new_record_dates)
     elif _history_values(read_bound(current, 'history')) != _history_values(read_bound(candidate, 'history')):
         raise ValueError('Handoff cannot revise same-day earned return history')
     old_events = _turnover_values(read_bound(current, 'turnover'))
@@ -329,6 +378,14 @@ def handoff(current_path, candidate_path, session, next_session, out):
         owner = candidate if extends_previous or key in ('period', 'turnover', 'prices') else current
         spec = owner[key]
         files[key] = (spec['path'], read_bound(owner, key))
+    if bridge is not None:
+        files['period'] = (candidate['period']['path'], encode(period))
+        files['history'] = (candidate['history']['path'], derived_history)
+        files['version_state'] = (candidate['version_state']['path'], derived_state)
+    elif not extends_previous and 'hedge_precision_bridge_v1' in current_period:
+        # Same-close period switches also retain the old daily's immutable proof.
+        period['hedge_precision_bridge_v1'] = current_period['hedge_precision_bridge_v1']
+        files['period'] = (candidate['period']['path'], encode(period))
     return _write_package(out, files, dict(as_of_date=session, next_trade_date=next_session, period_status='current', strategy_sha=candidate['strategy_sha'] if extends_previous else current['strategy_sha'],
                           handoff_mode='native_close_extends_previous' if extends_previous else 'same_close_period_switch',
                           handoff_from=json.loads(read_bound(current, 'period'))['package_id']))
@@ -371,6 +428,9 @@ def schedule(root, session):
 
 
 def main(argv=None):
+    # CLI is also invoked from the separate automation checkout.
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     p = sub.add_parser('bootstrap'); p.add_argument('--root', type=Path, required=True); p.add_argument('--out', type=Path, required=True)
@@ -380,13 +440,15 @@ def main(argv=None):
     for name in ('current', 'candidate', 'out'):
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--session', required=True); p.add_argument('--next-session', required=True)
+    p.add_argument('--hedge-precision-witness', type=Path)
     p = sub.add_parser('publish'); p.add_argument('--checkpoint', type=Path, required=True); p.add_argument('--pointer', type=Path, required=True); p.add_argument('--expected-current-sha')
     args = parser.parse_args(argv)
     if args.command == 'bootstrap': result = bootstrap(args.root, args.out)
     elif args.command == 'schedule':
         result = schedule(args.root, args.date); args.out.parent.mkdir(parents=True, exist_ok=True); args.out.write_bytes(encode(result))
     elif args.command == 'verify': result = verify(args.checkpoint); result.pop('_directory')
-    elif args.command == 'handoff': result = handoff(args.current, args.candidate, args.session, args.next_session, args.out)
+    elif args.command == 'handoff': result = handoff(args.current, args.candidate, args.session, args.next_session, args.out,
+                                                  hedge_precision_witness=args.hedge_precision_witness)
     else: publish(args.checkpoint, args.pointer, args.expected_current_sha); result = {'published': True}
     print(json.dumps(result, ensure_ascii=False))
     return 0
