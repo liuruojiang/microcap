@@ -888,7 +888,7 @@ TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW={
 }
 
 
-def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
+def stock_input_evidence_matches_validated_source(recorded, current, *, root=None) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
     Callers still compute the entire current data/code fingerprint from disk and
@@ -938,7 +938,8 @@ def stock_input_evidence_matches_validated_source(recorded, current) -> bool:
                 (old[name], new[name]) == tuple(review["changes"][name])
                 for name in changed):
             return True
-    return False
+    from scripts.scoped_archive_source_revalidation import stock_compatible
+    return stock_compatible(recorded, current, root)
 
 
 def validation_source_review_metadata() -> dict:
@@ -1802,7 +1803,7 @@ def validate_security_metadata(root: Path) -> list[dict[str, object]]:
         from scripts.stock_input_contract import source_fingerprint
         stock_actual = {"file_count": len(stock_paths), "sha256": stock_digest.hexdigest(), "code": source_fingerprint(root)}
         if not stock_input_evidence_matches_validated_source(
-                meta["core_params"].get("stock_input_evidence_fingerprint"), stock_actual):
+                meta["core_params"].get("stock_input_evidence_fingerprint"), stock_actual, root=root):
             raise ValueError("Proxy stock return/trading-state evidence fingerprint mismatch")
     return records
 
@@ -1867,6 +1868,12 @@ def pack_state(root: Path, bundle: Path, max_anchor_age_days: int | None,
     # outside the delivery CSV input map. Reuse the existing ZIP manifest hashes;
     # do not add another historical reconstruction or payload hash pass.
     captured = inventory() if delivery_manifest is not None else None
+    if delivery_manifest is not None:
+        from scripts import scoped_archive_source_revalidation as archive_source
+        delivery_document = json.loads(delivery_manifest)
+        if archive_source.ACTIVE in delivery_document:
+            archive_source.checked_document(delivery_document)
+            archive_source.inventory_matches(captured[1])
     validation_options = ({"close_confirmed_session": close_confirmed_session}
                           if close_confirmed_session is not None else {})
     if archive_session is not None:
@@ -1959,6 +1966,14 @@ def _verify_bundle_manifest(archive: zipfile.ZipFile) -> dict[str, object]:
     undeclared = sorted(payload_names - declared)
     if undeclared:
         raise ValueError("state bundle contains undeclared files: " + ",".join(undeclared))
+    if "outputs/top100_delivery_manifest.json" in payload_names:
+        from scripts import scoped_archive_source_revalidation as archive_source
+        delivery_document = json.loads(archive.read("outputs/top100_delivery_manifest.json"))
+        if archive_source.ACTIVE in delivery_document:
+            archive_source.checked_document(delivery_document)
+            archive_source.inventory_matches(manifest['files'])
+        elif archive_source.PREVIOUS in delivery_document:
+            archive_source.checked_receipt(delivery_document[archive_source.PREVIOUS])
     return manifest
 
 

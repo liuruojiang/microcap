@@ -67,6 +67,7 @@ RETURN_BASIS_FILES = [
     "scripts/scoped_same_anchor.py",
     "scripts/verified_d5_basis_cache.py",
     "data/verified_d5_basis_source_index_20261109.json.gz",
+    "scripts/scoped_archive_source_revalidation.py",
 ]
 RELEASE_FILES += RETURN_BASIS_FILES
 from scripts.sse_share_daily_unchanged_20261104 import SOURCE_FILES as SSE_DATED_SHARE_SOURCE_FILES
@@ -524,6 +525,12 @@ def inspect_outputs(root: Path, expected: str, *, new_generation: bool = False) 
         except (OSError, ValueError, KeyError, TypeError) as exc:
             report["errors"].append(f"invalid previous source validation: {exc}")
             report["ok"] = False
+    try:
+        from scripts.scoped_archive_source_revalidation import annotate
+        annotate(root, report, saved, new_generation=new_generation)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        report['errors'].append('invalid archive source validation: '+str(exc))
+        report['ok'] = False
     return report
 
 
@@ -928,7 +935,13 @@ def _refresh_all_unlocked(root: Path, *, candidate_sha: str | None = None, scope
     else:
         release = verify_candidate_release(root, candidate_sha)
         manifest_relative = CANDIDATE_MANIFEST
-    write_manifest(root, {"status": "refreshing", "verified_at": datetime.now(timezone.utc).isoformat()},
+    from scripts.scoped_archive_source_revalidation import pending_ancestry
+    try:
+        predecessor = json.loads((root / MANIFEST).read_bytes())
+    except FileNotFoundError:
+        predecessor = {}
+    archive_ancestry = pending_ancestry(predecessor)
+    write_manifest(root, {"status": "refreshing", "verified_at": datetime.now(timezone.utc).isoformat(), **archive_ancestry},
                    manifest_relative=manifest_relative)
     options = {"scoped_sources": scoped_sources} if scoped_sources is not None else {}
     base_report = state.refresh_state(root, max_anchor_age_days=None, **options)
@@ -973,8 +986,13 @@ def refresh_all(root: Path, *, candidate_sha: str | None = None, scoped_sources:
             return _refresh_all_unlocked(root)
         return _refresh_all_unlocked(root,candidate_sha=candidate_sha,scoped_sources=scoped_sources)
     except BaseException as exc:
+        from scripts.scoped_archive_source_revalidation import pending_ancestry
+        try:
+            ancestry = pending_ancestry(json.loads((root / (CANDIDATE_MANIFEST if candidate_sha else MANIFEST)).read_bytes()))
+        except (OSError, ValueError, KeyError, TypeError):
+            ancestry = {}
         write_manifest(root, {"status": "blocked", "errors": [str(exc)],
-                              "verified_at": datetime.now(timezone.utc).isoformat()},
+                              "verified_at": datetime.now(timezone.utc).isoformat(), **ancestry},
                        manifest_relative=CANDIDATE_MANIFEST if candidate_sha is not None else MANIFEST)
         raise
     finally:
@@ -983,13 +1001,13 @@ def refresh_all(root: Path, *, candidate_sha: str | None = None, scoped_sources:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "refresh-all", "recertify-validation-source", "refresh-candidate", "check-candidate"))
+    parser.add_argument("command", choices=("check", "refresh-all", "recertify-validation-source", "recertify-archive-source", "refresh-candidate", "check-candidate"))
     parser.add_argument("--expected-date")
     parser.add_argument("--candidate-sha")
     parser.add_argument("--scoped-config", type=Path)
     args = parser.parse_args(argv)
-    if (args.command == "recertify-validation-source") != (args.expected_date is not None):
-        parser.error("--expected-date is required only for recertify-validation-source")
+    if (args.command in ("recertify-validation-source", "recertify-archive-source")) != (args.expected_date is not None):
+        parser.error("--expected-date is required only for source recertification commands")
     candidate = args.command in ("refresh-candidate", "check-candidate")
     if candidate != (args.candidate_sha is not None) or (args.scoped_config is not None and args.command not in ("refresh-candidate","refresh-all")):
         parser.error("Candidate commands require --candidate-sha; --scoped-config is only for refresh commands")
@@ -997,6 +1015,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "recertify-validation-source":
             report = recertify_validation_source(root, args.expected_date)
+        elif args.command == "recertify-archive-source":
+            from scripts.scoped_archive_source_revalidation import recertify
+            report = recertify(root, args.expected_date)
         elif args.command == "refresh-candidate":
             config=json.loads(args.scoped_config.read_bytes()) if args.scoped_config else None
             report=refresh_all(root,candidate_sha=args.candidate_sha,scoped_sources=config)
