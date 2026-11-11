@@ -74,6 +74,25 @@ def _positive(value):
     return result
 
 
+def _active_boundary_symbols(master,day):
+    """Require each active issuer, using the boundary's existing BJ/B exclusions."""
+    if master.empty or not {'symbol','list_date','delist_date'}<=set(master.columns):
+        raise ValueError('Boundary requires the native dated security master')
+    symbols=master['symbol']
+    if (any(not isinstance(s,str) or re.fullmatch('[0-9]{6}',s) is None for s in symbols)
+            or symbols.duplicated().any()):
+        raise ValueError('Boundary native security master symbols are invalid or duplicated')
+    listed=pd.to_datetime(master['list_date'],errors='raise')
+    delisted=pd.to_datetime(master['delist_date'],errors='raise')
+    # Match the original row-screen exclusions below. Current ST names do not
+    # remove a required source row; PIT ST eligibility is checked separately.
+    applicable=~symbols.str.startswith(('4','8','920','200','900'))
+    if listed.loc[applicable].isna().any():
+        raise ValueError('Boundary native security master lacks an A-share listing date')
+    active=(listed<=pd.Timestamp(day))&(delisted.isna()|(delisted>pd.Timestamp(day)))
+    return set(symbols.loc[applicable&active])
+
+
 def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=False):
     """Source-bounded current-day exclusion, not invented issuer metadata."""
     if not history._ACTIVE_BATCH:
@@ -140,11 +159,9 @@ def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=Fals
 def verify(root,base,day,caps,scope,spec,authority,*,materialize=False):
     rows,files=read_snapshot(root,spec,day);by_symbol={r['SECURITY_CODE']:r for r in rows}
     master=base.freq_mod.load_security_master()
-    listed=pd.to_datetime(master.list_date,errors='raise')
-    delisted=pd.to_datetime(master.delist_date,errors='raise')
-    minimum=int(((listed<=pd.Timestamp(day))&(delisted.isna()|(delisted>pd.Timestamp(day)))).sum())
-    if len(rows)<minimum:
-        raise ValueError('Whole-market boundary coverage is smaller than the native active master')
+    missing=sorted(_active_boundary_symbols(master,day)-set(by_symbol))
+    if missing:
+        raise ValueError('Whole-market boundary is missing active native A-share issuers: '+','.join(missing))
     ranked=base.build_live_target_members_map({pd.Timestamp(day):caps},pd.DatetimeIndex([day]),{},top_n=100)[pd.Timestamp(day)]
     threshold=(_positive(caps[ranked[-1]]),ranked[-1]);outside=[]
     for symbol,value in caps.items():
