@@ -1,0 +1,39 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831630633_1.pdf",
+  "http_start": "2026-11-12T01:12:02.326806+00:00",
+  "http_complete": "2026-11-12T01:12:03.536305+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 75277,
+  "raw_sha256": "fc15ee44097ae8bb12951fc02d5db6d7c672f2f9fcb3d7fcd6b46b094bb65e6b",
+  "text_sha256": "2f1a47ef5ac0f08e426c0afcadebe59a3809e983962b7051f5cb3cd7097a54f1",
+  "native_row": {
+    "art_code": "AN202611111831630633",
+    "codes": [
+      {
+        "ann_type": "A,CYB",
+        "inner_code": "41362118977942",
+        "market_code": "0",
+        "short_name": "中胤科技",
+        "stock_code": "300901"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002005001001",
+        "column_name": "证券简称变更"
+      }
+    ],
+    "display_time": "2026-11-11 17:37:16:316",
+    "eiTime": "2026-11-11 17:38:16:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "333",
+    "title": "中胤时尚:关于变更公司证券简称的公告",
+    "title_ch": "中胤时尚:关于变更公司证券简称的公告",
+    "title_en": ""
+  }
+}

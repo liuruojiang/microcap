@@ -41,6 +41,8 @@ SOURCE_FILES += ["data/st_notice_boundary_reviews/postclose_20261104/" + identit
                  for suffix in (".pdf", ".txt", ".receipt.json")]
 from scripts.st_notice_boundary_20261111 import SOURCE_FILES as NOV11_SOURCE_FILES
 SOURCE_FILES += NOV11_SOURCE_FILES
+from scripts.st_notice_boundary_20261112 import SOURCE_FILES as NOV12_SOURCE_FILES
+SOURCE_FILES += NOV12_SOURCE_FILES
 LEGACY_CERTIFICATE_SHA = "1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9"
 
 
@@ -469,6 +471,10 @@ def _non_equity_catalog_metadata(previous, current, precision):
 
 def reviewed_additions(previous, current, precision):
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
+    from scripts.st_notice_boundary_20261112 import reviewed_boundary as reviewed_nov12
+    observation = reviewed_nov12(previous, current, precision)
+    if observation is not None:
+        return observation
     from scripts.st_notice_boundary_20261111 import reviewed_boundary as reviewed_nov11
     latest = reviewed_nov11(previous, current, precision)
     if latest is not None:

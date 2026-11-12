@@ -1,0 +1,39 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831632312_1.pdf",
+  "http_start": "2026-11-12T01:12:06.207011+00:00",
+  "http_complete": "2026-11-12T01:12:14.644021+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 1830054,
+  "raw_sha256": "23b47065bc5b3ceab63bd0e31fba404257816a0de26db43d80d25f576caaec92",
+  "text_sha256": "591679a85e998bd38bb307dd74c0c89c4200c0cf06e997c7fe4c3a37b282711c",
+  "native_row": {
+    "art_code": "AN202611111831632312",
+    "codes": [
+      {
+        "ann_type": "A,SZA",
+        "inner_code": "18917319792058",
+        "market_code": "0",
+        "short_name": "山东路桥",
+        "stock_code": "000498"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002008",
+        "column_name": "其他"
+      }
+    ],
+    "display_time": "2026-11-11 23:03:30:712",
+    "eiTime": "2026-11-11 18:34:33:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "331",
+    "title": "山东路桥:山东路桥山东高速路桥集团股份有限公司2026年跟踪评级报告",
+    "title_ch": "山东路桥:山东路桥山东高速路桥集团股份有限公司2026年跟踪评级报告",
+    "title_en": ""
+  }
+}
