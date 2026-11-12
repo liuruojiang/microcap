@@ -302,7 +302,8 @@ def test_boundary_review_is_exact_nonstock_source_change(frozen):
     assert before==original['inputs'][name] and after==delivery.sha(ROOT/name)
     assert before!=after
     assert a.LEGACY_REVISION=='exact_m3_20261110_boundary_coverage_source_only_v2'
-    assert a.REVISION=='exact_m3_20261110_latequote_st_observation_source_only_v3'
+    assert a.OBSERVATION_REVISION=='exact_m3_20261110_latequote_st_observation_source_only_v3'
+    assert a.REVISION=='exact_m3_20261110_typed_dualquote_fallback_source_only_v4'
     a.require_transition(original,current_report(original))
 
 

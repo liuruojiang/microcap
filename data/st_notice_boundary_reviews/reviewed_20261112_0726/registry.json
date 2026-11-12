@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "decision": "exact_0726_catalog_observation_no_history_rewrite",
+  "boundary_day": "2026-11-11",
+  "original_review_registry_sha256": "7c66c3334d3faeaff724ebf2721f6a738dc5fee0f22dfb5a6675cdc7d23ac6e0",
+  "protected_archive_reference": {
+    "path": ".microcap_index_cache/st_notice_sources/refresh_20261111T143208796316Z_2e7092817919/archive.json",
+    "sha256": "db23caa0f8ecc65e0720bb5f797023ec57313773dbc513284cc404608edbdc94"
+  },
+  "previous_manifest": {
+    "path": ".microcap_index_cache/st_notice_sources/refresh_20261111T143208796316Z_2e7092817919/2026-11-11/manifest.json",
+    "sha256": "ce58f3e2ee0712300f5080017816d7281a5edf290dccc8879c5d1477ef392839"
+  },
+  "previous_native_sha256": "75f1237e5118d2116fd1181e9f315245bd1a181a06caa7a8b43077a4b833e791",
+  "current_native_sha256": "2b3226596ef5660bad139070bc41ca7b3af5cf144f6329b7295a6aa46aaa923c",
+  "previous_stable_native_sha256": "27ab78dfda644ab4df7cdfa4d69b493143b924e80d50c1fc781c8b70f053148e",
+  "current_stable_native_sha256": "5957ccf4bf74470e50af050741fea0e2bcb15f4c0e13a8d6fb8e0e8243346259",
+  "current_manifest_sha256": "f99f3da9782d5ebd59a42315025ab96d3c46924d84983c4b52eaf76624602e0f",
+  "observation_floor": "2026-11-12T09:00:00+08:00",
+  "observation_start": "2026-11-12T07:26:49.388166+00:00",
+  "observation_end": "2026-11-12T07:27:02.715841+00:00",
+  "observation_clocks_original": true,
+  "artifacts": {
+    "manifest.json": "f99f3da9782d5ebd59a42315025ab96d3c46924d84983c4b52eaf76624602e0f",
+    "page_0001.json": "5ae8603e30a98e2c413da46814752090fc051c57cf251a41ae63825ed3fccbab",
+    "page_0001.receipt.json": "be7841015cd9b9d849577a29602c88f8002207d5d015a156a6885741cf0fa953",
+    "page_0002.json": "49978c3ebc1ca128ff09c7b0ba8806a480815bfe4dbceab1503b13fcf63d452c",
+    "page_0002.receipt.json": "bd91b2e8ac30f9be2e65b02858f82ff07f9e83a51ec25621dff64ef8b9b9bdc3",
+    "page_0003.json": "3d46bfa1e8cd8193645cfd07d7750ae34dee147750a05cbcfccc2e81430f3f81",
+    "page_0003.receipt.json": "d3ac05a63352a32b45eba781ac211a8c81c00f2a26ab65bbbfba5ce2d8d6089a",
+    "page_0004.json": "cf8907c63bec148b468019f56b7e2d9ee7373ccb643aaf08c1e606b1978a4713",
+    "page_0004.receipt.json": "c5c8b699d6c61c56415e13af1a6a4b7a1d4b99b890b38c86cd401ae27f04ccfb",
+    "page_0005.json": "6c75da2c106ac29e975a72f92fb0f0d6d37ffec1b7a2cd308bbf4912e65f512d",
+    "page_0005.receipt.json": "0beadec769c9246d9daf16107caae54a70c91faef61c177fc8eac388c7d75eff",
+    "page_0006.json": "2152e0aceb6e7e2e89c9f24950919565ec361eb0b9e74072acc23326bcbd320a",
+    "page_0006.receipt.json": "0d2288e5283b2fbeae037da0ab3a14fbfdc67e5214a0104066e853e435723885",
+    "page_0007.json": "a6a36332f77b8f1890a331a50bfd9c356cd441f0192f0812060eb9081aca85d3",
+    "page_0007.receipt.json": "d4d8898e2205340df72c2045ac230e5c9140de278a940585abd100c19606f32b",
+    "page_0008.json": "c22cadfc975217212b525cee750d4a3f872a429066dd0e84e14a4b7b2f9414f6",
+    "page_0008.receipt.json": "2fa815a66a931b69f9478fcf77410da12d34d455583d01cc5e7f919f3de82c7d",
+    "page_0009.json": "424b486ec123457cefc82127bb47d9cf49d4f164f3d685f950d758858a5cc32b",
+    "page_0009.receipt.json": "9f9e4d975b52e6aa427cef453bcbf1c661fcbb2aa54269d7a344c8a4a72a3157",
+    "page_0010.json": "ca9f32173fb19187215f2d39fdd3222e460ac9e169262ef7683daeab51ea2651",
+    "page_0010.receipt.json": "ce8054b693f2de7d26489e7cde0976a0b7fc72104bbbe215a504a00a851b877e",
+    "page_0011.json": "95bfd0eefcec98041bc51578ddfdcf5166318dc2da48cb99a3a4b1c5ef0deb32",
+    "page_0011.receipt.json": "290bac9424ef42541e0d345e3d0a18d5dfd7030753b2d27577d89bca04752790",
+    "page_0012.json": "adc58e6e7ce29bfbeb4b464d7d1abcd1761a2e465bf81147ae8924af9de4c462",
+    "page_0012.receipt.json": "b12cef68e72345174afe20c9ed6615cce9223aa3e5b1fc68cb420f4e56cd7b21",
+    "page_0013.json": "3725ea1db2d0611aced34062c4ca8c75087e61b4795747e16f0bca870a2e160f",
+    "page_0013.receipt.json": "8ad4d8fab4d03fdaa72c0794e74a4ab6778e99db72e912f1cb4ea5d3ce45091f"
+  },
+  "added_ids": [
+    "AN202611111831632312",
+    "AN202611111831636086",
+    "AN202611111831636184"
+  ],
+  "removed_ids": [],
+  "metadata_changes": {
+    "AN202611111831628757": {
+      "columns": {
+        "previous": [
+          {
+            "column_code": "001003001001003",
+            "column_name": "专项说明/独立意见"
+          },
+          {
+            "column_code": "001003002001",
+            "column_name": "保荐/核查意见"
+          }
+        ],
+        "current": [
+          {
+            "column_code": "001003001001003",
+            "column_name": "专项说明/独立意见"
+          }
+        ]
+      }
+    },
+    "AN202611111831629479": {
+      "columns": {
+        "previous": [
+          {
+            "column_code": "001002006014",
+            "column_name": "诉讼仲裁"
+          },
+          {
+            "column_code": "001002008",
+            "column_name": "其他"
+          }
+        ],
+        "current": [
+          {
+            "column_code": "001002008",
+            "column_name": "其他"
+          }
+        ]
+      }
+    },
+    "AN202611111831630633": {
+      "codes": {
+        "previous": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤时尚",
+            "stock_code": "300901"
+          }
+        ],
+        "current": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤科技",
+            "stock_code": "300901"
+          }
+        ]
+      }
+    },
+    "AN202611111831630634": {
+      "codes": {
+        "previous": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤时尚",
+            "stock_code": "300901"
+          }
+        ],
+        "current": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤科技",
+            "stock_code": "300901"
+          }
+        ]
+      }
+    },
+    "AN202611111831631588": {
+      "codes": {
+        "previous": [
+          {
+            "ann_type": "KZZ,Bond",
+            "inner_code": "44906952756938",
+            "market_code": "0",
+            "short_name": "百洋转债",
+            "stock_code": "123194"
+          },
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "29284054924581",
+            "market_code": "0",
+            "short_name": "百洋医药",
+            "stock_code": "301015"
+          }
+        ],
+        "current": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "29284054924581",
+            "market_code": "0",
+            "short_name": "百洋制药",
+            "stock_code": "301015"
+          }
+        ]
+      }
+    }
+  },
+  "native_row_digests": {
+    "AN202611111831628757": {
+      "previous": "fd1307be9f8cc3b71209a4392cb36d7a4ffd9d57d411120d737d081272e3c85c",
+      "current": "1052f7230ddaea0785620380ada8c28c14f8102398ab428d8593196cafe422f9"
+    },
+    "AN202611111831629479": {
+      "previous": "3f13e6c2d74e726cc969357d938b670639f15de11250f896892a6f0f24cab33e",
+      "current": "61d575c6dc563cbfeffda94fde03e75273c40682980ee19ca6cb4ed25e2cb8c4"
+    },
+    "AN202611111831630633": {
+      "previous": "0bba79131e60e7baa8af0b00bd817e1a5a0733c56ccbe0435fc09c99540e3fd6",
+      "current": "248f2d0698f6f6c849b4bcc8a546b2a20e459386e90ff339dc1bea09ff858b13"
+    },
+    "AN202611111831630634": {
+      "previous": "c49b16f3b44015a6cabcb344c4ff63d8f1844d004dce9c956af558b1fb8ea7f2",
+      "current": "8bf876ce5d6224737bf1cf86e77f0ad590e22c602a1683c1484e409a7bdb373c"
+    },
+    "AN202611111831631588": {
+      "previous": "49980dba249a8127526877f7197da3a8fdde94ca878c505c5af51d749cf6417e",
+      "current": "8b096227fffb9cff30247ae1a2ef35ad442033074c38e1a29816d9f5a6b59e4f"
+    }
+  },
+  "added_row_digests": {
+    "AN202611111831632312": "529e3493d6a3f6a1022ad24dc76e95e105ebb4bcadaddf5adb4ae3eda12f672e",
+    "AN202611111831636086": "855c678072f6cba8e8f327ef03aeb28f1a06bb0c738bbc59d535250daac91732",
+    "AN202611111831636184": "d0ebe04c85e43ab73faee82c9b7e1679fd0e0774dbd446dcc531da99c732b656"
+  },
+  "risk_projection_sha256": "b965d3f3850d619037cf5682abeb292f2d665cc9adb36692d0c8cc736a2be8e2",
+  "observed_original_300_symbols_sha256": "2e707061d0b401dc8712ea5c9ba9a2ef0343b458893492874b14245b7d9cd756",
+  "observed_original_300_affected_symbols": [],
+  "precision": {
+    "policy": "display_time_same_day_lt_1s_no_close_crossing_v1",
+    "changed_event_count": 919,
+    "maximum_delta_microseconds": 205000,
+    "crossed_integer_second_count": 11,
+    "changed_event_ids_sha256": "86ee6ec74158ef44fda1cabafa1f024b0c816a77b127dbbac05086a79187a23f"
+  },
+  "historical_authority_changed": false,
+  "historical_state_rewrite_authorized": false,
+  "target_freshness_granted": false,
+  "all_market_PIT_certified": false,
+  "observation_only": true,
+  "source_facts": {
+    "AN202611111831628757": {
+      "issuer": "920128",
+      "asset_class": "A,BJA",
+      "change": "removal of 001003002001 catalog tag only",
+      "native_equity_selector_consumes": false,
+      "native_title_risk_actions": {},
+      "body_adjudication_not_required_for_catalog_only_classification": true
+    }
+  },
+  "provenance": {
+    "original_run": "43173346897",
+    "original_cache_artifact": "13926807944",
+    "original_cache_sha256": "375c0deaf2a5b3037552dd86c51954a69c2c8efcb47b365d84bdefc2d56a7d7c",
+    "selected_raw_zip_sha256": "0dbbb6d03517adbc488028c72109f5618080da5f443361de4f29a5960a057f50",
+    "native_failed_resume_record": "7a507ae263a24de89745354a2c78f031",
+    "independent_classification_record": "74bf3eb8fa1d467b98934127d708f62f",
+    "source_collection_during_repair": false,
+    "prior_document_review_unmodified": true
+  }
+}

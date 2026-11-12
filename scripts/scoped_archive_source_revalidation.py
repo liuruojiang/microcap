@@ -19,7 +19,8 @@ RELEASE = '872abe41d48f818363d879cdf98b297d230377b4'
 PROXY = 'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json'
 MODULE = 'scripts/scoped_archive_source_revalidation.py'
 LEGACY_REVISION = 'exact_m3_20261110_boundary_coverage_source_only_v2'
-REVISION = 'exact_m3_20261110_latequote_st_observation_source_only_v3'
+OBSERVATION_REVISION = 'exact_m3_20261110_latequote_st_observation_source_only_v3'
+REVISION = 'exact_m3_20261110_typed_dualquote_fallback_source_only_v4'
 STOCK_IDENTITY = '7c0520448023df5a318689e59fb9965da7da2239a069b55133f26c52951e5c04'
 LEGACY_CHANGES = {
     'scripts/share_change_source.py': (
@@ -385,11 +386,95 @@ M7_ARCHIVE_INPUT_CHANGES = {'data/st_notice_boundary_reviews/reviewed_20261112/A
                                           '10a1cc86bb5429b1cbce28c7d6184c3ae823159299fe1c8b94870724dc3b1d46')}
 
 
+M8_STOCK_CHANGES = {
+    'data/share_source_future_plan_reviews.json': CHANGES['data/share_source_future_plan_reviews.json'],
+    'scripts/share_change_source.py': (
+        '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b',
+        'fdbc6292597ced431cf76bfdd9ad564c70042f8d603ee867f79d5da2bed2339e'),
+    'scripts/share_unchanged_tail.py': (
+        '85bb77979ecdb179c2f3a71ce17261dd9c4bd0cd60b9a8c90c83d183a79146b2',
+        '80ca426b78cfda4e63fc32be0157be188ebbe31d68e2f9758664b2d7d2342491'),
+}
+# Frozen from the actual M8 input set and the original M3 manifest.  Only
+# these exact source bytes may earn v4; the older v3 archive is not an input.
+M8_ARCHIVE_INPUT_CHANGES = {'data/st_notice_boundary_reviews/reviewed_20261112_0726/manifest.json': (None,
+                                                                          'f99f3da9782d5ebd59a42315025ab96d3c46924d84983c4b52eaf76624602e0f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0001.json': (None,
+                                                                           '5ae8603e30a98e2c413da46814752090fc051c57cf251a41ae63825ed3fccbab'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0001.receipt.json': (None,
+                                                                                   'be7841015cd9b9d849577a29602c88f8002207d5d015a156a6885741cf0fa953'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0002.json': (None,
+                                                                           '49978c3ebc1ca128ff09c7b0ba8806a480815bfe4dbceab1503b13fcf63d452c'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0002.receipt.json': (None,
+                                                                                   'bd91b2e8ac30f9be2e65b02858f82ff07f9e83a51ec25621dff64ef8b9b9bdc3'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0003.json': (None,
+                                                                           '3d46bfa1e8cd8193645cfd07d7750ae34dee147750a05cbcfccc2e81430f3f81'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0003.receipt.json': (None,
+                                                                                   'd3ac05a63352a32b45eba781ac211a8c81c00f2a26ab65bbbfba5ce2d8d6089a'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0004.json': (None,
+                                                                           'cf8907c63bec148b468019f56b7e2d9ee7373ccb643aaf08c1e606b1978a4713'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0004.receipt.json': (None,
+                                                                                   'c5c8b699d6c61c56415e13af1a6a4b7a1d4b99b890b38c86cd401ae27f04ccfb'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0005.json': (None,
+                                                                           '6c75da2c106ac29e975a72f92fb0f0d6d37ffec1b7a2cd308bbf4912e65f512d'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0005.receipt.json': (None,
+                                                                                   '0beadec769c9246d9daf16107caae54a70c91faef61c177fc8eac388c7d75eff'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0006.json': (None,
+                                                                           '2152e0aceb6e7e2e89c9f24950919565ec361eb0b9e74072acc23326bcbd320a'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0006.receipt.json': (None,
+                                                                                   '0d2288e5283b2fbeae037da0ab3a14fbfdc67e5214a0104066e853e435723885'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0007.json': (None,
+                                                                           'a6a36332f77b8f1890a331a50bfd9c356cd441f0192f0812060eb9081aca85d3'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0007.receipt.json': (None,
+                                                                                   'd4d8898e2205340df72c2045ac230e5c9140de278a940585abd100c19606f32b'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0008.json': (None,
+                                                                           'c22cadfc975217212b525cee750d4a3f872a429066dd0e84e14a4b7b2f9414f6'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0008.receipt.json': (None,
+                                                                                   '2fa815a66a931b69f9478fcf77410da12d34d455583d01cc5e7f919f3de82c7d'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0009.json': (None,
+                                                                           '424b486ec123457cefc82127bb47d9cf49d4f164f3d685f950d758858a5cc32b'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0009.receipt.json': (None,
+                                                                                   '9f9e4d975b52e6aa427cef453bcbf1c661fcbb2aa54269d7a344c8a4a72a3157'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0010.json': (None,
+                                                                           'ca9f32173fb19187215f2d39fdd3222e460ac9e169262ef7683daeab51ea2651'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0010.receipt.json': (None,
+                                                                                   'ce8054b693f2de7d26489e7cde0976a0b7fc72104bbbe215a504a00a851b877e'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0011.json': (None,
+                                                                           '95bfd0eefcec98041bc51578ddfdcf5166318dc2da48cb99a3a4b1c5ef0deb32'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0011.receipt.json': (None,
+                                                                                   '290bac9424ef42541e0d345e3d0a18d5dfd7030753b2d27577d89bca04752790'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0012.json': (None,
+                                                                           'adc58e6e7ce29bfbeb4b464d7d1abcd1761a2e465bf81147ae8924af9de4c462'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0012.receipt.json': (None,
+                                                                                   'b12cef68e72345174afe20c9ed6615cce9223aa3e5b1fc68cb420f4e56cd7b21'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0013.json': (None,
+                                                                           '3725ea1db2d0611aced34062c4ca8c75087e61b4795747e16f0bca870a2e160f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/page_0013.receipt.json': (None,
+                                                                                   '8ad4d8fab4d03fdaa72c0794e74a4ab6778e99db72e912f1cb4ea5d3ce45091f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112_0726/registry.json': (None,
+                                                                          '18275ccba2690db15ac36f89d141d90003925464d7fd744a20fcbe4534ea21b7'),
+ 'scripts/scoped_source_consumer.py': ('7d8ee365a7ddf5028abbb3a55e0158ead0ec40b93115e719fd669ee7a4ab19c2',
+                                       'a2c39c698edaf69a5cb9e667644b76fa72fd5959da84a528163eeab0982eec06'),
+ 'scripts/st_notice_boundary_20261112_0726.py': (None,
+                                                 '8769340ee642da7d8d3b1e58eba27abe309026636136771275f83e600d5a7714'),
+ 'scripts/st_notice_boundary_review.py': ('790b76ffa40902d6876adcd003fb2cb340feb08d8ffaf05f7e18b0660a9b6d78',
+                                          'f8cffaae9342dceabdda4e46b14f4d80290b2014f659918dada74f3f432b4863')}
+
+
 def input_changes(*, revision=REVISION):
     if revision == LEGACY_REVISION:
         return {**LEGACY_CHANGES, **ARCHIVE_INPUT_CHANGES}
-    if revision == REVISION:
+    if revision == OBSERVATION_REVISION:
         return {**CHANGES, **ARCHIVE_INPUT_CHANGES, **M7_ARCHIVE_INPUT_CHANGES}
+    if revision == REVISION:
+        consumer = M8_ARCHIVE_INPUT_CHANGES.get('scripts/scoped_source_consumer.py')
+        if (consumer is None or len(consumer) != 2
+                or consumer[0] != '7d8ee365a7ddf5028abbb3a55e0158ead0ec40b93115e719fd669ee7a4ab19c2'
+                or re.fullmatch('[0-9a-f]{64}', str(consumer[1])) is None
+                or consumer[1] == M7_ARCHIVE_INPUT_CHANGES['scripts/scoped_source_consumer.py'][1]):
+            raise ValueError('M8 typed-source archive contract is not frozen')
+        return {**CHANGES, **ARCHIVE_INPUT_CHANGES, **M7_ARCHIVE_INPUT_CHANGES,
+                **M8_STOCK_CHANGES, **M8_ARCHIVE_INPUT_CHANGES}
     raise ValueError('Unknown exact archive source validation revision')
 
 
@@ -434,7 +519,7 @@ def stock_compatible(recorded, current, root=None):
         return False
     changed = {n for n in recorded['code'] if recorded['code'][n] != current['code'][n]}
     if not any(changed == set(review) and all((recorded['code'][n], current['code'][n]) == review[n]
-                                            for n in changed) for review in (LEGACY_CHANGES, CHANGES)):
+                                            for n in changed) for review in (LEGACY_CHANGES, CHANGES, M8_STOCK_CHANGES)):
         return False
     if root is None:
         import microcap_top100_mom16_biweekly_live_v2_0 as native
@@ -594,9 +679,8 @@ def recertify(root, expected_date):
         original_raw = (root/delivery.MANIFEST).read_bytes(); saved = json.loads(original_raw)
         original = original_manifest(original_raw) if ACTIVE not in saved else checked_receipt(saved[ACTIVE])
         if ACTIVE in saved and saved[ACTIVE]['revision'] != REVISION:
-            # The v2 receipt is valid ancestry, not evidence for this new reader.
-            # A fresh M3 source archive lets the full current validator earn v3
-            # without rewriting or reinterpreting the published M6 certificate.
+            # Older v2/v3 receipts remain exact ancestry, not a v4 certificate.
+            # Only the untouched original M3 data may earn this new review.
             raise ValueError('Legacy archive certificate is preserved; use the exact original M3 archive to earn this new source-only revision')
         checked_source(root)
         release = delivery.verify_release(root)

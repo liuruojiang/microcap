@@ -43,6 +43,8 @@ from scripts.st_notice_boundary_20261111 import SOURCE_FILES as NOV11_SOURCE_FIL
 SOURCE_FILES += NOV11_SOURCE_FILES
 from scripts.st_notice_boundary_20261112 import SOURCE_FILES as NOV12_SOURCE_FILES
 SOURCE_FILES += NOV12_SOURCE_FILES
+from scripts.st_notice_boundary_20261112_0726 import SOURCE_FILES as NOV12_0726_SOURCE_FILES
+SOURCE_FILES += NOV12_0726_SOURCE_FILES
 LEGACY_CERTIFICATE_SHA = "1b883caf14d9ab433ccab128448dac7fef804b7ec37439327246f4313206d9e9"
 
 
@@ -471,6 +473,10 @@ def _non_equity_catalog_metadata(previous, current, precision):
 
 def reviewed_additions(previous, current, precision):
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
+    from scripts.st_notice_boundary_20261112_0726 import reviewed_boundary as reviewed_nov12_0726
+    late_observation = reviewed_nov12_0726(previous, current, precision)
+    if late_observation is not None:
+        return late_observation
     from scripts.st_notice_boundary_20261112 import reviewed_boundary as reviewed_nov12
     observation = reviewed_nov12(previous, current, precision)
     if observation is not None:

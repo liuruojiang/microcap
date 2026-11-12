@@ -29,7 +29,9 @@ PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
 PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
     'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
-    '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36'})
+    '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
+    'd2d15cbaf5763333c74239b1ded3d1ac467adb3c',
+    '3344e403ff01e17ef45b745a704a240e0917720b'})
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
@@ -53,6 +55,19 @@ LATER_QUOTE_READER = {
     'scripts/share_unchanged_tail.py': (
         '85bb77979ecdb179c2f3a71ce17261dd9c4bd0cd60b9a8c90c83d183a79146b2',
         'd5824797c483d0b466684a5bebbe19595b7108fb393cd7815dc7b870688dd7ae'),
+}
+TYPED_QUOTE_READER = {
+    'scripts/share_change_source.py': (
+        'be9e393f09196a812d60b9eb867d21e32b6afbd1e7862d7605accb8bf809d93c',
+        'fdbc6292597ced431cf76bfdd9ad564c70042f8d603ee867f79d5da2bed2339e'),
+    'scripts/share_unchanged_tail.py': (
+        'd5824797c483d0b466684a5bebbe19595b7108fb393cd7815dc7b870688dd7ae',
+        'bbfcbcbfd1654915488164b7af347297fc158987dd03909f68d0eb794e225f88'),
+}
+BACKUP_QUOTE_READER = {
+    'scripts/share_unchanged_tail.py': (
+        'bbfcbcbfd1654915488164b7af347297fc158987dd03909f68d0eb794e225f88',
+        '80ca426b78cfda4e63fc32be0157be188ebbe31d68e2f9758664b2d7d2342491'),
 }
 
 
@@ -132,6 +147,24 @@ def validate_source_contract(root, manifest):
         successors.append({**review, **{name:(review[name][0] if name in review else before, after)
             for name,(before,after) in LATER_QUOTE_READER.items()}})
     reviews = (*reviews, *successors)
+    # This transport-only successor preserves every reviewed predecessor pair;
+    # no arbitrary source hash or partially matching file set is admitted.
+    typed_successors = [TYPED_QUOTE_READER]
+    for review in reviews:
+        shared = set(review) & set(TYPED_QUOTE_READER)
+        if any(review[name][1] != TYPED_QUOTE_READER[name][0] for name in shared):
+            continue
+        typed_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
+            for name,(before,after) in TYPED_QUOTE_READER.items()}})
+    reviews = (*reviews, *typed_successors)
+    budget_successors = [BACKUP_QUOTE_READER]
+    for review in reviews:
+        shared = set(review) & set(BACKUP_QUOTE_READER)
+        if any(review[name][1] != BACKUP_QUOTE_READER[name][0] for name in shared):
+            continue
+        budget_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
+            for name,(before,after) in BACKUP_QUOTE_READER.items()}})
+    reviews = (*reviews, *budget_successors)
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current

@@ -29,6 +29,8 @@ QUOTE_CORROBORATION_KIND = "exact_reviewed_plan_later_quote_v1"
 QUOTE_CORROBORATION_ENV = "MICROCAP_SHARE_LATER_QUOTE_CORROBORATION"
 EM_URL = "https://datacenter.eastmoney.com/securities/api/data/v1/get"
 QUOTE_URL = "https://push2.eastmoney.com/api/qt/stock/get"
+TYPED_QUOTE = "tencent_sina_total_shares_v1"
+_QUOTE_ENDPOINT_FAILURES = {}  # This process/date only; immutable HTTP evidence remains authoritative.
 HISTORICAL_URL = "https://datacenter-web.eastmoney.com/api/data/v1/get"
 SINA_URL = "https://money.finance.sina.com.cn/corp/go.php/vCI_StockStructureHistory/stockid/{symbol}/stocktype/TotalStock.phtml"
 DATE_FIELDS = ("END_DATE", "LISTING_DATE", "NOTICE_DATE")
@@ -182,6 +184,377 @@ def _artifact(entry, bound, *, url, params, end, now):
     require(actual.scheme == expected.scheme and actual.netloc in allowed_hosts and actual.path == expected.path, "actual endpoint differs")
     require(parse_qs(actual.query, keep_blank_values=True) == {k: [str(v)] for k, v in params.items()}, "actual query differs")
     return raw, receipt
+
+
+def _quote_symbols(symbols):
+    require(isinstance(symbols, list) and 0 < len(symbols) <= 300
+            and len(symbols) == len(set(symbols))
+            and all(isinstance(s, str) and re.fullmatch(r"[036][0-9]{5}", s) for s in symbols),
+            "invalid typed quote issuer scope")
+    return [(("sh" if s.startswith("6") else "sz") + s) for s in symbols]
+
+
+def typed_quote_urls(symbols):
+    tickers = _quote_symbols(symbols)
+    return ("https://qt.gtimg.cn/q=" + ",".join(tickers),
+            "https://hq.sinajs.cn/list=" + ",".join(x for ticker in tickers for x in (ticker, ticker + "_i")))
+
+
+def _quote_variables(raw, prefix, separator):
+    text = raw.decode("gb18030").strip(); values = {}
+    pattern = re.compile(r'(?:var\s+)?' + prefix + r'([a-z0-9_]+)="([^"\r\n]*)";')
+    for match in pattern.finditer(text):
+        require(match[1] not in values, "duplicate typed quote variable")
+        values[match[1]] = match[2].split(separator)
+    require(values and not pattern.sub("", text).strip(), "typed quote wrapper differs")
+    return values
+
+
+def parse_typed_quote(tencent_raw, sina_raw, *, symbol, symbols, end, receipts):
+    """Provider-native exact capital fields, never a fabricated EastMoney f84."""
+    tickers = _quote_symbols(symbols); require(symbol in symbols, "typed quote issuer absent")
+    ticker = tickers[symbols.index(symbol)]
+    tq = _quote_variables(tencent_raw, "v_", "~")
+    sq = _quote_variables(sina_raw, "hq_str_", ",")
+    require(set(tq) == set(tickers) and set(sq) == {x for t in tickers for x in (t, t + "_i")},
+            "typed quote requested variable set differs")
+    t, s, info = tq[ticker], sq[ticker], sq[ticker + "_i"]
+    require(len(t) >= 74 and len(s) >= 33 and len(info) >= 23
+            and t[2] == symbol and info[0] == "A",
+            "typed quote issuer or asset class differs")
+    require(re.fullmatch(r"[0-9]+", t[73]) is not None, "Tencent total shares is not an integer")
+    total = amount(t[73]); sina_total = amount(info[7]) * 10000
+    require(sina_total == sina_total.to_integral_value() and total == sina_total,
+            "typed quote total shares disagree")
+    require(re.fullmatch(r"[0-9]{14}", t[30]) is not None
+            and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", s[30]) is not None
+            and re.fullmatch(r"[0-9]{2}:[0-9]{2}:[0-9]{2}", s[31]) is not None,
+            "typed quote source clock malformed")
+    bj = timezone(timedelta(hours=8))
+    stamps = [datetime.strptime(t[30], "%Y%m%d%H%M%S").replace(tzinfo=bj),
+              datetime.fromisoformat(s[30] + "T" + s[31]).replace(tzinfo=bj)]
+    for stamp, receipt in zip(stamps, receipts):
+        complete = clock(receipt["http_complete"])
+        require(datetime.fromisoformat(end + "T15:00:00+08:00") <= stamp <= complete,
+                "typed quote is not a close-confirmed target frame")
+        if stamp.date() > day(end):
+            require(stamp.date() == complete.astimezone(bj).date(), "later typed quote is not from observation day")
+    return dict(kind=TYPED_QUOTE, symbol=symbol, total_shares=str(total),
+                source_market_dates=dict(tencent=stamps[0].date().isoformat(), sina=stamps[1].date().isoformat()),
+                source_market_dates_agree=stamps[0].date() == stamps[1].date(),
+                tencent_frame_time=stamps[0].isoformat(), sina_frame_time=stamps[1].isoformat(),
+                tencent_total_field=73, tencent_unit="shares", sina_total_field=7, sina_unit="10000_shares",
+                source_names=dict(tencent=t[1], sina=s[0], sina_information=info[22]),
+                source_names_agree=t[1] == s[0] == info[22],
+                independent_capital_asof_guarantee_proven=False)
+
+
+def _failure_files(directory, source, *, symbol, end):
+    """Authenticate this issuer/date's retained one/four failed main requests."""
+    entries = []
+    for number in range(1, 5):
+        receipt = directory / f"quote_attempt{number}.receipt.json"
+        transport = directory / f"quote_attempt{number}.transport.json"
+        require(not (receipt.exists() and transport.exists()), "ambiguous primary failure observation")
+        path = receipt if receipt.exists() else transport
+        if not path.exists():
+            break
+        item = dict(receipt=dict(path=path.relative_to(source).as_posix(), sha256=sha(path.read_bytes())))
+        if receipt.exists():
+            raw = directory / f"quote_attempt{number}.raw"
+            item["raw"] = dict(path=raw.relative_to(source).as_posix(), sha256=sha(raw.read_bytes()))
+        entries.append(item)
+    return entries
+
+
+def _verify_primary_failure(record, *, symbol, end, bound, now):
+    if record.get("schema") == "quote_primary_endpoint_failure_v1":
+        require(record.get("symbol") == symbol and record.get("target") == end,
+                "endpoint failure target differs")
+        spec = record["original_failure"]
+        original = json.loads(bound(spec["path"], spec["sha256"]))
+        require(original.get("schema") == "quote_primary_transport_failure_v1", "endpoint failure nesting forbidden")
+        previous = _verify_primary_failure(original, symbol=original["symbol"], end=end, bound=bound, now=now)
+        selected = clock(record["selected_at"])
+        require(previous["completed_at"] <= selected <= previous["completed_at"] + timedelta(minutes=30)
+                and selected.astimezone(timezone(timedelta(hours=8))).date()
+                == previous["completed_at"].astimezone(timezone(timedelta(hours=8))).date(),
+                "endpoint failure cooling/date scope expired")
+        return dict(completed_at=previous["completed_at"], selected_at=selected, origin=original["symbol"])
+    require(record.get("schema") == "quote_primary_transport_failure_v1"
+            and record.get("symbol") == symbol and record.get("target") == end
+            and isinstance(record.get("attempts"), list) and 1 <= len(record["attempts"]) <= 4,
+            "primary failure budget differs")
+    completed = []
+    for item in record["attempts"]:
+        receipt = json.loads(bound(item["receipt"]["path"], item["receipt"]["sha256"]))
+        require(receipt.get("url") == QUOTE_URL and receipt.get("params") == quote_params(symbol),
+                "primary failure endpoint or issuer differs")
+        start, complete = clock(receipt["http_start"]), clock(receipt["http_complete"])
+        require(datetime.fromisoformat(end + "T15:00:00+08:00") <= start <= complete <= now,
+                "primary failure target or clock differs")
+        completed.append(complete)
+        if "raw" in item:
+            raw = bound(item["raw"]["path"], item["raw"]["sha256"])
+            require(receipt.get("http_status") in (500, 502, 503, 504)
+                    and receipt.get("tls_verification") is True
+                    and receipt.get("raw_sha256") == sha(raw) and receipt.get("bytes") == len(raw),
+                    "primary failure is not an authenticated HTTP 5xx")
+        else:
+            require(receipt.get("status") == "transport_failure_no_response"
+                    and receipt.get("error_type") in ("ReadTimeout", "ConnectTimeout", "ConnectionError"),
+                    "primary failure is not a response-free transport error")
+    return dict(completed_at=max(completed), selected_at=None, origin=symbol)
+
+
+def verify_typed_quote(manifest, *, symbol, end, bound, now):
+    require(manifest.get("quote_source") == TYPED_QUOTE and "quote" not in manifest["files"]
+            and "quote_dated_corroboration" not in manifest and "quote_dated_corroboration" not in manifest["files"],
+            "ambiguous typed quote selection")
+    failure = manifest["quote_primary_failure"]
+    cause = _verify_primary_failure(json.loads(bound(failure["path"], failure["sha256"])),
+                                    symbol=symbol, end=end, bound=bound, now=now)
+    urls = typed_quote_urls(manifest["quote_symbols"])
+    pairs = [_artifact(manifest["files"][key], bound, url=url, params={}, end=end, now=now)
+             for key, url in zip(("tencent_quote", "sina_quote"), urls)]
+    for key, url in zip(("tencent_quote", "sina_quote"), urls):
+        entry = manifest["files"][key]
+        if "attempt_budget" in entry:
+            _verify_backup_budget(entry, bound=bound, url=url, purpose=key, end=end, now=now)
+    if cause["selected_at"] is not None:
+        require(all(cause["selected_at"] <= clock(pair[1]["http_start"])
+                    and ("attempt_budget" in manifest["files"][key]
+                         or clock(pair[1]["http_start"]) <= cause["selected_at"] + timedelta(seconds=90))
+                    for key, pair in zip(("tencent_quote", "sina_quote"), pairs)),
+                "typed fallback observations do not belong to the selected endpoint outage")
+    return parse_typed_quote(pairs[0][0], pairs[1][0], symbol=symbol, symbols=manifest["quote_symbols"],
+                             end=end, receipts=[pair[1] for pair in pairs])
+
+
+BACKUP_COOLDOWN = timedelta(minutes=30)
+
+
+class QuoteRecoveryPending(RuntimeError):
+    def __init__(self, directory, retry_after):
+        self.state = "quote_backup_recovery_pending"
+        self.directory = str(directory); self.retry_after = retry_after
+        super().__init__(self.state + "; retry_after=" + retry_after.isoformat() + "; evidence=" + str(directory))
+
+
+class QuoteRecoveryExhausted(RuntimeError):
+    state = "quote_backup_recovery_exhausted"
+
+
+def _backup_query_directory(source, *, url, end, purpose):
+    key = sha(json.dumps([url, {}, end], sort_keys=True, separators=(",", ":")).encode())
+    return Path(source) / "quote_failover" / "backup" / end / (purpose + "-" + key)
+
+
+def _backup_state(read, *, url, purpose, end, now):
+    """Reconstruct an original attempt from bytes, including an interrupted GET."""
+    raw = read("intent.json")
+    if raw is None:
+        return None
+    intent = json.loads(raw); created = clock(intent["created_at"])
+    require(intent.get("schema") == "quote_backup_attempt_v1" and intent.get("url") == url
+            and intent.get("params") == {} and intent.get("target") == end
+            and intent.get("purpose") == purpose and intent.get("max_attempts") == 1
+            and created <= now, "backup attempt identity or clock differs")
+    if read("terminal.json") is not None:
+        return dict(status="blocked", cooling_from=created)
+    body, receipt_raw = read(purpose + ".raw"), read(purpose + ".receipt.json")
+    if body is not None and receipt_raw is not None:
+        values = {"body": body, "receipt": receipt_raw}
+        entry = dict(raw_path="body", raw_sha256=sha(body), receipt_path="receipt", receipt_sha256=sha(receipt_raw))
+        _, receipt = _artifact(entry, lambda path, digest: values[path] if sha(values[path]) == digest else None,
+                               url=url, params={}, end=end, now=now)
+        require(created <= clock(receipt["http_start"]), "backup success precedes its durable intent")
+        return dict(status="complete", cooling_from=created)
+    if body is not None or receipt_raw is not None:
+        return dict(status="unknown", cooling_from=created)
+    failed = read(purpose + "_attempt1.receipt.json")
+    transport = read(purpose + "_attempt1.transport.json")
+    require(not (failed is not None and transport is not None), "backup failure observation ambiguous")
+    if failed is None and transport is None:
+        return dict(status="unknown", cooling_from=created)
+    record = json.loads(failed if failed is not None else transport)
+    start, complete = clock(record["http_start"]), clock(record["http_complete"])
+    require(record.get("url") == url and record.get("params") == {}
+            and created <= start and datetime.fromisoformat(end + "T15:00:00+08:00") <= start <= complete <= now,
+            "backup failure endpoint or clock differs")
+    if failed is not None:
+        data = read(purpose + "_attempt1.raw")
+        require(data is not None and record.get("raw_sha256") == sha(data)
+                and record.get("bytes") == len(data) and record.get("tls_verification") is True,
+                "backup failed HTTP raw differs")
+        retryable = record.get("http_status") in (500, 502, 503, 504)
+    else:
+        retryable = record.get("status") == "transport_failure_no_response" and record.get("error_type") in (
+            "ReadTimeout", "ConnectTimeout", "ConnectionError")
+    return dict(status="retryable" if retryable else "blocked", cooling_from=complete)
+
+
+def _backup_read(folder):
+    return lambda name: (folder / name).read_bytes() if (folder / name).is_file() else None
+
+
+def _backup_once(path, body):
+    if path.exists():
+        require(path.read_bytes() == body, "preserved backup observation changed")
+        return False
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("xb") as stream:
+            stream.write(body); stream.flush(); os.fsync(stream.fileno())
+        return True
+
+
+def _verify_backup_budget(entry, *, bound, url, purpose, end, now):
+    spec = entry["attempt_budget"]; raw = bound(spec["path"], spec["sha256"]); budget = json.loads(raw)
+    require(budget.get("schema") == "quote_backup_single_recovery_v1" and budget.get("url") == url
+            and budget.get("target") == end and budget.get("purpose") == purpose
+            and budget.get("selected") in ("initial", "recovery") and 0 < len(budget.get("files", {})) <= 20,
+            "backup budget identity differs")
+    values = {path: bound(path, digest) for path, digest in budget["files"].items()}
+    prefix = spec["path"].rsplit("/", 1)[0] + "/"
+    require(all(path.startswith(prefix) for path in values), "backup budget object escaped query scope")
+    state = {}
+    for attempt in ("initial", "recovery"):
+        state[attempt] = _backup_state(lambda name: values.get(prefix + attempt + "/" + name),
+            url=url, purpose=purpose, end=end, now=now)
+    chosen = state[budget["selected"]]
+    require(chosen is not None and chosen["status"] == "complete", "backup selected attempt is incomplete")
+    if budget["selected"] == "recovery":
+        old = state["initial"]; intent = json.loads(values[prefix + "recovery/intent.json"])
+        require(old is not None and old["status"] in ("unknown", "retryable")
+                and clock(intent["created_at"]) >= old["cooling_from"] + BACKUP_COOLDOWN,
+                "backup recovery precedes cooling or repeats a blocked source")
+    actual = {key: entry[key] for key in ("raw_path", "raw_sha256", "receipt_path", "receipt_sha256")}
+    selected = prefix + budget["selected"] + "/" + purpose
+    require(budget.get("success") == actual and actual["raw_path"] == selected + ".raw"
+            and actual["receipt_path"] == selected + ".receipt.json"
+            and budget["files"].get(actual["raw_path"]) == actual["raw_sha256"]
+            and budget["files"].get(actual["receipt_path"]) == actual["receipt_sha256"],
+            "backup success entry differs from selected attempt closure")
+
+
+def _collect_backup(*, directory, source, url, purpose, end):
+    now = datetime.now(timezone.utc)
+    def entry(folder):
+        body, receipt = folder / (purpose + ".raw"), folder / (purpose + ".receipt.json")
+        return dict(raw_path=body.relative_to(source).as_posix(), raw_sha256=sha(body.read_bytes()),
+            receipt_path=receipt.relative_to(source).as_posix(), receipt_sha256=sha(receipt.read_bytes()))
+    # Preserve and reuse a successful d2d-era typed observation at its old ABI.
+    if (directory / (purpose + ".raw")).is_file() and (directory / (purpose + ".receipt.json")).is_file():
+        return entry(directory)
+    budget = _backup_query_directory(source, url=url, end=end, purpose=purpose)
+    initial, recovery = budget / "initial", budget / "recovery"
+    initial.mkdir(parents=True, exist_ok=True)
+    state = _backup_state(_backup_read(initial), url=url, purpose=purpose, end=end, now=now)
+    chosen = initial
+    if state is not None and state["status"] != "complete":
+        if state["status"] == "blocked":
+            raise ValueError("Backup source refusal/TLS is terminal; original evidence preserved")
+        old = _backup_state(_backup_read(recovery), url=url, purpose=purpose, end=end, now=now)
+        if old is not None:
+            if old["status"] != "complete":
+                raise QuoteRecoveryExhausted("Backup recovery already started or failed; original attempts preserved")
+            chosen = recovery; state = old
+        else:
+            retry_after = state["cooling_from"] + BACKUP_COOLDOWN
+            if now < retry_after:
+                raise QuoteRecoveryPending(budget, retry_after)
+            chosen = recovery; state = None
+    if state is None:
+        chosen.mkdir(parents=True, exist_ok=True)
+        intent = dict(schema="quote_backup_attempt_v1", url=url, params={}, target=end, purpose=purpose,
+                      created_at=now.isoformat(), max_attempts=1)
+        if not _backup_once(chosen / "intent.json", json.dumps(intent, sort_keys=True).encode()):
+            raise QuoteRecoveryPending(budget, now + BACKUP_COOLDOWN)
+        try:
+            _save_public_observation(directory=chosen, source=source, url=url, params={}, purpose=purpose,
+                end=end, max_attempts=1, referer="https://finance.sina.com.cn/" if purpose == "sina_quote" else None)
+        except (requests.exceptions.SSLError, requests.HTTPError) as exc:
+            _backup_once(chosen / "terminal.json", json.dumps(dict(error_type=type(exc).__name__,
+                recorded_at=datetime.now(timezone.utc).isoformat(), no_retry=True)).encode())
+            raise
+        except RuntimeError:
+            observed = _backup_state(_backup_read(chosen), url=url, purpose=purpose, end=end, now=datetime.now(timezone.utc))
+            if chosen == recovery:
+                raise QuoteRecoveryExhausted("Backup recovery failed; original attempts preserved")
+            raise QuoteRecoveryPending(budget, observed["cooling_from"] + BACKUP_COOLDOWN)
+    result = entry(chosen)
+    allowed = {"intent.json", "terminal.json", purpose + ".raw", purpose + ".receipt.json",
+        purpose + "_attempt1.raw", purpose + "_attempt1.receipt.json", purpose + "_attempt1.transport.json"}
+    files = {path.relative_to(source).as_posix(): sha(path.read_bytes())
+        for folder in (initial, recovery) if folder.exists() for path in folder.iterdir() if path.name in allowed}
+    body = json.dumps(dict(schema="quote_backup_single_recovery_v1", url=url, target=end, purpose=purpose,
+        selected=chosen.name, success=result, files=files), sort_keys=True).encode()
+    manifest = budget / "success.json"; _backup_once(manifest, body)
+    result["attempt_budget"] = dict(path=manifest.relative_to(source).as_posix(), sha256=sha(body))
+    return result
+
+
+def collect_dual_quote(*, directory, source, symbols, end):
+    """Two provider-native observations with durable, bounded source recovery."""
+    return {key: _collect_backup(directory=Path(directory), source=Path(source), url=url, purpose=key, end=end)
+        for key, url in zip(("tencent_quote", "sina_quote"), typed_quote_urls(symbols))}
+
+
+def collect_quote_inputs(*, directory, source, symbol, end):
+    """One main attempt, or retained exhaustion; never reset a failed budget."""
+    directory, source = Path(directory), Path(source)
+    now = datetime.now(timezone.utc)
+    def bound(relative, digest):
+        path = (source / relative).resolve(); require(path.is_relative_to(source.resolve()), "quote source escaped root")
+        raw = path.read_bytes(); require(sha(raw) == digest, "quote source hash differs"); return raw
+    legacy, legacy_receipt = directory / "quote.raw", directory / "quote.receipt.json"
+    if legacy.exists() or legacy_receipt.exists():
+        require(legacy.exists() and legacy_receipt.exists(), "incomplete primary observation preserved")
+        entry = dict(raw_path=legacy.relative_to(source).as_posix(), raw_sha256=sha(legacy.read_bytes()),
+                     receipt_path=legacy_receipt.relative_to(source).as_posix(), receipt_sha256=sha(legacy_receipt.read_bytes()))
+        _artifact(entry, bound, url=QUOTE_URL, params=quote_params(symbol), end=end, now=now)
+        return {}, {"quote": entry}
+    ledger = source / "quote_failover" / symbol / end / "primary_failure.json"
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    if not ledger.exists():
+        attempts = _failure_files(directory, source, symbol=symbol, end=end)
+        if not attempts:
+            intent = ledger.with_name("primary_started.json")
+            require(not intent.exists(), "primary request outcome unknown; budget preserved")
+            cached = _QUOTE_ENDPOINT_FAILURES.get((str(source.resolve()), end))
+            if cached and now <= cached["expires_at"] and now.astimezone(timezone(timedelta(hours=8))).date() == cached["observation_day"]:
+                record = dict(schema="quote_primary_endpoint_failure_v1", symbol=symbol, target=end,
+                    original_failure=cached["reference"], selected_at=now.isoformat())
+            else:
+                with intent.open("xb") as stream:
+                    stream.write(json.dumps(dict(symbol=symbol, target=end, started_at=now.isoformat(), max_attempts=1)).encode())
+                try:
+                    entry, _ = _save_public_observation(directory=directory, source=source, url=QUOTE_URL,
+                        params=quote_params(symbol), purpose="quote", end=end, max_attempts=1)
+                    return {}, {"quote": entry}
+                except RuntimeError as exc:
+                    if not str(exc).startswith("SHARE_REQUEST_RETRY_EXHAUSTED: quote"):
+                        raise
+                attempts = _failure_files(directory, source, symbol=symbol, end=end)
+                record = dict(schema="quote_primary_transport_failure_v1", symbol=symbol, target=end, attempts=attempts)
+        else:
+            record = dict(schema="quote_primary_transport_failure_v1", symbol=symbol, target=end, attempts=attempts)
+        record["observation_directory"] = directory.relative_to(source).as_posix()
+        _verify_primary_failure(record, symbol=symbol, end=end, bound=bound, now=datetime.now(timezone.utc))
+        with ledger.open("xb") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False, indent=2).encode())
+    reference = dict(path=ledger.relative_to(source).as_posix(), sha256=sha(ledger.read_bytes()))
+    record = json.loads(bound(reference["path"], reference["sha256"]))
+    cause = _verify_primary_failure(record, symbol=symbol, end=end, bound=bound, now=datetime.now(timezone.utc))
+    if cause["selected_at"] is None:
+        _QUOTE_ENDPOINT_FAILURES[str(source.resolve()), end] = dict(reference=reference,
+            expires_at=cause["completed_at"] + timedelta(minutes=30),
+            observation_day=cause["completed_at"].astimezone(timezone(timedelta(hours=8))).date())
+    observation = (source / record["observation_directory"]).resolve()
+    require(observation.is_relative_to(source.resolve()) and observation.is_dir(), "typed quote observation directory escaped")
+    files = collect_dual_quote(directory=observation, source=source, symbols=[symbol], end=end)
+    return dict(quote_source=TYPED_QUOTE, quote_symbols=[symbol], quote_primary_failure=reference), files
 
 
 def _em_date(value):
@@ -506,42 +879,54 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
         require(not tail, "Sina tail event")
     sina_asof = [row for row in sina["records"] if day(row["provider_date"]) <= t]
     require(sina_asof and amount(sina_asof[-1]["total_shares_10k"]) == boundary, "Sina boundary total differs")
-    qp = quote_params(symbol)
-    quote_raw, quote_receipt = _artifact(files["quote"], bound, url=QUOTE_URL, params=qp, end=end, now=now)
-    quote = json.loads(quote_raw, parse_float=Decimal)
-    data = quote.get("data")
-    require(quote.get("rc") == 0 and isinstance(data, dict) and data.get("f57") == symbol, "quote issuer/status differs")
-    stamp = datetime.fromtimestamp(integer(data.get("f86")), timezone.utc)
-    frame_day = stamp.astimezone(timezone(timedelta(hours=8))).date()
-    historical = None
-    if "historical_close" in files:
-        # Only a genuinely later observation may take this path. A missing,
-        # stale, future or conflicting quote clock remains a hard failure.
-        observed_start = clock(quote_receipt["http_start"]).astimezone(timezone(timedelta(hours=8))).date()
-        observed_end = clock(quote_receipt["http_complete"]).astimezone(timezone(timedelta(hours=8))).date()
-        require(t < frame_day == observed_start == observed_end
-                and stamp <= clock(quote_receipt["http_complete"]), "later quote observation clock differs")
-        historical = _historical_close(files["historical_close"], bound, symbol=symbol,
-                                       previous_day=previous_day, end=end, boundary=boundary, now=now)
+    typed_quote = None
+    if manifest.get("quote_source") is not None:
+        typed_quote = verify_typed_quote(manifest, symbol=symbol, end=end, bound=bound, now=now)
+        stamp = clock(typed_quote["tencent_frame_time"])
+        historical = None
+        if any(day(value) > day(end) for value in typed_quote["source_market_dates"].values()):
+            require("historical_close" in files, "later typed quote needs dated target evidence")
+            historical = _historical_close(files["historical_close"], bound, symbol=symbol,
+                previous_day=previous_day, end=end, boundary=boundary, now=now)
+        require(amount(typed_quote["total_shares"]) / 10000 == boundary, "typed quote total differs")
+        corroboration = None
     else:
-        require(frame_day == t
-                and datetime.fromisoformat(end + "T15:00:00+08:00") <= stamp <= clock(quote_receipt["http_complete"]), "quote frame not target close")
-    extra_clock = data.get("f124")
-    if extra_clock is not None:
-        extra_epoch = integer(extra_clock)
-        if extra_epoch:
-            extra_stamp = datetime.fromtimestamp(extra_epoch, timezone.utc)
-            require(extra_stamp.astimezone(timezone(timedelta(hours=8))).date() == frame_day
-                    and (historical is not None or datetime.fromisoformat(end + "T15:00:00+08:00") <= extra_stamp)
-                    and extra_stamp <= clock(quote_receipt["http_complete"]), "quote extra clock conflicts")
-    corroboration = None
-    if amount(data.get("f84")) / 10000 == boundary:
-        require("quote_dated_corroboration" not in manifest and "quote_dated_corroboration" not in files,
-                "unused later quote corroboration")
-    else:
-        require("quote_dated_corroboration" in manifest, "quote total differs")
-        corroboration = verify_quote_dated_corroboration(manifest, symbol=symbol, end=end, boundary=boundary,
-            data=data, receipt=quote_receipt, sina=sina, plans=future_plans, bound=bound, now=now, root=root)
+        qp = quote_params(symbol)
+        quote_raw, quote_receipt = _artifact(files["quote"], bound, url=QUOTE_URL, params=qp, end=end, now=now)
+        quote = json.loads(quote_raw, parse_float=Decimal)
+        data = quote.get("data")
+        require(quote.get("rc") == 0 and isinstance(data, dict) and data.get("f57") == symbol, "quote issuer/status differs")
+        stamp = datetime.fromtimestamp(integer(data.get("f86")), timezone.utc)
+        frame_day = stamp.astimezone(timezone(timedelta(hours=8))).date()
+        historical = None
+        if "historical_close" in files:
+            # Only a genuinely later observation may take this path. A missing,
+            # stale, future or conflicting quote clock remains a hard failure.
+            observed_start = clock(quote_receipt["http_start"]).astimezone(timezone(timedelta(hours=8))).date()
+            observed_end = clock(quote_receipt["http_complete"]).astimezone(timezone(timedelta(hours=8))).date()
+            require(t < frame_day == observed_start == observed_end
+                    and stamp <= clock(quote_receipt["http_complete"]), "later quote observation clock differs")
+            historical = _historical_close(files["historical_close"], bound, symbol=symbol,
+                                           previous_day=previous_day, end=end, boundary=boundary, now=now)
+        else:
+            require(frame_day == t
+                    and datetime.fromisoformat(end + "T15:00:00+08:00") <= stamp <= clock(quote_receipt["http_complete"]), "quote frame not target close")
+        extra_clock = data.get("f124")
+        if extra_clock is not None:
+            extra_epoch = integer(extra_clock)
+            if extra_epoch:
+                extra_stamp = datetime.fromtimestamp(extra_epoch, timezone.utc)
+                require(extra_stamp.astimezone(timezone(timedelta(hours=8))).date() == frame_day
+                        and (historical is not None or datetime.fromisoformat(end + "T15:00:00+08:00") <= extra_stamp)
+                        and extra_stamp <= clock(quote_receipt["http_complete"]), "quote extra clock conflicts")
+        corroboration = None
+        if amount(data.get("f84")) / 10000 == boundary:
+            require("quote_dated_corroboration" not in manifest and "quote_dated_corroboration" not in files,
+                    "unused later quote corroboration")
+        else:
+            require("quote_dated_corroboration" in manifest, "quote total differs")
+            corroboration = verify_quote_dated_corroboration(manifest, symbol=symbol, end=end, boundary=boundary,
+                data=data, receipt=quote_receipt, sina=sina, plans=future_plans, bound=bound, now=now, root=root)
     facts = dict(kind=KIND, symbol=symbol, query_end=end, previous_day=previous_day,
                 total_shares_10k=str(boundary), unchanged_observations=True,
                 frame_time=stamp.isoformat(), f84_independent_asof_guarantee_proven=False,
@@ -551,25 +936,31 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                 future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport,
                 approved_late_unchanged_event={key: value for key, value in approved_event.items() if key != "row"}
                     if approved_event is not None else None)
+    if typed_quote is not None:
+        facts.pop("f84_independent_asof_guarantee_proven", None)
+        facts.pop("frame_time", None)
+        facts["typed_quote"] = typed_quote
     if corroboration is not None:
         facts["quote_dated_corroboration"] = corroboration
     return facts
 
 
-def _save_public_observation(*, directory, source, url, params, purpose, end, referer=None):
+def _save_public_observation(*, directory, source, url, params, purpose, end, referer=None, max_attempts=4):
     """Spend the former two-run transport budget on this request only.
 
     Four attempts equal the previous two local attempts times two whole-refresh
     attempts. Exhaustion is terminal to the outer runner; completed inputs and
     earlier successful requests are never repeated to consume this budget.
     """
-    for attempt in range(4):
+    require(type(max_attempts) is int and 1 <= max_attempts <= 4, "invalid public request attempt budget")
+    for attempt in range(max_attempts):
         start = datetime.now(timezone.utc)
         require(start >= datetime.fromisoformat(end + "T15:00:00+08:00"), "not close eligible")
         try:
             headers={"User-Agent":"Mozilla/5.0"}
             if referer is not None:
-                require(referer=="https://www.sse.com.cn/assortment/stock/list/info/company/index.shtml?COMPANY_CODE=603028", "unknown source referer")
+                require(referer=="https://www.sse.com.cn/assortment/stock/list/info/company/index.shtml?COMPANY_CODE=603028"
+                        or (referer=="https://finance.sina.com.cn/" and url.startswith("https://hq.sinajs.cn/list=")), "unknown source referer")
                 headers["Referer"]=referer
             response = requests.get(url, params=params, headers=headers, timeout=20, verify=True)
         except requests.exceptions.SSLError:
@@ -580,7 +971,7 @@ def _save_public_observation(*, directory, source, url, params, purpose, end, re
                            error_type=type(error).__name__, status="transport_failure_no_response")
             (directory / f"{purpose}_attempt{attempt + 1}.transport.json").write_text(
                 json.dumps(failure, ensure_ascii=False, indent=2), encoding="utf8")
-            if attempt == 3:
+            if attempt == max_attempts - 1:
                 raise RuntimeError("SHARE_REQUEST_RETRY_EXHAUSTED: " + purpose) from error
             print(f"[share-source] transient public request {purpose}; retry={attempt + 1}/3", flush=True)
             time.sleep(20 if attempt == 1 else 1)
@@ -602,7 +993,7 @@ def _save_public_observation(*, directory, source, url, params, purpose, end, re
                 response.raise_for_status()
             except requests.HTTPError as error:
                 if response.status_code in (500, 502, 503, 504):
-                    if attempt == 3:
+                    if attempt == max_attempts - 1:
                         raise RuntimeError("SHARE_REQUEST_RETRY_EXHAUSTED: " + purpose) from error
                     print(f"[share-source] HTTP {response.status_code} {purpose}; retry={attempt + 1}/3", flush=True)
                     time.sleep(20 if attempt == 1 else 1)
@@ -651,22 +1042,27 @@ def collect_manifest(*, root, symbol, previous_day, end, candidate):
                 reference, _ = save(review["pdf_url"], {}, "pdf_" + review["announcement_id"])
                 future_documents.append({**reference, "announcement_id": review["announcement_id"]})
     files["sina"], _ = save(SINA_URL.format(symbol=symbol), {}, "sina")
-    qp = quote_params(symbol)
-    files["quote"], quote_raw = save(QUOTE_URL, qp, "quote")
-    quote = json.loads(quote_raw)
-    quote_data = quote.get("data")
-    if quote.get("rc") == 0 and isinstance(quote_data, dict) and quote_data.get("f57") == symbol:
-        stamp = datetime.fromtimestamp(integer(quote_data.get("f86")), timezone.utc)
-        if stamp.astimezone(timezone(timedelta(hours=8))).date() > day(end):
-            files["historical_close"], _ = save(HISTORICAL_URL, historical_params(symbol, previous_day, end), "historical_close")
+    quote_metadata, quote_files = collect_quote_inputs(directory=directory, source=source, symbol=symbol, end=end)
+    files.update(quote_files)
     manifest = dict(schema=KIND, symbol=symbol, previous_day=previous_day, query_end=end, files=files,
-                    future_plan_documents=future_documents)
+                    future_plan_documents=future_documents, **quote_metadata)
+    if not quote_metadata:
+        quote = json.loads((source / files["quote"]["raw_path"]).read_bytes())
+        quote_data = quote.get("data")
+        if quote.get("rc") == 0 and isinstance(quote_data, dict) and quote_data.get("f57") == symbol:
+            stamp = datetime.fromtimestamp(integer(quote_data.get("f86")), timezone.utc)
+            if stamp.astimezone(timezone(timedelta(hours=8))).date() > day(end):
+                files["historical_close"], _ = save(HISTORICAL_URL, historical_params(symbol, previous_day, end), "historical_close")
     def bound(relative, expected):
         p = (source / relative).resolve()
         require(p.is_relative_to(source.resolve()), "source path escapes")
         raw = p.read_bytes()
         require(sha(raw) == expected, "source digest differs")
         return raw
+    if quote_metadata:
+        observed_quote = verify_typed_quote(manifest, symbol=symbol, end=end, bound=bound, now=datetime.now(timezone.utc))
+        if any(day(value) > day(end) for value in observed_quote["source_market_dates"].values()):
+            files["historical_close"], _ = save(HISTORICAL_URL, historical_params(symbol, previous_day, end), "historical_close")
     if (symbol, previous_day, end) == ("603028", "2026-11-04", "2026-11-05"):
         from scripts.sse_share_daily_unchanged_20261104 import collect_transition
         manifest = collect_transition(manifest, symbol=symbol, previous_day=previous_day,
