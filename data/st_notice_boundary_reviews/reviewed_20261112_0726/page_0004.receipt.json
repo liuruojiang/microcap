@@ -1,0 +1,18 @@
+{
+  "url": "https://np-anotice-stock.eastmoney.com/api/security/ann",
+  "params": {
+    "sr": "-1",
+    "page_size": "100",
+    "page_index": "4",
+    "ann_type": "A",
+    "client_source": "web",
+    "f_node": "0",
+    "s_node": "0",
+    "begin_time": "2026-11-11",
+    "end_time": "2026-11-11"
+  },
+  "collected_at": "2026-11-12T07:26:51.053413+00:00",
+  "status": 200,
+  "sha256": "cf8907c63bec148b468019f56b7e2d9ee7373ccb643aaf08c1e606b1978a4713",
+  "completed_at": "2026-11-12T07:26:52.051900+00:00"
+}

@@ -830,29 +830,36 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
         for e in events:
             if e['date']<=ds:expected=n.amount(e['total_shares_10k'])
         need(observed[ds]==expected,'daily totals do not reproduce complete event history')
-    quote_raw,quote_receipt=n._artifact(files['quote'],bound,url=n.QUOTE_URL,
-                                      params=n.quote_params(symbol),end=end,now=now)
-    quote=json.loads(quote_raw);data=quote.get('data')
-    need(quote.get('rc')==0 and isinstance(data,dict) and data.get('f57')==symbol,'quote issuer differs')
-    stamp=datetime.fromtimestamp(n.integer(data.get('f86')),timezone.utc)
-    frame_day=stamp.astimezone(timezone(n.timedelta(hours=8))).date()
-    complete=n.clock(quote_receipt['http_complete'])
-    need(t<=frame_day and datetime.fromisoformat(end+'T15:00:00+08:00')<=stamp<=complete,
-         'quote is not close eligible or has a future clock')
-    if frame_day>t:
-        need(frame_day==complete.astimezone(timezone(n.timedelta(hours=8))).date(),'later quote is not from observation day')
-    if data.get('f124') not in (None,0):
-        extra=datetime.fromtimestamp(n.integer(data['f124']),timezone.utc)
-        need(extra.astimezone(timezone(n.timedelta(hours=8))).date()==frame_day and extra<=complete,
-             'quote secondary clock conflicts')
-    corroboration=None
-    if n.amount(data.get('f84'))/10000==observed[end]:
-        need('quote_dated_corroboration' not in manifest and 'quote_dated_corroboration' not in files,
-             'unused later quote corroboration')
+    typed_quote=None
+    if manifest.get('quote_source') is not None:
+        typed_quote=n.verify_typed_quote(manifest,symbol=symbol,end=end,bound=bound,now=now)
+        need(n.amount(typed_quote['total_shares'])/10000==observed[end],
+             'typed quote total differs from dated terminal total')
+        corroboration=None
     else:
-        need('quote_dated_corroboration' in manifest,'quote total differs from dated terminal total')
-        corroboration=n.verify_quote_dated_corroboration(manifest,symbol=symbol,end=end,boundary=observed[end],
-            data=data,receipt=quote_receipt,sina=sina,plans=plans,bound=bound,now=now,root=root)
+        quote_raw,quote_receipt=n._artifact(files['quote'],bound,url=n.QUOTE_URL,
+                                          params=n.quote_params(symbol),end=end,now=now)
+        quote=json.loads(quote_raw);data=quote.get('data')
+        need(quote.get('rc')==0 and isinstance(data,dict) and data.get('f57')==symbol,'quote issuer differs')
+        stamp=datetime.fromtimestamp(n.integer(data.get('f86')),timezone.utc)
+        frame_day=stamp.astimezone(timezone(n.timedelta(hours=8))).date()
+        complete=n.clock(quote_receipt['http_complete'])
+        need(t<=frame_day and datetime.fromisoformat(end+'T15:00:00+08:00')<=stamp<=complete,
+             'quote is not close eligible or has a future clock')
+        if frame_day>t:
+            need(frame_day==complete.astimezone(timezone(n.timedelta(hours=8))).date(),'later quote is not from observation day')
+        if data.get('f124') not in (None,0):
+            extra=datetime.fromtimestamp(n.integer(data['f124']),timezone.utc)
+            need(extra.astimezone(timezone(n.timedelta(hours=8))).date()==frame_day and extra<=complete,
+                 'quote secondary clock conflicts')
+        corroboration=None
+        if n.amount(data.get('f84'))/10000==observed[end]:
+            need('quote_dated_corroboration' not in manifest and 'quote_dated_corroboration' not in files,
+                 'unused later quote corroboration')
+        else:
+            need('quote_dated_corroboration' in manifest,'quote total differs from dated terminal total')
+            corroboration=n.verify_quote_dated_corroboration(manifest,symbol=symbol,end=end,boundary=observed[end],
+                data=data,receipt=quote_receipt,sina=sina,plans=plans,bound=bound,now=now,root=root)
     candidate=previous_candidate
     if events:
         need(previous_candidate.endswith(b'\n'),'original CSV has no final line boundary')
@@ -864,6 +871,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     facts=dict(symbol=symbol,previous_day=previous_day,query_end=end,session_count=len(sessions),
                           changes=events,historical_reobservations=reobservations,
                           old_prefix_preserved=True,legal_effective_date_not_asserted=True)
+    if typed_quote is not None:facts['typed_quote']=typed_quote
     if corroboration is not None:facts['quote_dated_corroboration']=corroboration
     if structure_events:facts['structure_events']=structure_events
     if structure_reobservations:facts['structure_reobservations']=structure_reobservations
@@ -1002,13 +1010,14 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
                 review=matching[0];ref,_=save(review['pdf_url'],{},'pdf_'+review['announcement_id'])
                 documents.append({**ref,'announcement_id':review['announcement_id']})
     files['sina'],_=save(n.SINA_URL.format(symbol=symbol),{},'sina')
-    files['quote'],_=save(n.QUOTE_URL,n.quote_params(symbol),'quote')
+    quote_metadata,quote_files=n.collect_quote_inputs(directory=directory,source=source,symbol=symbol,end=end)
+    files.update(quote_files)
     review=STRUCTURE_ONLY_EVENT_20261105
     if symbol==review['symbol'] and previous_day<review['date']<=end:
         ref,_=save(review['pdf_url'],{},'structure_'+review['announcement_id'])
         files['structure_documents']=[{**ref,'announcement_id':review['announcement_id']}]
     manifest=dict(schema=DATED_WINDOW_KIND,symbol=symbol,previous_day=previous_day,query_end=end,
-                  files=files,future_plan_documents=documents,previous_candidate_sha256=_sha(candidate))
+                  files=files,future_plan_documents=documents,previous_candidate_sha256=_sha(candidate),**quote_metadata)
     _atomic(directory/'collection.json',json.dumps(manifest,ensure_ascii=False,indent=2).encode('utf8'))
     try:
         proposed,facts=verify_dated_window(manifest,symbol=symbol,previous_day=previous_day,end=end,
