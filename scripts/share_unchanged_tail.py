@@ -317,28 +317,188 @@ def verify_typed_quote(manifest, *, symbol, end, bound, now):
     urls = typed_quote_urls(manifest["quote_symbols"])
     pairs = [_artifact(manifest["files"][key], bound, url=url, params={}, end=end, now=now)
              for key, url in zip(("tencent_quote", "sina_quote"), urls)]
+    for key, url in zip(("tencent_quote", "sina_quote"), urls):
+        entry = manifest["files"][key]
+        if "attempt_budget" in entry:
+            _verify_backup_budget(entry, bound=bound, url=url, purpose=key, end=end, now=now)
     if cause["selected_at"] is not None:
         require(all(cause["selected_at"] <= clock(pair[1]["http_start"])
-                    <= cause["selected_at"] + timedelta(seconds=90) for pair in pairs),
+                    and ("attempt_budget" in manifest["files"][key]
+                         or clock(pair[1]["http_start"]) <= cause["selected_at"] + timedelta(seconds=90))
+                    for key, pair in zip(("tencent_quote", "sina_quote"), pairs)),
                 "typed fallback observations do not belong to the selected endpoint outage")
     return parse_typed_quote(pairs[0][0], pairs[1][0], symbol=symbol, symbols=manifest["quote_symbols"],
                              end=end, receipts=[pair[1] for pair in pairs])
 
 
-def collect_dual_quote(*, directory, source, symbols, end):
-    """Two bounded provider-native requests; useful independently for diagnostics."""
-    files = {}
-    for key, url in zip(("tencent_quote", "sina_quote"), typed_quote_urls(symbols)):
-        path, receipt = directory / (key + ".raw"), directory / (key + ".receipt.json")
-        if path.exists() or receipt.exists():
-            require(path.exists() and receipt.exists(), "incomplete typed quote observation preserved")
-            files[key] = dict(raw_path=path.relative_to(source).as_posix(), raw_sha256=sha(path.read_bytes()),
-                receipt_path=receipt.relative_to(source).as_posix(), receipt_sha256=sha(receipt.read_bytes()))
+BACKUP_COOLDOWN = timedelta(minutes=30)
+
+
+class QuoteRecoveryPending(RuntimeError):
+    def __init__(self, directory, retry_after):
+        self.state = "quote_backup_recovery_pending"
+        self.directory = str(directory); self.retry_after = retry_after
+        super().__init__(self.state + "; retry_after=" + retry_after.isoformat() + "; evidence=" + str(directory))
+
+
+class QuoteRecoveryExhausted(RuntimeError):
+    state = "quote_backup_recovery_exhausted"
+
+
+def _backup_query_directory(source, *, url, end, purpose):
+    key = sha(json.dumps([url, {}, end], sort_keys=True, separators=(",", ":")).encode())
+    return Path(source) / "quote_failover" / "backup" / end / (purpose + "-" + key)
+
+
+def _backup_state(read, *, url, purpose, end, now):
+    """Reconstruct an original attempt from bytes, including an interrupted GET."""
+    raw = read("intent.json")
+    if raw is None:
+        return None
+    intent = json.loads(raw); created = clock(intent["created_at"])
+    require(intent.get("schema") == "quote_backup_attempt_v1" and intent.get("url") == url
+            and intent.get("params") == {} and intent.get("target") == end
+            and intent.get("purpose") == purpose and intent.get("max_attempts") == 1
+            and created <= now, "backup attempt identity or clock differs")
+    if read("terminal.json") is not None:
+        return dict(status="blocked", cooling_from=created)
+    body, receipt_raw = read(purpose + ".raw"), read(purpose + ".receipt.json")
+    if body is not None and receipt_raw is not None:
+        values = {"body": body, "receipt": receipt_raw}
+        entry = dict(raw_path="body", raw_sha256=sha(body), receipt_path="receipt", receipt_sha256=sha(receipt_raw))
+        _, receipt = _artifact(entry, lambda path, digest: values[path] if sha(values[path]) == digest else None,
+                               url=url, params={}, end=end, now=now)
+        require(created <= clock(receipt["http_start"]), "backup success precedes its durable intent")
+        return dict(status="complete", cooling_from=created)
+    if body is not None or receipt_raw is not None:
+        return dict(status="unknown", cooling_from=created)
+    failed = read(purpose + "_attempt1.receipt.json")
+    transport = read(purpose + "_attempt1.transport.json")
+    require(not (failed is not None and transport is not None), "backup failure observation ambiguous")
+    if failed is None and transport is None:
+        return dict(status="unknown", cooling_from=created)
+    record = json.loads(failed if failed is not None else transport)
+    start, complete = clock(record["http_start"]), clock(record["http_complete"])
+    require(record.get("url") == url and record.get("params") == {}
+            and created <= start and datetime.fromisoformat(end + "T15:00:00+08:00") <= start <= complete <= now,
+            "backup failure endpoint or clock differs")
+    if failed is not None:
+        data = read(purpose + "_attempt1.raw")
+        require(data is not None and record.get("raw_sha256") == sha(data)
+                and record.get("bytes") == len(data) and record.get("tls_verification") is True,
+                "backup failed HTTP raw differs")
+        retryable = record.get("http_status") in (500, 502, 503, 504)
+    else:
+        retryable = record.get("status") == "transport_failure_no_response" and record.get("error_type") in (
+            "ReadTimeout", "ConnectTimeout", "ConnectionError")
+    return dict(status="retryable" if retryable else "blocked", cooling_from=complete)
+
+
+def _backup_read(folder):
+    return lambda name: (folder / name).read_bytes() if (folder / name).is_file() else None
+
+
+def _backup_once(path, body):
+    if path.exists():
+        require(path.read_bytes() == body, "preserved backup observation changed")
+        return False
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("xb") as stream:
+            stream.write(body); stream.flush(); os.fsync(stream.fileno())
+        return True
+
+
+def _verify_backup_budget(entry, *, bound, url, purpose, end, now):
+    spec = entry["attempt_budget"]; raw = bound(spec["path"], spec["sha256"]); budget = json.loads(raw)
+    require(budget.get("schema") == "quote_backup_single_recovery_v1" and budget.get("url") == url
+            and budget.get("target") == end and budget.get("purpose") == purpose
+            and budget.get("selected") in ("initial", "recovery") and 0 < len(budget.get("files", {})) <= 20,
+            "backup budget identity differs")
+    values = {path: bound(path, digest) for path, digest in budget["files"].items()}
+    prefix = spec["path"].rsplit("/", 1)[0] + "/"
+    require(all(path.startswith(prefix) for path in values), "backup budget object escaped query scope")
+    state = {}
+    for attempt in ("initial", "recovery"):
+        state[attempt] = _backup_state(lambda name: values.get(prefix + attempt + "/" + name),
+            url=url, purpose=purpose, end=end, now=now)
+    chosen = state[budget["selected"]]
+    require(chosen is not None and chosen["status"] == "complete", "backup selected attempt is incomplete")
+    if budget["selected"] == "recovery":
+        old = state["initial"]; intent = json.loads(values[prefix + "recovery/intent.json"])
+        require(old is not None and old["status"] in ("unknown", "retryable")
+                and clock(intent["created_at"]) >= old["cooling_from"] + BACKUP_COOLDOWN,
+                "backup recovery precedes cooling or repeats a blocked source")
+    actual = {key: entry[key] for key in ("raw_path", "raw_sha256", "receipt_path", "receipt_sha256")}
+    selected = prefix + budget["selected"] + "/" + purpose
+    require(budget.get("success") == actual and actual["raw_path"] == selected + ".raw"
+            and actual["receipt_path"] == selected + ".receipt.json"
+            and budget["files"].get(actual["raw_path"]) == actual["raw_sha256"]
+            and budget["files"].get(actual["receipt_path"]) == actual["receipt_sha256"],
+            "backup success entry differs from selected attempt closure")
+
+
+def _collect_backup(*, directory, source, url, purpose, end):
+    now = datetime.now(timezone.utc)
+    def entry(folder):
+        body, receipt = folder / (purpose + ".raw"), folder / (purpose + ".receipt.json")
+        return dict(raw_path=body.relative_to(source).as_posix(), raw_sha256=sha(body.read_bytes()),
+            receipt_path=receipt.relative_to(source).as_posix(), receipt_sha256=sha(receipt.read_bytes()))
+    # Preserve and reuse a successful d2d-era typed observation at its old ABI.
+    if (directory / (purpose + ".raw")).is_file() and (directory / (purpose + ".receipt.json")).is_file():
+        return entry(directory)
+    budget = _backup_query_directory(source, url=url, end=end, purpose=purpose)
+    initial, recovery = budget / "initial", budget / "recovery"
+    initial.mkdir(parents=True, exist_ok=True)
+    state = _backup_state(_backup_read(initial), url=url, purpose=purpose, end=end, now=now)
+    chosen = initial
+    if state is not None and state["status"] != "complete":
+        if state["status"] == "blocked":
+            raise ValueError("Backup source refusal/TLS is terminal; original evidence preserved")
+        old = _backup_state(_backup_read(recovery), url=url, purpose=purpose, end=end, now=now)
+        if old is not None:
+            if old["status"] != "complete":
+                raise QuoteRecoveryExhausted("Backup recovery already started or failed; original attempts preserved")
+            chosen = recovery; state = old
         else:
-            files[key], _ = _save_public_observation(directory=directory, source=source, url=url, params={},
-                purpose=key, end=end, max_attempts=1,
-                referer="https://finance.sina.com.cn/" if key == "sina_quote" else None)
-    return files
+            retry_after = state["cooling_from"] + BACKUP_COOLDOWN
+            if now < retry_after:
+                raise QuoteRecoveryPending(budget, retry_after)
+            chosen = recovery; state = None
+    if state is None:
+        chosen.mkdir(parents=True, exist_ok=True)
+        intent = dict(schema="quote_backup_attempt_v1", url=url, params={}, target=end, purpose=purpose,
+                      created_at=now.isoformat(), max_attempts=1)
+        if not _backup_once(chosen / "intent.json", json.dumps(intent, sort_keys=True).encode()):
+            raise QuoteRecoveryPending(budget, now + BACKUP_COOLDOWN)
+        try:
+            _save_public_observation(directory=chosen, source=source, url=url, params={}, purpose=purpose,
+                end=end, max_attempts=1, referer="https://finance.sina.com.cn/" if purpose == "sina_quote" else None)
+        except (requests.exceptions.SSLError, requests.HTTPError) as exc:
+            _backup_once(chosen / "terminal.json", json.dumps(dict(error_type=type(exc).__name__,
+                recorded_at=datetime.now(timezone.utc).isoformat(), no_retry=True)).encode())
+            raise
+        except RuntimeError:
+            observed = _backup_state(_backup_read(chosen), url=url, purpose=purpose, end=end, now=datetime.now(timezone.utc))
+            if chosen == recovery:
+                raise QuoteRecoveryExhausted("Backup recovery failed; original attempts preserved")
+            raise QuoteRecoveryPending(budget, observed["cooling_from"] + BACKUP_COOLDOWN)
+    result = entry(chosen)
+    allowed = {"intent.json", "terminal.json", purpose + ".raw", purpose + ".receipt.json",
+        purpose + "_attempt1.raw", purpose + "_attempt1.receipt.json", purpose + "_attempt1.transport.json"}
+    files = {path.relative_to(source).as_posix(): sha(path.read_bytes())
+        for folder in (initial, recovery) if folder.exists() for path in folder.iterdir() if path.name in allowed}
+    body = json.dumps(dict(schema="quote_backup_single_recovery_v1", url=url, target=end, purpose=purpose,
+        selected=chosen.name, success=result, files=files), sort_keys=True).encode()
+    manifest = budget / "success.json"; _backup_once(manifest, body)
+    result["attempt_budget"] = dict(path=manifest.relative_to(source).as_posix(), sha256=sha(body))
+    return result
+
+
+def collect_dual_quote(*, directory, source, symbols, end):
+    """Two provider-native observations with durable, bounded source recovery."""
+    return {key: _collect_backup(directory=Path(directory), source=Path(source), url=url, purpose=key, end=end)
+        for key, url in zip(("tencent_quote", "sina_quote"), typed_quote_urls(symbols))}
 
 
 def collect_quote_inputs(*, directory, source, symbol, end):
