@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "decision": "exact_20261112_observation_no_history_rewrite",
+  "boundary_day": "2026-11-11",
+  "observation_floor": "2026-11-12T09:00:00+08:00",
+  "previous_count": 1244,
+  "current_count": 1247,
+  "previous_native_sha256": "75f1237e5118d2116fd1181e9f315245bd1a181a06caa7a8b43077a4b833e791",
+  "current_native_sha256": "f6d11e3f2403eabeee6eb62d38e242ca6ef1796d5e0e213524d50390eef848fc",
+  "previous_stable_native_sha256": "27ab78dfda644ab4df7cdfa4d69b493143b924e80d50c1fc781c8b70f053148e",
+  "current_stable_native_sha256": "709a76eba3fdebfc0b458d0f6347e60037a3062a3743674cd497d20533e02587",
+  "added_ids": [
+    "AN202611111831632312",
+    "AN202611111831636086",
+    "AN202611111831636184"
+  ],
+  "removed_ids": [],
+  "metadata_changes": {
+    "AN202611111831629479": {
+      "columns": {
+        "previous": [
+          {
+            "column_code": "001002006014",
+            "column_name": "诉讼仲裁"
+          },
+          {
+            "column_code": "001002008",
+            "column_name": "其他"
+          }
+        ],
+        "current": [
+          {
+            "column_code": "001002008",
+            "column_name": "其他"
+          }
+        ]
+      }
+    },
+    "AN202611111831630634": {
+      "codes": {
+        "previous": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤时尚",
+            "stock_code": "300901"
+          }
+        ],
+        "current": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤科技",
+            "stock_code": "300901"
+          }
+        ]
+      }
+    },
+    "AN202611111831630633": {
+      "codes": {
+        "previous": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤时尚",
+            "stock_code": "300901"
+          }
+        ],
+        "current": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "41362118977942",
+            "market_code": "0",
+            "short_name": "中胤科技",
+            "stock_code": "300901"
+          }
+        ]
+      }
+    },
+    "AN202611111831631588": {
+      "codes": {
+        "previous": [
+          {
+            "ann_type": "KZZ,Bond",
+            "inner_code": "44906952756938",
+            "market_code": "0",
+            "short_name": "百洋转债",
+            "stock_code": "123194"
+          },
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "29284054924581",
+            "market_code": "0",
+            "short_name": "百洋医药",
+            "stock_code": "301015"
+          }
+        ],
+        "current": [
+          {
+            "ann_type": "A,CYB",
+            "inner_code": "29284054924581",
+            "market_code": "0",
+            "short_name": "百洋制药",
+            "stock_code": "301015"
+          }
+        ]
+      }
+    }
+  },
+  "documents": {
+    "AN202611111831629479": {
+      "pdf": {
+        "path": "AN202611111831629479.pdf",
+        "sha256": "b2b8f5671be8e9406c161bd4d2768b845e7e5664875483408ad40cc717bc498a"
+      },
+      "text": {
+        "path": "AN202611111831629479.txt",
+        "sha256": "a9cff7103edfbcaaf4ae04760b3ee8909e1115085a0d460c1eba31d48d0cbe42"
+      },
+      "receipt": {
+        "path": "AN202611111831629479.receipt.json",
+        "sha256": "1962c1fd56f47bdbfcfd679de84a12cf2746277d4635bd9328c850fa798ea96c"
+      }
+    },
+    "AN202611111831630633": {
+      "pdf": {
+        "path": "AN202611111831630633.pdf",
+        "sha256": "fc15ee44097ae8bb12951fc02d5db6d7c672f2f9fcb3d7fcd6b46b094bb65e6b"
+      },
+      "text": {
+        "path": "AN202611111831630633.txt",
+        "sha256": "8dd182b9cb96b43787203eec132b470c0b62d9b390ce06d100ca73121418876f"
+      },
+      "receipt": {
+        "path": "AN202611111831630633.receipt.json",
+        "sha256": "d7df772aec77651776ab795c0cc3f9b8035706afeeca21c44e127f4b835cef7b"
+      }
+    },
+    "AN202611111831630634": {
+      "pdf": {
+        "path": "AN202611111831630634.pdf",
+        "sha256": "d242352e01ca477b8c690225eb68b136544ca3e1363f6cae480869e287a4bca7"
+      },
+      "text": {
+        "path": "AN202611111831630634.txt",
+        "sha256": "f7af306278f919ce42deddb25fd12e84aad83ec519ed3e77729d3de89e62faa2"
+      },
+      "receipt": {
+        "path": "AN202611111831630634.receipt.json",
+        "sha256": "4a0886127f03a6e216c2ed53fdeb4386323415d5f35edcedefeddd42e62ae075"
+      }
+    },
+    "AN202611111831631588": {
+      "pdf": {
+        "path": "AN202611111831631588.pdf",
+        "sha256": "4c534cd42bbfd2bc5fbbbbf95a88bdce72b2372dde7e1f675d6e64d179c5abef"
+      },
+      "text": {
+        "path": "AN202611111831631588.txt",
+        "sha256": "9aa64218e237090bd9c3083c38e996bb841e82a0204574aba0789d6e0e422eab"
+      },
+      "receipt": {
+        "path": "AN202611111831631588.receipt.json",
+        "sha256": "21ef49e6c67d9c703275111713ebd3c87ed1e7511dc5c5e701850337d36d312e"
+      }
+    },
+    "AN202611111831632312": {
+      "pdf": {
+        "path": "AN202611111831632312.pdf",
+        "sha256": "23b47065bc5b3ceab63bd0e31fba404257816a0de26db43d80d25f576caaec92"
+      },
+      "text": {
+        "path": "AN202611111831632312.txt",
+        "sha256": "cc00f30c3f0cf2b6c4d959b1cd160281e84f0dad2dd0d680b5fdc57dd5fa6040"
+      },
+      "receipt": {
+        "path": "AN202611111831632312.receipt.json",
+        "sha256": "57c2fa5df8e22c705ad70c6e86e2ed5d6aa79d21c67158c93397c99fa1aa7536"
+      }
+    },
+    "AN202611111831636086": {
+      "pdf": {
+        "path": "AN202611111831636086.pdf",
+        "sha256": "597f51bed774d7e926301bd67faf77c7429d617228cc14882ba6ba76247f09df"
+      },
+      "text": {
+        "path": "AN202611111831636086.txt",
+        "sha256": "71b7bbfd697cf9c3fa47d14343dd58aebfe6789ee679f20fe5ced35e0da95fe1"
+      },
+      "receipt": {
+        "path": "AN202611111831636086.receipt.json",
+        "sha256": "24e8d60278a5a94035426bc81dd1479d13ab4563e437dc39d0bae2b5f1968b79"
+      }
+    },
+    "AN202611111831636184": {
+      "pdf": {
+        "path": "AN202611111831636184.pdf",
+        "sha256": "25b729b120e8cc01bc11549db02c2fc7e3a68f0900110393322e0289f3910cf1"
+      },
+      "text": {
+        "path": "AN202611111831636184.txt",
+        "sha256": "04b7968fea95b76b143027bb74f25fa101bd04face3d75f4a1febd976b360371"
+      },
+      "receipt": {
+        "path": "AN202611111831636184.receipt.json",
+        "sha256": "65acc1e465c36905a1a38c5ddaa76661c0e43ddcf268eabea197c93431b70ce2"
+      }
+    }
+  },
+  "artifacts": {
+    "previous/manifest.json": "ce58f3e2ee0712300f5080017816d7281a5edf290dccc8879c5d1477ef392839",
+    "previous/page_0001.json": "7253873811fb13a8e4502573f8e7b573070f4d1e5a2d1bc28b695f52ab75971b",
+    "previous/page_0001.receipt.json": "e3b79f1184e81a9718566b56d72b0ed388da2d7522b19565f5e995785a1b95ab",
+    "previous/page_0002.json": "0583cfee4d424a90daeb33d28cecdb6af1a63b4212a0e16a98eb1ea699604045",
+    "previous/page_0002.receipt.json": "ea83122b98ce1bc6ab1bc60b4d36a9aac1b6488e5e61b8a3717238b11a8c47df",
+    "previous/page_0003.json": "c1fc51d7545251a1f9d248dc0b5e17431b9d687d6515545c82633eed3fe22299",
+    "previous/page_0003.receipt.json": "6de346f6393fc659ba43d6e9125b6a01c0d52c8c54b76acbf7e4ca8a803dc25e",
+    "previous/page_0004.json": "9c6ce461bd3916b331c3affd5edf40ed4c8bb2016f6425870ce226e7e20bea39",
+    "previous/page_0004.receipt.json": "555c6adb841e6f9f7c512c1567bb3dc31bf597c0a78748cdf8ca1491953774f4",
+    "previous/page_0005.json": "872084d4dab505b90654b756b2dabaf8805c0240b87495380f1b29871dae7a3b",
+    "previous/page_0005.receipt.json": "fb2a03e260e40b913b49633bdbf82f7f5c8ef30509e0deb8a8d12ee671cae241",
+    "previous/page_0006.json": "ab87869ca7ed8e868a73a6c28f13392b1a91cc9a920fc84ff3c9dcde9001fe9e",
+    "previous/page_0006.receipt.json": "4794026d33f46cced763fa0b8afac8401336b3cf2271bd52dc55641d0be13975",
+    "previous/page_0007.json": "e52435f31eb0d9f50a0f0eb06ea1c7c3fcb25f6d1b0158ff4c1235de127e1340",
+    "previous/page_0007.receipt.json": "f97efe64bcc5ed43d8d5e57b5cee52749adc7ce5b7a655dfda070ad0e85216d7",
+    "previous/page_0008.json": "130c29419e11be915645762b6323614290c5477da9b9b28649d74499d26bb4e0",
+    "previous/page_0008.receipt.json": "e5e34a9ced2692224b82934a21578125411d2ddd5a17f58f7a4d009c4886525e",
+    "previous/page_0009.json": "5c211ca9d3f9a50b16d564c4ce0889e8d01fefc5375f697a90f29313496cc531",
+    "previous/page_0009.receipt.json": "94646defd554e0552736004de5eb64f332beae5ae87c10cffc44e145661f13e5",
+    "previous/page_0010.json": "a2b99083aecf217998a7021cf734bc7cfc48d20f6451f943fe784fd3cb011988",
+    "previous/page_0010.receipt.json": "ca78bc82e513c3b1176efa28cd69a464e3bfc3177ffa3f8117d1dac94b541ed7",
+    "previous/page_0011.json": "d3f20f59b07059316860962daf4145d42fedd1a6617708f1822bacbaff0ff4c0",
+    "previous/page_0011.receipt.json": "52811c8bbc2116d9f3c304e1b2c277fb684c8adbc5f6133589637502fbabeee2",
+    "previous/page_0012.json": "69c7b1c426dbce158a365405f60fec2bb89ee12434f73bd0d53dec1c3f593140",
+    "previous/page_0012.receipt.json": "0756cf7630e62842fbd35aa1422e17b88d9327f372f6423807e71a2961ee522b",
+    "previous/page_0013.json": "42bb2c1af621294476ff5f4d9ab42506ff58725083c5a7e16cece5cfd270667a",
+    "previous/page_0013.receipt.json": "89ae77dcfcf68536f22160cd644bbc8394f0cc6d6ee7c11e2224342bf6e00dbf",
+    "current/manifest.json": "077bb95d1a7a4b16516fc713ca6621f82d174535f8573223cd5f96b6fb847a1f",
+    "current/page_0001.json": "f970ceb801e14111650934df493026b6c95d39e4dc8437e42b5e51d0d1c98ba7",
+    "current/page_0001.receipt.json": "575e4969d2b7aa5b1a00b976443f7189b7620c16e84443e1dadd298d431f9b43",
+    "current/page_0002.json": "76dbb3d854eac89113bea2d04d3e76fa686f7a8dc90ea6f202ea6957e26c0743",
+    "current/page_0002.receipt.json": "cc4cce9140f1aafd2a3098683f2b5ea00881a28ab7d9336e8cb5f3edd96cd97d",
+    "current/page_0003.json": "40bb5017a16df3c75c4165b9cf6f0721b4e409400a1a4786257bf780f05f0de0",
+    "current/page_0003.receipt.json": "e2494c7131a64af4b7b92678971ba2900f8b845d68ea15626332b0d68ac33049",
+    "current/page_0004.json": "a7a7990d2020d97bc0256e10c0b7fcb842d50413030349272f8fe45b5fc99f4d",
+    "current/page_0004.receipt.json": "820b8379b7482330b05f43b8858d6960196ac92682c48d115a084bf0621751b9",
+    "current/page_0005.json": "1afc2edd2e12763fecabde7da2b83a668d85be207515b05331ea2ce62aa2c5f7",
+    "current/page_0005.receipt.json": "182b47eda51d4157501af362a51d50ed04bfac058ec2d770a8e2d6ba1b83774c",
+    "current/page_0006.json": "47f867110a0f4fc70c7966cba6278eed816af8f025af4d76a9a60beafe6da5a6",
+    "current/page_0006.receipt.json": "b36152563fd60a12a604b52893048fe5e9fc494fd067cc9e75397b77963ba0dd",
+    "current/page_0007.json": "0d6de93a8682236ff3b63b137615af4fed349af1cda06185bb47292df0060923",
+    "current/page_0007.receipt.json": "3e26803008a5dc3c498128db576761d8375fa2c5a0e0957e2815c5a943cb5813",
+    "current/page_0008.json": "e4767bcdfe8c5f4a826af869ee85f65d173cffcf049fcebcaa968dd2ee0c388c",
+    "current/page_0008.receipt.json": "b9993a6985dfef64e20394e68730172e2dd87eb7e52c30c62820686a21dcb4e5",
+    "current/page_0009.json": "ad1b45dd9d429cee9a7cc46d515387d819e5fb8ae505882785d146f7c26ff90d",
+    "current/page_0009.receipt.json": "123ed5086b62c7571a1dd706ab699919b42e92c146ee5b79dadc4c8a26dbeb97",
+    "current/page_0010.json": "ca9f32173fb19187215f2d39fdd3222e460ac9e169262ef7683daeab51ea2651",
+    "current/page_0010.receipt.json": "b7be243d76c24be6902fc10dca292c31161c6ddd1f14483048d254d3ce87f23d",
+    "current/page_0011.json": "7ce8b6728d6b6d3ce957c5995ffc9078ca78eee35cbff50cc99405ee58101eae",
+    "current/page_0011.receipt.json": "19c145037136c030681aa681ddf6a4a63bade1df15e704f8968cfcaf4dad162b",
+    "current/page_0012.json": "05eac383b0d608e2dd8674a713de9e077c63ff0ebd8d020564e46afa38a1869e",
+    "current/page_0012.receipt.json": "9a643cd676b632ec866e2f34450cb28d1e68220f670181eccbe647215d757106",
+    "current/page_0013.json": "3725ea1db2d0611aced34062c4ca8c75087e61b4795747e16f0bca870a2e160f",
+    "current/page_0013.receipt.json": "5756106cf147032bc49f9e05a2b733e20daae92734c198cf472b547c5b80c3d8",
+    "AN202611111831629479.pdf": "b2b8f5671be8e9406c161bd4d2768b845e7e5664875483408ad40cc717bc498a",
+    "AN202611111831629479.txt": "a9cff7103edfbcaaf4ae04760b3ee8909e1115085a0d460c1eba31d48d0cbe42",
+    "AN202611111831629479.receipt.json": "1962c1fd56f47bdbfcfd679de84a12cf2746277d4635bd9328c850fa798ea96c",
+    "AN202611111831630633.pdf": "fc15ee44097ae8bb12951fc02d5db6d7c672f2f9fcb3d7fcd6b46b094bb65e6b",
+    "AN202611111831630633.txt": "8dd182b9cb96b43787203eec132b470c0b62d9b390ce06d100ca73121418876f",
+    "AN202611111831630633.receipt.json": "d7df772aec77651776ab795c0cc3f9b8035706afeeca21c44e127f4b835cef7b",
+    "AN202611111831630634.pdf": "d242352e01ca477b8c690225eb68b136544ca3e1363f6cae480869e287a4bca7",
+    "AN202611111831630634.txt": "f7af306278f919ce42deddb25fd12e84aad83ec519ed3e77729d3de89e62faa2",
+    "AN202611111831630634.receipt.json": "4a0886127f03a6e216c2ed53fdeb4386323415d5f35edcedefeddd42e62ae075",
+    "AN202611111831631588.pdf": "4c534cd42bbfd2bc5fbbbbf95a88bdce72b2372dde7e1f675d6e64d179c5abef",
+    "AN202611111831631588.txt": "9aa64218e237090bd9c3083c38e996bb841e82a0204574aba0789d6e0e422eab",
+    "AN202611111831631588.receipt.json": "21ef49e6c67d9c703275111713ebd3c87ed1e7511dc5c5e701850337d36d312e",
+    "AN202611111831632312.pdf": "23b47065bc5b3ceab63bd0e31fba404257816a0de26db43d80d25f576caaec92",
+    "AN202611111831632312.txt": "cc00f30c3f0cf2b6c4d959b1cd160281e84f0dad2dd0d680b5fdc57dd5fa6040",
+    "AN202611111831632312.receipt.json": "57c2fa5df8e22c705ad70c6e86e2ed5d6aa79d21c67158c93397c99fa1aa7536",
+    "AN202611111831636086.pdf": "597f51bed774d7e926301bd67faf77c7429d617228cc14882ba6ba76247f09df",
+    "AN202611111831636086.txt": "71b7bbfd697cf9c3fa47d14343dd58aebfe6789ee679f20fe5ced35e0da95fe1",
+    "AN202611111831636086.receipt.json": "24e8d60278a5a94035426bc81dd1479d13ab4563e437dc39d0bae2b5f1968b79",
+    "AN202611111831636184.pdf": "25b729b120e8cc01bc11549db02c2fc7e3a68f0900110393322e0289f3910cf1",
+    "AN202611111831636184.txt": "04b7968fea95b76b143027bb74f25fa101bd04face3d75f4a1febd976b360371",
+    "AN202611111831636184.receipt.json": "65acc1e465c36905a1a38c5ddaa76661c0e43ddcf268eabea197c93431b70ce2"
+  },
+  "risk_projection_sha256": "b965d3f3850d619037cf5682abeb292f2d665cc9adb36692d0c8cc736a2be8e2",
+  "risk_positive_control": {
+    "announcement_id": "AN202611101831591478",
+    "symbol": "002731"
+  },
+  "source_facts": {
+    "AN202611111831629479": {
+      "type": "ordinary_litigation_catalog_column_removed",
+      "stock_code": "300368",
+      "no_ST_effective_event": true
+    },
+    "AN202611111831630633": {
+      "type": "ordinary_display_name_change",
+      "stock_code": "300901",
+      "old_name": "中胤时尚",
+      "new_name": "中胤科技",
+      "effective_date": "2026-11-12"
+    },
+    "AN202611111831630634": {
+      "type": "board_resolution_same_issuer_display_change",
+      "stock_code": "300901",
+      "effective_date": "2026-11-12"
+    },
+    "AN202611111831631588": {
+      "type": "ordinary_display_name_and_non_equity_catalog_membership",
+      "stock_code": "301015",
+      "old_name": "百洋医药",
+      "new_name": "百洋制药",
+      "bond_code_removed_from_catalog": "123194",
+      "effective_date": "2026-11-12"
+    },
+    "AN202611111831632312": {
+      "type": "ordinary_credit_rating_report",
+      "stock_code": "000498",
+      "native_selector_consumes": false
+    },
+    "AN202611111831636086": {
+      "type": "non_equity_INV_research_record",
+      "stock_code": "000528",
+      "native_selector_consumes": false
+    },
+    "AN202611111831636184": {
+      "type": "non_equity_INV_research_record",
+      "stock_code": "300504",
+      "native_selector_consumes": false
+    }
+  },
+  "protected_archive_reference": {
+    "manifest_path": ".microcap_index_cache/st_notice_sources/refresh_20261111T143208796316Z_2e7092817919/archive.json",
+    "manifest_sha256": "db23caa0f8ecc65e0720bb5f797023ec57313773dbc513284cc404608edbdc94"
+  },
+  "historical_authority_changed": false,
+  "historical_state_rewrite_authorized": false,
+  "observation_only": true,
+  "original_1244_boundary_preserved": true,
+  "document_text_receipt_hash_semantics": "LF canonical extracted text; raw Windows CRLF document text bytes also preserved and bound as artifacts",
+  "provenance": {
+    "raw_sources": "original installed Nov11 boundary and prepared Nov12 09:04 generation; no collection during repair",
+    "readonly_validation_record": "3d20375420ac4126bbf4dd7f2a132ae3"
+  }
+}

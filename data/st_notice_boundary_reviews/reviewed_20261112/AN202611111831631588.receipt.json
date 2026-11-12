@@ -1,0 +1,55 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831631588_1.pdf",
+  "http_start": "2026-11-12T01:12:04.750739+00:00",
+  "http_complete": "2026-11-12T01:12:06.206233+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 130666,
+  "raw_sha256": "4c534cd42bbfd2bc5fbbbbf95a88bdce72b2372dde7e1f675d6e64d179c5abef",
+  "text_sha256": "302e64163b0582c176d9069bf901b6d5ccb8f7a3abfe2c79c6670316f3b0a25e",
+  "native_row": {
+    "art_code": "AN202611111831631588",
+    "codes": [
+      {
+        "ann_type": "A,CYB",
+        "inner_code": "29284054924581",
+        "market_code": "0",
+        "short_name": "百洋制药",
+        "stock_code": "301015"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002005001001",
+        "column_name": "证券简称变更"
+      },
+      {
+        "column_code": "001002005001002",
+        "column_name": "公司名称变更"
+      },
+      {
+        "column_code": "001002005001004",
+        "column_name": "公司经营范围变更"
+      },
+      {
+        "column_code": "001002005003",
+        "column_name": "公司章程修订"
+      },
+      {
+        "column_code": "003014",
+        "column_name": "其它"
+      }
+    ],
+    "display_time": "2026-11-11 18:08:06:267",
+    "eiTime": "2026-11-11 18:08:47:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "333",
+    "title": "百洋医药:关于变更公司名称、证券简称、经营范围及修订《公司章程》暨完成工商变更登记的公告",
+    "title_ch": "百洋医药:关于变更公司名称、证券简称、经营范围及修订《公司章程》暨完成工商变更登记的公告",
+    "title_en": ""
+  }
+}

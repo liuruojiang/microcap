@@ -1,0 +1,39 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831636184_1.pdf",
+  "http_start": "2026-11-12T01:12:16.093995+00:00",
+  "http_complete": "2026-11-12T01:12:17.877039+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 74174,
+  "raw_sha256": "25b729b120e8cc01bc11549db02c2fc7e3a68f0900110393322e0289f3910cf1",
+  "text_sha256": "b0cd0f38b810edd63368df6d9b7ec41095a106dd1b11c17f71022d407bdfa810",
+  "native_row": {
+    "art_code": "AN202611111831636184",
+    "codes": [
+      {
+        "ann_type": "INV",
+        "inner_code": "26327328894282",
+        "market_code": "0",
+        "short_name": "天邑股份",
+        "stock_code": "300504"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "050003",
+        "column_name": "调研活动"
+      }
+    ],
+    "display_time": "2026-11-11 23:14:06:679",
+    "eiTime": "2026-11-11 23:13:29:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "324",
+    "title": "天邑股份:2026年11月11日天邑股份投资者关系活动记录表",
+    "title_ch": "天邑股份:2026年11月11日天邑股份投资者关系活动记录表",
+    "title_en": ""
+  }
+}
