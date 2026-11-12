@@ -1,0 +1,20 @@
+{
+  "scope": "real_archived_source_contracts_no_current_market_acceptance",
+  "M3_archive_sha256": "3d9aa183b614b272597bf81cfbd3b6fefdde021347fd36586e8047a6dc025e42",
+  "M6_archive_sha256": "5f78da37688112128d4edbaf6cc5dc7f3dbeb8602193d1834ddd2334d0c72f7f",
+  "M6_release": "14e9a9fa6f0487f1d5547598435089c43f2f9fd1",
+  "files": {
+    "M3-original-manifest.json": {
+      "sha256": "141689e188a2d97bb39d641425cd3214dacfc01130cee43dc6c62a39e28aa29d",
+      "bytes": 256644
+    },
+    "M3-proxy-meta.json": {
+      "sha256": "e6d0075e7adc2a2b0631a1aab5ce6c613e54fc33598a0590340d1c8778183299",
+      "bytes": 21092
+    },
+    "M6-earned-manifest.json": {
+      "sha256": "a891e3ce2dbb111b9e6e80316e528ec8973180a0ab243ea12ee7a0a0097d22e5",
+      "bytes": 823120
+    }
+  }
+}

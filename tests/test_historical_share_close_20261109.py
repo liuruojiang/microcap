@@ -136,7 +136,11 @@ def identities():
     fixture = json.loads((ROOT / 'tests/fixtures/maintenance_d5_source_identity_20261109.json').read_bytes())
     old = fixture['stock_input_evidence_fingerprint']
     current = copy.deepcopy(old)
-    current['code'] = source_fingerprint(ROOT)
+    # Exercise the sealed seven-source historical approval. A later producer
+    # worktree is not automatically a member of that exact reviewed protocol.
+    for name, (before, after) in state.TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW['changes'].items():
+        assert current['code'][name] == before
+        current['code'][name] = after
     return old, current, fixture
 
 
@@ -151,6 +155,16 @@ def test_exact_rehashed_d5_data_permits_only_actual_reviewed_source():
     before = copy.deepcopy((old,current))
     assert state.stock_input_evidence_matches_validated_source(old,current)
     assert (old,current) == before
+
+
+def test_current_producer_fingerprint_does_not_inherit_the_sealed_d5_review():
+    old, reviewed, _ = identities()
+    current = copy.deepcopy(old)
+    current['code'] = source_fingerprint(ROOT)
+    registry = 'data/share_source_future_plan_reviews.json'
+    assert current['code'][registry] == '86c353677ec35023bc451c00ca1fd13966f117e3cc7352958d0d5b28bd1b7aa8'
+    assert current['code'][registry] != reviewed['code'][registry]
+    assert not state.stock_input_evidence_matches_validated_source(old, current)
 
 
 def test_calendar_successor_preserves_prior_d5_reviews_and_rejects_unknown_cache_source():

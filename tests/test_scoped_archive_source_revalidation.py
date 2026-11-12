@@ -258,6 +258,9 @@ def test_archive_certificate_cannot_be_relabelled_current(transaction,field,valu
 def test_original_source_identity_is_preserved_under_exact_new_reader_pairs(monkeypatch,producer):
     from scripts import scoped_source_consumer as reader, stock_input_contract as contract
     current=next_fingerprint()['code'];old=copy.deepcopy(current)
+    # Predecessor packages retain their actual P1 helper/parser fingerprints;
+    # they cannot inherit the new M7 helper just by copying current code.
+    for name,(before,_) in reader.LATER_QUOTE_READER.items():old[name]=before
     if producer!='f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5':
         old['scripts/st_notice_refresh.py']=reader.ARCHIVED_PROOF_READER[0]
         old['scripts/stock_return_pipeline.py']=reader.FORWARD_CONSUMPTION_READER[0]
@@ -298,7 +301,8 @@ def test_boundary_review_is_exact_nonstock_source_change(frozen):
     assert name in delivery.RELEASE_FILES and name not in SOURCE_FILES and name not in a.CHANGES
     assert before==original['inputs'][name] and after==delivery.sha(ROOT/name)
     assert before!=after
-    assert a.REVISION=='exact_m3_20261110_boundary_coverage_source_only_v2'
+    assert a.LEGACY_REVISION=='exact_m3_20261110_boundary_coverage_source_only_v2'
+    assert a.REVISION=='exact_m3_20261110_latequote_st_observation_source_only_v3'
     a.require_transition(original,current_report(original))
 
 
@@ -318,5 +322,5 @@ def test_old_active_receipt_does_not_gain_the_new_boundary_review(transaction):
     root,_,_=transaction
     saved=a.recertify(root,a.DATE)
     saved[a.ACTIVE]['revision']='exact_m3_20261110_share_observation_source_only_v1'
-    with pytest.raises(ValueError,match='exact M3 review'):
+    with pytest.raises(ValueError,match='Unknown exact archive source validation revision'):
         a.checked_receipt(saved[a.ACTIVE])
