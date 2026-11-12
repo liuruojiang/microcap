@@ -11,6 +11,7 @@ import hashlib
 import io
 import base64
 import json
+import os
 from pathlib import Path
 import re
 import time
@@ -24,6 +25,8 @@ import requests
 from scripts.sina_share_history import parse_sina_total_history
 
 KIND = "dual_source_unchanged_tail_v1"
+QUOTE_CORROBORATION_KIND = "exact_reviewed_plan_later_quote_v1"
+QUOTE_CORROBORATION_ENV = "MICROCAP_SHARE_LATER_QUOTE_CORROBORATION"
 EM_URL = "https://datacenter.eastmoney.com/securities/api/data/v1/get"
 QUOTE_URL = "https://push2.eastmoney.com/api/qt/stock/get"
 HISTORICAL_URL = "https://datacenter-web.eastmoney.com/api/data/v1/get"
@@ -309,6 +312,90 @@ def _matches_approved_event(row, event):
     return event is not None and row == event["row"]
 
 
+def _later_quote_plan(*, symbol, end, boundary, data, receipt, plans, root):
+    """Select one already reviewed bridge, never infer a date from quote f84."""
+    require(isinstance(plans, list) and len(plans) == 1, "later quote needs one exact reviewed plan")
+    plan = plans[0]
+    stamp = datetime.fromtimestamp(integer(data.get("f86")), timezone.utc)
+    frame = stamp.astimezone(timezone(timedelta(hours=8))).date()
+    start, complete = clock(receipt["http_start"]), clock(receipt["http_complete"])
+    require(day(end) < frame == day(plan["date"])
+            and start.astimezone(timezone(timedelta(hours=8))).date() == frame
+            and complete.astimezone(timezone(timedelta(hours=8))).date() == frame
+            and stamp <= complete, "later quote and reviewed plan observation dates differ")
+    matches = [r for r in plan_reviews(root) if r["symbol"] == symbol and r["planned_date"] == plan["date"]]
+    require(len(matches) == 1, "later quote reviewed plan is missing or ambiguous")
+    review = matches[0]
+    before, after = Decimal(review["before_total_shares"]), Decimal(review["after_total_shares"])
+    delta = review["change_total_shares"]
+    require(type(delta) is int and delta != 0 and after - before == delta
+            and before == boundary * 10000
+            and after == amount(plan["total_shares_10k"]) * 10000 == amount(data.get("f84"))
+            and after != before, "later quote reviewed before/after/delta differs")
+    return review, stamp, complete
+
+
+def verify_quote_dated_corroboration(manifest, *, symbol, end, boundary, data, receipt,
+                                    sina, plans, bound, now, root):
+    """Reconcile later provider observations; assert no legal event execution.
+
+    The original target-day daily/EM/Sina checks run before this function. An
+    extra, independently collected Sina inventory corroborates the later quote;
+    neither the quote timestamp nor an issuer plan dates the target's f84.
+    """
+    require(manifest.get("quote_dated_corroboration") == {"schema": QUOTE_CORROBORATION_KIND},
+            "later quote corroboration is not explicitly selected")
+    review, stamp, quote_complete = _later_quote_plan(symbol=symbol, end=end, boundary=boundary,
+                                                     data=data, receipt=receipt, plans=plans, root=root)
+    raw, after_receipt = _artifact(manifest["files"]["quote_dated_corroboration"], bound,
+        url=SINA_URL.format(symbol=symbol), params={}, end=end, now=now)
+    start, complete = clock(after_receipt["http_start"]), clock(after_receipt["http_complete"])
+    frame = stamp.astimezone(timezone(timedelta(hours=8))).date()
+    require(quote_complete <= start <= complete
+            and start.astimezone(timezone(timedelta(hours=8))).date() == frame
+            and complete.astimezone(timezone(timedelta(hours=8))).date() == frame,
+            "later Sina observation is not after the quote on its reviewed provider date")
+    after = parse_sina_total_history(raw, symbol=symbol, observed_session=end, allowed_future_plans=plans)
+    require(after["records"] == sina["records"], "later Sina complete inventory changed")
+    target = [r for r in after["records"] if day(r["provider_date"]) <= day(end)]
+    future = [r for r in after["records"] if day(r["provider_date"]) > day(end)]
+    require(target and amount(target[-1]["total_shares_10k"]) == boundary
+            and len(future) == 1 and future[0]["provider_date"] == review["planned_date"]
+            and amount(future[0]["total_shares"]) == amount(data.get("f84")) == review["after_total_shares"],
+            "later Sina target or reviewed after total differs")
+    return dict(schema=QUOTE_CORROBORATION_KIND, basis="later_provider_observation_reconciled",
+                target_session=end, target_total_shares=str(boundary * 10000),
+                later_provider_date=frame.isoformat(), later_total_shares=str(amount(data.get("f84"))),
+                announcement_id=review["announcement_id"], issuer_document_sha256=review["pdf_sha256"],
+                sina_after_raw_sha256=sha(raw), quote_frame_time=stamp.isoformat(),
+                f84_independent_asof_guarantee_proven=False, execution_or_legal_effect_not_asserted=True)
+
+
+def collect_quote_dated_corroboration(manifest, *, symbol, end, boundary, bound, now, root, save):
+    """Only supplement a verified target whose sole remaining error is f84.
+
+    Callers must first run their complete original verifier and see its exact
+    terminal-total mismatch. Existing target artifacts and their clocks stay.
+    """
+    require(os.environ.get(QUOTE_CORROBORATION_ENV) == "1", "later quote collection is not opted in")
+    files = manifest["files"]
+    raw, receipt = _artifact(files["quote"], bound, url=QUOTE_URL,
+                            params=quote_params(symbol), end=end, now=now)
+    quote = json.loads(raw, parse_float=Decimal)
+    data = quote.get("data")
+    require(quote.get("rc") == 0 and isinstance(data, dict) and data.get("f57") == symbol,
+            "later quote issuer/status differs")
+    unfiltered = _em_inventory(files["unfiltered"], bound, symbol, end, False, now)
+    future = [r for r in unfiltered if _em_date(r["END_DATE"]) > day(end)]
+    plans, _ = _reviewed_future_plans(manifest, future, symbol=symbol, end=end, boundary=boundary,
+                                      bound=bound, now=now, root=root)
+    review, _, _ = _later_quote_plan(symbol=symbol, end=end, boundary=boundary, data=data,
+                                     receipt=receipt, plans=plans, root=root)
+    purpose = "sina_quote_date_" + review["planned_date"]
+    files["quote_dated_corroboration"], _ = save(SINA_URL.format(symbol=symbol), {}, purpose)
+    manifest["quote_dated_corroboration"] = {"schema": QUOTE_CORROBORATION_KIND}
+
+
 def _reviewed_future_plans(manifest, future, *, symbol, end, boundary, bound, now, root):
     documents = manifest.get("future_plan_documents", [])
     require(isinstance(documents, list), "future document inventory not list")
@@ -447,8 +534,15 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
             require(extra_stamp.astimezone(timezone(timedelta(hours=8))).date() == frame_day
                     and (historical is not None or datetime.fromisoformat(end + "T15:00:00+08:00") <= extra_stamp)
                     and extra_stamp <= clock(quote_receipt["http_complete"]), "quote extra clock conflicts")
-    require(amount(data.get("f84")) / 10000 == boundary, "quote total differs")
-    return dict(kind=KIND, symbol=symbol, query_end=end, previous_day=previous_day,
+    corroboration = None
+    if amount(data.get("f84")) / 10000 == boundary:
+        require("quote_dated_corroboration" not in manifest and "quote_dated_corroboration" not in files,
+                "unused later quote corroboration")
+    else:
+        require("quote_dated_corroboration" in manifest, "quote total differs")
+        corroboration = verify_quote_dated_corroboration(manifest, symbol=symbol, end=end, boundary=boundary,
+            data=data, receipt=quote_receipt, sina=sina, plans=future_plans, bound=bound, now=now, root=root)
+    facts = dict(kind=KIND, symbol=symbol, query_end=end, previous_day=previous_day,
                 total_shares_10k=str(boundary), unchanged_observations=True,
                 frame_time=stamp.isoformat(), f84_independent_asof_guarantee_proven=False,
                 provider_latency_guaranteed=False, old_candidate_sha256=sha(candidate),
@@ -457,6 +551,9 @@ def verify_manifest(manifest, *, symbol, previous_day, end, candidate, bound, no
                 future_plans_preserved_not_consumed=future_plans, future_pdf_transport_disclosures=future_transport,
                 approved_late_unchanged_event={key: value for key, value in approved_event.items() if key != "row"}
                     if approved_event is not None else None)
+    if corroboration is not None:
+        facts["quote_dated_corroboration"] = corroboration
+    return facts
 
 
 def _save_public_observation(*, directory, source, url, params, purpose, end, referer=None):
@@ -581,7 +678,17 @@ def collect_manifest(*, root, symbol, previous_day, end, candidate):
             verify_transition(manifest, symbol=symbol, previous_day=previous_day, end=end,
                               candidate=new, previous_candidate=candidate, bound=bound, root=root)
         else:
-            verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
+            try:
+                verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
+            except ValueError as mismatch:
+                if (str(mismatch) != "Unchanged share tail: quote total differs"
+                        or os.environ.get(QUOTE_CORROBORATION_ENV) != "1"):
+                    raise
+                old = pd.read_csv(io.BytesIO(candidate), dtype=str, keep_default_na=False)
+                collect_quote_dated_corroboration(manifest, symbol=symbol, end=end,
+                    boundary=amount(old.iloc[-1].total_shares_10k), bound=bound,
+                    now=datetime.now(timezone.utc), root=root, save=save)
+                verify_manifest(manifest, symbol=symbol, previous_day=previous_day, end=end, candidate=candidate, bound=bound, root=root)
     except ValueError as error:
         if (str(error)!="Unchanged share tail: EM new or ambiguous tail event"
                 or (symbol,previous_day,end)!=("603028","2026-11-03","2026-11-04")):
