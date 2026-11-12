@@ -140,13 +140,22 @@ def _members(raw):
 
 
 def _history(before,after,column,end,*,turnover=False):
+    def calendar_days(values):
+        # Native CSV writers may retain an exact midnight suffix on only the
+        # newest row. Parse that ISO representation without inferring one
+        # format from the first row, or accepting intraday/timezone values.
+        present=values.dropna().astype(str)
+        if not present.str.fullmatch(r'\d{4}-\d{2}-\d{2}(?:[ T]00:00:00(?:\.0{1,9})?)?').all():
+            raise ValueError('Forward history date must be an ISO calendar day or exact midnight')
+        return pd.to_datetime(values,format='ISO8601',errors='raise')
+
     old=_table(before,symbols=True);new=_table(after,symbols=True)
     for frame in (old,new):
-        frame[column]=pd.to_datetime(frame[column],errors='raise')
+        frame[column]=calendar_days(frame[column])
     new=new.loc[new[column]<=pd.Timestamp(end)].reset_index(drop=True)
     if turnover:
         for name in ('constraint_trade_date','execution_date','effective_date','return_start_date'):
-            for frame in (old,new):frame[name]=pd.to_datetime(frame[name],errors='raise')
+            for frame in (old,new):frame[name]=calendar_days(frame[name])
         # The original native close event may acquire its first return date in
         # the following segment. No execution or turnover count is rewritten.
         pending=old.return_start_date.isna()

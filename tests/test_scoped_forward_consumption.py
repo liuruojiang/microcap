@@ -1,5 +1,8 @@
 """Synthetic software contracts, not observed market prices or strategy metrics."""
 import copy
+import gzip
+import hashlib
+import io
 import json
 from pathlib import Path
 
@@ -171,3 +174,89 @@ def test_retired_pool_member_keeps_its_last_consumed_horizon_after_rotation(forw
     full,horizons,_=m.requirements(root,'2026-11-02',requested,meta,path,path.read_bytes(),base=base)
     assert full=='2026-10-28' and horizons['000300']=='2026-10-30'
     assert horizons['000400']=='2026-11-02' and horizons[first['terminal'][0]]=='2026-11-02'
+
+
+def test_real_m8_turnover_mixed_midnight_is_read_without_changing_original_bytes():
+    # Exact original M8 v4 archive member, not a regenerated historical CSV.
+    path=Path(__file__).parent/'fixtures/stock_return_basis_real/m8_turnover_a87ee0_20261110.csv.gz'
+    compressed=path.read_bytes();raw=gzip.decompress(compressed)
+    identity='a87ee0f76c90f08304bceda6805eca277bf101ca05dcbe2b3b0e0d3d63ed68d7'
+    assert hashlib.sha256(raw).hexdigest()==identity
+    frame=pd.read_csv(io.BytesIO(raw),dtype=str)
+    assert len(frame)==434 and frame.return_start_date.iloc[-1]=='2026-10-30 00:00:00'
+    assert frame.return_start_date.iloc[:-1].str.fullmatch(r'\d{4}-\d{2}-\d{2}').all()
+    m._history(raw,raw,'rebalance_date','2026-11-10',turnover=True)
+    # The parsed comparison recognizes the same day; neither authority is
+    # rewritten or given the other representation's hash.
+    bare=raw.replace(b'2026-10-30 00:00:00',b'2026-10-30')
+    assert bare!=raw
+    m._history(raw,bare,'rebalance_date','2026-11-10',turnover=True)
+    assert path.read_bytes()==compressed and hashlib.sha256(raw).hexdigest()==identity
+
+
+def dated_turnover():
+    return pd.DataFrame([dict(rebalance_date='2026-10-29',execution_timing='close',
+        constraint_trade_date='2026-10-29',execution_date='2026-10-29',
+        effective_date='2026-10-29',return_start_date='2026-10-30',
+        entry_count=12,exit_count=12,blocked_entry_count=2,blocked_exit_count=2,
+        buy_turnover_frac=0.12,sell_turnover_frac=0.12,two_side_cost_rate=0.00072,
+        holding_count_after=100)])
+
+
+@pytest.mark.parametrize('field',['rebalance_date','constraint_trade_date','execution_date',
+    'effective_date','return_start_date'])
+def test_history_iso_midnight_forms_compare_as_calendar_days(field):
+    before=dated_turnover();after=before.copy()
+    before.loc[0,field]+=' 00:00:00'
+    after.loc[0,field]+='T00:00:00.000000000'
+    m._history(csv(before),csv(after),'rebalance_date','2026-10-29',turnover=True)
+
+
+@pytest.mark.parametrize('field,value',[
+    ('rebalance_date','2026-10-29 00:00:01'),
+    ('constraint_trade_date','2026-10-29 09:30:00'),
+    ('execution_date','2026-10-29T00:00:00+00:00'),
+    ('effective_date','2026-10-29T00:00:00Z'),
+    ('return_start_date','2026-10-30 00:00:00.000000001'),
+    ('return_start_date','2026-02-30'),
+    ('return_start_date','2026-10-30 junk'),
+    ('return_start_date','10/30/2026'),
+])
+def test_history_rejects_non_midnight_timezone_and_invalid_calendar_dates(field,value):
+    before=dated_turnover();after=before.copy();after.loc[0,field]=value
+    with pytest.raises(ValueError):
+        m._history(csv(before),csv(after),'rebalance_date','2026-10-29',turnover=True)
+
+
+@pytest.mark.parametrize('state',['still_pending','next_session','false_next_session','predates_bridge'])
+def test_history_pending_close_first_return_rules_are_unchanged(monkeypatch,state):
+    import scripts.exchange_calendar as exchange
+    calendar=tuple(pd.Timestamp(d).date() for d in ['2026-10-29','2026-10-30','2026-11-02'])
+    monkeypatch.setattr(exchange,'sessions_for_day',lambda *a:calendar)
+    before=dated_turnover();before.loc[0,'return_start_date']=None
+    after=before.copy()
+    if state=='next_session':after.loc[0,'return_start_date']='2026-10-30 00:00:00'
+    elif state=='false_next_session':after.loc[0,'return_start_date']='2026-11-02'
+    elif state=='predates_bridge':
+        before.loc[0,'execution_date']='2026-10-28';after=before.copy()
+    old_raw,new_raw=csv(before),csv(after)
+    if state in ('false_next_session','predates_bridge'):
+        with pytest.raises(ValueError,match='false first-return|predates the bridge'):
+            m._history(old_raw,new_raw,'rebalance_date','2026-10-29',turnover=True)
+    else:
+        m._history(old_raw,new_raw,'rebalance_date','2026-10-29',turnover=True)
+    assert csv(before)==old_raw and csv(after)==new_raw
+
+
+@pytest.mark.parametrize('change',['calendar_day','turnover_count','cost','member'])
+def test_history_midnight_compatibility_never_allows_economic_or_member_rewrites(change):
+    if change=='member':
+        before=pd.DataFrame([dict(rebalance_date='2026-10-29',rank=1,symbol='000001')])
+        after=before.copy();after.loc[0,'symbol']='000002'
+    else:
+        before=dated_turnover();after=before.copy()
+        if change=='calendar_day':after.loc[0,'return_start_date']='2026-11-02'
+        elif change=='turnover_count':after.loc[0,'entry_count']=13
+        elif change=='cost':after.loc[0,'two_side_cost_rate']=0.00073
+    with pytest.raises(AssertionError):
+        m._history(csv(before),csv(after),'rebalance_date','2026-10-29',turnover=change!='member')
