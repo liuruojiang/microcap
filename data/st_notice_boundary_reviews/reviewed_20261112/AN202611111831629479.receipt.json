@@ -1,0 +1,39 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831629479_1.pdf",
+  "http_start": "2026-11-12T01:11:59.281663+00:00",
+  "http_complete": "2026-11-12T01:12:02.322108+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 160862,
+  "raw_sha256": "b2b8f5671be8e9406c161bd4d2768b845e7e5664875483408ad40cc717bc498a",
+  "text_sha256": "364f62dc1fc16483ac4416af58428056f7406a3ad50f475603c0cc9c4cd8c8d8",
+  "native_row": {
+    "art_code": "AN202611111831629479",
+    "codes": [
+      {
+        "ann_type": "A,CYB",
+        "inner_code": "20285678968630",
+        "market_code": "0",
+        "short_name": "汇金股份",
+        "stock_code": "300368"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002008",
+        "column_name": "其他"
+      }
+    ],
+    "display_time": "2026-11-11 17:11:04:262",
+    "eiTime": "2026-11-11 17:12:05:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "333",
+    "title": "汇金股份:关于子公司诉讼案件进展情况的公告",
+    "title_ch": "汇金股份:关于子公司诉讼案件进展情况的公告",
+    "title_en": ""
+  }
+}

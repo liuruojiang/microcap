@@ -845,7 +845,14 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
         extra=datetime.fromtimestamp(n.integer(data['f124']),timezone.utc)
         need(extra.astimezone(timezone(n.timedelta(hours=8))).date()==frame_day and extra<=complete,
              'quote secondary clock conflicts')
-    need(n.amount(data.get('f84'))/10000==observed[end],'quote total differs from dated terminal total')
+    corroboration=None
+    if n.amount(data.get('f84'))/10000==observed[end]:
+        need('quote_dated_corroboration' not in manifest and 'quote_dated_corroboration' not in files,
+             'unused later quote corroboration')
+    else:
+        need('quote_dated_corroboration' in manifest,'quote total differs from dated terminal total')
+        corroboration=n.verify_quote_dated_corroboration(manifest,symbol=symbol,end=end,boundary=observed[end],
+            data=data,receipt=quote_receipt,sina=sina,plans=plans,bound=bound,now=now,root=root)
     candidate=previous_candidate
     if events:
         need(previous_candidate.endswith(b'\n'),'original CSV has no final line boundary')
@@ -857,6 +864,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     facts=dict(symbol=symbol,previous_day=previous_day,query_end=end,session_count=len(sessions),
                           changes=events,historical_reobservations=reobservations,
                           old_prefix_preserved=True,legal_effective_date_not_asserted=True)
+    if corroboration is not None:facts['quote_dated_corroboration']=corroboration
     if structure_events:facts['structure_events']=structure_events
     if structure_reobservations:facts['structure_reobservations']=structure_reobservations
     if future_structure_rows:
@@ -1002,8 +1010,22 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
     manifest=dict(schema=DATED_WINDOW_KIND,symbol=symbol,previous_day=previous_day,query_end=end,
                   files=files,future_plan_documents=documents,previous_candidate_sha256=_sha(candidate))
     _atomic(directory/'collection.json',json.dumps(manifest,ensure_ascii=False,indent=2).encode('utf8'))
-    proposed,facts=verify_dated_window(manifest,symbol=symbol,previous_day=previous_day,end=end,
-                                      previous_candidate=candidate,bound=bound,root=root)
+    try:
+        proposed,facts=verify_dated_window(manifest,symbol=symbol,previous_day=previous_day,end=end,
+                                          previous_candidate=candidate,bound=bound,root=root)
+    except ValueError as mismatch:
+        if (str(mismatch)!='Unchanged share tail: dated window: quote total differs from dated terminal total'
+                or os.environ.get(n.QUOTE_CORROBORATION_ENV)!='1'):
+            raise
+        window=json.loads(bound(files['dated_window']['raw_path'],files['dated_window']['raw_sha256']))
+        target_rows=[row for row in window['result']['data'] if row['TRADE_DATE']==end+' 00:00:00']
+        n.require(len(target_rows)==1,'later quote target dated row differs')
+        n.collect_quote_dated_corroboration(manifest,symbol=symbol,end=end,
+            boundary=n.amount(target_rows[0]['TOTAL_SHARES'])/10000,bound=bound,
+            now=datetime.now(timezone.utc),root=root,save=save)
+        _atomic(directory/'collection.json',json.dumps(manifest,ensure_ascii=False,indent=2).encode('utf8'))
+        proposed,facts=verify_dated_window(manifest,symbol=symbol,previous_day=previous_day,end=end,
+                                          previous_candidate=candidate,bound=bound,root=root)
     manifest['verified_facts']=facts
     raw=json.dumps(manifest,ensure_ascii=False,indent=2).encode('utf8');path=directory/'manifest.json';_atomic(path,raw)
     return proposed,dict(path=path.relative_to(source).as_posix(),sha256=_sha(raw))

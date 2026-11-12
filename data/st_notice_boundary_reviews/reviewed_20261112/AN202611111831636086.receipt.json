@@ -1,0 +1,39 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831636086_1.pdf",
+  "http_start": "2026-11-12T01:12:14.693927+00:00",
+  "http_complete": "2026-11-12T01:12:16.093273+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 109604,
+  "raw_sha256": "597f51bed774d7e926301bd67faf77c7429d617228cc14882ba6ba76247f09df",
+  "text_sha256": "2554b3cee6ff8db105f9e315ae3539d437bb018a589da82fd899cabec3239cad",
+  "native_row": {
+    "art_code": "AN202611111831636086",
+    "codes": [
+      {
+        "ann_type": "INV",
+        "inner_code": "30350591796710",
+        "market_code": "0",
+        "short_name": "柳工",
+        "stock_code": "000528"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "050003",
+        "column_name": "调研活动"
+      }
+    ],
+    "display_time": "2026-11-11 23:33:39:646",
+    "eiTime": "2026-11-11 23:33:02:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "324",
+    "title": "柳工:11月10日柳工全球客户节投资者交流活动",
+    "title_ch": "柳工:11月10日柳工全球客户节投资者交流活动",
+    "title_en": ""
+  }
+}

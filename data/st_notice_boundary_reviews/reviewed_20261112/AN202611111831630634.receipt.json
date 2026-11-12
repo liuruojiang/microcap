@@ -1,0 +1,39 @@
+{
+  "url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831630634_1.pdf",
+  "http_start": "2026-11-12T01:12:03.536887+00:00",
+  "http_complete": "2026-11-12T01:12:04.750137+00:00",
+  "http_status": 200,
+  "tls_verification": true,
+  "raw_bytes": 86083,
+  "raw_sha256": "d242352e01ca477b8c690225eb68b136544ca3e1363f6cae480869e287a4bca7",
+  "text_sha256": "e0219ad01cc9b5878a9eb63c26c456c9fa30d5010e9105d1f10e6bf0d08fbd47",
+  "native_row": {
+    "art_code": "AN202611111831630634",
+    "codes": [
+      {
+        "ann_type": "A,CYB",
+        "inner_code": "41362118977942",
+        "market_code": "0",
+        "short_name": "中胤科技",
+        "stock_code": "300901"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002009",
+        "column_name": "董事会决议公告"
+      }
+    ],
+    "display_time": "2026-11-11 17:37:16:290",
+    "eiTime": "2026-11-11 17:38:16:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "333",
+    "title": "中胤时尚:2026年第八次临时董事会决议公告",
+    "title_ch": "中胤时尚:2026年第八次临时董事会决议公告",
+    "title_en": ""
+  }
+}

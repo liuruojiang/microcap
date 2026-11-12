@@ -18,9 +18,10 @@ DATE = '2026-11-10'
 RELEASE = '872abe41d48f818363d879cdf98b297d230377b4'
 PROXY = 'outputs/microcap_top100_mom16_biweekly_live_v2_0_base_proxy_meta.json'
 MODULE = 'scripts/scoped_archive_source_revalidation.py'
-REVISION = 'exact_m3_20261110_boundary_coverage_source_only_v2'
+LEGACY_REVISION = 'exact_m3_20261110_boundary_coverage_source_only_v2'
+REVISION = 'exact_m3_20261110_latequote_st_observation_source_only_v3'
 STOCK_IDENTITY = '7c0520448023df5a318689e59fb9965da7da2239a069b55133f26c52951e5c04'
-CHANGES = {
+LEGACY_CHANGES = {
     'scripts/share_change_source.py': (
         '3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b',
         '21ab5dddc118c73d118a12dcc5250dde21b767677c42692b5a055eeed051f34f'),
@@ -216,8 +217,180 @@ ARCHIVE_INPUT_CHANGES = {'scripts/scoped_cap_boundary.py': (
                                           '4925c79eee7e0c41143a96b5d4c966aac20af7f66a5ae152efb19b3bc3387b92')}
 
 
-def input_changes():
-    return {**CHANGES, **ARCHIVE_INPUT_CHANGES}
+# Exact P2 observations extend only source readers, not earned data.
+# The legacy v2 mapping remains immutable for old receipt/ancestry readback.
+CHANGES = {'data/share_source_future_plan_reviews.json': ('972825f752eb59d274c14e6a009f1b92cbed2e4a3f45ad5adce027f3b174e2e1',
+                                                '86c353677ec35023bc451c00ca1fd13966f117e3cc7352958d0d5b28bd1b7aa8'),
+ 'scripts/share_change_source.py': ('3dfb3ad0facbda0b8994af3767272fd35e22b16554993a60f6942d3e8bd74b7b',
+                                    'be9e393f09196a812d60b9eb867d21e32b6afbd1e7862d7605accb8bf809d93c'),
+ 'scripts/share_unchanged_tail.py': ('85bb77979ecdb179c2f3a71ce17261dd9c4bd0cd60b9a8c90c83d183a79146b2',
+                                     'd5824797c483d0b466684a5bebbe19595b7108fb393cd7815dc7b870688dd7ae')}
+M7_ARCHIVE_INPUT_CHANGES = {'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831629479.pdf': (None,
+                                                                                'b120a73fed778e758f25da3f05a2d13f2f3dbca6071b2acdf42f40d18212d9a5'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831629479.receipt.json': (None,
+                                                                                         'bf1c80e2db2c8ad6e2b000d08944f2a653175acc3cd49aab8db591a7640cc149'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831629479.txt': (None,
+                                                                                '364f62dc1fc16483ac4416af58428056f7406a3ad50f475603c0cc9c4cd8c8d8'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831630633.pdf': (None,
+                                                                                'a8f495eab959fcb4752f171ad6ef2a572635a8f74618cb4209ffe35ccd152710'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831630633.receipt.json': (None,
+                                                                                         '7143979081fd761e347e697c679b7e4986567ab114c2f04efa49cdeceda8af56'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831630633.txt': (None,
+                                                                                '2f1a47ef5ac0f08e426c0afcadebe59a3809e983962b7051f5cb3cd7097a54f1'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831630634.pdf': (None,
+                                                                                '118d9015c090f6cc3084c4b0298b4b0a26cb410fe74f54f9f930300a3ef690e1'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831630634.receipt.json': (None,
+                                                                                         'b14710bbc57aec900fe229d3194f30803a1a7e5f5e536527f88ea57bec5d53e4'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831630634.txt': (None,
+                                                                                'e0219ad01cc9b5878a9eb63c26c456c9fa30d5010e9105d1f10e6bf0d08fbd47'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831631588.pdf': (None,
+                                                                                '5477f5c33e0577accabaf6c69eeeb5996ba9e9ff3979dd7fd38c93d61e40adca'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831631588.receipt.json': (None,
+                                                                                         '89c199050c7a33759badc78c1c1d11652da95cee1aa5badff5012c9a020a3dcb'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831631588.txt': (None,
+                                                                                '302e64163b0582c176d9069bf901b6d5ccb8f7a3abfe2c79c6670316f3b0a25e'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831632312.pdf': (None,
+                                                                                'b917e4891202c6f09773ebfe546239309e18ff6bdea6266d47937990b215ef36'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831632312.receipt.json': (None,
+                                                                                         '064aacfbcb50ae7c6d6c9009881e83b9b27cdceab80bbc981fdc96b8645df938'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831632312.txt': (None,
+                                                                                '591679a85e998bd38bb307dd74c0c89c4200c0cf06e997c7fe4c3a37b282711c'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831636086.pdf': (None,
+                                                                                '70412405c7c614859c3dfc225e16307579bb574d6629088c414f5217c69c9b63'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831636086.receipt.json': (None,
+                                                                                         '8216b6bce8faedb7235b88f72d4a7b5c90fdf2756578dba52abd622feb60b5df'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831636086.txt': (None,
+                                                                                '2554b3cee6ff8db105f9e315ae3539d437bb018a589da82fd899cabec3239cad'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831636184.pdf': (None,
+                                                                                'c8430c566c2f48f9cab52cd8a0e3a28ddacbdf8e23e90ee74bf44dff4d08613f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831636184.receipt.json': (None,
+                                                                                         'a187e73d2d3fa48e70e8199c766c06ca38d0959c5aa9acf2a2294d54f05db91f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/AN202611111831636184.txt': (None,
+                                                                                'b0cd0f38b810edd63368df6d9b7ec41095a106dd1b11c17f71022d407bdfa810'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/manifest.json': (None,
+                                                                             '2f1233984d8f92944402a9e317242166b0caebbece77fc246f05b314f6169742'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0001.json': (None,
+                                                                              'f970ceb801e14111650934df493026b6c95d39e4dc8437e42b5e51d0d1c98ba7'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0001.receipt.json': (None,
+                                                                                      '8d6a3091db88ce1d647476ad9626750feccb0d79fa76baf05d81ecda34814b7e'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0002.json': (None,
+                                                                              '76dbb3d854eac89113bea2d04d3e76fa686f7a8dc90ea6f202ea6957e26c0743'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0002.receipt.json': (None,
+                                                                                      '22e528680ab9554c16a73d6dedc66bd0a08ff64b1f1dbadbb1a2802c263a7eef'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0003.json': (None,
+                                                                              '40bb5017a16df3c75c4165b9cf6f0721b4e409400a1a4786257bf780f05f0de0'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0003.receipt.json': (None,
+                                                                                      '79e4c4bfd9df4f00097d8c0e1579171cb913560b1f81abf13402c29bbd77e9ef'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0004.json': (None,
+                                                                              'a7a7990d2020d97bc0256e10c0b7fcb842d50413030349272f8fe45b5fc99f4d'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0004.receipt.json': (None,
+                                                                                      '09a64437104887f8cbc235159cdde7fa9755cb1db80d7fa43842f516741308ac'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0005.json': (None,
+                                                                              '1afc2edd2e12763fecabde7da2b83a668d85be207515b05331ea2ce62aa2c5f7'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0005.receipt.json': (None,
+                                                                                      '179e9087be50a2ed1e607455f66cae1404f13ed4d91b42433a2207857473a695'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0006.json': (None,
+                                                                              '47f867110a0f4fc70c7966cba6278eed816af8f025af4d76a9a60beafe6da5a6'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0006.receipt.json': (None,
+                                                                                      '842fa0d51cc240760f698cc3a0691bb74d340780ca4927554d1de44c2306134f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0007.json': (None,
+                                                                              '0d6de93a8682236ff3b63b137615af4fed349af1cda06185bb47292df0060923'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0007.receipt.json': (None,
+                                                                                      '3a71985a8cb3f7c8847072ccb61b7eed35f627f3791b3490912c075d7d46de0f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0008.json': (None,
+                                                                              'e4767bcdfe8c5f4a826af869ee85f65d173cffcf049fcebcaa968dd2ee0c388c'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0008.receipt.json': (None,
+                                                                                      '926b0a84a3981af011fdc4905aa39e41c23e3942051abf7757e050ea0ce13045'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0009.json': (None,
+                                                                              'ad1b45dd9d429cee9a7cc46d515387d819e5fb8ae505882785d146f7c26ff90d'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0009.receipt.json': (None,
+                                                                                      'f757789e133ed8a0ea5221b3ce956a8f03e29d981c0ee47f4f61b957ddb0baa9'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0010.json': (None,
+                                                                              'ca9f32173fb19187215f2d39fdd3222e460ac9e169262ef7683daeab51ea2651'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0010.receipt.json': (None,
+                                                                                      '75edc7be9863ddbdc3f0787a647fa2208be70a5e71bac11e4f1e2b24c6cc63bb'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0011.json': (None,
+                                                                              '7ce8b6728d6b6d3ce957c5995ffc9078ca78eee35cbff50cc99405ee58101eae'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0011.receipt.json': (None,
+                                                                                      '2b0aa1a9a1f876750910582d22f4567ec9e0296fc99e6d8e36b31652feb6c389'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0012.json': (None,
+                                                                              '05eac383b0d608e2dd8674a713de9e077c63ff0ebd8d020564e46afa38a1869e'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0012.receipt.json': (None,
+                                                                                      'cd692fa2babb818d4f948c2c38ec022b4d3419f90c783b803f5f1dc9ec0537c9'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0013.json': (None,
+                                                                              '3725ea1db2d0611aced34062c4ca8c75087e61b4795747e16f0bca870a2e160f'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/current/page_0013.receipt.json': (None,
+                                                                                      'cce1bc9a09c488255e73dc5930c61dff1e57bd841458fdbffc2533727d1a4426'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/manifest.json': (None,
+                                                                              'b3e1d3a426030940a04c26499da9d6959492444f452b849986f0257b80631e4d'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0001.json': (None,
+                                                                               '7253873811fb13a8e4502573f8e7b573070f4d1e5a2d1bc28b695f52ab75971b'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0001.receipt.json': (None,
+                                                                                       '780c63dc0bbdf194bc50f0c5ee1d3e715e9504480e563ad4f2117496668d5375'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0002.json': (None,
+                                                                               '0583cfee4d424a90daeb33d28cecdb6af1a63b4212a0e16a98eb1ea699604045'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0002.receipt.json': (None,
+                                                                                       '7d1949f5ac162810771a97afbad4d919303138df78e2eb600973b92b8c6cb277'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0003.json': (None,
+                                                                               'c1fc51d7545251a1f9d248dc0b5e17431b9d687d6515545c82633eed3fe22299'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0003.receipt.json': (None,
+                                                                                       '1d64e3c87f4d531475b21248eb1634ac45a7819cf012c987857311b6b17182be'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0004.json': (None,
+                                                                               '9c6ce461bd3916b331c3affd5edf40ed4c8bb2016f6425870ce226e7e20bea39'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0004.receipt.json': (None,
+                                                                                       '219ab14fcab9f07b7600707ed1ebe981434d1017b11b0c8faf1afaaa897241c7'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0005.json': (None,
+                                                                               '872084d4dab505b90654b756b2dabaf8805c0240b87495380f1b29871dae7a3b'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0005.receipt.json': (None,
+                                                                                       'a65011e9b001ca59b70ca501f64e66060e2d1caa17831d44b1397217500d84bf'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0006.json': (None,
+                                                                               'ab87869ca7ed8e868a73a6c28f13392b1a91cc9a920fc84ff3c9dcde9001fe9e'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0006.receipt.json': (None,
+                                                                                       '8e7bc17191143c8808f19f80eca94f87d683f55d99a1c2d4bcc09640091c7bb0'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0007.json': (None,
+                                                                               'e52435f31eb0d9f50a0f0eb06ea1c7c3fcb25f6d1b0158ff4c1235de127e1340'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0007.receipt.json': (None,
+                                                                                       'e46e9ca56f2b0b22d5a44e113812de32468976e8cb82b961ec862b0f500846cb'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0008.json': (None,
+                                                                               '130c29419e11be915645762b6323614290c5477da9b9b28649d74499d26bb4e0'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0008.receipt.json': (None,
+                                                                                       '68d277e6440e2aa0ca50d9ccfaf64353adf016fb5f3ae9bfcfc777873b4e6949'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0009.json': (None,
+                                                                               '5c211ca9d3f9a50b16d564c4ce0889e8d01fefc5375f697a90f29313496cc531'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0009.receipt.json': (None,
+                                                                                       'c7836e3e2e10d2964ceac65f31981f10fd457e19db58c4e8306b83bde1838ce5'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0010.json': (None,
+                                                                               'a2b99083aecf217998a7021cf734bc7cfc48d20f6451f943fe784fd3cb011988'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0010.receipt.json': (None,
+                                                                                       '7a9803f7324082b2b0c8d7513b31a44618431373eb4812afa490f2e836c99851'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0011.json': (None,
+                                                                               'd3f20f59b07059316860962daf4145d42fedd1a6617708f1822bacbaff0ff4c0'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0011.receipt.json': (None,
+                                                                                       'dbfa74608a970528a11ac61e15a5efc806f770dcbca2127708877f581eea19f3'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0012.json': (None,
+                                                                               '69c7b1c426dbce158a365405f60fec2bb89ee12434f73bd0d53dec1c3f593140'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0012.receipt.json': (None,
+                                                                                       '39d1a46ea396d3262df9bb6a3a4b19c5530dd84ad6f69410234660bd9a7baed7'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0013.json': (None,
+                                                                               '42bb2c1af621294476ff5f4d9ab42506ff58725083c5a7e16cece5cfd270667a'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/previous/page_0013.receipt.json': (None,
+                                                                                       '96fe17d7bff2b4eb9ec2e44e9840af42d9edc9c0d5a4f7d161782674b47ee931'),
+ 'data/st_notice_boundary_reviews/reviewed_20261112/registry.json': (None,
+                                                                     '7c66c3334d3faeaff724ebf2721f6a738dc5fee0f22dfb5a6675cdc7d23ac6e0'),
+ 'scripts/scoped_source_consumer.py': ('7d8ee365a7ddf5028abbb3a55e0158ead0ec40b93115e719fd669ee7a4ab19c2',
+                                       '0df49a7c2c8b72a3d34ab7e449665cea22748ce0b9ed240e16684a43365dfde3'),
+ 'scripts/st_notice_boundary_20261112.py': (None,
+                                            'ae735f8ed103c192bb30c49fef45e21b042572f24172cc701e25afba2159d022'),
+ 'scripts/st_notice_boundary_review.py': ('790b76ffa40902d6876adcd003fb2cb340feb08d8ffaf05f7e18b0660a9b6d78',
+                                          '10a1cc86bb5429b1cbce28c7d6184c3ae823159299fe1c8b94870724dc3b1d46')}
+
+
+def input_changes(*, revision=REVISION):
+    if revision == LEGACY_REVISION:
+        return {**LEGACY_CHANGES, **ARCHIVE_INPUT_CHANGES}
+    if revision == REVISION:
+        return {**CHANGES, **ARCHIVE_INPUT_CHANGES, **M7_ARCHIVE_INPUT_CHANGES}
+    raise ValueError('Unknown exact archive source validation revision')
 
 
 def digest(raw):
@@ -240,9 +413,9 @@ def original_manifest(raw):
     return saved
 
 
-def checked_source(root):
+def checked_source(root, *, revision=REVISION):
     from scripts.top100_delivery import sha
-    for name, (_, after) in input_changes().items():
+    for name, (_, after) in input_changes(revision=revision).items():
         actual = (digest((Path(root)/name).read_bytes()) if name.startswith('data/st_notice_evidence/')
                   else sha(Path(root)/name))
         if actual != after:
@@ -260,7 +433,8 @@ def stock_compatible(recorded, current, root=None):
             or current.get('sha256') != recorded['sha256'] or set(current.get('code', {})) != set(recorded['code'])):
         return False
     changed = {n for n in recorded['code'] if recorded['code'][n] != current['code'][n]}
-    if changed != set(CHANGES) or any((recorded['code'][n], current['code'][n]) != CHANGES[n] for n in changed):
+    if not any(changed == set(review) and all((recorded['code'][n], current['code'][n]) == review[n]
+                                            for n in changed) for review in (LEGACY_CHANGES, CHANGES)):
         return False
     if root is None:
         import microcap_top100_mom16_biweekly_live_v2_0 as native
@@ -274,7 +448,7 @@ def stock_compatible(recorded, current, root=None):
         return False
 
 
-def require_transition(original, current):
+def require_transition(original, current, *, revision=REVISION):
     """Only the exact reviewed source edits plus this release-verified reader."""
     if current.get('ok') is not True or current.get('errors') != [] or current.get('expected_date') != DATE:
         raise ValueError('Archive source revalidation is limited to the complete 10-Nov archive')
@@ -282,7 +456,7 @@ def require_transition(original, current):
         if current.get(key) != original.get(key):
             raise ValueError('Archive source-only transition changed ' + key)
     old, new = original['inputs'], current['inputs']
-    changes = input_changes()
+    changes = input_changes(revision=revision)
     added = {n for n,pair in changes.items() if pair[0] is None}
     if set(new) != set(old) | {MODULE} | added or MODULE in old:
         raise ValueError('Archive source transition changed the input path set')
@@ -311,11 +485,13 @@ def checked_receipt(receipt):
         raise ValueError('Incomplete archive source validation receipt')
     raw = receipt['original_manifest_utf8'].encode('utf-8')
     original = original_manifest(raw)
-    if (receipt['revision'] != REVISION or receipt['archive_session'] != DATE
+    revision = receipt['revision']
+    changes = input_changes(revision=revision)
+    if (receipt['archive_session'] != DATE
             or receipt['original_manifest_sha256'] != digest(raw) or receipt['original_release_sha'] != RELEASE
             or receipt['original_proxy_sha256'] != BASELINE['proxy_sha256']
             or receipt['stock_fingerprint_sha256'] != STOCK_IDENTITY
-            or receipt['source_changes'] != {n:list(v) for n,v in input_changes().items()}
+            or receipt['source_changes'] != {n:list(v) for n,v in changes.items()}
             or receipt['source_bundle_sha256'] != BASELINE['source_bundle_sha256']
             or receipt['source_state_manifest_sha256'] != BASELINE['state_manifest_sha256']
             or receipt['data_inventory_sha256'] != BASELINE['state_inventory_sha256']
@@ -326,7 +502,7 @@ def checked_receipt(receipt):
     if stamp.tzinfo is None or not datetime.fromisoformat(DATE+'T15:00:00+08:00') <= stamp <= datetime.now(timezone.utc):
         raise ValueError('Archive source validation clock is invalid')
     expected = copy.deepcopy(original['inputs'])
-    for name, (_, after) in input_changes().items():
+    for name, (_, after) in changes.items():
         expected[name] = after
     inputs = receipt['validator_inputs']
     if (not isinstance(inputs, dict) or set(inputs) != set(expected) | {MODULE}
@@ -339,10 +515,10 @@ def checked_receipt(receipt):
 def validate_active(root, current, saved):
     original = checked_document(saved)
     receipt = saved[ACTIVE]
-    require_transition(original, current)
+    require_transition(original, current, revision=receipt['revision'])
     if current['inputs'] != receipt['validator_inputs']:
         raise ValueError('Active archive source validation inputs changed')
-    checked_source(root)
+    checked_source(root, revision=receipt['revision'])
     if digest((Path(root)/PROXY).read_bytes()) != BASELINE['proxy_sha256']:
         raise ValueError('Archive source validation changed original proxy bytes')
     for name, expected in BASELINE['economic_csvs'].items():
@@ -358,7 +534,7 @@ def checked_document(saved):
             or saved.get('freshness') != 'verified_archive_only_requires_current_refresh'
             or saved.get('status') != 'complete' or saved.get('ok') is not True):
         raise ValueError('Archive source validation cannot claim current readiness')
-    require_transition(original, saved)
+    require_transition(original, saved, revision=saved[ACTIVE]['revision'])
     if saved['inputs'] != saved[ACTIVE]['validator_inputs']:
         raise ValueError('Active archive source validation inputs changed')
     return original
@@ -417,6 +593,11 @@ def recertify(root, expected_date):
         with os.fdopen(descriptor, 'wb') as stream:stream.write(owner)
         original_raw = (root/delivery.MANIFEST).read_bytes(); saved = json.loads(original_raw)
         original = original_manifest(original_raw) if ACTIVE not in saved else checked_receipt(saved[ACTIVE])
+        if ACTIVE in saved and saved[ACTIVE]['revision'] != REVISION:
+            # The v2 receipt is valid ancestry, not evidence for this new reader.
+            # A fresh M3 source archive lets the full current validator earn v3
+            # without rewriting or reinterpreting the published M6 certificate.
+            raise ValueError('Legacy archive certificate is preserved; use the exact original M3 archive to earn this new source-only revision')
         checked_source(root)
         release = delivery.verify_release(root)
         if re.fullmatch('[0-9a-f]{40}', release) is None:

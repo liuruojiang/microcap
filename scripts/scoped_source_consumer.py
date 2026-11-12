@@ -28,7 +28,8 @@ SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
 PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
-    'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5'})
+    'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
+    '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36'})
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
     '0091610545f494d3c3e347596049bee39494fc9c4a4b557fa0dbdcb838443351')
@@ -45,6 +46,14 @@ FUTURE_PLAN_SHARE_READER=(TOTAL_NEUTRAL_SHARE_READER[1],
 FUTURE_PLAN_REGISTRY_READER=(
     '972825f752eb59d274c14e6a009f1b92cbed2e4a3f45ad5adce027f3b174e2e1',
     '86c353677ec35023bc451c00ca1fd13966f117e3cc7352958d0d5b28bd1b7aa8')
+LATER_QUOTE_READER = {
+    'scripts/share_change_source.py': (
+        '21ab5dddc118c73d118a12dcc5250dde21b767677c42692b5a055eeed051f34f',
+        'be9e393f09196a812d60b9eb867d21e32b6afbd1e7862d7605accb8bf809d93c'),
+    'scripts/share_unchanged_tail.py': (
+        '85bb77979ecdb179c2f3a71ce17261dd9c4bd0cd60b9a8c90c83d183a79146b2',
+        'd5824797c483d0b466684a5bebbe19595b7108fb393cd7815dc7b870688dd7ae'),
+}
 
 
 def sha(raw):
@@ -113,6 +122,16 @@ def validate_source_contract(root, manifest):
         TOTAL_NEUTRAL_SHARE_READER[0],FUTURE_PLAN_SHARE_READER[1])}
     reviews=(*original,neutral,*({**r,**neutral} for r in original),plans,old_plans,
              *({**r,**p} for r in original for p in (plans,old_plans)))
+    # Preserve only already reviewed predecessor paths ending at the exact P1
+    # parser, followed by this exact two-file observation-only successor.
+    successors = [LATER_QUOTE_READER]
+    for review in reviews:
+        shared = set(review) & set(LATER_QUOTE_READER)
+        if any(review[name][1] != LATER_QUOTE_READER[name][0] for name in shared):
+            continue
+        successors.append({**review, **{name:(review[name][0] if name in review else before, after)
+            for name,(before,after) in LATER_QUOTE_READER.items()}})
+    reviews = (*reviews, *successors)
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
