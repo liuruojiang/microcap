@@ -1,0 +1,118 @@
+{
+  "decision": "exact_20261113_observation_no_history_rewrite",
+  "boundary_day": "2026-11-11",
+  "prior_registry_sha256": "18275ccba2690db15ac36f89d141d90003925464d7fd744a20fcbe4534ea21b7",
+  "previous_stable_sha": "27ab78dfda644ab4df7cdfa4d69b493143b924e80d50c1fc781c8b70f053148e",
+  "current_stable_sha": "af1ebfc0660d5c783019ee3edfa09a49b966e18960c9d62e98901196ea78fb8f",
+  "current_native_sha": "e6e92975cf82916056a3f099475faae59b2d82e5cab7d48352a3dd415c898713",
+  "added_ids": [
+    "AN202611121831660319",
+    "AN202611121831660320"
+  ],
+  "positive_risk_id": "AN202611101831591478",
+  "positive_before": {
+    "art_code": "AN202611101831591478",
+    "codes": [
+      {
+        "ann_type": "A,ZXB,SZA",
+        "inner_code": "36181347136570",
+        "market_code": "0",
+        "short_name": "萃华退",
+        "stock_code": "002731"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      },
+      {
+        "column_code": "001002004012",
+        "column_name": "其它风险提示公告"
+      }
+    ],
+    "display_time": "2026-11-10 17:39:06:297",
+    "eiTime": "2026-11-10 17:40:15:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "331",
+    "title": "萃华退:关于公司股票进入退市整理期交易的第七次风险提示公告",
+    "title_ch": "萃华退:关于公司股票进入退市整理期交易的第七次风险提示公告",
+    "title_en": ""
+  },
+  "positive_after": {
+    "art_code": "AN202611101831591478",
+    "codes": [
+      {
+        "ann_type": "A",
+        "inner_code": "36181347136570",
+        "market_code": "0",
+        "short_name": "萃华退",
+        "stock_code": "002731"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002004003004",
+        "column_name": "实施退市风险警示"
+      },
+      {
+        "column_code": "001002004012",
+        "column_name": "其它风险提示公告"
+      }
+    ],
+    "display_time": "2026-11-10 17:39:06:299",
+    "eiTime": "2026-11-10 17:40:15:000",
+    "language": "0",
+    "listing_state": "2",
+    "notice_date": "2026-11-11 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-11 12:00:00",
+    "source_type": "331",
+    "title": "萃华退:关于公司股票进入退市整理期交易的第七次风险提示公告",
+    "title_ch": "萃华退:关于公司股票进入退市整理期交易的第七次风险提示公告",
+    "title_en": ""
+  },
+  "historical_state_rewrite_authorized": false,
+  "target_freshness_granted": false,
+  "documents_reviewed": {
+    "AN202611121831660319": "CSRC2026-3171 convertible bond registration approval, pages1-2; no ST action",
+    "AN202611121831660320": "CSRC2026-3172 private equity offering registration approval, pages1-2; no ST action"
+  },
+  "artifacts": {
+    "AN202611121831660319.pdf": "79ca0ce408df5461e933d562f14ae86a2926a99a127379298e7efa408dfa3355",
+    "AN202611121831660319.receipt.json": "4dea1b0b11f01e501a57318622af1359e49d803a753abbb851746206b9313515",
+    "AN202611121831660320.pdf": "be51081be6f5c5634bbc3acbe1334152bff9509262767c2735a8a1e20b9e5a4b",
+    "AN202611121831660320.receipt.json": "237ee1a61a999621cb747d7bcd21602fa1f508998225f691d951af58bfec5528",
+    "manifest.json": "fa20ba6c29b9b2a254eecd3ac54a6e734cf60bf83517e3da2478838abc631c04",
+    "page_0001.json": "0567154e7f4a40f221e11c031827d74a8cf73f7320ca207138f5f1d80b26f382",
+    "page_0001.receipt.json": "0cae8d9512a3a37057309875075d05e7b3fc7ff4ecb6a5fedabadb01a09989e2",
+    "page_0002.json": "feeab4db3b7f3180f5a686b77f25e59a7e195507d12be79f0d085ec0eb1011e5",
+    "page_0002.receipt.json": "c7695b77de3f9248fb224e1ee7aa4f22fa57797307dbb0f8eacf087164108a6e",
+    "page_0003.json": "a6567224a2a39dbf4996c74826b5302f3c55e699f3701fe53f2d1c83f981709f",
+    "page_0003.receipt.json": "b1769b49ab7d0a71012ad890e6ad1fe73c0fab90a25eeac8739e6777c4859c74",
+    "page_0004.json": "61f2aafc307177374587047e2b4546ada45df70addeb01198d6c92a4d0b0cc6f",
+    "page_0004.receipt.json": "806ecdab3a8bad7839b9db51f9a2a1d82c8a86e0d66f71bfa811e0fcf22fd307",
+    "page_0005.json": "ba9d986e6b3587250e39a4cfe8a2545ca6cd7d4192c1d9a4a3f31446fe18c756",
+    "page_0005.receipt.json": "d3e4ed9bfaca21dd018a09481919ff6ba9c74aded616cd397da4eefae5ff9a7d",
+    "page_0006.json": "a2f5c9ca8729052355b2a2f827286b9ca5adc640e9f1bcf1ef41430a9fbd92d9",
+    "page_0006.receipt.json": "ae71c68e070abae9d6cec1158d08c6f989702adaa589adba1c105ae093108d6a",
+    "page_0007.json": "c7a4614f575297964020640c7fa127e97a559d352f9de8c235901f064a64016e",
+    "page_0007.receipt.json": "b4fef35cdd1835d99424cb0f6459a32e5aa7d23a0d1c2971f6e8c8ef55847505",
+    "page_0008.json": "67a2c4efba68de49e0c47e06e5765722d76257462cec9fd36e1e4680850a34df",
+    "page_0008.receipt.json": "637f15d7e070c2624b9cc0d774a3b13f46255b1d51b3a51402596f47269097c0",
+    "page_0009.json": "0182fd3b5d1e4ed989baf7de45f72c719eb07e269e47c54ff655772b217dd2e5",
+    "page_0009.receipt.json": "070d78ed54fb2772142a011840aa3174054d59d86c6e265acc8595ea3d632421",
+    "page_0010.json": "a60103129c58137ade2d1dfc2c123bba1ec7479453d1dc41f7cbee60a15d9599",
+    "page_0010.receipt.json": "f0ffc3ecbf3e608571326c5a338e4e6054649b8a98c7407c325d611451b9209e",
+    "page_0011.json": "f116b862dda596d57c6a817ee431f1f917cc93d92802b9bec33953000d96509f",
+    "page_0011.receipt.json": "1908aa8a553264c23bdd930011799fa539e40889e9ae01b777915c8e2db20f78",
+    "page_0012.json": "2ed624f11fd3d7c5cc51f21cbc433bd440531d92e6f0e3967a400c0c2fcf520a",
+    "page_0012.receipt.json": "b3ff7d28aadd27926e6f0b6957e1e754e66cdfe9a0a12bdeefc9f0824403d4e9",
+    "page_0013.json": "6571c3e9b6de48da3b83c2e4f53682a44ad28ac53c1ccf7046712622016b8dd3",
+    "page_0013.receipt.json": "8e640cd1091165a6f17cc69dc5f655e7f569b1c1f3cb8d732a19e2c59bab44c7"
+  }
+}

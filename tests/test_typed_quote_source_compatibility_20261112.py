@@ -26,7 +26,7 @@ def package(ref,values):
     return dict(runtime_sha=ref,producer_context=dict(runtime_sha=ref,native_sources=values))
 
 
-@pytest.mark.parametrize('ref',[P1,P2,P3,P3_RECOVERY])
+@pytest.mark.parametrize('ref',[P1,P2,P3,P3_RECOVERY,'ae439a1eec4dae5729483f43356473bcb9b1dff1'])
 def test_old_actual_producer_source_hashes_remain_readable_without_resigning(ref):
     before=actual_git_sources(ref)
     assert consumer.validate_source_contract(ROOT,package(ref,before))==source_fingerprint(ROOT)
