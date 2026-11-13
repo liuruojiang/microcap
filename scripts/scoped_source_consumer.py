@@ -26,7 +26,7 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
-PRODUCERS = frozenset({PRODUCER,'706af7ea9186bdb9b3948738deb5a5afda7a331e',
+PRODUCERS = frozenset({PRODUCER,'ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
     'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
     '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
@@ -165,6 +165,16 @@ def validate_source_contract(root, manifest):
         budget_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
             for name,(before,after) in BACKUP_QUOTE_READER.items()}})
     reviews = (*reviews, *budget_successors)
+    # Exact P3->P4 total-neutral future-row reader, preserving prior paths.
+    future_structure = {'scripts/share_change_source.py': ('fdbc6292597ced431cf76bfdd9ad564c70042f8d603ee867f79d5da2bed2339e','9c89824455dc295683d918bc6f5444bd2df5786a86db2643425590b68a603b3f')}
+    structure_successors = [future_structure]
+    for review in reviews:
+        shared = set(review) & set(future_structure)
+        if any(review[name][1] != future_structure[name][0] for name in shared):
+            continue
+        structure_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
+            for name,(before,after) in future_structure.items()}})
+    reviews = (*reviews, *structure_successors)
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
