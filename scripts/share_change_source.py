@@ -53,6 +53,17 @@ EXACT_FUTURE_STRUCTURE_301429 = dict(symbol='301429', announcement_id='AN2026110
         'e3650714e308713862a751c71a551e786a508cae45d3232bdd3aa51ca6c53c8e',)},
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611091831558999_1.pdf',
     pdf_sha256='2d40c57542b84922e0e9c97f7e69bc35b0291f81eed39bd8d166506619c6c65e',pdf_bytes=203662)
+# Nov13 issuer PDF pages1,6: one future, total-neutral unlock. Never promote
+# this row to a target-day share curve or assert its execution/legal effect.
+EXACT_FUTURE_STRUCTURE_000663 = dict(symbol='000663', announcement_id='AN202611121831665417',
+    provider_notice_date='2026-11-13', total_shares=336397452,
+    row_sha256_by_day={'2026-11-16':'e86f279b0dc3675a74c768bf3a0dd55021947eb56ad403d8473c141bf2161933'},
+    pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611121831665417_1.pdf',
+    pdf_sha256='8d55cdd6235b984be4b902a7d826e9bfd245031c8052cb8577a665b6d94fc37f',pdf_bytes=315361)
+
+def _structure_review(symbol):
+    return EXACT_FUTURE_STRUCTURE_000663 if symbol=='000663' else EXACT_FUTURE_STRUCTURE_301429
+
 # Observed through Google/Cloudflare/Ali DNS and verified against the real
 # CNInfo HTTPS API on 2026-11-02. This is a route, never a TLS-identity override.
 _KNOWN_CNINFO_IPV4 = '120.48.196.100'
@@ -673,7 +684,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
         later_review=dict(row=row)
         later_plan=dict(date=review['date'],total_shares_10k=str(Decimal(review['after_total_shares'])/10000))
     future_structure_rows=[];current_structure_rows=[];reviewed_structure_rows=[];optional_structure_plans=[]
-    review=EXACT_FUTURE_STRUCTURE_301429
+    review=_structure_review(symbol)
     if 'later_structure_documents' in files:
         # A later provider date can become an observed zero-total-change
         # reobservation. That does not make the Nov12 unlock plan executed,
@@ -715,8 +726,8 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                          'future structure exact row/total differs')
                     reviewed_structure_rows.append(row)
                     (future_structure_rows if ds>end else current_structure_rows).append(row)
-        need(len(reviewed_structure_rows)==2 and {r['END_DATE'][:10] for r in reviewed_structure_rows}==set(review['row_sha256_by_day']),
-             'future structure exact two-row inventory differs')
+        need(len(reviewed_structure_rows)==len(review['row_sha256_by_day']) and {r['END_DATE'][:10] for r in reviewed_structure_rows}==set(review['row_sha256_by_day']),
+             'future structure exact reviewed inventory differs')
         optional_structure_plans=[dict(date=ds,total_shares_10k=str(Decimal(review['total_shares'])/10000))
                                   for ds in sorted(review['row_sha256_by_day']) if ds>end]
     unfiltered=n._em_inventory(files['unfiltered'],bound,symbol,end,False,now,approved_event=later_review,
@@ -770,7 +781,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                 # Both dated market totals and Sina have now observed this
                 # provider date. Its exact reviewed row is total-neutral; keep
                 # the certified CSV byte-for-byte and do not call it execution.
-                review=EXACT_FUTURE_STRUCTURE_301429
+                review=_structure_review(symbol)
                 need(symbol==review['symbol'] and event['provider_date'] in review['row_sha256_by_day']
                      and value*10000==review['total_shares'],
                      'current structural reobservation is not the exact reviewed total')
@@ -876,10 +887,10 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     if structure_events:facts['structure_events']=structure_events
     if structure_reobservations:facts['structure_reobservations']=structure_reobservations
     if future_structure_rows:
-        facts['future_structure_not_consumed']=dict(announcement_id=EXACT_FUTURE_STRUCTURE_301429['announcement_id'],
+        facts['future_structure_not_consumed']=dict(announcement_id=_structure_review(symbol)['announcement_id'],
             provider_dates=sorted(r['END_DATE'][:10] for r in future_structure_rows),
-            total_shares_unchanged=EXACT_FUTURE_STRUCTURE_301429['total_shares'],
-            issuer_document_sha256=EXACT_FUTURE_STRUCTURE_301429['pdf_sha256'],
+            total_shares_unchanged=_structure_review(symbol)['total_shares'],
+            issuer_document_sha256=_structure_review(symbol)['pdf_sha256'],
             execution_or_legal_effect_not_asserted=True)
     if later_plan is not None:
         later=EXACT_FUTURE_PLAN_688092
@@ -988,7 +999,7 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
     documents=[];reviews=n.plan_reviews(root)
     for entry in files['unfiltered']:
         for row in json.loads((source/entry['raw_path']).read_bytes())['result']['data']:
-            structure=EXACT_FUTURE_STRUCTURE_301429
+            structure=_structure_review(symbol)
             if ((symbol,row.get('INFO_CODE'))==(structure['symbol'],structure['announcement_id'])
                     and row['END_DATE'][:10] in structure['row_sha256_by_day']):
                 # The original issuer document remains required when the
