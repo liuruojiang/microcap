@@ -35,7 +35,11 @@ STRUCTURE_ONLY_EVENT_20261105 = dict(symbol='300743', date='2026-11-05',
 # Issuer pages10-11: treasury-share incentive delivery; total361142872 unchanged.
 EXACT_TOTAL_NEUTRAL_300796 = {'symbol': '300796', 'date': '2026-11-11', 'announcement_id': 'AN202611111831628847', 'total_shares': 361142872, 'em_row_sha256': 'eeb37a70256ce4b625d3c1646e60c97967332b0e9a55406de7260ac2cfc446b8', 'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611111831628847_1.pdf', 'pdf_sha256': 'af48c0f69ca347ffb15a18a745fecfcb6be972f14b09a5495ad2d6462856b20d', 'pdf_bytes': 212853, 'limited_before': 724815, 'limited_after': 724815, 'unlimited_before': 360418057, 'unlimited_after': 360418057, 'transferred': 0}
 
+# Issuer confirms treasury-share delivery leaves total unchanged; provider limited fields stay N/A.
+EXACT_TOTAL_NEUTRAL_688113 = {'symbol': '688113', 'date': '2026-11-10', 'announcement_id': 'AN202611111831629103', 'total_shares': 64397559, 'em_row_sha256': 'd9f3f5158aa1685deba470ed81adf0c6e24eb4707cb47e850e26a1a141fa3feb', 'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611111831629103_1.pdf', 'pdf_sha256': '9afc81f37d7ff39ba72d05bb94fd8bfae90c45123e3e11aaf74bb40d0af54520', 'pdf_bytes': 167035, 'catalog_structure_unavailable': True}
+
 def _zero_change_review(symbol):
+    if symbol=='688113':return EXACT_TOTAL_NEUTRAL_688113
     return EXACT_TOTAL_NEUTRAL_300796 if symbol=='300796' else STRUCTURE_ONLY_EVENT_20261105
 
 EXACT_FUTURE_PLAN_688092 = dict(symbol='688092', date='2026-11-12',
@@ -808,14 +812,20 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
             need(len(pdf)==review['pdf_bytes'] and _sha(pdf)==review['pdf_sha256']
                  and pdf.startswith(b'%PDF-') and b'%%EOF' in pdf[-1024:],
                  'exact structural event issuer document differs')
-            need(n.integer(row['TOTAL_SHARES_CHANGE'])==0
-                 and n.amount(row['LIMITED_SHARES'])==review['limited_after']
-                 and n.amount(row['UNLIMITED_SHARES'])==review['unlimited_after']
-                 and n.integer(row['LIMITED_SHARES_CHANGE'])==review['transferred']
-                 and row['UNLIMITED_SHARES_CHANGE']==-review['transferred']
-                 and review['limited_before']+review['unlimited_before']==review['total_shares']
-                 and review['limited_after']+review['unlimited_after']==review['total_shares'],
-                 'exact structural event is not total-neutral')
+            if review.get('catalog_structure_unavailable'):
+                need(row['LIMITED_SHARES'] is None and row['LIMITED_SHARES_CHANGE'] is None
+                     and n.amount(row['UNLIMITED_SHARES'])==review['total_shares']
+                     and n.integer(row['TOTAL_SHARES_CHANGE'])==0 and row['UNLIMITED_SHARES_CHANGE']==0,
+                     'exact treasury event changed its unavailable structure fields or total')
+            else:
+                need(n.integer(row['TOTAL_SHARES_CHANGE'])==0
+                     and n.amount(row['LIMITED_SHARES'])==review['limited_after']
+                     and n.amount(row['UNLIMITED_SHARES'])==review['unlimited_after']
+                     and n.integer(row['LIMITED_SHARES_CHANGE'])==review['transferred']
+                     and row['UNLIMITED_SHARES_CHANGE']==-review['transferred']
+                     and review['limited_before']+review['unlimited_before']==review['total_shares']
+                     and review['limited_after']+review['unlimited_after']==review['total_shares'],
+                     'exact structural event is not total-neutral')
             structure_events.append(dict(date=event['provider_date'],total_shares_10k=str(value),
                 announcement_id=review['announcement_id'],issuer_document_sha256=review['pdf_sha256'],
                 old_total_unchanged=True))
