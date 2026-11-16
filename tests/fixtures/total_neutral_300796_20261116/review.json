@@ -1,0 +1,15 @@
+{
+  "symbol": "300796",
+  "date": "2026-11-11",
+  "announcement_id": "AN202611111831628847",
+  "total_shares": 361142872,
+  "em_row_sha256": "eeb37a70256ce4b625d3c1646e60c97967332b0e9a55406de7260ac2cfc446b8",
+  "pdf_url": "https://pdf.dfcfw.com/pdf/H2_AN202611111831628847_1.pdf",
+  "pdf_sha256": "af48c0f69ca347ffb15a18a745fecfcb6be972f14b09a5495ad2d6462856b20d",
+  "pdf_bytes": 212853,
+  "limited_before": 724815,
+  "limited_after": 724815,
+  "unlimited_before": 360418057,
+  "unlimited_after": 360418057,
+  "transferred": 0
+}

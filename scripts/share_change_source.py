@@ -32,6 +32,12 @@ STRUCTURE_ONLY_EVENT_20261105 = dict(symbol='300743', date='2026-11-05',
     pdf_sha256='0e3d22e681f7e10c7192cb951e0ac1c44f912b9023773c72fc1e31e5223f80cf',
     pdf_bytes=164308, limited_before=23653195, limited_after=24432195,
     unlimited_before=127551128, unlimited_after=126772128, transferred=779000)
+# Issuer pages10-11: treasury-share incentive delivery; total361142872 unchanged.
+EXACT_TOTAL_NEUTRAL_300796 = {'symbol': '300796', 'date': '2026-11-11', 'announcement_id': 'AN202611111831628847', 'total_shares': 361142872, 'em_row_sha256': 'eeb37a70256ce4b625d3c1646e60c97967332b0e9a55406de7260ac2cfc446b8', 'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611111831628847_1.pdf', 'pdf_sha256': 'af48c0f69ca347ffb15a18a745fecfcb6be972f14b09a5495ad2d6462856b20d', 'pdf_bytes': 212853, 'limited_before': 724815, 'limited_after': 724815, 'unlimited_before': 360418057, 'unlimited_after': 360418057, 'transferred': 0}
+
+def _zero_change_review(symbol):
+    return EXACT_TOTAL_NEUTRAL_300796 if symbol=='300796' else STRUCTURE_ONLY_EVENT_20261105
+
 EXACT_FUTURE_PLAN_688092 = dict(symbol='688092', date='2026-11-12',
     provider_notice_date='2026-11-10', announcement_id='AN202611091831555510',
     before_total_shares=82663740, after_total_shares=82148940,
@@ -790,7 +796,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
                     old_total_unchanged=True,provider_date_reobservation=True,
                     execution_or_legal_effect_not_asserted=True))
                 continue
-            review=STRUCTURE_ONLY_EVENT_20261105;row=matches[0]
+            review=_zero_change_review(symbol);row=matches[0]
             row_sha=_sha(json.dumps(row,sort_keys=True,ensure_ascii=False,separators=(',',':'),default=str).encode())
             need((symbol,event['provider_date'],row_sha,value*10000)==
                  (review['symbol'],review['date'],review['em_row_sha256'],review['total_shares']),
@@ -805,7 +811,7 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
             need(n.integer(row['TOTAL_SHARES_CHANGE'])==0
                  and n.amount(row['LIMITED_SHARES'])==review['limited_after']
                  and n.amount(row['UNLIMITED_SHARES'])==review['unlimited_after']
-                 and n.amount(row['LIMITED_SHARES_CHANGE'])==review['transferred']
+                 and n.integer(row['LIMITED_SHARES_CHANGE'])==review['transferred']
                  and row['UNLIMITED_SHARES_CHANGE']==-review['transferred']
                  and review['limited_before']+review['unlimited_before']==review['total_shares']
                  and review['limited_after']+review['unlimited_after']==review['total_shares'],
@@ -1023,7 +1029,7 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
     files['sina'],_=save(n.SINA_URL.format(symbol=symbol),{},'sina')
     quote_metadata,quote_files=n.collect_quote_inputs(directory=directory,source=source,symbol=symbol,end=end)
     files.update(quote_files)
-    review=STRUCTURE_ONLY_EVENT_20261105
+    review=_zero_change_review(symbol)
     if symbol==review['symbol'] and previous_day<review['date']<=end:
         ref,_=save(review['pdf_url'],{},'structure_'+review['announcement_id'])
         files['structure_documents']=[{**ref,'announcement_id':review['announcement_id']}]
