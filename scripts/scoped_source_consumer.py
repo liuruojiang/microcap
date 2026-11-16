@@ -175,6 +175,16 @@ def validate_source_contract(root, manifest):
         structure_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
             for name,(before,after) in future_structure.items()}})
     reviews = (*reviews, *structure_successors)
+    # Exact P4->P5 treasury-only reader; signed predecessor packages stay unchanged.
+    treasury = {'scripts/share_change_source.py': ('9c89824455dc295683d918bc6f5444bd2df5786a86db2643425590b68a603b3f','cc51abb0834eae664f198440f0de95d7c1ba2a3d017860976f34737d7f0e675b')}
+    treasury_successors = [treasury]
+    for review in reviews:
+        shared = set(review) & set(treasury)
+        if any(review[name][1] != treasury[name][0] for name in shared):
+            continue
+        treasury_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
+            for name,(before,after) in treasury.items()}})
+    reviews = (*reviews, *treasury_successors)
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
