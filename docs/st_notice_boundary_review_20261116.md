@@ -1,0 +1,7 @@
+# 16 November catalog reobservation
+
+The complete frozen 12-November native snapshots contain 1367 and 1368 rows. Two INV research notices were added; one INV research notice was removed by the provider. Three shared bond catalog entries changed listing_state or bond ann_type. Every other field is matched by the exact snapshots and the original display-clock precision check. The unchanged full native ST projection is checked at runtime, and additions/removal must have empty native selectors and risk actions.
+
+All six original documents and actual HTTP receipts are retained. The removed Zhaomin research record AN202611121831663341 is preserved via Sina original attachment 12704083.PDF (dated 12-November); the original Eastmoney attachment is unavailable and its detail endpoint reports missing basic information. The separate 13-November clean republication is independent corroboration, never a replacement for the original record. Original catalog pages, clocks and the old archive remain unchanged.
+
+This exact observation reader changes no strategy parameter, economic data, historical ST interval or approved authority. It does not grant target freshness or historical rewrite permission. Unknown/mutated snapshots remain rejected. Frozen-input tests are software compatibility evidence, not current market signals. Candidate base a20be0ed remains a recoverable Git checkpoint; the live source process still uses P4 until formal publication and exclusive activation.

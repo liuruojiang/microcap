@@ -1,0 +1,10 @@
+{
+  "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESZ_STOCK/2026/2026-11/2026-11-12/12704083.PDF",
+  "start": "2026-11-16T01:09:09.286999+00:00",
+  "end": "2026-11-16T01:09:13.001042+00:00",
+  "sha256": "22f3aa6e7194a38c022bd3dbee915280071bc8c40b5c4d12a63b5959f140aa35",
+  "http_status": 200,
+  "tls_verify": true,
+  "source": "sina_original_attachment",
+  "pages": 3
+}

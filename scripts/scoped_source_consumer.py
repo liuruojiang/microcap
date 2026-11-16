@@ -26,7 +26,7 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
-PRODUCERS = frozenset({PRODUCER,'ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
+PRODUCERS = frozenset({PRODUCER,'c8a660fb61409f992e106b3128d6946f7c34b159','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
     'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
     '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
