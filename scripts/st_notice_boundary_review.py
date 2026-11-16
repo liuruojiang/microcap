@@ -473,9 +473,15 @@ def _non_equity_catalog_metadata(previous, current, precision):
 
 from scripts.st_notice_boundary_20261113 import SOURCE_FILES as NOV13_SOURCE_FILES
 SOURCE_FILES += NOV13_SOURCE_FILES
+from scripts.st_notice_boundary_20261116 import SOURCE_FILES as NOV16_SOURCE_FILES
+SOURCE_FILES += NOV16_SOURCE_FILES
 
 
 def reviewed_additions(previous, current, precision):
+    from scripts.st_notice_boundary_20261116 import reviewed_boundary as nov16
+    reviewed = nov16(previous, current, precision)
+    if reviewed is not None:
+        return reviewed
     error = "ST boundary native events changed; exact-hash history review required; pointer preserved"
     from scripts.st_notice_boundary_20261113 import reviewed_boundary as reviewed_nov13
     nov13 = reviewed_nov13(previous, current, precision)
