@@ -1,0 +1,90 @@
+{
+  "schema": "eastmoney_all_market_daily_v1",
+  "date": "2026-11-12",
+  "pages": [
+    {
+      "response": "page_0001.json",
+      "receipt": "page_0001.receipt.json",
+      "response_sha256": "4c9c495ceb547224e9943de90497d9927a7252b87ea5748196d79aa06ca4018a",
+      "receipt_sha256": "923eab40017e8fd60cc35b0a82c4de3c6d7d7fc24fa453904888fa8c14c6ac52"
+    },
+    {
+      "response": "page_0002.json",
+      "receipt": "page_0002.receipt.json",
+      "response_sha256": "24e2b5a8b49ca3f86daa2ecdcebab7b7ef59c0115421def268c9208a8a78aa07",
+      "receipt_sha256": "accee5fd8feb7c4d5089389fe16c1d78a7b0db9878376d4856bb58babdac64b6"
+    },
+    {
+      "response": "page_0003.json",
+      "receipt": "page_0003.receipt.json",
+      "response_sha256": "d2cb0dc6a830e6565ecf7521714e16f71fe6eff8541dc939d9dadb72128ac492",
+      "receipt_sha256": "b73c5d0952ad11c1e9510f82251dfa7bd98fef7c269776d1e34ce2615762bd3d"
+    },
+    {
+      "response": "page_0004.json",
+      "receipt": "page_0004.receipt.json",
+      "response_sha256": "cb642902c75aebf76897bdeb5a3eb8356782220f341b3d485cb7e8df301e30c1",
+      "receipt_sha256": "2699cdd04a39204bae725bf88d2c2f6e7d5f2eae747ffdc89221310ea8f98d0e"
+    },
+    {
+      "response": "page_0005.json",
+      "receipt": "page_0005.receipt.json",
+      "response_sha256": "95a6f40bb954e6e35b2dcf895ab35f5807a4fbd0022cb765ea5f419ceb64564a",
+      "receipt_sha256": "c103040d55feaedab8721113490f57cb0cc0780046ec1b6f8d2e9df1a39adf11"
+    },
+    {
+      "response": "page_0006.json",
+      "receipt": "page_0006.receipt.json",
+      "response_sha256": "34baf2ab2c5dc7de11083a76f8c74deaa7db0b3fd80af3c9004819843a1c75bc",
+      "receipt_sha256": "1f6ab1828a54ef2d8aae9c5fefcd79640104fd6e64ba4e37cc00372624d7bd00"
+    },
+    {
+      "response": "page_0007.json",
+      "receipt": "page_0007.receipt.json",
+      "response_sha256": "68df8cb5d38c665cea34c822550197144bc0123566a2294efd7a116ad38331f4",
+      "receipt_sha256": "a451316adb3f0c0cca1f50d745c2a095885d89d9389af7dbcca51096d6dd2014"
+    },
+    {
+      "response": "page_0008.json",
+      "receipt": "page_0008.receipt.json",
+      "response_sha256": "acd8b919b31444ef71a6cb033819207af0e3474e406409599eff4f7177e6db0d",
+      "receipt_sha256": "73b86e779a85508320d11dd42ae88fca7e2f25b4f79488e647787f0604cdccde"
+    },
+    {
+      "response": "page_0009.json",
+      "receipt": "page_0009.receipt.json",
+      "response_sha256": "78cdadd2f3c7f5932975ae8e1237ed7facf361aa65cb315a4e6b856705dd684f",
+      "receipt_sha256": "d191a74286fe4576deefe5b44b258834e2a3910f30dd3544a5d6aafc7de54c21"
+    },
+    {
+      "response": "page_0010.json",
+      "receipt": "page_0010.receipt.json",
+      "response_sha256": "1994dfdec372ccce5f2e01a89366c6169605b07d4978bc0d9c0dd1eb1502d3cb",
+      "receipt_sha256": "b600a6681cbb8df2287b6a8e12d8215a71c1023e043aab8b0c41c35f7dbda22b"
+    },
+    {
+      "response": "page_0011.json",
+      "receipt": "page_0011.receipt.json",
+      "response_sha256": "8f30e077807b98d5238274f55fd2e59fa1a189823f46c3722972b4bf426eee4b",
+      "receipt_sha256": "b544d582891ac3f27aab2bac583afdc5ce03982da0403691ed50b9d259e51136"
+    },
+    {
+      "response": "page_0012.json",
+      "receipt": "page_0012.receipt.json",
+      "response_sha256": "fbe40b71ec560a01a4878396b328bd147aaf230df3d5d20c5c5be869ecd1f4d6",
+      "receipt_sha256": "3697a2de108bdcabce820e5428ea375dd53acf54cf9c8826860764fba1fa9281"
+    },
+    {
+      "response": "page_0013.json",
+      "receipt": "page_0013.receipt.json",
+      "response_sha256": "ccad66ddb77edb0ca4e4660d70fc8b24a656c2a02fcdd0b8c1a072465af34afe",
+      "receipt_sha256": "2984ac9c48d276f1dd608d7f5623f76a3f6b919b944729827bad51619080eb4d"
+    },
+    {
+      "response": "page_0014.json",
+      "receipt": "page_0014.receipt.json",
+      "response_sha256": "6ae640014803ce6e15e6a2874f83e0804da11496d4bfeead27e204de7ed2130c",
+      "receipt_sha256": "149b7b3c57d317efce185cff264120cd6a2c19e0d6804ac132111c3eb249c4c1"
+    }
+  ]
+}
