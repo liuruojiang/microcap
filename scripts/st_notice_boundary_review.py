@@ -477,7 +477,14 @@ from scripts.st_notice_boundary_20261116 import SOURCE_FILES as NOV16_SOURCE_FIL
 SOURCE_FILES += NOV16_SOURCE_FILES
 
 
+from scripts.st_notice_boundary_20261117 import SOURCE_FILES as NOV17_SOURCE_FILES
+SOURCE_FILES += NOV17_SOURCE_FILES
+
 def reviewed_additions(previous, current, precision):
+    from scripts.st_notice_boundary_20261117 import reviewed_boundary as nov17
+    reviewed = nov17(previous, current, precision)
+    if reviewed is not None:
+        return reviewed
     from scripts.st_notice_boundary_20261116 import reviewed_boundary as nov16
     reviewed = nov16(previous, current, precision)
     if reviewed is not None:
