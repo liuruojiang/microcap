@@ -1,0 +1,45 @@
+{
+  "requested_url": "https://pdf.dfcfw.com/pdf/H2_AN202611131831697401_1.pdf",
+  "final_url": "https://pdf.dfcfw.com/pdf/H2_AN202611131831697401_1.pdf",
+  "status": 200,
+  "tls_verify_configuration": true,
+  "redirects_allowed": false,
+  "observation_start": "2026-11-17T02:26:24.764822+00:00",
+  "observation_end": "2026-11-17T02:26:26.948762+00:00",
+  "raw_sha256": "8c61666a36f3de8a8484a12a4a2ac516170b40f49d4eea4427e62a2dcf7c9549",
+  "raw_bytes": 234170,
+  "native_row": {
+    "art_code": "AN202611131831697401",
+    "codes": [
+      {
+        "ann_type": "A,CYB",
+        "inner_code": "32600489366170",
+        "market_code": "0",
+        "short_name": "兆丰股份",
+        "stock_code": "300695"
+      }
+    ],
+    "columns": [
+      {
+        "column_code": "001002008",
+        "column_name": "其他"
+      }
+    ],
+    "display_time": "2026-11-13 17:38:05:406",
+    "eiTime": "2026-11-13 17:38:32:000",
+    "language": "0",
+    "listing_state": "0",
+    "notice_date": "2026-11-13 00:00:00",
+    "product_code": "",
+    "sort_date": "2026-11-13 12:00:00",
+    "source_type": "333",
+    "title": "兆丰股份:关于控股子公司中标项目签署合同的公告",
+    "title_ch": "兆丰股份:关于控股子公司中标项目签署合同的公告",
+    "title_en": ""
+  },
+  "response_headers": {
+    "Content-Length": "234170",
+    "Content-Type": "application/pdf",
+    "Date": "Tue, 17 Nov 2026 02:26:26 GMT"
+  }
+}
