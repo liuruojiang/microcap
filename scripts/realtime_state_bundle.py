@@ -888,6 +888,23 @@ TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW={
 }
 
 
+# The exact November 12 whole archive from run 43261210223, artifact 13969276381.
+# Later total-neutral issuer observations only extend the reader. The original
+# code and input bytes remain part of the archived lineage.
+NOV12_ARCHIVE_SHARE_SOURCE_REVIEW = {
+    "revision": "exact_20261112_whole_archive_share_reader_20261117",
+    "stock_fingerprint_sha256": "fe2c0358fd780a5948f4ea2c129c59865457fd6a1b3f8d598c1925ba04fca9ef",
+    "file_count": 16315,
+    "data_sha256": "74a4b5c311b9e03a06c8123e501b61b2aedc3c252367c2bf44f5df02e2859e35",
+    "changes": {
+        "scripts/share_change_source.py": (
+            "fdbc6292597ced431cf76bfdd9ad564c70042f8d603ee867f79d5da2bed2339e",
+            "cc51abb0834eae664f198440f0de95d7c1ba2a3d017860976f34737d7f0e675b",
+        ),
+    },
+}
+
+
 def stock_input_evidence_matches_validated_source(recorded, current, *, root=None) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
@@ -926,7 +943,8 @@ def stock_input_evidence_matches_validated_source(recorded, current, *, root=Non
                    ARCHIVED_REFRESH_RECEIPT_D5_SOURCE_REVIEW,SEALED_BASIS_CACHE_D5_SOURCE_REVIEW,
                    SEALED_BASIS_CACHE_N9_SOURCE_REVIEW,FORWARD_CONSUMPTION_D5_SOURCE_REVIEW,
                    FORWARD_CONSUMPTION_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW,
-                   TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW):
+                   TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW,
+                   NOV12_ARCHIVE_SHARE_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
