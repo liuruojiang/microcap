@@ -479,8 +479,15 @@ SOURCE_FILES += NOV16_SOURCE_FILES
 
 from scripts.st_notice_boundary_20261117 import SOURCE_FILES as NOV17_SOURCE_FILES
 SOURCE_FILES += NOV17_SOURCE_FILES
+from scripts.st_notice_boundary_20261118_nov17 import SOURCE_FILES as NOV18_NOV17_SOURCE_FILES
+SOURCE_FILES += NOV18_NOV17_SOURCE_FILES
+
 
 def reviewed_additions(previous, current, precision):
+    from scripts.st_notice_boundary_20261118_nov17 import reviewed_boundary as nov18_catalog_replacement
+    replacement = nov18_catalog_replacement(previous, current, precision)
+    if replacement is not None:
+        return replacement
     from scripts.st_notice_boundary_20261117 import reviewed_boundary as nov17
     reviewed = nov17(previous, current, precision)
     if reviewed is not None:
