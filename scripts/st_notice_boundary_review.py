@@ -485,7 +485,15 @@ from scripts.st_notice_boundary_20261118_nov12 import SOURCE_FILES as NOV18_NOV1
 SOURCE_FILES += NOV18_NOV12_SOURCE_FILES
 
 
+from scripts.st_notice_boundary_20261119_nov17 import SOURCE_FILES as NOV19_NOV17_SOURCE_FILES
+SOURCE_FILES += NOV19_NOV17_SOURCE_FILES
+
+
 def reviewed_additions(previous, current, precision):
+    from scripts.st_notice_boundary_20261119_nov17 import reviewed_boundary as nov19
+    bond_catalog = nov19(previous, current, precision)
+    if bond_catalog is not None:
+        return bond_catalog
     from scripts.st_notice_boundary_20261118_nov12 import reviewed_boundary as nov12_catalog_reobservation
     reobserved = nov12_catalog_reobservation(previous, current, precision)
     if reobserved is not None:
