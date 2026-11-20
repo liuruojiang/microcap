@@ -26,7 +26,7 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
-PRODUCERS = frozenset({PRODUCER,'075949e609d2c403214379d949672a192a16e649','52214f002a8b83ab602a90fd40cc48336a7ce51a','cbc3bd6c57a9b1abd556c2742f8b72a7118faad3','7c7e2954cd1945bbd75037f8cd144f8f95407598','f2ded1092aa11a1061b52aaf468ebcd5d2ce17a5','e3c855f980e503372fd9fc4268aeea2aa4b5aeeb','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
+PRODUCERS = frozenset({PRODUCER,'d09b53af78767370a7ecb2bf4ebe6e3527d2eacc','075949e609d2c403214379d949672a192a16e649','52214f002a8b83ab602a90fd40cc48336a7ce51a','cbc3bd6c57a9b1abd556c2742f8b72a7118faad3','7c7e2954cd1945bbd75037f8cd144f8f95407598','f2ded1092aa11a1061b52aaf468ebcd5d2ce17a5','e3c855f980e503372fd9fc4268aeea2aa4b5aeeb','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
     'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
     '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
@@ -185,6 +185,16 @@ def validate_source_contract(root, manifest):
         treasury_successors.append({**review, **{name:(review[name][0] if name in review else before, after)
             for name,(before,after) in treasury.items()}})
     reviews = (*reviews, *treasury_successors)
+    # The two reviewed November rows can extend prior exact source readers.
+    share_name = 'scripts/share_change_source.py'
+    nov20 = ('cc51abb0834eae664f198440f0de95d7c1ba2a3d017860976f34737d7f0e675b', '96201e1905c05601bcd1980433dee542cb3f62d264d4eb451f3e3dd700edec1e')
+    successors = [{share_name: nov20}]
+    for review in reviews:
+        prior = review.get(share_name)
+        if prior is not None and prior[1] != nov20[0]:
+            continue
+        successors.append({**review, share_name: (prior[0] if prior else nov20[0], nov20[1])})
+    reviews = (*reviews, *successors)
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
