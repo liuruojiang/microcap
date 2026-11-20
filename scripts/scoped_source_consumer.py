@@ -26,7 +26,7 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
-PRODUCERS = frozenset({PRODUCER,'52214f002a8b83ab602a90fd40cc48336a7ce51a','cbc3bd6c57a9b1abd556c2742f8b72a7118faad3','7c7e2954cd1945bbd75037f8cd144f8f95407598','f2ded1092aa11a1061b52aaf468ebcd5d2ce17a5','e3c855f980e503372fd9fc4268aeea2aa4b5aeeb','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
+PRODUCERS = frozenset({PRODUCER,'075949e609d2c403214379d949672a192a16e649','52214f002a8b83ab602a90fd40cc48336a7ce51a','cbc3bd6c57a9b1abd556c2742f8b72a7118faad3','7c7e2954cd1945bbd75037f8cd144f8f95407598','f2ded1092aa11a1061b52aaf468ebcd5d2ce17a5','e3c855f980e503372fd9fc4268aeea2aa4b5aeeb','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
     'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
     '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
