@@ -80,6 +80,10 @@ EXACT_FUTURE_STRUCTURE_002858 = dict(symbol='002858', announcement_id='AN2026111
         '2026-11-20': '64565b463c7cc1be2d61b059ba9fe02cb918ed2ecbb6ce4aadf28b389a07d5c4',
         '2026-11-23': 'fe1dfea1fe51237b4e7a057df1e07e8d596e88440bacaac7789d0b71a4a91dc0',
     },
+    # November 23 reobservation changes only FREELIQCI_SHARES.
+    additional_row_sha256_by_day={
+        '2026-11-23': ('82ab320b5c378e64d2e0a2640cf3de71a68ba7e609b1f133c1e6233d03ae65d5',),
+    },
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611191831866084_1.pdf',
     pdf_sha256='a74f62131ad48550186bd2ec67cb05672870fd1d2f5ec729b2dfa04b127f808e', pdf_bytes=165460)
 
@@ -92,6 +96,9 @@ EXACT_FUTURE_STRUCTURE_300535 = dict(symbol='300535', announcement_id='AN2026111
     row_sha256_by_day={
         '2026-11-20': 'dba22a66f53b9cbdcee5883c722782ea94dc47e101b03fd0a09dc7a0f0b04e18',
         '2026-11-23': '844a0a4f8d6982342fb01f985b7663c5d0bed4f132687d33f516549e158a65c4',
+    },
+    additional_row_sha256_by_day={
+        '2026-11-23': ('c3c145c208e785e9a41f267494c5e9f4821ebdadbd7e885e2547110fa251083c',),
     },
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611191831863289_1.pdf',
     pdf_sha256='ec89866dd9e9b58f0adf1686b2b52743eda8db75351fd86520cfabef1f1b7f59', pdf_bytes=139726)
