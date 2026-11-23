@@ -26,9 +26,10 @@ from scripts.st_notice_refresh import archived_freshness_source_files
 CACHE = '.microcap_index_cache/'
 SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
+NOV23_PRODUCER = '39c08829b43c8399bd6793d715de42cc67cd0d63'
 PRODUCERS = frozenset({PRODUCER,'d09b53af78767370a7ecb2bf4ebe6e3527d2eacc','075949e609d2c403214379d949672a192a16e649','52214f002a8b83ab602a90fd40cc48336a7ce51a','cbc3bd6c57a9b1abd556c2742f8b72a7118faad3','7c7e2954cd1945bbd75037f8cd144f8f95407598','f2ded1092aa11a1061b52aaf468ebcd5d2ce17a5','e3c855f980e503372fd9fc4268aeea2aa4b5aeeb','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
-    'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5',
+    'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5', NOV23_PRODUCER,
     '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
     'd2d15cbaf5763333c74239b1ded3d1ac467adb3c',
     '3344e403ff01e17ef45b745a704a240e0917720b'})
@@ -195,6 +196,12 @@ def validate_source_contract(root, manifest):
             continue
         successors.append({**review, share_name: (prior[0] if prior else nov20[0], nov20[1])})
     reviews = (*reviews, *successors)
+    nov23 = (nov20[1], '28cd753a507c93a158465570132dd67af39883b47aff587509dd3de8195945fd')
+    nov23_successors = [{share_name: nov23}]
+    for review in successors:
+        prior = review[share_name]
+        nov23_successors.append({**review, share_name: (prior[0], nov23[1])})
+    reviews = (*reviews, *nov23_successors)
     if changed and not any(changed==set(review) and all((old[n],current[n])==pair for n,pair in review.items()) for review in reviews):
         raise ValueError('Unreviewed scoped source consumer code successor')
     return current
