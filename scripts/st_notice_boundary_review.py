@@ -492,8 +492,15 @@ SOURCE_FILES += NOV19_NOV17_SOURCE_FILES
 from scripts.st_notice_boundary_20261120_nov18 import SOURCE_FILES as NOV20_NOV18_SOURCE_FILES
 SOURCE_FILES += NOV20_NOV18_SOURCE_FILES
 
+from scripts.st_notice_boundary_20261123_nov19 import SOURCE_FILES as NOV23_NOV19_SOURCE_FILES
+SOURCE_FILES += NOV23_NOV19_SOURCE_FILES
+
 
 def reviewed_additions(previous, current, precision):
+    from scripts.st_notice_boundary_20261123_nov19 import reviewed_boundary as nov23
+    reviewed_nov19 = nov23(previous, current, precision)
+    if reviewed_nov19 is not None:
+        return reviewed_nov19
     from scripts.st_notice_boundary_20261120_nov18 import reviewed_boundary as nov20
     reviewed_nov18 = nov20(previous, current, precision)
     if reviewed_nov18 is not None:
