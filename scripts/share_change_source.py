@@ -38,7 +38,19 @@ EXACT_TOTAL_NEUTRAL_300796 = {'symbol': '300796', 'date': '2026-11-11', 'announc
 # Issuer confirms treasury-share delivery leaves total unchanged; provider limited fields stay N/A.
 EXACT_TOTAL_NEUTRAL_688113 = {'symbol': '688113', 'date': '2026-11-10', 'announcement_id': 'AN202611111831629103', 'total_shares': 64397559, 'em_row_sha256': 'd9f3f5158aa1685deba470ed81adf0c6e24eb4707cb47e850e26a1a141fa3feb', 'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611111831629103_1.pdf', 'pdf_sha256': '9afc81f37d7ff39ba72d05bb94fd8bfae90c45123e3e11aaf74bb40d0af54520', 'pdf_bytes': 167035, 'catalog_structure_unavailable': True}
 
+EXACT_TOTAL_NEUTRAL_301065 = {
+    'symbol': '301065', 'date': '2026-11-23', 'announcement_id': 'AN202611231831952167',
+    'total_shares': 106020000,
+    'em_row_sha256': 'c44f36f2613fe03d3f0e41988bb94edcbdc23ca1b8d7a36270e81bae111cf484',
+    'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611231831952167_1.pdf',
+    'pdf_sha256': 'c7fc655a9367e2af9e6d4c54f57ef8cc387cb8a7cd1853e47821212d4ed8670f',
+    'pdf_bytes': 121900, 'limited_before': 19732500, 'limited_after': 20004375,
+    'unlimited_before': 86287500, 'unlimited_after': 86015625, 'transferred': 271875,
+}
+
+
 def _zero_change_review(symbol):
+    if symbol=='301065':return EXACT_TOTAL_NEUTRAL_301065
     if symbol=='688113':return EXACT_TOTAL_NEUTRAL_688113
     return EXACT_TOTAL_NEUTRAL_300796 if symbol=='300796' else STRUCTURE_ONLY_EVENT_20261105
 
@@ -49,6 +61,22 @@ EXACT_FUTURE_PLAN_688092 = dict(symbol='688092', date='2026-11-12',
     pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611091831555510_1.pdf',
     pdf_sha256='77b5ee10304392ffed474c5e569a932b40bea55b9297bcd98eb2bbb5c1c4d72d',
     pdf_bytes=125835)
+EXACT_FUTURE_PLAN_603700 = dict(symbol='603700', date='2026-11-26', first_target='2026-11-23',
+    provider_notice_date='2026-11-24', announcement_id='AN202611231831961868',
+    before_total_shares=199961934, after_total_shares=198224684,
+    em_row_sha256='281b58b58d83191ab239f613d8f53d363963b4cb7914ced8d76ba0e8d7d7d9ec',
+    pdf_url='https://pdf.dfcfw.com/pdf/H2_AN202611231831961868_1.pdf',
+    pdf_sha256='53ae2736159f0b1da62f708fa9728336d6c1f94d3fe06e4079667a86d4af849a',
+    pdf_bytes=106138)
+
+
+def _later_future_plan(symbol, end):
+    for review in (EXACT_FUTURE_PLAN_688092, EXACT_FUTURE_PLAN_603700):
+        if symbol == review['symbol'] and review.get('first_target', '') <= end < review['date']:
+            return review
+    return None
+
+
 # Original issuer PDF pages 1, 5, 6 reviewed on Nov9. Provider's Nov10
 # three-share lock adjustment is a catalog observation, not a proved execution.
 # Both later rows are total-neutral and are never added to an earlier curve.
@@ -699,8 +727,9 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
     need(days==list(reversed(sessions)),'dated source missing/duplicate/out-of-order sessions')
     need(observed[previous_day]==before,'previously certified boundary conflicts; exact historical migration required')
     later_review=None;later_plan=None
-    review=EXACT_FUTURE_PLAN_688092
-    if symbol==review['symbol'] and end<review['date']:
+    later = _later_future_plan(symbol, end)
+    if later is not None:
+        review = later
         docs=files.get('later_future_documents',[])
         need(len(docs)==1 and docs[0].get('announcement_id')==review['announcement_id'],
              'exact later future plan lacks original issuer document')
@@ -949,7 +978,6 @@ def verify_dated_window(manifest, *, symbol, previous_day, end, previous_candida
             issuer_document_sha256=_structure_review(symbol)['pdf_sha256'],
             execution_or_legal_effect_not_asserted=True)
     if later_plan is not None:
-        later=EXACT_FUTURE_PLAN_688092
         facts['future_plan_not_consumed']=dict(**later_plan,
             announcement_id=later['announcement_id'],provider_notice_date=later['provider_notice_date'],
             observed_after_target=later['provider_notice_date']>end,
@@ -1067,8 +1095,8 @@ def collect_dated_window(*, root, symbol, previous_day, end, candidate):
                     files['later_structure_documents']=[{**ref,'announcement_id':structure['announcement_id']}]
                 if n._em_date(row['END_DATE'])>n.day(end):continue
             if n._em_date(row['END_DATE'])>n.day(end):
-                later=EXACT_FUTURE_PLAN_688092
-                if (symbol,row.get('INFO_CODE'),row['END_DATE'][:10])==(later['symbol'],later['announcement_id'],later['date']):
+                later = _later_future_plan(symbol, end)
+                if later and (row.get('INFO_CODE'),row['END_DATE'][:10])==(later['announcement_id'],later['date']):
                     ref,_=save(later['pdf_url'],{},'later_future_'+later['announcement_id'])
                     files['later_future_documents']=[{**ref,'announcement_id':later['announcement_id']}]
                     continue
