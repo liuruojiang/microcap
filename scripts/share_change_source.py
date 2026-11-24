@@ -38,7 +38,19 @@ EXACT_TOTAL_NEUTRAL_300796 = {'symbol': '300796', 'date': '2026-11-11', 'announc
 # Issuer confirms treasury-share delivery leaves total unchanged; provider limited fields stay N/A.
 EXACT_TOTAL_NEUTRAL_688113 = {'symbol': '688113', 'date': '2026-11-10', 'announcement_id': 'AN202611111831629103', 'total_shares': 64397559, 'em_row_sha256': 'd9f3f5158aa1685deba470ed81adf0c6e24eb4707cb47e850e26a1a141fa3feb', 'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611111831629103_1.pdf', 'pdf_sha256': '9afc81f37d7ff39ba72d05bb94fd8bfae90c45123e3e11aaf74bb40d0af54520', 'pdf_bytes': 167035, 'catalog_structure_unavailable': True}
 
+EXACT_TOTAL_NEUTRAL_301065 = {
+    'symbol': '301065', 'date': '2026-11-23', 'announcement_id': 'AN202611231831952167',
+    'total_shares': 106020000,
+    'em_row_sha256': 'c44f36f2613fe03d3f0e41988bb94edcbdc23ca1b8d7a36270e81bae111cf484',
+    'pdf_url': 'https://pdf.dfcfw.com/pdf/H2_AN202611231831952167_1.pdf',
+    'pdf_sha256': 'c7fc655a9367e2af9e6d4c54f57ef8cc387cb8a7cd1853e47821212d4ed8670f',
+    'pdf_bytes': 121900, 'limited_before': 19732500, 'limited_after': 20004375,
+    'unlimited_before': 86287500, 'unlimited_after': 86015625, 'transferred': 271875,
+}
+
+
 def _zero_change_review(symbol):
+    if symbol=='301065':return EXACT_TOTAL_NEUTRAL_301065
     if symbol=='688113':return EXACT_TOTAL_NEUTRAL_688113
     return EXACT_TOTAL_NEUTRAL_300796 if symbol=='300796' else STRUCTURE_ONLY_EVENT_20261105
 
