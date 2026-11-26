@@ -62,9 +62,10 @@ def test_original_notice_chain_is_located_without_rewriting_receipts(seed):
     root,pointer,raw=seed;old=json.loads(raw)
     notice.refresh_notice_archive(root=root,target='2026-10-30',session=Session())
     notice.refresh_notice_archive(root=root,target='2026-10-31',session=Session())
+    notice.refresh_notice_archive(root=root,target='2026-11-01',session=Session())
     before={p:p.read_bytes() for p in (root/notice.PREFIX).glob('refresh_*/proof.json')}
-    result,specs=m.original_notice_chain(root,[old['manifest_path'],old['manifest_sha256']],'2026-10-31')
-    assert result['receipt_count']==len(specs)==2
+    result,specs=m.original_notice_chain(root,[old['manifest_path'],old['manifest_sha256']],'2026-11-01')
+    assert result['receipt_count']==len(specs)==3
     assert result['original_clocks_retained']
     assert all(p.read_bytes()==b for p,b in before.items())
 

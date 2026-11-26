@@ -93,6 +93,27 @@ def _active_boundary_symbols(master,day):
     return set(symbols.loc[applicable&active])
 
 
+DELISTING_002731_PDF = 'data/reviewed_forward_delisting/002731-SZSE-2026-124.pdf'
+DELISTING_002731_SHA256 = '26788d351ebfd99bd32b4df65aeaa00f2b528cb5e975ad40b420106a78daaac3'
+
+
+def missing_active_coverage(root, master, day, published_symbols, maintained_symbols):
+    missing = _active_boundary_symbols(master, day) - set(published_symbols)
+    symbol = '002731'
+    if symbol not in missing or day < '2026-11-13' or symbol in maintained_symbols:
+        return sorted(missing), {}
+    row = master.loc[master['symbol'].eq(symbol)].iloc[0]
+    # Issuer notice 2026-124 fixes Nov 12 as the final trade and Nov 13 as
+    # removal. Preserve the frozen master and require active coverage on Nov 12.
+    if (row.get('exchange') != 'SZSE' or pd.Timestamp(row['list_date']) != pd.Timestamp('2014-11-04')
+            or not pd.isna(pd.to_datetime(row['delist_date']))):
+        return sorted(missing), {}
+    body = sources.bound(root, DELISTING_002731_PDF).read_bytes()
+    if sources.sha(body) != DELISTING_002731_SHA256:
+        raise ValueError('Official SZSE 002731 delisting evidence bytes changed')
+    return sorted(missing - {symbol}), {DELISTING_002731_PDF: DELISTING_002731_SHA256}
+
+
 def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=False):
     """Source-bounded current-day exclusion, not invented issuer metadata."""
     if not history._ACTIVE_BATCH:
@@ -159,7 +180,7 @@ def st_exclusions(root,base,symbols,day,authority,witness_dir,*,materialize=Fals
 def verify(root,base,day,caps,scope,spec,authority,*,materialize=False):
     rows,files=read_snapshot(root,spec,day);by_symbol={r['SECURITY_CODE']:r for r in rows}
     master=base.freq_mod.load_security_master()
-    missing=sorted(_active_boundary_symbols(master,day)-set(by_symbol))
+    missing,delisting_evidence=missing_active_coverage(root,master,day,by_symbol,scope)
     if missing:
         raise ValueError('Whole-market boundary is missing active native A-share issuers: '+','.join(missing))
     ranked=base.build_live_target_members_map({pd.Timestamp(day):caps},pd.DatetimeIndex([day]),{},top_n=100)[pd.Timestamp(day)]
@@ -182,4 +203,4 @@ def verify(root,base,day,caps,scope,spec,authority,*,materialize=False):
         raise ValueError('Recall potentially eligible issuers into the 300-stock roster: '+','.join(escaped))
     return dict(status='native_scope_boundary_passed',date=day,scope_count=300,
         source_rows=len(rows),outside_exclusions=excluded,top100=ranked,authority=list(authority),
-        snapshot=spec,source_files={**files,**closure})
+        snapshot=spec,source_files={**files,**closure,**delisting_evidence})

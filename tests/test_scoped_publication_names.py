@@ -38,6 +38,21 @@ def test_names_transport_keeps_prior_and_exact_native_quote_scope(publication):
     assert len(check(publication))==2
 
 
+@pytest.mark.parametrize('name, accepted', [('*ST三六', True), ('ST三六', False), ('*ST三', False)])
+def test_native_publication_accepts_only_the_reviewed_300295_alias(publication,name,accepted):
+    root,names,_=publication
+    active=root/'.microcap_index_cache/active_universe.csv'
+    universe=active.read_bytes().replace(b'*ST complete','*ST三六五'.encode('utf-8'))
+    active.write_bytes(universe);names['universe_sha256']=s.sha(universe)
+    st=f'code,name\n300295,{name}\n'.encode('utf-8')
+    (root/'.microcap_index_cache/current_st.csv').write_bytes(st);names['cache_sha256']=s.sha(st)
+    names['scoped_observation']['quote_rows'][-1]['name']='*ST三六五'
+    if accepted:
+        assert len(check(publication))==2
+    else:
+        with pytest.raises(ValueError,match='ST board disagree'):check(publication)
+
+
 @pytest.mark.parametrize('fault',['scope','full_scope','missing_scope','fake_conflict','coverage','quote_source','clock','cold','prior','role'])
 def test_names_cannot_bypass_st_identity_or_witnessed_scope(publication,fault):
     root,names,symbols=publication;w=names['scoped_observation']

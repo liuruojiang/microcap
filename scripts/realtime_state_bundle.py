@@ -905,6 +905,22 @@ NOV12_ARCHIVE_SHARE_SOURCE_REVIEW = {
 }
 
 
+# User-approved 688511 November 12 archive. All 300 admitted source chains
+# and the newly admitted issuer were read through the released share reader.
+NOV12_688511_SHARE_SOURCE_REVIEW = {
+    "revision": "exact_20261112_688511_approved_archive_share_reader",
+    "stock_fingerprint_sha256": "adb383ac6f041cff080c1e58a96d230685702cdcf6b3a9917b8bb52cf4a5a01b",
+    "file_count": 16325,
+    "data_sha256": "77b675ac770bc9a6fd72593f4aa98de549a5052935f1ee048b64b7a4ee4582e7",
+    "changes": {
+        "scripts/share_change_source.py": (
+            "fdbc6292597ced431cf76bfdd9ad564c70042f8d603ee867f79d5da2bed2339e",
+            "eca35fb9465e8a5aaad9b5fc7b64cfffa9a5467aa7dbe8bbf29f7eb6326b2a38",
+        ),
+    },
+}
+
+
 def stock_input_evidence_matches_validated_source(recorded, current, *, root=None) -> bool:
     """Compare freshly computed inputs; allow only the exact reviewed old code.
 
@@ -944,7 +960,7 @@ def stock_input_evidence_matches_validated_source(recorded, current, *, root=Non
                    SEALED_BASIS_CACHE_N9_SOURCE_REVIEW,FORWARD_CONSUMPTION_D5_SOURCE_REVIEW,
                    FORWARD_CONSUMPTION_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_D5_SOURCE_REVIEW,
                    TOTAL_NEUTRAL_SHARE_LEGACY_N9_SOURCE_REVIEW,TOTAL_NEUTRAL_SHARE_NATIVE_N9_SOURCE_REVIEW,
-                   NOV12_ARCHIVE_SHARE_SOURCE_REVIEW):
+                   NOV12_ARCHIVE_SHARE_SOURCE_REVIEW, NOV12_688511_SHARE_SOURCE_REVIEW):
         if identity != review["stock_fingerprint_sha256"]:
             continue
         if review is not VALIDATION_SOURCE_REVIEW and (
