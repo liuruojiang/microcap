@@ -381,7 +381,12 @@ def plan_adoption(root, staged_root, manifest, *, consumed, observed):
     files = manifest['files']
     if not mutable <= set(files):
         raise ValueError('Scoped source lacks complete native mutable issuer inputs')
-    originals = {str(p.relative_to(root).as_posix()): raw for p, raw in observed.items()}
+    originals = {}
+    for path, raw in observed.items():
+        name = extended(path).relative_to(extended(root)).as_posix()
+        if name in originals and originals[name] != raw:
+            raise ValueError('Observed aliases disagree on the same source object')
+        originals[name] = raw
     originals[master_name] = master_raw
     for name, digest in files.items():
         if (not source_role(name, set(symbols))

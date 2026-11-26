@@ -61,7 +61,7 @@ def candidate(tmp_path):
     manifest=dict(schema=m.SCHEMA,source_inputs_only=True,native_ST_refresh_required_at_consumer=True,
         final_strategy_delivery=False,symbols=symbols,files=files,target='2026-11-09',master_sha256=m.sha((root/master).read_bytes()))
     observed_path=root/'outputs/old-proxy-meta.json';put(observed_path,b'original native consumption authority')
-    return root,stage,manifest,{s:'2026-10-29' for s in symbols},{observed_path:observed_path.read_bytes()},originals,immutable
+    return root,stage,manifest,{s:'2026-10-29' for s in symbols},{m.extended(observed_path):observed_path.read_bytes()},originals,immutable
 
 
 def plan(candidate):

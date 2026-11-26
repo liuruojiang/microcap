@@ -97,7 +97,7 @@ def original_notice_chain(source, previous, target):
     path = matches[0]; chain = []
     for _ in range(32):
         body = path.read_bytes(); proof = json.loads(body)
-        chain.append(dict(path=path.relative_to(source).as_posix(), sha256=sources.sha(body)))
+        chain.append(dict(path=sources.extended(path).relative_to(sources.extended(source)).as_posix(), sha256=sources.sha(body)))
         if proof['previous_authority'] == list(previous):
             break
         path = path.with_name('previous_freshness.json')
@@ -107,7 +107,7 @@ def original_notice_chain(source, previous, target):
         if old['authority'] != proof['previous_authority']:
             raise ValueError('Original notice receipt predecessor identity differs')
         if old['previous_authority'] == list(previous):
-            chain.append(dict(path=path.relative_to(source).as_posix(), sha256=sources.sha(path.read_bytes())))
+            chain.append(dict(path=sources.extended(path).relative_to(sources.extended(source)).as_posix(), sha256=sources.sha(path.read_bytes())))
             break
         old_generation = sources.bound(source, old['authority'][0]).parent
         original_path = old_generation / 'proof.json'
