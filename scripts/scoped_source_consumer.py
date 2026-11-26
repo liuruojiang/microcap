@@ -28,11 +28,12 @@ SCHEMA = 'microcap_scoped_source_inputs_v1'
 PRODUCER = '63c7b16d77600c4aa9dadf58b86d31e034477e44'
 NOV23_PRODUCER = '39c08829b43c8399bd6793d715de42cc67cd0d63'
 NOV24_PRODUCER = '106e2046e81f8963db2ecd9fc063b5e193d775ff'
+NOV26_688511_PRODUCER = '0051d4c185e3c695494c7fc9486934fc4d987805'
 PRODUCERS = frozenset({PRODUCER,'d09b53af78767370a7ecb2bf4ebe6e3527d2eacc','075949e609d2c403214379d949672a192a16e649','52214f002a8b83ab602a90fd40cc48336a7ce51a','cbc3bd6c57a9b1abd556c2742f8b72a7118faad3','7c7e2954cd1945bbd75037f8cd144f8f95407598','f2ded1092aa11a1061b52aaf468ebcd5d2ce17a5','e3c855f980e503372fd9fc4268aeea2aa4b5aeeb','ae439a1eec4dae5729483f43356473bcb9b1dff1','706af7ea9186bdb9b3948738deb5a5afda7a331e',
     'a016ce27ea86fca1fa0b5199f802b198c0ed99de','be89e87a0da728b27be0308d7c4c9e57a212b815',
     'f6970d665d5c7a39b37c866cf13dc3d4cb8fdcc5', NOV23_PRODUCER, NOV24_PRODUCER,
     '3fe2e15ee9e3f2ee7e25bbc328479f1fd9910d36',
-    'd2d15cbaf5763333c74239b1ded3d1ac467adb3c',
+    'd2d15cbaf5763333c74239b1ded3d1ac467adb3c', NOV26_688511_PRODUCER,
     '3344e403ff01e17ef45b745a704a240e0917720b'})
 ARCHIVED_PROOF_READER = (
     'a9ee19c96df52517d45b0d7e56f82a4b7c924cdaaa72f2818c0a32f7d772a83e',
@@ -258,6 +259,11 @@ def source_role(name, symbols):
         return False
     if parts[1] in ('prices_raw', 'share_change'):
         return len(parts) == 3 and parts[2] in {s + '.csv' for s in symbols}
+    if '688511' in symbols and name in {
+            CACHE + 'trade_status/2025-04-30-official-suspension.pdf',
+            CACHE + 'trade_status/2026-04-20-official-suspension.pdf'}:
+        # The approved issuer's native trade-state manifest binds these PDFs.
+        return True
     if parts[1] in ('share_sources', 'trade_status'):
         if len(parts) == 3:
             return parts[2] in {s + '.json' for s in symbols}
