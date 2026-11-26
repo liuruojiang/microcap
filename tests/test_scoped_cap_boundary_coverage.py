@@ -237,3 +237,27 @@ def test_native_BJ_and_B_share_rows_are_not_A_share_source_obligations(original,
             and not row['SECURITY_CODE'].startswith(('200','900'))]
     spec = write_pages(original, rows)
     assert verify(original, spec)['status'] == 'native_scope_boundary_passed'
+
+
+@pytest.mark.parametrize('day,maintained,forged,excluded', [
+    ('2026-11-26', (), False, True),
+    ('2026-11-12', (), False, False),
+    ('2026-11-26', ('002731',), False, False),
+    ('2026-11-26', (), True, False),
+])
+def test_reviewed_delisting_never_excuses_other_issuers(tmp_path, day, maintained, forged, excluded):
+    proof = tmp_path / boundary.DELISTING_002731_PDF
+    proof.parent.mkdir(parents=True)
+    original = Path(__file__).resolve().parents[1] / boundary.DELISTING_002731_PDF
+    proof.write_bytes(b'changed' if forged else original.read_bytes())
+    master = pd.DataFrame([
+        dict(symbol='002731', exchange='SZSE', list_date='2014-11-04', delist_date=None),
+        dict(symbol='002732', exchange='SZSE', list_date='2014-11-04', delist_date=None),
+    ])
+    if forged:
+        with pytest.raises(ValueError, match='evidence bytes changed'):
+            boundary.missing_active_coverage(tmp_path, master, day, [], maintained)
+    else:
+        missing, files = boundary.missing_active_coverage(tmp_path, master, day, [], maintained)
+        assert missing == (['002732'] if excluded else ['002731', '002732'])
+        assert files == ({boundary.DELISTING_002731_PDF: boundary.DELISTING_002731_SHA256} if excluded else {})
