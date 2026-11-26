@@ -12928,6 +12928,7 @@ V2_0_REWRITE_AUDIT_KEY_COLUMNS = [
 ]
 V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS = int(getattr(embedded_context.base_mod, "LOOKBACK", 16)) + 5
 V2_0_REWRITE_AUDIT_ALLOWED_TAIL_ROWS_BY_COLUMN = {
+    "return_net": 0,  # Published realized returns require a reviewed migration to change.
     "holding": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "next_holding": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
     "base_pre_cost_return": V2_0_SIGNAL_AUDIT_ALLOWED_TAIL_ROWS,
