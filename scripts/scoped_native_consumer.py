@@ -119,6 +119,13 @@ def original_notice_chain(source, previous, target):
     return sources.verify_notice_chain(source, previous, chain[::-1], target), chain[::-1]
 
 
+def _current_st_names_agree(code, board_name, quote_name):
+    # Match the source collector's exact alias from SZSE issuer notice 2026-012.
+    # PDF SHA-256: ad172506c7aca3004e2385e99be547c994b7ad07e36cb001d8105b6c2f33f60a.
+    return board_name == quote_name or (code, board_name, quote_name) == (
+        '300295', '*ST三六', '*ST三六五')
+
+
 def checked_publication_universe(source,names,floor,symbols):
     if names.get('schema')!='current_publication_names_v2' or names.get('publication_name_scope')!='maintained_plus_ST_conflicts':
         raise ValueError('Scoped publication names require an explicit maintained-pool observation')
@@ -138,7 +145,7 @@ def checked_publication_universe(source,names,floor,symbols):
             or not active or len(mapping)!=len(active) or sources.sha(st)!=names['cache_sha256']
             or len(rows)!=names['count'] or not rows
             or any(not re.fullmatch('[0-9]{6}',s) or not n for s,n in mapping.items())
-            or any(r['code'] not in mapping or mapping[r['code']]!=r['name'].strip()
+            or any(r['code'] not in mapping or not _current_st_names_agree(r['code'],r['name'].strip(),mapping[r['code']])
                    for r in rows if re.fullmatch('[036][0-9]{5}',r['code']))):
         raise ValueError('Scoped publication names and ST board disagree')
     files={name:sources.sha(universe)}
