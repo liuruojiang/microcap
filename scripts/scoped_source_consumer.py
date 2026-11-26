@@ -261,8 +261,20 @@ def source_role(name, symbols):
         return len(parts) == 3 and parts[2] in {s + '.csv' for s in symbols}
     if '688511' in symbols and name in {
             CACHE + 'trade_status/2025-04-30-official-suspension.pdf',
-            CACHE + 'trade_status/2026-04-20-official-suspension.pdf'}:
-        # The approved issuer's native trade-state manifest binds these PDFs.
+            CACHE + 'trade_status/2026-04-20-official-suspension.pdf',
+            CACHE + 'trade_status/2025-04-30-official-suspension-review.json',
+            CACHE + 'trade_status/2026-04-20-official-suspension-review.json',
+            CACHE + 'trade_status/original-tencent-em-2021-07-30-2023-07-24.json',
+            CACHE + 'trade_status/original-tencent-em-2023-07-25-2025-04-29.json',
+            CACHE + 'trade_status/original-tencent-em-2025-05-06-2026-04-17.json',
+            CACHE + 'trade_status/original-tencent-em-2026-04-21-2026-11-20.json',
+            CACHE + 'share_sources/baselines/a07a98e4e7a5d83637097f691a845778881bf2dd3c8ee3d9c47ae0154f2b7af7/history-source-diagnostic/issuer-20240812-capital.pdf',
+            CACHE + 'share_sources/baselines/a07a98e4e7a5d83637097f691a845778881bf2dd3c8ee3d9c47ae0154f2b7af7/history-source-diagnostic/issuer-202502-capital.pdf',
+            CACHE + 'share_sources/baselines/a07a98e4e7a5d83637097f691a845778881bf2dd3c8ee3d9c47ae0154f2b7af7/history-source-diagnostic/issuer-20260407-capital.pdf',
+            CACHE + 'share_sources/baselines/a07a98e4e7a5d83637097f691a845778881bf2dd3c8ee3d9c47ae0154f2b7af7/issuer-st-removal-20260418.pdf',
+            CACHE + 'share_sources/baselines/a07a98e4e7a5d83637097f691a845778881bf2dd3c8ee3d9c47ae0154f2b7af7/sse-listing-monthly-202107.pdf',
+    }:
+        # The approved issuer's native trade-state/share manifests bind these PDFs.
         return True
     if parts[1] in ('share_sources', 'trade_status'):
         if len(parts) == 3:
