@@ -12,6 +12,7 @@ PREVIOUS_SHA256 = 'a81c3aeac2f7e232e8a732cb10d4e8eab8c1454e799b2431e830a3816b893
 OBSERVED_SHA256 = 'f55e76ec54598efc08b52c83e787633cf63f7a3691a0abae544cd5c263023400'
 NOV24_OBSERVED_SHA256 = '807b6055ea8ecb04f4a8096fdf59a75cdfc0de9cbe5c4eb8712dadfa93dcdc59'
 NOV25_OBSERVED_SHA256 = '40f5c35fb9afcb524371805be9894259c3c3d6372833e492aa1865f9b4359db7'
+NOV26_OBSERVED_SHA256 = '4ec67fed4bafbf601feaf50b73a14ed9acc626c39e3303e617ac8501c16fef32'
 DOCUMENT_DIR = 'data/st_notice_boundary_reviews/reviewed_20261123_nov19'
 DOCUMENTS = {
     'AN202611181831832632': '97b606829f29d93d6dcde679f5cdc46d3c727f66e120c22bcf704f29cd55939e',
@@ -38,9 +39,31 @@ NOV25_ADDED_DOCUMENTS = {
     'AN202611241831999540': '68d559c1598e514ad5d8a439c4eb93673045ea428db4f5247d0dd185e74d6732',
     'AN202611241831999541': '37fed643cddb17dd8c8ad4cc0b6e8fa457038ade53d5cb1ad0ea6522b340076d',
 }
+# November 26 reuses the previous catalog case and observes one later short
+# name on an older, unchanged bank-freeze notice. The signed November 25
+# notice documents the separate November 26 implementation.
+NOV26_RENAMED_NOTICE = 'AN202611191831863672'
+NOV26_DOCUMENTS = {
+    **NOV24_DOCUMENTS,
+    NOV26_RENAMED_NOTICE: 'efedaaf62c139a52dfe42e787c116804803190e83fa727d793d055712e0f7991',
+}
+NOV26_ST_NOTICE = (
+    '300670-st-20261125', '6371c94f99f47996137f563d158d3947358964918e8f293b1ed46c63741f3401',
+    'https://static.cninfo.com.cn/finalpage/2026-11-25/1225686832.PDF',
+)
 SOURCE_FILES = ['scripts/st_notice_boundary_20261123_nov19.py'] + [
-    f'{DOCUMENT_DIR}/{identity}{suffix}' for identity in (*NOV24_DOCUMENTS, *NOV25_ADDED_DOCUMENTS) for suffix in ('.pdf', '.receipt.json')
+    f'{DOCUMENT_DIR}/{identity}{suffix}' for identity in (*NOV26_DOCUMENTS, *NOV25_ADDED_DOCUMENTS, NOV26_ST_NOTICE[0]) for suffix in ('.pdf', '.receipt.json')
 ]
+
+def _verify_document(documents, identity, expected, url):
+    raw = (documents / f'{identity}.pdf').read_bytes()
+    receipt = json.loads((documents / f'{identity}.receipt.json').read_bytes())
+    if (sha256(raw).hexdigest() != expected or receipt['raw_sha256'] != expected
+            or not raw.startswith(b'%PDF-') or b'%%EOF' not in raw[-1024:]
+            or receipt['url'] != url or receipt['actual_url'] != url
+            or receipt['http_status'] != 200 or receipt['tls_verification'] is not True
+            or receipt['bytes'] != len(raw)):
+        raise StNoticeEvidenceError('November 19 catalog issuer document differs')
 
 
 def reviewed_boundary(previous, current, precision):
@@ -51,6 +74,8 @@ def reviewed_boundary(previous, current, precision):
         NOV24_OBSERVED_SHA256: (NOV24_DOCUMENTS, {}, 'exact_nov19_catalog_reobservation_20261124_v1'),
         NOV25_OBSERVED_SHA256: (NOV24_DOCUMENTS, NOV25_ADDED_DOCUMENTS,
                                'exact_nov19_catalog_reobservation_20261125_v1'),
+        NOV26_OBSERVED_SHA256: (NOV26_DOCUMENTS, NOV25_ADDED_DOCUMENTS,
+                               'exact_nov19_catalog_reobservation_20261126_v1'),
     }
     if (sha256(canonical(original)).hexdigest() != PREVIOUS_SHA256
             or observed_sha not in reviewed):
@@ -64,15 +89,9 @@ def reviewed_boundary(previous, current, precision):
 
     documents = Path(__file__).resolve().parents[1] / DOCUMENT_DIR
     for identity, expected in {**expected_docs, **added_docs}.items():
-        raw = (documents / f'{identity}.pdf').read_bytes()
-        receipt = json.loads((documents / f'{identity}.receipt.json').read_bytes())
-        url = f'https://pdf.dfcfw.com/pdf/H2_{identity}_1.pdf'
-        if (sha256(raw).hexdigest() != expected or receipt['raw_sha256'] != expected
-                or not raw.startswith(b'%PDF-') or b'%%EOF' not in raw[-1024:]
-                or receipt['url'] != url or receipt['actual_url'] != url
-                or receipt['http_status'] != 200 or receipt['tls_verification'] is not True
-                or receipt['bytes'] != len(raw)):
-            raise StNoticeEvidenceError('November 19 catalog issuer document differs')
+        _verify_document(documents, identity, expected, f'https://pdf.dfcfw.com/pdf/H2_{identity}_1.pdf')
+    if observed_sha == NOV26_OBSERVED_SHA256:
+        _verify_document(documents, *NOV26_ST_NOTICE)
 
     comparison = {identity: dict(row, display_time=current[identity]['display_time']) for identity, row in original.items()}
     result = precision(previous, comparison)
