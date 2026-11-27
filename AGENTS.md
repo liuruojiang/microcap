@@ -119,9 +119,11 @@ Use this repo-local file as the source of workspace guidance for the Top100 micr
 - 约定的适用门槛全部通过即交付，不再附加新一轮审计、美化或测试。若受阻，明确已完成部分、具体阻断及最少后续动作，不把部分完成称为全部完成。
 
 
-## 本地实时日报固定入口（2026-11-03已激活）
+## 本地实时日报固定入口（2026-11-27 核对）
 
-本地ic-im自动化先读 D:\Codex\home\automations\ic-im\scripts\REALTIME_RUNBOOK.md，并经 realtime_daily_gate.py daily 固定入口执行当次完整专项。active绑定的是认证离线测试环境，不能作为生产信号或当日报价。专项通过后仍须实际运行正式生产状态门禁与研究入口，并在Codex任务发布；本地不调用SMTP。新ST证据候选、历史迁移及种子身份继续遵循原精确审阅/批准门槛，不以软件验收冒充当日数据可用。
+10:00 和 14:15 使用分离入口。微盘从 `member_daily_install.json` 读取已审核的小包和本地执行身份，调用其中的 `run_microcap_member_local.py`，上午使用 `--prepare-only`。若上午小包尚在等待交接，下午入口按同一交易日查询是否已发布正式新包。IC/IM 从 `icim_local_install.json` 读取独立准备库存，14:15 后先执行安装包的 `run_icim_local_independent.py gate`，放行后运行同入口的 `run`。测试文件数、哈希、来源和已通过状态取自机器回执与当前正式清单。两策略各自使用当日真实输入和独立日历，盘中结果在 15:00 前发布至 Codex。
+
+两个安装指针位于 `D:/Codex/home/automations/ic-im/`。实际排程与输入见 [实时日报运行说明](<D:/Codex/home/automations/ic-im/scripts/REALTIME_RUNBOOK.md>)。新 ST 证据、历史迁移及种子身份继续遵循原精确审阅、批准及核验门槛。
 
 
 ## 日报故障按阶段修复（2026-11-04 用户要求，后续修复必须遵循）
